@@ -1,0 +1,59 @@
+<!-- <div mat-dialog-content class="preview-resume-renderer-page preview-browser-resume-page preview-browserResumePage "
+     style="padding: 36px 36px 0px;">
+    <app-resume1-template [isPreview]="true"></app-resume1-template>
+    <div style="position: absolute;top: 0px;right: 0px;padding: 10px 14px;border-radius: 50%;background-color: rgba(128, 128, 128, 0.482);border: 1px solid rgba(128, 128, 128, 0.482);width: fit-content;height: fit-content;">
+        <button style="background-color: transparent;border: 0;width: fit-content;height: fit-content;" (click)="onNoClick()"><i class="pi pi-times"></i></button>
+    </div>
+    <div mat-dialog-actions>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100"> 
+            <button mat-raised-button color="warn" type="button" mat-dialog-close>Close</button>
+            <button mat-raised-button color="primary" >
+                POST A DEAL
+            </button>
+        </div> 
+    </div>
+</div> -->
+
+<h2 mat-dialog-title  align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <!-- <button mat-button cdkFocusInitial (click)="onDownloadHandler()">
+            Download
+            <i class="pi pi-download"></i>
+        </button> -->
+</h2>
+<mat-dialog-content class="preview-resume-renderer-page preview-browser-resume-page preview-browserResumePage">
+    @if(selectedTemplateName == 'TEMPLATE_1'){
+        <app-resume1-template [isPreview]="true"></app-resume1-template>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_2'){
+        <app-resume-template2 [isPreview]="true"></app-resume-template2>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_3'){
+        <app-resume-template3 [isPreview]="true"></app-resume-template3>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_4'){
+        <app-resume-template4 [isPreview]="true"></app-resume-template4>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_5'){
+        <app-resume-template5 [isPreview]="true"></app-resume-template5>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_6'){
+        <app-resume-template6 [isPreview]="true"></app-resume-template6>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_7'){
+        <app-resume-template7 [isPreview]="true"></app-resume-template7>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_8'){
+        <app-resume-template8 [isPreview]="true"></app-resume-template8>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_9'){
+        <app-resume-template9 [isPreview]="true"></app-resume-template9>
+    }
+    @else if(selectedTemplateName == 'TEMPLATE_10'){
+        <app-resume-template10 [isPreview]="true"></app-resume-template10>
+    }
+</mat-dialog-content>
+<!-- <mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button>
+</mat-dialog-actions> -->

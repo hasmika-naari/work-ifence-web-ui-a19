@@ -1,0 +1,32 @@
+.preview-resume-renderer-page {
+    background-color: #fff;
+    max-height: 100vh !important;
+    width: 940px;
+  }
+
+  .preview-browser-resume-page {
+    /* box-shadow:0 0 2px 0 rgba(83,83,83,.5); */
+    margin-bottom: 40px !important;
+  }
+  
+  .preview-browser-resume-page:after,.preview-browser-resume-page:before {
+    background: transparent !important;
+    content: "" !important;
+    height: 10px !important;
+    width: 60% !important;
+    z-index: -1 !important;
+  }
+  
+  .preview-browser-resume-page:before {
+    bottom: 30px !important;
+    box-shadow: 0 31px 10px rgba(0,0,0,.6) !important;
+    left: 20px !important;
+    transform: rotate(-1deg) !important;
+  }
+  
+  .preview-browser-resume-page:after {
+    bottom: 50px !important;
+    box-shadow: 0 47px 14px rgba(0,0,0,.5) !important;
+    right: -1px !important;
+    transform: skew(2deg) rotate(3deg) !important;
+  }

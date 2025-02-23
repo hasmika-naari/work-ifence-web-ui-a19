@@ -1,0 +1,82 @@
+<!-- <div class="row">
+	<div class="col-12 p-b-2">
+		<mat-progress-bar *ngIf="isActionInProgress"  mode="indeterminate"></mat-progress-bar>
+	</div>
+</div>
+
+<div class="row">
+	
+	@for (application of filteredApps(); track application.job_application_details.id) {
+
+		<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+			<div class="single-application-box with-box-shadow m-1 mb-5">
+				<div class="row p-10" style="width: 100% !important;margin: auto;">
+					<div class="col-12 p-0 application-content2">
+						<h3  class="text-left"><span  class="d-inline-block elipse-with-2line">{{application.job_application_details.job_role}}</span></h3>
+						<div class="box-primary-shade row" >
+							<div class="col-12" style="text-align: left;padding-left:3px;">
+							  <span  color="primary" class="company-name">&#64; {{application.job_application_details.company_name}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-6">
+						<small class="w-100 text-left d-block mt-2">Applied On: <strong>{{application.job_application_details.jobAppliedDate?(application.job_application_details.jobAppliedDate | date) : 'N/A'}}</strong></small>
+					</div>
+					<div class="col-6">
+						<small class="w-100 text-left d-block mt-2">Updated On: <strong>{{application.job_application_details.lastModifiedDate | date}}</strong></small>
+					</div>
+					<div class="col-12 tb-border">
+						<small class="w-100 text-left d-block mt-2">Location: <strong>Atlanta, GA</strong></small>
+					</div>
+					<div  class="col-7 tb-border">
+						<div>
+							<small class="w-100 text-left d-block">Vendor Info:</small>
+						</div>
+					</div>
+					<div class="col-5 tb-border">
+						<div class="row justify-content-between p-10">
+							<div class="col-12 p-0">
+								<div class="row justify-content-between p-0">
+									<div class="col-2 d-flex">
+										<div class="application-status" >
+											{{application.job_application_details.status}}
+										</div>
+									</div>
+									<div class="col-8">
+										
+									</div>
+								</div>
+							</div>
+						
+							<div class="col-12 application-content3" >
+								<p-menu [model]="menuOptions">
+									<ng-template pTemplate="item" let-item>
+										<a class="p-menuitem-link flex  align-items-center application-menu-option" (click)="menuActionHandler($event, application, item)">
+												<span class="p-menuitem-icon" [class]="item.icon"></span>
+												<span class="p-menuitem-text"> {{ item.label }}</span>
+										</a>
+									</ng-template>
+								</p-menu>
+								
+							</div>
+								
+						</div>
+					</div>
+					<div class="col-12">
+						<div>
+							<small class="w-100 text-left d-block">Round Info:</small>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	}@empty {
+		<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" style="padding-left: 30px;">
+			<h4 >
+					No Job Applications Found 
+			</h4>
+			<button mat-raised-button color="primary" (click)="showapplicationGeneratorHandler($event)">Add Job Application</button>
+		</div>
+	  }
+</div> -->

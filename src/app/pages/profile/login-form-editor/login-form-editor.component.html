@@ -1,0 +1,139 @@
+
+<div class="row pl-4 pr-4" style="height: 80% !important;border-radius: 20px;">
+    <div class="col-12"  >
+        <form [formGroup]="loginForm" style="height: 65vh;margin-top:30px;" >
+            <div class="row wrap">
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Username</mat-label>
+                        <input matInput formControlName="username">
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Password</mat-label>
+                        <input matInput formControlName="password">
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Phone Number</mat-label>
+                        <input matInput placeholder="Phone Number" formControlName="phone_number">
+                        <mat-icon matSuffix matTooltip="Update Phone Number" 
+                                *ngIf="!phoneUpdateInProgress && phoneUpdateRequired && !loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)" 
+                            class="show-green save-icon"  (click)="patchLoginForm()">save</mat-icon>
+                        <mat-icon matSuffix matTooltip=""   *ngIf="(!phoneUpdateInProgress && loginForm.get('phone_number')?.hasError('pattern') && (!loginForm.get('phone_number')?.dirty || !loginForm.get('phone_number')?.touched)) ||
+                                                                 (!phoneUpdateInProgress && loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)) " 
+                            class="show-silver save-icon"  >save</mat-icon>
+                        <mat-progress-spinner matSuffix mode="indeterminate" color="warn" [diameter]="'25'"  
+                            style="position: relative;margin-right:10px;" 
+                           *ngIf=phoneUpdateInProgress>
+                        </mat-progress-spinner>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('phone_number')?.hasError('required') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)">
+                            Required.
+                        </mat-error>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)">
+                            Please enter a valid Phone number
+                        </mat-error>
+                        <mat-hint class="show-green" *ngIf="phoneNumberUpdateSuccess">Phone Number Updated Successfully!!</mat-hint>
+                    </mat-form-field>
+
+                </div>
+                <div class="col-12 p-b-0 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Email</mat-label>
+                        <input matInput placeholder="Email" formControlName="email">
+                        <mat-icon matSuffix matTooltip="Update Email" *ngIf="!emailUpdateInProgress && emailValidationRequired && !loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched) &&  !showCancelOption" 
+                                class="show-green save-icon"  (click)="updateEmail($event)">save</mat-icon>
+                        <mat-icon matSuffix matTooltip="" *ngIf="(!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (!loginForm.get('email')?.dirty || !loginForm.get('email')?.touched)) ||
+                                                                 (!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) && !showCancelOption" 
+                                class="show-silver save-icon"  >save</mat-icon>                                
+                        <mat-progress-spinner matSuffix mode="indeterminate" color="warn" [diameter]="'25'"  
+                                style="position: relative;margin-right:10px;" 
+                               *ngIf=emailUpdateInProgress>
+                        </mat-progress-spinner>
+                        <mat-icon matSuffix matTooltip="Cancel Email Update"  (click)="cancelEmailUpdate()"
+                            *ngIf="showCancelOption && !emailUpdateInProgress" 
+                                class="show-orangered save-icon"  >
+                                close
+                        </mat-icon>   
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('email')?.hasError('required') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
+                            Required.
+                        </mat-error>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
+                            Please enter a valid email address
+                        </mat-error>
+                        <!-- <mat-hint *ngIf="!emailUpdateError && emailUpdateRequested">Submit Validation Code from New Email!!</mat-hint> -->
+                        <mat-hint *ngIf="emailUpdateError">{{emailUpdateErrorMessage}}</mat-hint>
+                        <mat-hint class="show-green" *ngIf="emailUpdateSuccess">Email Number Updated Successfully!!</mat-hint>
+
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-0 p-t-0" *ngIf="emailValidationCodeSubmiRequired">
+                    <mat-form-field appearance="outline" class="w-100" *ngIf="emailValidationRequired" >
+                        <mat-label>Validation code</mat-label>
+                        <input matInput placeholder="Validation code" #acCode formControlName="validate_code">
+                        <mat-icon matSuffix matTooltip="Submit Activation Code" *ngIf="!emailAcodeUpdateInProgress && acCode.value && !emailAcodeUpdateInProgress && emailValidationRequired && !loginForm.get('validate_code')?.hasError('pattern') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched)" 
+                                class="show-green save-icon"  (click)="submitActivationCode()">check</mat-icon>
+                        <mat-icon matSuffix matTooltip="" *ngIf="emailAcodeUpdateInProgress || !acCode.value || (!emailAcodeUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (!loginForm.get('validate_code')?.dirty || !loginForm.get('validate_code')?.touched)) ||
+                                                                 (!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched))" 
+                                class="show-silver save-icon"  >check</mat-icon>             
+                        <mat-progress-spinner matSuffix mode="indeterminate" color="warn" [diameter]="'25'"  
+                                style="position: relative;margin-right:10px;" 
+                            *ngIf=emailAcodeUpdateInProgress>
+                        </mat-progress-spinner>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('validate_code')?.hasError('required') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched)">
+                            Required
+                        </mat-error>
+                        <mat-hint class="show-green" *ngIf="emailValidationRequired && !invalidActivationCode">Please check Email for Activation Code</mat-hint>
+                        <mat-hint class="show-orangered" *ngIf="emailValidationRequired && invalidActivationCode">Invalid Activation Code Submitted</mat-hint>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-6 p-b-1 p-t-2" *ngIf="emailValidationCodeSubmiRequired">
+                    <p-button label="Primary"  *ngIf="emailValidationRequired" [raised]="true" severity="danger" size="small"
+                            [disabled]="!emailValidationRequired || emailUpdateInProgress"  
+                        [tooltip]="'Submit To Change Email'"
+                        tooltipPosition="top"
+                        tooltipStyleClass="custom-tooltip">
+                            <ng-template pTemplate="content" >
+                                <p-icon class="pi pi-check" ></p-icon>
+                                SUBMIT
+                            </ng-template>
+                    </p-button>
+                </div> -->
+                <!-- <div class="col-12 p-t-0" *ngIf="emailValidationCodeSubmiRequired">
+                </div> -->
+                <div class="col-12 m-t-2"  >
+                    <div class="row wrap title-form-action-buttons text-right p-0" style="display: flex !important;justify-content: space-between !important;align-items: center !important;">
+                        <div class="col-6 p-b-1 p-t-2" style="display: flex;justify-content: start;">
+                            <!-- <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                             [disabled]="emailValidationRequired"  
+                            [tooltip]="'Validate'"
+                            tooltipPosition="top"
+                            tooltipStyleClass="custom-tooltip">
+                                <ng-template pTemplate="content" >
+                                    <p-icon class="pi pi-check" ></p-icon>
+                                    VALIDATE
+                                </ng-template>
+                        </p-button> -->
+                        </div>
+                        <!-- <div class="col-6 p-b-1 p-t-2" style="display: flex;justify-content: end;">
+                            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                                    (click)="saveLoginForm()"  [disabled]="loginForm.invalid"  
+                                    [tooltip]="'Validate'"
+                                    tooltipPosition="top"
+                                    tooltipStyleClass="custom-tooltip">
+                                        <ng-template pTemplate="content" >
+                                            <p-icon class="pi pi-check" ></p-icon>
+                                            Save Profile
+                                        </ng-template>
+                                </p-button>
+                        </div> -->
+                    </div>
+                </div>
+                
+            </div>
+        </form>
+       
+    </div>
+</div>

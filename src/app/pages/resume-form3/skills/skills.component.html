@@ -1,0 +1,217 @@
+
+@if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
+<div class="row h-100 pl-5 pr-5" style="overflow-y:auto;padding-bottom:50px;overflow-x: hidden;">
+    <div class="col-12"  >
+        <form [formGroup]="skillsForm" >
+            <div class="row wrap pl-1 pr-1">
+                <div class="col-12 p-0 m-t-3">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Skill</mat-label>
+                        <input matInput placeholder="Skill" formControlName="skills">
+                        <span matSuffix (click)="addSkill()" *ngIf="isVisible()" style="color: black;">
+                            <!-- <p-icon class="pi pi-plus" style="cursor: pointer;"></p-icon> -->
+                            <p style="font-size: 14px;
+                            line-height: 17px;
+                            font-weight: 700;
+                            cursor: pointer;">ADD</p>
+                        </span>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2"  *ngIf="fruits && fruits.length"
+                            style="border: dashed 1px silver; border-radius: 10px; ">
+                    <mat-chip-list
+                    cdkDropList class="custom-chip-list"
+                    [cdkDropListData]="fruits"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <mat-chip
+                      *ngFor="let fruit of fruits; let i = index"
+                      [selectable]="selectable"
+                      [removable]="removable"
+                      (click)="toggleSkill(fruit)"
+                      (removed)="remove(fruit)"
+                      cdkDrag
+                    >
+                      {{ fruit.name}} 
+                      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                      <div *cdkDragPlaceholder class="drag-placeholder">
+                        Dragging...
+                      </div>
+                    </mat-chip>
+                  </mat-chip-list>
+                </div>
+                <!-- <div class="col-12 p-b-1 p-t-2">
+                    <mat-chip-list #chipList>
+                        <mat-chip
+                          *ngFor="let fruit of fruits"
+                          [selectable]="selectable"
+                          [removable]="removable"
+                          (removed)="remove(fruit)">
+                          {{fruit}}
+                          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                        </mat-chip>
+                      </mat-chip-list>
+                </div> -->
+                <div class="col-12 p-b-1 p-t-2" *ngIf="skills.length > 0">
+                     <h3 style="margin-top: 0;
+                    color: #333;
+                    font-size: 1rem;">AI Response</h3>
+                    <mat-chip-list #chipList2>
+                        <mat-chip 
+                          *ngFor="let skill of skills"
+                          [selectableAI]="selectable"
+                          [removableAI]="false"
+                          [selected]="skill.selected"
+                          (click)="toggleSkill(skill)"
+                          [ngClass]="{ 'selected-chip': skill.selected}"
+                          (removed)="toggleSkill(skill)"
+                          cdkDrag
+                        >
+                        {{ skill.name }} <mat-icon matChipRemove *ngIf="skill.selected">cancel</mat-icon>
+                        <mat-icon matChipTrailingIcon *ngIf="!skill.selected">add</mat-icon>
+                        <div *cdkDragPlaceholder class="drag-placeholder">
+                          Dragging...
+                        </div>
+                        </mat-chip>
+                      </mat-chip-list>
+                      
+                </div>
+                
+            </div>
+        </form>
+        <div class="col-12 mt-3 text-right text-end"  >
+            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                (click)="saveAndContinue()"   
+                [tooltip]="'Add to Resume Summary'"
+                tooltipPosition="top" [disabled]="fruits && fruits.length == 0"
+                tooltipStyleClass="custom-tooltip">
+                    <ng-template pTemplate="content" >
+                        <p-icon class="pi pi-check" ></p-icon>
+                        Add to resume
+                    </ng-template>
+            </p-button>
+        </div>
+    </div>
+   
+   
+</div>
+}
+@else{
+    <div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
+        <div class="col-12"  >
+            <form [formGroup]="skillsForm" >
+                <div class="row wrap">
+                    <div class="col-12 p-t-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Sub Title</mat-label>
+                            <input type="text"
+                                   placeholder="Pick one"
+                                   aria-label="Number"
+                                   matInput
+                                   formControlName="sub_title"
+                                   [matAutocomplete]="auto"
+                                   (input)="checkForOptions($event)">
+                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                              <mat-option *ngFor="let option of (filteredOptions | async)" [value]="option">
+                                {{option}}
+                              </mat-option>
+                            </mat-autocomplete>
+                            @if(isEditSubTitle){
+                            <span matSuffix (click)="addSubTitleV2()" *ngIf="isSuffixVisible" style="color: black;">
+                              <p style="font-size: 14px;
+                                        line-height: 17px;
+                                        font-weight: 700;
+                                        cursor: pointer;">EDIT</p>
+                            </span>
+                            }
+                            @else{
+                                <span matSuffix (click)="addSubTitleV2()" *ngIf="isSuffixVisible" style="color: black;">
+                                    <p style="font-size: 14px;
+                                              line-height: 17px;
+                                              font-weight: 700;
+                                              cursor: pointer;">ADD</p>
+                                  </span>
+                            }
+                          </mat-form-field>                          
+                    </div>
+                    <div class="col-12 p-b-1 p-t-1">
+                        <mat-form-field appearance="outline" class="w-100" >
+                            <mat-label>Skill</mat-label>
+                            <input matInput placeholder="Skill" formControlName="skills">
+                            <span matSuffix (click)="addSkillV2()" *ngIf="isVisible()" style="color: black;">
+                                <!-- <p-icon class="pi pi-plus" style="cursor: pointer;"></p-icon> -->
+                                <p style="font-size: 14px;
+                                line-height: 17px;
+                                font-weight: 700;
+                                cursor: pointer;">ADD</p>
+                            </span>
+                        </mat-form-field>
+                    </div>
+                    <div style="position: relative;left:0px;right:0px;top:0px;height:50vh;overflow-x:hidden;">
+                      @for(item of skills_v2; track item.sub_title){
+                      <div class="col-12 p-b-1 p-t-2">
+                          <div style="font-size: 1.1rem;font-weight: 500;position: relative;color: #000000c0;" class="sub-title mb-2 mt-3">{{item.sub_title}}
+                              <div class="section-actions">
+                                  <p-icon class="pi pi-pencil" title="Edit Sub-Title" (click)="editSubTitle(item)"></p-icon>
+                                  <p-icon class="pi pi-times" title="Delete Sub-Title" (click)="deleteSubTitle(item)"></p-icon>
+                                </div>
+                              </div>
+                      
+                            <div cdkDropList cdkDropListOrientation="mixed" 
+                              class="example-list" (cdkDropListDropped)="dropInList(item, $event)">
+                              @for (skill of item.skills; track skill) {
+                                <div class="example-box" cdkDrag>
+                                  <span class="skill-text">{{skill}}</span>
+                                  <span class="remove-icon" (click)="removeSkill(item, skill)">✖</span>
+                                </div>
+                              }
+                            </div>
+
+                      
+                          </div>
+                      }
+                    </div>
+                    <div class="col-12 p-b-1 p-t-2" *ngIf="skills.length > 0">
+                         <h3 style="margin-top: 0;
+                        color: #333;
+                        font-size: 1rem;">AI Response</h3>
+                        <mat-chip-list #chipList2>
+                            <mat-chip 
+                              *ngFor="let skill of skills"
+                              [selectableAI]="selectable"
+                              [removableAI]="false"
+                              [selected]="skill.selected"
+                              (click)="toggleSkill(skill)"
+                              [ngClass]="{ 'selected-chip': skill.selected}"
+                              (removed)="toggleSkill(skill)"
+                              cdkDrag
+                            >
+                            {{ skill.name }} <mat-icon matChipRemove *ngIf="skill.selected">cancel</mat-icon>
+                            <mat-icon matChipTrailingIcon *ngIf="!skill.selected">add</mat-icon>
+                            <div *cdkDragPlaceholder class="drag-placeholder">
+                              Dragging...
+                            </div>
+                            </mat-chip>
+                          </mat-chip-list>
+                          
+                    </div>
+                    
+                </div>
+            </form>
+            <div class="col-12 mt-3 text-right text-end"  >
+                <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                    (click)="saveAndContinue()"   
+                    [tooltip]="'Add to Resume Summary'"
+                    tooltipPosition="top"
+                    tooltipStyleClass="custom-tooltip">
+                        <ng-template pTemplate="content" >
+                            <p-icon class="pi pi-check" ></p-icon>
+                            Add to resume
+                        </ng-template>
+                </p-button>
+            </div>
+        </div>
+       
+       
+    </div>
+}

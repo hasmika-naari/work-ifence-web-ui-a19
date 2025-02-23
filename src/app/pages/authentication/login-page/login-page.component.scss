@@ -1,0 +1,115 @@
+///////////////
+:host {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Force font on all elements within this component */
+:host * {
+  font-family: 'Poppins', sans-serif;
+}
+
+:host{
+  .mat-icon{
+      font-family: 'Material Icons' !important;
+  }
+
+  .mat-card{
+    background-color: var(--whiteColor) !important;
+    box-shadow: none !important;
+  }
+
+}
+
+::ng-deep .remember-check .mdc-label {
+  font-size: 14px !important;
+}
+
+
+.enabled-button {
+    background-color: #f05b4e;
+    color: white;
+    border: 1px solid #f05b4e;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:hover{
+      background-color: var(--secondaryColor) !important;
+      color: white !important;
+      border: 1px solid var(--secondaryColor) !important;
+    }
+  }
+  
+  .disabled-button {
+    // background-color: #;
+    // color: white;
+    // border: 1px solid #f5a39d;
+    cursor:default;
+    font-size: 1rem;
+  }
+
+
+/* Apply colors to PrimeNG components */
+.p-button {
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--primary-button-border-color); /* Change border color */
+  &:hover{
+    background-color: var(--secondaryColor) !important;
+    color: white !important;
+    border: 1px solid var(--secondaryColor) !important;
+  }
+}
+
+.w-link-button{
+  color: var(--primary-color) !important;
+  background-color: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  &:hover{
+      // background-color: var(--secondaryColor) !important;
+      background-color: transparent !important;
+      color: var(--secondaryColor) !important;
+  }
+
+}
+
+
+  /* Custom class for button to place icon above text */
+.icon-top-button .p-button-icon-left {
+  display: block; /* Make icon occupy its own block */
+  margin: 0 auto; /* Center the icon horizontally */
+  margin-bottom: 5px; /* Space between icon and text */
+}
+
+.icon-top-button .p-button-label {
+  display: block;
+  text-align: center; /* Center-align text */
+}
+
+.login-overlay {
+  position: fixed; /* Full-screen overlay */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  z-index: 999;    /* Slightly lower than the centered-div to make sure it's behind */
+}
+
+.login-centered-div {
+  position: fixed; /* Ensures the div stays in the same place while scrolling */
+  top: 50%;        /* Positions the div vertically at 50% of the screen height */
+  left: 50%;       /* Positions the div horizontally at 50% of the screen width */
+  transform: translate(-50%, -50%); /* Moves the div back to center as top/left is based on the top-left corner */
+  z-index: 1000;   /* Ensures the div stays on top of other content */
+  background-color: white; /* Change to match the background */
+  padding: 20px;   /* Add some padding for content inside the div */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: adds a shadow for visual depth */
+  border-radius: 8px; /* Optional: adds rounded corners */
+  width: 300px;    /* Adjust the width as needed */
+  height: auto;    /* Adjust height if needed */
+}
+
+
+

@@ -1,0 +1,127 @@
+<div class="row h-100 p-0 mt-3">
+    <div class="col-12"  >
+        <form [formGroup]="summaryForm">
+            <div class="row wrap">
+                <div class="col-12 p-b-1 summary-editor-div"  style="margin-bottom: 20px;position:relative;top:-20px;">
+                        <div #editorContainer style="height: 60vh;color: black;font-size:15px;"></div>
+
+                         <div style="flex: 0 1 auto; text-align: left;position:absolute;top:5px;right:20px;z-index:100;">
+                            @if(!is_summary_loading){
+                                <!-- <p-button label="Primary" [outlined]="true" severity="secondary" size="small"
+                                (click)="optimizeText()"  [disabled]="isButtonDisabled"  [rounded]="'false'" styleClass="p-button-sm"
+                                [tooltip]="'Use BOTbro AI & Optimize'"
+                                tooltipPosition="top"
+                                tooltipStyleClass="custom-tooltip">
+                                    <ng-template pTemplate="content" >
+                                        <p-icon class="pi pi-sparkles" ></p-icon>
+                                        BOTbro AI
+                                    </ng-template>
+                                </p-button> -->
+                                <button
+                                    class="d-flex ai-btn" (click)="optimizeText()" >
+                                   <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
+                             </button>
+                            } 
+                            @if(is_summary_loading){
+                                 <!-- <p-button label="Primary" [outlined]="true" severity="secondary"
+                                     [disabled]="isButtonDisabled"  rounded="false" size="small" styleClass="p-button-sm-progress">
+                                    <ng-template pTemplate="content">
+                                        <div class="progress-container">
+                                            <div class="progress-bar"></div>
+                                                <p-icon class="pi pi-reddit pi-reddit-pos" style="font-size: large; margin-right: 5px;"></p-icon>
+                                        </div>
+                                        USE BOTBRO
+                                    </ng-template>
+                                </p-button> -->
+                                <button
+                                    class="d-flex ai-btn"  >
+                                    <!-- <ng-template pTemplate="content"> -->
+                                        <div class="progress-container">
+                                            <div class="progress-bar"></div>
+
+                                                <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
+                                        </div>
+                                        USE BOTBRO
+                                    <!-- </ng-template> -->
+                                   <!-- <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO -->
+                             </button>
+                            }
+                        </div>
+                            <div class="form-action-buttons p-0" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+
+                                <div style="flex: 0 1 auto; text-align: left;">
+                                </div>
+                              
+                                <div style="flex: 0 1 auto; text-align: right;">
+                                    <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                                    (click)="saveAndContinue()"  [disabled]="isButtonDisabled || is_summary_loading"  
+                                        [tooltip]="'Add to Resume Summary'"
+                                        tooltipPosition="top"
+                                        tooltipStyleClass="custom-tooltip">
+                                            <ng-template pTemplate="content" >
+                                                <p-icon class="pi pi-check" ></p-icon>
+                                                Add to resume
+                                            </ng-template>
+                                        </p-button>
+                                </div>
+                              </div>
+                </div>
+                
+            </div>
+           
+        </form>
+    </div>
+  
+</div>
+<div class="summary-ai-animated-panel" 
+            [style.width]="width + 'px'" [style.border-width]="borderWidth + 'px'">
+     <div class="summary-ai-response-panel-pp" header="">
+        <div  class="row" style="height: 50px;">
+            <div class="col-9" style="display: flex;justify-content: flex-start;align-items: center;">
+                <h3 style="margin-top: 0;
+                    color: #333;
+                    font-size: 1rem;margin-left: 15px;">AI Response</h3>
+            </div>
+            <div class="col-3">
+                <div class="position-close-icon">
+                    <p-button icon="pi pi-times"   
+                    [rounded]="true" [text]="true" severity="danger"
+                 (click)="closePanelWindow()" />
+                </div>
+              
+            </div>
+        </div>
+        <div style="position: relative;top:10px;height:71vh;margin-left:10px;margin-right:10px;">
+            @if(summaryAIResponses.length > 0){
+                <div class="col-12 p-b-1 p-t-2" style="position: absolute;top:0px;bottom:0px;">
+                    <mat-card class="ai-response-panel">
+                            @if(action_taken == ''){
+                                <div class="section-actions">
+                                    <p-icon class="pi pi-pencil" title="Edit" (click)="editAIResponse()"></p-icon>
+                                    <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Use BotBro" (click)="reoptimizeSummary()"></p-icon>
+                                    <p-icon class="pi pi-plus" title="Use This Response" (click)="setAIResponse()" ></p-icon>
+                                  </div>
+                            }
+                            @if(action_taken != 'EDIT'){
+                                <p [ngClass]="action_taken == 'OPTIMIZE'? 'spinner-wrapper' : ''">{{ summaryAIResponses }}</p>
+                            }
+                            @if(action_taken == 'OPTIMIZE'){
+                                <div class="spinner-overlay">
+                                    <div class="spinner"></div>
+                                </div>
+                            }
+                            @else if(action_taken == 'EDIT'){
+                                <mat-form-field appearance="outline">
+                                    <textarea matInput [formControl]="aiResponsePoint"></textarea>
+                                </mat-form-field>
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <button mat-button color="warn" (click)="cancelPoint()">Cancel</button>
+                                    <button mat-stroked-button color="primary" (click)="updatePoint()">Update</button>
+                                </div>
+                            }
+                    </mat-card>
+                </div>
+            }
+        </div>
+    </div>
+</div>

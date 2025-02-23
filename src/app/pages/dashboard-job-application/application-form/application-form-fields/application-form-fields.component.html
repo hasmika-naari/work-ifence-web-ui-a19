@@ -1,0 +1,259 @@
+<div class="row h-100 pl-4 pr-4">
+    <div class="col-12">
+        <form [formGroup]="applicationForm">
+            <div class="row wrap">
+                
+                <div class="col-7 col-xs-6 text-left" style="padding-bottom: 18px;" >
+                    <i class='bx bx-left-arrow-alt application-back-icon' (click)="goBackToApplications($event)" matTooltip="Back To Applications" ></i>
+                    <span class="application-top-label">Application {{selectedAppLicationListItem().jobApplication.id}}</span>
+
+                </div>
+                <div class="col-5 col-xs-6 text-right" style="padding-bottom: 18px;">
+                  
+                    <div class="application-status" [matMenuTriggerFor]="beforeMenu">
+                        <span class="application-status-label">{{applicationForm.controls['status']?.value}}</span>
+                        <i class='bx bx-edit-alt  application-status-edit-icon'   matTooltip="edit Status" ></i>
+                            <mat-menu #beforeMenu="matMenu" class="custom-menu" xPosition="before">
+                                <button mat-menu-item  *ngFor="let option of jobApplicationStatusOptions1"
+                                (click)="selectOption(option)" class="menu-item-class"
+                                [class.menu-selected]="isSelected(option)">
+                                {{ option }}
+                                <!-- <mat-icon *ngIf="isSelected(option)" class="custom-menu-check-icon">check</mat-icon> -->
+                                </button>
+                              </mat-menu>
+                    </div>
+                    <i class='bx bx-save application-save-icon' 
+                        [class.application-save-ready-icon]="applicationForm.dirty" 
+                             (click)="saveAndContinue($event)" matTooltip="Save Application" ></i>
+                </div>
+                <div class="col-12  p-b-1 p-t-2">
+                    <div class="row wrap">
+                        <div class="col-7 col-xs-12 text-center">
+                            <div class="row wrap">
+                                <div class="col-6 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Job Role</mat-label>
+                                        <input matInput placeholder="Job Role" formControlName="jobRole" maxlength="255">
+                                        <mat-error *ngIf="applicationForm.get('jobRole')?.hasError('required')">
+                                            Required.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-3 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Company Name</mat-label>
+                                        <input matInput placeholder="Company Name" formControlName="companyName">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-3 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Location</mat-label>
+                                        <input matInput placeholder="Location" formControlName="location">
+                                    </mat-form-field>
+                                </div>
+                              
+                                <div class="col-4 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Email Given</mat-label>
+                                        <input matInput placeholder="Email Given" formControlName="emailGiven" maxlength="255">
+                                        <mat-error *ngIf="applicationForm.get('emailGiven')?.hasError('required')">
+                                            Required.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-3 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Applied Date</mat-label>
+                                        <input matInput [matDatepicker]="appliedDatePicker" placeholder="Applied Date" formControlName="jobAppliedDate">
+                                        <mat-datepicker-toggle matSuffix [for]="appliedDatePicker"></mat-datepicker-toggle>
+                                        <mat-datepicker #appliedDatePicker></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-3 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Job Type</mat-label>
+                                        <mat-select formControlName="jobType">
+                                            <mat-option *ngFor="let jtype of jobTypes" [value]="jtype.value">
+                                                {{jtype.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-2 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Job Mode</mat-label>
+                                        <mat-select formControlName="jobMode">
+                                            <mat-option *ngFor="let jMode of jobModes" [value]="jMode.value">
+                                                {{jMode.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-6 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Job Reference URL</mat-label>
+                                        <input matInput type="text" placeholder="Job Reference URL" id="url" formControlName="applicationReferalURL" maxlength="255">
+                                        <mat-error
+                                                *ngIf="applicationForm.get('applicationReferalURL')?.hasError('invalidUrl')">
+                                            Please enter a valid URL.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-2 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Salary Type</mat-label>
+                                        <mat-select formControlName="salaryType">
+                                            <mat-option *ngFor="let sType of salTypes" [value]="sType.value">
+                                                {{sType.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-2 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Salary Min</mat-label>
+                                        <input matInput type="tel" currencyMask placeholder="Salary Min" formControlName="salaryMin" >
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-2 col-xs-12 p-b-1 p-t-2">
+                                    <mat-form-field  class="w-100">
+                                        <mat-label>Salary Max</mat-label>
+                                        <input matInput type="tel" currencyMask placeholder="Salary Max" formControlName="salaryMax">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-12 p-b-1 p-t-2">
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                          <mat-panel-title>
+                                            Job Description
+                                          </mat-panel-title>
+                                          <mat-panel-description>
+                                            Explore Details
+                                          </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                    
+                                        <mat-form-field  class="w-100">
+                                            <mat-label>Job Description</mat-label>
+                                            <textarea matInput placeholder="Job Description" formControlName="jobDescription" rows="5"></textarea>
+                                        </mat-form-field>
+                                    
+                                      </mat-expansion-panel>
+                                   
+                                </div>
+                                <div class="col-12 p-b-1 p-t-2">
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                          <mat-panel-title>
+                                            Resume
+                                          </mat-panel-title>
+                                          <mat-panel-description>
+                                            Submitted Resume Details
+                                          </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                            <div class="app-panel-content">
+                                                <div class="col-12 p-b-1 p-t-2 resume-selection-btns" >
+                                                    <button>Select Resume</button>
+                                                </div>
+                                            </div>
+                                      </mat-expansion-panel>
+                                  
+                                </div>
+                                <div class="col-12 p-b-1 p-t-2">
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                          <mat-panel-title>
+                                            Vendor
+                                          </mat-panel-title>
+                                          <mat-panel-description>
+                                            Contact Details
+                                          </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                            <div class="app-panel-content">
+                                                <div class="col-12 p-b-1 p-t-2 resume-selection-btns" >
+                                                    <button (click)="addContactDetails('vendor')">Add Vendor Details</button>
+                                                </div>
+                                            </div>
+                                      </mat-expansion-panel>
+                                </div>
+                                <div class="col-12 p-b-1 p-t-2">
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                          <mat-panel-title>
+                                            Client
+                                          </mat-panel-title>
+                                          <mat-panel-description>
+                                            Contact Details
+                                          </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                            <div class="app-panel-content">
+                                                <div class="col-12 p-b-1 p-t-2 resume-selection-btns" >
+                                                    <button (click)="addContactDetails('client')">Add Client Details</button>
+                                                </div>
+                                            </div>
+                                      </mat-expansion-panel>
+                                </div>
+                                <div class="col-12 p-b-1 p-t-2">
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                          <mat-panel-title>
+                                            Share
+                                          </mat-panel-title>
+                                          <mat-panel-description>
+                                            Who Can See
+                                        </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                            <div class="app-panel-content">
+                                                <div class="col-12 p-b-1 p-t-2 resume-selection-btns" >
+                                                    <button (click)="addContactDetails('client')">Share With</button>
+                                                </div>
+                                            </div>
+                                      </mat-expansion-panel>
+                                </div>
+                                <div class="col-12 p-b-1 p-t-2">
+                                    <div class="m-t-3" style="display: flex;justify-content: start;align-items: center;">
+                                        <h2>Feedback</h2>
+                                    </div>
+                                    <div class="col-12 p-b-1 p-t-4">
+                                        <mat-form-field class="w-100">
+                                        <mat-label>Feedback</mat-label>
+                                        <textarea matInput placeholder="User Feedback" formControlName="userFeedback" rows="4"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5 col-xs-12 text-center">
+                            <div class="col-12">
+                                <div class="row wrap">
+                                    <div class="app-form-group-panel m-t-3">
+                                        <div class="app-panel-title">Interview Rounds</div>
+                                        <div class="app-panel-content">
+                                            <div class="col-12 p-b-1 p-t-2 resume-selection-btns" >
+                                                <button (click)="addRoundItem()">Add Round</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Save Button -->
+                <div class="col-12 p-t-2 text-center p-b-4">
+                    <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                        (click)="saveAndContinue()"    
+                        [tooltip]="'Save Application'"
+                        tooltipPosition="top"
+                        tooltipStyleClass="custom-tooltip">
+                            <ng-template pTemplate="content" >
+                                <p-icon class="pi pi-check" ></p-icon>
+                                Add to resume
+                            </ng-template>
+                    </p-button>
+                    
+                </div>
+            </div>
+        </form>
+    </div>
+  </div>
+  

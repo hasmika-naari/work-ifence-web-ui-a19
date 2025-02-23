@@ -1,0 +1,449 @@
+<div class="container-fluid">
+    <!-- Left Column -->
+    <div
+      class="left-column"
+      [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow }"
+    >
+        <div  class="sticky-left-toolbox">
+            <div class="ToolboxDesktop-module_toolboxContainer shadow-hover bg-surface fade-in">
+            <div class="scrollbar-container ToolboxDesktop-module_scrollAreaInitial" style="height: 555px;">
+                <div class="scrollhost-container">
+                    <div class="scrollhost">
+                        <div class="scroll-content">
+                        
+                            <div class="resume-toobar-menu" style="height: 36px !important;padding-top: 3px;" [ngClass]="{'disabled': isDisabled}">
+                                <p-menu *ngIf="browser"  [model]="closeOptions"></p-menu>
+                            </div>
+                                <div  class="ToolboxDesktop-module_separator"></div>
+        
+                            <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
+                                <ul class="menu" style="padding-left: 0rem !important;">
+                                    <li (click)="showResumeTitle()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> META DATA</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }
+                                    </li>
+                                    <li (click)="showContact()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CONTACT</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    @if(resumeSignalForm().isSectionPresent?.isExperience){
+                                    <li (click)="showWorkExperianceDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> EXPERIENCE</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                    @if(resumeSignalForm().isSectionPresent?.isProject){
+                                    <li (click)="showProjectWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> PROJECT</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                    @if(resumeSignalForm().isSectionPresent?.isEducation){
+                                    <li (click)="showEducationDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> EDUCATION</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                    @if(resumeSignalForm().isSectionPresent?.isCertification){
+                                    <li (click)="showCertificationsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CERTIFICATIONS</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                    @if(resumeSignalForm().isSectionPresent?.isOther){
+                                        <li (click)="showSectionDetails('OTHER')"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CERTIFICATIONS</div>
+                                            @if(false){
+                                                <div class="wave-point"></div>
+                                            }</li>
+                                    }
+                                    @if(resumeSignalForm().isSectionPresent?.isCourseWork){
+                                    <li (click)="showCourseWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> COURSE WORK</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                    @if(resumeSignalForm().isSectionPresent?.isSkill){
+                                    <li (click)="showSkillsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                    @if(resumeSignalForm().isSectionPresent?.isAchievement){
+                                    <li (click)="showAchievementsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> ACHIEVEMENTS</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                    @if(resumeSignalForm().isSectionPresent?.isAccomplishments){
+                                        <li (click)="showAccomplishmentsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> ACCOMPLISHMENTS</div>
+                                            @if(false){
+                                                <div class="wave-point"></div>
+                                            }</li>
+                                        }
+                                    @if(resumeSignalForm().isSectionPresent?.isSummary){
+                                    <li (click)="showSummaryDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SUMMARY</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                </ul>
+                            </div>
+                                <div  class="ToolboxDesktop-module_separator"></div>
+                            <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
+                                <ul class="menu" style="padding-left: 0rem !important;">
+                                    <!-- <li (click)="showJobDescription()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> JOB DESCRIPTION</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li> -->
+                                    <li (click)="showResumeTemplates()"><div><span class="checkmark"><p-icon class="pi pi-file-o "></p-icon></span> TEMPLATE'S</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    <li (click)="saveResume()"><div><span class="checkmark"><p-icon class="pi pi-save  "></p-icon></span> SAVE</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    <li (click)="saveAndDownload()"><div><span class="checkmark"><p-icon class="pi pi-download "></p-icon></span> SAVE & DOWNLOAD</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="ToolboxPanel-module_panelContainer shadow-hover bg-surface "   >
+            <div class="scrollbar-container full-width ToolboxPanel-module_panelContainerHeight" >
+                <div class="scrollhost-container">
+                <p-panel class="sidewindow-panel-pp" [header]="formLabel">
+                    <ng-template pTemplate="icons">
+                        <p-button icon="pi pi-times"   
+                            [rounded]="true" [text]="true" severity="danger"
+                        (click)="closePanelWindow($event)" />
+                        
+                    </ng-template>
+                    <div style="position: relative;height:75vh;overflow-y:hidden;overflow-x:hidden;">
+                        <app-resume-job-description (contact)="saveContact()" *ngIf="showJobDescriptionWindow"></app-resume-job-description>
+                        <app-resume-template-list (contact)="saveContact()" *ngIf="showResumeTemplateList"></app-resume-template-list>
+                        <app-resume-title (contact)="saveContact()" *ngIf="showResumeTitleWindow"></app-resume-title>
+                        <app-resume-experience (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngIf="showWorkExperianceDetailsWindow"></app-resume-experience>
+                        <app-resume-contact (contact)="saveContact()" *ngIf="showContactDetailsWindow"></app-resume-contact>
+                        <app-resume-project (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngIf="showProjectWorkDetailsWindow"></app-resume-project>
+                        <app-resume-education (contact)="saveContact()" *ngIf="showEducationDetailsWindow"></app-resume-education>
+                        <app-resume-certificate (contact)="saveContact()" *ngIf="showCertificationsDetailsWindow"></app-resume-certificate>
+                        <app-resume-course-work [courseValue]="courseWorkCount" (contact)="saveContact()" *ngIf="showCourseWorkDetailsWindow"></app-resume-course-work>
+                        <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" *ngIf="showSkillsDetailsWindow" ></app-resume-skills>
+                        <app-resume-achievements (contact)="saveContact()" [sectionName]="'ACHIEVEMENT'" *ngIf="showAchievementsDetailsWindow"></app-resume-achievements>
+                        <app-resume-achievements (contact)="saveContact()" [sectionName]="'OTHER'" *ngIf="showOtherDetailsWindow"></app-resume-achievements>
+                        <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngIf="showSummaryDetailsWindow"></app-resume-summary>
+                        <app-resume-accomplishments (contact)="saveContact()" *ngIf="showAccomplishmentsWindow"></app-resume-accomplishments>
+                    </div>
+                </p-panel>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <!-- Right Column -->
+    <div
+      class="right-column"
+      [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow, 'disabled': isDisabled } "
+    >
+        <!-- <div class="centered-content"> -->
+        <div class="resume-editor-content-box center-block" style="margin-top: 16px;">
+                <div class="browser-resume-title-div trigger-area" style="text-align:left;" >
+                    <div class="row wrap streach-h-100 m-0 p-0">
+                        <div class="metadata-container">
+                            <p-panel class="form-title-panel-pp" [header]="(resumeSignalForm().title || 'Resume Title') + ' | ' + (resumeSignalForm().role_category || 'Role')"
+                                   [collapsed]="true"  [toggleable]="true">
+                                <ng-template pTemplate="icons">
+                                        <span class="pp-inline-message" severity="info">{{resumeSignalForm()?.access_level ?? 'Private'}}</span> 
+                                        <p-button icon="pi pi-pencil"   
+                                            [rounded]="true" [text]="true" severity="success"
+                                        (click)="showResumeTitle()" />
+                                        <!-- <button pButton class="p-panel-header-icon p-link" (click)="showResumeTitle()">
+                                            <span class="pi pi-pencil"></span>
+                                        </button> -->
+                                </ng-template>
+                                <div class="details">
+                                    <div class="detail-item" style="text-align: start;">
+                                        <strong class="data-value">{{resumeSignalForm().resume_category || 'NA'}}</strong>
+                                        <span class="data-label">Category</span>
+                                    </div>
+                                    <div class="detail-item" style="text-align: start;">
+                                        <strong class="data-value">{{resumeSignalForm().isPrimary?'Primary' : 'Not Primary'}}</strong>
+                                        <span class="data-label">Priority</span>
+                                    </div>
+                                    <div class="detail-item" style="text-align: start;">
+                                        <strong class="data-value">{{resumeSignalForm().isActive? 'Active' : 'Not Active'}}</strong>
+                                        <span class="data-label">Status</span>
+                                    </div>
+                                </div>
+                            </p-panel>
+                        </div>
+                        <mat-progress-bar *ngIf="isActionInProgress" style="position: relative; bottom: 0px;left: 0px;right: 0px;" 
+                            mode="indeterminate"></mat-progress-bar>
+                    </div>
+                 <div class="resume-editor-wrapper feedback-wrapper relative">
+                     <div class="resume-renderer center-resume">
+                        <div class="resume-renderer-page browser-resume-page browserResumePage " style="padding: 36px 0px 0px;" >
+                            <div style=" background-color: white;
+                                        width: 100%;
+                                        height: 100%;
+                                        z-index: 40;
+                                        position: relative;
+                                        padding: 36px 36px 0px;
+                                        padding-top:0px;">
+                            @if(resumeSignalForm().template_details.template_name == 'TEMPLATE_1'){
+                                <app-resume1-template
+                                     (editSection)="showEditSection($event)">
+                                </app-resume1-template>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+                                <app-resume-template9
+                                (editSection)="showEditSection($event)"></app-resume-template9>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_2'){
+                                <app-resume-template2 
+                                (editSection)="showEditSection($event)"></app-resume-template2>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_3'){
+                                <app-resume-template3 
+                                (editSection)="showEditSection($event)"></app-resume-template3>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_4'){
+                                <app-resume-template4 
+                                (editSection)="showEditSection($event)"></app-resume-template4>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_5'){
+                                <app-resume-template5 
+                                (editSection)="showEditSection($event)"></app-resume-template5>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_6'){
+                                <app-resume-template6 
+                                (editSection)="showEditSection($event)"></app-resume-template6>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_7'){
+                                <app-resume-template7 
+                                (editSection)="showEditSection($event)"></app-resume-template7>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_8'){
+                                <app-resume-template8 
+                                (editSection)="showEditSection($event)"></app-resume-template8>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_10'){
+                                <app-resume-template10
+                                (editSection)="showEditSection($event)"></app-resume-template10>
+                            }
+                            </div>
+                                <div class="view-resume">
+                                    <p-icon class="pi pi-eye" style="font-size: x-large;" matTooltip="Preview Resume" (click)="previewResume()"></p-icon>
+                                </div>
+                        </div>
+                       
+                     </div>
+                 </div>
+          </div>
+        </div>
+        <!-- </div> -->
+  </div>
+  
+
+<!-- <div id="actions-disable" class="disable-actions"></div>
+<div  class="sticky-left-toolbox">
+    <div class="ToolboxDesktop-module_toolboxContainer shadow-hover bg-surface fade-in">
+       <div class="scrollbar-container ToolboxDesktop-module_scrollAreaInitial" style="height: 555px;">
+          <div class="scrollhost-container">
+             <div class="scrollhost">
+                <div class="scroll-content">
+                   
+                    <div class="resume-toobar-menu" style="height: 36px !important;padding-top: 3px;" [ngClass]="{'disabled': isDisabled}">
+                        <p-menu *ngIf="browser"  [model]="closeOptions"></p-menu>
+                    </div>
+                        <div  class="ToolboxDesktop-module_separator"></div>
+
+                    <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
+                        <ul class="menu" style="padding-left: 0rem !important;">
+                            <li (click)="showResumeTitle()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> META DATA</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }
+                            </li>
+                            <li (click)="showContact()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CONTACT</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showWorkExperianceDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> EXPERIENCE</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showProjectWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> PROJECT</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showEducationDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> EDUCATION</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showCertificationsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CERTIFICATIONS</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showCourseWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> COURSE WORK</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showSkillsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showAchievementsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> ACHIEVEMENTS</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showSummaryDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SUMMARY</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                          </ul>
+                    </div>
+                        <div  class="ToolboxDesktop-module_separator"></div>
+                    <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
+                        <ul class="menu" style="padding-left: 0rem !important;">
+                            <li (click)="showJobDescription()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> JOB DESCRIPTION</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="showResumeTemplates()"><div><span class="checkmark"><p-icon class="pi pi-file-o "></p-icon></span> TEMPLATE'S</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="saveResume()"><div><span class="checkmark"><p-icon class="pi pi-save  "></p-icon></span> SAVE</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                            <li (click)="saveAndDownload()"><div><span class="checkmark"><p-icon class="pi pi-download "></p-icon></span> SAVE & DOWNLOAD</div>
+                                @if(false){
+                                    <div class="wave-point"></div>
+                                }</li>
+                          </ul>
+                    </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+</div>
+<div class="resume-container" >
+    <div class="left-column  animated-div"  [class.hide]="hidePanelWindow" [class.show]="!hidePanelWindow">
+        <div class="ToolboxPanel-module_panelContainer shadow-hover bg-surface " 
+        style="max-width: 475px; height: 89vh;"  >
+        <div class="scrollbar-container full-width ToolboxPanel-module_panelContainerHeight" style="height: auto;">
+        <div class="scrollhost-container">
+                    <div class="history-buttons m-top-1 p-t-1 text-right">
+                        <div class="h7 text-center">{{formLabel}}</div>
+                        <button class="border-rounded animation-fade-in m-inline-2 
+                            HistoryArrowButtons-module_arrowContainer d-flex" (click)="closePanelWindow($event)">
+                            <i class="pi pi-times"></i>
+                        </button>
+                    </div>
+                    <app-resume-job-description (contact)="saveContact()" *ngIf="showJobDescriptionWindow"></app-resume-job-description>
+                    <app-resume-template-list (contact)="saveContact()" *ngIf="showResumeTemplateList"></app-resume-template-list>
+                    <app-resume-title (contact)="saveContact()" *ngIf="showResumeTitleWindow"></app-resume-title>
+                    <app-resume-experience (contact)="saveContact()" *ngIf="showWorkExperianceDetailsWindow"></app-resume-experience>
+                    <app-resume-contact (contact)="saveContact()" *ngIf="showContactDetailsWindow"></app-resume-contact>
+                    <app-resume-project (contact)="saveContact()" *ngIf="showProjectWorkDetailsWindow"></app-resume-project>
+                    <app-resume-education (contact)="saveContact()" *ngIf="showEducationDetailsWindow"></app-resume-education>
+                    <app-resume-certificate (contact)="saveContact()" *ngIf="showCertificationsDetailsWindow"></app-resume-certificate>
+                    <app-resume-course-work [courseValue]="courseWorkCount" (contact)="saveContact()" *ngIf="showCourseWorkDetailsWindow"></app-resume-course-work>
+                    <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" *ngIf="showSkillsDetailsWindow" ></app-resume-skills>
+                    <app-resume-achievements (contact)="saveContact()" *ngIf="showAchievementsDetailsWindow"></app-resume-achievements>
+                    <app-resume-summary (contact)="saveContact()" *ngIf="showSummaryDetailsWindow"></app-resume-summary>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="right-column animated-div" [ngClass]="{'disabled': isDisabled}" [class.expand-animation]="hidePanelWindow" 
+            [class.contract-animation]="!hidePanelWindow">
+      <div class="centered-content">
+          <div class="resume-editor-content-box center-block mt-3">
+                <div class="browser-resume-title-div trigger-area" style="text-align:left;" >
+                    <div class="row wrap streach-h-100 m-0 p-0">
+                        <div class="metadata-container">
+                            <p-panel [header]="(resumeSignalForm().title || 'Resume Title') + ' | ' + (resumeSignalForm().role_category || 'Category')"
+                                   [collapsed]="true"  [toggleable]="true">
+                                <ng-template pTemplate="icons">
+                                        <span class="pp-inline-message" severity="info">{{resumeSignalForm()?.access_level ?? 'Private'}}</span> 
+                                        <button pButton class="p-panel-header-icon p-link" (click)="showResumeTitle()">
+                                            <span class="pi pi-pencil"></span>
+                                        </button>
+                                </ng-template>
+                                <div class="details">
+                                    <div class="detail-item" style="text-align: start;">
+                                        <strong class="data-value">{{resumeSignalForm().resume_category || 'NA'}}</strong>
+                                        <span class="data-label">Category</span>
+                                    </div>
+                                    <div class="detail-item" style="text-align: start;">
+                                        <strong class="data-value">{{resumeSignalForm().isPrimary?'Primary' : 'Not Primary'}}</strong>
+                                        <span class="data-label">Priority</span>
+                                    </div>
+                                    <div class="detail-item" style="text-align: start;">
+                                        <strong class="data-value">{{resumeSignalForm().isActive? 'Active' : 'Not Active'}}</strong>
+                                        <span class="data-label">Status</span>
+                                    </div>
+                                </div>
+                            </p-panel>
+                    </div>
+                    <mat-progress-bar *ngIf="isActionInProgress" style="position: absolute; bottom: 0px;left: 0px;right: 0px;" 
+                    mode="indeterminate"></mat-progress-bar>
+                </div>
+                 <div class="resume-editor-wrapper feedback-wrapper relative">
+                     <div class="resume-renderer center-resume">
+                        <div class="resume-renderer-page browser-resume-page browserResumePage " style="padding: 36px 36px 0px;" >
+
+                            @if(resumeSignalForm().template_details.template_name == 'TEMPLATE_1'){
+                                <app-resume1-template 
+                                (editSection)="showEditSection($event)"></app-resume1-template>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_2'){
+                                <app-resume-template2 
+                                (editSection)="showEditSection($event)"></app-resume-template2>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_3'){
+                                <app-resume-template3 
+                                (editSection)="showEditSection($event)"></app-resume-template3>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_4'){
+                                <app-resume-template4 
+                                (editSection)="showEditSection($event)"></app-resume-template4>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_5'){
+                                <app-resume-template5 
+                                (editSection)="showEditSection($event)"></app-resume-template5>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_6'){
+                                <app-resume-template6 
+                                (editSection)="showEditSection($event)"></app-resume-template6>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_7'){
+                                <app-resume-template7 
+                                (editSection)="showEditSection($event)"></app-resume-template7>
+                            }
+                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_8'){
+                                <app-resume-template8 
+                                (editSection)="showEditSection($event)"></app-resume-template8>
+                            }
+                                <div class="view-resume">
+                                    <p-icon class="pi pi-eye" style="font-size: x-large;" matTooltip="Preview Resume" (click)="previewResume()"></p-icon>
+                                </div>
+                        </div>
+                     </div>
+                 </div>
+          </div>
+      </div>
+    </div>
+  </div> -->

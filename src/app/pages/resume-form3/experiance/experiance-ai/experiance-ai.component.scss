@@ -1,0 +1,39 @@
+// item-list.component.scss
+.item-list-container {
+    padding: 1rem;
+    position: relative;
+    width: 30vw;
+    height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .overlay {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .list-option {
+    transition: all 0.3s ease;
+  }
+  
+  .list-option.selected .card {
+    background-color: #e3f2fd; /* Light Blue */
+    transform: scale(1.02);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .list-option:not(.selected) .card {
+    background-color: #ffffff;
+  }

@@ -1,0 +1,102 @@
+<div class="row h-100 pl-4 pr-4">
+    <div class="col-12"  >
+        <form [formGroup]="educationForm" >
+            <div class="row wrap">
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>University Name</mat-label>
+                        <input matInput placeholder="University Name" formControlName="school_name">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('school_name')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- <span class="p-float-label">
+                        <label for="school_name">University Name</label>
+                        <input id="school_name" type="text" class="w-100 p-inputtext" pInputText formControlName="school_name">
+                        </span> -->
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>University Location</mat-label>
+                        <input matInput placeholder="University Location" formControlName="school_location">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('school_location')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- <span class="p-float-label">
+                        <label for="school_location">University Location</label>
+                        <input id="school_location" type="text" class="w-100 p-inputtext" pInputText formControlName="school_location">
+                        </span> -->
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Degree</mat-label>
+                        <input matInput placeholder="Degree" formControlName="degree">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('degree')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- <span class="p-float-label">
+                        <label for="degree">Degree</label>
+                        <input id="degree" type="text" class="w-100 p-inputtext" pInputText formControlName="degree">
+                        </span> -->
+                </div>
+                @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Branch</mat-label>
+                        <input matInput placeholder="Branch" formControlName="field_of_study">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('field_of_study')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                        <!-- <span class="p-float-label">
+                            <label for="field_of_study">Field Of Study</label>
+                            <input id="field_of_study" type="text" class="w-100 p-inputtext" pInputText formControlName="field_of_study">
+                        </span> -->
+                </div>
+                }
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>GPA/Percentage</mat-label>
+                        <input matInput placeholder="GPA/Percentage" formControlName="gpa">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('gpa')?.hasError('pattern')">
+                            Please enter a valid GPA
+                        </mat-error>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('gpa')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Graduation Date</mat-label>
+                        <input matInput placeholder="Period" formControlName="graduation_year">
+                        <mat-hint style="color: black;">MM/YYYY</mat-hint>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('graduation_year')?.hasError('pattern')">
+                            Please enter a valid Year of period
+                        </mat-error>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('graduation_year')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+                
+            </div>
+        </form>
+        <div class="col-12 mt-3 text-right text-end"  >
+            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                (click)="saveAndContinue()"  [disabled]="educationForm.invalid"  
+                [tooltip]="'Add to Resume Summary'"
+                tooltipPosition="top"
+                tooltipStyleClass="custom-tooltip">
+                    <ng-template pTemplate="content" >
+                        <p-icon class="pi pi-check" ></p-icon>
+                        Add to resume
+                    </ng-template>
+            </p-button>
+        </div>
+    </div>
+</div>

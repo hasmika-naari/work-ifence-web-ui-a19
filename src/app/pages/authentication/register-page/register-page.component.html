@@ -1,0 +1,248 @@
+<section class="page-full-section">
+
+<app-header-wifence [back]="showBack"></app-header-wifence>
+
+<div class="justify-content-center align-items-center bg-light-primary"
+[class.blank-layout-container]="!isMobile" [class.blank-layout-container-mobile]="isMobile">
+  <div
+    class="position-relative row w-100 h-100 bg-gredient justify-content-center"
+  >
+    <div class="col-lg-4 d-flex align-items-center" style="overflow: hidden;"  [ngClass]="{'expanded': showSignUpSecondStep}">
+      <mat-card class="cardWithShadow boxed-auth fadeInUpSignUp">
+        <mat-card-content class="p-32">
+          <div class="text-center  pt-3 pb-5">
+            <a [routerLink]="['/user/dashboard']">
+              <img
+                src="assets/img/black-logo.png"
+                class="align-middle m-2"
+                alt="logo"
+              />
+            </a>
+          </div>
+
+          <div class="row wrap mb-5">
+         
+            <div class="col-6">
+              <span class="p-buttonset  w-100 text-center" style="align-items: center;
+              align-content: center;
+              display: block;
+              border-radius: 5px;">
+                  <button pButton pRipple label="Sign Up with Google" type="button" icon="pi pi-google" 
+                  (click)="backToSignUpFirstStep($event)" *ngIf="!isMobile" class="p-button-text p-button-lg w-link-button" >
+                  </button>
+                  <button pButton pRipple label="Sign Up with" type="button" icon="pi pi-google" 
+                  (click)="backToSignUpFirstStep($event)" *ngIf="isMobile" class="p-button-text p-button-lg w-link-button-mobile"  >
+                  </button>
+              </span>
+            </div>
+            <div class="col-6">
+              <span class="p-buttonset w-100 text-center" style="align-items: center;
+                    align-content: center;
+                    display: block;
+                    border-radius: 5px;">
+                  <button pButton pRipple label="Sign Up with LinkedIn" type="button" icon="pi pi-linkedin" 
+                  (click)="backToSignUpFirstStep($event)" *ngIf="!isMobile" class="p-button-text p-button-lg w-link-button" >
+                  </button>
+                  <button pButton pRipple label="Sign Up with" type="button" icon="pi pi-linkedin" 
+                  (click)="backToSignUpFirstStep($event)" *ngIf="isMobile" class="p-button-text p-button-lg w-link-button-mobile"  >
+                  </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="or-border m-t-30">or sign up with</div>
+          <form  [formGroup]="registerForm3" (ngSubmit)="onSecondFormSubmit()">
+            <div class="row wrap">
+              <div class="col-12 col-md-6 mt-3">
+                <mat-form-field appearance="outline" class="w-100" >
+                  <mat-label>First Name</mat-label>
+                  <input matInput placeholder="First Name" formControlName="firstName">
+                  <mat-icon 
+                      [class.show-silver]="!registerForm3.get('firstName')?.value && (!registerForm3.get('firstName')?.dirty && !registerForm3.get('firstName')?.touched)" 
+                      [class.show-error]="registerForm3.get('firstName')?.invalid"
+                      [class.show-green]="!registerForm3.get('firstName')?.invalid" matSuffix>
+                      edit
+                  </mat-icon>
+                  <mat-error class="ng-dirty ng-invalid" 
+                            *ngIf="registerForm3.get('firstName')?.dirty || registerForm3.get('firstName')?.touched">
+                  <ng-container *ngIf="registerForm3.get('firstName')?.hasError('required')">
+                    First Name Required.
+                  </ng-container>
+                  <ng-container >
+                    <span *ngIf="registerForm3.get('firstName')?.hasError('minlength')">(min 5)</span>
+                    <span *ngIf="registerForm3.get('firstName')?.hasError('maxlength')">(max 20)</span>
+                    <span *ngIf="registerForm3.get('firstName')?.hasError('pattern')"> Only A-Z, a-z, space, -, '</span>
+                  </ng-container>
+                </mat-error>
+
+                </mat-form-field>
+              </div>
+              <div class="col-12 col-md-6 mt-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput placeholder="Last Name" formControlName="lastName">
+                  <mat-icon 
+                      [class.show-silver]="!registerForm3.get('lastName')?.value && (!registerForm3.get('lastName')?.dirty && !registerForm3.get('lastName')?.touched)" 
+                      [class.show-error]="registerForm3.get('lastName')?.invalid"
+                      [class.show-green]="!registerForm3.get('lastName')?.invalid" matSuffix>
+                      edit
+                  </mat-icon>
+                  <mat-error class="ng-dirty ng-invalid" 
+                              *ngIf="registerForm3.get('lastName')?.dirty || registerForm3.get('lastName')?.touched">
+                    <ng-container *ngIf="registerForm3.get('lastName')?.hasError('required')">
+                      Last Name Required.
+                    </ng-container>
+                    <ng-container >
+                       <span *ngIf="registerForm3.get('lastName')?.hasError('minlength')">(min 5)</span>
+                       <span *ngIf="registerForm3.get('lastName')?.hasError('maxlength')">(max 20)</span>
+                       <span *ngIf="registerForm3.get('lastName')?.hasError('pattern')"> Only A-Z, a-z, space, -, '</span>
+                    </ng-container>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-12 mt-2">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>User Name</mat-label>
+                  <input matInput placeholder="User Name" formControlName="userName">
+                  <mat-icon  *ngIf="!registerForm3.get('userName')?.value" 
+                    class="show-error" matSuffix>
+                    edit
+                  </mat-icon>
+                  <mat-icon matSuffix *ngIf="!isUserNameAvailable && !isUserNameChecked && !isUserNameCheckInProgress && registerForm3.get('userName')?.value 
+                       && !registerForm3.controls['userName']?.errors?.['invalidUsername']" 
+                            [class.show-silver]="!registerForm3.get('userName')?.value"
+                            (click)="checkUserName($event)">refresh</mat-icon>
+                  <mat-progress-spinner matSuffix mode="indeterminate" [diameter]="'25'"  style="position: relative;margin-right:10px;" 
+                          *ngIf=isUserNameCheckInProgress></mat-progress-spinner>
+                  <mat-icon matSuffix *ngIf="isUserNameAvailable && (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched)" 
+                            class="show-green"  (click)="checkUserName($event)">check</mat-icon>
+                  <mat-hint class="show-error" *ngIf="!isUserNameAvailable && !isUserNameChecked && !isUserNameCheckInProgress && registerForm3.get('userName')?.value && 
+                  !registerForm3.controls['userName']?.errors?.['invalidUsername']">
+                    Check User Name Availability. 
+                  </mat-hint>
+                  <mat-error *ngIf="!isUserNameChecked && !registerForm3.get('userName')?.value && (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched)">
+                    Required.
+                  </mat-error>
+                  <mat-hint class="show-error"  *ngIf="isUserNameChecked && !isUserNameAvailable  && !isUserNameCheckInProgress">
+                    SORRY! User Name Not Available - Check Another
+                  </mat-hint>
+                  <mat-hint class="show-green" *ngIf="isUserNameChecked && isUserNameAvailable && !isUserNameCheckInProgress">
+                    Congratulations!! User Name Available
+                  </mat-hint>
+                  <mat-hint class="show-info" *ngIf="registerForm3.controls['userName']?.errors?.['invalidUsername'] && 
+                    !isUserNameAvailable && !isUserNameChecked && !isUserNameCheckInProgress && 
+                    registerForm3.get('userName')?.value">
+                    Allowed (a-z,A-Z, 0-9, Dot & Underscore)
+                  </mat-hint>
+                  <mat-error class="ng-dirty ng-invalid w-100 text-right show-error" *ngIf="!isUserNameChecked && !isUserNameCheckInProgress && 
+                  registerForm3.get('userName')?.value && !registerForm3.controls['userName']?.errors?.['invalidUsername']">
+                    Check User Name
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-12 mt-2">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Email</mat-label>
+                  <input matInput placeholder="Email" id="email" type="email" formControlName="email">
+                  <mat-icon 
+                    [class.show-silver]="!registerForm3.get('email')?.value && (!registerForm3.get('email')?.dirty && !registerForm3.get('email')?.touched)" 
+                    [class.show-error]="registerForm3.get('email')?.invalid"
+                    [class.show-green]="!registerForm3.get('email')?.invalid" matSuffix>
+                    edit
+                  </mat-icon>
+                  <mat-error class="ng-dirty ng-invalid" *ngIf="registerForm3.get('email')?.hasError('required') && (registerForm3.get('email')?.dirty || registerForm3.get('email')?.touched)">
+                    Required.
+                  </mat-error>
+                  <mat-error class="ng-dirty ng-invalid" *ngIf="registerForm3.get('email')?.hasError('email') && (registerForm3.get('email')?.dirty || registerForm3.get('email')?.touched)">
+                    Please enter a valid email address
+                  </mat-error>
+                  <mat-hint  *ngIf="signUpError">
+                    <strong>Failed to sign Up!</strong> Email Already in Use.
+                  </mat-hint>
+                </mat-form-field>
+            </div>
+            <div class="col-12 mt-2">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Password</mat-label>
+                <input 
+                  matInput 
+                  [type]="hidePassword ? 'password' : 'text'" 
+                  placeholder="Password" 
+                  class="w-100" 
+                  id="password" 
+                  formControlName="password">
+                <button 
+                  mat-icon-button 
+                  matSuffix 
+                  type="button" 
+                  (click)="hidePassword = !hidePassword" 
+                  [attr.aria-label]="'Hide password'" 
+                  [attr.aria-pressed]="!hidePassword">
+                  <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error 
+                  class="ng-dirty ng-invalid" 
+                  *ngIf="registerForm3.get('password')?.hasError('required') && (registerForm3.get('password')?.dirty || registerForm3.get('password')?.touched)">
+                  Required.
+                </mat-error>
+                <mat-error *ngIf="registerForm3.get('password')?.hasError('pattern')">
+                  Minimum 8 characters, with uppercase, lowercase, number, and special character
+                </mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="col-12 mt-2" [class.mt-p]="registerForm3.get('password')?.hasError('pattern') && isMobile">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Confirm Password</mat-label>
+                <input 
+                  matInput 
+                  [type]="hideConfirmPassword ? 'password' : 'text'" 
+                  placeholder="Confirm Password" 
+                  id="cpassword" 
+                  class="w-100" 
+                  formControlName="confirmPassword">
+                <button 
+                  mat-icon-button 
+                  matSuffix 
+                  type="button" 
+                  (click)="hideConfirmPassword = !hideConfirmPassword" 
+                  [attr.aria-label]="'Hide confirm password'" 
+                  [attr.aria-pressed]="!hideConfirmPassword">
+                  <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error 
+                  class="ng-dirty ng-invalid" 
+                  *ngIf="registerForm3.get('confirmPassword')?.hasError('required') && (registerForm3.get('confirmPassword')?.dirty || registerForm3.get('confirmPassword')?.touched)">
+                  Required.
+                </mat-error>
+                <mat-error 
+                  class="ng-dirty ng-invalid" 
+                  *ngIf="registerForm3.hasError('matching') && (registerForm3.get('confirmPassword')?.dirty || registerForm3.get('confirmPassword')?.touched)">
+                  Not Matching
+                </mat-error>
+              </mat-form-field>
+            </div>
+            
+              <div class="col-12 mt-3">
+                <button pButton type="submit" label="Sign Up"  [disabled]="registerForm3.invalid || !isUserNameAvailable"
+                     [ngClass]="(registerForm3.invalid || !isUserNameAvailable) ? 'disabled-button' : 'enabled-button'" class="w-100 p-button-lg" [loading]="isLoading" ></button>
+              </div>
+              <div class="col-12 mb-3 mt-3" style="align-items: center;margin-top:10px;">
+                <span class="d-block f-w-500 text-center show-accent"
+                  >Already have an Account?
+                  <a
+                    [routerLink]="['/sign-in']"
+                    class="text-decoration-none f-w-500 f-s-14  bold sign-in-lnk-btn"  >
+                  <i class="bx bx-log-in-circle link-icon"></i>  Sign In
+                  </a>
+                </span>
+              </div>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+<app-work-ifence-footer></app-work-ifence-footer>
+</section>

@@ -1,0 +1,29 @@
+<section
+    class="mission-area ptb-100"
+    [class.dark-mission-area]="themeService.isDark()"
+>
+    <div class="container">
+        <div class="mission-content">
+            <div class="section-title text-start">
+                <span class="sub-title">Discover Learning</span>
+                <h2>Why our platform in better</h2>
+            </div>
+            <div class="mission-slides">
+                <owl-carousel-o [options]="missionSlides">
+                    <ng-template carouselSlide>
+                        <h3>Quality can be better than quantity in this platform</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut nisi ut aliquip ex ea commodo consequat.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut nisi ut aliquip ex ea commodo consequat.</p>
+                        <a routerLink="/" class="default-btn"><i class='bx bx-book-reader icon-arrow before'></i><span class="label">View Courses</span><i class="bx bx-book-reader icon-arrow after"></i></a>
+                    </ng-template>
+                    <ng-template carouselSlide>
+                        <h3>A place where you can achieve</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut nisi ut aliquip ex ea commodo consequat.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut nisi ut aliquip ex ea commodo consequat.</p>
+                        <a routerLink="/" class="default-btn"><i class='bx bx-book-reader icon-arrow before'></i><span class="label">View Courses</span><i class="bx bx-book-reader icon-arrow after"></i></a>
+                    </ng-template>
+                </owl-carousel-o>
+            </div>
+        </div>
+    </div>
+</section>

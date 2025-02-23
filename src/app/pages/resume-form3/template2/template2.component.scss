@@ -1,0 +1,372 @@
+.resume-container {
+    // width: 100%; /* Make the container full width */
+    // max-width: 940px; /* Limit maximum width */
+    margin: auto;
+    position: relative;
+    text-align: start !important;
+}
+
+// .body-container {
+//     padding: 36px 36px 0px;
+
+// }
+
+.header {
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.header h1 {
+    margin: 0;
+    color: black;
+    font-size: 2rem;
+}
+
+header{
+    margin-bottom: 15px;
+}
+
+.contact-details {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap */
+    margin: 10px 0px;
+}
+
+.contact-details p {
+    margin: 0;
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.icon {
+    color: black;
+    font-size: 12px;
+}
+
+.template2-experience{
+    padding-top: 10px !important;
+    .template2-section-title{
+        margin: 0;
+        
+
+        .add-education-icon{
+            cursor: pointer;
+            font-size: small;
+            display: none;
+        }
+    }
+
+    &:hover{
+        .template2-section-title{
+            .add-education-icon{
+                cursor: pointer;
+                font-size: small;
+                display: block;
+            }
+
+        }
+    
+    }
+
+}
+
+.course-work{
+    line-height: 1.4;
+     text-align: left;
+    .course-work-section-title{
+      font-weight: 400;
+      color: black;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(101, 105, 109, .5);
+      white-space: pre-wrap;
+      padding-bottom: 1px;
+      // font-family: Rubik, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
+      font-size: 1rem;
+      line-height: 25px;
+        height: 25px !important;
+      width: 100%;
+      display: block;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+    }
+  
+    .course-work-section-content{
+      padding: 8px 16px;
+      border-radius: 5px;
+      color: black;
+      text-align: left;
+  
+    .qualification-name{
+      white-space: pre-wrap;
+      color: black;
+      font-size: 1.1rem;
+      // line-height: 18px;
+      font-weight: 500 !important;
+    }
+  
+    .university-name{
+      white-space: pre-wrap;
+      color: black;
+      font-size: 1rem !important;
+      // line-height: 14px !important;
+    }
+  
+    .course-work-list{
+      display: flex;
+      flex-wrap: wrap;
+      font-size: 1rem;
+      text-align:left;
+  
+      .course-work-lisit-item{
+        flex: 0 0 25%;
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  &:hover{
+    .add-education-icon{
+      display: block;
+      cursor: pointer;
+      font-size: small;
+    }
+  }
+  
+  }
+
+
+.template2-projects{
+    padding-top: 10px !important;
+    .template2-section-title{
+        margin: 0;
+        
+
+        .add-project-icon{
+            cursor: pointer;
+            display: none;
+            font-size: small;
+        }
+    }
+
+    &:hover{
+        .template2-section-title{
+            .add-project-icon{
+                cursor: pointer;
+                display: block;
+                font-size: small;
+            }
+
+        }
+    
+    }
+
+}
+
+
+.template2-education{
+    padding-top: 10px !important;
+    .template2-section-title{
+        margin: 0;
+        
+
+        .add-education-icon{
+            cursor: pointer;
+            display: none;
+            font-size: small;
+        }
+    }
+
+    &:hover{
+        .template2-section-title{
+            .add-education-icon{
+                cursor: pointer;
+                display: block;
+                font-size: small;
+            }
+
+        }
+    
+    }
+
+}
+
+
+.template2-skills{
+    padding-top: 10px !important;
+    .template2-section-title{
+        margin: 0;
+        
+
+        .add-skill-icon{
+            cursor: pointer;
+            display: none;
+            font-size: small;
+        }
+    }
+
+    &:hover{
+        .template2-section-title{
+            .add-skill-icon{
+                cursor: pointer;
+                display: block;
+                font-size: small;
+            }
+
+        }
+    
+    }
+
+}
+
+.summary {
+    // margin-top: 20px;
+}
+
+.summary h2 {
+    margin: 0;
+    font-size: 18px;
+    padding: 0;
+    font-weight: 400;
+    // margin-bottom: 5px;
+}
+
+.summary p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.experience,
+.project,
+.education,
+.skills {
+    // margin-top: 20px;
+}
+
+.experience h2,
+.project h2,
+.education h2,
+.skills h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 400;
+
+}
+
+.experience-details,
+.project-details,
+.education-details {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    // margin-top: 10px;
+}
+
+.experience-details p,
+.project-details p,
+.education-details p {
+    margin: 0;
+    font-size: 14px;
+    margin-right: 10px;
+    opacity: 1;
+}
+
+.experience-bullets,
+.project-bullets,
+.skills-bullets {
+    margin-top: 10px;
+}
+
+.experience-bullets ul,
+.project-bullets ul,
+.skills-bullets ul {
+    list-style-type: disc;
+}
+
+.experience-bullets li,
+.project-bullets li,
+.skills-bullets li,
+.skills-bullets p {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* Media queries for responsiveness */
+@media only screen and (max-width: 768px) {
+    .resume-container {
+        border-top-width: 5px; /* Decrease border width for smaller screens */
+    }
+
+    .body-container {
+        // margin: 10px; /* Decrease margin for smaller screens */
+    }
+
+    .header h1 {
+        font-size: 20px; /* Decrease font size for smaller screens */
+    }
+
+    .contact-details p,
+    .icon {
+        font-size: 12px; /* Decrease font size for smaller screens */
+    }
+
+    .summary h2 {
+        font-size: 16px; /* Decrease font size for smaller screens */
+    }
+
+    .summary p {
+        font-size: 12px; /* Decrease font size for smaller screens */
+    }
+
+    .experience h2,
+    .project h2,
+    .education h2,
+    .skills h2 {
+        font-size: 16px; /* Decrease font size for smaller screens */
+    }
+
+    .experience-details p,
+    .project-details p,
+    .education-details p {
+        font-size: 12px; /* Decrease font size for smaller screens */
+    }
+
+    .experience-bullets li,
+    .project-bullets li,
+    .skills-bullets li,
+    .skills-bullets p {
+        font-size: 12px; /* Decrease font size for smaller screens */
+    }
+}
+
+a{
+    color: #0000EE; /* Unvisited link color */
+    text-decoration: underline;
+}
+
+.profile-contact-details-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: left;
+    font-size: 0.9rem !important;
+      li{
+        margin-left: 0;
+        margin-right: 10px;
+        opacity:1;
+        i{
+          color:  black;
+        }
+        span{
+            color: black;
+        }
+
+        a{
+          padding: 0px !important;
+          color: #0000EE; /* Unvisited link color */
+          text-decoration: underline;
+        }
+      }
+  }
+

@@ -1,0 +1,24 @@
+.example-button-container {
+    margin-bottom: 15px;
+}
+.example-form-field {
+    width: 100%;
+}
+.example-button-container > button {
+    margin: 0 15px 0 0;
+}
+::ng-deep {
+    .mat-mdc-card {
+        &.trinta-card {
+            .mat-mdc-card-content {
+                .mat-mdc-form-field {
+                    &.example-form-field {
+                        .mat-mdc-text-field-wrapper {
+                            padding-left: 15px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

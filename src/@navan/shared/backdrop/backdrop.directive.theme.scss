@@ -1,0 +1,22 @@
+.fury-backdrop {
+  z-index: 800 !important;
+  background-color: transparent;
+  transition-property: background-color, visibility;
+  transition-duration: 400ms !important;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  visibility: hidden;
+
+  &.visible {
+    visibility: visible;
+    background-color: rgba(0, 0, 0, .6);
+  }
+
+  &.invisible {
+    background-color: transparent;
+  }
+}

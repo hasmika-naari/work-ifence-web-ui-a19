@@ -1,0 +1,31 @@
+
+.mat-snack-bar-container{
+    max-width: 900px !important;
+}
+.multiline-snack-outer-container{
+    width: 700px !important;
+    background: transparent !important;
+
+
+    .header{
+        // border-bottom: 1px solid  rgba(170, 0, 0, 0.51) !important;
+        padding-bottom: 5px !important;
+        margin-bottom: 3px !important;
+    }
+
+
+    .message-row{
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
+        border-bottom: 1px solid  rgba(170, 0, 0, 0.21) !important;
+    }
+
+    .mat-icon{
+        color: rgba(148, 3, 3, 0.80) !important;
+    }
+
+
+
+
+
+}

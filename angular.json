@@ -1,0 +1,153 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "trinta": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:component": {
+                    "style": "scss"
+                }
+            },
+            "root": "",
+            "sourceRoot": "src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:application",
+                    "options": {
+                        "outputPath": "dist/trinta",
+                        "index": "src/index.html",
+                        "browser": "src/main.ts",
+                        "polyfills": [
+                            "zone.js"
+                        ],
+                        "tsConfig": "tsconfig.app.json",
+                        "allowedCommonJsDependencies": [  
+                            "lodash",
+                            "jquery",
+                            "CommonJS",
+                            "compression",
+                            "cors",
+                            "http-proxy-middleware",
+                            "hammerjs",
+                            "mousetrap",
+                            "hammerjs",
+                            "@ks89/angular-modal-gallery",
+                            "hammerjs",
+                            "rxjs/internal/operators",
+                            "lodash",
+                            "moment",
+                            "chartist",
+                            "clone-deep",
+                            "feather-icons",
+                            "quill-delta",
+                            "wow.js",
+                            "ts-luxon"
+                          ],
+                        "inlineStyleLanguage": "scss",
+                        "assets": [
+                            "src/favicon.ico",
+                            "src/assets",
+                            {
+                                "glob": "**/*",
+                                "input": "public"
+                            }
+                        ],
+                        "styles": [
+                            "node_modules/bootstrap/scss/bootstrap.scss",
+                            "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
+                            "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
+                            "node_modules/animate.css/animate.min.css",
+                            "src/assets/css/flaticon.css",
+                            "node_modules/boxicons/css/boxicons.min.css",
+                            "node_modules/remixicon/fonts/remixicon.css",
+                            "node_modules/primeicons/primeicons.css",
+                            "node_modules/font-awesome/scss/font-awesome.scss",
+                            "src/styles/custom-font-awesome.scss",
+                            "node_modules/aos/dist/aos.css",
+                            "src/styles.scss",
+                             "src/styles/tokens.scss",
+                             "node_modules/quill/dist/quill.snow.css"
+                        ],
+                        "scripts": [
+                            "node_modules/apexcharts/dist/apexcharts.min.js",
+                            "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+                            "node_modules/jquery/dist/jquery.min.js",
+                            "node_modules/wowjs/dist/wow.js"
+                        ],
+                        "server": "src/main.server.ts",
+                        "prerender": true,
+                        "ssr": {
+                            "entry": "server.ts"
+                        }
+                    },
+                    "configurations": {
+                        "production": {
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "10MB",
+                                    "maximumError": "20MB"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2MB",
+                                    "maximumError": "4MB"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "development": {
+                            "optimization": false,
+                            "extractLicenses": false,
+                            "sourceMap": true
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "configurations": {
+                        "production": {
+                            "buildTarget": "trinta:build:production"
+                        },
+                        "development": {
+                            "buildTarget": "trinta:build:development",
+                            "proxyConfig": "src/proxy.config.json"   
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n"
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "polyfills": [
+                            "zone.js",
+                            "zone.js/testing"
+                        ],
+                        "tsConfig": "tsconfig.spec.json",
+                        "inlineStyleLanguage": "scss",
+                        "assets": [
+                            {
+                                "glob": "**/*",
+                                "input": "public"
+                            }
+                        ],
+                        "styles": [
+                            "src/styles.scss"
+                        ],
+                        "scripts": []
+                    }
+                }
+            }
+        }
+    },
+    "cli": {
+      "analytics": false
+    }
+}

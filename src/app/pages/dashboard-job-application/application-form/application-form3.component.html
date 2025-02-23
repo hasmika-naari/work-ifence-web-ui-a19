@@ -1,0 +1,525 @@
+<div class="container-fluid">
+    <div class="left-column"
+        [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow }" >
+        <div  class="sticky-left-toolbox">
+            <div class="ToolboxDesktop-module_toolboxContainer shadow-hover bg-surface fade-in">
+            <div class="scrollbar-container ToolboxDesktop-module_scrollAreaInitial" style="height: 555px;">
+                <div class="scrollhost-container">
+                    <div class="scrollhost">
+                        <div class="scroll-content">
+                            <div class="resume-toobar-menu" style="height: 36px !important;padding-top: 3px;" [ngClass]="{'disabled': isDisabled}">
+                                <p-menu *ngIf="browser"  [model]="closeOptions"></p-menu>
+                            </div>
+                            <div  class="ToolboxDesktop-module_separator"></div>
+                                <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
+                                    <ul class="menu" style="padding-left: 0rem !important;">
+                                        <li (click)="showApplicationTab()">
+                                            <div>
+                                                <span class="checkmark">
+                                                    <p-icon class="pi pi-check-circle "></p-icon>
+                                                </span> 
+                                                APPLICATION
+                                            </div>
+                                        </li>
+                                        <li (click)="showVendor()">
+                                            <div>
+                                                <span class="checkmark">
+                                                    <p-icon class="pi pi-check-circle "></p-icon>
+                                                </span> 
+                                                VENDOR
+                                            </div>
+                                        </li>
+                                        <li (click)="showClient()">
+                                            <div>
+                                                <span class="checkmark">
+                                                    <p-icon class="pi pi-check-circle "></p-icon>
+                                                </span> 
+                                                CLIENT
+                                            </div>
+                                        </li>
+                                        <li (click)="showRounds()">
+                                            <div>
+                                                <span class="checkmark">
+                                                    <p-icon class="pi pi-check-circle "></p-icon>
+                                                </span> 
+                                                ROUNDS
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            <div  class="ToolboxDesktop-module_separator"></div>
+                            <div class="resume-toobar-menu" 
+                                    [ngClass]="{'disabled': isDisabled}">
+                                <ul class="menu" style="padding-left: 0rem !important;">
+                                    <li (click)="viewApplication()">
+                                        <div>
+                                            <span class="checkmark">
+                                                <p-icon class="pi pi-check-circle "></p-icon>
+                                            </span> 
+                                            VIEW APPLICATION
+                                        </div>
+                                    </li>
+                                    <li (click)="showResumeTab()">
+                                        <div>
+                                            <span class="checkmark">
+                                                <p-icon class="pi pi-save  "></p-icon>
+                                            </span> 
+                                            VIEW RESUME
+                                        </div>
+                                    </li>
+                                    <li (click)="uploadResumeToS3()">
+                                        <div>
+                                            <span class="checkmark">
+                                                <p-icon class="pi pi-download "></p-icon>
+                                            </span> 
+                                            SAVE
+                                        </div>
+                                        @if(jobApplicationFlag()){
+                                            <div class="wave-point"></div>
+                                        }
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="ToolboxPanel-module_panelContainer shadow-hover bg-surface "   >
+            <div class="scrollbar-container full-width ToolboxPanel-module_panelContainerHeight" >
+                <div class="scrollhost-container">
+                <p-panel class="sidewindow-panel-pp" [header]="formLabel">
+                    <ng-template pTemplate="icons">
+                        <p-button icon="pi pi-times"   
+                            [rounded]="true" [text]="true" severity="danger"
+                        (click)="closePanelWindow($event)" />
+                        
+                    </ng-template>
+                    <div style="position: relative;height:96vh;overflow-y:auto;overflow-x:hidden;"> 
+                        <app-resume-job-description (contact)="saveContact()" *ngIf="showJobDescriptionWindow"></app-resume-job-description>
+                        <app-resume-template-list (contact)="saveContact()" *ngIf="showResumeTemplateList"></app-resume-template-list>
+                        <app-applications-tab (contact)="saveContact()" *ngIf="showApplicationTabWindow"></app-applications-tab>
+                        <app-client-tab (contact)="saveContact()" *ngIf="showClientWindow"></app-client-tab>
+                        <app-vendor-tab (contact)="saveContact()" *ngIf="showVendorDetailsWindow"></app-vendor-tab>
+                        <app-rounds-tab (contact)="saveContact()" *ngIf="showRoundsWindow"></app-rounds-tab>
+                        <app-feedback-tab (contact)="saveContact()" *ngIf="showFeedbackWindow"></app-feedback-tab>
+                        <app-resume-certificate (contact)="saveContact()" *ngIf="showCertificationsDetailsWindow"></app-resume-certificate>
+                        <app-resume-course-work [courseValue]="courseWorkCount" (contact)="saveContact()" *ngIf="showCourseWorkDetailsWindow"></app-resume-course-work>
+                        <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" *ngIf="showSkillsDetailsWindow" ></app-resume-skills>
+                        <app-resume-achievements (contact)="saveContact()" *ngIf="showAchievementsDetailsWindow"></app-resume-achievements>
+                        <app-resume-summary (contact)="saveContact()" *ngIf="showSummaryDetailsWindow"></app-resume-summary>
+                    </div>
+                </p-panel>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div
+      class="right-column" style="overflow-x: hidden;"
+      [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow }"
+    >
+        <div class="resume-editor-content-box center-block" style="margin-top: 16px;">
+                <div class="browser-resume-title-div trigger-area" style="text-align:left;" >
+                 <div class="resume-editor-wrapper feedback-wrapper relative">
+                     <div class="resume-renderer center-resume">
+                        <div class="resume-renderer-page browser-resume-page browserResumePage " style="padding: 0px 0px 0px;" >
+                            <div style="
+                                        width: 100%;
+                                        height: 100%;
+                                        z-index: 40;
+                                        position: relative;
+                                        padding: 36px 36px 0px;
+                                        padding-top:0px;padding-bottom:100px;padding-left:0px;padding-right:0px;">
+                                <div>
+                                    @if(!isResumeTabSelected){
+                                        <mat-progress-bar *ngIf="isActionInProgress" style="position: relative; top: 0px;left: 0px;right: 0px;" 
+                                        mode="indeterminate"></mat-progress-bar>
+                                        <section style="margin-left: 20px;margin-right:20px;" >
+                                            <h2 style="display: flex;align-items: center;justify-content: space-between;">Job Application Details
+                                                <div style="display: flex;gap: 10px;float: right;">
+                                                    @if(jobApplication().job_application_details.job_role){
+                                                        <button class="action-btn" title="Edit" (click)="showApplicationTab()">
+                                                            <p-icon class="pi pi-pencil"></p-icon>
+                                                        </button>
+                                                        <button class="action-btn" title="Remove" (click)="deleteApplication($event)">
+                                                            <p-icon class="pi pi-trash"></p-icon>
+                                                        </button>
+                                                    }
+                                                    @else{
+                                                        <button class="action-btn" title="Add" (click)="showApplicationTab()">
+                                                            <p-icon class="pi pi-plus"></p-icon>
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </h2>
+                                            <div class="details">
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().job_application_details.job_role">{{jobApplication().job_application_details.job_role}}</strong>
+                                                    <span class="value">Job Role</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().job_application_details.company_name">{{jobApplication().job_application_details.company_name}}</strong>
+                                                    <span class="value">Company Name</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().job_application_details.location">{{jobApplication().job_application_details.location}}</strong>
+                                                    <span class="value">Location</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().job_application_details.email_provided">{{jobApplication().job_application_details.email_provided}}</strong>
+                                                    <span class="value">Email Provided</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{jobApplication().job_application_details.formatted_date}}</strong>
+                                                    <span class="value">Applied Date</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{jobApplication().job_application_details.job_type}}</strong>
+                                                    <span class="value">Job Type</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{jobApplication().job_application_details.job_mode}}</strong>
+                                                    <span class="value">Job Mode</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    @if(jobApplication().job_application_details.job_reference_url.length > 0){
+                                                    <strong [title]="jobApplication().job_application_details.job_reference_url"><a href="{{jobApplication().job_application_details.job_reference_url}}" target="_blank">Click Here</a></strong>
+                                                    }
+                                                    <span class="value">Job Reference URL</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{jobApplication().job_application_details.status}}</strong>
+                                                    <span class="value">Status</span>
+                                                </div>
+                                                <div class="detail-item custom-accordion" style="text-align: start;padding:0px;">
+                                                    <p-accordion [activeIndex]="0" [style]="{'box-shadow': 'none !important'}">
+                                                        <p-accordionTab header="Job Description">
+                                                            <div class="col-lg-12" [innerHtml]="jobApplication().job_application_details.job_description">
+                
+                                                            </div>
+                                                            <!-- <p class="m-0">
+                                                                {{jobApplication().job_application_details.job_description}}
+                                                            </p> -->
+                                                        </p-accordionTab>
+                                                    </p-accordion>
+                                                </div>
+                                            </div>
+                                        </section>
+                                
+                                        <section style="margin-left: 20px;margin-right:20px;">
+                                            <h2 style="display: flex;align-items: center;justify-content: space-between;">Vendor Details
+                                            <div style="display: flex;gap: 10px;float: right;">
+                                                @if(jobApplication().vendor_details.first_name || jobApplication().vendor_details.last_name || jobApplication().vendor_details.email || jobApplication().vendor_details.phone_number || jobApplication().vendor_details.company_name){
+                                                    <button class="action-btn" title="Edit">
+                                                        <p-icon class="pi pi-pencil" (click)="showVendor()"></p-icon>
+                                                    </button>
+                                                    <button class="action-btn" title="Remove" (click)="deleteVendorContact($event)">
+                                                        <p-icon class="pi pi-trash"></p-icon>
+                                                    </button>
+                                                }
+                                                @else{
+                                                    <button class="action-btn" title="Add">
+                                                        <p-icon class="pi pi-plus" (click)="showVendor()"></p-icon>
+                                                    </button>
+                                                }
+                                            </div></h2>
+                                            <div class="details">
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().vendor_details.first_name">{{jobApplication().vendor_details.first_name}}</strong>
+                                                    <span class="value">First Name</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().vendor_details.last_name">{{jobApplication().vendor_details.last_name}}</strong>
+                                                    <span class="value">Last Name</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().vendor_details.email">{{jobApplication().vendor_details.email}}</strong>
+                                                    <span class="value">Email</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().vendor_details.phone_number">{{jobApplication().vendor_details.phone_number}}</strong>
+                                                    <span class="value">Phone</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="jobApplication().vendor_details.company_name">{{jobApplication().vendor_details.company_name}}</strong>
+                                                    <span class="value">Company Name</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;border: 0;">
+                                                </div>
+                                            </div>
+                                        </section>
+                                        <section style="margin-left: 20px;margin-right:20px;">
+                                        <h2 style="display: flex;align-items: center;justify-content: space-between;">Client Details
+                                            <div style="display: flex;gap: 10px;float: right;">
+                                                @if(jobApplication().client_details.first_name || jobApplication().client_details.last_name || jobApplication().client_details.email || jobApplication().client_details.phone_number || jobApplication().client_details.company_name){
+                                                <button class="action-btn" title="Edit">
+                                                <p-icon class="pi pi-pencil" (click)="showClient()"></p-icon>
+                                                </button>
+                                                <button class="action-btn" title="Remove" (click)="deleteClientContact($event)">
+                                                    <p-icon class="pi pi-trash"></p-icon>
+                                                </button>
+                                                }
+                                                @else{
+                                                    <button class="action-btn" title="Add">
+                                                        <p-icon class="pi pi-plus" (click)="showClient()"></p-icon>
+                                                    </button>
+                                                }
+                                            </div>
+                                        </h2>
+                                        <div class="details">
+                                            <div class="detail-item" style="text-align: start;">
+                                                <strong [title]="jobApplication().client_details.first_name">{{jobApplication().client_details.first_name}}</strong>
+                                                <span class="value">First Name</span>
+                                            </div>
+                                            <div class="detail-item" style="text-align: start;">
+                                                <strong [title]="jobApplication().client_details.last_name">{{jobApplication().client_details.last_name}}</strong>
+                                                <span class="value">Last Name</span>
+                                            </div>
+                                            <div class="detail-item" style="text-align: start;">
+                                                <strong [title]="jobApplication().client_details.email">{{jobApplication().client_details.email}}</strong>
+                                                <span class="value">Email</span>
+                                            </div>
+                                            <div class="detail-item" style="text-align: start;">
+                                                <strong [title]="jobApplication().client_details.phone_number">{{jobApplication().client_details.phone_number}}</strong>
+                                                <span class="value">Phone</span>
+                                            </div>
+                                            <div class="detail-item" style="text-align: start;">
+                                                <strong [title]="jobApplication().client_details.company_name">{{jobApplication().client_details.company_name}}</strong>
+                                                <span class="value">Company Name</span>
+                                            </div>
+                                            <div class="detail-item" style="text-align: start;border: 0;">
+                                            </div>
+                                        </div>
+                                        </section>
+                                        <section style="margin-left: 20px;margin-right:20px;">
+                                            <h2 style="display: flex;align-items: center;justify-content: space-between;">Round Details
+                                                <div style="display: flex;gap: 10px;float: right;">
+                                                    <button class="action-btn" title="Add">
+                                                        <p-icon class="pi pi-plus" (click)="showRounds()"></p-icon>
+                                                    </button>
+                                                
+                                                </div>
+                                            </h2>
+                                            <div class="round-details" *ngFor="let round of jobApplication().round_details; let i = index">
+                                                <div class="round-divider">
+                                                    <span class="left-line"></span>
+                                                    <span class="round-text">Round {{i + 1}}</span>
+                                                    <span class="right-line"></span>
+                                                    <span class="icon-container">
+                                                    <button class="action-btn" (click)="editRound(round)">
+                                                        <p-icon class="pi pi-pencil"></p-icon>
+                                                    </button>
+                                                    <button class="action-btn" title="Remove" (click)="deleteRound($event, round)">
+                                                        <p-icon class="pi pi-trash"></p-icon>
+                                                    </button>
+                                                    </span>
+                                                </div>
+                                                
+                                                
+                                                
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{round.type}}</strong>
+                                                    <span class="value">Type</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{round.mode}}</strong>
+                                                    <span class="value">Mode</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{round.status}}</strong>
+                                                    <span class="value">Status</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{round.time}}</strong>
+                                                    <span class="value">Time</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong>{{round.formatted_date}}</strong>
+                                                    <span class="value">Date</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <strong [title]="round.meet_link"><a href="{{round.meet_link}}" target="_blank">Join Here</a></strong>
+                                                    <span class="value">Test/Meet Link</span>
+                                                </div>
+                                                <div class="detail-item" style="text-align: start;">
+                                                    <div class="expansion-panel">
+                                                        <div class="expansion-header" (click)="toggleNote()">
+                                                            <span class="value">Notes</span>
+                                                            <span class="expansion-icon" [class.rotated]="isExpandedNote">▼</span>
+                                                        </div>
+                                                        <div class="expansion-content" [class.expanded]="isExpandedNote">
+                                                            {{round.notes}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    }
+                                    @else{
+                                        @if(!isResumeGiven){
+                                        <div class="right-column animated-div" 
+                                            style="padding-top: 0 !important; padding-top: 0 !important;overflow-x:hidden;
+    background-color: #fafcfd !important;">
+                                        <div class="centered-content" style="padding-top: 0 !important;">
+                                            <div class="job-application-editor-content-box center-block">
+                                                    <div class="job-application-editor-wrapper feedback-wrapper relative">
+                                                        <div class="job-application-renderer center-job-application">
+                                                            <mat-progress-bar *ngIf="isActionInProgressNotGiven" style="position: absolute; top: 0px;left: 0px;right: 0px;" 
+                                                                    mode="indeterminate">
+                                                            </mat-progress-bar>
+                                                            <div class="job-application-renderer-page browser-job-application-page browserResumePage " style="padding: 36px" >
+                                                                    <div class="action-container">
+                                                                        <h2 class="job-application-action-title">Choose an Option to Proceed</h2>
+                                                                        <p class="job-application-action-description">
+                                                                            Select one of the options below to proceed with your resume. You can either upload a new job-application or pick one from your saved list.
+                                                                        </p>
+                                                                        <div class="job-application-action-buttons">
+                                                                            <input
+                                                                            type="file"
+                                                                            class="upload-input" 
+                                                                            (change)="onFileSelected($event)"
+                                                                            #imageUpload
+                                                                            placeholder="Upload Image"
+                                                                            accept="application/pdf"
+                                                                            />
+                                                                            <button mat-button class="upload-btn" (click)="imageUpload.click()">
+                                                                            <p-icon class="pi pi-cloud-upload"></p-icon> Upload Your Resume
+                                                                            </button>
+        
+                                                                            
+                                                                            <div style="font-size: 1rem;
+                                                                            color: #666666;
+                                                                            line-height: 1.6;">OR</div>
+                                                                        
+                                                                            <button mat-button class="select-btn" (click)="openResumeDialog()">
+                                                                            <p-icon class="pi pi-folder"></p-icon> Choose from Saved Resumes
+                                                                            </button>
+                                                                        </div>
+                                                                        </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    }
+                                    @else{
+                                        <div class="job-app-resume-custom-accordion "   [ngClass]="{'accordion-opened': isAccordionOpened}" >
+                                            <p-accordion  
+                                                (onOpen)="onAccordionToggle(true)" 
+                                                (onClose)="onAccordionToggle(false)"
+                                                [activeIndex]="activeIndex"  [style]="{'box-shadow': 'none !important', 'background-color': '#fafafa'}">
+                                                <p-accordionTab 
+                                                    [header]="(jobApplication().job_application_details.job_role || 'Job Role') + ' | ' + (jobApplication().job_application_details.company_name || 'Company Name')+ ' | ' + (jobApplication().job_application_details.location || 'Location')">
+                                                    <div class="details">
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <strong [title]="jobApplication().job_application_details.job_role">{{ jobApplication().job_application_details.job_role }}</strong>
+                                                            <span class="value">Job Role</span>
+                                                        </div>
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <strong [title]="jobApplication().job_application_details.company_name">{{ jobApplication().job_application_details.company_name }}</strong>
+                                                            <span class="value">Company Name</span>
+                                                        </div>
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <strong [title]="jobApplication().job_application_details.location">{{ jobApplication().job_application_details.location }}</strong>
+                                                            <span class="value">Location</span>
+                                                        </div>
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <strong [title]="jobApplication().job_application_details.email_provided">{{ jobApplication().job_application_details.email_provided }}</strong>
+                                                            <span class="value">Email Provided</span>
+                                                        </div>
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <strong>{{ jobApplication().job_application_details.formatted_date }}</strong>
+                                                            <span class="value">Applied Date</span>
+                                                        </div>
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <strong>{{ jobApplication().job_application_details.job_type }}</strong>
+                                                            <span class="value">Job Type</span>
+                                                        </div>
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <strong>{{ jobApplication().job_application_details.job_mode }}</strong>
+                                                            <span class="value">Job Mode</span>
+                                                        </div>
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <ng-container *ngIf="jobApplication().job_application_details.job_reference_url.length > 0">
+                                                                <strong [title]="jobApplication().job_application_details.job_reference_url">
+                                                                    <a href="{{ jobApplication().job_application_details.job_reference_url }}" target="_blank">Click Here</a>
+                                                                </strong>
+                                                            </ng-container>
+                                                            <span class="value">Job Reference URL</span>
+                                                        </div>
+                                                        <div class="detail-item" style="text-align: start;">
+                                                            <strong>{{ jobApplication().job_application_details.status }}</strong>
+                                                            <span class="value">Status</span>
+                                                        </div>
+                                                    </div>
+                                                </p-accordionTab>
+                                            </p-accordion>
+                                       </div>
+                                        <!-- <div  class="ToolboxDesktop-module_separator"></div> -->
+                                        <div class="animated-div" style="padding-bottom: 10px !important;" 
+                                            *ngFor="let imageByte of resumeToImageBytes; let index=index;">
+                                            <div class="centered-content" style="padding-top: 0 !important;">
+                                                <div class="job-application-editor-content-box center-block mt-1">
+                                                        <div class="job-application-editor-wrapper feedback-wrapper" style="margin-bottom: 20px;">
+                                                            <div class="job-application-renderer center-job-application">
+                                                                <mat-progress-bar *ngIf="isActionInProgressGiven" style="position: absolute; top: 0px;left: 0px;right: 0px;" 
+                                                                mode="indeterminate"></mat-progress-bar>
+                                                                <div class="job-application-renderer-page browserResumePage " style="overflow-y: hidden;overflow-x: hidden;padding-bottom: 10px !important;">
+                                                                   
+                                                                    <!-- <section> -->
+                                                                        <!-- <h2 style="display: flex;align-items: center;justify-content: space-between;">Job Application Details
+                                                                            <div style="display: flex;gap: 10px;float: right;">
+                                                                                @if(jobApplication().job_application_details.job_role){
+                                                                                    <button class="action-btn" title="Edit" (click)="showApplicationTab()">
+                                                                                        <p-icon class="pi pi-pencil"></p-icon>
+                                                                                    </button>
+                                                                                    <button class="action-btn" title="Remove" (click)="deleteApplication($event)">
+                                                                                        <p-icon class="pi pi-trash"></p-icon>
+                                                                                    </button>
+                                                                                }
+                                                                                @else{
+                                                                                    <button class="action-btn" title="Add" (click)="showApplicationTab()">
+                                                                                        <p-icon class="pi pi-plus"></p-icon>
+                                                                                    </button>
+                                                                                }
+                                                                            </div>
+                                                                        </h2> -->
+                                                                       
+                                                                    <!-- </section> -->
+                                                                    <div class="pdf-display">
+                                                                        <div class="pdf-container">
+                                                                            <img [src]="imageByte" alt="PDF Page Preview" class="pdf-page">
+                                                                            @if(index == 0){
+                                                                            <div class="pdf-section-actions">
+                                                                                <p-icon class="pi pi-trash" (click)="deleteResume()"></p-icon>
+                                                                                @if(jobApplication().job_application_details.resume_download_link.length > 0){
+                                                                                    <p-icon class="pi pi-download" title="Download" (click)="downloadResume()"></p-icon>
+                                                                                }
+                                                                            </div>
+                                                                            <!-- <div  style="position: absolute;top:0px;right:0px;" (click)="deleteResume()">
+                                                                                <p-icon class="pi pi-times"></p-icon>
+                                                                            </div> -->
+                                                                            }
+                                                                        </div>
+                                                                        </div>                                                            
+                                                                    <p style="display: flex;justify-content: center;align-items: center;padding-right: 60px;">({{index + 1}})</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                    }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                       
+                     </div>
+                 </div>
+          </div>
+        </div>
+  </div>
+ 

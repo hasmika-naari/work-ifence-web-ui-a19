@@ -1,0 +1,345 @@
+.container {
+    margin: 0;
+    //font-family: Arial, sans-serif;
+    color: #333;
+    box-sizing: border-box;
+    padding-bottom: 36px;
+}
+
+/* Layout */
+.container {
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 65% 35%;
+    gap: 10px; /* Adjust the gap between columns as needed */
+}
+
+.sidebar {
+    display: block;
+    padding: 15px;
+    background-color: rgb(242, 246, 248);
+    border-radius: 5px;
+}
+
+
+.header {
+    grid-column: 1 / -1;
+    text-align: left;
+    padding-bottom: 0;
+    margin-bottom: 10px;
+}
+
+.header h1 {
+    margin: 0;
+    line-height: 1;
+    font-weight: 500 !important;
+    font-size: 32px;
+    color: #2a7ae4;
+}
+
+.header .title {
+    color: #555;
+    margin: 5px 0px 5px 0px;
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 400;
+}
+
+.summary-hover{
+    position: relative;
+}
+
+.header .summary {
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 400;
+    color: #666;
+    margin: 0px;
+}
+
+.work-experience{
+    padding-right: 15px;
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.work-experience h2 {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #2a7ae4;
+    margin: 0;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.job {
+    margin-bottom: 8px;
+    gap: 10px;
+    align-items: start;
+    position: relative;
+}
+
+.job h3 {
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.job .date {
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 400;
+    color: #777;
+    text-align: right;
+    margin: 0;
+}
+
+.job .company {
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 400;
+    color: #555;
+    margin-bottom: 10px;
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+.job ul {
+    margin: 0;
+    padding-left: 20px;
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+.job ul li {
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+.contact ul, .skills ul {
+    margin: 0;
+    padding: 5px 17px;
+}
+
+.contact ul li, .skills ul li {
+    margin-bottom: 3px;
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 400;
+}
+
+.contact ul li a {
+    color: #2a7ae4;
+    text-decoration: none;
+}
+
+.contact ul li a:hover {
+    text-decoration: underline;
+}
+
+.skills h2, .education h2, .contact h2{
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #2a7ae4;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 8px;
+    text-transform: uppercase;
+}
+
+// .skill-item{
+//     margin-top: 5px;
+//     margin-bottom: 0;
+//     font-size: 13px;
+//     line-height: 15px;
+//     font-weight: 400;
+// }
+
+.contact h2{
+    margin-top: 0;
+}
+
+.education {
+    // margin-top: 20px;
+}
+
+.education p {
+    margin: 5px 0;
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 400;
+}
+
+.skill-items{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-item{
+    padding: 5px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 400;
+}
+
+:host ::ng-deep .project-content ol {
+    padding-left: 1.09rem !important;
+    margin: 0 !important;
+  }
+  
+  :host ::ng-deep .project-content ol li {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 400;
+    padding: 3px 0px;
+    color: black;
+    white-space: pre-wrap;
+  }
+  
+  :host ::ng-deep .project-content ul {
+    padding-left: 1.09rem !important;
+    margin: 0 !important;
+  }
+  
+  :host ::ng-deep .project-content ul li {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 400;
+    padding: 3px 0px;
+    color: black;
+    white-space: pre-wrap;
+  }
+  
+  :host ::ng-deep .project-content p {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 400;
+    padding: 3px 0px;
+    color: black;
+    white-space: pre-wrap;
+    margin: 0;
+  }
+
+
+// ------------------------------------------------------
+.opacity-half{
+    opacity: 0.5;
+  }
+  
+  .opacity-full{
+    opacity: 1;
+  }
+
+  .section-actions {
+    position: absolute;
+    top: -10px;
+    right: 0px;
+    display: flex;
+    // background-color: #eeeeee8f;
+    // padding: 0.25rem 0.75rem;
+    border-radius: 1000px !important;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    p-icon{
+      border-radius: 50%;
+      background-color: #eeeeee85;
+    }
+    p-icon:hover{
+      background-color: #eee;
+      transform: scale(1.1); /* Slight zoom effect on hover */
+    }
+  }
+
+  .sub-items-actions{
+    position: absolute;
+    top: 10px;
+    right: 0px;
+    display: flex;
+    // background-color: #eeeeee8f;
+    // padding: 0.25rem 0.75rem;
+    border-radius: 1000px !important;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    .icon{
+      font-size: 18px;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      transition: background-color 0.2s, color 0.2s;
+      background-color: #eeeeee;
+    }
+    .icon:hover{
+      transform: scale(1.1); /* Slight zoom effect on hover */
+    }
+  }
+
+  .action-hover:hover .section-actions{
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .summary-hover:hover .section-actions{
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .job:hover .sub-items-actions {
+    opacity: 1 !important;
+    transform: translateX(0);
+  }
+
+  .edu-item:hover .sub-items-actions {
+    opacity: 1 !important;
+    transform: translateX(0);
+  }
+  
+
+  .section-actions p-icon {
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  
+  
+  /* Specific action colors */
+  .pi-plus {
+    color: #3498db; /* Blue-ish for Add */
+  }
+  
+  .pi-pencil {
+    color: #2ecc71; /* Green-ish for Edit */
+  }
+  
+  .pi-eye-slash {
+    color: #f39c12; /* Orange-ish for Hide */
+  }
+  
+  .pi-eye{
+    color: #f39c12;
+  }
+  
+  .pi-times {
+    color: #e74c3c; /* Red-ish for Delete */
+  }
+  

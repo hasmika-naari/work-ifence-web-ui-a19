@@ -1,0 +1,1060 @@
+
+<div style="display: flex;flex-wrap: wrap;flex-direction: row;width: 100%;min-height:87vh;overflow-x: hidden;overflow-y:hidden;"
+   class="card mt-0" style="border: none !important;min-height: 86.5vh;">
+    <div style="width:100%;" class="mb-20 flex">
+        <i class='bx bx-left-arrow-alt' style="font-size:x-large;margin-top:2px;cursor:pointer;" (click)="goback($event)" ></i>
+        <div >
+            <h4 class="resume-generator-lbl">New Resume<span class="ai-assisted-lbl"> AI Assisted</span></h4>
+        </div>
+        <!-- <i class="pi pi-plus text-orange-500 text-xl"></i> -->
+    </div>
+    <div style=" width: 100%;height: inherit;padding:0px;">
+        <div style="width: 100%;padding:0px;">
+           
+            <div style="width: 100%;height: 100%;overflow-x: auto;overflow-y: hidden;" class="nav-tabs-custom">
+                <ul class="nav-tabset">
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab1'}">
+                        <span class="active" (click)="switchTab($event, 'tab1')">CONTACT</span>
+                    </li>
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab2'}">
+                        <span (click)="switchTab($event, 'tab2')">EXPERIENCE</span>
+                    </li>
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab3'}">
+                        <span (click)="switchTab($event, 'tab3')">PROJECT</span>
+                    </li>
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab4'}">
+                        <span (click)="switchTab($event, 'tab4')">EDUCATION</span>
+                    </li>
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab5'}">
+                        <span (click)="switchTab($event, 'tab5')">CERTIFICATIONS</span>
+                    </li>
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab6'}">
+                        <span (click)="switchTab($event, 'tab6')">COURSE WORK</span>
+                    </li>
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab7'}">
+                        <span (click)="switchTab($event, 'tab7')">SKILLS</span>
+                    </li>
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab8'}">
+                        <span (click)="switchTab($event, 'tab8')">SUMMARY</span>
+                    </li>
+                    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab9'}">
+                        <span (click)="switchTab($event, 'tab9')">FINISH UP & PREVIEW</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div >
+                    <div class="tabs-container card mt-0" id="tab1" 
+                            style="box-shadow:none;height: 70vh !important;" *ngIf="currentTab === 'tab1'">
+                        <div class="row h-100">
+                            <div class="col-7"  >
+                                <form [formGroup]="contactForm" style="height: 57vh;">
+                                    <div class="row wrap">
+                                        <div class="col-12">
+                                            <div class="row wrap">
+                                                <div class="col-6">
+                                                    <div class="row wrap">
+                                                        <div class="col-12">
+                                                            <span class="p-float-label mb-2">
+                                                                <input id="name" type="text" class="w-100 p-inputtext" pInputText formControlName="name">
+                                                                <label for="name">First Name</label>
+                                                              </span>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <span class="p-float-label mb-2">
+                                                                <input id="lname" type="text" class="w-100 p-inputtext" pInputText formControlName="lname">
+                                                                <label for="lname">Last Name</label>
+                                                              </span>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <span class="p-float-label mb-2">
+                                                                <input id="phone_number" type="text" class="w-100 p-inputtext" pInputText formControlName="phone_number">
+                                                                <label for="phone_number">Phone Number</label>
+                                                              </span>
+                                                        </div>
+                                                        <div class="col-12">
+                                                              <span class="p-float-label mb-2">
+                                                                <input id="email_address" type="text" class="w-100 p-inputtext" pInputText formControlName="email_address">
+                                                                <label for="email_address">Email Address</label>
+                                                              </span>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <span class="p-float-label mb-2">
+                                                                <input id="github_profile" type="text" class="w-100 p-inputtext" pInputText formControlName="github_profile">
+                                                                <label for="github_profile"><strong>Github</strong> URL</label>
+                                                              </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="row wrap">
+                                                        <div class="col-12">
+                                                            <div class="column profile-image" style="margin: auto;">
+                                                                @if(showProfileImage){
+                                                                    <img [src]="getImageBase64()" alt="Profile Image">
+                                                                }
+                                                                @if(!showProfileImage){
+                                                                    <img src="assets/imghome/profile_fake.png" />
+                                                                }
+                                                                <input type="file" (change)="onFileSelected($event)" #imageUpload placeholder="Upload Photo"/>
+                                                                <button (click)="imageUpload.click()">Upload Photo</button>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <span class="p-float-label mb-2">
+                                                                    <input id="linkedIn_profile" type="text" class="w-100 p-inputtext" pInputText formControlName="linkedIn_profile">
+                                                                    <label for="linkedIn_profile"><strong>LinkedIn</strong> URL</label>
+                                                                  </span>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <span class="p-float-label mb-2">
+                                                                    <input id="portfolio_url" type="text" class="w-100 p-inputtext" pInputText formControlName="portfolio_url">
+                                                                    <label for="portfolio_url"><strong>Personal Website</strong> or Relevant Link</label>
+                                                                  </span>
+                                                             
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                        
+                                       
+                                    </div>
+                                </form>
+                                <div class="row form-action-buttons text-right">
+                                    <div style="justify-content: end;">
+                                        <button class="next-btn" (click)="saveAndContinue(null)"  id="saveButton">Save Contact</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5" style="border-left:1px dashed rgba(192, 192, 192, 0.556);">
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabs-container card mt-0" id="tab2" 
+                            style="box-shadow:none;height: 70vh !important;" *ngIf="currentTab === 'tab2'">
+                            <div class="row pt-0">
+                                <div class="col-7 pt-0" >
+                                    <div class="row">
+                                        <div class="col-12 pt-0">
+                                            <p-overlayPanel #opExp [style]="{ width: '850px' }" [showCloseIcon]="true">
+                                                <ng-template pTemplate="content">
+                                                    <form [formGroup]="experienceForm" >
+                                                        <div class="row wrap">
+                                                            <div class="col-6" style="height: 35vh;">
+                                                                    <div class="row wrap">
+                                                                        <div class="col-12">
+                                                                            <span class="p-float-label">
+                                                                                <input id="position_title" type="text" class="w-100 p-inputtext" pInputText formControlName="position_title">
+                                                                                <label for="position_title">Position Title</label>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <span class="p-float-label">
+                                                                                <input id="company_name" type="text" class="w-100 p-inputtext" pInputText formControlName="company_name">
+                                                                                <label for="company_name">Company Name</label>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <span class="p-float-label">
+                                                                                <input id="location" type="text" class="w-100 p-inputtext" pInputText formControlName="location">
+                                                                                <label for="location">Location</label>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <span class="p-float-label">
+                                                                                <input id="start_date" type="text" class="w-100 p-inputtext" pInputText formControlName="start_date">
+                                                                                <label for="start_date">Start Date</label>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <span class="p-float-label">
+                                                                                <input id="end_date" type="text" class="w-100 p-inputtext" pInputText formControlName="end_date">
+                                                                                <label for="end_date">End Date</label>
+                                                                            </span>
+                                                                        </div>
+                                                                       
+                                                                           
+                                                                    </div>
+                                                            </div>
+                                                            <div class="col-6" style="height: 35vh;">
+                                                                        <label for="description" style="display: flex;justify-content: space-between;align-items: center;    position: relative;
+                                                                        top: 20px;">Work Summary
+                                                                            <button style="display: flex;justify-content: center;align-items: center;padding: 3px 10px;background-color: white;color: #f05b4e;border: 1px solid #f05b4e;border-radius: 50px;text-transform: uppercase;font-size: 0.857rem;font-size: 0.857rem;">
+                                                                                ⚡Use AI Writer
+                                                                            </button>
+                                                                            </label>
+                                                                            <span class="p-float-label mb-2" style="height: 75%; position: relative;top: 32px;">
+                                                                                <textarea id="description"  rows="15" cols="30" class="w-100 h-100" pInputTextarea formControlName="description"></textarea>
+                                                                                <label for="description">Write your work experince here</label>
+                                                                            </span>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="row form-action-buttons" style="padding:10px;justify-content: flex-end;padding-right: 0 !important;margin: 0 !important;bottom:0px;">
+                                                                    <div style="display: flex;justify-content: end;padding: 0;">
+                                                                        <button class="next-btn" (click)="saveToExperienceList()"  id="saveButton">Save To Experiences List</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </ng-template>
+                                            </p-overlayPanel>
+                                            <p-button (click)="opExp.toggle($event)" icon="pi pi-plus" label="Add Experience"></p-button>
+                                        </div>
+                                        <div class="col-12 pt-0" style="overflow-y: auto;height:57vh;">
+                                            <p-accordion [activeIndex]="0" >
+                                                <p-accordionTab >
+                                                    <ng-template pTemplate="header">
+                                                        <span class="flex align-items-justify gap-2 w-full">
+                                                            <span style="font-weight: 500;">Lead UI Developer &#64; Amazon  </span>
+                                                            <span class="flex"></span>
+                                                             <span><b>(June 2016 - Present)</b></span>
+                                                        </span>
+                                                    </ng-template>
+                                                    <div class="fow">
+                                                        <div class="col-12 text-right">
+                                                            <i class="pi pi-trash txt-xl show-orange-red delete-list-item"></i> 
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <p>
+                                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header II">
+                                                    <p>
+                                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header III">
+                                                    <p>
+                                                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header I">
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header II">
+                                                    <p>
+                                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header III">
+                                                    <p>
+                                                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header I">
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header II">
+                                                    <p>
+                                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header III">
+                                                    <p>
+                                                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header I">
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header II">
+                                                    <p>
+                                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header III">
+                                                    <p>
+                                                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                    </p>
+                                                </p-accordionTab>
+                                            </p-accordion>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-5" style="border-left:1px dashed rgba(192, 192, 192, 0.556);">
+
+                                </div>
+                            </div>
+                    </div>
+                    <div class="tabs-container card mt-0" id="tab3" 
+                            style="box-shadow:none;height: 70vh !important;" *ngIf="currentTab === 'tab3'">
+                            <div class="row pt-0">
+                                <div class="col-7 pt-0" style="height: 57vh;">
+                                    <div class="row">
+                                        <div class="col-12 pt-0">
+                                            <p-overlayPanel #opProj [style]="{ width: '850px' }" [showCloseIcon]="true">
+                                                <ng-template pTemplate="content">
+                                                    <form [formGroup]="projectForm">
+                                                        <div class="row wrap">
+                                                            <div class="col-6">
+                                                                <span class="p-float-label">
+                                                                    <input id="project_title" type="text" class="w-100 p-inputtext" pInputText formControlName="project_title">
+                                                                    <label for="project_title">Project Title</label>
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <span class="p-float-label">
+                                                                    <input id="project_link" type="text" class="w-100 p-inputtext" pInputText formControlName="project_link">
+                                                                    <label for="project_link">Project URL</label>
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <span class="p-float-label">
+                                                                    <input id="technologies_used" type="text" class="w-100 p-inputtext" pInputText formControlName="technologies_used">
+                                                                    <label for="technologies_used">Technologies Used</label>
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="row wrap">
+                                                                    <div class="col-12  pb-0 pt-0">
+                                                                        <div class="row justify-content-between h-100">
+                                                                            <div class="col-4 text-left pt-0 pb-0">
+                                                                                <label for="description" style="font-size: larger;position:relative;top:15px;">Project Summary</label>
+                                                                            </div>
+                                                                            <div class="col-4 text-right pt-0 pb-0">
+                                                                                <p-button label="Use AI Writer" icon="pi pi-users"  [outlined]="outLineButton" [style]="{position: 'relative',top:'10px'}"></p-button>
+                                                                                <!-- <button style="display: flex;justify-content: center;align-items: center;padding: 3px 10px;background-color: white;color: #f05b4e;border: 1px solid #f05b4e;border-radius: 50px;text-transform: uppercase;font-size: 0.857rem;font-size: 0.857rem;">
+                                                                                    ⚡Use AI Writer
+                                                                                </button> -->
+                                                                            </div>
+                                                                          </div>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <span class="p-float-label mb-2" style="height: 15vh; position: relative;">
+                                                                            <textarea id="description"  rows="15" cols="30" class="w-100 h-100" pInputTextarea formControlName="description"></textarea>
+                                                                            <label for="description">Write project description here...</label>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <div class="row form-action-buttons" style="justify-content: flex-end;padding-right: 0 !important;margin: 0 !important;bottom:0px;">
+                                                                            <div style="display: flex;justify-content: end;padding: 0;">
+                                                                                <button class="next-btn" (click)="saveToProjectList()"  id="saveButton">Save To Projects List</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- <div class="column flex-wrap" style="flex-basis: 70%;">
+                                                            <div class="row flex-wrap" style="padding-top: 10px;">
+                                                             
+                                                             
+                                                            </div>
+                                                            <div class="row flex-wrap">
+                                                             
+                                                            </div>
+                                                            <div class="row flex-wrap">
+                                                                <div class="form-input" style="margin-bottom: 0;">
+                                                                    <label for="description" style="display: flex;justify-content: space-between;align-items: center;"><strong>Project Summary</strong> 
+                                                                        <button style="display: flex;justify-content: center;align-items: center;padding: 3px 10px;background-color: white;color: #f05b4e;border: 1px solid #f05b4e;border-radius: 50px;text-transform: uppercase;font-size: 0.857rem;">
+                                                                            ⚡Use AI Writer
+                                                                        </button>
+                                                                        </label>
+                                                                    <textarea type="text" id="description" formControlName="description" placeholder="Write project description here..."></textarea> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="row form-action-buttons" style="padding:10px;justify-content: flex-end;padding-right: 0 !important;margin-right: 0 !important;">
+                                                                <div style="display: flex;justify-content: end;padding: 0;">
+                                                                    <button class="next-btn" (click)="saveToProjectList()"  id="saveButton">Save To Projects List</button>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
+                                                        <!-- <div style="flex-basis: 30%;display: flex;padding: 0px 10px;justify-content: center;">
+                                                            <div style="box-shadow: 0 0 0.125rem 0 rgba(0, 0, 0, 0.1);display: flex;flex-wrap: wrap;flex-direction: column;background-color: #fff;border-radius: 10px;padding: 10px;width: 320px;justify-content: start;margin: 1rem;margin-top: 0 !important;">
+                                                                <div>
+                                                                    <p style="font-weight: 700;padding-bottom: 0.75rem;">Your Projects</p>
+                                                                </div>
+                                                                <div style="background-color: rgba(209, 213, 219, 1);height: 1px;width: 100%;"></div>
+                                                                @if(project_list.length == 0){
+                                                                    <span style="opacity: 0.8;font-size: 0.857rem;color: black;padding: 10px 0px;">Add your first Projects</span>
+                                                                }
+                                                                @else{
+                                                                    <div style="display: flex;flex-direction: column;justify-content: center;padding: 10px 0px;">
+                                                                        <div class="exp-card" *ngFor="let exp of project_list" style="display: flex;flex-direction: column;">
+                                                                            <div style="font-size: 0.857rem;display: flex;flex-direction: column;">
+                                                                                <strong>{{exp.project_title}}</strong>
+                                                                            </div>
+                                                                            <div style="display: flex;flex-direction: row;justify-content: start;margin-top: 0.5rem;">  
+                                                                                <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: #4d70eb; color: white;border: 1px solid #4d70eb;border-radius: 5px;margin-right: 0.5rem;text-transform: uppercase;font-size: 11px;font-weight: 700;margin-left: 0;" (click)="editProjectItem(exp)">Edit</button>
+                                                                                <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: rgba(212, 0, 0, 1); color: white;border: 1px solid rgba(212, 0, 0, 1);border-radius: 5px;text-transform: uppercase;margin-right: 0.5rem;font-size: 11px;font-weight: 700;" (click)="removeProjectItem(exp)">Delete</button>
+                                                                                <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: white; color: gray;border: 1px solid gray;border-radius: 5px;text-transform: uppercase;margin-right: 0.5rem;font-size: 11px;font-weight: 700;">Hide</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </div> -->
+                                                    </form>
+                                                </ng-template>
+                                            </p-overlayPanel>
+                                            <p-button (click)="opProj.toggle($event)" icon="pi pi-plus" label="Add Project"></p-button>
+                                        </div>
+                                        <div class="col-12 pt-0" style="overflow-y: auto;height:57vh;">
+                                            <p-accordion [activeIndex]="0" >
+                                                <p-accordionTab >
+                                                    <ng-template pTemplate="header">
+                                                        <span class="flex align-items-justify gap-2 w-full">
+                                                            <span style="font-weight: 500;">LaunchIT Web Application&#64; Incomm Payments  </span>
+                                                            <span class="flex"></span>
+                                                             <!-- <span><b>(June 2016 - Present)</b></span> -->
+                                                        </span>
+                                                    </ng-template>
+                                                    <div class="fow">
+                                                        <div class="col-12 text-right">
+                                                            <i class="pi pi-trash txt-xl show-orange-red delete-list-item"></i> 
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <p>
+                                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header II">
+                                                    <p>
+                                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header III">
+                                                    <p>
+                                                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header I">
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header II">
+                                                    <p>
+                                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header III">
+                                                    <p>
+                                                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header I">
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header II">
+                                                    <p>
+                                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header III">
+                                                    <p>
+                                                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header I">
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header II">
+                                                    <p>
+                                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                    </p>
+                                                </p-accordionTab>
+                                                <p-accordionTab header="Header III">
+                                                    <p>
+                                                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                        qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                    </p>
+                                                </p-accordionTab>
+                                            </p-accordion>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-5" style="border-left:1px dashed rgba(192, 192, 192, 0.556);">
+
+                                </div>
+                            </div>
+                    </div>
+                    <div class="tabs-container card mt-0" id="tab4" 
+                        style="box-shadow:none;height: 70vh !important;" *ngIf="currentTab === 'tab4'">
+                        <div class="row pt-0">
+                            <div class="col-7 pt-0" style="height: 57vh;">
+                                <div class="row">
+                                    <div class="col-12 pt-0">
+                                        <p-overlayPanel #opEdu [style]="{ width: '850px' }" [showCloseIcon]="true">
+                                            <ng-template pTemplate="content">
+                                                <form [formGroup]="educationForm" >
+                                                    <div class="row wrap">
+                                                        <div class="col-6">
+                                                            <span class="p-float-label">
+                                                                <input id="school_name" type="text" class="w-100 p-inputtext" pInputText formControlName="school_name">
+                                                                <label for="school_name">University Name</label>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <span class="p-float-label">
+                                                                <input id="school_location" type="text" class="w-100 p-inputtext" pInputText formControlName="school_location">
+                                                                <label for="school_location">University Location</label>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <span class="p-float-label">
+                                                                <input id="degree" type="text" class="w-100 p-inputtext" pInputText formControlName="degree">
+                                                                <label for="degree">Degree</label>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <span class="p-float-label">
+                                                                <input id="field_of_study" type="text" class="w-100 p-inputtext" pInputText formControlName="field_of_study">
+                                                                <label for="field_of_study">Field Of Study</label>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <span class="p-float-label">
+                                                                <input id="gpa" type="text" class="w-100 p-inputtext" pInputText formControlName="gpa">
+                                                                <label for="gpa">GPA</label>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <span class="p-float-label">
+                                                                <input id="graduation_year" type="text" class="w-100 p-inputtext" pInputText formControlName="graduation_year">
+                                                                <label for="graduation_year">Graduation Year</label>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="row form-action-buttons" style="justify-content: flex-end;padding-right: 0 !important;margin: 0 !important;bottom:0px;">
+                                                                <div style="display: flex;justify-content: end;padding: 0;">
+                                                                    <button class="next-btn" (click)="saveToEducationList()"  id="saveButton">Save To Educations List</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div style="flex-basis: 30%;display: flex;padding: 0px 10px;justify-content: center;">
+                                                        <div style="box-shadow: 0 0 0.125rem 0 rgba(0, 0, 0, 0.1);display: flex;flex-wrap: wrap;flex-direction: column;background-color: #fff;border-radius: 10px;padding: 10px;width: 320px;justify-content: start;margin: 1rem;margin-top: 0 !important;">
+                                                            <div>
+                                                                <p style="font-weight: 700;padding-bottom: 0.75rem;">Your Education</p>
+                                                            </div>
+                                                            <div style="background-color: rgba(209, 213, 219, 1);height: 1px;width: 100%;"></div>
+                                                            @if(education_list.length == 0){
+                                                                <span style="opacity: 0.8;font-size: 0.857rem;color: black;padding: 10px 0px;">Add your first Educations</span>
+                                                            }
+                                                            @else{
+                                                                <div style="display: flex;flex-direction: column;justify-content: center;padding: 10px 0px;">
+                                                                    <div class="exp-card" *ngFor="let exp of education_list" style="display: flex;flex-direction: column;">
+                                                                        <div style="font-size: 0.857rem;display: flex;flex-direction: column;">
+                                                                            <strong>{{exp.degree}}</strong>
+                                                                        </div>
+                                                                        <div style="display: flex;flex-direction: row;justify-content: start;margin-top: 0.5rem;">  
+                                                                            <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: #4d70eb; color: white;border: 1px solid #4d70eb;border-radius: 5px;margin-right: 0.5rem;text-transform: uppercase;font-size: 11px;font-weight: 700;margin-left: 0;" (click)="editEducationItem(exp)">Edit</button>
+                                                                            <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: rgba(212, 0, 0, 1); color: white;border: 1px solid rgba(212, 0, 0, 1);border-radius: 5px;text-transform: uppercase;margin-right: 0.5rem;font-size: 11px;font-weight: 700;" (click)="removeEducationItem(exp)">Delete</button>
+                                                                            <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: white; color: gray;border: 1px solid gray;border-radius: 5px;text-transform: uppercase;margin-right: 0.5rem;font-size: 11px;font-weight: 700;">Hide</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div> -->
+                                                </form>
+                                            </ng-template>
+                                        </p-overlayPanel>
+                                        <p-button (click)="opEdu.toggle($event)" icon="pi pi-plus" label="Add Education"></p-button>
+                                    </div>
+                                    <div class="col-12 pt-0" style="overflow-y: auto;height:57vh;">
+                                        <p-accordion [activeIndex]="0" >
+                                            <p-accordionTab >
+                                                <ng-template pTemplate="header">
+                                                    <span class="flex align-items-justify gap-2 w-full">
+                                                        <span style="font-weight: 500;">LaunchIT Web Application&#64; Incomm Payments  </span>
+                                                        <span class="flex"></span>
+                                                         <!-- <span><b>(June 2016 - Present)</b></span> -->
+                                                    </span>
+                                                </ng-template>
+                                                <div class="fow">
+                                                    <div class="col-12 text-right">
+                                                        <i class="pi pi-trash txt-xl show-orange-red delete-list-item"></i> 
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <p>
+                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header II">
+                                                <p>
+                                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header III">
+                                                <p>
+                                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                    qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header I">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header II">
+                                                <p>
+                                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header III">
+                                                <p>
+                                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                    qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header I">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header II">
+                                                <p>
+                                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header III">
+                                                <p>
+                                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                    qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header I">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header II">
+                                                <p>
+                                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header III">
+                                                <p>
+                                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                    qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                </p>
+                                            </p-accordionTab>
+                                        </p-accordion>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5" style="border-left:1px dashed rgba(192, 192, 192, 0.556);">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabs-container card mt-0" id="tab5" 
+                            style="box-shadow:none;height: 70vh !important;" *ngIf="currentTab === 'tab5'">
+                        <div class="row pt-0">
+                            <div class="col-7 pt-0" style="height: 57vh;">
+                                <div class="row">
+                                    <div class="col-12 pt-0">
+                                        <p-overlayPanel #opCerti [style]="{ width: '850px' }" [showCloseIcon]="true">
+                                            <ng-template pTemplate="content">
+                                                <form [formGroup]="certifyForm" style="padding: 10px;display: flex;">
+                                                    <div class="column flex-wrap" style="flex-basis: 70%;">
+                                                        <div class="row flex-wrap" style="padding-top: 10px;">
+                                                            <div class="form-input" style="flex-basis: 50%;">
+                                                                <label for="certification_name"><strong>Certification Name</strong></label>
+                                                                <input type="text" id="certification_name" formControlName="certification_name" placeholder="Marketing Analyst"> 
+                                                            </div>
+                                                            <div class="form-input" style="flex-basis: 50%;">
+                                                                <label for="issued_organisation"><strong>Issued Organisation</strong></label>
+                                                                <input type="text" id="issued_organisation" formControlName="issued_organisation" placeholder="Google"> 
+                                                            </div>
+                                                        </div>
+                                                        <div class="row flex-wrap" style="height: auto;">
+                                                            <div class="form-input" style="flex-basis: 50%;margin-bottom: 0 !important;">
+                                                                <label for="certification_link"><strong>Certification</strong> URL</label>
+                                                                <input type="text" id="certification_link" formControlName="certification_link" placeholder="Hyderbad, India"> 
+                                                            </div>
+                                                            <div class="form-input" style="flex-basis: 25%;margin-bottom: 0 !important;">
+                                                                <label for="issued_month"><strong>Issued Month</strong></label>
+                                                                <input type="text" id="issued_month" formControlName="issued_month" placeholder="May 2022"> 
+                                                            </div>
+                                                            <div class="form-input" style="flex-basis: 25%;margin-bottom: 0 !important;">
+                                                                <label for="issued_year"><strong>Issued Year</strong></label>
+                                                                <input type="text" id="issued_year" formControlName="issued_year" placeholder="May 2022"> 
+                                                            </div>
+                                                        </div>
+                                                        <!-- <div class="row flex-wrap">
+                                                            <div class="form-input" style="margin-bottom: 0;">
+                                                                <label for="description"><strong>Description</strong></label>
+                                                                <textarea type="text" id="description" formControlName="description" placeholder="Write about your certification here..."></textarea> 
+                                                            </div>
+                                                        </div> -->
+                                                        <div class="row form-action-buttons" style="padding:10px;justify-content: flex-end;padding-right: 0 !important;margin-right: 0 !important;">
+                                                            <div style="display: flex;justify-content: end;padding: 0;">
+                                                                <button class="next-btn" (click)="saveToCertificationList()"  id="saveButton">Save To Certifications List</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style="flex-basis: 30%;display: flex;padding: 0px 10px;justify-content: center;">
+                                                        <div style="box-shadow: 0 0 0.125rem 0 rgba(0, 0, 0, 0.1);display: flex;flex-wrap: wrap;flex-direction: column;background-color: #fff;border-radius: 10px;padding: 10px;width: 320px;justify-content: start;margin: 1rem;margin-top: 0 !important;">
+                                                            <div>
+                                                                <p style="font-weight: 700;padding-bottom: 0.75rem;">Your Certifications</p>
+                                                            </div>
+                                                            <div style="background-color: rgba(209, 213, 219, 1);height: 1px;width: 100%;"></div>
+                                                            @if(certification_list.length == 0){
+                                                                <span style="opacity: 0.8;font-size: 0.857rem;color: black;padding: 10px 0px;">Add your first Certifications</span>
+                                                            }
+                                                            @else{
+                                                                <div style="display: flex;flex-direction: column;justify-content: center;padding: 10px 0px;">
+                                                                    <div class="exp-card" *ngFor="let exp of certification_list" style="display: flex;flex-direction: column;">
+                                                                        <div style="font-size: 0.857rem;display: flex;flex-direction: column;">
+                                                                            <strong>{{exp.certification_name}}</strong>
+                                                                        </div>
+                                                                        <div style="display: flex;flex-direction: row;justify-content: start;margin-top: 0.5rem;">  
+                                                                            <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: #4d70eb; color: white;border: 1px solid #4d70eb;border-radius: 5px;margin-right: 0.5rem;text-transform: uppercase;font-size: 11px;font-weight: 700;margin-left: 0;" (click)="editCertificationItem(exp)">Edit</button>
+                                                                            <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: rgba(212, 0, 0, 1); color: white;border: 1px solid rgba(212, 0, 0, 1);border-radius: 5px;text-transform: uppercase;margin-right: 0.5rem;font-size: 11px;font-weight: 700;" (click)="removeCertificationItem(exp)">Delete</button>
+                                                                            <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: white; color: gray;border: 1px solid gray;border-radius: 5px;text-transform: uppercase;margin-right: 0.5rem;font-size: 11px;font-weight: 700;">Hide</button>
+                                                                        </div>
+                                                                        <!-- <div style="padding: 0;margin: 0;background-color: #3498db;display: flex;justify-content: center;align-items: center;padding: 10px;cursor: pointer;"  (click)="editExperienceItem(exp)">
+                                                                            ✎
+                                                                        </div>
+                                                                        <div style="padding: 0;margin: 0;background-color: #e74c3c;display: flex; justify-content: center;align-items: center;padding: 10px;cursor: pointer;border-radius: 0 10px 10px 0;"  (click)="removeExperienceItem(exp)">
+                                                                            ✖
+                                                                        </div> -->
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </ng-template>
+                                        </p-overlayPanel>
+                                        <p-button (click)="opCerti.toggle($event)" icon="pi pi-plus" label="Add Certification"></p-button>
+                                    </div>
+                                    <div class="col-12 pt-0" style="overflow-y: auto;height:57vh;">
+                                        <p-accordion [activeIndex]="0" >
+                                            <p-accordionTab >
+                                                <ng-template pTemplate="header">
+                                                    <span class="flex align-items-justify gap-2 w-full">
+                                                        <span style="font-weight: 500;">LaunchIT Web Application&#64; Incomm Payments  </span>
+                                                        <span class="flex"></span>
+                                                         <!-- <span><b>(June 2016 - Present)</b></span> -->
+                                                    </span>
+                                                </ng-template>
+                                                <div class="fow">
+                                                    <div class="col-12 text-right">
+                                                        <i class="pi pi-trash txt-xl show-orange-red delete-list-item"></i> 
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <p>
+                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header II">
+                                                <p>
+                                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header III">
+                                                <p>
+                                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                    qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header I">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header II">
+                                                <p>
+                                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header III">
+                                                <p>
+                                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                    qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header I">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header II">
+                                                <p>
+                                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header III">
+                                                <p>
+                                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                    qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header I">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header II">
+                                                <p>
+                                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+                                                    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
+                                                </p>
+                                            </p-accordionTab>
+                                            <p-accordionTab header="Header III">
+                                                <p>
+                                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa
+                                                    qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
+                                                </p>
+                                            </p-accordionTab>
+                                        </p-accordion>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5" style="border-left:1px dashed rgba(192, 192, 192, 0.556);"> </div>
+                        </div>
+                    </div>
+                    <div class="tabs-container card mt-0" style="box-shadow:none;height: 70vh !important;" *ngIf="currentTab === 'tab6'">
+                        <div class="row h-100">
+                            <div class="pane col-7 h-100" id="tab6" >
+                                <form [formGroup]="courseWorkForm" class="column">
+                                    <div class="row justify-content-start">
+                                        <div class="column justify-content-start">
+                                            <div class="row">
+                                                <div class="grid-templates-rows-auto form-input">
+                                                <label for="coursework">Coursework</label>
+                                                <textarea type="text" id="coursework" formControlName="coursework"></textarea> 
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div *ngFor="let coursework of listed_coursework" class="fit-content row" style=" margin: 0px 5px 5px 0px;padding: 0;flex-wrap: wrap;">
+                                                    <button class="skill-btn fit-content" (click)="addCoursework(coursework)" style="display: flex;justify-content: center;align-items: center;">&#43; {{coursework}}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="row justify-content-end form-action-buttons">
+                                    <div style="width: fit-content;padding: 0;">
+                                        <button class="back-btn">Preview</button>
+                                        <button class="next-btn" (click)="saveAndContinue(null)"  id="saveButton">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5" style="border-left:1px dashed rgba(192, 192, 192, 0.556);">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabs-container">
+                        <div class="pane" id="tab7" *ngIf="currentTab === 'tab7'"> 
+                            <form [formGroup]="skillsForm" style="padding: 10px;display: flex;">
+                                <div class="column flex-wrap" style="flex-basis: 70%;">
+                                    <div class="row flex-wrap">
+                                        <div class="form-input" style="margin-bottom: 0;">
+                                            <label for="skills"><strong>Skills</strong> 
+                                        </label>
+                                            <textarea type="text" id="skills" formControlName="skills" placeholder="Technical Skills: Java, Python, Javascript"></textarea> 
+                                        </div>
+                                    </div>
+                                    <div class="row form-action-buttons" style="padding:10px;justify-content: flex-end;padding-right: 0 !important;margin-right: 0 !important;">
+                                        <div style="display: flex;justify-content: end;padding: 0;">
+                                            <button class="next-btn" (click)="saveToSkillsList()"  id="saveButton">Save To Skills List</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="flex-basis: 30%;display: flex;padding: 0px 10px;justify-content: center;">
+                                    <div style="box-shadow: 0 0 0.125rem 0 rgba(0, 0, 0, 0.1);display: flex;flex-wrap: wrap;flex-direction: column;background-color: #fff;border-radius: 10px;padding: 10px;width: 320px;justify-content: start;margin: 1rem;margin-top: 0 !important;">
+                                        <div>
+                                            <p style="font-weight: 700;padding-bottom: 0.75rem;">Your Skills</p>
+                                        </div>
+                                        <div style="background-color: rgba(209, 213, 219, 1);height: 1px;width: 100%;"></div>
+                                        @if(skills_list.length == 0){
+                                            <span style="opacity: 0.8;font-size: 0.857rem;color: black;padding: 10px 0px;">Add your first Skills</span>
+                                        }
+                                        @else{
+                                            <div style="display: flex;flex-direction: column;justify-content: center;padding: 10px 0px;">
+                                                <div class="exp-card" *ngFor="let skill of skills_list" style="display: flex;flex-direction: column;">
+                                                    <div style="font-size: 0.857rem;display: flex;flex-direction: column;">
+                                                        <strong>{{skill.skills}}</strong>
+                                                    </div>
+                                                    <div style="display: flex;flex-direction: row;justify-content: start;margin-top: 0.5rem;">  
+                                                        <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: #4d70eb; color: white;border: 1px solid #4d70eb;border-radius: 5px;margin-right: 0.5rem;text-transform: uppercase;font-size: 11px;font-weight: 700;margin-left: 0;" (click)="editSkillItem(skill)">Edit</button>
+                                                        <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: rgba(212, 0, 0, 1); color: white;border: 1px solid rgba(212, 0, 0, 1);border-radius: 5px;text-transform: uppercase;margin-right: 0.5rem;font-size: 11px;font-weight: 700;" (click)="removeSkillItem(skill)">Delete</button>
+                                                        <button style="width: fit-content;padding: 0.25rem 0.5rem;background-color: white; color: gray;border: 1px solid gray;border-radius: 5px;text-transform: uppercase;margin-right: 0.5rem;font-size: 11px;font-weight: 700;">Hide</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="tabs-container">
+                        <div class="pane" id="tab8" *ngIf="currentTab === 'tab8'"> 
+                            <form [formGroup]="summaryForm" style="padding: 10px;display: flex;">
+                                <div class="column flex-wrap" style="flex-basis: 70%;">
+                                    <div class="row flex-wrap">
+                                        <div class="form-input" style="margin-bottom: 0;">
+                                            <label for="profile_summary" style="display: flex;justify-content: space-between;align-items: center;"><strong>Professional Summary</strong> 
+                                                <button style="display: flex;justify-content: center;align-items: center;padding: 3px 10px;background-color: white;color: #f05b4e;border: 1px solid #f05b4e;border-radius: 50px;text-transform: uppercase;font-size: 0.857rem;">
+                                                    ⚡Use AI Writer
+                                                </button>
+                                            </label>
+                                            <textarea type="text" id="profile_summary" formControlName="profile_summary" placeholder="Versatile Full Stack Developer with expertise in frontend and backend technologies. Skilled in developing scalable web applications and passionate about crafting intuitive user experiences. Effective communicator and collaborator committed to delivering high-quality solutions. Continuously learning and adapting to new technologies to drive innovation."></textarea> 
+                                        </div>
+                                    </div>
+                                    <div class="row form-action-buttons" style="padding:10px;justify-content: flex-end;padding-right: 0 !important;margin-right: 0 !important;">
+                                        <div style="display: flex;justify-content: end;padding: 0;">
+                                            <button class="next-btn" (click)="saveAndContinue(null)"  id="saveButton">Save Summary Info</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="flex-basis: 30%;display: flex;padding: 0px 10px;justify-content: center;">
+                                    <div style="box-shadow: 0 0 0.125rem 0 rgba(0, 0, 0, 0.1);display: flex;flex-wrap: wrap;flex-direction: column;background-color: #fff;border-radius: 10px;padding: 10px;width: 320px;justify-content: start;margin: 1rem;margin-top: 0 !important;">
+                                        <div>
+                                            <p style="font-weight: 700;padding-bottom: 0.75rem;text-transform: uppercase;font-size: 0.857rem;">AI Summary Writer</p>
+                                        </div>
+                                        <div style="background-color: rgba(209, 213, 219, 1);height: 1px;width: 100%;"></div>
+                                        <div>
+                                            <span style="opacity: 0.8;font-size: 0.857rem;color: black;padding: 10px 0px;">
+                                                AI writer helps you to write your summary for a targeted job position. Strange result? Just regenerate!
+                                            </span>
+                                        </div>
+                                        <form [formGroup]="summaryRequestForm" style="padding: 10px;display: flex;width: 100%;">
+                                            <div class="column flex-wrap" style="width: 100%;">
+                                                <div class="form-input">
+                                                    <label for="position_highlight"><strong>Position Highlight*</strong></label>
+                                                    <input type="text" id="position_highlight" formControlName="position_highlight" placeholder="Java Developer"> 
+                                                </div>
+                                                <div class="form-input">
+                                                    <label for="skills_highlight"><strong>Skills Highlight*</strong></label>
+                                                    <input type="text" id="skills_highlight" formControlName="skills_highlight" placeholder="Java, Data Structures, Springboot"> 
+                                                </div>
+                                                
+                                                <div class="row form-action-buttons" style="padding:10px;justify-content: center;padding: 0 !important;margin: 0 !important;">
+                                                    <div style="display: flex;justify-content: end;padding: 0;width: 100%;">
+                                                        <button class="next-btn"  id="saveButton" style="background-color: white;border: 1px solid #f05b4e;color: #f05b4e;width: 100%;margin: 0;" [disabled]="!summaryRequestForm.valid">⚡AI Writer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+               <!-- </div> -->
+            <!-- </div> -->
+            <!-- <div style="width: 50%;height: 100%;">
+
+            </div> -->
+        <!-- </div> -->
+        <!-- <div style="width: 100%;height: 10%; padding: 10px 20px;" class="footer">
+            <div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;" >
+            
+            </div>
+        </div> -->
+    </div>
+    <!-- <div id="sheet" class="sheet">
+        <span id="closeButton" (click)="closeSheet()" class="close">&times;</span>
+        @if(currentTab === 'tab2'){
+            <div  *ngIf="workHistoryList" class="column justify-content-start card-container">
+                <div class="card" id="exp-card-info">
+                    <div class="select-btn">
+                        <button (click)="handleGenAIResponse('Work_History', '')">Use AI Response</button>
+                    </div>
+                    <ul class="resume-list"  *ngFor="let work of workHistoryList">
+                        <li>{{work}}</li>
+                    </ul>
+                </div>
+            </div >
+        }
+        @if(currentTab === 'tab3'){
+            <div  *ngIf="projectList_genai" class="column justify-content-start card-container">
+                <div class="card" id="project-card-info">
+                    <div class="select-btn">
+                        <button (click)="handleGenAIResponse('Project', '')">Use AI Response</button>
+                    </div>
+                    <ul class="resume-list"  *ngFor="let key_point of projectList_genai">
+                        <li>{{key_point}}</li>
+                    </ul>
+                </div>
+            </div >
+        }
+        @if(currentTab === 'tab8'){
+            <div  *ngIf="profile_summary_genai" class="column justify-content-start card-container">
+                <div class="card" id="summary-card-info" *ngFor="let summary of profile_summary_genai">
+                    <div class="select-btn">
+                        <button (click)="handleGenAIResponse('Summary', summary)">Use AI Response</button>
+                    </div>
+                    {{summary}}
+                </div>
+            </div >
+        }
+      </div> -->
+      <div id="saveSuccessCard" class="save-success-card">
+        Changes saved
+      </div>
+</div>

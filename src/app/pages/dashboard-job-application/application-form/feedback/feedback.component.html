@@ -1,0 +1,99 @@
+
+<div class="row pl-4 pr-4" style="height: 80% !important;">
+    <div class="col-12"  >
+        <form [formGroup]="applicationForm" style="height: 65vh;margin-top:30px;" >
+            <div class="row wrap">
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Job Role</mat-label>
+                        <input matInput placeholder="Job Role" formControlName="job_role">
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Company Name</mat-label>
+                        <input matInput placeholder="Company Name" formControlName="company_name">
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Location</mat-label>
+                        <input matInput placeholder="Location" formControlName="location">
+                    </mat-form-field>
+
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Email Provided</mat-label>
+                        <input matInput placeholder="Email Provided" formControlName="email_provided">
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>Job Type</mat-label>
+                        <mat-select placeholder="Job Type" formControlName="job_type">
+                            <mat-option *ngFor="let cat of accessCategories" [value]="cat.access_description">
+                                {{cat.access_description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>Job Mode</mat-label>
+                        <mat-select placeholder="Job Mode" formControlName="job_mode">
+                            <mat-option *ngFor="let cat of accessCategories" [value]="cat.access_description">
+                                {{cat.access_description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2 ">
+                    <mat-form-field class="streach-h-100">
+                        <mat-label>Applied Date</mat-label>
+                        <input matInput [matDatepicker]="edp" formControlName="applied_date">
+                        <!-- <mat-hint>DD/MM/YYYY</mat-hint> -->
+                        <mat-datepicker-toggle matIconSuffix [for]="edp"></mat-datepicker-toggle>
+                        <mat-datepicker #edp
+                                        panelClass="example-month-picker">
+                        </mat-datepicker>
+                      </mat-form-field>
+                
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>Status</mat-label>
+                        <mat-select placeholder="Status" formControlName="status">
+                            <mat-option *ngFor="let cat of accessCategories" [value]="cat.access_description">
+                                {{cat.access_description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Job Reference URL</mat-label>
+                        <input matInput placeholder="Job Reference URL" formControlName="job_reference_url">
+                    </mat-form-field>
+
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>Job Description</mat-label>
+                        <textarea matInput  #descri formControlName="job_description" rows="5"></textarea>
+                      </mat-form-field>
+                   
+                </div>
+                <div class="col-12 m-t-2"  >
+                    <div class="row title-form-action-buttons text-right p-0">
+                        <div style="justify-content: end;">
+                            <button  [disabled]="applicationForm.invalid" id="saveButton" [ngClass]="applicationForm.invalid ? 'disabled-button' : 'enabled-button'">Save Application</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </form>
+       
+    </div>
+</div>

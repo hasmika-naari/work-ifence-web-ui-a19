@@ -1,0 +1,123 @@
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+  }
+
+  .card {
+    width: 300px;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+
+  .card img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .details p {
+    margin: 0;
+  }
+
+  .love-icon {
+    color: red;
+    cursor: pointer;
+  }
+
+.card {
+    position: relative;
+  }
+  
+  .use-template-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .card:hover .use-template-button {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  
+  .love-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    cursor: pointer;
+  }
+
+.training-course-banner-content {
+    h1 {
+        font-size: 70px;
+        margin-bottom: 5px;
+        font-weight: bold;
+
+        span {
+            color: var(--mainColor);
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+
+    .training-course-banner-content {
+        h1 {
+            font-size: 32px;
+        }
+    }
+
+
+}
+
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    .training-course-banner-content {
+        h1 {
+            font-size: 55px;
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+
+    .training-course-banner-content {
+        h1 {
+            font-size: 55px;
+        }
+    }
+
+}
+
+.filter-templates{
+    width: 90%;
+    padding: 20px 10px;
+}
+  

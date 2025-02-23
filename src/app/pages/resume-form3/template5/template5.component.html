@@ -1,0 +1,207 @@
+<div class="resume-container">
+    <div class="body-container">
+        <header class="trigger-area">
+            <div class="header">
+                <h1>{{resumeForm().contact.fname + ' ' + resumeForm().contact.lname}}</h1>
+            </div>
+            <div class="contact-details">
+                @if(resumeForm().contact.email.length > 0){
+                <i class="fa fa-envelope"></i>
+                <p>{{resumeForm().contact.email}}</p>
+                }
+                @if(resumeForm().contact.phone_number.length > 0){
+                <i class="fa fa-phone" style="margin-left: 10px;"></i>
+                <p>{{resumeForm().contact.phone_number}}</p>
+                }
+                @if(resumeForm().contact.linkedIn_profile.length > 0){
+                <i class="fa fa-linkedin" style="margin-left: 10px;"></i>
+                <a href="{{resumeForm().contact.linkedIn_profile}}"> <p>{{resumeForm().contact.linkedIn_profile}}</p></a>
+                }
+                @if(resumeForm().contact.github_profile.length > 0){
+                <i class="fa fa-github" style="margin-left: 10px;"></i>
+                <a  href="{{resumeForm().contact.github_profile}}"> <p>{{resumeForm().contact.github_profile}}</p></a>
+                }
+            </div>
+            <div class="edit-context-menu"  *ngIf="!isPreview">
+                <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('CONTACT', null)"  ></i>
+            </div>
+            </header>
+
+        @if(resumeForm().profileSummary.profile_summary.length > 0){
+        <div class="summary trigger-area">
+            <h2>Summary</h2>
+            <p class="resume-summary" >{{resumeForm().profileSummary.profile_summary}}</p>
+            <div class="edit-context-menu"  *ngIf="!isPreview">
+                <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('SUMMARY', null)"  ></i>
+                <i class="fa fa-trash show-orange-red" (click)="confirmDeleteDialog('SUMMARY', null)"  ></i>
+            </div>
+        </div>
+    }
+    @if(resumeForm().project.length > 0 && (!isPreview || checkProjectCondition())){
+        <div class="template5-projects trigger-area">
+            <span class="template5-section-title">
+                <span style="position: relative;float:left;">
+                  Projects  
+                </span>  
+                <span *ngIf="!isPreview">
+                  <i style="position: relative;float:left;left:20px;top:5px;" matTooltip="Add Project"  class="fa fa-plus show-green add-project-icon"  
+                    id="editContact" (click)="addSectionHandler('PROJECT', '')"  >
+                  </i> 
+                </span>
+              </span>
+            <div style="display: flex;width: 100%;height: auto;margin: 0;padding: 0;" *ngFor="let item of resumeForm().project">
+                <div style="width: 18%;margin: 0;padding: 0;">
+                    <!-- <p style="font-size: 12px;">January 2020 - March 2021</p> -->
+                </div>
+                <div style="width: 82%;margin: 0;padding: 0;">
+                    <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
+                        <div class="project-item-header">
+                            <div class="project-item-header-left">
+                                <p><a href="{{item.project_link}}" style="color: #384347;text-decoration: none;"><strong>{{item.project_name}}</strong></a></p>
+                            </div>
+                        </div>
+                        <div class="project-bullets">
+                            <ul>
+                                <li *ngFor="let des of item.description">{{des}}</li> 
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="edit-context-menu"  *ngIf="!isPreview">
+                        <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('PROJECT', item)"  ></i>
+                        <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('PROJECT', item)"></i>
+                        @if(item.isHideSelected){
+                          <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('PROJECT', item)"></i>
+                        }
+                        @else{
+                          <i class="fa fa-eye" (click)="hideSectionElement('PROJECT', item)"></i>
+                        }
+                        <i class="fa fa-arrow-up"  (click)="moveObjectById('PROJECT', item.id, 'up')" ></i>
+                        <i class="fa fa-arrow-down"  (click)="moveObjectById('PROJECT', item.id, 'down')" ></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if(resumeForm().experience.length > 0 && (!isPreview || checkExperienceCondition())){
+        <div class="template5-experience trigger-area">
+            <span class="template5-section-title">
+                <span style="position: relative;float:left;">
+                  Experience  
+                </span>  
+                <span *ngIf="!isPreview">
+                  <i style="position: relative;float:left;left:20px;top:5px;" matTooltip="Add Experiance"  class="fa fa-plus show-green add-education-icon"  
+                    id="editContact" (click)="addSectionHandler('EXPERIENCE', '')"  >
+                  </i> 
+                </span>
+              </span>
+            <div style="display: flex;width: 100%;height: auto;margin: 0;padding: 0;" *ngFor="let item of resumeForm().experience">
+                <div style="width: 18%;margin: 0;padding: 0;">
+                    <p style="font-size: 12px;">{{item.start_date}} - {{item.end_date}}</p>
+                </div>
+                <div style="width: 82%;margin: 0;padding: 0;">
+                    <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
+                        <div class="experience-item-header">
+                            <div class="experience-item-header-left">
+                                <p><strong>{{item.position_title}}, {{item.company_name}}</strong></p>
+                            </div>
+                        </div>
+                        <div class="experience-bullets">
+                            <ul>
+                                <li *ngFor="let des of item.description">{{des}}</li> 
+                            </ul>
+                        </div>
+                        </div>
+                        <div class="edit-context-menu menuFadeInUp" *ngIf="!isPreview">
+                            <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('EXPERIENCE', item)"  ></i>
+                            <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('EXPERIENCE', item)"></i>
+                            @if(item.isHideSelected){
+                              <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('EXPERIENCE', item)"></i>
+                            }
+                            @else{
+                              <i class="fa fa-eye" (click)="hideSectionElement('EXPERIENCE', item)"></i>
+                            }
+                            <i class="fa fa-arrow-up"  (click)="moveObjectById('EXPERIENCE', item.id, 'up')" ></i>
+                            <i class="fa fa-arrow-down"  (click)="moveObjectById('EXPERIENCE', item.id, 'down')" ></i>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    @if(resumeForm().education.length > 0 && (!isPreview || checkEducationCondition())){
+        <div class="template5-education trigger-area">
+            <span class="template5-section-title">
+                <span style="position: relative;float:left;">
+                    Education  
+                </span>  
+                <span *ngIf="!isPreview">
+                  <i style="position: relative;float:left;left:20px;top:5px;" matTooltip="Add Education"  class="fa fa-plus show-green add-education-icon"  
+                    id="editContact" (click)="addSectionHandler('EDUCATION', '')"  >
+                  </i> 
+                </span>
+              </span>
+            <div style="display: flex;width: 100%;height: auto;margin: 0;padding: 0;" *ngFor="let item of resumeForm().education">
+                <div style="width: 18%;margin: 0;padding: 0">
+                    <p style="font-size: 12px;">{{item.graduation_date}}</p>
+                </div>
+                <div style="width: 82%;margin: 0;padding: 0;">
+                    <div class="education-details" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
+                        <p><strong>{{item.degree}}, {{item.field_of_study}}, {{item.school_name}}</strong></p>
+                        </div>
+                        <div class="edit-context-menu"  *ngIf="!isPreview">
+                            <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('EDUCATION', item)"  ></i>
+                            <i class="fa fa-trash show-orange-red"  (click)="confirmDeleteDialog('EDUCATION', item)" ></i>
+                            @if(item.isHideSelected){
+                              <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('EDUCATION', item)"></i>
+                            }
+                            @else{
+                              <i class="fa fa-eye" (click)="hideSectionElement('EDUCATION', item)"></i>
+                            }
+                            <i class="fa fa-arrow-up"  (click)="moveObjectById('EDUCATION', item.id, 'up')" ></i>
+                            <i class="fa fa-arrow-down"  (click)="moveObjectById('EDUCATION', item.id, 'down')" ></i>
+                        </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if(resumeForm().skill.length > 0){
+        <div class="template5-skills">
+            <span class="template5-section-title">
+                <span style="position: relative;float:left;">
+                    Skills  
+                </span>  
+                <span *ngIf="!isPreview">
+                  <i style="position: relative;float:left;left:20px;top:5px;" matTooltip="Add Skill"  class="fa fa-plus show-green add-skill-icon"  
+                    id="editContact" (click)="addSectionHandler('SKILLS', '')"  >
+                  </i> 
+                </span>
+              </span>
+            <div class="trigger-area" style="display: flex;width: 100%;height: auto;margin: 0;padding: 0;">
+                <div style="width: 18%;margin: 0;padding: 0;">
+                    <div class="edit-context-menu"  *ngIf="!isPreview">
+                        <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('SKILLS', null)"  ></i>
+                        <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('SKILLS', null)"></i>
+                    </div>
+                </div>
+                <div style="width: 82%;margin: 0;padding: 0;height: fit-content;">
+                    <div class="skills-bullets">
+                        <ul style="list-style-type: none;padding: 0;margin: 0;">
+                            <li class="skills-list-item" *ngFor="let item of resumeForm().skill">{{item}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+    <footer style="padding-top: 100px;padding-bottom:30px;">
+        <div class="row">
+            <div class="text-left">
+                <p class="company-name-in-footer">www.workifence.com</p>
+            </div>
+            <div>
+
+            </div>
+        </div>
+    </footer>
+</div>

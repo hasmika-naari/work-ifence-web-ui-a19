@@ -1,0 +1,85 @@
+<!-- Start Sidebar Modal -->
+<div class="sidebar-modal">
+    <div class="modal right fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" 
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            <i class="icofont-close"></i>
+                        </span>
+                    </button>
+                    <h2 class="modal-title" id="myModalLabel2"><a routerLink="/">
+                        <img src="assets/img/guru-class-time-tp-bg-full-h.png" alt="logo"></a></h2>
+                </div>
+                <div class="modal-body">
+                    <div class="sidebar-modal-widget">
+                        <h3 class="hide-on-init title"  animateOnScroll animationName="animated fadeInUp">Additional Links</h3>
+
+                        <ul>
+                            <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp"><a data-bs-dismiss="modal" routerLink="/sign-in">Login</a></li>
+                            <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp"><a data-bs-dismiss="modal" routerLink="/sign-up">Register</a></li>
+                            <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp"><a data-bs-dismiss="modal" routerLink="/faq">FAQs</a></li>
+                            <!-- <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp"><a data-bs-dismiss="modal" routerLink="/contact-us">Contact US</a></li> -->
+                            <!-- <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp"><a routerLink="/">Logout</a></li> -->
+                        </ul>
+                    </div>
+                    <div class="sidebar-modal-widget mb-3 mt--25">
+                        <h3 class="hide-on-init title"  animateOnScroll animationName="animated fadeInUp">Support</h3>
+                        <ul class="support-link">
+                            <li class=" wow fadeInUp" data-wow-offset="10" data-wow-duration="1s"><i class="icon-Double-arrow"></i><a [routerLink]="['/privacy']">Privacy</a></li>
+                            <li class="  wow fadeInUp" data-wow-offset="10" data-wow-duration="1s"><i class="icon-Double-arrow"></i><a [routerLink]="['/terms']">Terms</a></li>
+                            <li class="  wow fadeInUp" data-wow-offset="10" data-wow-duration="1s"><i class="icon-Double-arrow"></i><a [routerLink]="['/contact-us']">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-modal-widget">
+                        <h3 class="hide-on-init title"  animateOnScroll animationName="animated fadeInUp">Contact Info</h3>
+
+                        <ul class="contact-info">
+                            <!-- <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp">
+                                <i class="icofont-google-map"></i>
+                                Address
+                                <span></span>
+                            </li> -->
+                            <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp">
+                                <i class="icofont-email"></i>
+                                Email
+                                <span>admin&#64;Workifence.com</span>
+                            </li>
+                            <!-- <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp">
+                                <i class="icofont-phone"></i>
+                                Phone
+                                <span>+123 456 7890</span>
+                            </li> -->
+                        </ul>
+                    </div>
+                    <div class="sidebar-modal-widget">
+                        <h3 class="hide-on-init title" animateOnScroll animationName="animated fadeInUp">Connect With Us</h3>
+
+                        <ul class="social-list">
+                            <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp">
+                                <a href="https://www.facebook.com/people/Naari-Deals/100088113458576" target="_blank"><i class="icofont-facebook"></i></a>
+                            </li>
+                            <!-- <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp"><a href="#" target="_blank"><i class="icofont-twitter"></i></a></li> -->
+                            <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp">
+                                <a href="https://www.instagram.com/naarideals/?igshid=YmMyMTA2M2Y%3D" target="_blank"><i class="icofont-instagram"></i></a>
+                            </li>
+                            <li><a href="https://chat.whatsapp.com/C3OZtNNrgOg5p2uIoRVhVs" *ngIf="country === 'usa'" target="_blank" class="d-block"><i class='bx bxl-whatsapp'></i></a></li>
+                            <li><a href="https://chat.whatsapp.com/EB8UQJflmNrCq6pvZojsJR" *ngIf="country === 'india'" target="_blank" class="d-block"><i class='bx bxl-whatsapp'></i></a></li>
+                            <!-- <li class="hide-on-init" animateOnScroll animationName="animated fadeInUp"><a href="#" target="_blank"><i class="icofont-linkedin"></i></a></li> -->
+                        </ul>
+                    </div>
+                    <!-- <div class="sidebar-modal-widget">
+                        <h3 class="hide-on-init title" animateOnScroll animationName="animated fadeInUp">Choose Country</h3>
+                        <mat-radio-group aria-label="Select Country" color="primary" (change)="countrySelectionChanged($event)"  [value]="selectedCountry">
+                            <mat-radio-button value="1">USA</mat-radio-button>
+                            <mat-radio-button class="ml--15" value="2">INDIA</mat-radio-button>
+                          </mat-radio-group>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Sidebar Modal -->

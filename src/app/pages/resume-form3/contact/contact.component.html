@@ -1,0 +1,188 @@
+
+<div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
+    <div class="col-12"  >
+        <form [formGroup]="contactForm"  class="mb-3" >
+            <div class="row wrap">
+                <!-- <div class="col-12 p-b-1 p-t-1">
+                    <div class="column profile-image" style="margin: auto;">
+                        @if(showProfileImage){
+                            <img [src]="getImageBase64()" alt="Profile Image">
+                        }
+                        @if(!showProfileImage){
+                            <img src="assets/img/home/profile_fake.png" />
+                        }
+                        <input type="file" (change)="onFileSelected($event)" #imageUpload placeholder="Upload Photo"/>
+                        <button (click)="imageUpload.click()">Upload Photo</button>
+                    </div>
+                </div> -->
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>First Name</mat-label>
+                        <input matInput placeholder="First Name" formControlName="fname">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('fname')?.hasError('pattern')">
+                            Please enter a valid name.
+                        </mat-error>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('fname')?.hasError('required') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                    
+                    <!-- <span class="p-float-label">
+                        <label for="name">First Name</label>
+                        <input id="name" type="text" class="w-100 p-inputtext" pInputText formControlName="fname">
+                        </span> -->
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Last Name</mat-label>
+                        <input matInput placeholder="Last Name" formControlName="lname">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('lname')?.hasError('pattern')">
+                            Please enter a valid name.
+                        </mat-error>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('lname')?.hasError('required') && (contactForm.get('lname')?.dirty || contactForm.get('lname')?.touched)">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- <span class="p-float-label">
+                        <label for="lname">Last Name</label>
+                        <input id="lname" type="text" class="w-100 p-inputtext" pInputText formControlName="lname">
+                        </span> -->
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Sub Title/Role</mat-label>
+                        <input matInput placeholder="Sub Title/Role" formControlName="subTitle">
+                    </mat-form-field>
+
+                    <!-- <span class="p-float-label">
+                        <label for="subTitle">Sub Title/Role</label>
+                        <input id="subTitle" type="text" class="w-100 p-inputtext" pInputText formControlName="subTitle">
+                        </span> -->
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Address</mat-label>
+                        <input matInput placeholder="Address" formControlName="address">
+                    </mat-form-field>
+
+                    <!-- <span class="p-float-label">
+                        <label for="phone_number">Phone Number</label>
+                        <input id="phone_number" type="text" class="w-100 p-inputtext" pInputText formControlName="phone_number">
+                        </span> -->
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Phone Number</mat-label>
+                        <input matInput placeholder="Phone Number" formControlName="phone_number">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('phone_number')?.hasError('pattern')">
+                            Please enter a valid Phone number
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- <span class="p-float-label">
+                        <label for="phone_number">Phone Number</label>
+                        <input id="phone_number" type="text" class="w-100 p-inputtext" pInputText formControlName="phone_number">
+                        </span> -->
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Email Address</mat-label>
+                        <input matInput placeholder="Email Address" formControlName="email_address">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('email_address')?.hasError('pattern')">
+                            Please enter a valid email address
+                        </mat-error>
+                      </mat-form-field>
+                        <!-- <span class="p-float-label">
+                        <label for="email_address">Email Address</label>
+                        <input id="email_address" type="text" class="w-100 p-inputtext" pInputText formControlName="email_address">
+                        </span> -->
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label><strong>GitHub</strong> Display Name</mat-label>
+                        <input matInput placeholder="GitHub Display Name" formControlName="github_profile_display_name">
+                        <!-- <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('github_profile')?.hasError('pattern')">
+                            Please enter a valid GitHub link
+                        </mat-error> -->
+                    </mat-form-field>
+
+                    <!-- <span class="p-float-label">
+                        <label for="github_profile"><strong>Github</strong> URL</label>
+                        <input id="github_profile" type="text" class="w-100 p-inputtext" pInputText formControlName="github_profile">
+                        </span> -->
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label><strong>GitHub</strong> URL</mat-label>
+                        <input matInput placeholder="GitHub URL" formControlName="github_profile">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('github_profile')?.hasError('pattern')">
+                            Please enter a valid GitHub link
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- <span class="p-float-label">
+                        <label for="github_profile"><strong>Github</strong> URL</label>
+                        <input id="github_profile" type="text" class="w-100 p-inputtext" pInputText formControlName="github_profile">
+                        </span> -->
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label><strong>LinkedIn</strong> Display Name</mat-label>
+                        <input matInput placeholder="LinkedIn Display Name" formControlName="linkedIn_profile_display_name">
+                        <!-- <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('linkedIn_profile')?.hasError('pattern')">
+                            Please enter a valid LinkedIn link
+                        </mat-error> -->
+                    </mat-form-field>
+
+                    <!-- <span class="p-float-label">
+                        <label for="linkedIn_profile"><strong>LinkedIn</strong> URL</label>
+                        <input id="linkedIn_profile" type="text" class="w-100 p-inputtext" pInputText formControlName="linkedIn_profile">
+                        </span> -->
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label><strong>LinkedIn</strong> URL</mat-label>
+                        <input matInput placeholder="LinkedIn URL" formControlName="linkedIn_profile">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('linkedIn_profile')?.hasError('pattern')">
+                            Please enter a valid LinkedIn link
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- <span class="p-float-label">
+                        <label for="linkedIn_profile"><strong>LinkedIn</strong> URL</label>
+                        <input id="linkedIn_profile" type="text" class="w-100 p-inputtext" pInputText formControlName="linkedIn_profile">
+                        </span> -->
+                </div>
+                <!-- <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label><strong>Portfolio</strong> URL</mat-label>
+                        <input matInput placeholder="Portfolio URL" formControlName="portfolio_url">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="contactForm.get('portfolio_url')?.hasError('pattern')">
+                            Please enter a valid Portfolio link
+                        </mat-error>
+                    </mat-form-field>
+
+                   
+                    
+                </div> -->
+                
+            </div>
+        </form>
+       
+    </div>
+    <!-- <div class="col-12 m-t-2"  >
+        <div class="row form-action-buttons text-right p-0">
+            <div style="justify-content: end;">
+                <button (click)="saveAndContinue(null)"  id="saveButton" [disabled]="contactForm.invalid" [ngClass]="contactForm.invalid ? 'disabled-button' : 'enabled-button'">Add to resume</button>
+            </div>
+        </div>
+    </div> -->
+    <div class="col-12 m-t-2 p-0"  >
+        <div class="row form-action-buttons text-right p-0">
+            <div style="justify-content: end;">
+                <button (click)="saveAndContinue(null)"  id="saveButton" 
+                    [ngClass]="contactForm.invalid ? 'disabled-button' : 'enabled-button'">Add to resume</button>
+            </div>
+        </div>
+    </div>
+</div>

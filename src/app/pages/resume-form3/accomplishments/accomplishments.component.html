@@ -1,0 +1,38 @@
+<div class="row h-100 pl-4 pr-4">
+    <div class="col-12"  >
+        <form [formGroup]="accomplishmentForm" >
+            <div class="row wrap">
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Accomplishment</mat-label>
+                        <input matInput placeholder="Accomplishment" formControlName="acplsmnt">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="accomplishmentForm.get('acplsmnt')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-3 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Date</mat-label>
+                        <input matInput placeholder="Date" formControlName="date">
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 quill-editor-div"  style="position:relative;top:-20px;">
+                    <div #editorContainer style="height: 250px;color: black;"></div>
+                </div>
+            </div>
+        </form>
+        <div class="col-12 mt-1 text-right text-end"  >
+            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                (click)="saveAndContinue()"   
+                [tooltip]="'Add to Resume Summary'"
+                tooltipPosition="top"
+                tooltipStyleClass="custom-tooltip">
+                    <ng-template pTemplate="content" >
+                        <p-icon class="pi pi-check" ></p-icon>
+                        Add to resume
+                    </ng-template>
+            </p-button>
+        </div>
+    </div>
+</div>

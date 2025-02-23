@@ -1,0 +1,118 @@
+<div class="container-fluid">
+    <!-- Left Column -->
+    <div
+      class="p-left-column"
+      [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow }" >
+      <div class="ToolboxPanel-module_panelContainer shadow-hover bg-surface " 
+            style="max-width: 475px; height: 84vh;"  >
+        <div class="scrollbar-container full-width ToolboxPanel-module_panelContainerHeight" style="height: auto;">
+        <div class="scrollhost-container">
+            <p-panel class="sidewindow-panel-pp" [header]="formLabel">
+                <ng-template pTemplate="icons">
+                    <p-button icon="pi pi-times"   
+                        [rounded]="true" [text]="true" severity="danger"
+                    (click)="closePanelWindow($event)" />
+                    
+                </ng-template>
+                <!-- <div class="history-buttons m-top-1 p-t-1 text-right">
+                    <div class="h7 text-center">{{formLabel}}</div>
+                    <button class="border-rounded animation-fade-in m-inline-2 
+                        HistoryArrowButtons-module_arrowContainer d-flex" (click)="closePanelWindow($event)">
+                        <i class="pi pi-times"></i>
+                    </button>
+                </div> -->
+                <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showLoginFormEditor"></app-login-form-editor>
+                <app-bio-form-editor [formClosed]="formClosed" (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showBioFormEditor"></app-bio-form-editor>
+                <app-address-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showAddressFormEditor"></app-address-form-editor>
+            </p-panel>
+        </div>
+        </div>
+        </div>
+
+    </div>
+    <div
+    class="p-right-column"
+    [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow }">
+    <div class="resume-editor-content-box center-block mt-2" >
+                
+        <div class="resume-editor-wrapper feedback-wrapper relative" >
+            <div class="resume-renderer center-resume">
+                <mat-progress-bar *ngIf="isActionInProgress" style="position: absolute; top: 0px;left: 0px;right: 0px;" 
+                               mode="indeterminate">
+                </mat-progress-bar>
+                <section class="user-profile-container" style="padding: 0;border: 0;">
+                    <div class="row">
+                        <div class="col-12">
+                            <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
+                        </div>
+                        <div class="col-12">
+                            <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
+                        </div>
+                        <div class="col-12">
+                            <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+ </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+<!-- <div class="resume-container" >
+    <div class="left-column  animated-div" style="width: 500px;" [class.hide]="hidePanelWindow" [class.show]="!hidePanelWindow">
+        <div class="ToolboxPanel-module_panelContainer shadow-hover bg-surface " 
+                style="max-width: 475px; height: 89vh;"  >
+        <div class="scrollbar-container full-width ToolboxPanel-module_panelContainerHeight" style="height: auto;">
+        <div class="scrollhost-container">
+                    <div class="history-buttons m-top-1 p-t-1 text-right">
+                        <div class="h7 text-center">{{formLabel}}</div>
+                        <button class="border-rounded animation-fade-in m-inline-2 
+                            HistoryArrowButtons-module_arrowContainer d-flex" (click)="closePanelWindow($event)">
+                            <i class="pi pi-times"></i>
+                        </button>
+                    </div>
+                    <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showLoginFormEditor"></app-login-form-editor>
+                    <app-bio-form-editor [formClosed]="formClosed" (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showBioFormEditor"></app-bio-form-editor>
+                    <app-address-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showAddressFormEditor"></app-address-form-editor>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="right-column animated-div" [class.expand-animation]="hidePanelWindow" 
+            [class.contract-animation]="!hidePanelWindow">
+      <div class="centered-content">
+          <div class="resume-editor-content-box center-block mt-2">
+                
+                 <div class="resume-editor-wrapper feedback-wrapper relative">
+                     <div class="resume-renderer center-resume">
+                            <div>
+                                <mat-progress-bar *ngIf="isActionInProgress" style="position: absolute; top: 0px;left: 0px;right: 0px;" 
+                                        mode="indeterminate"></mat-progress-bar>
+                    <section class="user-profile-container" style="padding: 0;border: 0;">
+                            <div class="row">
+                                <div class="col-12">
+                                    <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
+                                </div>
+                                <div class="col-12">
+                                    <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
+                                </div>
+                                <div class="col-12">
+                                    <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
+                                </div>
+                            </div>
+                    </section>
+                        </div>
+                     </div>
+                 </div>
+          </div>
+      </div>
+    </div>
+  </div> -->

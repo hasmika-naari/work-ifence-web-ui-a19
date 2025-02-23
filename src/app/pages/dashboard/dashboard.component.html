@@ -1,0 +1,93 @@
+<fury-page [fxLayoutGap]="gap" class="dashboard" fxLayout="column">
+  <div class="dashboard" style="overflow-y: auto;height: 100vh;">
+    <h1 class="welcome-message">
+      Welcome <span class="user-name">{{bioProfile().firstName }} {{bioProfile().lastName}}</span> 👋
+    </h1>
+    <p class="subtitle">Let’s manage your journey to dream job with Workifence!</p>
+
+    <section>
+      <div class="mb-3">
+        <span class="section-subtitle" >Stats</span>
+      </div>
+      <div class="stats-container">
+        <div class="stat-card" *ngFor="let stat of stats">
+          <div class="stat-header">
+            <span class="stat-title">{{ stat.title }}</span>
+            <i class="{{ stat.icon }}" [style.color]="stat.color"></i>
+          </div>
+          <div class="stat-body">
+            <span class="stat-value">{{ stat.value }}</span>
+            <span class="stat-sub">{{ stat.sub }}</span>
+          </div>
+          <div class="stat-footer" [style.background]="stat.color"></div>
+        </div>
+      </div>
+    </section>
+    <section class="mt-5">
+      <div class="mb-3">
+        <span class="section-subtitle mb-3" >WorkIfence Tools</span>
+      </div>
+      <div class="tools-container">
+        <div class="tools-card  radius-8" *ngFor="let tool of tools" (click)="goToSelectedPage($event,tool)">
+          <!-- <div class="tools-card-icon">
+            <img [src]="tool.icon" alt="{{ tool.title }} icon" />
+          </div> -->
+          <div class="tools-card-content">
+            <h1 style="font-size: 14px;line-height: 1.25rem;font-weight: bold;gap: .75rem;display: flex;justify-content: flex-start;align-items: center;">{{ tool.title }}
+              <p-icon class="pi pi-arrow-right"></p-icon>
+            </h1>
+            <p style="font-size: 12px;line-height: 1rem;font-weight: 400;--tw-text-opacity: 1;color: rgb(68 76 88 1)">{{ tool.description }}</p>
+          </div>
+        </div>
+      </div>
+  </section>
+  <section class="mt-5">
+    <div class="mb-3">
+      <span class="section-subtitle mt-5 mb-3" >Resources</span>
+    </div>
+    <div class="resource-container">
+      <div class="resource">
+        <div class="resource-header">
+          <p-icon class="pi pi-book"></p-icon>
+          <h1 class="reource-header-title">User Guide</h1>
+        </div>
+        <div class="resource-divider"></div>
+        <p style="--tw-text-opacity: 1;color: rgb(68 76 88 / 1);width: 139px;">See how our app works!</p>
+        <div style="padding-top: 0.75rem;">
+          <p style="--tw-text-opacity: 1;color: rgb(42 129 118 / 1);font-weight: 600;gap: 5px;align-items: center;flex-wrap: wrap;display: flex;">Learn more
+            <p-icon class="pi pi-angle-right"></p-icon>
+          </p>
+        </div>
+      </div>
+      <div class="resource">
+        <div class="resource-header">
+          <p-icon class="pi pi-lightbulb"></p-icon>
+          <h1 class="reource-header-title">Learning Hub</h1>
+        </div>
+        <div class="resource-divider"></div>
+        <p style="--tw-text-opacity: 1;color: rgb(68 76 88 / 1);width: 139px;">The art of finding a job in videos.</p>
+        <div style="padding-top: 0.75rem;">
+          <p style="--tw-text-opacity: 1;color: rgb(42 129 118 / 1);font-weight: 600;gap: 5px;align-items: center;flex-wrap: wrap;display: flex;">Learn more
+            <p-icon class="pi pi-angle-right"></p-icon>
+          </p>
+        </div>
+      </div>
+      <div class="resource">
+        <div class="resource-header">
+          <p-icon class="pi pi-question-circle"></p-icon>
+          <h1 class="reource-header-title">Help Center</h1>
+        </div>
+        <div class="resource-divider"></div>
+        <p style="--tw-text-opacity: 1;color: rgb(68 76 88 / 1);width: 139px;">Need help? Visit our help center.</p>
+        <div style="padding-top: 0.75rem;">
+          <p style="--tw-text-opacity: 1;color: rgb(42 129 118 / 1);font-weight: 600;gap: 5px;align-items: center;flex-wrap: wrap;display: flex;">Learn more
+            <p-icon class="pi pi-angle-right"></p-icon>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+</fury-page>
+
+

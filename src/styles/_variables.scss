@@ -1,0 +1,180 @@
+
+/**
+General
+*/
+
+$page-load-background: #13293d;
+$elevation: 2;
+
+$color-success: #7cb342;
+
+$spacing: 24px;
+$border-radius: 8px;
+
+$padding-xl: 48px;
+$padding-lg: 32px;
+$padding: 24px;
+$padding-md: 16px;
+$padding-sm: 12px;
+$padding-xs: 8px;
+$padding-xxs: 4px;
+$padding-0: 0px;
+
+$paddings: (
+'-0': $padding-0,
+-xxs: $padding-xxs,
+-xs: $padding-xs,
+-sm: $padding-sm,
+-md: $padding-md,
+'': $padding,
+-lg: $padding-lg,
+-xl: $padding-xl,
+);
+
+$icon-sizes: (
+-xs: 14px,
+-sm: 18px,
+-md: 20px,
+'': 24px,
+-lg: 28px,
+-xl: 32px
+);
+
+$font-family: 'Poppins', sans-serif;
+$theme-max-width: 1300px;
+
+$admin-toolbar-height: 56px;
+$admin-sidenav-width: 250px;
+$sidenav-user-block-height: 156px;
+
+
+/**
+Card
+*/
+$card-header-height: 64px;
+
+
+/**
+  Toolbar
+ */
+ $toolbar-height: 64px;
+ $toolbar-z-index: 500;
+ $toolbar-button-width: 64px;
+ 
+
+/**
+  Footer
+ */
+ $footer-height: 56px;
+ $footer-z-index: 100;
+
+// Sidenav
+$sidenav-width: 280px;
+$sidenav-collapsed-width: 74px;
+$sidenav-toolbar-height: $toolbar-height;
+
+// Sidenav Item
+
+$sidenav-item-icon-size: 22px;
+
+$sidenav-item-height: 44px;
+$sidenav-item-padding-left: 24px;
+$sidenav-item-padding-right: 16px;
+$sidenav-item-margin-right: 8px;
+$sidenav-item-padding-left-level1: $sidenav-item-padding-left;
+$sidenav-item-padding-left-level2: $sidenav-item-padding-left-level1 + 8px;
+$sidenav-item-padding-left-level3: $sidenav-item-padding-left-level2 + 8px;
+$sidenav-item-padding-left-level4: $sidenav-item-padding-left-level3 + 8px;
+
+// Sidenav width can be changed in src/@fury/animations/sidenav.animation.ts
+$sidenav-z-index: 700;
+
+$blink-scrollbar-width: 12px;
+
+/*================================================
+Default CSS
+=================================================*/
+$font_family: 'Poppins', sans-serif;
+$template_color: #b81f89;
+$template_bgcolor: #fbf5d6;
+$transparent-primary_color: #0404048a;
+
+$template_color2: #006742;
+$template_color_dark: #b81f89;
+$title-h1-color: #f7ecea;
+$template_color2-opcacity05: #b81f8a88;
+$white_color: #ffffff;
+$black_color: #231F40;
+$paragraph_color: #0f0f11;
+$logo-text-floating-color: #b81f89;
+
+
+//////////////////////////////////////////////////////
+/// Variables from the Admin Mart
+/// 
+/// 
+
+
+// light color variable
+$sidebarbg: white;
+$background: white;
+$cardbg: white;
+$toolbar: white;
+$cardshadow: rgb(145 158 171 / 30%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 12px 24px -4px;
+$hoverBgColor: #f6f9fc;
+
+// Dark color variable
+$darksidebarbg: #2a3447;
+$darkbackground: #2a3447;
+$darkcardbg: #2a3447;
+$darktoolbar: #2a3447;
+$darkcardshadow: rgba(145, 158, 171, 0.3) 0px 0px 2px 0px, rgba(145, 158, 171, 0.02) 0px 12px 24px -4px;
+$darkborderColor: #333f55;
+$darkformborderColor: #465670;
+$darkhoverbgcolor: #333f55;
+$darkthemelightprimary: #253662;
+$darkthemelightaccent: #1C455D;
+$darkthemelightwarning: #4D3A2A;
+$darkthemelighterror: #4B313D;
+$darkthemelightsuccess: #1B3C48;
+
+// Sidenav
+$sidenav-desktop: 270px !default;
+$sidenav-mini: 80px !default;
+$header-height: 70px !default;
+
+
+//BorderColor
+$borderColor: #e5eaef;
+$borderformColor: #dfe5ef;
+
+// custom
+$primary: #5d87ff;
+$accent: #49beff;
+$warning: #ffae1f;
+$error: #fa896b;
+$success: #13deb9;
+$white: #ffffff;
+
+$light: #f2f6fa;
+
+$gray-100:  #7c8fac;
+
+$light-primary: #ecf2ff;
+$light-accent: #e8f7ff;
+$light-warning: #fef5e5;
+$light-error: #fdede8;
+$light-success: #e6fffa;
+
+// layout
+$boxedWidth: 1200px;
+
+$border-radius: 7px;
+
+// text color
+$textPrimary: #2a3547;
+
+
+
+/////////////////////////////////////////////////////
+

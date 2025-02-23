@@ -1,0 +1,478 @@
+.container{
+  min-height: 100vh;
+  margin: 0;
+  min-width: 2000px;
+  color: black !important;
+}
+.column{
+  display:flex;
+  flex-direction: column;
+}
+.justify-content-start{
+  justify-content: start;
+}
+.page-info{
+  padding: 20px;
+  button{
+    border: 0;
+    color:dodgerblue;
+    background-color: transparent;
+    width: fit-content;
+    font-size: 15px;
+  }
+  h1{
+    font-size: 30px;
+    font-weight: bold;
+  }
+  h3{
+    font-size: 25px;
+    font-weight: bold;
+  }
+  p{
+    font-size: 20px;
+  }
+}
+
+.form-inputs{
+  width: fit-content;
+}
+
+.row{
+  display: flex;
+  flex-direction: row;
+}
+
+.p-20{
+  padding: 20px;
+}
+
+.profile-image{
+  width: fit-content;
+  align-items: center;
+  img{
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  button{
+    padding: 10px 20px;
+    border: 1px solid dodgerblue;
+    color: dodgerblue;
+    width: fit-content;
+    background-color: transparent;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  button:hover{
+    background-color: rgba(30, 143, 255, 0.408);
+  }
+  input{
+    display: none;
+  }
+}
+
+.prl-20{
+  padding: 0px 40px;
+}
+
+.grid-templates-columns-auto{
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.grid-templates-rows-auto{
+  display: grid;
+  grid-template-rows: auto auto;
+}
+
+.form-input{
+  margin-bottom: 20px;
+  width: 100%;
+  label{
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  input{
+    padding: 8px 5px;
+    background-color: transparent;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100% !important;
+  }
+  input:focus{
+    border-color: #007bff; /* Change border color when focused */
+  }
+}
+
+.justify-content-space-between{
+  justify-content: space-between;
+}
+
+.form-action-buttons{
+  width: 100%;
+  padding: 0;
+  button{
+    padding: 10px 20px;
+    background-color: transparent;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    width: fit-content;
+    margin-left: 10px;
+  }
+  button:hover{
+    background-color: rgba(30, 143, 255, 0.408);
+  }
+  .back-btn{
+    border: 1px solid dodgerblue;
+    color: dodgerblue;
+    background-color: transparent;
+    margin-left: 0;
+  }
+  .loader-btn{
+    border: 1px solid dodgerblue;
+    color: white;
+    background-color: dodgerblue;
+    margin-left: 0;
+  }
+  .next-btn{
+    background-color: dodgerblue;
+    color: white;
+    border: 1px solid dodgerblue;
+  }
+  .optimize-btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    border: 1px solid dodgerblue;
+    color: white;
+    background-color: dodgerblue;
+    margin-left: 0;
+  }
+  .next-btn:hover, .optimize-btn:hover{
+    border: 1px solid dodgerblue;
+    color: dodgerblue;
+    background-color: transparent;
+    .loader{
+      background: dodgerblue;
+    }
+  }
+
+}
+
+.justify-content-end{
+  justify-content: end;
+}
+
+i{
+  margin-right: 5px;
+}
+
+.template{
+  width: fit-content;
+  float: right;
+  img{
+    width: 300px;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+.mt-30{
+  margin-top: 30px;
+}
+
+.mb-0{
+  margin-bottom: 0;
+}
+
+.grid-templates-columns-auto-auto{
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+}
+
+.fit-content{
+  width: fit-content;
+}
+
+/* Style for the textarea */
+textarea {
+  padding: 10px;
+  width: inherit;
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize:vertical; /* Prevent resizing */
+  //font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+/* Style for the textarea when focused */
+textarea:focus {
+  border-color: #007bff; /* Change border color when focused */
+}
+
+/* Style for placeholder text */
+textarea::placeholder {
+  color: #999; /* Placeholder text color */
+}
+
+/* Style for disabled textarea */
+textarea:disabled {
+  background-color: #f2f2f2; /* Light gray background */
+  cursor: not-allowed; /* Change cursor when disabled */
+}
+
+.prl-0{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.grid-templates-columns-auto-auto-auto{
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.br-1{
+  border-right: 1px solid #ccc;
+
+}
+
+.stepper {
+  position: relative;
+  margin: 50px 0px 0px 50px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  background-color: #fff;
+  color: #007bff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border: 1px solid #007bff;
+}
+
+.circle:hover, .circle.completed:hover {
+  background-color: dodgerblue;
+  color: #fff;
+  border: 1px solid dodgerblue;
+}
+
+.circle-selected {
+  background-color: dodgerblue;
+  color: #fff;
+}
+
+.circle-skipped{
+  background-color: gray !important;
+  border: 1px solid gray !important;
+  color: #fff;
+}
+
+.circle-completed::after {
+  content: '\2713'; /* Checkmark icon */
+  color: white !important;
+}
+
+.step-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.line {
+  width: 2px;
+  background-color: #007bff;
+  position: absolute;
+  top: 15px;
+  bottom: 50px; /* Height of the circle */
+  left: calc(50% - 1px); /* Position it between circles */
+  z-index: -1;
+}
+
+.line:not(:last-child) {
+  height: calc(90%); /* Extend line to bottom of next circle */
+}
+
+.justify-content-center{
+  justify-content: center;
+}
+
+.align-items-center{
+  align-items: center;
+}
+
+.display-flex{
+  display: flex;
+}
+
+.card-container{
+  height: 100vh; /* Set container height to full viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-top: 50px;
+  box-sizing: border-box;
+  width: 24%;
+}
+
+.card {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+  margin: 10px 0px;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+  .select-btn{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+  }
+  button{
+    padding: 10px 20px;
+    background-color: dodgerblue;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    width: fit-content;
+    margin-left: 10px;
+    color: white;
+    border: none;
+  }
+}
+
+.card:hover{
+  .select-btn{
+    display: block;
+  }
+}
+
+.card-focused{
+  background-color: dodgerblue;
+  color: white;
+}
+
+// .card:hover {
+//   transform: translateY(-5px);
+//   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+// }
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 15px;
+  padding: 2px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: white;
+  --_m: 
+    conic-gradient(#0000 10%,#000),
+    linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+          mask: var(--_m);
+  -webkit-mask-composite: source-out;
+          mask-composite: subtract;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {to{transform: rotate(1turn)}}
+
+.custom-expansion-panel {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.panel-title {
+  flex: 1;
+}
+
+.toggle-icon {
+  transition: transform 0.3s;
+}
+
+.toggle-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.panel-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s;
+}
+
+.panel-content.expanded {
+  max-height: 1000px; /* Adjust as needed */
+}
+
+.delete-btn{
+  padding: 10px 20px;
+  background-color: transparent;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 10px;
+  color: #EE4266;
+  border: 1px solid #EE4266;
+}
+
+.delete-btn:hover{
+  background-color: #EE4266;
+  color: white;
+}
+
+.skill-btn{
+  padding: 10px 20px;
+  background-color: white !important;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 10px;
+  color: dodgerblue !important;
+  border: 1px solid dodgerblue !important;
+}
+
+.skill-btn:hover{
+  background-color: dodgerblue !important;
+  color: white !important;
+}
+
+.optimize-btn{
+  padding: 10px 20px;
+  background-color: dodgerblue;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 10px;
+  color: white;
+  border: 1px solid dodgerblue !important;
+}
+
+.optimize-btn:hover{
+  background-color: white;
+  color: dodgerblue;
+}
+

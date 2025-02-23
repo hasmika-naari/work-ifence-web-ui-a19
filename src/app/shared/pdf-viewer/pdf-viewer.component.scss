@@ -1,0 +1,14 @@
+/* src/app/components/pdf-viewer/pdf-viewer.component.css */
+.pdf-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 10px;
+  }
+  
+  canvas {
+    border: 1px solid #ccc;
+  }
+  

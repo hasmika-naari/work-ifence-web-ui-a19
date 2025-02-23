@@ -1,0 +1,77 @@
+<section class="page-full-section">
+
+<app-header-wifence [back]="showBack"></app-header-wifence>
+
+<div class=" justify-content-center align-items-center bg-light-primary"
+  [class.blank-layout-container]="!isMobile" [class.blank-layout-container-mobile]="isMobile">
+  <div
+    class="position-relative row w-100 h-100 bg-gredient justify-content-center"
+  >
+    <div class="col-lg-4 d-flex align-items-center" style="overflow: hidden;height:100vh;" >
+      <mat-card class="cardWithShadow boxed-auth fadeInUpSignUp"  >
+        <mat-card-content class="p-32">
+          <div class="text-center  pt-3 pb-2">
+            <a [routerLink]="['/user']">
+              <img
+                src="assets/img/black-logo.png"
+                class="align-middle m-2"
+                alt="logo"
+              />
+            </a>
+          </div>
+
+          <div class="or-border mt-2 mb-3">Account Activation</div>
+          <form  [formGroup]="activationForm" (ngSubmit)="onActivationSubmit()">
+            <div class="row wrap">
+              <div class="col-6 mt-3">
+                <span class="p-float-label">
+                  <input id="userName" type="text" pInputText formControlName="userName">
+                  <label for="userName">User Name</label>
+                </span>
+              </div>
+              <div class="col-6 mt-3">
+
+                <span class="p-float-label">
+                  <input id="code" type="text" pInputText formControlName="code">
+                  <label for="code">Activation Code</label>
+                </span>
+                <small class="ng-dirty ng-invalid" *ngIf="activationForm.get('code')?.hasError('required') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)">
+                  Required.
+                </small>
+                <small class="ng-dirty ng-invalid" *ngIf="activationForm.get('code')?.hasError('minlength') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)">
+                  min 6 digits
+                </small>
+                <small class="ng-dirty ng-invalid" *ngIf="activationForm.get('code')?.hasError('maxlength') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)">
+                  max 12 digits
+                </small>
+              </div>
+              <div class="col-12 mt-1 mb-3">
+                  <p class="show-orange-red text-center" *ngIf="!activationForm.get('code')?.value">
+                    Please Check Your Email for Activation Code
+                  </p>
+              </div>
+              <div class="col-12 mt-2">
+                  <button pButton type="submit" label="Submit Activation Code"  class="w-100 p-button-lg" [loading]="isLoading" ></button>
+                <!-- <button  type="submit"  mat-flat-button color="primary" class="w-100 ">
+                  
+                </button> -->
+              </div>
+            </div>
+          </form>
+          <span class="d-block f-w-500 text-center m-t-24  mt-4 mb-3 show-accent"
+            >Already have an Account?
+            <a
+              [routerLink]="['/sign-in']"
+              class="text-decoration-none f-w-500 f-s-14  bold sign-in-lnk-btn"
+            >
+              Sign In</a
+            >
+          </span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+<app-work-ifence-footer></app-work-ifence-footer>
+
+</section>

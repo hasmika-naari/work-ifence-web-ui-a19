@@ -1,0 +1,135 @@
+<div
+    class="sidebar-area bg-white transition"
+    [ngClass]="{'active': isToggled}"
+>
+    <div class="logo bg-white align-items-center" [ngClass]="{'active': isToggled}" >
+        <!-- <a routerLink="/" class="d-flex align-items-center "> -->
+            <img class="small-icon transition" src="images/logo.png" style="height: 35px;width:35px;" alt="logo-icon">
+            <img class="big-icon transition" src="images/black-logo.png"  alt="logo-icon">
+        <!-- </a> -->
+    </div>
+    <div
+    class="burger-menu transition cursor-pointer" (click)="toggle()" >
+        <mat-icon style="font-size: x-large;" *ngIf="isToggled">push_pin</mat-icon>  <!-- Show Pin when sidebar is expanded -->
+        <mat-icon *ngIf="!isToggled">chevron_left</mat-icon>  <!-- Show Left Arrow when sidebar is collapsed -->
+    </div>
+  
+    <ng-scrollbar visibility="hover">
+        <div  class="sidenav-user" [class.collapsed]="isToggled" >
+            <img class="sidenav-user-image transition" [src]="bioProfile().imageUrl?bioProfile().imageUrl:'assets/img/avatars/noavatar.png'">
+            <h4 class="sidenav-user-name p-0 mb-1 ">{{bioProfile().firstName?bioProfile().firstName:'First Name'}} {{bioProfile().lastName?bioProfile().lastName:'Last Name'}}</h4>
+            <h5 class="sidenav-user-email p-0 m-0  show-gray">{{userAccount().email?userAccount().email:'email@xxxx.com'}}</h5>
+      
+            <div class="sidenav-user-icons mt-4 d-flex justify-content-center gap-3">
+                <a [routerLink]="['/tables/all-in-one-table']" class="btn p-2 show-primary">
+                    <mat-icon>assignment</mat-icon>
+                </a>
+                <a [routerLink]="['/apps/calendar']" class="btn p-2 show-primary">
+                    <mat-icon>date_range</mat-icon>
+                </a>
+                <a [routerLink]="['/login']" class="btn p-2 show-primary">
+                    <mat-icon>exit_to_app</mat-icon>
+                </a>
+            </div>
+            <div class="sidenav-user-options">
+                <button
+                mat-button
+                (click)="toggleTheme()"
+                class="dark-swtich-btn"
+                [class.active]="toggleService.isDark()" >
+                <i-feather name="moon"></i-feather>
+            </button>
+            </div>
+        </div>
+        <div class="sidebar-inner">
+            <div class="sidebar-menu">
+                <mat-accordion>
+                    <div style="margin-top:10px;margin-bottom:20px;border-bottom: 1px dotted gray;">
+                        <!-- OTHERS -->
+                        
+                    </div>
+                    <a routerLink="/user/dashboard" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="grid"></i-feather>
+                        <span class="title">
+                            Dashboard
+                        </span>
+                    </a>
+                    <a routerLink="/user/resumes" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="file-text"></i-feather>
+                        <span class="title">
+                            Resumes
+                        </span>
+                    </a>
+                    <a routerLink="/user/job-applications" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="file"></i-feather>
+                        <span class="title">
+                            Job Applications
+                        </span>
+                    </a>
+                    <!-- <a routerLink="/user/mail-box" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="mail"></i-feather>
+                        <span class="title">
+                            Mail
+                        </span>
+                    </a> -->
+                    <!-- <a routerLink="/user/user-contacts" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="users"></i-feather>
+                        <span class="title">
+                            Contacts
+                        </span>
+                    </a> -->
+
+                    <a routerLink="/user/user-learn" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="book-open"></i-feather>
+                        <span class="title">
+                            Learn
+                        </span>
+                    </a>
+                    <!-- <a routerLink="/user/calendar" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="calendar"></i-feather>
+                        <span class="title">
+                            Calendar
+                        </span>
+                    </a> -->
+                    <div style="margin-top:10px;margin-bottom:20px;border-bottom: 1px dotted gray;">
+                        <!-- OTHERS -->
+                        
+                    </div>
+                  
+                    <a routerLink="/user/profile" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="user"></i-feather>
+                        <span class="title">
+                            My Profile
+                        </span>
+                    </a>
+                    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <i-feather name="settings"></i-feather>
+                                <span class="title">
+                                    Settings
+                                </span>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <ul class="sidebar-sub-menu">
+                            <li class="sidemenu-item">
+                                <a routerLink="/settings" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Account Settings
+                                </a>
+                            </li>
+                            <li class="sidemenu-item">
+                                <a routerLink="/settings/change-password" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Change Password
+                                </a>
+                            </li>
+                        </ul>
+                    </mat-expansion-panel>
+                    <a routerLink="/authentication/logout" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather name="log-out"></i-feather>
+                        <span class="title">Logout</span>
+                    </a>
+                </mat-accordion>
+            </div>
+        </div>
+    </ng-scrollbar>
+</div>

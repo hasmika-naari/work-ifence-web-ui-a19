@@ -1,0 +1,130 @@
+
+<div class="row pl-4 pr-4" style="height: 95vh !important;overflow-y: auto;padding-bottom: 60px;">
+    <div class="col-12"  >
+        <form [formGroup]="applicationForm">
+            <div class="row wrap">
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Job Role</mat-label>
+                        <input matInput placeholder="Job Role" formControlName="job_role">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="applicationForm.get('job_role')?.hasError('required') && (applicationForm.get('job_role')?.dirty || applicationForm.get('job_role')?.touched)">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Company Name</mat-label>
+                        <input matInput placeholder="Company Name" formControlName="company_name">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="applicationForm.get('company_name')?.hasError('required') && (applicationForm.get('company_name')?.dirty || applicationForm.get('company_name')?.touched)">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Location</mat-label>
+                        <input matInput placeholder="Location" formControlName="location">
+                    </mat-form-field>
+
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Email Provided</mat-label>
+                        <input matInput placeholder="Email Provided" formControlName="email_provided">
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Job Type</mat-label>
+                        <mat-select placeholder="Job Type" formControlName="job_type">
+                            <mat-option *ngFor="let type of jobTypes" [value]="type.description">
+                                {{type.description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Job Mode</mat-label>
+                        <mat-select placeholder="Job Mode" formControlName="job_mode">
+                            <mat-option *ngFor="let mode of jobModes" [value]="mode.description">
+                                {{mode.description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2 ">
+                    <mat-form-field class="streach-h-100" appearance="outline">
+                        <mat-label>Applied Date</mat-label>
+                        <input matInput [matDatepicker]="edp" formControlName="applied_date">
+                        <!-- <mat-hint>DD/MM/YYYY</mat-hint> -->
+                        <mat-datepicker-toggle matIconSuffix [for]="edp"></mat-datepicker-toggle>
+                        <mat-datepicker #edp
+                                        panelClass="example-month-picker">
+                        </mat-datepicker>
+                      </mat-form-field>
+                
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Status</mat-label>
+                        <mat-select placeholder="Status" formControlName="status">
+                            <mat-option *ngFor="let s of jobStatuses" [value]="s.description">
+                                {{s.description}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="applicationForm.get('status')?.hasError('required') && (applicationForm.get('status')?.dirty || applicationForm.get('status')?.touched)">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Job Reference URL</mat-label>
+                        <input matInput placeholder="Job Reference URL" formControlName="job_reference_url">
+                    </mat-form-field>
+
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <!-- <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Job Description</mat-label>
+                        <textarea matInput  #descri formControlName="job_description" rows="5"></textarea>
+                      </mat-form-field> -->
+                      <mat-form-field class="w-100">
+                        <textarea matInput placeholder="Job Description" #job_description 
+                            formControlName="job_description" rows="12"></textarea>
+                      </mat-form-field>
+                      <!-- <p-accordion value="0">
+                        <p-accordion-panel value="0">
+                            <p-accordion-header>Job Description</p-accordion-header>
+                            <p-accordion-content>
+                                <p class="m-0">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                                    magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                                    pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+                                    laborum.
+                                </p>
+                            </p-accordion-content>
+                        </p-accordion-panel>
+                      </p-accordion> -->
+                </div>
+                <div class="col-12 m-t-2 text-end text-right"  >
+                    <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                        (click)="saveAndContinue()"    [disabled]="!applicationForm.dirty"
+                        [tooltip]="'Save Application'"
+                        tooltipPosition="top"
+                        tooltipStyleClass="custom-tooltip">
+                            <ng-template pTemplate="content" >
+                                <p-icon class="pi pi-check" ></p-icon>
+                                Save Application
+                            </ng-template>
+                    </p-button>
+                </div>
+                
+            </div>
+        </form>
+       
+    </div>
+</div>

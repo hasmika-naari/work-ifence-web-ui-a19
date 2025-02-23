@@ -1,0 +1,39 @@
+<div class="dialog-container">
+    <h2>Select a Resume</h2>
+  
+    <!-- Search Bar -->
+    <input
+      class="search-bar"
+      type="text"
+      placeholder="Search by title"
+      [(ngModel)]="searchQuery"
+      (input)="filterResumes()"
+    />
+  
+    <!-- Resume List -->
+    <div class="resume-list">
+      <div
+        *ngFor="let resume of filteredResumes"
+        class="resume-item"
+        [class.selected]="selectedResume === resume"
+        (click)="selectResume(resume)"
+      >
+        <img [src]="resume.imageBytes[0]" alt="{{ resume.title }}" />
+        <p [title]="resume.title">{{ resume.title }}</p>
+      </div>
+    </div>
+  
+    <!-- Action Buttons -->
+    <div class="dialog-actions">
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button
+        mat-button
+        class="select-btn"
+        [disabled]="!selectedResume"
+        (click)="onConfirm()"
+      >
+        Confirm
+      </button>
+    </div>
+  </div>
+  

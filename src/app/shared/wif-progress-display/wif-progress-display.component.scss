@@ -1,0 +1,90 @@
+//////////////////////////////////////////
+/// 
+#login-fury-splash-screen {
+  display: block;
+  position: fixed;  /* Changed to fixed to cover the screen */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #305661cc;
+  z-index: 99999;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#login-fury-splash-screen > .login-wrapper {
+  text-align: center;  /* Centering both ripple and text */
+}
+
+@-webkit-keyframes login-ball-scale-multiple {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes login-ball-scale-multiple {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.login-ball-scale-multiple {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+
+.login-ball-scale-multiple > div:nth-child(2) {
+  -webkit-animation-delay: -0.4s;
+  animation-delay: -0.4s;
+}
+
+.login-ball-scale-multiple > div:nth-child(3) {
+  -webkit-animation-delay: -0.2s;
+  animation-delay: -0.2s;
+}
+
+.login-ball-scale-multiple > div {
+  background-color: #f05b45;
+  border-radius: 100%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  width: 60px;
+  height: 60px;
+  -webkit-animation: login-ball-scale-multiple 0.5s 0s linear infinite;
+  animation: login-ball-scale-multiple 0.5s 0s linear infinite;
+}
+
+/* Style for the text below the ripples */
+.splash-text {
+  font-size: 18px;
+  color: white;
+  opacity: 0.8;
+  //font-family: Arial, sans-serif;
+  margin-top: 20px; /* Space between the ripple and the text */
+}

@@ -1,0 +1,582 @@
+.resume-contact-us{
+  text-align: left !important;
+  margin-bottom: 8px;
+  padding: 8px 16px;
+  padding-left: 0px;
+  .profile-full-name{
+    white-space:pre-wrap;
+    padding-bottom: 5px;
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    // font-size: 34px;
+    line-height: 1;
+    font-weight: 500 !important;
+    font-size: 32px;
+    margin-bottom: 0px;
+    text-align: left;
+  }
+
+  .profile-sub-title{
+    white-space: pre-wrap;
+    padding-bottom: 5px;
+    // font-family: Rubik, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 400;
+    margin-bottom: 0px !important;
+    text-align: left;
+    width: 100%;
+    display: block;
+  }
+  .profile-contact-details-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: left;
+    font-size: 0.9rem !important;
+    flex-wrap: wrap;
+      li{
+        white-space: pre-wrap;
+        font-size: 13px;
+        line-height: 15px;
+        font-weight: 400;
+        display: flex;
+        width: auto;
+        margin-left: 1px;
+        padding-right: 12px !important;
+        padding-left: 2px;
+        justify-content: center; /* Horizontally center */
+        align-items: center;  
+        i{
+          color:  black;
+        }
+        span{
+            color: black;
+        }
+
+        a{
+          // padding: 0px !important;
+          // color: #0000EE; /* Unvisited link color */
+          text-decoration: underline;
+          white-space: pre-wrap;
+          font-size: 13px;
+          line-height: 15px;
+          font-weight: 400;
+          display: flex;
+          width: auto;
+          margin-left: 1px;
+          // padding-right: 12px !important;
+          padding-left: 2px;
+          justify-content: center; /* Horizontally center */
+          align-items: center;  
+        }
+      }
+  }
+}
+
+.contact-detail-icon{
+    font-size: smaller;
+    font-style: normal !important;
+    font-variant: normal !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+    // speak: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    // margin-top: auto;
+}
+
+a{
+  // color: #0000EE; /* Unvisited link color */
+  text-decoration: underline;
+}
+
+.add-education-icon{
+  display: none;
+  cursor: pointer;
+  font-size: small;
+}
+
+.resume-education{
+
+    // line-height: 1.4;
+     text-align: left;
+     margin-bottom: 12px;
+    .education-section-title{
+      font-weight: 400;
+      color: black;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(101, 105, 109, .5);
+      white-space: pre-wrap;
+      padding-bottom: 1px;
+      // font-family: Rubik, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
+      font-size: 1rem;
+      line-height: 25px;
+      height: 25px !important;
+      width: 100%;
+      display: block;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+
+    }
+    
+    .education-section-content{
+        padding: 0px 0px;
+        border-radius: 5px;
+        color: black;
+        text-align: left;
+
+      p{
+        font-size: 13px;
+        line-height: 16px;
+        font-weight: 400;
+        padding: 3px 0px;
+        font-family: 'Poppins', sans-serif ;
+        color: black;
+        white-space: pre-wrap;
+      }
+    }
+   
+
+    &:hover{
+      .add-education-icon{
+        display: block;
+        cursor: pointer;
+        font-size: small;
+      }
+    }
+  
+   
+}
+
+.course-work{
+  // line-height: 1.4;
+   text-align: left;
+   margin-bottom: 12px;
+  .course-work-section-title{
+    font-weight: 600;
+    color: black;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(101, 105, 109, .5);
+    white-space: pre-wrap;
+    padding-bottom: 1px;
+    // font-family: Rubik, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
+    font-size: 16px;
+    
+    width: 100%;
+    display: block;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .course-work-section-content{
+    padding: 6px 0px;
+    border-radius: 5px;
+    color: black;
+    text-align: left;
+
+    p{
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 400;
+      padding: 3px 0px;
+      font-family: 'Poppins', sans-serif ;
+      color: black;
+      white-space: pre-wrap;
+    }
+
+    ol,ul{
+      padding-left: 1.09rem !important;
+      margin: 0 !important;
+      li{
+        font-size: 13px;
+        line-height: 16px;
+        font-weight: 400;
+        padding: 3px 0px;
+        font-family: 'Poppins', sans-serif ;
+        color: black;
+        white-space: pre-wrap;
+      }
+    }
+
+  .course-work-list{
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1rem;
+    text-align:left;
+
+    .course-work-lisit-item{
+      flex: 0 0 25%;
+      // font-size: 1rem;
+    }
+  }
+}
+
+&:hover{
+ .add-education-icon{
+        display: block;
+        cursor: pointer;
+        font-size: small;
+      }
+}
+
+}
+
+:host ::ng-deep .project-content ol {
+  padding-left: 1.09rem !important;
+  margin: 0 !important;
+}
+
+:host ::ng-deep .project-content ol li {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 400;
+  padding: 3px 0px;
+  font-family: 'Poppins', sans-serif;
+  color: black;
+  white-space: pre-wrap;
+}
+
+:host ::ng-deep .project-content ul {
+  padding-left: 1.09rem !important;
+  margin: 0 !important;
+}
+
+:host ::ng-deep .project-content ul li {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 400;
+  padding: 3px 0px;
+  font-family: 'Poppins', sans-serif;
+  color: black;
+  white-space: pre-wrap;
+}
+
+:host ::ng-deep .project-content p {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 400;
+  padding: 3px 0px;
+  font-family: 'Poppins', sans-serif;
+  color: black;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+
+
+.resume-summary{
+  // line-height: 1.4;
+  text-align: left;
+  margin-bottom: 12px;
+
+  &:hover{
+    .add-education-icon{
+      display: block;
+      cursor: pointer;
+    }
+  }
+}
+
+.summary-section-title{
+  font-weight: 400;
+  color: #384347;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(101, 105, 109, .5);
+  white-space: pre-wrap;
+  padding-bottom: 8px;
+  font-size: 20px;
+  line-height: 24px;
+  display: block;
+  text-align: left;
+}
+
+.resume-summary-text{
+  white-space: pre-wrap;
+  // font-family: Inter, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
+  text-align: left;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  padding: 6px 0px;
+  font-family: 'Poppins', sans-serif ;
+  color: #384347;
+  margin: 0 !important;
+}
+
+.skill-section{
+  line-height: 1.4;
+  text-align: left;
+  .skills-section-title{
+    font-weight: 400;
+    color: black;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(101, 105, 109, .5);
+    white-space: pre-wrap;
+    padding-bottom: 1px;
+    font-size: 1rem;
+    line-height: 25px;
+    height: 25px !important;
+    width: 100%;
+    display: block;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .skills-section-content{
+    padding: 8px 16px;
+    border-radius: 5px;
+    color: black;
+    text-align: left;
+
+    .skills-list{
+      list-style:none; 
+      font-size: 1rem;
+      text-align:left;
+
+      .skills-list-item{
+        font-size: 1rem;
+      }
+    }
+
+  }
+
+  &:hover{
+    .add-education-icon{
+      display: block;
+      cursor: pointer;
+    }
+  }
+
+}
+.opacity-50{
+  opacity: 0.5;
+}
+
+.opacity-100{
+  opacity: 1;
+}
+.tp-50{
+  background-color: #ffffffa4;
+}
+
+.tp-0{
+  background-color: #ffffff00;
+}
+
+
+/* Profile Name */
+.profile-name {
+  font-size: 28px; /* Larger font for emphasis */
+  font-weight: bold;
+  color: #222; /* Dark color for high contrast */
+  margin-bottom: 5px;
+}
+
+/* Profile Role (e.g., Job Title) */
+.profile-role {
+  font-size: 18px; /* Slightly smaller than the name */
+  font-weight: normal;
+  color: #555; /* Medium contrast color */
+  margin-bottom: 10px;
+}
+
+/* Profile Social Links */
+.profile-social-links {
+  font-size: 14px !important; /* Standard text size */
+   /* Accent color to highlight links */
+  /* Align to the right for a modern look */
+  margin-bottom: 15px;
+}
+
+.profile-social-links a {
+  color: #007ACC; /* Ensure links match the section color */
+   /* Spacing between links */
+}
+
+
+/* Section Header (e.g., Experience, Education) */
+.Section-header {
+  font-size: 20px !important; /* Bold and prominent */
+  font-weight: bold;
+  color: #333; /* Strong, professional color */
+   /* Underline with accent color */
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+}
+
+/* Section Item Header (e.g., Job Title, Company Name) */
+.section-item-header {
+  font-size: 18px !important; /* Emphasized for clarity */
+  font-weight: bold;
+  color: #444; /* Slightly muted compared to section header */
+  margin-bottom: 5px;
+}
+
+/* Section Item Content (e.g., Job Description, Achievements) */
+.section-item-content {
+  font-size: 14px !important; /* Standard content size */
+  color: #555; /* Regular text color */
+  margin-bottom: 10px;
+  line-height: 1.6; /* Adequate spacing for readability */
+}
+
+.section-item-content ul {
+  list-style-type: disc;
+  margin-left: 20px;
+  padding-left: 0;
+}
+
+.section-item-content li {
+  margin-bottom: 5px;
+}
+
+.section-actions {
+  position: absolute;
+  top: -10px;
+  right: 0px;
+  display: flex;
+  // background-color: #eeeeee8f;
+  // padding: 0.25rem 0.75rem;
+  border-radius: 1000px !important;
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  p-icon{
+    border-radius: 50%;
+    background-color: #eeeeee85;
+  }
+  p-icon:hover{
+    background-color: #eee;
+    transform: scale(1.1); /* Slight zoom effect on hover */
+  }
+}
+
+.education-p{
+  color: #000;
+  display: flex;
+  font-size: 14px;
+}
+.education-p p{
+  color: #000;
+  padding: 0 2.5px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.sub-items-actions{
+  position: absolute;
+  top: 10px;
+  right: 0px;
+  display: flex;
+  // background-color: #eeeeee8f;
+  // padding: 0.25rem 0.75rem;
+  border-radius: 1000px !important;
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  .icon{
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    background-color: #eeeeee;
+  }
+  .icon:hover{
+    transform: scale(1.1); /* Slight zoom effect on hover */
+  }
+}
+
+.cer-sub-items-actions{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: flex;
+  // background-color: #eeeeee8f;
+  // padding: 0.25rem 0.75rem;
+  border-radius: 1000px !important;
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 100 !important;
+  .icon{
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    background-color: #eeeeee;
+  }
+  .icon:hover{
+    transform: scale(1.1); /* Slight zoom effect on hover */
+  }
+}
+
+.resume-contact-us:hover .section-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.summary-section-title:hover .section-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.project-content-container:hover .sub-items-actions {
+  opacity: 1 !important;
+  transform: translateX(0);
+}
+
+li::marker{
+  font-size: 8px !important; /* Adjust the size of the bullet point here */
+  color: #000; /* You can also change the color of the bullet */
+}
+
+.project-content-container:hover .cer-sub-items-actions {
+  opacity: 1 !important;
+  transform: translateX(0);
+}
+
+.section-actions p-icon {
+  font-size: 18px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+
+/* Specific action colors */
+.pi-plus {
+  color: #3498db; /* Blue-ish for Add */
+}
+
+.pi-pencil {
+  color: #2ecc71; /* Green-ish for Edit */
+}
+
+.pi-eye-slash {
+  color: #f39c12; /* Orange-ish for Hide */
+}
+
+.pi-eye{
+  color: #f39c12;
+}
+
+.pi-times {
+  color: #e74c3c; /* Red-ish for Delete */
+}
+
+
+.opacity-half{
+  opacity: 0.5;
+}
+
+.opacity-full{
+  opacity: 1;
+}

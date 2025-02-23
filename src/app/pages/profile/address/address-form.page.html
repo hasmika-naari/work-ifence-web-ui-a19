@@ -1,0 +1,331 @@
+<section class="bio-profile-section">
+        <div class="header">
+        <h2>Addresses</h2>
+        <div style="display: flex;gap: 10px;float: right;">
+        <button class="action-btn" title="Add" (click)="addAddress($event)">
+                <p-icon class="pi pi-plus"></p-icon>
+        </button>
+        <!-- <button class="action-btn" title="Remove">
+                <p-icon class="pi pi-trash"></p-icon>
+        </button> -->
+        </div>
+        </div>
+        <div class="round-details" *ngFor="let address of addresses(); let i = index">
+            <div class="round-divider">
+                <span class="left-line"></span>
+                <span class="round-text">Address {{i + 1}}</span>
+                <span class="right-line"></span>
+                <span class="icon-container">
+                  <button class="action-btn" title="Edit" (click)="editAddressForm(address)">
+                    <p-icon class="pi pi-pencil"></p-icon>
+                  </button>
+                  <button class="action-btn" title="Remove" (click)="removeAddress($event, address)">
+                        <p-icon class="pi pi-trash"></p-icon>
+                </button>
+                  <!-- <span class="right-line-after-icon"></span> -->
+                </span>
+              </div>
+              
+              <div class="detail-item">
+                <strong>{{ address.locationName || 'N/A' }}</strong>
+                <span class="value-label">Address Name</span>
+              </div>
+              <div class="detail-item">
+                <strong>{{ address.line1 || 'N/A' }}</strong>
+                <span class="value-label">Address Line 1</span>
+              </div>
+              <div class="detail-item">
+                <strong>{{ address.line2 || 'N/A' }}</strong>
+                <span class="value-label">Address Line 2</span>
+              </div>
+              <div class="detail-item">
+                <strong>{{ address.city || 'N/A' }}</strong>
+                <span class="value-label">City</span>
+              </div>
+              <div class="detail-item">
+                <strong>{{ address.state || 'N/A' }}</strong>
+                <span class="value-label">State</span>
+              </div>
+              <div class="detail-item">
+                <strong>{{ address.country || 'N/A' }} - {{ address.zipcode || 'N/A' }}</strong>
+                <span class="value-label">Country - ZipCode</span>
+              </div>
+                                                                      
+            
+        </div>
+        <div *ngIf="!addresses().length">
+                <h4>No Address Updated</h4>
+        </div>
+    </section>
+
+<!--   
+<mat-card style="max-width:1500px;">
+        <mat-card-header>
+                <mat-card-title>
+                        Addresses
+                       
+                </mat-card-title>
+                <div  style="position: absolute;right:30px;" *ngIf="!offEdit">
+                        
+                        <button mat-raised-button color="warn" 
+                                (click)="addNewAddress($event)">
+                                <span class="show-white">Add</span>
+                                <mat-icon >
+                                        add
+                                </mat-icon>
+                        </button>
+                </div>
+        </mat-card-header>
+        <mat-card-content class="mt-20 mb-3">
+                <div class="row wrap streach-h-100 m-0 p-0">
+                        <div class="col-lg-10 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" *ngIf="!offEdit">
+                                @for (address of addresses(); track address.id) {
+                                        <mat-card class="streach-h-100">
+                                                <mat-card-content>
+                                                        <div class="row wrap streach-h-100 m-0 p-0">
+                                                                <div class="col-lg-4 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" >
+                                                                        <div>
+                                                                                <div>
+                                                                                <span class="data-data">{{address.locationName}}</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                        <small class="data-label">Address Name </small> 
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" 
+                                                                        >
+                                                                        <div *ngIf="address.line1">
+                                                                                <div>
+                                                                                <span class="data-data">{{address.line1}}</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                        <small class="data-label">Address Line 1 </small> 
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0 mt-2" >
+                                                                        <div *ngIf="address.line2">
+                                                                                <div>
+                                                                                <span class="data-data">{{address.line2}}</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                        <small class="data-label">Address Line 2 </small> 
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="col-lg-3 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0 mt-2" >
+                                                                        <div>
+                                                                                <div>
+                                                                                <span class="data-data">{{address.city}}</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                        <small class="data-label">City</small> 
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="col-lg-3 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0 mt-2" >
+                                                                        <div>
+                                                                                <div>
+                                                                                <span class="data-data">{{address.state}}</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                        <small class="data-label">State</small> 
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="col-lg-3 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0 mt-2" >
+                                                                        <div>
+                                                                                <div>
+                                                                                <span class="data-data">{{address.country}} -  {{address.zipcode}}</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                        <small class="data-label">Country - ZipCode</small> 
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                </mat-card-content>
+                                                <mat-card-footer>
+                                                        <div class="row wrap streach-h-100 m-0 p-0 mb-3" >
+                                                                <div align="end" class="col-12">
+                                                                        <button  mat-raised-button color="warn" 
+                                                                                (click)="removeAddress($event, address)">
+                                                                                <span  class="show-white">Remove</span>
+                                                                                <mat-icon >
+                                                                                        cancel
+                                                                                </mat-icon>
+                                                                        </button>
+                                                                        <button mat-raised-button color="primary" class="ml-4" 
+                                                                                (click)="editAddressProfile($event, address)"  >
+                                                                                <span class="show-white">Edit</span>
+                                                                                <mat-icon >
+                                                                                edit
+                                                                                </mat-icon>
+                                                                        </button>
+                                                                                        
+                                                                </div>
+                                                        </div>
+                                                </mat-card-footer>
+                                        </mat-card>
+                                      
+                                }
+                                @empty {
+                                        <span class="data-data">No Address Added</span>
+                                }
+                        </div>
+                </div>
+                <div class="row wrap streach-h-100 m-0 p-0" *ngIf="offEdit">
+                        <div class="col-lg-12 col-md-10 col-sm-9 col-xs-12  m-0 p-0"  >
+                                <form [formGroup]="addressForm"  autocomplete="off" >
+                                        <div class="row wrap streach-h-100">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field  class="streach-h-100">
+                                                                <mat-label>Address Name (ex. Home)</mat-label>
+                                                                <input  matInput formControlName="name">
+                                                                
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!addressForm.controls['name'].valid"
+                                                                [class.show-primary]="addressForm.controls['name'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="addressForm.get('name')?.hasError('required')">
+                                                                        Required.
+                                                                        </mat-error>
+                                                                        <mat-error align="end" *ngIf="addressForm.get('name')?.hasError('maxlength') && (addressForm.get('name')?.dirty || addressForm.get('name')?.touched)">
+                                                                                Maximum 60 characters.
+                                                                        </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field  class="streach-h-100">
+                                                                <mat-label>Address Line 1</mat-label>
+                                                                <input  matInput formControlName="line1">
+                                                                
+                                                                <span matSuffix ><mat-icon
+                                                                        [class.show-silver]="!addressForm.controls['line1'].valid"
+                                                                        [class.show-primary]="addressForm.controls['line1'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="addressForm.get('line1')?.hasError('required')">
+                                                                Required.
+                                                                </mat-error>
+                                                                <mat-error align="end" *ngIf="addressForm.get('line1')?.hasError('maxlength') && (addressForm.get('line1')?.dirty || addressForm.get('line1')?.touched)">
+                                                                        Maximum 60 characters.
+                                                                </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field  class="streach-h-100">
+                                                                <mat-label>Address Line 2</mat-label>
+                                                                <input matInput
+                                                                        formControlName="line2" >
+                                                                <mat-error align="end" *ngIf="addressForm.get('line2')?.hasError('required')">
+                                                                Required.
+                                                                </mat-error>
+                                                                <mat-error align="end" *ngIf="addressForm.get('line2')?.hasError('maxlength') && (addressForm.get('line2')?.dirty || addressForm.get('line2')?.touched)">
+                                                                        Maximum 60 characters.
+                                                                </mat-error>
+
+                                                        </mat-form-field>
+                                                </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+
+                                                        <mat-form-field class="streach-h-100"  color="primary">
+                                                                <mat-label>Country</mat-label>
+                                                                <mat-select id="country" formControlName="country" >
+                                                                <mat-option value="USA">United States</mat-option>
+                                                                <mat-option value="INDIA">India</mat-option>
+                                                                </mat-select>
+                                                                
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!addressForm.controls['country'].valid"
+                                                                [class.show-primary]="addressForm.controls['country'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="addressForm.get('country')?.hasError('required')">
+                                                                        Required.
+                                                                </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+
+                                                        <mat-form-field class="streach-h-100">
+                                                                <mat-label>State</mat-label>
+                                                                <mat-select placeholder="State" formControlName="state">
+                                                                    <mat-option *ngFor="let state of stateList" [value]="state.name">
+                                                                        {{state.name}}
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                                <span matSuffix ><mat-icon
+                                                                        [class.show-silver]="!addressForm.controls['state'].valid"
+                                                                        [class.show-primary]="addressForm.controls['state'].valid">edit</mat-icon></span>
+                                                                        <mat-error align="end" *ngIf="addressForm.get('state')?.hasError('required')">
+                                                                                Required.
+                                                                        </mat-error>
+                                                            </mat-form-field>
+
+                                                       
+                                                       
+                                                </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field class="streach-h-100"  color="primary">
+                                                                <mat-label>City</mat-label>
+                                                                <input id="city" matInput matInput required formControlName="city"  
+                                                                         (click)="openCitySelectionBottomSheet()" 
+                                                                        placeholder="City" type="text" maxlength="20"
+                                                                        name="city"  required>
+                                                                
+
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!addressForm.controls['city'].valid"
+                                                                [class.show-primary]="addressForm.controls['city'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="addressForm.get('city')?.hasError('required')">
+                                                                Required.
+                                                                </mat-error>
+                                                                <mat-error align="end" *ngIf="addressForm.get('city')?.hasError('maxlength') && (addressForm.get('city')?.dirty || addressForm.get('city')?.touched)">
+                                                                        Maximum 60 characters.
+                                                                </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field class="streach-h-100" >
+                                                                <mat-label>Zip Code</mat-label>
+                                                                <input  matInput required formControlName="zipcode">
+                                                                
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!addressForm.controls['zipcode'].valid"
+                                                                [class.show-primary]="addressForm.controls['zipcode'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="addressForm.get('zipcode')?.hasError('required')">
+                                                                Required.
+                                                                </mat-error>
+                                                                <mat-error align="end" *ngIf="addressForm.get('zipcode')?.hasError('pattern') && (addressForm.get('zipcode')?.dirty || addressForm.get('zipcode')?.touched)">
+                                                                        Invalid Zipcode.
+                                                                </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                        </div>
+                                </form>
+                        </div>
+                </div>
+                <div class="row wrap streach-h-100 m-0 p-0" *ngIf="offEdit">
+                        <div align="end" class="col-12">
+                        
+                                <button fxFlex mat-raised-button color="warn" 
+                                        (click)="cancelChanges($event)">
+                                        <span  class="show-white">Cancel</span>
+                                        <mat-icon >
+                                                close
+                                        </mat-icon>
+                                </button>
+                        
+                                <button mat-raised-button color="primary" class="ml-4" (click)="saveAddressProfile($event)"
+                                                fxFlex    [disabled]="(actionInProgress$ | async) || addressForm.invalid">
+                                        <span class="show-white">Save</span>
+                                        <mat-icon >
+                                        save
+                                        </mat-icon>
+                                </button>
+                                                
+                        </div>
+                </div>
+</mat-card-content>
+<mat-card-footer>
+        <mat-progress-bar *ngIf="actionInProgress" mode="indeterminate" color="primary" value="71"></mat-progress-bar>
+</mat-card-footer>
+</mat-card>
+ -->

@@ -1,0 +1,68 @@
+//////////////
+:host {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Force font on all elements within this component */
+:host * {
+  font-family: 'Poppins', sans-serif;
+}
+
+:host{
+  .mat-icon{
+      font-family: 'Material Icons' !important;
+  }
+
+  .mat-card{
+    background-color: var(--whiteColor) !important;
+    box-shadow: none !important;
+  }
+
+}
+
+::ng-deep .remember-check .mdc-label {
+  font-size: 14px !important;
+}
+
+
+
+.enabled-button {
+    background-color: #f05b4e;
+    color: white;
+    border: 1px solid #f05b4e;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .disabled-button {
+    // background-color: #f5a39d;
+    color: white;
+    // border: 1px solid #f5a39d;
+    font-size: 1rem;
+  }
+
+  .mt-p{
+    margin-top: 30px !important;
+  }
+
+  
+/* Apply colors to PrimeNG components */
+.p-button {
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--primary-button-border-color); /* Change border color */
+}
+
+.w-link-button{
+  color: var(--primary-color) !important;
+  background-color: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  &:hover{
+      // background-color: var(--secondaryColor) !important;
+      background-color: transparent !important;
+      color: var(--secondaryColor) !important;
+  }
+
+}

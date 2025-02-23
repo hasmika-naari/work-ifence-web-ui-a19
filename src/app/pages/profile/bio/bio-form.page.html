@@ -1,0 +1,218 @@
+<section class="bio-profile-section">
+  <div class="header">
+    <h2>Bio Profile</h2>
+    <div style="display: flex;gap: 10px;float: right;">
+      <button class="action-btn edit-btn" title="Edit" (click)="editBioProfile()">
+        <span class="pi pi-pencil"></span>
+      </button>
+      <!-- <button class="action-btn delete-btn" title="Remove">
+        <span class="pi pi-trash"></span>
+      </button> -->
+    </div>
+  </div>
+  <div class="profile-details row">
+        <div class="profile-overview col-6">
+            <div>
+                <img class="profile-avatar" [src]="getImageBase64()" alt="Avatar">
+                <h3>{{bioProfile().firstName}} {{bioProfile().lastName}}</h3>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="detail-item">
+                <strong>{{bioProfile().firstName || 'N/A'}}</strong>
+                <span class="value-label">First Name</span>
+            </div>
+            <div class="detail-item">
+                <strong>{{bioProfile().lastName || 'N/A'}}</strong>
+                <span class="value-label">Last Name</span>
+            </div>
+            <div class="detail-item">
+                <strong>{{bioProfile().dob ? (bioProfile().dob | date : 'MMM d, yyyy') : 'N/A'}}</strong>
+                <span class="value-label">Date of Birth</span>
+            </div>
+            <div class="detail-item">
+                <strong>{{bioProfile().gender === '1' ? 'Male' : bioProfile().gender === '0' ? 'Female' : 'N/A'}}</strong>
+                <span class="value-label">Gender</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- 
+<mat-card  style="max-width:1500px;">
+        <mat-card-header>
+                <mat-card-title>
+                        Bio Profile
+                </mat-card-title>
+        </mat-card-header> 
+        <mat-card-content class="mt-20 mb-3" >
+
+                <div class="row wrap streach-h-100 m-0 p-0">
+
+                        <div class="col-lg-3 col-md-2 col-sm-3 col-xs-12 text-center  m-0 p-0" *ngIf="!offEdit">
+                                <img class="profile-avatar" *ngIf="!offEdit" [src]="getImageBase64()" alt="avatar">
+                                
+                        </div>
+                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" *ngIf="!offEdit">
+                                 <div class="row wrap streach-h-100 m-0 p-0">
+                                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" >
+                                                <div>
+                                                        <div>
+                                                              <span class="data-data">{{bioProfile().firstName}}</span>
+                                                        </div>
+                                                        <div>
+                                                                <small class="data-label">First Name </small> 
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" >
+                                                <div>
+                                                        <div>
+                                                              <span class="data-data">{{bioProfile().lastName}}</span>
+                                                        </div>
+                                                        <div>
+                                                                <small class="data-label">Last Name </small> 
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0 mt-2" >
+                                                <div>
+                                                        <div>
+                                                              <span class="data-data">{{bioProfile().dob?(bioProfile().dob | date) : 'Not Set'}}</span>
+                                                        </div>
+                                                        <div>
+                                                                <small class="data-label">Date of Birth </small> 
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0 mt-2" >
+                                                <div>
+                                                        <div>
+                                                              <span class="data-data">{{bioProfile().gender == '1'?'Male':'Female'}}</span>
+                                                        </div>
+                                                        <div>
+                                                                <small class="data-label">Gender </small> 
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="row wrap streach-h-100 m-0 p-0" >
+                        <div class="col-lg-3 col-md-2 col-sm-3 col-xs-12 text-center  m-0 p-0" *ngIf="offEdit">
+                                
+                                <img class="profile-avatar" [src]="getImageBase64()" alt="Profile Image">
+                                
+                                <div class="text-center">
+                                        <div class="column profile-image" style="margin: auto;">
+                                               
+                                                <input type="file" (change)="onFileSelected($event)" #imageUpload placeholder="Upload Profile Image"/>
+                                                <button (click)="imageUpload.click()">Upload Profile Image</button>
+                                        </div>
+                                </div>
+                                <h2>{{bioProfile().firstName}} {{bioProfile().lastName}}</h2>        
+                        </div>
+                        <div class="col-lg-9 col-md-10 col-sm-9 col-xs-12  m-0 p-0"  *ngIf="offEdit">
+                                <form [formGroup]="bioProfileForm" class="streach-h-100"  autocomplete="off" >
+                                        <div class="row wrap streach-h-100 m-0 p-0">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                                                        <mat-form-field  class="streach-h-100" autocomplete="off"  color="primary">
+                                                                <input id="firstName" matInput formControlName="firstName"
+                                                                        autocomplete="off"
+                                                                        placeholder="First Name" type="text" maxlength="100"
+                                                                        name="firstName"  >
+                                                               
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!bioProfileForm.controls['firstName'].valid"
+                                                                [class.show-primary]="bioProfileForm.controls['firstName'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="!bioProfileForm.controls['firstName'].valid || bioProfileForm.controls['firstName'].pristine">
+                                                                        Missing or Error or max-length is 100
+                                                                </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field  class="streach-h-100" autocomplete="off"  color="primary">
+                                                                <input id="lastName" matInput formControlName="lastName"
+                                                                        autocomplete="off"
+                                                                        placeholder="Last Name" type="text" maxlength="20"
+                                                                        name="lastName"  required>
+                                                               
+
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!bioProfileForm.controls['lastName'].valid"
+                                                                [class.show-primary]="bioProfileForm.controls['lastName'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="bioProfileForm.controls['lastName'].errors || bioProfileForm.controls['lastName'].pristine">
+                                                                        Missing or Error
+                                                                </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                        </div>
+                                        <div class="row wrap streach-h-100 m-0 p-0">
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field class="stretch-h-100" color="primary">
+                                                                <mat-label>Date of Birth</mat-label>
+                                                                <input id="dob" matInput formControlName="dob" [matDatepicker]="datepicker" maxlength="20" name="dob" [max]="max_Date" />
+                                                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                                                <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+                                                                <mat-datepicker #datepicker></mat-datepicker>
+                                                                <mat-error align="end" *ngIf="bioProfileForm.controls['dob'].errors || bioProfileForm.controls['dob'].pristine">
+                                                                  Missing or Error
+                                                                </mat-error>
+                                                              </mat-form-field>
+                                                              
+                                                </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field class="streach-h-100"  color="primary">
+                                                                <mat-select placeholder="Gender" formControlName="gender">
+                                                                    <mat-option *ngFor="let gen of genders" [value]="gen.gender_id">
+                                                                        {{gen.gender}}
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                                <span matSuffix ><mat-icon
+                                                                        [class.show-silver]="!bioProfileForm.controls['gender'].valid"
+                                                                        [class.show-primary]="bioProfileForm.controls['gender'].valid">edit</mat-icon></span>
+                                                                        <mat-error align="end" *ngIf="bioProfileForm.controls['gender'].errors || bioProfileForm.controls['gender'].pristine">
+                                                                                Missing or Error
+                                                                        </mat-error>
+                                                            </mat-form-field>
+                                                </div>
+                                        </div>
+                                </form>
+                               
+                        </div>
+                        <div class="row wrap streach-h-100 m-0 p-0">
+                                <div align="end" class="col-12" *ngIf="offEdit">
+                                        <button mat-raised-button color="warn" 
+                                                [disabled]="actionInProgress"
+                                                (click)="cancelChanges($event)">
+                                                <span class="show-white">Cancel</span>
+                                                <mat-icon >
+                                                        close
+                                                </mat-icon>
+                                        </button>
+                                        <button mat-raised-button color="primary" class="ml-4" (click)="saveBioProfile($event)"
+                                                        [disabled]="actionInProgress || bioProfileForm.invalid">
+                                                <span class="show-white">Save</span>
+                                                <mat-icon >
+                                                save
+                                                </mat-icon>
+                                        </button>
+                                </div>
+                                <div align="end" class="col-12" *ngIf="!offEdit">
+
+                                        <button mat-raised-button color="warn" 
+                                                (click)="editBioProfile($event)">
+                                                <span class="show-white">Modify</span>
+                                                <mat-icon >
+                                                        edit
+                                                </mat-icon>
+                                        </button>
+                                </div>
+                        </div>
+                </div>
+        </mat-card-content>
+        <mat-card-footer>
+                <mat-progress-bar *ngIf="actionInProgress" mode="indeterminate" color="primary" value="71"></mat-progress-bar>
+        </mat-card-footer>
+</mat-card> -->

@@ -1,0 +1,55 @@
+
+<div class="row pl-4 pr-4" style="height: 80% !important;">
+    <div class="col-12"  >
+        <form [formGroup]="clientForm" style="height: 65vh;margin-top:30px;" >
+            <div class="row wrap">
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>First Name</mat-label>
+                        <input matInput placeholder="First Name" formControlName="first_name">
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Last Name</mat-label>
+                        <input matInput placeholder="Last Name" formControlName="last_name">
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Email</mat-label>
+                        <input matInput placeholder="Email" formControlName="email">
+                    </mat-form-field>
+
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Phone Number</mat-label>
+                        <input matInput placeholder="Phone Number" formControlName="phone_number">
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Company Name</mat-label>
+                        <input matInput placeholder="Company Name" formControlName="company_name">
+                    </mat-form-field>
+                </div>
+                
+                <div class="col-12 m-t-2 text-end text-right"  >
+                    <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                        (click)="saveAndContinue()"    [disabled]="!clientForm.dirty"
+                        [tooltip]="'Save Client'"
+                        tooltipPosition="top"
+                        tooltipStyleClass="custom-tooltip">
+                            <ng-template pTemplate="content" >
+                                <p-icon class="pi pi-check" ></p-icon>
+                                Save Client
+                            </ng-template>
+                    </p-button>
+                </div>
+                
+            </div>
+        </form>
+       
+    </div>
+</div>

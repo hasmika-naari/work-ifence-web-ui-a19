@@ -1,0 +1,19 @@
+<div class="dialog-overlay" id="dialogOverlay">
+  <!-- Dialog Box -->
+  <div class="dialog-box">
+    <mat-dialog-content>
+      <h2 class="dialog-title">Save Changes?</h2>
+      <p class="dialog-message">
+        Do you want to save the changes you made? Your changes will be lost if you don’t save them.
+      </p>
+    </mat-dialog-content>
+    <div class="dialog-buttons">
+      <mat-dialog-actions>
+        <button mat-button class="btn cancel" (click)="onNoClick()">Discard Changes</button>
+        <button mat-raised-button color="warn" class="btn save" (click)="onConfirmHandler()" cdkFocusInitial>
+          Save Changes
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </div>
+</div>

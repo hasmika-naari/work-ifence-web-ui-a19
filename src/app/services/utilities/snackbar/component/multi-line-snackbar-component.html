@@ -1,0 +1,20 @@
+<div class="container-fluid multiline-snack-outer-container">
+    <!-- Header Row -->
+    <div class="row header align-items-start">
+        <div class="col-12 d-flex justify-content-between align-items-end">
+            <span>{{ title }}</span>
+            <i class="material-icons" (click)="closeSnack()">close</i>
+        </div>
+    </div>
+
+    <!-- Message Rows -->
+    <div class="row streach-h-100">
+        <div class="col-12 message-row" *ngFor="let error of errorMessages">
+            <div class="row history-row">
+                <div class="col-12 d-flex align-items-center">
+                    <h5 class="no-margin-padding">{{ error?.message }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

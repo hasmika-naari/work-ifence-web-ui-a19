@@ -1,0 +1,34 @@
+<div class="row h-100 pl-4 pr-4" style="width: 60%;height:70vh;">
+  <div class="col-12">
+    <form [formGroup]="feedbackForm">
+      <div class="row wrap">
+        
+        <!-- Close button -->
+        <div class="col-12 text-right" style="padding-bottom: 18px;">
+          <i class='bx bx-x close-dialog-icon' (click)="onNoClick()" matTooltip="Close"></i>
+        </div>
+
+        <!-- Header with Save button -->
+        <div class="col-12 text-right" style="padding-bottom: 18px;">
+          <span class="dialog-header-label">Application Feedback</span>
+          <button mat-raised-button color="primary" (click)="onConfirmHandler()">Save Feedback</button>
+        </div>
+
+        <div class="col-12 p-b-1 p-t-4">
+          <mat-form-field class="w-100">
+            <mat-label>Feedback</mat-label>
+            <textarea matInput placeholder="User Feedback" formControlName="userFeedback" rows="4"></textarea>
+          </mat-form-field>
+        </div>
+
+      
+        <div class="col-12 p-t-4">
+          <div class="text-right">
+            <button mat-raised-button color="primary" (click)="saveFeedback()">Save Feedback</button>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>

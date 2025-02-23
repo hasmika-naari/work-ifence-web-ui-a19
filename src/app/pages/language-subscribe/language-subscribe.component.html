@@ -1,0 +1,22 @@
+<section class="subscribe-area ptb-100">
+    <div class="container">
+        <div class="subscribe-content">
+            <span class="sub-title  wow fadeInUp" data-wow-offset="10" data-wow-duration="1s">Go At Your Own Pace</span>
+            <h2 class="  wow fadeInUp" data-wow-offset="10" data-wow-duration="1s">Subscribe To Our Deals Letter</h2>
+            <p class=" wow fadeInUp" data-wow-offset="10" data-wow-duration="1s">Naari deals Team is working on getting Best savings near to you both online and in-store. Just subscribe and relax, we will inform you as soon as we get best deals.</p>
+            <form class="newsletter-form  wow fadeInUp" data-wow-offset="10" data-wow-duration="1s"
+                 [formGroup]="emailFormGroup" (ngSubmit)="onRegisterFormSubmit(emailFormGroup.value)">
+                <input type="text" class="input-newsletter" formControlName="email" required
+                     placeholder="Enter your email address" name="email">
+                <button type="submit" class="default-btn" >
+                    <i class='bx bx-paper-plane icon-arrow before'></i><span class="label">Subscribe Now</span>
+                    <i class="bx bx-paper-plane icon-arrow after"></i>
+                </button>
+            </form>
+            <mat-progress-bar *ngIf="actionInProgress" color="primary" mode="indeterminate"></mat-progress-bar>
+            <h6 *ngIf="emailRegisteredNum > 1" class="show-orange-red">You have already registered!</h6>
+        </div>
+    </div>
+    <div class="lang-shape4" *ngIf="!isMobile"><img src="assets/img/lang-shape4.png" alt="image"></div>
+    <div class="lang-shape5" *ngIf="!isMobile"><img src="assets/img/lang-shape5.png" alt="image"></div>
+</section>

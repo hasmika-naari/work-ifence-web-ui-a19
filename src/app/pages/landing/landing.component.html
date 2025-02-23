@@ -1,0 +1,35 @@
+<section class="page-full-section">
+<app-header-wifence ></app-header-wifence>
+<app-homefourteen-main-banner class="main-banner-area"></app-homefourteen-main-banner>
+<section class="pt-50">
+    <app-popular-features></app-popular-features>
+</section>
+<div class="courses-categories-area pt-50">
+    <app-our-dashboard-demo></app-our-dashboard-demo>
+</div>
+
+<div class="courses-categories-area pt-50">
+  <app-active-jobs></app-active-jobs>
+</div>
+
+<div class="testimonials-area pt-100" *ngIf="browser">
+  <div class="container">
+      <div class="section-title">
+          <span class="sub-title">Testimonials</span>
+          <h2>What Users Says</h2>
+      </div>
+      <app-feedback-style-two />
+  </div>
+</div>
+
+  <!-- @defer (on timer(2s)) { -->
+    <app-work-ifence-footer></app-work-ifence-footer>
+  <!-- } @placeholder (minimum 2000ms) {
+    <h1>become Partner</h1>
+  } @loading {
+    <span>Loading...</span>
+  } @error {
+    <span>Something went wrong :(</span>
+  } -->
+
+</section>

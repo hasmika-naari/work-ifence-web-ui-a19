@@ -1,0 +1,22 @@
+<section class="page-full-section">
+
+<app-header-wifence></app-header-wifence>
+<div class="page-title-area item-bg1">
+    <div id="errormask" class="errormask"></div> 
+    <div class="container">
+        <div class="page-title-content">
+            <ul>
+                <li><a (click)="backToHomePage($event)">Home</a></li>
+                <li>Opening List</li>
+            </ul>
+            <h2>Job Openings</h2>
+        </div>
+    </div>
+</div>
+<section>
+    <app-work-openings [isMobile]="isMobile" ></app-work-openings>
+</section>
+<section>
+    <app-work-ifence-footer></app-work-ifence-footer>
+</section>
+</section>

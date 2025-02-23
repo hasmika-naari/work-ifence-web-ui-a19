@@ -1,0 +1,37 @@
+<div
+    class="feedback-slides"
+    [class.dark-feedback-slides]="themeService.isDark()"
+>
+    <owl-carousel-o [options]="feedbackSlides">
+        <ng-template carouselSlide>
+            <div class="single-feedback-item">
+                <p>“Keep away from people who try to belittle your ambitions. Small people always do that, but the really great make you feel that you, too, can become great.”</p>
+                <div class="info">
+                    <h3>James Anderson</h3>
+                    <span>Switzerland</span>
+                    <img src="assets/img/user1.jpg" class="shadow rounded-circle" alt="image">
+                </div>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="single-feedback-item">
+                <p>“The difference between school and life? In school, you're taught a lesson and then given a test. In life, you're given a test that teaches you a lesson.”</p>
+                <div class="info">
+                    <h3>Lina D'Souza</h3>
+                    <span>Switzerland</span>
+                    <img src="assets/img/user2.jpg" class="shadow rounded-circle" alt="image">
+                </div>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="single-feedback-item">
+                <p>“If a man empties his purse into his head, no man can take it away from him. An investment in knowledge always pays the best interest.”</p>
+                <div class="info">
+                    <h3>David Warner</h3>
+                    <span>Switzerland</span>
+                    <img src="assets/img/user3.jpg" class="shadow rounded-circle" alt="image">
+                </div>
+            </div>
+        </ng-template>
+    </owl-carousel-o>
+</div>

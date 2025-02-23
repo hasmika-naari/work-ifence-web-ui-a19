@@ -1,0 +1,124 @@
+.dialog-container {
+    width: 100%;
+    max-width: 880px;
+    padding: 20px 50px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dialog-container h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .search-bar {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    color: black !important;
+  }
+  
+  .resume-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: start;
+    align-items: start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 400px;
+  }
+
+  .resume-list::-webkit-scrollbar{
+    display: none;
+  }
+  
+  .resume-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 15px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: #f9f9f9;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .resume-item:hover {
+    // transform: translateY(-5px);
+    border-color: #007bff;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+  }
+  
+  .resume-item.selected {
+    border-color: #007bff;
+    background: #eaf4ff;
+  }
+  
+  .resume-item img {
+    width: 150px;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  
+  .resume-item p {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 10px 0 0;
+    color: #333;
+    text-align: center;
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflowing text */
+    text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+    width: 100%; /* Restrict the width to match the container */
+    max-width: 100px; /* Set a maximum width for text container */
+  }
+  
+  /* Tooltip for full title */
+  .resume-item p:hover {
+    position: relative;
+  }
+
+  .resume-item:hover::after {
+    content: attr(title); /* Display the full title on hover */
+  }
+  
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    // background-color: #eeeeee89;
+  }
+  
+  button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  .select-btn {
+    background-color: #f05b4ecb !important;
+    border: 1px solid #f05b4ecb !important;
+    color: black !important;
+  }
+  
+  .select-btn:hover {
+    background-color: #f05b4e !important;
+    border: 1px solid #f05b4e !important;
+  }
+  

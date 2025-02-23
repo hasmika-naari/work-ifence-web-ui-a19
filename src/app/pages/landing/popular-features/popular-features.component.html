@@ -1,0 +1,48 @@
+<section
+    class="motivation-courses-area pb-70"
+    [class.dark-motivation-courses-area]="themeService.isDark()"
+>
+    <div class="container">
+        <div class="section-title text-start">
+            <span class="sub-title ">Discover Our Components</span>
+            <h2 >Features</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="single-motivation-courses-box mb-3 card"
+                         (click)="showResumeOptimizer($event)">
+                    <div class="courses-image">
+                        <a routerLink="/single-courses" class="d-block"><img src="assets/img/home/wifence-4.png" alt="image"></a>
+                    </div>
+                    <div class="courses-content">
+                        <h1>AI Resume Optimizer</h1>
+                        <p>Enhance your resume with AI-driven insights. Tailor your skills and experiences to match job requirements and improve your chances of landing interviews.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-motivation-courses-box mb-3 card"  (click)="showResumeManager($event)">
+                    <div class="courses-image">
+                        <a routerLink="/single-courses" class="d-block"><img src="assets/img/home/wifence-3.png" alt="image"></a>
+                    </div>
+                    <div class="courses-content">
+                            <h1>Resume Manager</h1>
+                            <p>Organize and manage multiple resumes effortlessly. Keep your documents up-to-date and ready for any job opportunity.</p>
+                    </div>
+                  
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-motivation-courses-box mb-3 card" (click)="showJobApplicationManager($event)">
+                    <div class="courses-image">
+                        <a routerLink="/single-courses" class="d-block"><img style="bottom: 0px;" src="assets/img/home/wifence-2.png" alt="image"></a>
+                    </div>
+                    <div class="courses-content">
+                            <h1>Job Application Manager</h1>
+                            <p>Track and manage your job applications efficiently. Stay organized with application statuses and deadlines all in one place.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

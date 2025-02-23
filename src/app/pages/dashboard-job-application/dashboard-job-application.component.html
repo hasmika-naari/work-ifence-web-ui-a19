@@ -1,0 +1,538 @@
+ <div class="job-tracker">
+  <div class="toolbar">
+    <h1 class="title">Job Applications Tracker</h1>
+    <div class="content-row">
+      <!-- Menus Section -->
+       <div class="dropdown-container">
+          <div class="flex justify-content-center">
+            <p-autoComplete 
+              [suggestions]="jobTitles" 
+              (completeMethod)="filterJobTitles($event)"
+              [(ngModel)]="filteredJobTitleValue" 
+              field="name" 
+              placeholder="Job Title"
+              [dropdown]="true">
+            </p-autoComplete>
+            <!-- <p-dropdown 
+                [options]="jobTitles" 
+                [(ngModel)]="filteredJobTitleValue"
+                [checkmark]="true" 
+                optionLabel="name" 
+                placeholder="Job Title" /> -->
+          </div>
+          <div class="flex justify-content-center">
+            <p-autoComplete 
+              [suggestions]="companies" 
+              (completeMethod)="filterCompany($event)"
+              [(ngModel)]="filteredCompanyNameValue" 
+              field="name" 
+              placeholder="Company"
+              [dropdown]="true">
+            </p-autoComplete>
+            <!-- <p-dropdown 
+                [options]="companies" 
+                [(ngModel)]="filteredCompanyNameValue"
+                [checkmark]="true" 
+                optionLabel="name"
+                placeholder="Company" /> -->
+          </div>
+          <div class="flex justify-content-center">
+            <p-autoComplete 
+              [suggestions]="locations" 
+              (completeMethod)="filterLocation($event)"
+              [(ngModel)]="filteredLocationValue" 
+              field="name" 
+              placeholder="Location"
+              [dropdown]="true">
+            </p-autoComplete>
+            <!-- <p-dropdown 
+                [options]="locations" 
+                [(ngModel)]="filteredLocationValue"
+                [checkmark]="true" 
+                optionLabel="name" 
+                placeholder="Location" /> -->
+
+          </div>
+          <div class="flex justify-content-center">
+            @if(isFilterOff){
+            <button class="add-job-btn" (click)="filterApplications()">
+              <p-icon class="pi pi-filter"></p-icon>
+              <span>Filter</span>
+            </button>
+          }
+          @else{
+            <button class="add-job-btn" (click)="unselectFilter()">
+              <p-icon class="pi pi-times"></p-icon>
+              <span>Unselect</span>
+            </button>
+          }
+          </div>
+       </div>
+      <!-- <div style="bottom: 0;">
+        <p-dropdown 
+        [options]="cities" 
+        [(ngModel)]="selectedCity"
+        [checkmark]="true" 
+        optionLabel="name" 
+        [showClear]="true"
+        placeholder="Select a City" />
+        
+      </div> -->
+  
+      <!-- Right Section: Search + Add Job -->
+      <div class="right-section">
+        <!-- Search Bar -->
+        <!-- <div class="search-container">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search applications"
+            [(ngModel)]="searchQuery"
+          />
+          <button class="search-btn" (click)="onSearch()">
+            <span class="pi pi-search"></span>
+          </button>
+        </div> -->
+  
+        <!-- Add Job Button -->
+        <button class="add-job-btn" (click)="onAddJob()">
+          <p-icon class="pi pi-plus"></p-icon>
+          <span>Add Job Application</span>
+        </button>
+      </div>
+    </div>
+  </div>
+   <section>
+    <mat-progress-bar *ngIf="isActionInProgress" style="margin-bottom: 16px;" mode="indeterminate"></mat-progress-bar>
+   </section>
+    <div class="sections" >
+        <!-- Applied Section -->
+        <div class="section" cdkDropList 
+            id="applied" 
+            [cdkDropListData]="applied_applications" 
+            [cdkDropListConnectedTo]="['interview', 'offer', 'notChosen']" 
+            (cdkDropListDropped)="drop($event, 'Applied')"
+            (cdkDragEntered)="onDragEntered('applied')"
+            (cdkDragExited)="onDragExited()">
+            <div class="section-header applied" 
+              style="display: flex;align-items: center;justify-content: center;">APPLIED ({{applied_applications.length}})</div>
+            <div class="outer-container" >
+            <div class="cards">
+              @for (application of applied_applications; track application.job_application_details.id){
+                <mat-card class="job-card" cdkDrag>
+                   <mat-card-header>
+                      <mat-card-title class="card-title">{{application.job_application_details.job_role}}</mat-card-title>
+                      <!-- <mat-card-subtitle> {{application.job_application_details.company_name}}</mat-card-subtitle> -->
+                        <button
+                          mat-icon-button
+                          [matMenuTriggerFor]="menu"
+                          class="p-context-menu-button"
+                        >
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                   </mat-card-header>
+                   <mat-card-content>
+                      <div class="row job-app-details">
+                        <div class="col-12">
+
+                        </div>
+                        <div class="col-12">
+                          <div class="col-12 text-start text-left">
+                            <h4 class="p-0 m-0">
+                              {{application.job_application_details.company_name}}
+                            </h4>
+                            <h5 class="p-0 m-0">{{application.job_application_details.location}}</h5>
+                          </div>
+                        </div>
+                        <div class="col-12 text-end">
+                          <div >
+                             <div>
+                              <span>{{application.job_application_details.formatted_date}}</span>
+                             </div>
+                             <div>
+                               <small class="show-gray data-label">Applied On</small>
+                             </div>
+                          </div>
+                        </div>
+                      </div>
+                   </mat-card-content>
+                   <mat-card-footer>
+                    <div class="footer row align-items-center justify-content-between p-0 p0">
+                      <!-- Left-Aligned Job URL Button -->
+                      <div class="col-4 d-flex align-items-center p0 p-0">
+                        <button mat-icon-button class="job-app-menu-button">
+                          <a href="{{application.job_application_details.job_reference_url}}" target="_blank" class="job-url">
+                            Job URL
+                          </a>
+                          <mat-icon>call_made</mat-icon>
+                        </button>
+                      </div>
+                  
+                      <!-- Right-Aligned Move To Button -->
+                      <div class="col-8 d-flex justify-content-end align-items-center p0 p-0">
+                        <button mat-icon-button [matMenuTriggerFor]="moveMenu" class="job-app-menu-button">
+                          Move To 
+                          <mat-icon>subdirectory_arrow_right</mat-icon>
+                        </button>
+                        <mat-menu #moveMenu="matMenu" xPosition="before">
+                          <button mat-menu-item (click)="moveApplication(application, 'Interview')">
+                            <mat-icon>arrow_forward</mat-icon>
+                            <span>Interview</span>
+                          </button>
+                          <button mat-menu-item (click)="moveApplication(application, 'Offered')">
+                            <mat-icon>arrow_forward</mat-icon>
+                            <span>Offer</span>
+                          </button>
+                          <button mat-menu-item (click)="moveApplication(application, 'not_chosen')">
+                            <mat-icon>arrow_forward</mat-icon>
+                            <span>Not Chosen</span>
+                          </button>
+                        </mat-menu>
+                      </div>
+                    </div>
+                  </mat-card-footer>
+                  
+                </mat-card>
+                <mat-menu xPosition="before" #menu="matMenu">
+                  <button mat-menu-item (click)="editApplication(application)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="deleteApplication($event, application, 'APPLIED')">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+                }
+                        <!-- If List is Empty, Show Custom Placeholder -->
+                <div *ngIf="applied_applications.length === 0" class="empty-column-placeholder">
+                  <p>Drop Here</p>
+                </div>                         
+            </div>
+            </div>
+        </div>
+        <!-- Interview Section -->
+        <div class="section" cdkDropList id="interview" 
+          [cdkDropListData]="interview_applications" 
+          [cdkDropListConnectedTo]="['applied', 'offer', 'notChosen']" 
+          (cdkDropListDropped)="drop($event, 'Interview')"
+          (cdkDragEntered)="onDragEntered('interview')"
+          (cdkDragExited)="onDragExited()">
+          <div class="section-header interview" style="display: flex;align-items: center;justify-content: center;text-transform: uppercase;">Interview ({{interview_applications.length}})</div>
+          <div class="outer-container" >
+          <div class="interview-cards">
+            @for (application of interview_applications; track application.job_application_details.id){
+              <mat-card class="job-card" cdkDrag>
+                   <!-- Define Placeholder -->
+                   <ng-template cdkDragPlaceholder>
+                    <mat-card class="job-card placeholder">
+                        <mat-card-content>
+                            <h4>Moving...</h4>
+                        </mat-card-content>
+                    </mat-card>
+                </ng-template>
+                <mat-card-header>
+                   <mat-card-title>{{application.job_application_details.job_role}}</mat-card-title>
+                   <!-- <mat-card-subtitle> {{application.job_application_details.company_name}}</mat-card-subtitle> -->
+                     <button
+                       mat-icon-button
+                       [matMenuTriggerFor]="menu"
+                       class="p-context-menu-button"
+                     >
+                       <mat-icon>more_vert</mat-icon>
+                     </button>
+                </mat-card-header>
+                <mat-card-content>
+                   <div class="row job-app-details">
+                     <div class="col-12">
+
+                     </div>
+                     <div class="col-12">
+                       <div class="col-12 text-start text-left">
+                         <h4 class="p-0 m-0">
+                           {{application.job_application_details.company_name}}
+                         </h4>
+                         <h5 class="p-0 m-0">{{application.job_application_details.location}}</h5>
+                       </div>
+                     </div>
+                     <div class="col-12 text-end">
+                      <div >
+                        <div>
+                         <span>{{application.job_application_details.formatted_date}}</span>
+                        </div>
+                        <div>
+                          <small class="show-gray">Applied On</small>
+                        </div>
+                     </div>
+                     </div>
+                   </div>
+                </mat-card-content>
+                <mat-card-footer>
+                 <div class="footer row align-items-center justify-content-between p-0 p0">
+                   <div class="col-4 d-flex align-items-center p0 p-0">
+                    <button mat-icon-button class="job-app-menu-button">
+                      <a href="{{application.job_application_details.job_reference_url}}" target="_blank" class="job-url">
+                        Job URL
+                      </a>
+                      <mat-icon>call_made</mat-icon>
+                    </button>
+                   </div>
+                   <div class="col-8 d-flex justify-content-end align-items-center p0 p-0">
+                     <button mat-icon-button [matMenuTriggerFor]="moveMenu" class="job-app-menu-button">
+                       Move To 
+                       <mat-icon>subdirectory_arrow_right</mat-icon>
+                     </button>
+                     <mat-menu xPosition="before" #moveMenu="matMenu">
+                       <button mat-menu-item (click)="moveApplication(application, 'Offered')">
+                         <mat-icon>arrow_forward</mat-icon>
+                         <span>Offer</span>
+                       </button>
+                       <button mat-menu-item (click)="moveApplication(application, 'not_chosen')">
+                         <mat-icon>arrow_forward</mat-icon>
+                         <span>NoT Chosen</span>
+                       </button>
+                       <button mat-menu-item (click)="moveApplication(application, 'Applied')">
+                        <mat-icon>arrow_forward</mat-icon>
+                        <span>Applied</span>
+                      </button>
+                     </mat-menu>
+                   </div>
+                 </div>
+                </mat-card-footer>
+             </mat-card>
+             <mat-menu xPosition="before" #menu="matMenu">
+               <button mat-menu-item (click)="editApplication(application)">
+                 <mat-icon>edit</mat-icon>
+                 <span>Edit</span>
+               </button>
+               <button mat-menu-item (click)="deleteApplication($event, application, 'APPLIED')">
+                 <mat-icon>delete</mat-icon>
+                 <span>Delete</span>
+               </button>
+             </mat-menu> 
+              }    
+               <!-- If List is Empty, Show Custom Placeholder -->
+            <div *ngIf="interview_applications.length === 0" class="empty-column-placeholder">
+              <p>Drop Here {{highlightedSection}}</p>
+            </div>            
+          </div>
+          </div>
+      </div>
+
+        <!-- Offer Section -->
+        <div class="section" cdkDropList id="offer" 
+        [cdkDropListData]="offer_applications" 
+        [cdkDropListConnectedTo]="['applied', 'interview', 'notChosen']" 
+        (cdkDropListDropped)="drop($event, 'Offered')"
+        (cdkDragEntered)="onDragEntered('offer')"
+        (cdkDragExited)="onDragExited()">
+            <div class="section-header offer" style="display: flex;align-items: center;justify-content: center;text-transform: uppercase;">Offer ({{offer_applications.length}})</div>
+            <div class="offer-outer-container" >
+            <div class="offer-cards">
+              @for (application of offer_applications; track application.job_application_details.id){
+                <mat-card class="job-card" cdkDrag>
+                     <!-- Define Placeholder -->
+                     <ng-template cdkDragPlaceholder>
+                      <mat-card class="job-card placeholder">
+                          <mat-card-content>
+                              <h4>Moving...</h4>
+                          </mat-card-content>
+                      </mat-card>
+                  </ng-template>
+                  <mat-card-header>
+                     <mat-card-title>{{application.job_application_details.job_role}}</mat-card-title>
+                     <!-- <mat-card-subtitle> {{application.job_application_details.company_name}}</mat-card-subtitle> -->
+                       <button
+                         mat-icon-button
+                         [matMenuTriggerFor]="menu"
+                         class="p-context-menu-button"
+                       >
+                         <mat-icon>more_vert</mat-icon>
+                       </button>
+                  </mat-card-header>
+                  <mat-card-content>
+                     <div class="row job-app-details">
+                       <div class="col-12">
+
+                       </div>
+                       <div class="col-12">
+                         <div class="col-12 text-start text-left">
+                           <h4 class="p-0 m-0">
+                             {{application.job_application_details.company_name}}
+                           </h4>
+                           <h5 class="p-0 m-0">{{application.job_application_details.location}}</h5>
+                         </div>
+                       </div>
+                       <div class="col-12 text-end">
+                        <div >
+                          <div>
+                           <span>{{application.job_application_details.formatted_date}}</span>
+                          </div>
+                          <div>
+                            <small class="show-gray">Applied On</small>
+                          </div>
+                       </div>
+                       </div>
+                     </div>
+                  </mat-card-content>
+                  <mat-card-footer>
+                   <div class="footer row align-items-center justify-content-between p-0 p0" >
+                     <div class="col-4 d-flex align-items-center p0 p-0">
+                      <button mat-icon-button class="job-app-menu-button">
+                        <a href="{{application.job_application_details.job_reference_url}}" target="_blank" class="job-url">
+                          Job URL
+                        </a>
+                        <mat-icon>call_made</mat-icon>
+                      </button>
+                     </div>
+                     <div class="col-8 d-flex justify-content-end align-items-center p0 p-0">
+                       <button mat-icon-button [matMenuTriggerFor]="moveMenu" class="job-app-menu-button">
+                         Move To 
+                         <mat-icon>subdirectory_arrow_right</mat-icon>
+                       </button>
+                       <mat-menu xPosition="before" #moveMenu="matMenu">
+                         <button mat-menu-item (click)="moveApplication(application, 'Applied')">
+                           <mat-icon>arrow_forward</mat-icon>
+                           <span>NoT Chosen</span>
+                         </button>
+                         <button mat-menu-item (click)="moveApplication(application, 'Interview')">
+                          <mat-icon>arrow_forward</mat-icon>
+                          <span>Interview</span>
+                        </button>
+                        <button mat-menu-item (click)="moveApplication(application, 'Applied')">
+                          <mat-icon>arrow_forward</mat-icon>
+                          <span>Applied</span>
+                        </button>
+                       </mat-menu>
+                     </div>
+                   </div>
+                  </mat-card-footer>
+               </mat-card>
+               <mat-menu xPosition="before" #menu="matMenu">
+                 <button mat-menu-item (click)="editApplication(application)">
+                   <mat-icon>edit</mat-icon>
+                   <span>Edit</span>
+                 </button>
+                 <button mat-menu-item (click)="deleteApplication($event, application, 'APPLIED')">
+                   <mat-icon>delete</mat-icon>
+                   <span>Delete</span>
+                 </button>
+               </mat-menu>
+                } 
+                    <!-- If List is Empty, Show Custom Placeholder -->
+              <div *ngIf="offer_applications.length === 0" class="empty-column-placeholder">
+                <p>Drop Here</p>
+              </div>         
+            </div>
+            </div>
+        </div>
+        <!-- Not Chosen Section -->
+        <div class="section" cdkDropList id="notChosen" 
+          [cdkDropListData]="not_chosen_applications" 
+          [cdkDropListConnectedTo]="['applied', 'interview', 'offer']"
+          (cdkDropListDropped)="drop($event, 'not_chosen')"
+          (cdkDragEntered)="onDragEntered('notChosen')"
+          (cdkDragExited)="onDragExited()">
+            <div class="section-header not-chosen" style="display: flex;align-items: center;justify-content: center;text-transform: uppercase;">Not Chosen ({{not_chosen_applications.length}})</div>
+            <div class="not-choosen-outer-container" >
+            <div class="not-choosen-cards">
+              @for (application of not_chosen_applications; track application.job_application_details.id){
+                <mat-card class="job-card" cdkDrag>
+                     <!-- Define Placeholder -->
+                     <ng-template cdkDragPlaceholder>
+                      <mat-card class="job-card placeholder">
+                          <mat-card-content>
+                              <h4>Moving...</h4>
+                          </mat-card-content>
+                      </mat-card>
+                  </ng-template>
+                  <mat-card-header>
+                     <mat-card-title>{{application.job_application_details.job_role}}</mat-card-title>
+                     <!-- <mat-card-subtitle> {{application.job_application_details.company_name}}</mat-card-subtitle> -->
+                       <button
+                         mat-icon-button
+                         [matMenuTriggerFor]="menu"
+                         class="p-context-menu-button"
+                       >
+                         <mat-icon>more_vert</mat-icon>
+                       </button>
+                  </mat-card-header>
+                  <mat-card-content>
+                     <div class="row job-app-details">
+                       <div class="col-12">
+
+                       </div>
+                       <div class="col-12">
+                         <div class="col-12 text-start text-left">
+                           <h4 class="p-0 m-0">
+                             {{application.job_application_details.company_name}}
+                           </h4>
+                           <h5 class="p-0 m-0">{{application.job_application_details.location}}</h5>
+                         </div>
+                       </div>
+                       <div class="col-12 text-end ">
+                        <div >
+                          <div>
+                           <span>{{application.job_application_details.formatted_date}}</span>
+                          </div>
+                          <div>
+                            <small class="show-gray">Applied On</small>
+                          </div>
+                       </div>
+                       </div>
+                     </div>
+                  </mat-card-content>
+                  <mat-card-footer>
+                   <div class="footer row align-items-center justify-content-between p-0 p0" >
+                     <div class="col-4 d-flex align-items-center p0 p-0">
+                      <button mat-icon-button class="job-app-menu-button">
+                        <a href="{{application.job_application_details.job_reference_url}}" target="_blank" class="job-url">
+                          Job URL
+                        </a>
+                        <mat-icon>call_made</mat-icon>
+                      </button>
+                     </div>
+                     <div class="col-8 d-flex justify-content-end align-items-center p0 p-0">
+                       <button mat-icon-button [matMenuTriggerFor]="moveMenu" class="job-app-menu-button">
+                         Move To 
+                         <mat-icon>subdirectory_arrow_right</mat-icon>
+                       </button>
+                       <mat-menu xPosition="before" #moveMenu="matMenu">
+                        <button mat-menu-item (click)="moveApplication(application, 'Applied')">
+                          <mat-icon>arrow_forward</mat-icon>
+                          <span>Applied</span>
+                        </button>
+                         <button mat-menu-item (click)="moveApplication(application, 'Interview')">
+                           <mat-icon>arrow_forward</mat-icon>
+                           <span>Interview</span>
+                         </button>
+                         <button mat-menu-item (click)="moveApplication(application, 'Offered')">
+                           <mat-icon>arrow_forward</mat-icon>
+                           <span>Offer</span>
+                         </button>
+                        
+                       </mat-menu>
+                     </div>
+                   </div>
+                  </mat-card-footer>
+               </mat-card>
+               <mat-menu xPosition="before" #menu="matMenu">
+                 <button mat-menu-item (click)="editApplication(application)">
+                   <mat-icon>edit</mat-icon>
+                   <span>Edit</span>
+                 </button>
+                 <button mat-menu-item (click)="deleteApplication($event, application, 'APPLIED')">
+                   <mat-icon>delete</mat-icon>
+                   <span>Delete</span>
+                 </button>
+               </mat-menu>
+                } 
+                       <!-- If List is Empty, Show Custom Placeholder -->
+              <div *ngIf="highlightedSection === 'notChosen' && not_chosen_applications.length === 0" class="empty-column-placeholder">
+                <p>Drop Here</p>
+              </div>        
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+<div class="row h-100 pl-4 pr-4">
+    <div class="col-12"  >
+        <form [formGroup]="summaryForm">
+            <div class="row wrap">
+                <div class="col-12 p-b-1 p-t-2 mt-4">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Experiance in years</mat-label>
+                        <mat-select placeholder="Experiance">
+                            <mat-option *ngFor="let cat of experienceCategory" [value]="cat">
+                                {{cat}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 m-0" style="padding-right: 10.5px;">
+                    @if(!is_summary_loading){
+                        <button
+                           class="d-flex ai-btn" (click)="optimizeText()" >
+                              <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
+                        </button>
+                    }
+                    @if(is_summary_loading){
+                        <button class="use-ai-btn d-flex" style="float: right;">
+                            <div class="progress-container">
+                                <div class="progress-bar"></div>
+                                <i class="pi pi-reddit pi-reddit-pos" ></i>
+                              </div>
+                        </button>
+                    }
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field class="w-100">
+                        <textarea matInput placeholder="Job Description" #profileSummary formControlName="profile_summary" rows="12"></textarea>
+                        <mat-hint>Note : Use Job description to find skills and ATS keywords.</mat-hint>
+                      </mat-form-field>
+                </div>
+                
+            </div>
+        </form>
+    </div>
+    <!-- <div class="col-12 p-t-2"  >
+        <div class="row form-action-buttons text-right p-0 mt-3">
+            @if(!is_summary_loading){
+            <div style="justify-content: end;">
+                <button class="next-btn" (click)="optimizeText()"  id="saveButton"><i class="pi pi-reddit pi-reddit-pos" ></i> Use Botbro</button>
+            </div>
+            }
+        @else{
+            <div style="justify-content: end;">
+                <button class="next-btn" style="border-color: 1px solid #f05b4e !important;background-color: transparent;color: #f05b4e !important;" id="saveButton">
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                        <i class="pi pi-reddit pi-reddit-pos" ></i>
+                    </div>
+                </button>
+            </div>
+        }
+        </div>
+    </div> -->
+</div>

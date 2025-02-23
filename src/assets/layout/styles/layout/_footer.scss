@@ -1,0 +1,41 @@
+.layout-footer {
+    transition: margin-left $transitionDuration;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0px;
+    border-top: 1px solid var(--surface-border);
+    position: relative;
+    .footer-bottom-area {
+        // margin-top: 20px;
+        text-align: center;
+        background-color: #F5F5F5;
+        width: 100%;
+        padding: {
+            top: 30px;
+            bottom: 30px;
+        };
+        .logo {
+            margin-bottom: 18px;
+        }
+        p {
+            color: var(--blackColor2);
+            font-size: 14px;
+    
+            i {
+                position: relative;
+                top: 1px;
+            }
+            a {
+                display: inline-block;
+                font-weight: 600;
+                color: var(--blackColor);
+    
+                &:hover, &:focus {
+                    color: var(--mainColor);
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,68 @@
+<div class="row h-100 pl-4 pr-4">
+    <div class="col-12">
+      <form [formGroup]="contactForm">
+        <div class="row wrap">
+  
+          <!-- Close button -->
+          <div class="col-12 text-right" style="padding-bottom: 18px;">
+            <i class='bx bx-x close-dialog-icon' (click)="onNoClick()" matTooltip="Close"></i>
+          </div>
+  
+          <!-- Header with Save button -->
+          <div class="col-12 text-right" style="padding-bottom: 18px;">
+            <span class="dialog-header-label">{{who}}Contact Details</span>
+            <button mat-raised-button color="primary" (click)="onConfirmHandler()">Save Contact</button>
+          </div>
+  
+          <!-- First Name -->
+          <div class="col-6 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>First Name</mat-label>
+              <input matInput placeholder="First Name" formControlName="firstName">
+            </mat-form-field>
+          </div>
+  
+          <!-- Last Name -->
+          <div class="col-6 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Last Name</mat-label>
+              <input matInput placeholder="Last Name" formControlName="lastName">
+            </mat-form-field>
+          </div>
+  
+          <!-- Email -->
+          <div class="col-6 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="Email" formControlName="email" type="email">
+            </mat-form-field>
+          </div>
+  
+          <!-- Phone -->
+          <div class="col-6 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Phone</mat-label>
+              <input matInput placeholder="Phone" formControlName="phone" type="tel">
+            </mat-form-field>
+          </div>
+  
+          <!-- Company Name -->
+          <div class="col-12 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Company Name</mat-label>
+              <input matInput placeholder="Company Name" formControlName="companyName">
+            </mat-form-field>
+          </div>
+  
+          <!-- Save Button -->
+          <div class="col-12 p-t-4">
+            <div class="text-right">
+              <button mat-raised-button color="primary" (click)="saveContact()">Save Contact</button>
+            </div>
+          </div>
+  
+        </div>
+      </form>
+    </div>
+  </div>
+  

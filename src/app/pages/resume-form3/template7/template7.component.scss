@@ -1,0 +1,229 @@
+.resume-container {
+    font-family: 'Arial', sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #333;
+    text-align: start !important;
+}
+
+
+
+.template7-experience{
+    padding-top: 10px !important;
+    .template7-section-title{
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+
+         .add-education-icon{
+            cursor: pointer;
+            font-size: small;
+            display: none;
+        }
+    }
+
+    &:hover{
+        .template7-section-title{
+              .add-education-icon{
+                cursor: pointer;
+                font-size: small;
+                display: block;
+            }
+
+        }
+    
+    }
+
+}
+
+
+.template7-projects{
+    padding-top: 10px !important;
+    .template7-section-title{
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+
+         .add-project-icon{
+            cursor: pointer;
+            display: none;
+            font-size: small;
+        }
+    }
+
+    &:hover{
+        .template7-section-title{
+           .add-project-icon{
+                cursor: pointer;
+                display: block;
+                font-size: small;
+            }
+        }
+    
+    }
+
+}
+
+
+.template7-education{
+    padding-top: 10px !important;
+    .template7-section-title{
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+
+         .add-education-icon{
+            cursor: pointer;
+            font-size: small;
+            display: none;
+        }
+    }
+
+    &:hover{
+        .template7-section-title{
+              .add-education-icon{
+                cursor: pointer;
+                font-size: small;
+                display: block;
+            }
+
+        }
+    
+    }
+
+}
+
+
+.template7-skills{
+    padding-top: 10px !important;
+    .template7-section-title{
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+
+       .add-skill-icon{
+            cursor: pointer;
+            display: none;
+            font-size: small;
+        }
+    }
+
+    &:hover{
+        .template7-section-title{
+            .add-skill-icon{
+                cursor: pointer;
+                display: block;
+                font-size: small;
+            }
+
+        }
+    
+    }
+
+}
+
+
+a{
+    color: #0000EE; /* Unvisited link color */
+    text-decoration: underline;
+}
+header {
+    text-align: left;
+    margin-bottom: 10px;
+}
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    color: #000;
+}
+header p {
+    font-size: 14px;
+    margin: 2px 0;
+}
+section {
+    margin-bottom: 10px;
+}
+h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+h3 {
+    font-size: 13px;
+    margin: 5px 0;
+    color: #000;
+}
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+.experience, .education, .skills, .projects {
+    margin-bottom: 10px;
+}
+.experience p, .education p, .skills p, .projects p {
+    margin: 2px 0;
+}
+
+.course-work{
+    line-height: 1.4;
+     text-align: left;
+    .course-work-section-title{
+      font-weight: 400;
+      color: black;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(101, 105, 109, .5);
+      white-space: pre-wrap;
+      padding-bottom: 1px;
+      // font-family: Rubik, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
+      font-size: 1rem;
+      line-height: 25px;
+        height: 25px !important;
+      width: 100%;
+      display: block;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+    }
+  
+    .course-work-section-content{
+      padding: 8px 16px;
+      border-radius: 5px;
+      color: black;
+      text-align: left;
+  
+    .qualification-name{
+      white-space: pre-wrap;
+      color: black;
+      font-size: 1.1rem;
+      // line-height: 18px;
+      font-weight: 500 !important;
+    }
+  
+    .university-name{
+      white-space: pre-wrap;
+      color: black;
+      font-size: 1rem !important;
+      // line-height: 14px !important;
+    }
+  
+    .course-work-list{
+      display: flex;
+      flex-wrap: wrap;
+      font-size: 1rem;
+      text-align:left;
+  
+      .course-work-lisit-item{
+        flex: 0 0 25%;
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  &:hover{
+    .add-education-icon{
+      display: block;
+      cursor: pointer;
+    }
+  }
+  
+  }

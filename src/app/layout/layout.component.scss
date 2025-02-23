@@ -1,0 +1,159 @@
+
+///////////////
+:host {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Force font on all elements within this component */
+  :host * {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  
+// Main Content
+.main-content {
+  overflow: hidden;
+  min-height: 100vh;
+  background-color: rgb(250, 251, 253); // #f5f7fa;
+  // padding: {
+  //     top: 105px;
+  //     left: 282px;
+  //     right: 25px;
+  // };
+  // &.active, &.hide-sidebar {
+  //     padding-left: 85px;
+  // }
+}
+
+// Blank Page
+.blank-page {
+  app-sidebar, app-footer, app-header {
+      display: none !important;
+  }
+  .main-content {
+      padding: 0 !important;
+  }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+  // Main Content
+  .main-content {
+      padding: {
+          top: 150px;
+          left: 15px;
+          right: 15px;
+      };
+      &.active, &.hide-sidebar {
+          padding-left: 15px;
+      }
+  }
+  
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width : 576px) and (max-width : 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+
+  // Main Content
+  .main-content {
+      padding: {
+          top: 101px;
+          left: 25px;
+          right: 25px;
+      };
+      &.active, &.hide-sidebar {
+          padding-left: 25px;
+      }
+  }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {
+
+  // Main Content
+  .main-content {
+      padding: {
+          left: 25px;
+          right: 25px;
+      };
+      &.active, &.hide-sidebar {
+          padding-left: 25px;
+      }
+  }
+
+}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1600px */
+@media only screen and (min-width: 1600px) {}
+
+
+////////////////////////////////
+/* Ensure the parent flex container takes full viewport height */
+.d-flex {
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 250px; /* Adjust sidebar width as needed */
+    height: 100vh; /* Full height */
+    overflow-y: auto;
+    // background-color: #2C3E50; /* Adjust sidebar color */
+}
+
+.sidebar-mobile {
+    // width: 250px; /* Adjust sidebar width as needed */
+    height: 100vh; /* Full height */
+    overflow-y: auto;
+    // background-color: #2C3E50; /* Adjust sidebar color */
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100vh !important;
+}
+
+/* Content Wrapper (Ensures router-outlet stays within main content) */
+.content-wrapper {
+    flex-grow: 1 !important;
+    padding: 0px !important; /* Ensures some spacing */
+    overflow-y: hidden !important; /* Prevents content overflow */
+    padding-top: 0px;
+}
+
+/* Ensure Header & Footer stay fixed in layout */
+app-header {
+    width: 100%;
+    height: 77px;
+    background: #ffffff;
+    // box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+app-footer {
+    width: 100%;
+    height: 50px;
+    background: #f1f1f1;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Sidebar Collapse Handling */
+.sidebar.collapsed {
+    width: 75px; /* Adjust for collapsed mode */
+}
+
+.main-content.active {
+    margin-left: 75px; /* Adjust main content when sidebar is collapsed */
+}
+ 

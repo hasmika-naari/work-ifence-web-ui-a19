@@ -1,0 +1,1272 @@
+ /*================================================
+    Default CSS
+    =================================================*/
+    $font_family: 'Poppins', sans-serif;
+    $template_color: #FFD358; // #b81f89;
+    $template_bgcolor: #282835;
+    $transparent-primary_color: #0404048a;
+
+    $template_color2: #f0c03b;
+    $template_color_dark: #FFD358;  // #b81f89;
+    $title-h1-color: #f7ecea;
+    $template_color2-opcacity05: #b81f8a88;  // #b81f8a88;
+    $white_color: #ffffff;
+    $black_color: #231F40;
+    $paragraph_color: #0f0f11;
+    $logo-text-floating-color: #18b918;
+
+
+.lang-shape1 {
+    position: absolute;
+    left: 0;
+    top: 16%;
+    z-index: -1;
+
+    img {
+        max-width: 100px;
+        animation: movebounce2 8s linear infinite;
+    }
+}
+.lang-shape2 {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: -1;
+
+    img {
+        animation: movebounce2 8s linear infinite;
+        max-width: 170px;
+    }
+}
+.lang-shape3 {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: -1;
+
+    img {
+        animation: movebounce2 8s linear infinite;
+        max-width: 250px;
+    }
+}
+.lang-shape4 {
+    position: absolute;
+    right: 5%;
+    top: 30%;
+    z-index: -1;
+
+    img {
+        animation: movebounce3 8s linear infinite;
+    }
+}
+.lang-shape5 {
+    position: absolute;
+    left: 1%;
+    bottom: 0;
+    z-index: -1;
+
+    img {
+        animation: movebounce3 8s linear infinite;
+        max-width: 350px;
+    }
+}
+
+/*================================================
+Subscribe CSS
+=================================================*/
+.subscribe-area {
+    position: relative;
+    z-index: 1;
+    background: {
+        image: url(../assets/img/map.png);
+        position: center center;
+        size: cover;
+        attachment: fixed;
+        repeat: no-repeat;
+    }
+    &::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff !important;
+        opacity: .67;
+    }
+    .section-title {
+        h2, p {
+            color: $white_color;
+        }
+        .bar {
+            background: $white_color;
+
+            &::before {
+                background: $template_color !important;
+            }
+        }
+    }
+    .newsletter-form {
+        max-width: 650px;
+        margin: 0 auto;
+        position: relative;
+        border-radius: 5px;
+
+        .form-control {
+            height: 70px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 5px;
+            color: $paragraph_color !important;
+            padding-left: 20px;
+
+            &::placeholder {
+                color: $paragraph_color !important;
+            }
+        }
+        .btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+
+            &:hover, &:focus {
+                transform: translateY(0);
+            }
+        }
+    }
+}
+.bubble-animate {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+
+    .circle {
+        background: $template_color !important;
+        bottom: 0;
+        position: absolute;
+        border-radius: 50%;
+
+        &.small {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+
+            &.square1 {
+                left: 18%;
+                top: 100%;
+                animation-name: smallBubble;
+                animation-duration: 3s;
+                animation-iteration-count: infinite;
+                animation-delay: 1s;
+                animation-timing-function: ease-in;
+            }
+            &.square2 {
+                left: 36%;
+                top: 100%;
+                animation-name: smallBubble;
+                animation-duration: 4s;
+                animation-iteration-count: infinite;
+                animation-delay: 2s;
+                animation-timing-function: ease-in;
+            }
+            &.square3 {
+                left: 54%;
+                top: 100%;
+                animation-name: smallBubble;
+                animation-duration: 5s;
+                animation-iteration-count: infinite;
+                animation-delay: 1s;
+                animation-timing-function: ease-in;
+            }
+            &.square4 {
+                left: 72%;
+                top: 100%;
+                animation-name: smallBubble;
+                animation-duration: 6s;
+                animation-iteration-count: infinite;
+                animation-delay: 4s;
+                animation-timing-function: ease-in;
+            }
+            &.square5 {
+                left: 90%;
+                top: 100%;
+                animation-name: smallBubble;
+                animation-duration: 7s;
+                animation-delay: 5s;
+                animation-timing-function: ease-in;
+            }
+        }
+        &.medium {
+            width: 40px;
+            height: 40px;
+            opacity: 0.35;
+
+            &.square1 {
+                left: 21%;
+                top: 100%;
+                animation-name: mediumBubble;
+                animation-duration: 5s;
+                animation-iteration-count: infinite;
+                animation-delay: 2s;
+                animation-timing-function: ease-in;
+            }
+            &.square2 {
+                left: 42%;
+                top: 100%;
+                animation-name: mediumBubble;
+                animation-duration: 8s;
+                animation-iteration-count: infinite;
+                animation-delay: 6s;
+                animation-timing-function: ease-in;
+            }
+            &.square3 {
+                left: 63%;
+                top: 100%;
+                animation-name: mediumBubble;
+                animation-duration: 12s;
+                animation-iteration-count: infinite;
+                animation-delay: 12s;
+                animation-timing-function: ease-in;
+            }
+            &.square4 {
+                left: 84%;
+                top: 100%;
+                animation-name: mediumBubble;
+                animation-duration: 4s;
+                animation-iteration-count: infinite;
+                animation-delay: 12s;
+                animation-timing-function: ease-in;
+            }
+            &.square5 {
+                left: 105%;
+                top: 100%;
+                animation-name: mediumBubble;
+                animation-duration: 18s;
+                animation-iteration-count: infinite;
+                animation-delay: 6s;
+                animation-timing-function: ease-in;
+            }
+        }
+        &.large {
+            width: 100px;
+            height: 100px;
+            opacity: 0.15;
+
+            &.square1 {
+                left: 21%;
+                top: 100%;
+                animation-name: bigBubble;
+                animation-duration: 6s;
+                animation-iteration-count: infinite;
+                animation-delay: 6s;
+                animation-timing-function: ease-in;
+            }
+            &.square2 {
+                left: 42%;
+                top: 100%;
+                animation-name: bigBubble;
+                animation-duration: 6s;
+                animation-iteration-count: infinite;
+                animation-delay: 3s;
+                animation-timing-function: ease-in;
+            }
+            &.square3 {
+                left: 63%;
+                top: 100%;
+                animation-name: bigBubble;
+                animation-duration: 6s;
+                animation-iteration-count: infinite;
+                animation-delay: 13s;
+                animation-timing-function: ease-in;
+            }
+            &.square4 {
+                left: 84%;
+                top: 100%;
+                animation-name: bigBubble;
+                animation-duration: 6s;
+                animation-iteration-count: infinite;
+                animation-delay: 9s;
+                animation-timing-function: ease-in;
+            }
+            &.square5 {
+                left: 105%;
+                top: 100%;
+                animation-name: bigBubble;
+                animation-duration: 6s;
+                animation-iteration-count: infinite;
+                animation-delay: 13s;
+                animation-timing-function: ease-in;
+            }
+        }
+    }
+}
+@-webkit-keyframes smallBubble {
+    0% {
+        top: 100%;
+        margin-left: 10px;
+    }
+    25% {
+        margin-left: -10px;
+    }
+    50% {
+        margin-left: 10px;
+    }
+    75% {
+        margin-left: -10px;
+    }
+    100% {
+        top: 0%;
+        opacity: 0;
+        margin-left: 0px;
+    }
+}
+@keyframes smallBubble {
+    0% {
+        top: 100%;
+        margin-left: 10px;
+    }
+    25% {
+        margin-left: -10px;
+    }
+    50% {
+        margin-left: 10px;
+    }
+
+    75% {
+        margin-left: -10px;
+    }
+    100% {
+        top: 0%;
+        opacity: 0;
+        margin-left: 0px;
+    }
+}
+@-webkit-keyframes mediumBubble {
+    0% {
+        top: 100%;
+        margin-left: 15px;
+    }
+    25% {
+        margin-left: -15px;
+    }
+    50% {
+        margin-left: 15px;
+    }
+    75% {
+        margin-left: -15px;
+    }
+    100% {
+        top: 0%;
+        opacity: 0;
+        margin-left: 0px;
+    }
+}
+@keyframes mediumBubble {
+    0% {
+        top: 100%;
+        margin-left: 15px;
+    }
+    25% {
+        margin-left: -15px;
+    }
+    50% {
+        margin-left: 15px;
+    }
+    75% {
+        margin-left: -15px;
+    }
+    100% {
+        top: 0%;
+        opacity: 0;
+        margin-left: 0px;
+    }
+}
+@-webkit-keyframes bigBubble {
+    0% {
+        top: 100%;
+        margin-left: 20px;
+    }
+    25% {
+        margin-left: -20px;
+    }
+    50% {
+        margin-left: 20px;
+    }
+    75% {
+        margin-left: -20px;
+    }
+    100% {
+        top: 0%;
+        opacity: 0;
+        margin-left: 0px;
+    }
+}
+@keyframes bigBubble {
+    0% {
+        top: 100%;
+        margin-left: 20px;
+    }
+    25% {
+        margin-left: -20px;
+    }
+    50% {
+        margin-left: 20px;
+    }
+    75% {
+        margin-left: -20px;
+    }
+    100% {
+        top: 0%;
+        opacity: 0;
+        margin-left: 0px;
+    }
+}
+
+.bee-compete-categories-slides{
+    .owl-prev {
+        font-size: 30px !important;
+        top: 35%;
+        position: absolute;
+        left: -70px;
+        background-color: var(--grayButtonColor) !important;
+        color: var(--grayButtonTextColor);
+        i{
+        color: var(--grayButtonTextColor);
+        }
+        border-radius: 30px !important;
+        width: 50px;
+        height: 50px;
+    }
+    .owl-next:hover, .owl-prev:hover {
+        background-color: var(--mainColor) !important;
+        i{
+            color:  var(--blackColor2) !important;
+        }
+    }
+
+    .owl-next{
+        font-size: 30px!important;
+        top: 35%;
+        position: absolute;
+        right: -70px;
+        background-color: var(--grayButtonColor) !important;
+        color: var(--grayButtonTextColor);
+        i{
+        color: var(--grayButtonTextColor);
+        }
+        border-radius: 30px !important;
+        width: 50px;
+        height: 50px;
+    }
+
+}
+
+.gct-features-list{
+    .owl-prev {
+        font-size: 20px !important;
+        font-size: 20px!important;
+        top: 60px;
+        background-color: #18b918!important;
+        position: absolute;
+        left: 0px;
+        background-color: $logo-text-floating-color !important;
+        // opacity: 0; /* Initially hidden */
+        // transform: translateY(50px); /* Start below the viewport */
+        // animation: fadeInUp 2s ease forwards; /* Animation for fading in and sliding up */
+        // animation-delay: 1s;
+
+    }
+
+    .owl-next{
+        font-size: 20px!important;
+        top: 60px;
+        background-color: #18b918!important;
+        position: absolute;
+        right: 0px;
+        font-size: 20px !important;
+        background-color: $logo-text-floating-color !important;
+        // opacity: 0; /* Initially hidden */
+        // transform: translateY(50px); /* Start below the viewport */
+        // animation: fadeInUp 2s ease forwards; /* Animation for fading in and sliding up */
+        // animation-delay: 1s;
+
+    }
+}
+
+.gct-lovein-features-list{
+    .owl-prev {
+        font-size: 30px !important;
+        // position: absolute !important;
+        // left: 0px !important;
+        // top: 70px !important;
+        position: absolute;
+        left: 0px;
+        top: 25%;
+        background-color: $logo-text-floating-color !important;
+        opacity: 0; /* Initially hidden */
+        transform: translateY(50px); /* Start below the viewport */
+        animation: fadeInUp 1s ease forwards; /* Animation for fading in and sliding up */
+        animation-delay: 0.5s;
+
+    }
+
+    .owl-next{
+        // position: absolute !important;
+        // right: 0px !important;
+        // top: 40px !important;
+        position: absolute;
+        right: 0px;
+        top: 25%;
+        font-size: 30px !important;
+        background-color: $logo-text-floating-color !important;
+        opacity: 0; /* Initially hidden */
+        transform: translateY(50px); /* Start below the viewport */
+        animation: fadeInUp 1s ease forwards; /* Animation for fading in and sliding up */
+        animation-delay: 0.5s;
+
+    }
+}
+
+.blog-slides{
+    .owl-prev {
+        font-size: 30px !important;
+        // position: absolute !important;
+        // left: 0px !important;
+        // top: 70px !important;
+        background-color: $logo-text-floating-color !important;
+        opacity: 0; /* Initially hidden */
+        transform: translateY(50px); /* Start below the viewport */
+        animation: fadeInUp 1s ease forwards; /* Animation for fading in and sliding up */
+        animation-delay: 0.5s;
+
+    }
+
+    .owl-next{
+        // position: absolute !important;
+        // right: 0px !important;
+        // top: 70px !important;
+        font-size: 30px !important;
+        background-color: $logo-text-floating-color !important;
+        opacity: 0; /* Initially hidden */
+        transform: translateY(50px); /* Start below the viewport */
+        animation: fadeInUp 1s ease forwards; /* Animation for fading in and sliding up */
+        animation-delay: 0.5s;
+
+    }
+}
+
+::ng-deep .owl-theme .owl-dots .owl-dot span {
+    background: #D6D6D6!important; /* dots color*/
+  }
+ 
+.owl-dot.active span,
+.owl-dot:hover span {
+    background: $logo-text-floating-color !important; /*active and on hover color*/
+  }
+
+///// Elipses classes
+.elipse-with-1line{
+    overflow: hidden   !important;
+    text-overflow: ellipsis !important; 
+    display: -webkit-box !important; 
+    -webkit-line-clamp: 1 !important; 
+    -webkit-box-orient: vertical !important;
+    max-width: 99% !important;
+}
+
+.elipse-with-1line-98{
+    overflow: hidden   !important;
+    text-overflow: ellipsis !important; 
+    display: -webkit-box !important; 
+    -webkit-line-clamp: 1 !important; 
+    -webkit-box-orient: vertical !important;
+    max-width: 98% !important;
+}
+
+
+.apply-fadein-up{
+    transform: translateY(50px); /* Start below the viewport */
+    animation: fadeInUp 2s ease forwards; /* Animation for fading in and sliding up */
+}
+
+.delay-1s{
+    animation-delay: 1s; /* Delay before the animation starts */
+}
+
+.delay-2s{
+    animation-delay: 2s; /* Delay before the animation starts */
+}
+
+
+.streach-h-100{
+    width: 100% !important;
+}
+
+.streach-h-95{
+    width: 95% !important;
+}
+
+.streach-v-100{
+    height: 100% !important;
+}
+
+.streach-v-0{
+    height: 0% !important;
+}
+
+.mat-bottom-sheet-container{
+    padding: 0px !important;
+}
+
+.show-orange-red{
+    color: orangered !important;
+}
+
+.show-error{
+    color: var(--mat-form-field-error-text-color) !important;
+}
+
+.show-green{
+    color: green !important;
+}
+.show-info{
+    color:#3280da;
+}
+
+.show-silver{
+    color: silver !important;
+}
+
+.show-gray{
+    color: gray !important;
+}
+.resume-icon-gray{
+   color:  rgb(185, 185, 185);
+}
+.resume-font-color{
+    color: rgb(56, 67, 71) !important;
+}
+.show-white{
+    color: white !important;
+}
+
+.show-primary{
+    color: var(--mainColor) !important;
+}
+
+.show-accent{
+    color: var(--blackColor2) !important
+}
+.show-info{
+    color: var(--infoColor3) !important
+}
+
+.bold{
+    font-weight: 600 !important;
+}
+
+.error{
+    background-color: rgba(255, 68, 0, 0.966) !important;
+    color: white !important;
+
+    .mat-simple-snackbar-action{
+        span{
+            color: white !important;
+        }
+    }
+}
+
+.success{
+    background-color: rgba(0, 128, 0, 0.973) !important;
+    color: white !important;
+
+    .mat-simple-snackbar-action{
+        span{
+            color: white !important;
+        }
+    }
+}
+
+.mat-mdc-snack-bar-container {
+    .mdc-snackbar__surface{
+        background-color: white !important;
+    }
+
+    .mdc-snackbar__label{
+        color: #333333 !important;
+      }
+
+    .success {
+        background: #388E3C !important;
+    }
+
+    .error {
+        background: #E53935 !important;
+    }
+}
+
+
+////////////////////////////////
+.home-slides-list{
+    .owl-carousel {
+        position: relative;
+    }
+    .owl-next, .owl-prev {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+    }
+    .owl-next {
+        right: 30px;
+        display: flex;
+    }
+    .owl-prev{
+        left: 30px;
+        display: flex;
+    }
+
+    .owl-theme .owl-nav [class*=owl-] {
+        background: #ffffff09 !important;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.07) !important;
+        color: #b81f89 !important;
+        font-size: 2.5rem !important;
+        margin: 5px;
+        padding: 4px 7px;
+        display: inline-block;
+        cursor: pointer;
+        border-radius: 3px;
+    }
+}
+
+
+
+///////////////////// Deal Card Specifics
+
+.deal-start-date-div{
+    padding: 3px;
+    padding-left: 10px;
+    color: #1d1c1c;
+    padding-right: 10px;
+    position: absolute;
+    top: 101px;
+    left: 0px;
+    right: -17px;
+    font-size: small;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    letter-spacing: 1px;
+    z-index: 100;
+    background-color: yellow;
+
+    .start-date{
+        color: #af0c7e;
+        font-weight: 500;
+    }
+}
+
+.deal-start-date-details-div{
+    padding: 3px;
+    padding-left: 10px;
+    color: #1d1c1c;
+    /* border-radius: 10px; */
+    padding-right: 10px;
+    position: relative;
+    top: 150px;
+    /* left: -12px; */
+    /* right: 0px; */
+    text-align: center;
+    font-size: small;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    letter-spacing: 1px;
+    z-index: 100;
+    background-color: yellow;
+}
+.deal-start-date-caro-div{
+    // background-color: #009639;
+    padding: 3px;
+    padding-left: 10px;
+    color: #1d1c1c;
+    /* border-radius: 10px; */
+    padding-right: 10px;
+    position: absolute;
+    top: 150px;
+    left: -12px;
+    right: 0px;
+    text-align: center;
+    font-size: small;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    letter-spacing: 1px;
+    z-index: 100;
+    background-color: yellow;
+
+    .start-date{
+        color: #af0c7e;
+        font-weight: 500;
+    }
+}
+
+.deal-highlight-div{
+    background-color: #009639;
+    padding: 1px;
+    padding-left: 10px;
+    color: #ffffff;
+    /* border-radius: 10px; */
+    padding-right: 10px;
+    position: absolute;
+    bottom: 55px;
+    right: -12px;
+    font-size: x-small;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    letter-spacing: 1px;
+    z-index: 100;
+}
+
+.deal-highlight-caro-div{
+    background-color: #009639;
+    padding: 1px;
+    padding-left: 10px;
+    color: #ffffff;
+    /* border-radius: 10px; */
+    padding-right: 10px;
+    position: absolute;
+    /* bottom: 0px; */
+    top: 30px;
+    right: 0px;
+    font-size: x-small;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    letter-spacing: 1px;
+    z-index: 100;
+    float: right;
+    min-height: 21px;
+}
+
+.deal-discount-caro-chip{
+    background-color: #ff5252;
+    color: white;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    z-index: 100 !important;
+}
+
+  /* ngx-pagination */
+  .product-pagination .ngx-pagination{
+    margin-bottom: 0 !important;
+    padding: 14px 10px;
+    .current { 
+        background: var(--mainColor);
+        color: var(--whiteColor);
+    }
+    a:hover, button:hover{
+        background: var(--mainColor5);
+        color: var(--blackColor);
+    }
+}
+
+
+.deal-discount-tag {
+    position: absolute;
+    .mat-mdc-chip-set{
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        &.list-view{
+            left: 10px;
+        }
+    }
+    .mat-mdc-chip-selected{
+        font-size: large;
+        font-weight: 700;
+        background-color: #ffd500cb !important;
+        color: #bf2493 !important;
+        border-radius: 10px !important;
+      border-top-right-radius: 0px !important;
+      border-bottom-right-radius: 0px !important;
+      padding-left: 8px !important;
+    }
+    .mdc-evolution-chip__text-label {
+      color: #bf2493 !important;
+      font-size: large !important;
+      font-weight: 700 !important;
+    }
+    .mdc-evolution-chip__graphic{
+        color: #bf2493 !important;
+    }
+    .mdc-evolution-chip__graphic{
+        display: none !important;
+    }
+    .mdc-evolution-chip__checkmark {
+        color: #bf2493 !important;
+        display: none !important;
+    }
+
+    .mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) .mdc-evolution-chip__checkmark{
+        display: none !important;
+    }
+
+    .mdc-evolution-chip--selected .mdc-evolution-chip__checkmark{
+        display: none !important;
+
+    }
+}
+
+
+  //////////////////////// Loading Feature Type Animation
+  .fade-in-up-text {
+    opacity: 0;
+    transform: translateY(20px); /* Start below */
+    animation: fadeInUpAnimation 0.3s ease forwards; /* Apply animation */
+  }
+  
+  @keyframes fadeInUpAnimation {
+    from {
+      opacity: 0;
+      transform: translateY(50px); /* Start below */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0); /* Move to original position */
+    }
+  }
+
+.feature-div-position{
+    position: relative;
+    top:100px;
+    height: 200px !important;
+    width: 100%;
+    border-radius: 8px;
+    opacity: 0; /* Initially hidden */
+    transform: translateY(30px); /* Start below the viewport */
+    animation: borderAnimation 2s linear 0.5s, fadeInUp 0.5s ease forwards;; /* Apply animation */
+    animation-delay: 0.5s;
+    z-index: 100;
+  }
+
+  
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+    .feature-div-position{
+       display: none !important;   
+    }
+}
+  
+@keyframes borderAnimation {
+    0% {
+      border: 2px solid transparent; /* Start with transparent border */
+    }
+    50% {
+      border: 2px solid pink; /* Transition to pink color */
+    }
+    100% {
+      border: 2px solid transparent; /* Revert back to transparent border */
+    }
+  }
+
+
+  @keyframes feature-div-loading-progress {
+    0% { width: 0; }
+    10% { width: 30%; }
+    30% { width: 60%; }
+    50% { width: 80%; }
+    70% { width: 60%; }
+    90% { width: 30%; }
+    100% { width: 0; }
+}
+
+.feature-div-loading-spinner {
+    position: absolute;
+    top: calc(50% - 4px); /* Center vertically */
+    left: 0; /* Start from the left */
+    width: 100px; /* Adjust length as needed */
+    height: 8px; /* Thickness of the loading bar */
+    background-color: #3498db; /* Loading bar color */
+    animation: feature-div-loading-progress 2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Loading bar animation */
+    z-index: 2; /* Ensure loading bar is above content */
+}
+
+.feature-div-position:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(to right, #f0f0f0ad 30%, #ddddddab rgba(240, 240, 240, 0.719)0f0f0 70%); /* Gradient background */
+    background-size: 200% 100%; /* Double the width */
+    animation: feature-div-loading-background 2s linear infinite; /* Background animation */
+    z-index: 100; /* Ensure pseudo-element is below content */
+}
+
+@keyframes feature-div-loading-background {
+    0% { background-position: 0 50%; } /* Start with initial position */
+    50% { background-position: 100% 50%; } /* Move background to the right */
+    100% { background-position: 0 50%; } /* Return to initial position */
+}
+
+.feature-div-position.loaded:before {
+    content: none; /* Remove the progress bar when content is loaded */
+}
+
+@keyframes feature-div-hide-content {
+    0% { opacity: 1; } /* Start with content visible */
+    100% { opacity: 0; } /* End with content hidden */
+}
+
+.feature-div-position.loaded:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #ffffff70; /* Background color to hide content */
+    border: none;
+    animation: feature-div-hide-content 3s linear forwards; /* Animation */
+    z-index: 200; /* Ensure content overlay is on top of progress bar */
+}
+  
+
+  //////////////////////////////////// this might be gone to Global CSS 
+  .slide-section{
+    padding-top: 50px;
+    min-height: 150px;
+  }
+  
+  /* Max width 767px */
+  @media only screen and (max-width: 767px) {
+    .slide-section{
+      padding-top: 25px;
+      height: 340px;
+    }
+  }
+  
+  
+  .home-feature-div-position{
+    position: relative;
+    height: 180px !important;
+    width: 100%;
+    border-radius: 8px;
+  }
+  @keyframes feature-div-loading-progress {
+    0% { width: 0; }
+    10% { width: 30%; }
+    30% { width: 60%; }
+    50% { width: 80%; }
+    70% { width: 60%; }
+    90% { width: 30%; }
+    100% { width: 0; }
+  }
+  
+  .home-feature-div-loading-spinner {
+    position: absolute;
+    top: calc(50% - 4px); /* Center vertically */
+    left: 0; /* Start from the left */
+    width: 100px; /* Adjust length as needed */
+    height: 8px; /* Thickness of the loading bar */
+    background-color: #3498db; /* Loading bar color */
+    animation: feature-div-loading-progress 2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Loading bar animation */
+    z-index: 2; /* Ensure loading bar is above content */
+  }
+  
+  .home-feature-div-position:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(to right, #f0f0f0 30%, #ddd 50%, #f0f0f0 70%); /* Gradient background */
+    background-size: 200% 100%; /* Double the width */
+    animation: feature-div-loading-background 2s linear infinite; /* Background animation */
+    z-index: 100; /* Ensure pseudo-element is below content */
+  }
+  
+  @keyframes feature-div-loading-background {
+    0% { background-position: 0 50%; } /* Start with initial position */
+    50% { background-position: 100% 50%; } /* Move background to the right */
+    100% { background-position: 0 50%; } /* Return to initial position */
+  }
+  
+  .home-feature-div-position.loaded:before {
+    content: none; /* Remove the progress bar when content is loaded */
+  }
+  
+  @keyframes feature-div-hide-content {
+    0% { opacity: 1; } /* Start with content visible */
+    100% { opacity: 0; } /* End with content hidden */
+  }
+  
+  .home-feature-div-position.loaded:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #fff; /* Background color to hide content */
+    animation: feature-div-hide-content 3s linear forwards; /* Animation */
+    z-index: 200; /* Ensure content overlay is on top of progress bar */
+  }
+
+
+
+
+  ////////////////////////////// Remove the above if this works.
+  
+.feature-div-mobile-position{
+    position: relative;
+    top:10px;
+    // height: 200px;
+    // margin-bottom: 40px;
+    width: 100%;
+    // background-color: rgba(255, 192, 203, 0.663);
+    border-radius: 8px;
+    opacity: 1; /* Initially hidden */
+    transform: translateY(30px); /* Start below the viewport */
+    animation: borderAnimation 2s linear 1s; /* Apply animation */
+    animation-delay: 0.1s;
+  }
+
+  
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+    .feature-div-mobile-position{
+        position: relative;
+        top:10px;
+        // height: 300px;
+        width: 100%;
+        margin-bottom: 100px;
+        border-radius: 8px;
+        // background-color: rgba(255, 192, 203, 0.663);
+
+        opacity: 1; /* Initially hidden */
+        transform: translateY(30px); /* Start below the viewport */
+        animation: borderAnimation 2s linear 1s; /* Apply animation */
+        animation-delay: 0.1s;
+      }
+}
+  
+@keyframes borderAnimation {
+    0% {
+      border: 2px solid transparent; /* Start with transparent border */
+      background-color: transparent;
+
+    }
+    50% {
+      border: 2px solid pink; /* Transition to pink color */
+      background-color: rgba(255, 192, 203, 0.663);
+    }
+    100% {
+      border: 2px solid transparent; /* Revert back to transparent border */
+      background-color: transparent;
+    }
+  }
+
+
+  @keyframes feature-div-mobile-loading-progress {
+    0% { width: 0; }
+    10% { width: 30%; }
+    30% { width: 60%; }
+    50% { width: 80%; }
+    70% { width: 60%; }
+    90% { width: 30%; }
+    100% { width: 0; }
+}
+
+.feature-div-mobile-loading-spinner {
+    position: absolute;
+    top: calc(50% - 4px); /* Center vertically */
+    left: 0; /* Start from the left */
+    width: 100px; /* Adjust length as needed */
+    height: 8px; /* Thickness of the loading bar */
+    background-color: #3498db; /* Loading bar color */
+    animation: feature-div-mobile-loading-progress 2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* Loading bar animation */
+    z-index: 2; /* Ensure loading bar is above content */
+}
+
+.feature-div-mobile-position:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(to right, #f0f0f0ad 30%, #ddddddab rgba(240, 240, 240, 0.719)0f0f0 70%); /* Gradient background */
+    background-size: 200% 100%; /* Double the width */
+    animation: feature-div-mobile-loading-background 2s linear infinite; /* Background animation */
+    z-index: 1; /* Ensure pseudo-element is below content */
+}
+
+@keyframes feature-div-mobile-loading-background {
+    0% { background-position: 0 50%; } /* Start with initial position */
+    50% { background-position: 100% 50%; } /* Move background to the right */
+    100% { background-position: 0 50%; } /* Return to initial position */
+}
+
+.feature-div-mobile-position.loaded:before {
+    content: none; /* Remove the progress bar when content is loaded */
+}
+
+@keyframes feature-div-mobile-hide-content {
+    0% { opacity: 1; } /* Start with content visible */
+    100% { opacity: 0; } /* End with content hidden */
+}
+
+.feature-div-mobile-position.loaded:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #ffffff70; /* Background color to hide content */
+    border: none;
+    animation: feature-div-mobile-hide-content 3s linear forwards; /* Animation */
+    z-index: 2; /* Ensure content overlay is on top of progress bar */
+}
+ 
+
+.login-form-button{
+    cursor: pointer;
+}
+
+
+/////////////////
+// Angular Material Over rides.
+.mdc-button .mdc-button__label{
+    color: var(--blackColor2) !important
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+    width: 100% !important;
+    height: 100% !important;
+    // background: transparent !important;
+    // box-shadow: none !important;
+  }
+
+  /////////////// Menu List item 
+  /* Scoped styling for the specific mat-menu */
+.custom-menu .mat-mdc-menu-panel {
+    max-height: 200px; /* Adjust this value to set the maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  

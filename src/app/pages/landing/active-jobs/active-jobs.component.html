@@ -1,0 +1,78 @@
+<section
+    class="motivation-courses-area pb-70"
+    [class.dark-motivation-courses-area]="themeService.isDark()"
+>
+    <div class="container">
+        <div class="section-title text-start mb-0">
+            <span class="sub-title">Discover Openings</span>
+            <h2>Active Openings</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div  class="col-12 text-right text-end" style="padding-bottom: 20px;">
+                <span [routerLink]="['/opening-list']" class="see-all-openings">See All Openings</span>
+            </div>
+            <div>
+            <mat-progress-bar *ngIf="actionInProgress" mode="indeterminate" color="primary"  ></mat-progress-bar>
+            </div>
+            @for (job of activeJobs(); track job.id) {
+                <div  class="col-lg-4 col-md-6">
+                    <mat-card  class="job-feed-item">
+                        <mat-card-header style="padding-left: 15px;">
+                          <mat-card-title [routerLink]="['/opening/' + job.id]" [innerHtml]="job.name" ></mat-card-title>
+                          <mat-card-subtitle  color="accent">{{job.region}} - {{job.jobtype}}</mat-card-subtitle>
+                        </mat-card-header>
+                        <mat-card-content>
+                          <div class="box-primary-shade row" style="position: relative;left:10px;top:10px;">
+                              <div class="col-12" style="text-align: left;">
+                                <span  color="primary" class="company-name">&#64; {{job.company}}</span>
+                              </div>
+                          </div>
+                          <div style="position: absolute;bottom:50px;right:20px;">
+                            <div style="text-align: right;">
+                                <div >
+                                    <h6><b>{{convertDateFormat(job.pubdate)}}</b></h6>
+                                </div>
+                                <div>
+                                    <small>Published On</small> 
+                                </div>
+                            </div>
+                          </div>
+                        </mat-card-content>
+                            <div class="row justify-content-center p-1" style="position: absolute;bottom:5px;left:0px;right:0px;padding-bottom:5px;">
+                                <div class="col text-center">
+                                  <!-- <button class="job-open-button" mat-icon-button aria-label="save Job" (click)="saveToWishList($event, job)" *ngIf="!job.selected"
+                                    matTooltip="Add To Wish List"> -->
+                                    <i  matTooltip="Add To Wish List" class="fa  fa-heart-o job-card-icon" (click)="saveToWishList($event, job)" *ngIf="!job.selected"></i>
+                                    <!-- </button> -->
+                                    <!-- <button  class="job-open-button" mat-icon-button aria-label="save Job" (click)="removeFromWishList($event, job)" *ngIf="job.selected"
+                                    matTooltip="Remove From Wish List"> -->
+                                        <i matTooltip="Remove From Wish List" class="fa  fa-heart job-card-icon" (click)="removeFromWishList($event, job)" *ngIf="job.selected"></i>
+                                    <!-- </button> -->
+                                </div>
+                                <div class="col text-center">
+                                    <!-- <button  class="job-open-button" mat-icon-button aria-label="save Job" (click)="shareOnWhatsApp($event, job)" matTooltip="Share on Whats App"> -->
+                                        <i class="fa  fa-whatsapp job-card-icon" (click)="shareOnWhatsApp($event, job)" matTooltip="Share on Whats App"></i>
+                                    <!-- </button> -->
+                                </div>
+                                <div class="col text-center">
+                                    <!-- <button mat-icon-button aria-label="save Job" (click)="viewJobDetails($event, job)" matTooltip="View Job Details"> -->
+                                        <!-- <i class="fa  fa-arrow-right"></i> -->
+                                        <i class="fa fa-long-arrow-right job-card-icon" (click)="viewJobDetails($event, job)" matTooltip="View Job Details"></i>
+                                    <!-- </button> -->
+                                </div>
+                            </div>
+                            <div style="position: absolute;top:5px;right:5px;background-color:rgba(172, 238, 172, 0.281);padding-top:2px;padding-bottom:2px;padding-left:10px;padding-right:10px;border-radius:4px;">
+                                <!-- <small>From:</small> -->
+                                <!-- <p-message severity="success" variant="outlined"> -->
+                                    <img style="width:65px;" src="assets/img/jobicy-official.svg" />
+                                <!-- </p-message> -->
+                            </div>
+                    </mat-card>
+
+
+                </div>
+            }
+            
+        </div>
+    </div>
+</section>

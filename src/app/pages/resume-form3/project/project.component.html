@@ -1,0 +1,214 @@
+<div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
+    <div class="col-12"  >
+        <form [formGroup]="projectForm" >
+            <div class="row wrap">
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Project title</mat-label>
+                        <input matInput placeholder="Project Title" #title formControlName="project_title">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="projectForm.get('project_title')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- <span class="p-float-label">
+                        <label for="project_title">Project Title</label>
+                        <input id="project_title" type="text" class="w-100 p-inputtext" pInputText formControlName="project_title">
+                        </span> -->
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Project Link</mat-label>
+                        <input matInput placeholder="Project Link" formControlName="project_link">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="projectForm.get('project_link')?.hasError('pattern')">
+                            Please enter a valid link.
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- <span class="p-float-label">
+                        <label for="project_link">Project Link</label>
+                        <input id="project_link" type="text" class="w-100 p-inputtext" pInputText formControlName="project_link">
+                        </span> -->
+                </div>
+                @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Technologies Used</mat-label>
+                        <input matInput placeholder="Technologies Used" formControlName="technologies_used">
+                    </mat-form-field>
+                    <!-- <span class="p-float-label">
+                        <label for="technologies_used">Technologies Used</label>
+                        <input id="technologies_used" type="text" class="w-100 p-inputtext" pInputText formControlName="technologies_used">
+                        </span> -->
+                </div>
+                }
+                @else{
+                    <div class="col-12 p-b-1 p-t-2">
+                        <mat-form-field appearance="outline" class="w-100" >
+                            <mat-label>Period</mat-label>
+                            <input matInput placeholder="Period" formControlName="period">
+                        </mat-form-field>
+                        <!-- <span class="p-float-label">
+                            <label for="technologies_used">Technologies Used</label>
+                            <input id="technologies_used" type="text" class="w-100 p-inputtext" pInputText formControlName="technologies_used">
+                            </span> -->
+                    </div>
+                }
+                <!-- <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>No.of Bullet Points</mat-label>
+                        <input matInput placeholder="Number of Bullet Points" formControlName="bullet_points">
+                    </mat-form-field>
+                   
+                </div> -->
+                <!-- <div class="col-12 p-0 m=0">
+                    @if(!is_projects_loading){
+                        <button [class.use-ai-btn]="descri.value.length && title.value.length" [class.use-ai-btn-disabled]="!descri.value.length || !title.value.length" 
+                           class="d-flex" style="float: right;" (click)="optimizeProject()" 
+                            [disabled]="isProjectsSkipped || !descri.value.length || !title.value.length">
+                              <i class="pi pi-reddit" style="font-size: medium;"></i>  Use AI Writer
+                        </button>
+                       
+                    }
+                    @if(is_projects_loading){
+                        <button class="use-ai-btn d-flex" style="float: right;">
+                           
+                            <div class="progress-container">
+                                <div class="progress-bar"></div>
+                                <i class="pi pi-reddit pi-reddit-pos" ></i>
+                              </div>
+                        </button>
+                    }
+                </div> -->
+
+                <!-- <div class="col-12 m-0" style="padding-right: 10.5px;">
+                    @if(!is_projects_loading){
+                        <button
+                           class="d-flex ai-btn" (click)="optimizeProject()" >
+                              <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
+                        </button>
+                    }
+                    @if(is_projects_loading){
+                        <button class="use-ai-btn d-flex" style="float: right;">
+                            <div class="progress-container">
+                                <div class="progress-bar"></div>
+                                <i class="pi pi-reddit pi-reddit-pos" ></i>
+                              </div>
+                        </button>
+                    }
+                </div> -->
+
+                <div class="col-12 m-0" >
+                    @if(!is_projects_loading){
+                        <button  matTooltip="Use BOTbro AI & Optimize" style="z-index: 100; position: relative; top: 18px;right: 10px;"
+                            class="d-flex ai-btn" (click)="optimizeProject()" >
+                                <p-icon class="pi pi-sparkles" 
+                                    style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
+                        </button>
+                    }
+                    @if(is_projects_loading){
+                        <button  matTooltip="Use BOTbro AI & Optimize"
+                            class="d-flex ai-btn"  style="z-index: 100; position: relative; top: 18px;right: 10px;">
+                                <span class="use-ai-btn d-flex">
+                                    <div class="progress-container">
+                                      <div class="progress-bar"></div>
+                                      <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
+                                    </div>
+                                </span>
+                                <span>
+                                    USE BOTBRO
+                                </span>
+                                <!-- <p-icon class="pi pi-sparkles" 
+                                    style="font-size: medium;margin-right: 5px;"></p-icon>  BOT<small style="position: relative;top:1px;font-size:x-small;font-weight:normal;margin-right:4px;">BRO</small> AI -->
+                        </button>
+                        
+                    }
+                </div>
+
+
+                <!-- <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field class="w-100">
+                        <textarea matInput placeholder="Project Summary" #descri formControlName="description" rows="5"></textarea>
+                        <mat-hint>Hint : Provide Project title and Description to use AI</mat-hint>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="projectForm.get('description')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                      </mat-form-field>
+                </div> -->
+                <div class="col-12 p-b-1 quill-editor-div"  style="margin-bottom: 20px;position:relative;top:-20px;">
+                    <div #editorContainer style="height: 250px;color: black;"></div>
+                </div>
+                
+            </div>
+          
+        </form>
+        <div class="col-12 m-t-2 p- text-right text-end"  >
+            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                (click)="saveAndContinue()"  [disabled]="projectForm.invalid"  
+                [tooltip]="'Add to Resume Summary'"
+                tooltipPosition="top"
+                tooltipStyleClass="custom-tooltip">
+                    <ng-template pTemplate="content" >
+                        <p-icon class="pi pi-check" ></p-icon>
+                        Add to resume
+                    </ng-template>
+            </p-button>
+        </div>
+    </div>
+</div>
+<div class="project-ai-animated-panel" 
+            [style.width]="width + 'px'" [style.border-width]="borderWidth + 'px'">
+     <div class="project-ai-response-panel-pp" header="">
+        <div  class="row" style="height: 50px;">
+            <div class="col-9" style="display: flex;justify-content: flex-start;align-items: center;">
+                <h3 style="margin-top: 0;
+                    color: #333;
+                    font-size: 1rem;margin-left: 15px;">AI Response</h3>
+            </div>
+            <div class="col-3" style="display: flex;justify-content: flex-start;align-items: center;">
+                <div class="position-close-icon">
+                    <p-button icon="pi pi-times"   
+                    [rounded]="true" [text]="true" severity="danger"
+                 (click)="closePanelWindow()" />
+                </div>
+              
+            </div>
+        </div>
+        <div style="position: relative;top:10px;height:71vh;margin-left:10px;margin-right:10px;overflow-y: scroll;">
+            @if(projectListPoints.length > 0){
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-card class="ai-response-panel" *ngFor="let project of projectListPoints; let i = index">
+                        @if(i != optimize_index){
+                            <div class="section-actions">
+                                <p-icon class="pi pi-pencil" title="Edit" (click)="editAIResponse(i)"></p-icon>
+                                <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Use BotBro" (click)="optimizeResponse(i)"></p-icon>
+                                <p-icon class="pi pi-plus" title="Use This Response" (click)="useResponse(i)"></p-icon>
+                            </div>
+                        }
+                        @if(i != optimize_index){
+                            <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
+                        }
+                        @else if(i == optimize_index && action_taken != 'EDIT'){
+                            <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
+                        }
+                        @if(i == optimize_index && action_taken == 'OPTIMIZE'){
+                            <div class="spinner-overlay">
+                                <div class="spinner"></div>
+                            </div>
+                        }
+                        @else if(i == optimize_index && action_taken == 'EDIT'){
+                            <mat-form-field appearance="outline">
+                                <textarea matInput [formControl]="aiResponsePoint"></textarea>
+                            </mat-form-field>
+                            <div style="display: flex;justify-content: space-between;align-items: center;">
+                                <button mat-button color="warn" (click)="cancelPoint(i)">Cancel</button>
+                                <button mat-stroked-button color="primary" (click)="updatePoint(i)">Update</button>
+                            </div>
+                        }
+
+                    </mat-card>
+                    
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

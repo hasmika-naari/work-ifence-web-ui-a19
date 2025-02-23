@@ -1,0 +1,424 @@
+.resume-container {
+    // width: 100%; /* Make the container full width */
+    // max-width: 940px; /* Limit maximum width */
+    margin: auto;
+    // position: relative;
+    background-color: white;
+    text-align: start !important;
+}
+
+// .body-container {
+//     padding: 36px 36px 0px;
+// }
+
+.template4-experience{
+    padding-top: 10px !important;
+    .template4-section-title{
+        margin: 0;
+        font-size: 20px;
+        font-weight: 500;
+
+         .add-education-icon{
+            cursor: pointer;
+            font-size: small;
+            display: none;
+        }
+    }
+
+    &:hover{
+        .template4-section-title{
+              .add-education-icon{
+                cursor: pointer;
+                font-size: small;
+                display: block;
+            }
+
+        }
+    
+    }
+
+}
+
+
+.template4-projects{
+    padding-top: 10px !important;
+    .template4-section-title{
+        margin: 0;
+        font-size: 20px;
+        font-weight: 500;
+
+         .add-project-icon{
+            cursor: pointer;
+            display: none;
+            font-size: small;
+        }
+    }
+
+    &:hover{
+        .template4-section-title{
+           .add-project-icon{
+                cursor: pointer;
+                display: block;
+                font-size: small;
+            }
+        }
+    
+    }
+
+}
+
+
+.template4-education{
+    padding-top: 10px !important;
+    .template4-section-title{
+        margin: 0;
+        font-size: 20px;
+        font-weight: 500;
+
+         .add-education-icon{
+            cursor: pointer;
+            font-size: small;
+            display: none;
+        }
+    }
+
+    &:hover{
+        .template4-section-title{
+              .add-education-icon{
+                cursor: pointer;
+                font-size: small;
+                display: block;
+            }
+
+        }
+    
+    }
+
+}
+
+
+.template4-skills{
+    padding-top: 10px !important;
+    .template4-section-title{
+        margin: 0;
+        font-size: 20px;
+        font-weight: 500;
+
+       .add-skill-icon{
+            cursor: pointer;
+            display: none;
+            font-size: small;
+        }
+    }
+
+    &:hover{
+        .template4-section-title{
+            .add-skill-icon{
+                cursor: pointer;
+                display: block;
+                font-size: small;
+            }
+
+        }
+    
+    }
+
+}
+
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.contact-details {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap */
+    justify-content: center; /* Center items horizontally */
+    margin: 0;
+    padding: 0;
+}
+
+.contact-details p {
+    margin: 0;
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.icon {
+    color: black;
+    font-size: 12px;
+}
+
+.summary {
+    // margin-top: 20px;
+}
+
+.summary h2 {
+    margin: 0;
+    font-size: 18px;
+    padding: 0;
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.summary p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.education,
+.skills {
+}
+
+.education h2,
+.skills h2 {
+    margin: 0;
+    font-size: 18px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.education-details,
+.skills-bullets {
+    // margin-top: 10px;
+}
+
+.education-details p,
+.skills-bullets p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 1;
+}
+
+.skills-bullets ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.skills-bullets li {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.experience,
+.project {
+}
+
+.experience h2,
+.project h2 {
+    margin: 0;
+    font-size: 18px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.experience-item,
+.project-item {
+}
+
+.experience-item-header,
+.project-item-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.experience-item-header-left,
+.project-item-header-left {
+    flex: 1;
+    text-align: left;
+}
+
+.experience-item-header-right,
+.project-item-header-right {
+    flex: 1;
+    text-align: right;
+}
+
+.experience-item-header-left p,
+.project-item-header-left p,
+.experience-item-header-right p,
+.project-item-header-right p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.experience-item-details,
+.project-item-details {
+    margin-top: 5px;
+    opacity: 0.8;
+}
+
+.experience-bullets,
+.project-bullets {
+    margin-top: 10px;
+}
+
+.experience-bullets ul,
+.project-bullets ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.experience-bullets li,
+.project-bullets li {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* Media queries for responsiveness */
+@media only screen and (max-width: 768px) {
+    .resume-container {
+        width: 100%; /* Make the container full width */
+        height: auto; /* Allow height to adjust based on content */
+    }
+
+    .body-container {
+        margin: 10px; /* Decrease margin for smaller screens */
+    }
+
+    .header h1 {
+        font-size: 20px; /* Decrease font size for smaller screens */
+    }
+
+    .contact-details p,
+    .icon {
+        font-size: 10px; /* Decrease font size for smaller screens */
+    }
+
+    .summary h2 {
+        font-size: 16px; /* Decrease font size for smaller screens */
+    }
+
+    .summary p {
+        font-size: 12px; /* Decrease font size for smaller screens */
+    }
+
+    .education h2,
+    .skills h2 {
+        font-size: 16px; /* Decrease font size for smaller screens */
+    }
+
+    .education-details p,
+    .skills-bullets p {
+        font-size: 12px; /* Decrease font size for smaller screens */
+    }
+
+    .experience h2,
+    .project h2 {
+        font-size: 16px; /* Decrease font size for smaller screens */
+    }
+
+    .experience-item-header-left p,
+    .project-item-header-left p,
+    .experience-item-header-right p,
+    .project-item-header-right p {
+        font-size: 12px; /* Decrease font size for smaller screens */
+    }
+
+    .experience-bullets li,
+    .project-bullets li {
+        font-size: 12px; /* Decrease font size for smaller screens */
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // margin-bottom: 10px;
+}
+
+.header-left {
+    flex: 1;
+}
+
+.header-right p {
+    margin: 0;
+    padding: 0;
+    color: black;
+    font-size: 1rem;
+
+}
+
+.header-right {
+    text-align: right;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 2em;
+    color: black;
+}
+
+.course-work{
+    padding: 0.2rem;
+    line-height: 1.4;
+     text-align: left;
+    .course-work-section-title{
+      font-weight: 400;
+      color: black;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(101, 105, 109, .5);
+      white-space: pre-wrap;
+      padding-bottom: 1px;
+      // font-family: Rubik, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
+      font-size: 1rem;
+      line-height: 25px;
+        height: 25px !important;
+      width: 100%;
+      display: block;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+    }
+  
+    .course-work-section-content{
+      padding: 8px 16px;
+      border-radius: 5px;
+      color: black;
+      text-align: left;
+  
+    .qualification-name{
+      white-space: pre-wrap;
+      color: black;
+      font-size: 1.1rem;
+      // line-height: 18px;
+      font-weight: 500 !important;
+    }
+  
+    .university-name{
+      white-space: pre-wrap;
+      color: black;
+      font-size: 1rem !important;
+      // line-height: 14px !important;
+    }
+  
+    .course-work-list{
+      display: flex;
+      flex-wrap: wrap;
+      font-size: 1rem;
+      text-align:left;
+  
+      .course-work-lisit-item{
+        flex: 0 0 25%;
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  &:hover{
+    .add-education-icon{
+      display: block;
+      cursor: pointer;
+    }
+  }
+  
+  }
+
+  a{
+    color: #0000EE; /* Unvisited link color */
+    text-decoration: underline;
+}

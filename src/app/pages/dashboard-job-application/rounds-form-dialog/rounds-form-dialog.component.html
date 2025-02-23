@@ -1,0 +1,211 @@
+<h2 mat-dialog-title>Interview Round Info</h2>
+<mat-dialog-content>
+  <form [formGroup]="interviewRoundsForm">
+    <div class="row wrap">
+      <div class="col-2 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Round</mat-label>
+          <input matInput placeholder="Round" formControlName="roundNumber" type="number">
+        </mat-form-field>
+      </div>
+
+      <div class="col-2 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Round Type</mat-label>
+          <input matInput placeholder="Round Type" formControlName="roundType">
+        </mat-form-field>
+      </div>
+
+      <div class="col-2 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Round Date</mat-label>
+          <input matInput [matDatepicker]="roundDatePicker" placeholder="Round Date" formControlName="roundDate">
+          <mat-datepicker-toggle matSuffix [for]="roundDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #roundDatePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-2 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let status of statusOptions" [value]="status">
+              {{status}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-2 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Mode</mat-label>
+          <input matInput placeholder="Mode" formControlName="mode">
+        </mat-form-field>
+      </div>
+      <div class="col-2 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Result</mat-label>
+          <input matInput placeholder="Result" formControlName="result">
+        </mat-form-field>
+      </div>
+
+      <!-- <div class="col-4 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Venue/Link</mat-label>
+          <input matInput placeholder="Venue/Link" formControlName="venueOrLink">
+        </mat-form-field>
+      </div> -->
+
+      <div class="col-12 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Conducted By</mat-label>
+          <input matInput placeholder="Conducted By" formControlName="conductedBy">
+        </mat-form-field>
+      </div>
+      <div class="col-12 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Details</mat-label>
+          <textarea matInput placeholder="Round Description" formControlName="roundDescription" rows="4"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Feedback</mat-label>
+          <textarea matInput placeholder="Feedback" formControlName="feedback" rows="4"></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- <div class="col-12 p-b-1 p-t-4">
+        <mat-form-field class="w-100">
+          <mat-label>Score</mat-label>
+          <input matInput placeholder="Score" formControlName="score">
+        </mat-form-field>
+      </div> -->
+      <!-- <div class="col-6 p-b-1 p-t-4">
+        <mat-checkbox formControlName="remindMe">Remind Me</mat-checkbox>
+      </div> -->
+
+      <!-- <div class="col-12 p-t-4">
+        <div class="text-right">
+          <button mat-raised-button color="primary" (click)="saveRound()">Add Round</button>
+        </div>
+      </div> -->
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button  (click)="saveRound()" cdkFocusInitial>Save Changes</button>
+</mat-dialog-actions>
+
+
+<!-- <div class="row  pl-4 pr-4">
+    <div class="col-12">
+      <form [formGroup]="interviewRoundsForm">
+        <div class="row wrap">
+          <div class="col-12 text-right" style="padding-bottom: 18px;">
+            <i class='bx bx-x close-dialog-icon' (click)="onNoClick()" matTooltip="Close"></i>
+          </div>
+  
+          <div class="col-12 text-right" style="padding-bottom: 18px;">
+            <span class="dialog-header-label">Interview Round 1</span>
+            <button mat-raised-button color="primary" (click)="onConfirmHandler()">Add Round</button>
+          </div>
+  
+          <div class="col-4 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Round Number</mat-label>
+              <input matInput placeholder="Round Number" formControlName="roundNumber" type="number">
+            </mat-form-field>
+          </div>
+  
+          <div class="col-4 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Round Type</mat-label>
+              <input matInput placeholder="Round Type" formControlName="roundType">
+            </mat-form-field>
+          </div>
+  
+          <div class="col-4 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Round Date</mat-label>
+              <input matInput [matDatepicker]="roundDatePicker" placeholder="Round Date" formControlName="roundDate">
+              <mat-datepicker-toggle matSuffix [for]="roundDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #roundDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+  
+          <div class="col-4 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Mode</mat-label>
+              <input matInput placeholder="Mode" formControlName="mode">
+            </mat-form-field>
+          </div>
+  
+          <div class="col-4 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Venue/Link</mat-label>
+              <input matInput placeholder="Venue/Link" formControlName="venueOrLink">
+            </mat-form-field>
+          </div>
+  
+          <div class="col-4 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Conducted By</mat-label>
+              <input matInput placeholder="Conducted By" formControlName="conductedBy">
+            </mat-form-field>
+          </div>
+  
+          <div class="col-12 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let status of statusOptions" [value]="status">
+                  {{status}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+  
+          <div class="col-12 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Feedback</mat-label>
+              <textarea matInput placeholder="Feedback" formControlName="feedback" rows="4"></textarea>
+            </mat-form-field>
+          </div>
+  
+          <div class="col-12 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Score</mat-label>
+              <input matInput placeholder="Score" formControlName="score">
+            </mat-form-field>
+          </div>
+  
+          <div class="col-12 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Result</mat-label>
+              <input matInput placeholder="Result" formControlName="result">
+            </mat-form-field>
+          </div>
+  
+          <div class="col-12 p-b-1 p-t-4">
+            <mat-form-field class="w-100">
+              <mat-label>Round Description</mat-label>
+              <textarea matInput placeholder="Round Description" formControlName="roundDescription" rows="4"></textarea>
+            </mat-form-field>
+          </div>
+  
+          <div class="col-6 p-b-1 p-t-4">
+            <mat-checkbox formControlName="remindMe">Remind Me</mat-checkbox>
+          </div>
+  
+          <div class="col-12 p-t-4">
+            <div class="text-right">
+              <button mat-raised-button color="primary" (click)="saveRound()">Add Round</button>
+            </div>
+          </div>
+  
+        </div>
+      </form>
+    </div>
+  </div> -->
+  

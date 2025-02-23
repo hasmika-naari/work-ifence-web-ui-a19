@@ -1,0 +1,45 @@
+<div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
+    <div class="col-12"  >
+        <form [formGroup]="courseWorkForm" >
+            <div class="row wrap">
+                <div class="col-12 p-b-1 p-t-4">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Course work</mat-label>
+                        <input matInput placeholder="Course work" formControlName="coursework">
+                        <span matSuffix (click)="addSkill()" *ngIf="isVisible()" style="color: black;">
+                             <p style="font-size: 14px;
+                             line-height: 17px;
+                             font-weight: 700;
+                             cursor: pointer;">ADD</p>
+                        </span>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-chip-list #chipList>
+                        <mat-chip
+                          *ngFor="let fruit of fruits"
+                          [selectable]="selectable"
+                          [removable]="removable"
+                          (removed)="remove(fruit)">
+                          {{fruit}}
+                          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                        </mat-chip>
+                      </mat-chip-list>
+                </div>
+                
+            </div>
+        </form>
+        <div class="col-12 mt-3 text-right text-end"  >
+            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                (click)="saveAndContinue()"   
+                [tooltip]="'Add to Resume Summary'"
+                tooltipPosition="top"
+                tooltipStyleClass="custom-tooltip">
+                    <ng-template pTemplate="content" >
+                        <p-icon class="pi pi-check" ></p-icon>
+                        Add to resume
+                    </ng-template>
+            </p-button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,831 @@
+<div class="container">
+  @if(resumeForm().isSectionPresent?.isContact){
+    <header class="trigger-area resume-contact-us" >
+      <div>
+          <h1 class="profile-full-name" id="resumeName">{{resumeForm().contact.fname + ' ' + resumeForm().contact.lname}}</h1>
+          @if(resumeForm().contact.subTitle.length > 0){
+            <span class="profile-sub-title">{{resumeForm().contact.subTitle}}</span>
+          }
+      </div>
+      <div>
+            <ul class="profile-contact-details-list">
+                @if(resumeForm().contact.phone_number.length > 0){
+                <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-phone contact-detail-icon"></p-icon> {{resumeForm().contact.phone_number}}</li>
+                }
+                @if(resumeForm().contact.email.length > 0){
+                <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-at contact-detail-icon"></p-icon> {{resumeForm().contact.email}}</li>
+                }
+                @if(resumeForm().contact.linkedIn_profile.length > 0){
+                <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-linkedin contact-detail-icon"></p-icon> <a href="{{resumeForm().contact.linkedIn_profile}}" target="_blank">{{resumeForm().contact.linkedIn_profile_display_name}}</a></li>
+                }
+                @if(resumeForm().contact.github_profile.length > 0){
+                <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-github contact-detail-icon"></p-icon> <a  href="{{resumeForm().contact.github_profile}}" target="_blank">{{resumeForm().contact.github_profile_display_name}}</a></li>
+                }
+                @if(resumeForm().contact.portfolio_link.length > 0){
+                  <li><b>Potfolio :</b> <a  href="{{resumeForm().contact.portfolio_link}}" target="_blank"> 
+                      Profile</a>
+                  </li>
+                  }
+            </ul>
+      </div>
+      @if(!isPreview){
+            <div class="section-actions">
+        @if(resumeForm().contact.isDefaultData){
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CONTACT')"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Add Contact
+            </div>
+          </div>
+        }
+        @else{
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('CONTACT', null)"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Edit Contact
+            </div>
+          </div>
+        }
+        <div class="wif-tooltip" data-direction="bottom">
+          <div class="wif-tooltip__initiator">
+            <p-icon class="pi pi-times" title="" (click)="removeSection('CONTACT')"></p-icon>
+          </div>
+          <div class="wif-tooltip__item">
+            Remove Contact
+          </div>
+        </div>
+      </div>
+    }
+    </header>
+  }
+
+    @if(resumeForm().profileSummary.profile_summary.length > 0 && resumeForm().isSectionPresent?.isSummary){
+      <section class="trigger-area resume-summary"  >
+        <span class="summary-section-title">Summary
+          @if(!isPreview){
+            <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                   <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('SUMMARY', null)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Edit Summary
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times" title="" (click)="removeSection('SUMMARY')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove Summary
+                </div>
+              </div>
+            </div>
+          }
+        </span>
+        <div [innerHTML]="resumeForm().profileSummary.profile_summary" class="project-content">
+        </div>
+      </section>
+    }
+    @else if(resumeForm().isSectionPresent?.isSummary){
+      <section class="trigger-area resume-summary"  >
+        <span class="summary-section-title">Summary
+          @if(!isPreview){
+            <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('SUMMARY')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Add Summary
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times" title="" (click)="removeSection('SUMMARY')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove Summary
+                </div>
+              </div>
+            </div>
+          }
+        </span>
+          <p class="resume-summary-text opacity-half">Briefly explian why you're a great fit for the role - use the AI assistant to tailor this summary for each job posting.</p>
+          
+      </section>
+    }
+
+    @if(resumeForm().education.length > 0 && resumeForm().isSectionPresent?.isEducation){
+      <section  class="trigger-area resume-education">
+          <span class="summary-section-title">Education
+            @if(!isPreview){
+              <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Education
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Remove Education
+                  </div>
+                </div>
+            </div>
+          }
+          </span>  
+       
+          <div class="education-section-content template1-section-content trigger-area" *ngFor="let item of resumeForm().education">
+            <div *ngIf="!isPreview || !item.isHideSelected"   class="project-content-container">
+                <div style="display: flex;justify-content: space-between;" [class]="getDivClass(item)">
+                  <div style="flex: 1;text-align: left;">
+                    @if(item.degree && item.field_of_study){
+                      <p class="qualification-name"><b>{{item.degree}}, {{item.field_of_study}}</b></p>
+                    }
+                    @else if(item.degree){
+                      <p class="qualification-name" ><b>{{item.degree}}</b></p>
+                    }
+                    @else{
+                      <p class="qualification-name" ><b>{{item.field_of_study}}</b></p>
+                    }
+                  </div>
+                  <div style="flex: 1;text-align: right;">
+                      <p class="qualification-name" >{{item.school_location}}</p></div>
+                </div>
+                <div style="display: flex;justify-content: space-between;" [class]="getDivClass(item)">
+                  <div style="flex: 1;text-align: left;">
+                    <p class="qualification-name" >{{item.school_name}}</p></div>
+                  <div style="flex: 1;text-align: right;">
+                    <p class="qualification-name" >{{item.graduation_date}}</p></div>
+                </div>
+                <div [class]="getDivClass(item)">
+                  @if(item.gpa.length > 0){
+                    <div style="flex: 1;text-align: left;">
+                      <p class="qualification-name" >GPA - {{item.gpa}}</p></div>
+                  }
+                </div>
+              @if(!isPreview){
+                <div class="sub-items-actions" >
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-pencil icon" title="" (click)="editSectionHandler('EDUCATION', item)"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Edit Education
+                    </div>
+                  </div>
+                  @if(!item.isHideSelected){
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('EDUCATION', item)"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Hide Education
+                      </div>
+                    </div>
+                  }
+                  @else{
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('EDUCATION', item)"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Show Education
+                      </div>
+                    </div>
+                  }
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-angle-up icon" title="" (click)="moveObjectById('EDUCATION', item.id, 'up')"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Move Up
+                    </div>
+                  </div>
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('EDUCATION', item.id, 'down')"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Move Down
+                    </div>
+                  </div>
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-times icon" title="" (click)="confirmDeleteItemDialog('EDUCATION', item)"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Remove Education
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+        </div>
+      </section>
+    }
+    @else if(resumeForm().isSectionPresent?.isEducation){
+      <section  class="resume-education trigger-area">
+          <span class="summary-section-title">Education
+            @if(!isPreview){
+              <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Education
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Remove Education
+                  </div>
+                </div>
+          </div>
+        }
+          </span>  
+          <div class="education-section-content template1-section-content trigger-area">
+            <div>
+              <div style="display: flex;justify-content: space-between;">
+                <div style="flex: 1;text-align: left;">
+                    <p class="qualification-name opacity-half"><b>Degree and Field of Study</b></p>
+                </div>
+                <div style="flex: 1;text-align: right;">
+                    <p class="qualification-name opacity-half">Location</p>
+                </div>
+              </div>
+              <div style="display: flex;justify-content: space-between;">
+                <div style="flex: 1;text-align: left;">
+                  <p class="qualification-name opacity-half">School or University</p></div>
+                <div style="flex: 1;text-align: right;">
+                  <p class="qualification-name opacity-half">Date Period</p></div>
+              </div>
+              <div>
+                <div style="flex: 1;text-align: left;">
+                  <p class="qualification-name opacity-half">GPA - GPA/Percentage</p></div>
+              </div>
+            </div>
+        </div>
+      </section>
+    }
+
+    @if(resumeForm().isSectionPresent?.isCourseWork){
+      <section  class="trigger-area course-work">
+        <span class="summary-section-title">Relevant Coursework
+          @if(!isPreview){
+            <div class="section-actions">
+              @if(resumeForm().courseWork.length == 0){
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('COURSEWORK')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Course Work
+                  </div>
+                </div>
+              }
+              @else{
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('COURSEWORK', null)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Edit Course Work
+                  </div>
+                </div>
+                  }
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('COURSEWORK')"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Remove Course Work
+                    </div>
+                  </div>
+                </div>
+        }
+        </span>
+        <div  class="course-work-section-content">
+          @if(resumeForm().courseWork.length == 0){
+            <p class="opacity-half">Your Course Work</p>
+          }
+          @else{
+            <ul class="course-work-list">
+                <li class="course-work-lisit-item" *ngFor="let item of resumeForm().courseWork">{{item}}</li>
+            </ul>
+          }
+        </div>
+      </section>
+    }
+
+    @if(resumeForm().isSectionPresent?.isSkill){
+      <section  class="trigger-area course-work">
+        <span class="summary-section-title">Skills
+          @if(!isPreview){
+            <div class="section-actions">
+              @if(resumeForm().skill.length == 0){
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Skills
+                  </div>
+                </div>
+              }
+              @else{
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS', null)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Edit Skills
+                  </div>
+                </div>
+              }
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS')"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Remove Skills
+                    </div>
+                  </div>
+                </div>
+              }
+        </span>
+        <div  class="course-work-section-content">
+          @if(resumeForm().skill.length == 0){
+            <p class="opacity-half">Your Skills</p>
+          }
+          @else{
+            <ul class="course-work-list">
+                <li class="course-work-lisit-item" *ngFor="let item of resumeForm().skill">{{item}}</li>
+            </ul>
+          }
+       
+        </div>
+      </section>
+    }
+
+
+    @if(resumeForm().experience.length > 0 && resumeForm().isSectionPresent?.isExperience){
+      <section class="course-work section-details trigger-area">
+        <!-- <span class="template1-section-title"> -->
+          <span class="summary-section-title">Experience
+            @if(!isPreview){
+              <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('EXPERIENCE')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Experience
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('EXPERIENCE')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Remove Experience
+                  </div>
+                </div>
+          </div>
+        }
+          </span>  
+          <div class="course-work-section-content template1-section-content trigger-area" *ngFor="let item of resumeForm().experience">
+            <div *ngIf="!isPreview || !item.isHideSelected" >
+              <div style="display: flex;justify-content: space-between;" [class]="getDivClass(item)">
+                  <p style="flex: 1;text-align: left;margin: 0;"><b>{{item.position_title}}</b><span>, {{item.company_name}}</span></p><span style="flex: 1;text-align: right;">{{item.start_date}} - {{item.end_date}}</span></div>
+              <div class="project-content-container">
+                <div [innerHTML]="item.description" class="project-content" [class]="getDivClass(item)">
+                </div>
+                @if(!isPreview){
+                  <div class="sub-items-actions">
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('EXPERIENCE', item)"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Edit Experience
+                      </div>
+                    </div>
+                    @if(!item.isHideSelected){
+                      <div class="wif-tooltip" data-direction="bottom">
+                        <div class="wif-tooltip__initiator">
+                          <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('EXPERIENCE', item)"></p-icon>
+                        </div>
+                        <div class="wif-tooltip__item">
+                          Hide Experience
+                        </div>
+                      </div>
+                    }
+                    @else{
+                      <div class="wif-tooltip" data-direction="bottom">
+                        <div class="wif-tooltip__initiator">
+                          <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('EXPERIENCE', item)"></p-icon>
+                        </div>
+                        <div class="wif-tooltip__item">
+                          Show Experience
+                        </div>
+                      </div>
+                    }
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('EXPERIENCE', item.id, 'up')"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Move Up
+                      </div>
+                    </div>
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('EXPERIENCE', item.id, 'down')"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Move Down
+                      </div>
+                    </div>
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('EXPERIENCE', item)"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Remove Experience
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+        </div>
+      </section>
+    }
+    @else if(resumeForm().isSectionPresent?.isExperience){
+      <section class="course-work section-details trigger-area">
+          <span class="summary-section-title">Experience
+            @if(!isPreview){
+              <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EXPERIENCE')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Experience
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times" title="" (click)="removeSection('EXPERIENCE')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Remove Experience
+                  </div>
+                </div>
+          </div>
+        }
+          </span>  
+          <div class="course-work-section-content template1-section-content trigger-area">
+            <div>
+              <div style="display: flex;justify-content: space-between;"><p style="flex: 1;text-align: left;margin: 0;" class="opacity-half"><b>Title</b>, <span>Company Name</span></p><span style="flex: 1;text-align: right;" class="opacity-half">Date Period</span></div>
+              <div>
+                <ul>
+                  <li class="opacity-half">Highlight your accomplishments, using numbers if possible.</li> 
+                </ul>
+              </div>
+            </div>
+        </div>
+      </section>
+    }
+
+    @if(resumeForm().project.length > 0 && resumeForm().isSectionPresent?.isProject){
+      <section class="course-work section-details trigger-area">
+          <span class="summary-section-title">Projects
+            @if(!isPreview){
+              <div class="section-actions">
+            <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
+            <!-- <p-icon class="pi pi-pencil" title="Edit"></p-icon> -->
+            <!-- <p-icon class="pi pi-eye-slash" title="Hide"></p-icon> -->
+            <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
+          </div>
+        }
+          </span>  
+          <div  class="course-work-section-content template1-section-content trigger-area" *ngFor="let item of resumeForm().project">
+            <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
+              <div style="flex: 1;text-align: left;">
+                <div class="education-p">
+                    @if(item.project_name.length > 0 && item.project_link.length >0){
+                        <p style="padding: 0;"><a href="{{item.project_link}}" target="_blank" ><b>{{item.project_name}}</b></a></p>
+                    }
+                    @if(item.project_name.length > 0 && item.project_link.length == 0){
+                      <p style="padding: 0;"><b>{{item.project_name}}</b></p>
+                  }
+                    @if(item.project_name.length > 0 && item.technologies_used.length > 0){
+                        <p>|</p>
+                    }
+                    @if(item.technologies_used.length > 0){
+                        <p>{{item.technologies_used}}</p>
+                    }
+                </div>
+              </div>
+            <div class="project-content-container">
+              <div [innerHTML]="item.description" class="project-content">
+              </div>
+              @if(!isPreview){
+                <div class="sub-items-actions">
+                  <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('PROJECT', item)"></p-icon>
+                  @if(!item.isHideSelected){
+                    <p-icon class="pi pi-eye icon" title="Show" (click)="hideSectionElement('PROJECT', item)"></p-icon>
+                  }
+                  @else{
+                    <p-icon class="pi pi-eye-slash icon" title="Hide" (click)="unHideSectionElement('PROJECT', item)"></p-icon>
+                  }
+                  <!-- <p-icon class="pi pi-eye-slash icon" title="Hide"></p-icon> -->
+                  <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('PROJECT', item.id, 'up')"></p-icon>
+                  <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('PROJECT', item.id, 'down')"></p-icon>
+                  <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('PROJECT', item)"></p-icon>
+                </div>
+              }
+            </div>
+            </div>
+          <!-- <div class="edit-context-menu"  *ngIf="!isPreview">
+            <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('PROJECT', item)"  ></i>
+            <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('PROJECT', item)"></i>
+            @if(item.isHideSelected){
+              <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('PROJECT', item)"></i>
+            }
+            @else{
+              <i class="fa fa-eye" (click)="hideSectionElement('PROJECT', item)"></i>
+            }
+            <i class="fa fa-arrow-up"  (click)="moveObjectById('PROJECT', item.id, 'up')" ></i>
+            <i class="fa fa-arrow-down"  (click)="moveObjectById('PROJECT', item.id, 'down')" ></i>
+        </div> -->
+        </div>
+      </section>
+    }
+    @else if(resumeForm().isSectionPresent?.isProject){
+      <section class="course-work section-details trigger-area">
+          <span class="summary-section-title trigger-area">Projects
+            @if(!isPreview){
+              <div class="section-actions">
+            <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
+            <!-- <p-icon class="pi pi-pencil" title="Edit"></p-icon> -->
+            <!-- <p-icon class="pi pi-eye-slash" title="Hide"></p-icon> -->
+            <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
+          </div>
+        }
+          </span>  
+          <div  class="course-work-section-content template1-section-content trigger-area">
+            <div style="flex: 1;text-align: left;">
+                <p class="opacity-half"><a href="#"><b>Project Name</b></a> | Technologies used</p> 
+            </div>
+            <div>
+              <ul>
+                <li class="opacity-half">What was a successful outcome of your work? (e.g. Optimized model performance, reducing processing time by 20%)</li> 
+                <!-- <li class="opacity-half">What was a successful outcome of your work? (e.g. Optimized model performance, reducing processing time by 20%)</li>  -->
+              </ul>
+            </div>
+            </div>
+          <!-- <div class="edit-context-menu"  *ngIf="!isPreview">
+            <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('PROJECT', item)"  ></i>
+            <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('PROJECT', item)"></i>
+            @if(item.isHideSelected){
+              <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('PROJECT', item)"></i>
+            }
+            @else{
+              <i class="fa fa-eye" (click)="hideSectionElement('PROJECT', item)"></i>
+            }
+            <i class="fa fa-arrow-up"  (click)="moveObjectById('PROJECT', item.id, 'up')" ></i>
+            <i class="fa fa-arrow-down"  (click)="moveObjectById('PROJECT', item.id, 'down')" ></i>
+        </div>
+        </div> -->
+      </section>
+    }
+
+    @if(resumeForm().certification.length > 0 && resumeForm().isSectionPresent?.isCertification){
+      <section class="course-work section-details trigger-area">
+        <!-- <span class="template1-section-title"> -->
+          <span class="summary-section-title">Certifications
+            @if(!isPreview){
+              <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CERTIFICATION')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Certification 
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times" title="" (click)="removeSection('CERTIFICATION')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Delete Certification 
+                  </div>
+                </div>
+          </div>
+        }
+          </span>  
+        <div class="course-work-section-content template1-section-content trigger-area" *ngFor="let item of resumeForm().certification">
+          <div *ngIf="!isPreview || !item.isHideSelected"  class="project-content-container">
+            <p [class]="getDivClass(item)" style="margin: 0;padding: 0;">
+            <span><a href="{{item.certification_link}}" target="_blank">{{item.certification_name}}</a>, {{item.issued_organisation}}</span>
+            <span style="float: right;">{{item.issued_month}} {{item.issued_year}}</span>
+            </p>
+            @if(!isPreview){
+              <div class="cer-sub-items-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-pencil icon" title="" (click)="editSectionHandler('CERTIFICATION', item)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Edit Certification 
+                  </div>
+                </div>
+                @if(!item.isHideSelected){
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('CERTIFICATION', item)"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Hide Certification 
+                    </div>
+                  </div>
+                }
+                @else{
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('CERTIFICATION', item)"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Show Certification 
+                    </div>
+                  </div>
+                }
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('CERTIFICATION', item.id, 'up')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Up 
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('CERTIFICATION', item.id, 'down')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Down 
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('CERTIFICATION', item)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Remove Certification 
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+    }
+    @else if(resumeForm().isSectionPresent?.isCertification){
+      <section class="course-work section-details trigger-area">
+          <span class="summary-section-title">Certifications
+            @if(!isPreview){
+              <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATION')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Certification 
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATION')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Remove Certification 
+                  </div>
+                </div>
+          </div>
+        }
+          </span>  
+        <div class="course-work-section-content template1-section-content trigger-area">
+          <div>
+            <p style="margin: 0;" class="opacity-half">
+            <span><a href="#" target="_blank">Certificate Name</a>, Which institution issued the certificate?</span>
+            <span style="float: right;">Date</span>
+            </p>
+          </div>
+        </div>
+      </section>
+    }
+
+    @if(!resumeForm().achievement.isDefault && resumeForm().isSectionPresent?.isAchievement){
+      <section  class="trigger-area course-work trigger-area">
+        <span class="summary-section-title">Achievements
+          @if(!isPreview){
+            <div class="section-actions">
+              @if(resumeForm().achievement.isDefault){
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Achievements 
+                  </div>
+                </div>
+              }
+              @else{
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS', null)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Edit Achievements 
+                  </div>
+                </div>
+              }
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Delete Achievements 
+                </div>
+              </div>
+        </div>
+      }
+        </span>
+        <div  class="course-work-section-content">
+          <div>
+            <div [innerHTML]="resumeForm().achievement.ach" class="project-content"></div>
+          </div>
+        </div>
+      </section>
+    }
+    @else if(resumeForm().isSectionPresent?.isAchievement){
+      <section  class="trigger-area course-work trigger-area">
+        <span class="summary-section-title">Achievements
+          @if(!isPreview){
+            <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Add Achievements 
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove Achievements 
+                </div>
+              </div>
+        </div>
+      }
+        </span>
+        <div  class="course-work-section-content trigger-area">
+         <ul>
+          <li class="opacity-half">Describe what you did and the impact it had.</li>
+         </ul>
+        </div>
+      </section>
+    }
+    <footer style="padding-top: 100px;padding-bottom:30px;">
+        <div class="row">
+            <div class="text-left">
+                <p class="company-name-in-footer">www.workifence.com</p>
+            </div>
+            <div>
+
+            </div>
+        </div>
+    </footer>
+  </div>
+

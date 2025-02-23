@@ -1,0 +1,75 @@
+<div
+    class="instructor-slides"
+    [class.dark-instructor-slides]="themeService.isDark()"
+>
+    <owl-carousel-o [options]="instructorSlides">
+        <ng-template carouselSlide>
+            <div class="single-instructor-box mb-3">
+                <div class="image">
+                    <img src="assets/img/instructor/instructor1.jpg" alt="image">
+                    <ul class="social">
+                        <li><a href="#" target="_blank"><i class="bx bxl-facebook"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-twitter"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-linkedin"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-instagram"></i></a></li>
+                    </ul>
+                </div>
+                <div class="content">
+                    <h3><a routerLink="/single-instructor">Alex Maxwel</a></h3>
+                    <span>CEO & Founder</span>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="single-instructor-box mb-3">
+                <div class="image">
+                    <img src="assets/img/instructor/instructor2.jpg" alt="image">
+                    <ul class="social">
+                        <li><a href="#" target="_blank"><i class="bx bxl-facebook"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-twitter"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-linkedin"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-instagram"></i></a></li>
+                    </ul>
+                </div>
+                <div class="content">
+                    <h3><a routerLink="/single-instructor">Sarah Taylor</a></h3>
+                    <span>UX/UI Designer</span>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="single-instructor-box mb-3">
+                <div class="image">
+                    <img src="assets/img/instructor/instructor3.jpg" alt="image">
+                    <ul class="social">
+                        <li><a href="#" target="_blank"><i class="bx bxl-facebook"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-twitter"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-linkedin"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-instagram"></i></a></li>
+                    </ul>
+                </div>
+                <div class="content">
+                    <h3><a routerLink="/single-instructor">Lee Munroe</a></h3>
+                    <span>Web Developer</span>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="single-instructor-box mb-3">
+                <div class="image">
+                    <img src="assets/img/instructor/instructor4.jpg" alt="image">
+                    <ul class="social">
+                        <li><a href="#" target="_blank"><i class="bx bxl-facebook"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-twitter"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-linkedin"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="bx bxl-instagram"></i></a></li>
+                    </ul>
+                </div>
+                <div class="content">
+                    <h3><a routerLink="/single-instructor">Jonkin Jullinor</a></h3>
+                    <span>OOP Developer</span>
+                </div>
+            </div>
+        </ng-template>
+    </owl-carousel-o>
+</div>

@@ -1,0 +1,514 @@
+
+
+<ul class="nav-tabset pt-50">
+    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab1'}">
+        <span class="active" (click)="switchTab($event, 'tab1')">Heading</span>
+    </li>
+    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab2'}">
+        <span (click)="switchTab($event, 'tab2')">Work History</span>
+    </li>
+    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab3'}">
+        <span (click)="switchTab($event, 'tab3')">Education</span>
+    </li>
+    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab4'}">
+        <span (click)="switchTab($event, 'tab4')">Skills</span>
+    </li>
+    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab5'}">
+        <span (click)="switchTab($event, 'tab5')">Summary</span>
+    </li>
+    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab6'}">
+        <span (click)="switchTab($event, 'tab6')">Project</span>
+    </li>
+    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab7'}">
+        <span (click)="switchTab($event, 'tab7')">Achievements</span>
+    </li>
+    <li class="nav-tab" [ngClass]="{'active': currentTab === 'tab8'}">
+        <span (click)="switchTab($event, 'tab8')">Finalize</span>
+    </li>
+</ul>
+<div class="tabs-container">
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab1'">
+        <form [formGroup]="contactForm" class="column p-20">
+            <div class="column justify-content-start page-info prl-0">
+               <div class="row justify-content-space-between">
+                   <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+               </div>
+               <h1>What’s the best way for employers to contact you?</h1>
+               <p>We suggest including an email and phone number.</p>
+            </div>
+            <div class="row justify-content-start grid-templates-columns-auto" >
+               <div class="column profile-image">
+                   @if(showProfileImage){
+                       <img [src]="getImageBase64()" alt="Profile Image">
+                   }
+                   @if(!showProfileImage){
+                       <img src="assets/img/home/profile_fake.png" />
+                   }
+                   <input type="file" (change)="onFileSelected($event)" #imageUpload placeholder="Upload Photo"/>
+                   <button (click)="imageUpload.click()">Upload Photo</button>
+               </div>
+               <div class="column justify-content-start ">
+                   <div class="row wrap">
+                       
+                    <div class="row grid-templates-columns-auto">
+                       <div class="grid-templates-rows-auto form-input">
+                           <label for="name">*Name</label>
+                           <input type="text" id="name" formControlName="name"> 
+                       </div>
+                       <div class="grid-templates-rows-auto form-input">
+                           <label for="profession">Profession</label>
+                           <input type="text" id="profession" formControlName="role"> 
+                          </div>
+                    </div>
+                    <div class="row grid-templates-columns-auto">
+                       <div class="grid-templates-rows-auto form-input">
+                           <label for="name">*Email</label>
+                           <input type="text" id="email_address" formControlName="email_address"> 
+                       </div>
+                       <div class="grid-templates-rows-auto form-input">
+                           <label for="name">Phone</label>
+                           <input type="text" id="phone_number" formControlName="phone_number"> 
+                       </div>
+                    </div>
+                       <div class="row grid-templates-columns-auto">
+                       <div class="grid-templates-rows-auto form-input">
+                           <label for="name">LinkedIn Profile</label>
+                        <input type="text" id="linkedIn_profile" formControlName="linkedIn_profile"> 
+                       </div>
+                       <div class="grid-templates-rows-auto form-input">
+                           <label for="name">Github Profile</label>
+                        <input type="text" id="linkedIn_profile" formControlName="linkedIn_profile"> 
+                          </div>
+                    </div>
+       
+               </div>
+            </div>
+           </div>
+                   <div class="row justify-content-end form-action-buttons mt-30 mb-0">
+                     
+                       <div style="width: fit-content;padding: 0;">
+                           <button class="back-btn" (click)="saveAndContinue('Heading')"  [disabled]="!contactForm.valid">Save & Continue</button>
+                           <button class="next-btn">Preview</button>
+                       </div>
+                   </div>
+           </form>
+    </div>
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab2'">
+        <div style="width: 40%;display: flex;" class="justify-content-start">
+            <div class="column justify-content-start page-info prl-0">
+                <div class="row justify-content-space-between">
+                    <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+                    <button (click)="next()">Next</button>
+                </div>            <h1>Now, let’s fill out your
+                    Work history</h1>
+                <h3>Here’s what you need to know:</h3>
+                <p>You can include any work experience or You can Just Copy & Paste the roles and responsibilities of your role provided in the company portal.</p>
+            </div>
+            </div>
+    </div>
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab3'">
+        <div style="width: 40%;">
+            <form [formGroup]="workForm" class="column p-20">
+            <div class="column justify-content-start page-info prl-0">
+                <div class="row justify-content-space-between">
+                    <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+                    @if(!isWorkHistorySkipped){
+                        <button (click)="skipHandler('Work_History')">Skip</button>
+                    }
+                    @if(isWorkHistorySkipped){
+                        <button (click)="addSectionHandler('Work_History')">Add</button>
+                    }
+                </div>            
+                <h1>Tell us about your most recent job</h1>
+                <p>We’ll start there and work backward.</p>
+            </div>
+            <div formArrayName="work_fields" class="row justify-content-start">
+                <div *ngFor="let workField of workFields.controls; let i = index" [formGroupName]="i" class="row ">
+
+                    <div class="custom-expansion-panel" style="margin-bottom: 20px;width: 82%;">
+                        <div class="panel-header" (click)="toggleWorkExpansion(i)">
+                            @if(workField.get('position_title')?.value){
+                                <div class="panel-title">{{workField.get('position_title')?.value}}</div>
+                            }
+                            @else{
+                                <div class="panel-title">...</div>
+                            }
+                            <div class="toggle-icon" [ngClass]="{'expanded': work_panels[i].expanded}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                              <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="panel-content" [class.expanded]="work_panels[i].expanded">
+                            <div class="row" style="display: flex;justify-content: center;align-items: center;padding: 20px 0px;">
+                                <div class="column form-inputs justify-content-start">
+                                    <div class="row grid-templates-columns-auto-auto-auto">
+                                       <div class="grid-templates-rows-auto form-input">
+                                        <label for="position_title">Position Title</label>
+                                        <input type="text" id="position_title" formControlName="position_title"> 
+                                       </div>
+                                       <div class="grid-templates-rows-auto form-input">
+                                        <label for="company_name">Company Name</label>
+                                        <input type="text" id="company_name" formControlName="company_name"> 
+                                       </div>
+                                       <div class="grid-templates-rows-auto form-input">
+                                        <label for="location">Location</label>
+                                        <input type="text" id="location" formControlName="location"> 
+                                       </div>
+                                    </div>
+                                     <div class="row grid-templates-columns-auto-auto">
+                                        <div class="grid-templates-rows-auto form-input">
+                                            <label for="start_month">Start Date</label>
+                                            <input type="text" id="start_month" formControlName="start_month" placeholder="Month"> 
+                                        </div>
+                                        <div class="grid-templates-rows-auto form-input">
+                                            <label for="start_year" style="visibility: hidden;">Start Date</label>
+                                            <input type="text" id="start_year" formControlName="start_year" placeholder="Year"> 
+                                           </div>
+                                           <div class="grid-templates-rows-auto form-input">
+                                            <label for="end_month">End Date</label>
+                                            <input type="text" id="end_month" formControlName="end_month" placeholder="Month"> 
+                                        </div>
+                                        <div class="grid-templates-rows-auto form-input">
+                                            <label for="end_year" style="visibility: hidden;">Start Date</label>
+                                            <input type="text" id="end_year" formControlName="end_year" placeholder="Year"> 
+                                           </div>
+                                     </div>
+                                     <div class="row justify-content-end">
+                                        <input type="checkbox" class="fit-content " formControlName="current_work_check" (change)="checkHandler(i)" />
+                                        <p class="fit-content">I currently work here</p>  
+                                     </div>
+                                     <div class="row">
+                                        <div class="grid-templates-rows-auto form-input">
+                                         <label for="description">Work Summary</label>
+                                         <textarea type="text" id="description" formControlName="description"></textarea> 
+                                        </div>
+                                     </div>
+                                     <div class="row fit-content">
+                                        @if(!is_work_history_loading){
+                                            <button class="optimize-btn fit-content" (click)="optimizeWorkHistory(i)" [disabled]="isWorkHistorySkipped">Optimize</button>
+                                        }
+                                        @if(is_work_history_loading){
+                                            <button class="optimize-btn fit-content"><div class="loader"></div> Optimizing</button>
+                                        }
+                                     </div>
+                        
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div style="width: 15%;">
+                        <button class="delete-btn" (click)="removeWorkField(i)" [disabled]="isWorkHistorySkipped">Delete</button>
+                      </div>
+                </div>
+                  
+            </div>
+            <div class="row justify-content-space-between form-action-buttons mt-30 mb-0">
+                <div style="width: fit-content;">
+                    <button class="optimize-btn" (click)="addWorkExp()" [disabled]="isWorkHistorySkipped">Add Work Experience</button>
+                </div>
+                <div style="width: fit-content;padding: 0;">
+                    <button class="back-btn" (click)="saveAndContinue('Work_History')" [disabled]="!workForm.valid && isWorkHistorySkipped">Save & Continue</button>
+                    <button class="next-btn">Preview</button>
+                </div>
+            </div>
+            </form>
+        </div>
+        <div  *ngIf="workHistoryList" class="column justify-content-start card-container">
+            <div class="card" id="exp-card-info">
+                <div class="select-btn">
+                    <button (click)="handleGenAIResponse('Work_History', '')">Use AI Response</button>
+                </div>
+                <ul class="resume-list"  *ngFor="let work of workHistoryList">
+                    <li>{{work}}</li>
+                </ul>
+            </div>
+        </div >
+    </div>
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab4'">
+        <div style="width: 45%;">
+            <div class="column justify-content-start page-info">
+                <div class="row justify-content-space-between">
+                    <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+                    <button (click)="next()">Next</button>
+                </div>            <h1>Great, let’s work on your
+                    Education</h1>
+                <h3>Here’s what you need to know:</h3>
+                <p>Employers quickly scan the education section.</p>
+                <p>We’ll take care of the formatting so it’s easy to find.</p>
+            </div>
+            </div>
+    </div>
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab5'">
+        <div style="width: 40%;">
+            <form [formGroup]="eduForm" class="column p-20">
+            <div class="column justify-content-start page-info prl-0">
+                <div class="row justify-content-space-between">
+                    <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+                    @if(!isEducationSkipped){
+                        <button (click)="skipHandler('Education')">Skip</button>
+                    }
+                    @if(isEducationSkipped){
+                        <button (click)="addSectionHandler('Education')">Add</button>
+                    }
+                </div>            
+                <h1>Tell us about your education</h1>
+                <p>Enter your education experience so far, even if you are a current student or did not graduate.</p>
+            </div>
+            <div formArrayName="edu_fields" class="row justify-content-start">
+                <div *ngFor="let educationField of eduFields.controls; let i = index" [formGroupName]="i" class="row ">
+
+                    <div class="custom-expansion-panel" style="margin-bottom: 20px;width: 82%;">
+                        <div class="panel-header" (click)="toggleExpansion(i)">
+                            @if(educationField.get('degree')?.value){
+                                <div class="panel-title">{{educationField.get('degree')?.value}}</div>
+                            }
+                            @else{
+                                <div class="panel-title">...</div>
+                            }
+                            <div class="toggle-icon" [ngClass]="{'expanded': panels[i].expanded}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                              <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="panel-content" [class.expanded]="panels[i].expanded">
+                            <div class="row" style="display: flex;justify-content: center;align-items: center;padding: 20px 0px;">
+                                <div class="column form-inputs justify-content-start">
+                                    <div class="row grid-templates-columns-auto">
+                                       <div class="grid-templates-rows-auto form-input">
+                                        <label for="school_name">*School Name</label>
+                                        <input type="text" id="school_name" formControlName="school_name"> 
+                                       </div>
+                                       <div class="grid-templates-rows-auto form-input">
+                                        <label for="school_location">School Location</label>
+                                        <input type="text" id="school_location" formControlName="school_location"> 
+                                       </div>
+                                    </div>
+                                    <div class="row grid-templates-columns-auto-auto-auto">
+                                        <div class="grid-templates-rows-auto form-input">
+                                         <label for="degree">*Degree</label>
+                                         <input type="text" id="degree" formControlName="degree"> 
+                                        </div>
+                                        <div class="grid-templates-rows-auto form-input">
+                                         <label for="field_of_study">*Field Of Study</label>
+                                         <input type="text" id="field_of_study" formControlName="field_of_study"> 
+                                        </div>
+                                        <div class="grid-templates-rows-auto form-input">
+                                            <label for="gpa">GPA</label>
+                                            <input type="text" id="gpa" formControlName="gpa"> 
+                                           </div>
+                                     </div>
+                                     <div class="row grid-templates-columns-auto">
+                                        <div class="grid-templates-rows-auto form-input">
+                                         <label for="graduation_month">*Graduation Date</label>
+                                         <input type="text" id="graduation_month" formControlName="graduation_month" placeholder="Month"> 
+                                        </div>
+                                        <div class="grid-templates-rows-auto form-input">
+                                         <label for="graduation_year" style="visibility: hidden;">Location</label>
+                                         <input type="text" id="graduation_year" formControlName="graduation_year" placeholder="Year"> 
+                                        </div>
+                                     </div>
+                        
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div style="width: 15%;">
+                        <button class="delete-btn" (click)="removeEducationField(i)" [disabled]="isEducationSkipped">Delete</button>
+                      </div>
+                </div>
+                  
+            </div>
+            <div class="row justify-content-space-between form-action-buttons mt-30 mb-0">
+                <div style="width: fit-content;">
+                    <button class="optimize-btn" (click)="addEducation()" [disabled]="isEducationSkipped">Add Education</button>
+                </div>
+                <div style="width: fit-content;padding: 0;">
+                    <button class="back-btn" (click)="saveAndContinue('Education')" [disabled]="!eduForm.valid && isEducationSkipped">Save & Continue</button>
+                    <button class="next-btn">Preview</button>
+                </div>
+               
+            </div>
+    </form>
+            </div>
+            <div  *ngIf="educationGeminiResponse" class="column justify-content-start card-container">
+                <div class="card" id="edu-card-info">
+                </div>
+            </div >
+    </div>
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab6'">
+        <div style="width: 45%;">
+            <div class="column justify-content-start page-info">
+                <div class="row justify-content-space-between">
+                    <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+                    <button (click)="next()">Next</button>
+                </div>            
+                <h1>Next, let’s take care of your
+                    Skills</h1>
+                <h3>Here’s what you need to know:</h3>
+                <p>Employers scan skills for relevant keywords.</p>
+                <p>We’ll help you choose the best ones.</p>
+            </div>
+            </div>
+    </div>
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab7'">
+        <div style="width: 40%;">
+            <form [formGroup]="skillsForm" class="column p-20">
+            <div class="column justify-content-start page-info prl-0">
+                <div class="row justify-content-space-between">
+                    <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+                    @if(!isSkillsSkipped){
+                        <button (click)="skipHandler('Skills')">Skip</button>
+                    }
+                    @if(isSkillsSkipped){
+                        <button (click)="addSectionHandler('Skills')">Add</button>
+                    }
+                </div>            
+                <h1>What skills would you like to highlight?</h1>
+                <p>Choose from our pre-written examples below or write your own.</p>
+            </div>
+            <div class="row justify-content-start">
+                <div class="column justify-content-start">
+                     <div class="row">
+                        <div class="grid-templates-rows-auto form-input">
+                         <label for="skills">Skills</label>
+                         <textarea type="text" id="skills" formControlName="skills"></textarea> 
+                        </div>
+                     </div>
+        
+                </div>
+            </div>
+            <div class="row justify-content-space-between form-action-buttons mt-30 mb-0">
+                <div style="width: fit-content;">
+                </div>
+                <div style="width: fit-content;padding: 0;">
+                    <button class="back-btn" (click)="saveAndContinue('Skills')" [disabled]="!skillsForm.valid">Save & Continue</button>
+                    <button class="next-btn">Preview</button>
+                </div>
+            </div>
+    </form>
+    </div>
+    <div  class="column justify-content-start card-container">
+        <div class="card" id="skills-card-info">
+            <div class="row">
+                <div *ngFor="let skill of listed_skills" class="fit-content row" style=" margin: 0px 5px 5px 0px;padding: 0;flex-wrap: wrap;">
+                    <button class="skill-btn fit-content" (click)="addSkill(skill)">{{skill}}</button>
+                </div>
+            </div>
+        </div>
+    </div >
+    </div>
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab8'">
+        <div style="width: 45%;">
+            <div class="column justify-content-start page-info">
+                <div class="row justify-content-space-between">
+                    <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+                    <button (click)="next()">Next</button>
+                </div>            
+                <h1>Next, let’s work on your
+                    Summary</h1>
+                <h3>Here’s what you need to know:</h3>
+                <p>Your summary shows employers you’re right for their job.</p>
+                <p>We’ll help you write a great one with expert content you can customize.</p>
+            </div>
+            </div>
+    </div>
+    <div class="pane" id="tab1" *ngIf="currentTab === 'tab9'">
+        <div style="width: 40%;">
+            <form [formGroup]="userProjectForm" class="column p-20">
+            <div class="column justify-content-start page-info prl-0">
+                <div class="row justify-content-space-between">
+                    <button (click)="back()"><i class="fa-light fa-arrow-left-long"></i>Go Back</button>
+                    @if(!isProjectsSkipped){
+                        <button (click)="skipHandler('Project')">Skip</button>
+                    }
+                    @if(isProjectsSkipped){
+                        <button (click)="addSectionHandler('Project')">Add</button>
+                    }
+                </div>            
+                <h1>Briefly tell us about your Project details</h1>
+                <p>Choose from our pre-written examples below or write your own.</p>
+            </div>
+            <div formArrayName="project_fields" class="row justify-content-start">
+                <div *ngFor="let projectField of projectFields.controls; let i = index" [formGroupName]="i" class="row ">
+
+                    <div class="custom-expansion-panel" style="margin-bottom: 20px;width: 82%;">
+                        <div class="panel-header" (click)="toggleProjectExpansion(i)">
+                            @if(projectField.get('project_title')?.value){
+                                <div class="panel-title">{{projectField.get('project_title')?.value}}</div>
+                            }
+                            @else{
+                                <div class="panel-title">...</div>
+                            }
+                            <div class="toggle-icon" [ngClass]="{'expanded': project_panels[i].expanded}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                              <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="panel-content" [class.expanded]="project_panels[i].expanded">
+                            <div class="row" style="display: flex;justify-content: center;align-items: center;padding: 20px 0px;">
+                                <div class="column form-inputs justify-content-start" style="width: 100% !important;">
+                                    <div class="row">
+                                       <div class="grid-templates-rows-auto form-input">
+                                        <label for="project_title">Project Title</label>
+                                        <input type="text" id="project_title" formControlName="project_title"> 
+                                       </div>
+                                    </div>
+                                     <div class="row wrap">
+                                        <div class="grid-templates-rows-auto form-input">
+                                            <label for="technologies_used">Technologies Used</label>
+                                            <input type="text" id="technologies_used" formControlName="technologies_used"> 
+                                        </div>
+                                     </div>
+                                     <div class="row">
+                                        <div class="grid-templates-rows-auto form-input">
+                                         <label for="description">Project Summary</label>
+                                         <textarea type="text" id="description" formControlName="description"></textarea> 
+                                        </div>
+                                     </div>
+                                     <div class="row fit-content">
+                                        @if(!is_projects_loading){
+                                            <button class="optimize-btn fit-content" (click)="optimizeProject(i)" [disabled]="isProjectsSkipped">Optimize</button>
+                                        }
+                                        @if(is_projects_loading){
+                                            <button class="optimize-btn fit-content"><div class="loader"></div> Optimizing</button>
+                                        }
+                                     </div>
+                        
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div style="width: 15%;">
+                        <button class="delete-btn" (click)="removeProjectField(i)" [disabled]="isProjectsSkipped">Delete</button>
+                      </div>
+                </div>
+                  
+            </div>
+            <div class="row justify-content-space-between form-action-buttons mt-30 mb-0">
+                <div style="width: fit-content;">
+                    <button class="optimize-btn" (click)="addProject()" [disabled]="isProjectsSkipped">Add Project</button>
+                 
+                </div>
+                <div style="width: fit-content;padding: 0;">
+                    <button class="back-btn" (click)="saveAndContinue('Project')" [disabled]="!userProjectForm.valid && isProjectsSkipped">Save & Continue</button>
+                    <button class="next-btn">Preview</button>
+                </div>
+              
+            </div>
+    </form>
+            </div>
+            <div  *ngIf="projectList_genai" class="column justify-content-start card-container">
+                <div class="card" id="project-card-info">
+                    <div class="select-btn">
+                        <button (click)="handleGenAIResponse('Project', '')">Use AI Response</button>
+                    </div>
+                    <ul class="resume-list"  *ngFor="let key_point of projectList_genai">
+                        <li>{{key_point}}</li>
+                    </ul>
+                </div>
+            </div >
+    </div>
+</div>

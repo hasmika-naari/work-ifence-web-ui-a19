@@ -1,0 +1,78 @@
+<section class="page-full-section">
+<app-header-wifence ></app-header-wifence>
+<section
+
+    class="about-area pt-100"
+    [class.dark-about-area]="themeService.isDark()"
+>
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-lg-6 col-md-12">
+                <div class="about-content left-content">
+                    <span class="sub-title">Resume Optimizer</span>
+                    <h2>Our most prized asset is undoubtedly our 
+                        <span style="text-decoration: underline;"><span class="ai-power-text">AI-Powered</span> <br>Resume  Optimization Tool.</span></h2>
+                    <!-- <h6>We can support student forum 24/7 for national and international students.</h6> -->
+                    <p>Crack the code to job interviews with our AI resume optimization tool. Transform your resume into a standout document that not only passes AI screenings but leaves a lasting impression on hiring managers.
+                    </p>
+                    <!-- <div class="features-text">
+                        <h5><i class='bx bx-planet'></i>A place where you can achieve</h5>
+                        <p>Education encompasses both the teaching and learning of knowledge, proper conduct, and technical competency.</p>
+                    </div> -->
+                    <!-- <div class="signature">
+                        <img src="assets/img/home/wifence-4.png" alt="image">
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="about-right-image">
+                    <!-- <img src="assets/img/home/wifence-4.png" alt="image"> -->
+                    <img src="assets/img/home/wifence-4.png" alt="image">
+                    <div class="text-box">
+                        <div class="inner">
+                            Trusted By
+                            <span>Many</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <resume-opti-flow-steps></resume-opti-flow-steps>
+</section>
+<section>
+    <resume-opti-flow-steps2></resume-opti-flow-steps2>
+</section>
+<section class="section4-intro">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 col-md-12">
+                <div class="about-right-image">
+                    <img src="assets/img/home/resume-opti-image-2.png" alt="image">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="about-content left-content">
+                    <span class="sub-title">Discover Our Dashboard</span>
+                    <h2>
+                        Here’s the solution. 
+                    </h2>
+                    <p>
+                        Our AI-based Resume Optimization Tool ensures you stand out from the competition by highlighting your unique strengths and skills, making a lasting impression on recruiters and hiring managers!
+                    </p>
+                    <p>
+                        With our AI-driven resume enhancement, your application will showcase the qualities that set you apart, ensuring you get noticed and stand out in a crowded job market.
+                    </p>
+                    <div class="option-buttons d-block" [class.mt-100]="!isMobile" [class.mt-50]="isMobile">
+                        <button type="button" class="db-demo" routerLink="/dashboard-intro">Dashboard Demo</button>
+                        <button type="button" class="signup-demo" routerLink="/sign-up">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<app-work-ifence-footer></app-work-ifence-footer>
+</section>

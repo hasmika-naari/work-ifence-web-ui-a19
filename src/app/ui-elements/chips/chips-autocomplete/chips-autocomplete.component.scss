@@ -1,0 +1,18 @@
+.example-chip-list {
+    width: 100%;
+}
+::ng-deep {
+    .mat-mdc-card {
+        &.trinta-card {
+            .mat-mdc-card-content {
+                .mat-mdc-form-field {
+                    &.example-chip-list {
+                        .mat-mdc-text-field-wrapper {
+                            padding-left: 15px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

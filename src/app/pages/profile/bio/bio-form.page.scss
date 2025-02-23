@@ -1,0 +1,201 @@
+.bio-profile-section {
+  max-width: 1000px;
+  margin: 0 auto 10px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  //font-family: Arial, sans-serif;
+}
+
+.bio-profile-section .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.bio-profile-section h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.bio-profile-section .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: none;
+  background: #f1f1f1;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.action-btn:hover {
+  background: #e0e0e0;
+  transform: scale(1.1);
+}
+
+p-icon {
+  font-size: 16px;
+  color: #555;
+}
+
+/* Icon Colors */
+.pi-pencil {
+  color: #4caf50; /* Green for Edit */
+}
+
+.pi-plus {
+  color: #2196f3; /* Blue for Add */
+}
+
+.pi-trash {
+  color: #f44336; /* Red for Remove */
+}
+
+// .bio-profile-section .profile-details {
+//   display: flex;
+//   flex-wrap: wrap;
+//   gap: 20px;
+// }
+
+.detail-item {
+  flex: 1 calc(50% - 15px); /* Three columns */
+  background: #fbfbfb;
+  padding: 10px;
+  border: 1px solid #eeeeee26;
+  border-radius: 4px;
+  min-width: 250px; /* Ensures proper width for smaller fields */
+}
+
+.detail-item strong {
+  display: block;
+  font-weight: 500;
+  color: var(--secondaryColor) !important;
+  margin-bottom: 4px;
+  font-size: medium !important;
+}
+
+.detail-item .value-label {
+  color: #666;
+  font-size: small;
+}
+
+// .profile-details {
+//   display: flex;
+//   gap: 2rem; /* Adds space between the two columns */
+//   align-items: center; /* Centers the content vertically */
+//   padding: 1rem; /* Optional: Adds some padding around the parent container */
+// }
+
+// .profile-overview {
+//   display: flex;
+//   justify-content: center; /* Centers the image and name horizontally */
+//   align-items: center; /* Centers the image and name vertically */
+//   text-align: center; /* Centers the text below the image */
+//   flex: 1; /* Allows both columns to grow/shrink equally */
+// }
+
+// .profile-avatar {
+//   width: 150px; /* Adjust size as needed */
+//   height: 150px;
+//   border-radius: 50%; /* Makes the image circular */
+//   object-fit: cover; /* Ensures proper image scaling */
+//   margin-bottom: 1rem; /* Adds space below the image */
+// }
+
+// .detail-item {
+//   margin-bottom: 1rem; /* Adds vertical space between items */
+// }
+
+// .col-6 {
+//   flex: 1; /* Ensures both columns take up equal width */
+// }
+
+.profile-details {
+  display: flex;
+  gap: 2rem; /* Adds space between the two columns */
+  align-items: center; /* Centers the content vertically */
+  padding: 1rem; /* Optional: Adds some padding around the parent container */
+}
+
+.profile-overview {
+  display: flex;
+  justify-content: center; /* Centers the image and name horizontally */
+  align-items: center; /* Centers the image and name vertically */
+  text-align: center; /* Centers the text below the image */
+  flex: 1; /* Allows both columns to grow/shrink equally */
+  h3{
+    color: var(--secondaryColor) !important;
+  }
+}
+
+.profile-avatar {
+  width: 150px; /* Adjust size as needed */
+  height: 150px;
+  border-radius: 50%; /* Makes the image circular */
+  object-fit: cover; /* Ensures proper image scaling */
+  margin-bottom: 1rem; /* Adds space below the image */
+}
+
+.detail-item {
+  margin-bottom: 1rem; /* Adds vertical space between items */
+}
+
+.col-6 {
+  flex: 1; /* Ensures both columns take up equal width */
+}
+
+
+.bio-profile-section .upload-section {
+  margin: 10px 0;
+}
+
+.bio-profile-section .upload-input {
+  display: none;
+}
+
+.bio-profile-section .upload-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.bio-profile-section .upload-btn:hover {
+  background-color: #0056b3;
+}
+
+.bio-profile-section h3 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: #444;
+}
+
+.bio-profile-section strong {
+  font-size: 1rem;
+  color: #333;
+}
+
+.bio-profile-section .value-label {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #888;
+}

@@ -1,0 +1,17 @@
+<app-header-wifence ></app-header-wifence>
+<!-- <app-main-banner [browser]="browser" [desktop]="isDesktop" [tablet]="isTablet" ></app-main-banner> -->
+<div class="container">
+    <div class="training-course-banner-content">
+        <h1>Create ATS-friendly and AI Optimized resumes</h1>
+        <!-- <input type="text" class="filter-templates" /> -->
+    </div>
+    <div class="card" *ngFor="let template of templates" (mouseenter)="toggleButton(true)" (mouseleave)="toggleButton(false)">
+      <img [src]="template.image" [alt]="template.name">
+      <div class="details">
+        <p><span>😊</span> {{ template.helpfulCount }} people found this helpful</p>
+        <button *ngIf="showButton" class="use-template-button" (click)="selectTemplate(template)">Use The Template</button>
+        <span class="love-icon" (click)="saveTemplate(template)">❤️</span>
+      </div>
+    </div>
+  </div>
+  

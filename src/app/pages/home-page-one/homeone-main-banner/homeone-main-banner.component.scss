@@ -1,0 +1,88 @@
+.mission-area {
+    position: relative;
+    z-index: 1;
+    background: {
+        image: url(../../../../assets/img/mission-bg.jpg);
+        position: center center;
+        size: cover;
+        repeat: no-repeat;
+    };
+    &.dark-mission-area {
+        .mission-content {
+            background-color: var(--blackColor);
+        
+            h3 {
+                border-bottom-color: #3a3a3a;
+            }
+        }
+    }
+}
+.mission-content {
+    background-color: var(--whiteColor);
+    padding: 60px;
+    border-radius: 5px;
+    max-width: 630px;
+
+    .section-title {
+        margin-bottom: 35px;
+    }
+    h3 {
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eeeeee;
+        padding-bottom: 15px;
+        font: {
+            size: 18px;
+            weight: 600;
+        };
+    }
+    .default-btn {
+        margin-top: 8px;
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .mission-content {
+        padding: 20px;
+        max-width: 100%;
+
+        .section-title {
+            margin-bottom: 25px;
+
+            &.text-start {
+                text-align: start !important;
+            }
+        }
+        h3 {
+            margin-bottom: 13px;
+            padding-bottom: 13px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    .mission-content {
+        max-width: 720px;
+        text-align: center;
+        margin: {
+            left: auto;
+            right: auto;
+        };
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}

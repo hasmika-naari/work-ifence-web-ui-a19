@@ -1,0 +1,23 @@
+<div class="row h-100 pl-4 pr-4">
+    <div class="col-12"  >
+        <form [formGroup]="achievementsForm" >
+            <div class="row wrap mt-4">
+                <div class="col-12 p-b-1 quill-editor-div"  style="margin-bottom: 20px;position:relative;top:-20px;">
+                    <div #editorContainer style="height: 250px;color: black;"></div>
+                </div>
+            </div>
+        </form>
+        <div class="col-12 mt-3 text-right text-end"  >
+            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                (click)="saveAndContinue()"   
+                [tooltip]="'Add to Resume Summary'"
+                tooltipPosition="top"
+                tooltipStyleClass="custom-tooltip">
+                    <ng-template pTemplate="content" >
+                        <p-icon class="pi pi-check" ></p-icon>
+                        Add to resume
+                    </ng-template>
+            </p-button>
+        </div>
+    </div>
+</div>

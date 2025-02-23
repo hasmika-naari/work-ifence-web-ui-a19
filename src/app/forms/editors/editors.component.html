@@ -1,0 +1,17 @@
+<mat-card class="trinta-card mb-25 bg-white border-none d-block">
+    <mat-card-header>
+        <mat-card-title>
+            <h5 class="mt-0 mb-0">
+                Ngx Editor
+            </h5>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="NgxEditor__Wrapper">
+            <ng-container *ngIf="editor">
+                <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+                <ngx-editor [editor]="editor"></ngx-editor>
+            </ng-container>
+        </div>
+    </mat-card-content>
+</mat-card>

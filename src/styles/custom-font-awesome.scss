@@ -1,0 +1,10 @@
+@use 'sass:math';
+
+// Fix deprecated variables manually
+$fa-li-width: math.div(30em, 14) !default;
+
+// Correct the font path to Angular's assets folder
+$fa-font-path: "/assets/fonts";
+
+// Import Font Awesome after overriding the path
+@import "node_modules/font-awesome/scss/font-awesome.scss";

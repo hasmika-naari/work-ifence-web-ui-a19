@@ -1,0 +1,116 @@
+
+
+.template-image{
+  box-shadow: 0 0 8px -2px #ccc;
+  border: 1px solid transparent;
+  &:hover{
+    border: 1px solid var(--mainColor);
+  }
+}
+
+.template-name{
+  display: block;
+  text-align: center;
+  font-size: medium;
+  font-weight: 400;
+  margin-top: 15px;
+  color: var(--secondaryColor);
+}
+
+.resume-selected{
+  box-shadow: 0 0 8px -2px #ccc;
+  border: 1px solid var(--mainColor);
+  &:hover{
+    border: 1px solid var(--mainColor);
+  }
+}
+
+.left-column {
+  width: 433px;
+  height: 100vh !important;
+  overflow-y: hidden;
+  z-index: 46;
+  left: 0px;
+  position: relative;
+  padding-left: 15px;
+  background-color: white;
+}
+
+.ToolboxPanel-module_panelContainer {
+  width: 500px;
+  border-radius: 2px;
+  z-index: 48;
+  position: absolute;
+  transition: all 0.2s cubic-bezier(0.08, 0.52, 0.52, 1);
+  overflow-x: hidden;
+  overflow-y: hidden;
+  opacity: 1;
+  left: 0px;
+  top: 10px !important;
+  bottom: 85px !important; 
+  --translateX: -100px;
+  --translateY: 100px;
+  padding-left: 0px;
+
+  .history-buttons{
+    height: 50px !important;
+     text-align: right !important;
+    .HistoryArrowButtons-module_arrowContainer {
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      padding: 2px;
+       position: absolute;
+       right: 10px;
+       top: 30px;
+      border: 1px transparent;
+      background-color: transparent;
+      font-size: 17px;
+      transition: background-color .1s;
+    }
+    i{
+      color: #b9babb !important;
+
+      // &:hover{
+      //   color: var(--mainColor) !important;
+      // }
+    }
+  }
+
+  &:hover{
+    // color: var(--mainColor) !important;
+    // i{
+    //     color: var(--mainColor) !important;
+    // }
+    // .back-text{
+    //     color: var(--mainColor) !important;
+    // }
+  }
+}
+
+.shadow-hover {
+  box-shadow: 0 2px 20px rgba(0,0,0,.1);
+}
+
+.bg-surface {
+  background-color: #fff;
+}
+
+.scrollbar-container {
+  animation: height .3s ease-in-out;
+  box-sizing: content-box;
+
+  .scrollhost {
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: relative;
+
+    .scroll-content {
+      display: inline-block;
+      width: 100%;
+  }
+  }
+}
+

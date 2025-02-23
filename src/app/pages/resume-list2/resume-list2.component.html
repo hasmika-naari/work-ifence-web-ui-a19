@@ -1,0 +1,122 @@
+<div class="row" style="margin:16px 0 48px 0;padding-bottom:100px;">
+		<div *ngIf="filteredResumes().length === 0 && !isActionInProgress" class="empty-list-container">
+			<p>No resumes found.</p>
+	  	</div>
+		  <div *ngIf="isActionInProgress" class="empty-list-container">
+			<p>Loading Please wait...</p>
+	  	</div>
+
+	  <ng-container *ngIf="filteredResumes().length > 0">
+		@for (resume of filteredResumes(); track resume.id) {
+
+			<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+				<div class="single-resume-box with-box-shadow m-1 mb-5">
+					<div class="row p-10" style="width: 100% !important;margin: auto;">
+						<div  class="col-6">
+							<div class="courses-image">
+								<span  class="d-block template-image cubic-image-container">
+									<img style="max-width:100%;margin-top:10px;" class="cubic-image" [src]="resume.imageBytes[0]" alt="image">
+								</span>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="row justify-content-between p-10">
+								<div class="col-12 p-0">
+									<div class="row justify-content-between p-0">
+										<div class="col-2 d-flex">
+											<div style="position: absolute;right:10px;top:6px;">
+												@if (!resume.wish){
+													<p-button
+													icon="pi pi-bookmark"
+													[rounded]="checkBoxBinary"
+													[text]="checkBoxBinary"
+													severity="secondary"
+													(click)="addToWishList($event, resume)"
+													></p-button>
+													}
+													@else {
+														<p-button
+														icon="pi pi-bookmark-fill"
+														[rounded]="checkBoxBinary"
+														[text]="checkBoxBinary"
+														severity="secondary"
+														></p-button>
+													}
+													<!-- <p-button
+													icon="pi pi-ellipsis-v"
+													[rounded]="checkBoxBinary"
+													[text]="checkBoxBinary"
+													severity="secondary "
+													[matMenuTriggerFor]="menu"
+													></p-button> -->
+													<!-- <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+														<mat-icon>more_vert</mat-icon>
+													</button> -->
+													<!-- <mat-menu #menu="matMenu" xPosition="before"> -->
+														<!-- <span mat-menu-item>
+															<mat-checkbox [checked]="resume.priority" (change)="update($event.checked, 'PRIMARY_CHANGE', resume)">Primary</mat-checkbox>
+															<mat-checkbox [checked]="resume.status == 'ACTIVE'?true:false" (change)="update($event.checked, 'ACTIVE_CHANGE', resume)">Active</mat-checkbox>
+															<mat-checkbox [checked]="resume.access == 'Public'?true : false" (change)="update($event.checked, 'PUBLIC_CHANGE', resume)">Public</mat-checkbox>
+															<mat-checkbox [checked]="resume.access == 'Only Employer'?true  : false" (change)="update($event.checked, 'ONLY_EMPLOYER_CHANGE', resume)">Only Employer</mat-checkbox>
+														</span> -->
+														
+
+														<!-- <button mat-menu-item>
+														<mat-icon>dialpad</mat-icon>
+														<span>Primary</span>
+														</button>
+														<button mat-menu-item>
+														<mat-icon>voicemail</mat-icon>
+														<span>Active</span>
+														</button>
+														<button mat-menu-item>
+														<mat-icon>notifications_off</mat-icon>
+														<span>Disable alerts</span>
+														</button> -->
+													<!-- </mat-menu> -->
+													<!-- <i class="fa fa-ellipsis-v show-green"  id="editContact"   ></i> -->
+
+											</div>
+										</div>
+										<div class="col-8">
+											<div  [class]="'sm:ml-2 product-badge courses-tag2  status-' + resume.resumeCategory?.toLowerCase()">
+												<span [class]="'sm:ml-2 resume-badge status-' + resume.resumeCategory?.toLowerCase()">{{resume.resumeCategory}}</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 p-0 resume-content2">
+									<h3 style="height: 38px !important;" class="text-left"><span  class="d-inline-block elipse-with-2line">{{resume.title}}</span></h3>
+									<span class="w-100 text-left d-block fs-6">Modified On: <strong>{{resume.lastUpdatedDate | date}}</strong></span>
+								</div>
+								<div class="resume-content3 custom-menu-scope">
+									<p-menu [model]="menuOptions">
+										<ng-template pTemplate="item" let-item>
+											<a class="p-menuitem-link resume-menu-option"
+												 (click)="menuActionHandler($event, resume, item)">
+												<span class="p-menuitem-icon pi" [ngClass]="item.icon"></span>
+												<span class="p-menuitem-text"> {{ item.label }}</span>
+											</a>
+										</ng-template>
+									</p-menu>
+								</div>
+									<div class="col-12 p-0">
+										<span class="w-100 text-left d-block mt-2 fs-6">Created On: <strong>{{resume.createdDate | date}}</strong></span>
+								</div>
+								
+							</div>
+						</div>
+						<div class="col-12">
+							<span>
+								<mat-checkbox [checked]="resume.priority" (change)="update($event.checked, 'PRIMARY_CHANGE', resume)">Primary</mat-checkbox>
+								<mat-checkbox [checked]="resume.status == 'ACTIVE'?true:false" (change)="update($event.checked, 'ACTIVE_CHANGE', resume)">Active</mat-checkbox>
+								<mat-checkbox [checked]="resume.access == 'PUBLIC_ONLY_EMPLOYER'?true : resume.access == 'PUBLIC'?true:false" (change)="update($event.checked, 'PUBLIC_CHANGE', resume)">Public</mat-checkbox>
+								<mat-checkbox [checked]="resume.access == 'PUBLIC_ONLY_EMPLOYER'?true  : resume.access == 'PRIVATE_ONLY_EMPLOYER'?true:false" (change)="update($event.checked, 'ONLY_EMPLOYER_CHANGE', resume)">Employer</mat-checkbox>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	</ng-container>
+</div>
