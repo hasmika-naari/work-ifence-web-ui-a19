@@ -23,7 +23,7 @@ export class ResumeService {
 
   generateResume(resumeTemplate: any){
     // 
-    let queryUrl = 'http://132.148.79.209:8090/api/generateCustomResume';
+    let queryUrl = 'http://Workifence.com:8090/api/generateCustomResume';
 
 
     const headers = new HttpHeaders({
@@ -44,7 +44,7 @@ export class ResumeService {
 
   saveAndDownloadResume(jobRequest : any){
 
-    // let queryUrl = 'http://132.148.79.209:8090/api/saveResumeandDownloadResume';
+    // let queryUrl = 'http://Workifence.com:8090/api/saveResumeandDownloadResume';
 
     let baseUrl = this.appConstants.BASE_API_URL;
     if(isPlatformBrowser(this.platformId)){
@@ -60,7 +60,7 @@ export class ResumeService {
 
   dowloadResumePDF(userName : any, fileName : any){
 
-    // let queryUrl = 'http://132.148.79.209:8090/api/saveResumeandDownloadResume';
+    // let queryUrl = 'http://Workifence.com:8090/api/saveResumeandDownloadResume';
 
     let baseUrl = this.appConstants.BASE_API_URL;
     if(isPlatformBrowser(this.platformId)){
@@ -81,7 +81,7 @@ export class ResumeService {
 
   downloadExternalResume(userName : any, fileName : any){
 
-    // let queryUrl = 'http://132.148.79.209:8090/api/saveResumeandDownloadResume';
+    // let queryUrl = 'http://Workifence.com:8090/api/saveResumeandDownloadResume';
 
     let baseUrl = this.appConstants.BASE_API_URL;
     if(isPlatformBrowser(this.platformId)){

@@ -180,13 +180,13 @@ export class AppConstantsService {
         this.JWT_TOKEN = '';
         this.BASE_APP_URL = 'http://Workifence.com';
         // this.BASE_APP_URL = 'http://localhost:4200';
-        this.BASE_API_SSR_URL = 'http://132.148.79.209:8090';
-        this.BASE_API_URL = 'http://132.148.79.209:8090';
-        this.BASE_SSR_API_URL = 'http://132.148.79.209:8090';
+        this.BASE_API_SSR_URL = 'http://Workifence.com:8090';
+        this.BASE_API_URL = 'http://Workifence.com:8090';
+        this.BASE_SSR_API_URL = 'http://Workifence.com:8090';
         // this.BASE_AWS_API_URL = 'https://97.74.93.142:8443';
         // this.BASE_FRONT_PAGE_API_URL = 'https://97.74.93.142:8443';
         // this.BASE_API_URL = '';
-        this.BASE_AWS_API_URL = 'http://132.148.79.209:8090';
+        this.BASE_AWS_API_URL = 'http://Workifence.com:8090';
         this.BASE_FRONT_PAGE_API_URL = '';
         this.SIGN_IN_PRE_URL = APP_CONTEXT ? '/' : '' + APP_CONTEXT + '/api/wif-login';
         this.SIGN_IN_URL = APP_CONTEXT ? '/' : '' + APP_CONTEXT + '/api/authenticate';

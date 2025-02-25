@@ -438,7 +438,7 @@ return this.http
 uploadFile(file: File) {
 // let url:string = 'https://97.74.93.142:8443/api/aws-s3-upload?path=test';
 let url:string = '/api/aws-s3-upload?path=test';
-// let url:string = 'http://132.148.79.209:8090/api/aws-s3-upload?path=test';
+// let url:string = 'http://Workifence.com:8090/api/aws-s3-upload?path=test';
 // 
 console.log('uploadFile: api call');
 return this.http
