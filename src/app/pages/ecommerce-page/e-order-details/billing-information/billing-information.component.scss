@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.billing-information-card {
         min-height: 295px;
 
@@ -33,7 +33,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.billing-information-card {
             min-height: auto;
 
@@ -63,7 +63,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.billing-information-card {
             min-height: 276px;
             
@@ -89,7 +89,7 @@
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {
 
-    .trinta-card {
+    .workifence-card {
         &.billing-information-card {
             min-height: 285px;
         }

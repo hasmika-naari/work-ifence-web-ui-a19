@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.calendar-card {
         .events-list {
             li {
@@ -35,7 +35,7 @@
     }
 }
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.calendar-card {
             .mat-mdc-card-content {
                 .mat-calendar {
@@ -166,7 +166,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.calendar-card {
             .events-list {
                 li {
@@ -190,7 +190,7 @@
 /* Min width 576px to Max width 767px */
 @media only screen and (min-width : 576px) and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.calendar-card {
             .events-list {
                 li {
@@ -213,7 +213,7 @@
 /* Min width 1200px to Max width 1399px */
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
 
-    .trinta-card {
+    .workifence-card {
         &.calendar-card {
             .events-list {
                 li {
@@ -228,7 +228,7 @@
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {
     
-    .trinta-card {
+    .workifence-card {
         &.calendar-card {
             .events-list {
                 li {

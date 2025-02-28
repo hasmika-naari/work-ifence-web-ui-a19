@@ -41,7 +41,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Sarah Rodriguez',
             number: '+03 4567 8900'
         },
-        email: 'rodriguez@trinta.com',
+        email: 'rodriguez@workifence.com',
         roles: 'Administrator',
         projects: 805,
         status: {
@@ -60,7 +60,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Marcus Davis',
             number: '+03 4567 8900'
         },
-        email: 'davis@trinta.com',
+        email: 'davis@workifence.com',
         roles: 'Administrator',
         projects: 324,
         status: {
@@ -79,7 +79,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Emily Johnson',
             number: '+03 4567 8900'
         },
-        email: 'johnson@trinta.com',
+        email: 'johnson@workifence.com',
         roles: 'Administrator',
         projects: 902,
         status: {
@@ -98,7 +98,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'William Anderson',
             number: '+03 4567 8900'
         },
-        email: 'anderson@trinta.com',
+        email: 'anderson@workifence.com',
         roles: 'Administrator',
         projects: 519,
         status: {
@@ -117,7 +117,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Charlotte Lee',
             number: '+03 4567 8900'
         },
-        email: 'lee@trinta.com',
+        email: 'lee@workifence.com',
         roles: 'Administrator',
         projects: 227,
         status: {
@@ -136,7 +136,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'David Stivy',
             number: '+03 4567 8900'
         },
-        email: 'david@trinta.com',
+        email: 'david@workifence.com',
         roles: 'Administrator',
         projects: 902,
         status: {
@@ -155,7 +155,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Olivia Lucky',
             number: '+03 4567 8900'
         },
-        email: 'olivia@trinta.com',
+        email: 'olivia@workifence.com',
         roles: 'Administrator',
         projects: 519,
         status: {
@@ -174,7 +174,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Maxwel Smith',
             number: '+03 4567 8900'
         },
-        email: 'maxwel@trinta.com',
+        email: 'maxwel@workifence.com',
         roles: 'Administrator',
         projects: 227,
         status: {
@@ -193,7 +193,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Benjamin Clark',
             number: '+03 4567 8900'
         },
-        email: 'clark@trinta.com',
+        email: 'clark@workifence.com',
         roles: 'Administrator',
         projects: 324,
         status: {
@@ -212,7 +212,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Alina Smith',
             number: '+03 4567 8900'
         },
-        email: 'alina@trinta.com',
+        email: 'alina@workifence.com',
         roles: 'Administrator',
         projects: 805,
         status: {
@@ -231,7 +231,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Alina Smith',
             number: '+03 4567 8900'
         },
-        email: 'alina@trinta.com',
+        email: 'alina@workifence.com',
         roles: 'Administrator',
         projects: 805,
         status: {
@@ -250,7 +250,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Benjamin Clark',
             number: '+03 4567 8900'
         },
-        email: 'clark@trinta.com',
+        email: 'clark@workifence.com',
         roles: 'Administrator',
         projects: 324,
         status: {
@@ -269,7 +269,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Charlotte Lee',
             number: '+03 4567 8900'
         },
-        email: 'charlotte@trinta.com',
+        email: 'charlotte@workifence.com',
         roles: 'Administrator',
         projects: 227,
         status: {
@@ -288,7 +288,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Olivia Lucky',
             number: '+03 4567 8900'
         },
-        email: 'olivia@trinta.com',
+        email: 'olivia@workifence.com',
         roles: 'Administrator',
         projects: 519,
         status: {
@@ -307,7 +307,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'David Stivy',
             number: '+03 4567 8900'
         },
-        email: 'david@trinta.com',
+        email: 'david@workifence.com',
         roles: 'Administrator',
         projects: 902,
         status: {
@@ -326,7 +326,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Maxwel Smith',
             number: '+03 4567 8900'
         },
-        email: 'maxwel@trinta.com',
+        email: 'maxwel@workifence.com',
         roles: 'Administrator',
         projects: 227,
         status: {
@@ -345,7 +345,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'William Anderson',
             number: '+03 4567 8900'
         },
-        email: 'anderson@trinta.com',
+        email: 'anderson@workifence.com',
         roles: 'Administrator',
         projects: 519,
         status: {
@@ -364,7 +364,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Emily Johnson',
             number: '+03 4567 8900'
         },
-        email: 'johnson@trinta.com',
+        email: 'johnson@workifence.com',
         roles: 'Administrator',
         projects: 902,
         status: {
@@ -383,7 +383,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Marcus Davis',
             number: '+03 4567 8900'
         },
-        email: 'davis@trinta.com',
+        email: 'davis@workifence.com',
         roles: 'Administrator',
         projects: 324,
         status: {
@@ -402,7 +402,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Sarah Rodriguez',
             number: '+03 4567 8900'
         },
-        email: 'rodriguez@trinta.com',
+        email: 'rodriguez@workifence.com',
         roles: 'Administrator',
         projects: 805,
         status: {

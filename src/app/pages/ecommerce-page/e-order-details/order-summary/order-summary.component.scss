@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.order-summary-card {
         padding-bottom: 94px;
 
@@ -27,7 +27,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.order-summary-card {
             padding-bottom: 20px;
     
@@ -52,7 +52,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.order-summary-card {
             padding-bottom: 25px;
     

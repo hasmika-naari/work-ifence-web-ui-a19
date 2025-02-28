@@ -7,9 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import fs from 'fs';
 import http from 'http';
-// import https from 'https'; // Uncomment if using SSL
+import { createProxyMiddleware, Options } from 'http-proxy-middleware'; 
 import bootstrap from './src/main.server';
-import { createProxyMiddleware } from 'http-proxy-middleware'; // Import properly
 
 // Function to determine if compression should be applied
 function shouldCompress(req: Request, res: Response) {
@@ -34,58 +33,85 @@ export function app(): Express {
   const browserDistFolder = resolve(serverDistFolder, '../browser');
   const indexHtmlPath = join(serverDistFolder, 'index.server.html');
 
+  console.log(`Checking SSR template file at: ${indexHtmlPath}`);
+
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  // Serve static files from /browser
-  server.use(express.static(browserDistFolder, { maxAge: '1y' }));
+  // Serve static files from /browser (SSR safe)
+  server.use(express.static(browserDistFolder, { maxAge: '1y', index: false }));
+
+  // Define proxy middleware options
+// const proxyOptions: any = {
+//   target: "http://132.148.79.209:8090", // ✅ Ensure it explicitly points to 8090
+//   changeOrigin: true, // ✅ Ensures Host header matches target
+//   ws: true, // ✅ Enables WebSockets
+//   secure: false, // ✅ Allows HTTP (skip SSL verification if backend is HTTPS)
+//   onProxyReq: (proxyReq: any, req: any, res: any) => {
+//     console.log(`🔄 Proxying request: ${req.method} ${req.url} -> ${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`);
+//   },
+//   onError: (err: any, req: any, res: any) => {
+//     console.error(`❌ Proxy error: ${err.message}`);
+//     res.status(500).send("Proxy Error");
+//   }
+// };
+
+// const proxyOptions: any = {
+//   target: "http://132.148.79.209:8090",   
+//   changeOrigin: true,
+//   pathRewrite: {
+//       [`^/api`]: '/api',
+//   },
+//   ws: true
+// };
+
+const proxyOptions: any = {
+  target: "http://132.148.79.209:8090",
+  changeOrigin: true,
+  secure: false,  // Ensure HTTPS does not interfere
+  logLevel: "debug",  // Logs details for debugging
+  pathRewrite: {
+    [`^/api`]: '/api',
+  },
+  ws: true
+};
+
+// Use proxy middleware in Express server
+server.use('/api/**', createProxyMiddleware(proxyOptions));
 
   // API Proxy Configuration
-  server.use('/api/**', createProxyMiddleware({
-    target: "http://132.148.79.209:8090",
-    changeOrigin: true,
-    pathRewrite: { '^/api': '/api' },
-    ws: true
-  }));
+  // server.use('/api', createProxyMiddleware({
+  //   target: "http://132.148.79.209:8090",
+  //   changeOrigin: true,
+  //   ws: true
+  // }));
 
-  // Angular Universal SSR Rendering
   server.get('*', async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log(`SSR Rendering for: ${req.originalUrl}`);
+  
       if (!fs.existsSync(indexHtmlPath)) {
-        return res.status(500).send("Server rendering template not found.");
+        console.error("SSR template missing:", indexHtmlPath);
+        return res.status(500).send("SSR template not found.");
       }
-
+  
       const html = await renderApplication(bootstrap, {
         document: fs.readFileSync(indexHtmlPath, 'utf8'),
         url: req.originalUrl,
         platformProviders: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }],
       });
-
-      res.send(html);
+  
+      return res.send(html); // ✅ Ensure the function always returns
     } catch (err) {
-      next(err);
+      console.error("SSR Rendering Error:", err);
+      return res.status(500).send("Internal Server Error"); // ✅ Ensure return on error
     }
-    return;
   });
-
   return server;
 }
 
 function run(): void {
-  const port = process.env['PORT'] || 80;
-
-  // Uncomment this section if using HTTPS certificates
-  /*
-  const httpsOptions = {
-    key: fs.readFileSync('ssl/naarideals/www.naarideals.com.key'),
-    cert: fs.readFileSync('ssl/www_naarideals_com/www_naarideals_com.crt'),
-    ca: [
-      fs.readFileSync('ssl/www_naarideals_com/SectigoRSADomainValidationSecureServerCA.crt'),
-      fs.readFileSync('ssl/www_naarideals_com/USERTrustRSAAAACA.crt')
-    ]
-  };
-  const server = https.createServer(httpsOptions, app());
-  */
+  const port = Number(process.env['PORT']) || 80;
 
   // HTTP Server
   const server = http.createServer(app());

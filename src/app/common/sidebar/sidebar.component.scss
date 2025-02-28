@@ -244,7 +244,7 @@
                                     font-family: remixicon!important;
                                 }
                             }
-                            .trinta-badge {
+                            .workifence-badge {
                                 top: 50%;
                                 right: 18px;
                                 width: 17px;
@@ -399,12 +399,12 @@
                                             &::after {
                                                 background-color: var(--whiteColor);
                                             }
-                                            .trinta-badge {
+                                            .workifence-badge {
                                                 color: var(--primaryColor);
                                                 background-color: var(--whiteColor);
                                             }
                                         }
-                                        .trinta-badge {
+                                        .workifence-badge {
                                             font-size: 11px;
                                             padding: 2px 8px;
                                             margin-left: 5px;
@@ -845,7 +845,7 @@
                                 .mat-expansion-indicator {
                                     display: none;
                                 }
-                                .trinta-badge {
+                                .workifence-badge {
                                     display: none;
                                 }
                             }
@@ -987,7 +987,7 @@
                                     .mat-expansion-indicator {
                                         display: inline-block;
                                     }
-                                    .trinta-badge {
+                                    .workifence-badge {
                                         display: inline-block;
                                     }
                                 }

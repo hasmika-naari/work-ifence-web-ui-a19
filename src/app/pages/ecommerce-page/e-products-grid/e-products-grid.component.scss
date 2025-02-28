@@ -1,5 +1,5 @@
 // Products Filter
-.trinta-card {
+.workifence-card {
     &.products-filter-card {
         .mat-mdc-card-header {
             margin-bottom: 15px;
@@ -73,7 +73,7 @@
     }
 }
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.products-filter-card {
             .mat-mdc-card-content {
                 .filters-top {
@@ -139,7 +139,7 @@
 }
 
 // Products Grid
-.trinta-card {
+.workifence-card {
     &.product-card {
         padding: 20px 20px 30px;
 
@@ -224,7 +224,7 @@
 @media only screen and (max-width : 767px) {
 
     // Products Filter
-    .trinta-card {
+    .workifence-card {
         &.products-filter-card {
             padding: 20px;
 
@@ -264,7 +264,7 @@
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.products-filter-card {
                 .mat-mdc-card-content {
                     .filters-top {
@@ -289,7 +289,7 @@
     }
 
     // Products Grid
-    .trinta-card {
+    .workifence-card {
         &.product-card {
             padding: 20px;
 
@@ -336,7 +336,7 @@
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
     // Products Filter
-    .trinta-card {
+    .workifence-card {
         &.products-filter-card {
             padding: 30px 25px;
 
@@ -372,7 +372,7 @@
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.products-filter-card {
                 .mat-mdc-card-content {
                     .filters-top {
@@ -392,7 +392,7 @@
     }
 
     // Products Grid
-    .trinta-card {
+    .workifence-card {
         &.product-card {
             padding: 20px 20px 25px;
 

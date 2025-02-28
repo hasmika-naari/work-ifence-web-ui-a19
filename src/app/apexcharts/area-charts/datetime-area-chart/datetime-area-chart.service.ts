@@ -23,7 +23,7 @@ export class DatetimeAreaChartService {
                 const options = {
                     series: [
                         {
-                            name: "Trinta",
+                            name: "workifence",
                             data: data
                         }
                     ],

@@ -794,8 +794,8 @@ export class TemplatesService {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resume</title>
-  <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+  <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -1170,8 +1170,8 @@ a{
     <head>
     <meta charset="UTF-8">
     <title>Resume</title>
-    <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+    <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
     <style>
     .container {
       margin: auto;
@@ -1519,8 +1519,8 @@ a{
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Resume</title>
-      <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+      <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
       <style>
       .resume-container {
       margin: auto;
@@ -1775,8 +1775,8 @@ list-style-type: disc;
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Resume</title>
-      <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+      <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
       <style>
       .resume-container {
           margin: auto;
@@ -2084,8 +2084,8 @@ list-style-type: disc;
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Resume</title>
-      <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+      <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
       <style>
       .resume-container {
           margin: auto;
@@ -2411,8 +2411,8 @@ list-style-type: disc;
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Resume</title>
-      <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+      <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
       <style>
       .resume-container {
     // width: 100%; /* Make the container full width */
@@ -2805,8 +2805,8 @@ list-style-type: disc;
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Resume</title>
-     <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+     <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
       <style>
       .resume-container {
           font-family: 'Helvetica', sans-serif;
@@ -2926,8 +2926,8 @@ ul {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Resume</title>
-     <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+     <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
       <style>
       .resume-container {
     font-family: 'Arial', sans-serif;
@@ -3070,8 +3070,8 @@ ul {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Resume</title>
-      <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+      <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
       <style>
           .resume-container {
     font-family: 'Tahoma', sans-serif;
@@ -3232,8 +3232,8 @@ ul {
     <head>
     <meta charset="UTF-8">
     <title>Resume</title>
-    <script defer src="http://workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-    <link href="http://workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
+    <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
+    <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>

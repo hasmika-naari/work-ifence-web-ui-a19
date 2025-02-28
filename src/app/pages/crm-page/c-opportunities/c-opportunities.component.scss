@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.opportunities-card {
         padding: 40px 45px;
 
@@ -124,7 +124,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.opportunities-card {
             padding: 20px;
     
@@ -199,7 +199,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.opportunities-card {
             padding: 25px 20px;
     
@@ -234,7 +234,7 @@
 /* Min width 1200px to Max width 1399px */
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
 
-    .trinta-card {
+    .workifence-card {
         &.opportunities-card {
             .mat-mdc-card-content {
                 .email {

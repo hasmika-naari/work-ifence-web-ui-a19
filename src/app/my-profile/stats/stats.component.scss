@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.pm-stat-card {
         padding: {
             top: 40px;
@@ -60,7 +60,7 @@
 .row {
     .col-xxxl-2 {
         &:nth-child(2) {
-            .trinta-card {
+            .workifence-card {
                 &.pm-stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -71,7 +71,7 @@
             }
         }
         &:nth-child(3) {
-            .trinta-card {
+            .workifence-card {
                 &.pm-stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -82,7 +82,7 @@
             }
         }
         &:nth-child(4) {
-            .trinta-card {
+            .workifence-card {
                 &.pm-stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -93,7 +93,7 @@
             }
         }
         &:nth-child(5) {
-            .trinta-card {
+            .workifence-card {
                 &.pm-stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -104,7 +104,7 @@
             }
         }
         &:nth-child(6) {
-            .trinta-card {
+            .workifence-card {
                 &.pm-stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -120,7 +120,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.pm-stat-card {
             padding: {
                 top: 20px;
@@ -152,7 +152,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.pm-stat-card {
             padding: {
                 top: 25px;

@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.stat-card {
         .mat-mdc-card-content {
             .title {
@@ -56,7 +56,7 @@
 .row {
     .col-xxl-3 {
         &:nth-child(2) {
-            .trinta-card {
+            .workifence-card {
                 &.stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -67,7 +67,7 @@
             }
         }
         &:nth-child(3) {
-            .trinta-card {
+            .workifence-card {
                 &.stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -78,7 +78,7 @@
             }
         }
         &:nth-child(4) {
-            .trinta-card {
+            .workifence-card {
                 &.stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -94,7 +94,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.stat-card {
             .mat-mdc-card-content {
                 .title {
@@ -127,7 +127,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.stat-card {
             .mat-mdc-card-content {
                 .title {

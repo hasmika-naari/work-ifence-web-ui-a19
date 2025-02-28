@@ -22,7 +22,7 @@ export class BasicRadarChartService {
                 const options = {
                     series: [
                         {
-                            name: "Trinta",
+                            name: "workifence",
                             data: [80, 50, 30, 40, 100, 20]
                         }
                     ],

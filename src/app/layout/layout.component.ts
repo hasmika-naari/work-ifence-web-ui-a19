@@ -42,7 +42,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
    // Toggle Service
    isToggled = false;
 
-   title = 'Trinta -  Angular 19 Material Design Admin Dashboard Template';
+   title = 'workifence -  Angular 19 Material Design Admin Dashboard Template';
    routerSubscription: any;
    public locationService: Location =  inject(Location);
    public location: any;

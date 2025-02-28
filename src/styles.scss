@@ -24,7 +24,7 @@
 @include mat.core();
 
 // Define the theme object.
-// $trinta-theme: mat.define-theme((
+// $workifence-theme: mat.define-theme((
 //     color: (
 //         theme-type: light,
 //         primary: mat.$azure-palette,
@@ -40,7 +40,7 @@
 //     $font-family: 'Roboto, sans-serif'
 // );
 
-$trinta-theme: mat.define-theme((
+$workifence-theme: mat.define-theme((
     color: (
         theme-type: light,
         primary: theme-colors.$primary-palette,
@@ -55,15 +55,15 @@ $trinta-theme: mat.define-theme((
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 :root {
-    @include mat.all-component-themes($trinta-theme);
+    @include mat.all-component-themes($workifence-theme);
 }
 
 // Comment out the line below if you want to use the pre-defined typography utility classes.
 // For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
-// @include mat.typography-hierarchy($trinta-theme);
+// @include mat.typography-hierarchy($workifence-theme);
 
 // Comment out the line below if you want to use the deprecated `color` inputs.
-// @include mat.color-variants-backwards-compatibility($trinta-theme);
+// @include mat.color-variants-backwards-compatibility($workifence-theme);
 
 /* You can add global styles to this file, and also import other style files */
 :root {

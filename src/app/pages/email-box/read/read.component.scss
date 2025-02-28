@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.read-email-card {
         .mat-mdc-card-header {
             .info-buttons-list {
@@ -102,7 +102,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.read-email-card {
             .mat-mdc-card-header {
                 .info-buttons-list {
@@ -166,7 +166,7 @@
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.read-email-card {
                 .mat-mdc-card-header {
                     .mat-mdc-card-header-text {
@@ -185,7 +185,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.read-email-card {
             .mat-mdc-card-content {
                 .content {
@@ -210,7 +210,7 @@
 /* Min width 992px to Max width 1199px */
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
 
-    .trinta-card {
+    .workifence-card {
         &.read-email-card {
             .mat-mdc-card-content {
                 .content {

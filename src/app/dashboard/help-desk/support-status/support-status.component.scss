@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.support-status-card {
         .mat-mdc-card-content {
             .chart {
@@ -80,7 +80,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.support-status-card {
             .mat-mdc-card-content {
                 .chart {
@@ -148,7 +148,7 @@
 /* Min width 1200px to Max width 1399px */
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
 
-    .trinta-card {
+    .workifence-card {
         &.support-status-card {
             .mat-mdc-card-content {
                 .chart {

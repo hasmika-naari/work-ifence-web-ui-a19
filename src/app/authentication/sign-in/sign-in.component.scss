@@ -7,7 +7,7 @@
         left: 12.5px;
         right: 12.5px;
     };
-    .trinta-form {
+    .workifence-form {
         max-width: 520px;
         padding: 35px 30px;
 
@@ -64,7 +64,7 @@
 }
 ::ng-deep {
     .sign-in-area {
-        .trinta-form {
+        .workifence-form {
             .signin-with-socials {
                 .mat-mdc-button {
                     .mdc-button__label {
@@ -207,7 +207,7 @@
 @media only screen and (max-width : 767px) {
 
     .sign-in-area {
-        .trinta-form {
+        .workifence-form {
             max-width: 100%;
             padding: 30px 20px;
         
@@ -233,7 +233,7 @@
     }
     ::ng-deep {
         .sign-in-area {
-            .trinta-form {
+            .workifence-form {
                 .signin-with-socials {
                     .mat-mdc-button {
                         .mdc-button__label {
@@ -279,7 +279,7 @@
 @media only screen and (min-width : 576px) and (max-width : 767px) {
     
     .sign-in-area {
-        .trinta-form {
+        .workifence-form {
             max-width: 540px;
         }
     }

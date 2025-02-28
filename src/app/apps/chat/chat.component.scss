@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.chat-sidebar-card {
         .mat-mdc-card-content {
             .search-box {
@@ -94,7 +94,7 @@
                         .time {
                             margin-bottom: 2px;
                         }
-                        .trinta-badge {
+                        .workifence-badge {
                             width: 16px;
                             height: 16px;
                             font-size: 11px;
@@ -293,7 +293,7 @@
     }
 }
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.chat-sidebar-card {
             .mat-mdc-card-content {
                 .mat-mdc-tab-group {
@@ -470,7 +470,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.chat-sidebar-card {
             .mat-mdc-card-content {
                 .search-box {
@@ -563,7 +563,7 @@
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.chat-sidebar-card {
                 .mat-mdc-card-content {
                     .mat-mdc-tab-group {

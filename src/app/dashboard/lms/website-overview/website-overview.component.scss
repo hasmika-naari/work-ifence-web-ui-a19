@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.website-overview-card {
         padding: {
             top: 35.5px;
@@ -53,7 +53,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.website-overview-card {
             padding: {
                 top: 20px;
@@ -92,7 +92,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.website-overview-card {
             padding: {
                 top: 25px;
@@ -128,7 +128,7 @@
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {
 
-    .trinta-card {
+    .workifence-card {
         &.website-overview-card {
             .mat-mdc-card-content {
                 .box {

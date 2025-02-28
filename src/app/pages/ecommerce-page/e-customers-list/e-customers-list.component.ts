@@ -41,7 +41,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Sarah Rodriguez',
             number: '+03 4567 8900'
         },
-        email: 'rodriguez@trinta.com',
+        email: 'rodriguez@workifence.com',
         walletBalance: '$100.5k',
         totalOrders: '1,250',
         activeStatus: '1 hrs ago',
@@ -57,7 +57,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Marcus Davis',
             number: '+03 4567 8900'
         },
-        email: 'davis@trinta.com',
+        email: 'davis@workifence.com',
         walletBalance: '$75k',
         totalOrders: '308',
         activeStatus: '10 hrs ago',
@@ -73,7 +73,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Emily Johnson',
             number: '+03 4567 8900'
         },
-        email: 'johnson@trinta.com',
+        email: 'johnson@workifence.com',
         walletBalance: '$40k',
         totalOrders: '887',
         activeStatus: '1 month ago',
@@ -89,7 +89,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'William Anderson',
             number: '+03 4567 8900'
         },
-        email: 'anderson@trinta.com',
+        email: 'anderson@workifence.com',
         walletBalance: '$90k',
         totalOrders: '539',
         activeStatus: '6 hrs ago',
@@ -105,7 +105,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Charlotte Lee',
             number: '+03 4567 8900'
         },
-        email: 'lee@trinta.com',
+        email: 'lee@workifence.com',
         walletBalance: '$120.5k',
         totalOrders: '60',
         activeStatus: '2 days ago',
@@ -121,7 +121,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Xavier Rodriguez',
             number: '+03 4567 8900'
         },
-        email: 'rodriguez@trinta.com',
+        email: 'rodriguez@workifence.com',
         walletBalance: '$40k',
         totalOrders: '205',
         activeStatus: '7 dys ago',
@@ -137,7 +137,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Sophia Nguyen',
             number: '+03 4567 8900'
         },
-        email: 'nguyen@trinta.com',
+        email: 'nguyen@workifence.com',
         walletBalance: '$90k',
         totalOrders: '107',
         activeStatus: '2 hrs ago',
@@ -153,7 +153,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Elijah Benjamin',
             number: '+03 4567 8900'
         },
-        email: 'benjamin@trinta.com',
+        email: 'benjamin@workifence.com',
         walletBalance: '$120.5k',
         totalOrders: '100',
         activeStatus: '9 hrs ago',
@@ -169,7 +169,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Elijah Benjamin',
             number: '+03 4567 8900'
         },
-        email: 'benjamin@trinta.com',
+        email: 'benjamin@workifence.com',
         walletBalance: '$120.5k',
         totalOrders: '100',
         activeStatus: '9 hrs ago',
@@ -185,7 +185,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Sophia Nguyen',
             number: '+03 4567 8900'
         },
-        email: 'nguyen@trinta.com',
+        email: 'nguyen@workifence.com',
         walletBalance: '$90k',
         totalOrders: '107',
         activeStatus: '2 hrs ago',
@@ -201,7 +201,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Xavier Rodriguez',
             number: '+03 4567 8900'
         },
-        email: 'rodriguez@trinta.com',
+        email: 'rodriguez@workifence.com',
         walletBalance: '$40k',
         totalOrders: '205',
         activeStatus: '7 dys ago',
@@ -217,7 +217,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Charlotte Lee',
             number: '+03 4567 8900'
         },
-        email: 'lee@trinta.com',
+        email: 'lee@workifence.com',
         walletBalance: '$120.5k',
         totalOrders: '60',
         activeStatus: '2 days ago',
@@ -233,7 +233,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'William Anderson',
             number: '+03 4567 8900'
         },
-        email: 'anderson@trinta.com',
+        email: 'anderson@workifence.com',
         walletBalance: '$90k',
         totalOrders: '539',
         activeStatus: '6 hrs ago',
@@ -249,7 +249,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Emily Johnson',
             number: '+03 4567 8900'
         },
-        email: 'johnson@trinta.com',
+        email: 'johnson@workifence.com',
         walletBalance: '$40k',
         totalOrders: '887',
         activeStatus: '1 month ago',
@@ -265,7 +265,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Marcus Davis',
             number: '+03 4567 8900'
         },
-        email: 'davis@trinta.com',
+        email: 'davis@workifence.com',
         walletBalance: '$75k',
         totalOrders: '308',
         activeStatus: '10 hrs ago',
@@ -281,7 +281,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Sarah Rodriguez',
             number: '+03 4567 8900'
         },
-        email: 'rodriguez@trinta.com',
+        email: 'rodriguez@workifence.com',
         walletBalance: '$100.5k',
         totalOrders: '1,250',
         activeStatus: '1 hrs ago',

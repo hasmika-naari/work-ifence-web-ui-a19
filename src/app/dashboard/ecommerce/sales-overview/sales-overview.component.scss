@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.sales-overview-card {
         .mat-mdc-card-header {
             .mat-mdc-card-subtitle {
@@ -31,7 +31,7 @@
     }
 }
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.sales-overview-card {
             .mat-mdc-card-header {
                 .mat-mdc-card-header-text {
@@ -161,7 +161,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.sales-overview-card {
             .mat-mdc-card-header {
                 .mat-mdc-card-subtitle {
@@ -174,7 +174,7 @@
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.sales-overview-card {
                 .mat-mdc-card-header {
                     .mat-mdc-card-header-text {
@@ -240,7 +240,7 @@
 @media only screen and (min-width : 576px) and (max-width : 767px) {
 
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.sales-overview-card {
                 .mat-mdc-card-content {
                     .mat-mdc-tab-group {
@@ -263,7 +263,7 @@
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.sales-overview-card {
                 .mat-mdc-card-header {
                     .mat-mdc-card-header-text {
@@ -323,7 +323,7 @@
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
 
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.sales-overview-card {
                 .mat-mdc-card-header {
                     .mat-mdc-card-header-text {
@@ -367,7 +367,7 @@
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
 
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.sales-overview-card {
                 .mat-mdc-card-header {
                     .mat-mdc-card-header-text {
@@ -411,7 +411,7 @@
 @media only screen and (min-width: 1600px) {
 
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.sales-overview-card {
                 .mat-mdc-card-header {
                     .mat-mdc-card-header-text {

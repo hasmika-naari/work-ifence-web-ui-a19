@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.emails-card {
         .mat-mdc-card-header {
             .info-buttons-list {
@@ -102,7 +102,7 @@
     }
 }
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.emails-card {
             .mat-mdc-card-content {
                 .emails-table {
@@ -144,7 +144,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.emails-card {
             .mat-mdc-card-header {
                 .info-buttons-list {

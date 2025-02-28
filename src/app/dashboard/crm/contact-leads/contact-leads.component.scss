@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.contact-leads-card {
         .mat-mdc-card-content {
             ul {
@@ -22,7 +22,7 @@
                             };
                         }
                     }
-                    .trinta-badge {
+                    .workifence-badge {
                         font-size: 12px;
                         color: #00b69b;
                         border-radius: 2px;
@@ -55,7 +55,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.contact-leads-card {
             .mat-mdc-card-content {
                 ul {
@@ -76,7 +76,7 @@
                                 };
                             }
                         }
-                        .trinta-badge {
+                        .workifence-badge {
                             font-size: 11px;
                             margin-top: 12px;
                         }
@@ -91,12 +91,12 @@
 /* Min width 576px to Max width 767px */
 @media only screen and (min-width : 576px) and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.contact-leads-card {
             .mat-mdc-card-content {
                 ul {
                     li {
-                        .trinta-badge {
+                        .workifence-badge {
                             margin-top: 0;
                         }
                     }
@@ -110,7 +110,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.contact-leads-card {
             .mat-mdc-card-content {
                 ul {
@@ -141,7 +141,7 @@
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {
 
-    .trinta-card {
+    .workifence-card {
         &.contact-leads-card {
             .mat-mdc-card-content {
                 ul {

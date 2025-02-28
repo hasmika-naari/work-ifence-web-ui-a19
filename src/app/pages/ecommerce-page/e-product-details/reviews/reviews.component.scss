@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.overall-reviews-card {
         .product {
             img {
@@ -159,7 +159,7 @@
                             width: 380px;
                         }
                     }
-                    .trinta-badge {
+                    .workifence-badge {
                         font-size: 12px;
                         border-radius: 2px;
                         padding: 1.5px 7px;
@@ -191,7 +191,7 @@
     }
 }
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.overall-reviews-card {
             .rating-item {
                 --mdc-linear-progress-active-indicator-height: 7px;
@@ -212,7 +212,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.overall-reviews-card {
             .product {
                 margin-bottom: 22px;
@@ -303,7 +303,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.overall-reviews-card {
             .product {
                 margin-bottom: 27px;
@@ -326,7 +326,7 @@
 /* Min width 992px to Max width 1199px */
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
 
-    .trinta-card {
+    .workifence-card {
         &.overall-reviews-card {
             .rating-item {
                 margin-bottom: 30px;
@@ -349,7 +349,7 @@
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {
 
-    .trinta-card {
+    .workifence-card {
         &.overall-reviews-card {
             .product {
                 padding-right: 17px;

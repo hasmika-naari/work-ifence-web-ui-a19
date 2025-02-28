@@ -41,7 +41,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Sarah Rodriguez',
             number: '+03 4567 8900'
         },
-        email: 'rodriguez@trinta.com',
+        email: 'rodriguez@workifence.com',
         dealValue: '$100.5k',
         company: 'Aurora Skies',
         status: {
@@ -60,7 +60,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Marcus Davis',
             number: '+03 4567 8900'
         },
-        email: 'davis@trinta.com',
+        email: 'davis@workifence.com',
         dealValue: '$75k',
         company: 'Nexa Technologies',
         status: {
@@ -79,7 +79,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Emily Johnson',
             number: '+03 4567 8900'
         },
-        email: 'johnson@trinta.com',
+        email: 'johnson@workifence.com',
         dealValue: '$40k',
         company: 'Crimson Horizon',
         status: {
@@ -98,7 +98,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'William Anderson',
             number: '+03 4567 8900'
         },
-        email: 'anderson@trinta.com',
+        email: 'anderson@workifence.com',
         dealValue: '$90k',
         company: 'Leaf Solutions',
         status: {
@@ -117,7 +117,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Charlotte Lee',
             number: '+03 4567 8900'
         },
-        email: 'lee@trinta.com',
+        email: 'lee@workifence.com',
         dealValue: '$120.5k',
         company: 'Celestial Dynamics',
         status: {
@@ -136,7 +136,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Charlotte Lee',
             number: '+03 4567 8900'
         },
-        email: 'lee@trinta.com',
+        email: 'lee@workifence.com',
         dealValue: '$120.5k',
         company: 'Celestial Dynamics',
         status: {
@@ -155,7 +155,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Emily Johnson',
             number: '+03 4567 8900'
         },
-        email: 'johnson@trinta.com',
+        email: 'johnson@workifence.com',
         dealValue: '$40k',
         company: 'Crimson Horizon',
         status: {
@@ -174,7 +174,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'William Anderson',
             number: '+03 4567 8900'
         },
-        email: 'anderson@trinta.com',
+        email: 'anderson@workifence.com',
         dealValue: '$90k',
         company: 'Leaf Solutions',
         status: {
@@ -193,7 +193,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Marcus Davis',
             number: '+03 4567 8900'
         },
-        email: 'davis@trinta.com',
+        email: 'davis@workifence.com',
         dealValue: '$75k',
         company: 'Nexa Technologies',
         status: {
@@ -212,7 +212,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
             name: 'Sarah Rodriguez',
             number: '+03 4567 8900'
         },
-        email: 'rodriguez@trinta.com',
+        email: 'rodriguez@workifence.com',
         dealValue: '$100.5k',
         company: 'Aurora Skies',
         status: {

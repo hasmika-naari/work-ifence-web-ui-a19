@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.customers-list-card {
         .customers-list-table {
             .mat-mdc-table {
@@ -75,7 +75,7 @@
                         white-space: normal;
                         max-width: 135px;
                     }
-                    .trinta-badge {
+                    .workifence-badge {
                         font-size: 12px;
                         border-radius: 2px;
                         padding: 1.5px 7px;
@@ -106,7 +106,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.customers-list-card {
             .customers-list-table {
                 .mat-mdc-table {
@@ -129,7 +129,7 @@
                                 }
                             }
                         }
-                        .trinta-badge {
+                        .workifence-badge {
                             font-size: 11px;
                         }
                         .location {
@@ -155,7 +155,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.customers-list-card {
             .customers-list-table {
                 .mat-mdc-table {

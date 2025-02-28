@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.order-details-card {
         background: #0d0626;
 
@@ -90,7 +90,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.order-details-card {
             .mat-mdc-card-content {
                 .tracking-info {
@@ -144,7 +144,7 @@
 /* Min width 576px to Max width 767px */
 @media only screen and (min-width : 576px) and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.order-details-card {
             .mat-mdc-card-content {
                 .tracking-info {
@@ -170,7 +170,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.order-details-card {
             .mat-mdc-card-content {
                 .tracking-info {
@@ -200,7 +200,7 @@
 /* Min width 992px to Max width 1199px */
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
 
-    .trinta-card {
+    .workifence-card {
         &.order-details-card {
             .mat-mdc-card-content {
                 .tracking-info {
@@ -225,7 +225,7 @@
 /* Min width 1200px to Max width 1399px */
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
 
-    .trinta-card {
+    .workifence-card {
         &.order-details-card {
             .mat-mdc-card-content {
                 .tracking-info {

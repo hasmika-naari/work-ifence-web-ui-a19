@@ -1,5 +1,5 @@
 <!-- Overall Reviews -->
-<mat-card class="trinta-card overall-reviews-card mb-25 bg-white border-none d-block">
+<mat-card class="workifence-card overall-reviews-card mb-25 bg-white border-none d-block">
     <mat-card-content>
         <div class="row align-items-center">
             <div class="col-lg-2">
@@ -99,7 +99,7 @@
 </mat-card>
 
 <!-- Manage Reviews -->
-<mat-card class="trinta-card manage-reviews-card mb-25 bg-white border-none d-block">
+<mat-card class="workifence-card manage-reviews-card mb-25 bg-white border-none d-block">
     <mat-card-header>
         <mat-card-title>
             <h5 class="mt-0 mb-0">
@@ -189,10 +189,10 @@
                             Status
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <span class="trinta-badge fw-medium pending d-inline-block" *ngIf="element.status.pending">
+                            <span class="workifence-badge fw-medium pending d-inline-block" *ngIf="element.status.pending">
                                 {{element.status.pending}}
                             </span>
-                            <span class="trinta-badge fw-medium published d-inline-block" *ngIf="element.status.published">
+                            <span class="workifence-badge fw-medium published d-inline-block" *ngIf="element.status.published">
                                 {{element.status.published}}
                             </span>
                         </td>

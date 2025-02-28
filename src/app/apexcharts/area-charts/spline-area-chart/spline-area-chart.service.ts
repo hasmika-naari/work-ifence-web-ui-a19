@@ -22,7 +22,7 @@ export class SplineAreaChartService {
                 const options = {
                     series: [
                         {
-                            name: "Trinta",
+                            name: "workifence",
                             data: [31, 40, 28, 51, 42, 70, 60]
                         },
                         {

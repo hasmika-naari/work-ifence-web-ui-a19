@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.hd-stat-card {
         .mat-mdc-card-content {
             .icon {
@@ -64,7 +64,7 @@
 .row {
     .col-sm-6 {
         &:nth-child(2) {
-            .trinta-card {
+            .workifence-card {
                 &.hd-stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -84,7 +84,7 @@
             }
         }
         &:nth-child(3) {
-            .trinta-card {
+            .workifence-card {
                 &.hd-stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -104,7 +104,7 @@
             }
         }
         &:nth-child(4) {
-            .trinta-card {
+            .workifence-card {
                 &.hd-stat-card {
                     .mat-mdc-card-content {
                         .icon {
@@ -129,7 +129,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.hd-stat-card {
             border-right-width: 0 !important;
     
@@ -174,7 +174,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.hd-stat-card {
             .mat-mdc-card-content {
                 .icon {
@@ -200,7 +200,7 @@
 /* Min width 992px to Max width 1199px */
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
 
-    .trinta-card {
+    .workifence-card {
         &.hd-stat-card {
             .mat-mdc-card-content {
                 .icon {
@@ -227,7 +227,7 @@
 /* Min width 1200px to Max width 1399px */
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
 
-    .trinta-card {
+    .workifence-card {
         &.hd-stat-card {
             .mat-mdc-card-content {
                 .icon {
@@ -254,7 +254,7 @@
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {
 
-    .trinta-card {
+    .workifence-card {
         &.hd-stat-card {
             .mat-mdc-card-content {
                 .icon {

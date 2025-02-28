@@ -7,7 +7,7 @@
         left: 12.5px;
         right: 12.5px;
     };
-    .trinta-form {
+    .workifence-form {
         max-width: 520px;
         padding: 35px 30px;
 
@@ -38,7 +38,7 @@
 }
 ::ng-deep {
     .lock-screen-area {
-        .trinta-form {
+        .workifence-form {
             form {
                 .form-group {
                     margin-bottom: 20px;
@@ -128,7 +128,7 @@
 @media only screen and (max-width : 767px) {
 
     .lock-screen-area {
-        .trinta-form {
+        .workifence-form {
             max-width: 100%;
             padding: 30px 20px;
         
@@ -147,7 +147,7 @@
     }
     ::ng-deep {
         .lock-screen-area {
-            .trinta-form {
+            .workifence-form {
                 form {
                     .form-group {
                         margin-bottom: 18px;
@@ -179,7 +179,7 @@
 @media only screen and (min-width : 576px) and (max-width : 767px) {
     
     .lock-screen-area {
-        .trinta-form {
+        .workifence-form {
             max-width: 540px;
         }
     }

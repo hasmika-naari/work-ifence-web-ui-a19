@@ -57,7 +57,7 @@ import { ScrollPositionDirective } from './scroll-position.directive';
 })
 export class AppComponent implements OnInit, AfterViewInit{
 
-    title = 'Trinta -  Angular 19 Material Design Admin Dashboard Template';
+    title = 'workifence -  Angular 19 Material Design Admin Dashboard Template';
     routerSubscription: any;
     location: any;
     isLoading = true;

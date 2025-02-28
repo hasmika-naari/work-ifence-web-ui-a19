@@ -1,5 +1,5 @@
 <mat-card
-    class="trinta-card all-projects-card mb-25 bg-white border-none d-block"
+    class="workifence-card all-projects-card mb-25 bg-white border-none d-block"
 >
     <mat-card-header>
         <mat-card-title>
@@ -84,13 +84,13 @@
                             Status
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <span class="trinta-badge fw-medium d-inline-block" *ngIf="element.status.active">
+                            <span class="workifence-badge fw-medium d-inline-block" *ngIf="element.status.active">
                                 {{element.status.active}}
                             </span>
-                            <span class="trinta-badge fw-medium pending d-inline-block" *ngIf="element.status.pending">
+                            <span class="workifence-badge fw-medium pending d-inline-block" *ngIf="element.status.pending">
                                 {{element.status.pending}}
                             </span>
-                            <span class="trinta-badge fw-medium completed d-inline-block" *ngIf="element.status.completed">
+                            <span class="workifence-badge fw-medium completed d-inline-block" *ngIf="element.status.completed">
                                 {{element.status.completed}}
                             </span>
                         </td>

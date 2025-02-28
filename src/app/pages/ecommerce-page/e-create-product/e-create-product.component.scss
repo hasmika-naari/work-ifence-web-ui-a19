@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.add-product-card {
         max-width: 850px;
         margin: {
@@ -8,7 +8,7 @@
     }
 }
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.add-product-card {
             .create-product-btn {
                 text-align: end;
@@ -36,13 +36,13 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.add-product-card {
             max-width: 100%;
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.add-product-card {
                 .create-product-btn {
                     .mat-mdc-button {
@@ -62,13 +62,13 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.add-product-card {
             max-width: 100%;
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.add-product-card {
                 .create-product-btn {
                     .mat-mdc-button {
@@ -85,7 +85,7 @@
 /* Min width 992px to Max width 1199px */
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
 
-    .trinta-card {
+    .workifence-card {
         &.add-product-card {
             max-width: 100%;
         }
@@ -96,7 +96,7 @@
 /* Min width 1200px to Max width 1399px */
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
 
-    .trinta-card {
+    .workifence-card {
         &.add-product-card {
             max-width: 100%;
         }
@@ -107,7 +107,7 @@
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {
 
-    .trinta-card {
+    .workifence-card {
         &.add-product-card {
             max-width: 1064px;
         }

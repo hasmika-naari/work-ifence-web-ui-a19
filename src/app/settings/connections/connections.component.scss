@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.connected-accounts-card {
         ul {
             li {
@@ -26,7 +26,7 @@
     }
 }
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.add-new-connection-card {
             .save-info-btn {
                 .mat-mdc-button {
@@ -51,7 +51,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.connected-accounts-card {
             ul {
                 li {
@@ -70,7 +70,7 @@
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.add-new-connection-card {
                 .save-info-btn {
                     .mat-mdc-button {
@@ -90,7 +90,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.connected-accounts-card {
             ul {
                 li {
@@ -103,7 +103,7 @@
         }
     }
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.add-new-connection-card {
                 .save-info-btn {
                     .mat-mdc-button {

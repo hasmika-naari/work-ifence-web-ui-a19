@@ -1,4 +1,4 @@
-<mat-card class="trinta-card orders-list-card mb-25 bg-white border-none d-block">
+<mat-card class="workifence-card orders-list-card mb-25 bg-white border-none d-block">
     <mat-card-header>
         <mat-card-title>
             <h5 class="mt-0 mb-0">
@@ -78,16 +78,16 @@
                             Payment Status
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <span class="trinta-badge unpaid fw-medium d-inline-block" *ngIf="element.paymentStatus.unpaid">
+                            <span class="workifence-badge unpaid fw-medium d-inline-block" *ngIf="element.paymentStatus.unpaid">
                                 <i class="ri-file-list-3-line"></i> {{element.paymentStatus.unpaid}}
                             </span>
-                            <span class="trinta-badge fw-medium d-inline-block" *ngIf="element.paymentStatus.paid">
+                            <span class="workifence-badge fw-medium d-inline-block" *ngIf="element.paymentStatus.paid">
                                 <i class="ri-money-dollar-circle-line"></i> {{element.paymentStatus.paid}}
                             </span>
-                            <span class="trinta-badge fw-medium awaiting d-inline-block" *ngIf="element.paymentStatus.awaiting">
+                            <span class="workifence-badge fw-medium awaiting d-inline-block" *ngIf="element.paymentStatus.awaiting">
                                 <i class="ri-hourglass-2-fill"></i> {{element.paymentStatus.awaiting}}
                             </span>
-                            <span class="trinta-badge fw-medium canceled d-inline-block" *ngIf="element.paymentStatus.failed">
+                            <span class="workifence-badge fw-medium canceled d-inline-block" *ngIf="element.paymentStatus.failed">
                                 <i class="ri-information-line"></i> {{element.paymentStatus.failed}}
                             </span>
                         </td>
@@ -129,13 +129,13 @@
                             Status
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <span class="trinta-badge fw-medium d-inline-block" *ngIf="element.status.pending">
+                            <span class="workifence-badge fw-medium d-inline-block" *ngIf="element.status.pending">
                                 {{element.status.pending}}
                             </span>
-                            <span class="trinta-badge fw-medium delivered d-inline-block" *ngIf="element.status.delivered">
+                            <span class="workifence-badge fw-medium delivered d-inline-block" *ngIf="element.status.delivered">
                                 {{element.status.delivered}}
                             </span>
-                            <span class="trinta-badge fw-medium canceled d-inline-block" *ngIf="element.status.canceled">
+                            <span class="workifence-badge fw-medium canceled d-inline-block" *ngIf="element.status.canceled">
                                 {{element.status.canceled}}
                             </span>
                         </td>

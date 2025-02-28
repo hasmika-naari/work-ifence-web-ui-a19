@@ -1,5 +1,5 @@
 ::ng-deep {
-    .trinta-card {
+    .workifence-card {
         &.new-email-card {
             .btn-box {
                 text-align: end;
@@ -32,7 +32,7 @@
 @media only screen and (max-width : 767px) {
 
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.new-email-card {
                 .btn-box {
                     margin-top: 25px;
@@ -59,7 +59,7 @@
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.new-email-card {
                 .btn-box {
                     .mat-mdc-button {
@@ -81,7 +81,7 @@
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
 
     ::ng-deep {
-        .trinta-card {
+        .workifence-card {
             &.new-email-card {
                 .btn-box {
                     .mat-mdc-button {

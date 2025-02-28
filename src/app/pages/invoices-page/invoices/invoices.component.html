@@ -1,4 +1,4 @@
-<mat-card class="trinta-card invoices-list-card mb-25 bg-white border-none d-block">
+<mat-card class="workifence-card invoices-list-card mb-25 bg-white border-none d-block">
     <mat-card-header>
         <mat-card-title>
             <h5 class="mt-0 mb-0">
@@ -98,13 +98,13 @@
                             Balance
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <span class="trinta-badge fw-medium d-inline-block" *ngIf="element.balance.paid">
+                            <span class="workifence-badge fw-medium d-inline-block" *ngIf="element.balance.paid">
                                 {{element.balance.paid}}
                             </span>
-                            <span class="trinta-badge fw-medium due d-inline-block" *ngIf="element.balance.due">
+                            <span class="workifence-badge fw-medium due d-inline-block" *ngIf="element.balance.due">
                                 {{element.balance.due}}
                             </span>
-                            <span class="trinta-badge fw-medium waiting d-inline-block" *ngIf="element.balance.waiting">
+                            <span class="workifence-badge fw-medium waiting d-inline-block" *ngIf="element.balance.waiting">
                                 {{element.balance.waiting}}
                             </span>
                         </td>

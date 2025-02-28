@@ -47,7 +47,7 @@
 
     // Mat Card
     .mat-mdc-card {
-        &.trinta-card {
+        &.workifence-card {
             .mat-mdc-card-header {
                 .mat-mdc-card-header-text {
                     .mat-mdc-card-subtitle {
@@ -440,7 +440,7 @@
                                             &::after {
                                                 background-color: var(--whiteColor);
                                             }
-                                            .trinta-badge {
+                                            .workifence-badge {
                                                 color: var(--primaryColor);
                                                 background-color: var(--whiteColor);
                                             }
@@ -606,8 +606,8 @@
         }
     }
 
-    // Trinta Card
-    .trinta-card {
+    // workifence Card
+    .workifence-card {
         &.top-selling-products-card {
             .mat-mdc-card-content {
                 .products-slides {
@@ -2356,7 +2356,7 @@
 
     // Help Desk Stats
     .main-content {
-        .trinta-card {
+        .workifence-card {
             &.hd-stat-card {
                 border-right-color: rgba(255, 255, 255, .15) !important;
             }
@@ -2387,7 +2387,7 @@
 
     // Sign In
     .sign-in-area {
-        .trinta-form {
+        .workifence-form {
             .signin-with-socials {
                 .mat-mdc-button {
                     border-color:rgba(255, 255, 255, .20) !important;
@@ -2445,7 +2445,7 @@
         }
     }
     .sign-up-area {
-        .trinta-form {
+        .workifence-form {
             .signup-with-socials {
                 .mat-mdc-button {
                     border-color:rgba(255, 255, 255, .20) !important;
@@ -2503,7 +2503,7 @@
         }
     }
     .forgot-password-area {
-        .trinta-form {
+        .workifence-form {
             form {
                 .form-group {
                     .mdc-text-field--filled {
@@ -2589,7 +2589,7 @@
         }
     }
     .logout-area {
-        .trinta-form {
+        .workifence-form {
             .logo {
                 img {
                     &:first-child {
@@ -2615,7 +2615,7 @@
         }
     }
     .reset-password-area {
-        .trinta-form {
+        .workifence-form {
             form {
                 .form-group {
                     .mdc-text-field--filled {

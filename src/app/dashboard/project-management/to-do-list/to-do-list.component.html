@@ -1,4 +1,4 @@
-<mat-card class="trinta-card to-do-list-card mb-25 bg-white border-none d-block">
+<mat-card class="workifence-card to-do-list-card mb-25 bg-white border-none d-block">
     <mat-card-header>
         <mat-card-title>
             <h5 class="mt-0 mb-0">
@@ -57,13 +57,13 @@
                             Status
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <span class="trinta-badge fw-medium d-inline-block" *ngIf="element.status.active">
+                            <span class="workifence-badge fw-medium d-inline-block" *ngIf="element.status.active">
                                 {{element.status.active}}
                             </span>
-                            <span class="trinta-badge fw-medium onHand d-inline-block" *ngIf="element.status.onHand">
+                            <span class="workifence-badge fw-medium onHand d-inline-block" *ngIf="element.status.onHand">
                                 {{element.status.onHand}}
                             </span>
-                            <span class="trinta-badge fw-medium urgent d-inline-block" *ngIf="element.status.urgent">
+                            <span class="workifence-badge fw-medium urgent d-inline-block" *ngIf="element.status.urgent">
                                 {{element.status.urgent}}
                             </span>
                         </td>

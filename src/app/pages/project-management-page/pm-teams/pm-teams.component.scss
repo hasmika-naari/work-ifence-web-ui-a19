@@ -1,4 +1,4 @@
-.trinta-card {
+.workifence-card {
     &.team-card {
         .mat-mdc-card-content {
             h6 {
@@ -108,7 +108,7 @@
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
-    .trinta-card {
+    .workifence-card {
         &.team-card {
             .mat-mdc-card-content {
                 h6 {
@@ -187,7 +187,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 
-    .trinta-card {
+    .workifence-card {
         &.team-card {
             .mat-mdc-card-content {
                 h6 {
@@ -236,7 +236,7 @@
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {
 
-    .trinta-card {
+    .workifence-card {
         &.team-card {
             .mat-mdc-card-content {
                 .list {
