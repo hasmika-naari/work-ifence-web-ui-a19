@@ -1,6 +1,6 @@
 
 :host {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', sans-serif !important;
   }
   
   /* Force font on all elements within this component */
@@ -12,6 +12,11 @@
         font-family: 'Material Icons' !important;
     }
   } 
+
+  .contact-form-submit-btn{
+     background-color: var(--mainColor) !important;
+     color: var(--whiteColor) !important;
+  }
 
 .page-title-area{
     .page-title-content{

@@ -25,119 +25,101 @@
             <h2>Drop us Message for any Query</h2>
         </div>
         <div class="contact-form">
-            <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
+          <div class="container">
+            <div class="form-card">
+              <form [formGroup]="feedbackForm" 
+                    (ngSubmit)="onSubmit()">
                 <div class="row">
-                    <div class="col-lg-4 col-md-12">
-                        <div class="form-group">
-                            <input
-                              type="text"
-                              placeholder="Full Name"
-                              formControlName="fullname"
-                              class="form-control"
-                              [ngClass]="{ 'is-invalid': feedbackSubmitted && f['fullname'].errors }"
-                            />
-                            @if (feedbackSubmitted && f['fullname'].errors) {
-                            <div class="invalid-feedback">
-                              @if (f['fullname'].errors['required']) {
-                              <div>Email is required</div>
-                              } @if (f['fullname'].errors['fullname']) {
-                              <div>Full Name is invalid</div>
-                              }
-                            </div>
-                            }
-                          </div>
-                    </div>
-                    <div class="col-lg-4 col-md-12">
-                        <div class="form-group">
-                            <input
-                              type="text"
-                              placeholder="Emain Id"
-                              formControlName="email"
-                              class="form-control"
-                              [ngClass]="{ 'is-invalid': feedbackSubmitted && f['email'].errors }"
-                            />
-                            @if (feedbackSubmitted && f['email'].errors) {
-                            <div class="invalid-feedback">
-                              @if (f['email'].errors['required']) {
-                              <div>Email is required</div>
-                              } @if (f['email'].errors['email']) {
-                              <div>Email is invalid</div>
-                              }
-                            </div>
-                            }
-                          </div>
-                    </div>
-                    <div class="col-lg-4 col-md-12">
-                        <div class="form-group">
-                            <input
-                              type="text"
-                              placeholder="Phone Number"
-                              formControlName="phonenumber"
-                              class="form-control"
-                              [ngClass]="{ 'is-invalid': feedbackSubmitted && f['phonenumber'].errors }"
-                            />
-                            @if (feedbackSubmitted && f['phonenumber'].errors) {
-                            <div class="invalid-feedback">
-                              @if (f['phonenumber'].errors['required']) {
-                              <div>Phone Number is required</div>
-                              } @if (f['phonenumber'].errors['phonenumber']) {
-                              <div>Phone Number is invalid</div>
-                              }
-                            </div>
-                            }
-                          </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12">
-                        <div class="form-group">
-                            <input
-                              type="text"
-                              placeholder="Subject"
-                              formControlName="subject"
-                              class="form-control"
-                              [ngClass]="{ 'is-invalid': feedbackSubmitted && f['subject'].errors }"
-                            />
-                            @if (feedbackSubmitted && f['subject'].errors) {
-                            <div class="invalid-feedback">
-                              @if (f['subject'].errors['required']) {
-                              <div>Subject is required</div>
-                              } @if (f['subject'].errors['subject']) {
-                              <div>Subject is invalid</div>
-                              }
-                            </div>
-                            }
-                          </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12">
-                            <div class="form-group">
-                                <textarea
-                                  type="text"
-                                  placeholder="Message"
-                                  cols="30" rows="5"
-                                  formControlName="message"
-                                  class="form-control"
-                                  [ngClass]="{ 'is-invalid': feedbackSubmitted && f['message'].errors }"
-                                ></textarea>
-                                @if (feedbackSubmitted && f['message'].errors) {
-                                <div class="invalid-feedback">
-                                  @if (f['message'].errors['required']) {
-                                  <div>Message is required</div>
-                                  } @if (f['message'].errors['message']) {
-                                  <div>Message is invalid</div>
-                                  }
-                                </div>
-                                }
-                              </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12 text-right text-end">
-                        <button type="submit" class="default-btn" [class.disabled]="feedbackForm.invalid">
-                            <i class='bx bx-paper-plane icon-arrow before'></i>
-                            <span class="label">Send Message</span>
-                            <i class="bx bx-paper-plane icon-arrow after"></i>
-                        </button>
-                    </div>
-                    </div>
-            </form>
-        </div>
+                  <div class="col-md-6 mt-2">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>First Name</mat-label>
+                      <input matInput formControlName="firstName" />
+                      <mat-error *ngIf="feedbackForm.controls['firstName'].hasError('required')">
+                        First Name is required.
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+          
+                  <div class="col-md-6 mt-2">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Last Name</mat-label>
+                      <input matInput formControlName="lastName" />
+                      <mat-error *ngIf="feedbackForm.controls['lastName'].hasError('required')">
+                        Last Name is required.
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+          
+                <div class="row">
+                  <div class="col-md-6 mt-2">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Email</mat-label>
+                      <input matInput type="email" formControlName="emailId" />
+                      <mat-error *ngIf="feedbackForm.controls['emailId'].hasError('required')">
+                        Email is required.
+                      </mat-error>
+                      <mat-error *ngIf="feedbackForm.controls['emailId'].hasError('email')">
+                        Enter a valid email address.
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+          
+                  <div class="col-md-6 mt-2">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Phone Number</mat-label>
+                      <input matInput type="text" formControlName="phoneNumber" />
+                      <mat-error *ngIf="feedbackForm.controls['phoneNumber'].hasError('required')">
+                        Phone number is required.
+                      </mat-error>
+                      <mat-error *ngIf="feedbackForm.controls['phoneNumber'].hasError('pattern')">
+                        Enter a valid 10-digit phone number.
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+          
+                <div class="row">
+                  <div class="col-md-12 mt-2">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Request Type</mat-label>
+                      <mat-select formControlName="requestType">
+                        <mat-option *ngFor="let type of requestTypes" [value]="type.value">
+                          {{ type.label }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="feedbackForm.controls['requestType'].hasError('required')">
+                        Request type is required.
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+          
+                <div class="row">
+                  <div class="col-md-12 mt-2">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Request Description</mat-label>
+                      <textarea matInput formControlName="requestDescription" rows="7"></textarea>
+                      <mat-error *ngIf="feedbackForm.controls['requestDescription'].hasError('required')">
+                        Description is required.
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+          
+                <div class="text-end mt-3">
+                  <button mat-raised-button color="primary" type="submit" 
+                    [class.contact-form-submit-btn]="!feedbackForm.invalid"
+                  [disabled]="feedbackForm.invalid">
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+        
+          </div>
     </div>
     <div class="contact-bg-image">
         <img src="assets/img/map.png" alt="image">
