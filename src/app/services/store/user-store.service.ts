@@ -1,6 +1,6 @@
 import { Injectable, Signal, computed, signal } from "@angular/core";
 import { ResumeTemplateDto, UserResume, UserState } from "./user-store";
-import { Account, BioProfile, LoginProfile } from "../profile.model";
+import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
 import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, Achievement, IsSectionPresent, Other, SkillV2, Accomplishment, Skill} from "../resume.model";
 import { ApplicationListDataItem, ClientContact, JobApplicationFeedback, JobApplicationRequest, JobInterviewRounds, ResumeListDataItem, VendorContact } from "../work-ifence-data.model";
@@ -16,6 +16,8 @@ import { Address } from "../contact.model";
     state = signal<UserState>(
       { 
         account: new Account(), 
+        roles: new Array<WifRole>(),
+        activeRole: new WifRole(),
         bioProfile: new BioProfile(), 
         loginProfile: new LoginProfile(),
         addresses: new Array<Address>(),
@@ -43,6 +45,8 @@ import { Address } from "../contact.model";
         this.state.update((state) => ({
           ...state,
           account: new Account(), 
+          roles: new Array<WifRole>(),
+          activeRole: new WifRole(),
           bioProfile: new BioProfile(), 
           loginProfile: new LoginProfile(),
           addresses: new Array<Address>(),
@@ -58,6 +62,20 @@ import { Address } from "../contact.model";
         this.state.update((state) => ({
           ...state,
           account: account
+        }));
+      }
+
+      updateRoles(roles: Array<WifRole>) {
+        this.state.update((state) => ({
+          ...state,
+          roles: roles
+        }));
+      }
+
+      updateActiveRole(role: WifRole) {
+        this.state.update((state) => ({
+          ...state,
+          activeRole: role
         }));
       }
 
@@ -1006,6 +1024,14 @@ import { Address } from "../contact.model";
       
       getUserLoginStatus(): Signal<boolean> {
         return computed(()=> this.state().isUserLoggedIn);
+      }
+
+      getUserRoles(): Signal<Array<WifRole>> {
+        return computed(()=> this.state().roles);
+      }
+
+      getUserActiveRole(): Signal<WifRole> {
+        return computed(()=> this.state().activeRole);
       }
 
       // getCurrentRoleCategory() : Signal<string> {

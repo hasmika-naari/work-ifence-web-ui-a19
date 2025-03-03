@@ -30,7 +30,7 @@ import { AppConstantsService } from 'src/app/services/app-constants.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoginRequest } from 'src/app/services/auth.models';
-import { BioProfile, LoginProfile, PasswordResetRqst } from 'src/app/services/profile.model';
+import { Account, BioProfile, LoginProfile, PasswordResetRqst, WifRole } from 'src/app/services/profile.model';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { WifProgressDisplayComponent } from 'src/app/shared/wif-progress-display/wif-progress-display.component';
@@ -288,11 +288,18 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                     this.localStorageService.setItem('authenticated', true);
                   }
                   this.authService.getAccountProfile().subscribe(
-                    (account) =>
+                    (account:Account) =>
                     {
                       ;
                       console.log('account: ' + account.id);
                       this.userStore.updateAccount(account);
+                      let roles: Array<WifRole> = [];
+                      account.authorities.forEach(authr => {
+                        roles.push({title:authr,role:authr })
+                      });
+                      this.userStore.updateRoles(roles);
+                      this.userStore.updateActiveRole(roles[0]);
+
                       this.authService.getLoginProfile(account.login).subscribe(
                         (profile)=>{
                           this.userStore.updateLoginProfile(profile);
@@ -306,7 +313,12 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                                 }
                                 else{
                                   this.userStore.updateBioProfile(bioProfile);
-                                  this.router.navigate(['/user/dashboard']);
+                                  debugger;
+                                  if(this.hasRoleAdmin(account.authorities)){
+                                    this.router.navigate(['/user/dashboard-admin']);
+                                  }else{
+                                    this.router.navigate(['/user/dashboard']);
+                                  }
                                 }
                                 // bioProfile: 
                                 // {...bioProfile, imageUrl: bioProfile?.imageUrl?this.constantService.BASE_AWS_S3_API_URL + bioProfile?.imageUrl:'' }}),
@@ -332,6 +344,10 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
           this.isLoading = false;
         });
   }
+
+  hasRoleAdmin(authorities: string[]): boolean {
+    return authorities.includes("ROLE_ADMIN");
+}
 
   onReset(): void {
     this.submitted = false;

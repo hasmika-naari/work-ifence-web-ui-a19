@@ -1,0 +1,78 @@
+<div class="job-tracker" style="height: 100vh; overflow: hidden;">
+    <div class="resume-container">
+      <h1 class="title">Resume Tracker</h1>
+        <div class="toolbar" style="position: absloute; top: 0; background: transparent; z-index: 100;">
+            <!-- Header: Applications Tracker -->
+            <!-- <mat-progress-bar *ngIf="isActionInProgress" style="margin-bottom: 16px;" mode="indeterminate"></mat-progress-bar> -->
+
+            <!-- Below Header: Menus, Search Bar, and Add Button -->
+            <div class="content-row">
+              <!-- Menus Section -->
+               <div class="dropdown-container">
+                  <div class="flex justify-content-center">
+                    <p-dropdown 
+                        [options]="resumeCategories" 
+                        [formControl]="filteredResumeCategoryValue"
+                        [checkmark]="true" 
+                        optionLabel="name" 
+                        placeholder="Resume Category"
+                        [disabled]="!isFilterOff || !isSearchOff || isActionInProgress"  />
+                  </div>
+                  <div class="flex justify-content-center">
+                    <p-dropdown 
+                        [options]="roleCategories" 
+                        [formControl]="filteredRoleCategoryValue"
+                        [checkmark]="true" 
+                        optionLabel="name" 
+                        placeholder="Role Category"
+                        [disabled]="!isFilterOff || !isSearchOff || isActionInProgress" />
+                  </div>
+                  <div class="flex justify-content-center">
+                    @if(isFilterOff){
+                    <button class="add-job-btn" (click)="filterApplications()" [disabled]="!isSearchOff">
+                      <p-icon class="pi pi-filter"></p-icon>
+                      <span>Filter</span>
+                    </button>
+                  }
+                  @else{
+                    <button class="add-job-btn" (click)="unselectFilter()" [disabled]="!isSearchOff">
+                      <p-icon class="pi pi-times"></p-icon>
+                      <span>Unselect</span>
+                    </button>
+                  }
+                  </div>
+               </div>
+              <!-- Right Section: Search + Add Job -->
+              <div class="right-section">
+                <!-- Search Bar -->
+                <div class="search-container">
+                  <input
+                    type="text"
+                    class="search-input"
+                    [disabled]="isActionInProgress"
+                    placeholder="Search resume by title"
+                    [formControl]="searchQuery"
+                  />
+                </div>
+          
+                <!-- Add Job Button -->
+                <button class="add-job-btn" (click)="onAddResume()">
+                  <p-icon class="pi pi-plus"></p-icon>
+                  <span>Add Resume</span>
+                </button>
+              </div>
+            </div>
+        </div>
+        <section>
+          <mat-progress-bar *ngIf="isActionInProgress" style="margin-bottom: 16px;" mode="indeterminate"></mat-progress-bar>
+         </section>
+            <div class="sections">
+              <div class="col-12 p-0 pb-100">
+                  <request-list  
+                      [isActionInProgress]="isActionInProgress"
+                      (childEvent)="receiveFromChild($event)">
+                  </request-list>
+              </div>
+            </div>
+    </div>
+</div>

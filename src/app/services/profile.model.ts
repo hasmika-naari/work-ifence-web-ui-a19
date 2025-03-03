@@ -17,13 +17,25 @@ export class Account{
     lastModifiedDate?: any;
     lastName?: any;
     login?: any;
-
-
     constructor(){
         this.authorities = [];
     }
 
 }
+
+export class WifRole{
+    title: string = '';
+    role: string = '';
+}
+
+export class MenuListItem{
+    title: string = '';
+    icon: string = '';
+    url: string = '';
+    role: string = '';
+    subscription: string = '';
+}
+
 
 export class LoginProfile{
     id?: string;

@@ -75,7 +75,7 @@
                                             <i-feather name="log-out"></i-feather>
                                             Logout
                                         </button>
-                                        <button type="button" class="sign-up" routerLink="/user/dashboard">
+                                        <button type="button" class="sign-up" (click)="goToDashboard($event)" >
                                             <i-feather name="grid"></i-feather>
                                             <!-- <i class='bx bxs-dashboard' style="margin-right: 4px;font-size:larger;"></i> -->
                                             Dashboard
@@ -119,7 +119,7 @@
                                         <!-- <i-feather name="log-out"></i-feather> -->
                                         <span>Logout</span>
                                     </a>
-                                    <a href="/user/dashboard" class="dropdown-item d-flex align-items-center">
+                                    <a  (click)="goToDashboard($event)" class="dropdown-item d-flex align-items-center">
                                         <!-- <i class='bx bx-dashboard' style="margin-right: 4px;" ></i> -->
                                         <i-feather name="grid"></i-feather>
                                         <span>Dashboard</span>

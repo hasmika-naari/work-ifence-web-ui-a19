@@ -1,0 +1,33 @@
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding-top: 20px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .table-card {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: white;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .status-badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .new {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .addressed {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  

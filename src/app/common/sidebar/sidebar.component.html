@@ -46,15 +46,16 @@
                 <mat-accordion>
                     <div style="margin-top:10px;margin-bottom:20px;border-bottom: 1px dotted gray;">
                         <!-- OTHERS -->
-                        
                     </div>
-                    <a routerLink="/user/dashboard" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                        <i-feather name="grid"></i-feather>
+                    <a [routerLink]="mListItem.url"  *ngFor="let mListItem of menuList;let i = index;"
+                        class="sidebar-menu-link" routerLinkActive="active" 
+                            [routerLinkActiveOptions]="{exact: true}">
+                        <i-feather [name]="mListItem.icon"></i-feather>
                         <span class="title">
-                            Dashboard
+                            {{mListItem.title}}
                         </span>
                     </a>
-                    <a routerLink="/user/resumes" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                    <!-- <a routerLink="/user/resumes" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                         <i-feather name="file-text"></i-feather>
                         <span class="title">
                             Resumes
@@ -66,31 +67,13 @@
                             Job Applications
                         </span>
                     </a>
-                    <!-- <a routerLink="/user/mail-box" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                        <i-feather name="mail"></i-feather>
-                        <span class="title">
-                            Mail
-                        </span>
-                    </a> -->
-                    <!-- <a routerLink="/user/user-contacts" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                        <i-feather name="users"></i-feather>
-                        <span class="title">
-                            Contacts
-                        </span>
-                    </a> -->
-
                     <a routerLink="/user/user-learn" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                         <i-feather name="book-open"></i-feather>
                         <span class="title">
                             Learn
                         </span>
-                    </a>
-                    <!-- <a routerLink="/user/calendar" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                        <i-feather name="calendar"></i-feather>
-                        <span class="title">
-                            Calendar
-                        </span>
                     </a> -->
+
                     <div style="margin-top:10px;margin-bottom:20px;border-bottom: 1px dotted gray;">
                         <!-- OTHERS -->
                         
