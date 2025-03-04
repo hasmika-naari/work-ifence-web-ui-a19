@@ -6,13 +6,14 @@ import { FeathericonsModule } from '../../icons/feathericons/feathericons.module
 import { Router, RouterLink } from '@angular/router';
 import { ToggleService } from './toggle.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Account, BioProfile } from 'src/app/services/profile.model';
+import { Account, BioProfile, WifRole } from 'src/app/services/profile.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, RouterLink, NgClass],
+    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, RouterLink, NgClass, MatDividerModule],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss',
     providers: [
@@ -22,6 +23,8 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 export class HeaderComponent {
     private userStore: UserStoreService = inject(UserStoreService);
     public userAccount: Signal<Account> = this.userStore.getUserAccount();
+    public userRoles: Signal<Array<WifRole>> = this.userStore.getUserRoles();
+    public userActiveRole: Signal<WifRole> = this.userStore.getUserActiveRole();
     bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   
     private storageService: LocalStorageService = inject(LocalStorageService);

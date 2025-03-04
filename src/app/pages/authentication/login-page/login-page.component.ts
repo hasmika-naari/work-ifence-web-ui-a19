@@ -295,7 +295,11 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                       this.userStore.updateAccount(account);
                       let roles: Array<WifRole> = [];
                       account.authorities.forEach(authr => {
-                        roles.push({title:authr,role:authr })
+                        if(authr === 'ROLE_ADMIN'){
+                          roles.push({title:'App Admin',role:authr, url: '/user/dashboard-admin' });
+                        }else if(authr === 'ROLE_USER'){
+                          roles.push({title:'Member',role:authr, url: '/user/dashboard' });
+                        }
                       });
                       this.userStore.updateRoles(roles);
                       this.userStore.updateActiveRole(roles[0]);

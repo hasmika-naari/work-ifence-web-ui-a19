@@ -26,6 +26,7 @@ export class Account{
 export class WifRole{
     title: string = '';
     role: string = '';
+    url: string = '';
 }
 
 export class MenuListItem{
