@@ -1,4 +1,4 @@
-import { Component, inject, PLATFORM_ID, Signal } from '@angular/core';
+import { Component, effect, inject, PLATFORM_ID, Signal } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ToggleService } from '../header/toggle.service';
@@ -39,102 +39,107 @@ export class SidebarComponent {
         this.toggleService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
         });
-        let aRole = this.userActiveRole().role;
-        if(this.userActiveRole().role === 'ROLE_ADMIN'){
-            this.menuList = [
-                {
-                    title: 'Dashboard',
-                    icon: 'grid',
-                    url: '/user/dashboard-admin',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Requests',
-                    icon: 'file-text',
-                    url: '/user/requests',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Organizations',
-                    icon: 'file',
-                    url: '/user/org-list',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Users',
-                    icon: 'users',
-                    url: '/user/user-list',
-                    role: '',
-                    subscription: ''
-                }
-                
-            ];
-        }else if(this.userActiveRole().role === 'ROLE_USER'){
-            this.menuList = [
-                {
-                    title: 'Dashboard',
-                    icon: 'grid',
-                    url: '/user/dashboard',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Resumes',
-                    icon: 'file-text',
-                    url: '/user/resumes',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Job Applications',
-                    icon: 'file',
-                    url: '/user/job-applications',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Learn',
-                    icon: 'book-open',
-                    url: '/user/user-learn',
-                    role: '',
-                    subscription: ''
-                }
-            ];
-        }else{
-            this.menuList = [
-                {
-                    title: 'Dashboard',
-                    icon: 'grid',
-                    url: '/user/dashboard',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Resumes',
-                    icon: 'file-text',
-                    url: '/user/resumes',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Job Applications',
-                    icon: 'file',
-                    url: '/user/job-applications',
-                    role: '',
-                    subscription: ''
-                },
-                {
-                    title: 'Learn',
-                    icon: 'book-open',
-                    url: '/user/user-learn',
-                    role: '',
-                    subscription: ''
-                }
-            ];
-        }
+
+        effect(() => {
+            let aRole = this.userActiveRole().role;
+            if(this.userActiveRole().role === 'ROLE_ADMIN'){
+                this.menuList = [
+                    {
+                        title: 'Dashboard',
+                        icon: 'grid',
+                        url: '/user/dashboard-admin',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Requests',
+                        icon: 'file-text',
+                        url: '/user/requests',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Organizations',
+                        icon: 'file',
+                        url: '/user/org-list',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Users',
+                        icon: 'users',
+                        url: '/user/user-list',
+                        role: '',
+                        subscription: ''
+                    }
+                    
+                ];
+            }else if(this.userActiveRole().role === 'ROLE_USER'){
+                this.menuList = [
+                    {
+                        title: 'Dashboard',
+                        icon: 'grid',
+                        url: '/user/dashboard',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Resumes',
+                        icon: 'file-text',
+                        url: '/user/resumes',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Job Applications',
+                        icon: 'file',
+                        url: '/user/job-applications',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Learn',
+                        icon: 'book-open',
+                        url: '/user/user-learn',
+                        role: '',
+                        subscription: ''
+                    }
+                ];
+            }else{
+                this.menuList = [
+                    {
+                        title: 'Dashboard',
+                        icon: 'grid',
+                        url: '/user/dashboard',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Resumes',
+                        icon: 'file-text',
+                        url: '/user/resumes',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Job Applications',
+                        icon: 'file',
+                        url: '/user/job-applications',
+                        role: '',
+                        subscription: ''
+                    },
+                    {
+                        title: 'Learn',
+                        icon: 'book-open',
+                        url: '/user/user-learn',
+                        role: '',
+                        subscription: ''
+                    }
+                ];
+            }
+          });
+
+       
     }
 
    

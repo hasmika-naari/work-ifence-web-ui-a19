@@ -319,6 +319,7 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                                   this.userStore.updateBioProfile(bioProfile);
                                   debugger;
                                   if(this.hasRoleAdmin(account.authorities)){
+                                    this.userStore.updateActiveRole(roles[1]);
                                     this.router.navigate(['/user/dashboard-admin']);
                                   }else{
                                     this.router.navigate(['/user/dashboard']);

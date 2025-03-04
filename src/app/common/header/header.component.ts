@@ -67,4 +67,9 @@ export class HeaderComponent {
        this.userStore.resetStore();
         this.router.navigateByUrl("/");
     }
+
+    switchDashboard($event:any, role: WifRole){
+        this.userStore.updateActiveRole(role);
+        this.router.navigateByUrl(role.url);
+    }
 }

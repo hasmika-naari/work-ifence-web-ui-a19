@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, PLATFORM_ID, Signal, inject } from '@angular/core';
+import { AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, PLATFORM_ID, Signal, effect, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import * as moment from 'moment';
 import { Observable, ReplaySubject, Subscription } from 'rxjs';
@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { ResumeService } from 'src/app/services/resume.service';
-import { Account, BioProfile } from 'src/app/services/profile.model';
+import { Account, BioProfile, WifRole } from 'src/app/services/profile.model';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
 
 @Component({
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   userAccount: Signal<Account> = this.userStore.getUserAccount();
   bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   resumes : Array<ResumeListDataItem> = []
-
+  public userRoles: Signal<Array<WifRole>> = this.userStore.getUserRoles();
 
 
 
@@ -64,6 +64,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     //     DashboardComponent.isInitialLoad = false;
     //   }
     // }
+ effect(() => {
+    let aRoles = this.userRoles();
+      this.userStore.updateActiveRole(aRoles[0]);
+    });
 
   }
 

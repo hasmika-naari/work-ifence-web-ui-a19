@@ -189,7 +189,8 @@
                     <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
                         @for (role of userRoles(); track role) {
                             <li class="position-relative transition fw-medium cursor-pointer"
-                                [routerLink]="role.url">
+                               [class.active-role]="userActiveRole().title === role.title"
+                               (click)="switchDashboard($event, role)" >
                                 <i class="material-symbols-outlined">
                                     dashboard
                                 </i>
