@@ -170,7 +170,9 @@
                   placeholder="Password" 
                   class="w-100" 
                   id="password" 
-                  formControlName="password">
+                  formControlName="password"
+                  (input)="onPasswordInput()">
+                
                 <button 
                   mat-icon-button 
                   matSuffix 
@@ -180,15 +182,18 @@
                   [attr.aria-pressed]="!hidePassword">
                   <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                 </button>
+              
                 <mat-error 
-                  class="ng-dirty ng-invalid" 
                   *ngIf="registerForm3.get('password')?.hasError('required') && (registerForm3.get('password')?.dirty || registerForm3.get('password')?.touched)">
                   Required.
                 </mat-error>
-                <mat-error *ngIf="registerForm3.get('password')?.hasError('pattern')">
-                  Minimum 8 characters, with uppercase, lowercase, number, and special character
-                </mat-error>
+              
+                <!-- Smooth fade-in animation for the hint -->
+                <mat-hint *ngIf="showPasswordHint" @fadeInOut>
+                  Must be 8+ chars with upper, lower, number & (&#64;$!%*?&).
+                </mat-hint>
               </mat-form-field>
+              
             </div>
             
             <div class="col-12 mt-2" [class.mt-p]="registerForm3.get('password')?.hasError('pattern') && isMobile">

@@ -1,15 +1,13 @@
 <div class="row" style="margin:16px 0 48px 0;padding-bottom:100px;">
-		<div *ngIf="filteredResumes().length === 0 && !isActionInProgress" class="empty-list-container">
+		<div *ngIf="getFilteredData().length === 0 && !isActionInProgress" class="empty-list-container">
 			<p>No resumes found.</p>
 	  	</div>
 		  <div *ngIf="isActionInProgress" class="empty-list-container">
 			<p>Loading Please wait...</p>
 	  	</div>
-		  <div class="container">
-			<mat-card class="table-card">
-			  <h2 class="text-center">Feedback Requests</h2>
-		  
-			  <div class="row mb-3">
+		  <div class="container-fluid">
+			<mat-card class="table-card mat-elevation-z0" *ngIf="!isActionInProgress && getFilteredData().length">
+			  <!-- <div class="row mb-3">
 				<div class="col-md-4">
 				  <mat-form-field appearance="outline" class="full-width">
 					<mat-label>Filter by Request Type</mat-label>
@@ -21,8 +19,7 @@
 					</mat-select>
 				  </mat-form-field>
 				</div>
-			  </div>
-		  
+			  </div> -->
 			  <table mat-table [dataSource]="getFilteredData()" class="mat-elevation-z0 full-width">
 		  
 				<!-- Date Received Column -->
@@ -60,7 +57,7 @@
 				  <th mat-header-cell *matHeaderCellDef>Status</th>
 				  <td mat-cell *matCellDef="let element">
 					<span class="status-badge" [ngClass]="{'new': element.status === 'New', 'addressed': element.status === 'Addressed'}">
-					  {{ element.status }}
+					  {{ element.status }} {{element.expanded}}
 					</span>
 				  </td>
 				</ng-container>

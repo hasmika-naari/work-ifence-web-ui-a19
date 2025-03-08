@@ -834,8 +834,10 @@
 }
 
 .search-job-feed-item{
-    background-color: #f5f4f4 !important;
-    box-shadow: 0px 1px 1px 0px rgb(10 27 57 / 20%);
+    background-color: #ffffff !important;
+    // box-shadow: 0px 1px 1px 0px rgb(10 27 57 / 20%);
+    box-shadow: none;
+    border: 1px solid #b0b0b0 !important;
     border-radius: 5px 5px 0 0 !important;
     transition: var(--transition) !important;
     font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif, Arial, Helvetica, sans-serif, Geneva, Tahoma, sans-serif !important;
@@ -861,6 +863,10 @@
         .company-name{
             font-weight: 600 !important;
             letter-spacing: 1px !important;
+          }
+
+          &:hover{
+            background-color: #fff !important;
           }
       }
    
@@ -903,7 +909,12 @@
 
     &:hover{
         border: 1px solid #b0b0b0;
-        background-color: #f1f1f149 !important;
+        box-shadow: 0px 1px 1px 0px rgb(10 27 57 / 20%);
+        background-color: #d3d2d26b !important;
+
+        .box-primary-shade {
+            background-color: #fff !important;
+        }
     }
   }
 

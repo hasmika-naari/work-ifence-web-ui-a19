@@ -1,33 +1,194 @@
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding-top: 20px;
-    font-family: 'Poppins', sans-serif;
+/* ===========================
+   General Layout & Containers
+============================= */
+.row {
+  margin: 16px 0 48px 0;
+  padding-bottom: 100px;
+}
+
+.container-fluid {
+  padding: 20px;
+}
+
+.table-card {
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: white;
+}
+
+/* ===========================
+   Empty State Messages
+============================= */
+.empty-list-container {
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-medium);
+  padding: 20px;
+}
+
+.empty-list-container p {
+  margin: 0;
+  font-style: italic;
+}
+
+/* ===========================
+   Form Fields
+============================= */
+mat-form-field.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.mat-form-field-outline {
+  border-color: var(--text-medium);
+}
+
+mat-select {
+  background: white;
+}
+
+/* ===========================
+   Material Table Styles
+============================= */
+table.mat-table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th.mat-header-cell {
+  background: var(--background-light);
+  font-weight: bold;
+  color: var(--text-dark);
+  padding: 12px 16px;
+  text-align: left;
+}
+
+td.mat-cell {
+  padding: 12px 16px;
+  color: var(--text-medium);
+}
+
+tr.mat-header-row {
+  height: 56px;
+}
+
+tr.mat-row {
+  transition: background 0.3s ease-in-out;
+}
+
+tr.mat-row:hover {
+  background: var(--background-light);
+}
+
+/* ===========================
+   Status Badges
+============================= */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.status-badge.new {
+  background: var(--primary-color);
+  color: white;
+}
+
+.status-badge.addressed {
+  background: var(--secondary-color);
+  color: white;
+}
+
+/* ===========================
+   Action Buttons
+============================= */
+.mat-icon-button {
+  transition: transform 0.2s;
+  color: var(--primary-color);
+}
+
+.mat-icon-button:hover {
+  transform: scale(1.1);
+}
+/* Primary Button */
+.mat-button-primary {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Apply Darker Shade on Hover */
+.mat-button-primary:hover {
+  filter: brightness(90%) !important; /* Darken by 10% */
+}
+
+/* Warn Button */
+.mat-button-warn {
+  background-color: var(--warn-color) !important;
+  color: white !important;
+}
+
+/* Apply Darker Shade on Hover */
+.mat-button-warn:hover {
+  filter: brightness(90%) !important;
+}
+
+
+/* ===========================
+   Expanded Row (Mat Expansion Panel)
+============================= */
+.expandable-row {
+  cursor: pointer;
+}
+
+tr.expanded td {
+  padding: 0 !important;
+}
+
+.mat-expansion-panel {
+  width: 100%;
+  background: var(--background-light);
+  border-left: 4px solid var(--primary-color);
+  padding: 10px;
+}
+
+.mat-expansion-panel-header {
+  font-weight: 500;
+}
+
+.mat-expansion-panel p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--text-medium);
+}
+
+/* ===========================
+   Responsive Styles
+============================= */
+@media (max-width: 768px) {
+  th.mat-header-cell, td.mat-cell {
+    font-size: 14px;
+    padding: 10px;
   }
-  
-  .table-card {
-    padding: 20px;
-    border-radius: 12px;
-    background-color: white;
+
+  .mat-expansion-panel {
+    border-left: none;
   }
-  
-  .full-width {
-    width: 100%;
-  }
-  
+
   .status-badge {
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: bold;
+    font-size: 12px;
+    padding: 3px 10px;
   }
-  
-  .new {
-    background-color: #f8d7da;
-    color: #721c24;
+
+  .mat-icon-button {
+    margin: 4px;
   }
-  
-  .addressed {
-    background-color: #d4edda;
-    color: #155724;
-  }
-  
+}

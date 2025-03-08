@@ -28,7 +28,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { ResumeService } from 'src/app/services/resume.service';
 import { Account } from 'src/app/services/profile.model';
-import { JobApplicationRequest, ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
+import { FeedbackRequest, JobApplicationRequest, ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import moment from 'moment';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { JobApplicationStatus } from 'src/app/services/store/resume.model';
@@ -84,9 +84,21 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy, AfterViewI
 
   filteredRoleCategoryValue = new FormControl()
   filteredResumeCategoryValue = new FormControl()
-  roleCategories : Array<Option> = []
-  resumeCategories : Array<Option> = []
-  tempResumes : ResumeListDataItem[] = []
+  roleCategories : Array<Option> = [];
+  resumeCategories : Array<Option> = [{
+    name: 'All',
+    code: 'All'
+  }, {
+    name: 'Request for New Org Account',
+    code: 'Request for New Org Account'
+  },{
+    name: 'Request for New Feature',
+    code: 'Request for New Feature'
+  },{
+    name: 'Issue with Login',
+    code: 'Issue with Login'
+  }];
+  tempResumes : ResumeListDataItem[] = [];
 
   private resumeService: ResumeService = inject(ResumeService);
   private pdfToImageService: PdfToImageService = inject(PdfToImageService);
@@ -106,6 +118,34 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy, AfterViewI
 
   locations = [];
   filteredLocationValue: string = '';
+
+  receivedRequests: Array<FeedbackRequest> = [
+    {
+      id: 1,
+      dateReceived: '2024-02-28',
+      firstName: 'John',
+      lastName: 'Doe',
+      emailId: 'john.doe@example.com',
+      phoneNumber: '9876543210',
+      requestType: 'Request for New Org Account',
+      requestDescription: 'Need an organization account for new employees.',
+      status: 'New',
+      expanded: false
+    },
+    {
+      id: 2,
+      dateReceived: '2024-02-27',
+      firstName: 'Jane',
+      lastName: 'Smith',
+      emailId: 'jane.smith@example.com',
+      phoneNumber: '9876543211',
+      requestType: 'Issue with Login',
+      requestDescription: 'Unable to log in to the portal with my credentials.',
+      status: 'Addressed',
+      expanded: false
+    }
+  ];
+
 
   constructor(private router: Router, public layoutService: LayoutService) {
       effect(()=>{
@@ -202,14 +242,14 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy, AfterViewI
     //             this.resumeCategories = [...this.resumeCategories , { name: e.resumeCategory, code: '' }];
     //           }
     //     })
-    //     setTimeout(() => {
-    //       this.isActionInProgress = false;
-    //     }, 100);
+        setTimeout(() => {
+          this.isActionInProgress = false;
+        }, 100);
     // }   
-    if(this.loginStatus() && this.isFirstTimeCalling){
-      this.isFirstTimeCalling = false;
-      this.loadResumeData()
-    }
+    // if(this.loginStatus() && this.isFirstTimeCalling){
+      // this.isFirstTimeCalling = false;
+      // this.loadResumeData();
+    // }
   }
 
   private async loadResumeData() {
@@ -236,10 +276,10 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy, AfterViewI
                 this.roleCategories = [...this.roleCategories , { name: e.roleCategory, code: '' }];
               }
 
-              let resumeCategoryExists = this.resumeCategories.some(category => category.name.includes(e.resumeCategory));
-              if (!resumeCategoryExists && e.resumeCategory.length > 0) {
-                this.resumeCategories = [...this.resumeCategories , { name: e.resumeCategory, code: '' }];
-              }
+              // let resumeCategoryExists = this.resumeCategories.some(category => category.name.includes(e.resumeCategory));
+              // if (!resumeCategoryExists && e.resumeCategory.length > 0) {
+              //   this.resumeCategories = [...this.resumeCategories , { name: e.resumeCategory, code: '' }];
+              // }
           })
           this.userStore.setResumeDataListItems(this.resumes);
           this.userStore.setFilteredResumes([...this.resumes]);

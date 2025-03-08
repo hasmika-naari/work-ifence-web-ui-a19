@@ -12,7 +12,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
-import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
+import { FeedbackRequest, ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { ResumeService } from 'src/app/services/resume.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Account } from 'src/app/services/profile.model';
@@ -78,6 +78,7 @@ export class RequestsListComponent implements OnInit, OnChanges, OnDestroy {
     private appUtilService: AppUtilService = inject(AppUtilService);
     
     @Input() isActionInProgress: boolean = true; 
+    @Input() reqlist: Array<FeedbackRequest> = []; 
     @Output() childEvent = new EventEmitter<boolean>();
     resumes: ResumeListDataItem[] = [];
     userAccount: Signal<Account> = this.userStore.getUserAccount();
@@ -298,8 +299,8 @@ export class RequestsListComponent implements OnInit, OnChanges, OnDestroy {
 
     getFilteredData() {
     return this.requestFilter.value
-        ? this.dataSource.filter(item => item.requestType === this.requestFilter.value)
-        : this.dataSource;
+        ? this.reqlist.filter(item => item.requestType === this.requestFilter.value)
+        : this.reqlist;
     }
 
     deleteRequest(id: number) {

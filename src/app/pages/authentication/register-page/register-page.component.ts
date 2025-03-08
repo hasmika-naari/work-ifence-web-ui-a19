@@ -84,6 +84,7 @@ export class RegisterPageComponent {
   isLoading =  false;
   valCheck: string[] = ['remember'];
   password!: string;
+  showPasswordHint = false;
   showBack = true;
   months: any = [
     {
@@ -208,7 +209,10 @@ export class RegisterPageComponent {
     });
     }
 
-
+    onPasswordInput() {
+      const passwordValue = this.registerForm3.get('password')?.value;
+      this.showPasswordHint = passwordValue.length > 0; // Show hint when at least one character is entered
+    }
  
     ngOnInit(): void {
       this.maxYear = new Date().getFullYear();
