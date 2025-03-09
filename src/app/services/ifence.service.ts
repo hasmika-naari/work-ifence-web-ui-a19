@@ -6,7 +6,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Profile } from './profile.model';
 import { AppConstantsService } from './app-constants.service';
-import { JobFeedItem, JobItem, JobResumeItem, QuestionComment } from './ifence.model';
+import { CollegeJobItem, JobFeedItem, JobItem, JobResumeItem, QuestionComment } from './ifence.model';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({providedIn: 'any'})
@@ -50,6 +50,12 @@ export class IfenceService {
     return this.http.get<any>(queryUrl);
   }
 
+  getCollegeJobsFeed() : Observable<Array<CollegeJobItem>>{
+    // let queryUrl = 'https://jobicy.com/feed/newjobs';
+    let queryUrl = this.appConstants.BASE_API_URL +  '/api/college-jobs';
+
+    return this.http.get<any>(queryUrl);
+  }
 
   getNotifications(userId : any) : Observable<any>{
     

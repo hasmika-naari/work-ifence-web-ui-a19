@@ -1,5 +1,6 @@
 import { Injectable, Signal, computed, signal } from "@angular/core";
 import { Enterprise, JobFeedItem, JobItem, JobOpeningsState } from "./jobs-store.model";
+import { CollegeJobItem } from "../ifence.model";
 
 
 
@@ -11,7 +12,9 @@ import { Enterprise, JobFeedItem, JobItem, JobOpeningsState } from "./jobs-store
     state = signal<JobOpeningsState>(
       { 
         actionInProgress : false,
+        collegeJobActionInProgress : false,
         homePageJobsFeed : new Array<JobFeedItem>(),
+        collegeJobsFeed : new Array<CollegeJobItem>(),
         searchPageJobsFeed : new Array<JobFeedItem>(),
         seletedJobFeed :  new JobFeedItem(),
         jobWishList : new Array<JobFeedItem>(),
@@ -24,8 +27,10 @@ import { Enterprise, JobFeedItem, JobItem, JobOpeningsState } from "./jobs-store
        resetStore() {
         this.state.update((state) => ({
           ...state,
+          collegeJobActionInProgress : false,
           actionInProgress : false,
           homePageJobsFeed : new Array<JobFeedItem>(),
+          collegeJobsFeed : new Array<CollegeJobItem>(),
           searchPageJobsFeed : new Array<JobFeedItem>(),
           seletedJobFeed :  new JobFeedItem(),
           jobWishList : new Array<JobFeedItem>(),
@@ -40,6 +45,13 @@ import { Enterprise, JobFeedItem, JobItem, JobOpeningsState } from "./jobs-store
         this.state.update((state) => ({
           ...state,
           homePageJobsFeed: jobs
+        }));
+    }
+
+    updateCollegeJobsFeed(jobs: Array<CollegeJobItem>) {
+        this.state.update((state) => ({
+          ...state,
+          collegeJobsFeed: jobs
         }));
     }
 
@@ -93,6 +105,17 @@ import { Enterprise, JobFeedItem, JobItem, JobOpeningsState } from "./jobs-store
         const homePageJobsFeed = this.state().homePageJobsFeed;
         return homePageJobsFeed.length > 12 ? homePageJobsFeed.slice(0, 12) : homePageJobsFeed;
       });
+    }
+
+    getCollegeJobsFeed() : Signal<Array<CollegeJobItem>> {
+      return computed(() => {
+        const collegeJobsFeed = this.state().collegeJobsFeed;
+        return collegeJobsFeed.length > 12 ? collegeJobsFeed.slice(0, 12) : collegeJobsFeed;
+      });
+    }
+
+    getCollegeJobs() : Signal<Array<CollegeJobItem>> {
+      return computed(() => this.state().collegeJobsFeed);
     }
 
     getSearchPageJobsFeed(): Signal<Array<JobFeedItem>> {
