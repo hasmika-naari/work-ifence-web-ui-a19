@@ -1,3 +1,4 @@
+import { CollegeJobItem } from "../ifence.model";
 
 export class JLink {
     __cdata: string;
@@ -97,7 +98,9 @@ export class Enterprise{
 
 export interface JobOpeningsState{
     actionInProgress : boolean;
+    collegeJobActionInProgress : boolean;
     homePageJobsFeed : Array<JobFeedItem>;
+    collegeJobsFeed : Array<CollegeJobItem>;
     searchPageJobsFeed : Array<JobFeedItem>;
     seletedJobFeed :  JobFeedItem;
     jobWishList : Array<JobFeedItem>;
