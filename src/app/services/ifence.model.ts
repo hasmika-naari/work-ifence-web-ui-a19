@@ -127,6 +127,26 @@ export class JobFeedItem{
     }
 }
 
+export class CollegeJobItem{
+  id: string = '';
+  jobPostingId: string = '';
+  jobTitle: string = '';
+  description: string = '';
+  jobURL: string = '';
+  college: string = '';
+  postingDate: string = '';
+  scrapedDate: string = '';
+  postingStatus: string = '';
+  jobStatus: string = '';
+  jobSource: string = '';
+  selected?: boolean = false;
+  loading?: boolean = true;
+
+  constructor(){
+      this.selected = false;
+  }
+}
+
 export class JobResumeItem{
     id: string = '';
     title: any = '';

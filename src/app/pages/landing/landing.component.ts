@@ -28,6 +28,7 @@ import { AppUtilService } from '../../services/app.util.service';
 import { DealsService } from '../../services/deals.service';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { JobFeedItem } from '../../services/ifence.model';
+import { ActiveCollegeJobsComponent } from './active-college-jobs/active-college-jobs.component';
 
 @Component({
   selector: 'app-landing',
@@ -36,7 +37,7 @@ import { JobFeedItem } from '../../services/ifence.model';
     MainBannerComponent,NgxPaginationModule,HomefourteenMainBannerComponent,
     CategoriesComponent,FooterWorkifenceComponent,OurDashboardDemoComponent,
     MatButtonModule, MatChipsModule, MatIconModule,
-    MatMenuModule,PopularFeaturesComponent, ActiveJobsComponent,
+    MatMenuModule,PopularFeaturesComponent, ActiveJobsComponent, ActiveCollegeJobsComponent,
     MatCardModule, MatProgressBarModule, FeedbackStyleTwoComponent
      ],
   templateUrl: './landing.component.html',
