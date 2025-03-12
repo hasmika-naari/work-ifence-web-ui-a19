@@ -183,6 +183,12 @@ export const routes: Routes = [
                 .then(m => m.ListPageComponent), data: {reuseComponent: true, breadcrumb: 'Compations By Category' }
     },
     {
+        path: 'college-jobs-list',
+        loadComponent: () => 
+            import('./pages/college-jobs-list-page/college-jobs-list-page.component')
+                .then(m => m.CollegeJobsListPageComponent), data: {reuseComponent: true, breadcrumb: 'College Jobs List' }
+    },
+    {
         path: 'resume-opti-intro',
         loadComponent: () => 
             import('./pages/intro/resume-optimizer-intro/resume-optimizer-intro.component')
