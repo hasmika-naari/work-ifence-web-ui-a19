@@ -8,6 +8,7 @@ import { Profile } from './profile.model';
 import { AppConstantsService } from './app-constants.service';
 import { CollegeJobItem, JobFeedItem, JobItem, JobResumeItem, QuestionComment } from './ifence.model';
 import { isPlatformBrowser } from '@angular/common';
+import { ServiceRequestItem } from './store/app-store.model';
 
 @Injectable({providedIn: 'any'})
 export class IfenceService {
@@ -181,7 +182,21 @@ export class IfenceService {
       .pipe(catchError(this.handleError));
   }
 
+  saveServiceRequest(serviceRequest: ServiceRequestItem){
+    let url:string = this.appConstants.BASE_API_URL + this.appConstants.SERVICE_REQUEST_URL;
+    console.log('saveServiceRequest: api call');
+    return this.http
+      .post<any>(url, serviceRequest)
+      .pipe(catchError(this.handleError));
+  }
 
+  getServiceRequests() : Observable<Array<ServiceRequestItem>>{
+    let url:string = this.appConstants.BASE_API_URL + this.appConstants.SERVICE_REQUEST_URL;
+    console.log('getServiceRequests: api call');
+    return this.http
+      .get<any>(url)
+      .pipe(catchError(this.handleError));
+  }
 
 
   private handleError(error: HttpErrorResponse): Observable<never> {
