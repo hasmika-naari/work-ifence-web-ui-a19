@@ -35,6 +35,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
+import { ServiceRequestItem } from 'src/app/services/store/app-store.model';
 
 @Component({
     selector: 'request-list',
@@ -78,7 +79,7 @@ export class RequestsListComponent implements OnInit, OnChanges, OnDestroy {
     private appUtilService: AppUtilService = inject(AppUtilService);
     
     @Input() isActionInProgress: boolean = true; 
-    @Input() reqlist: Array<FeedbackRequest> = []; 
+    @Input() reqlist: Array<ServiceRequestItem> = []; 
     @Output() childEvent = new EventEmitter<boolean>();
     resumes: ResumeListDataItem[] = [];
     userAccount: Signal<Account> = this.userStore.getUserAccount();
