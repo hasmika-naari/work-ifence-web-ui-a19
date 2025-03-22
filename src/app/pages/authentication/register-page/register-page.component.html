@@ -69,8 +69,8 @@
                     First Name Required.
                   </ng-container>
                   <ng-container >
-                    <span *ngIf="registerForm3.get('firstName')?.hasError('minlength')">(min 5)</span>
-                    <span *ngIf="registerForm3.get('firstName')?.hasError('maxlength')">(max 20)</span>
+                    <!-- <span *ngIf="registerForm3.get('firstName')?.hasError('minlength')">(min 5)</span> -->
+                    <span *ngIf="registerForm3.get('firstName')?.hasError('maxlength')">(max 32)</span>
                     <span *ngIf="registerForm3.get('firstName')?.hasError('pattern')"> Only A-Z, a-z, space, -, '</span>
                   </ng-container>
                 </mat-error>
@@ -93,8 +93,8 @@
                       Last Name Required.
                     </ng-container>
                     <ng-container >
-                       <span *ngIf="registerForm3.get('lastName')?.hasError('minlength')">(min 5)</span>
-                       <span *ngIf="registerForm3.get('lastName')?.hasError('maxlength')">(max 20)</span>
+                       <!-- <span *ngIf="registerForm3.get('lastName')?.hasError('minlength')">(min 5)</span> -->
+                       <span *ngIf="registerForm3.get('lastName')?.hasError('maxlength')">(max 32)</span>
                        <span *ngIf="registerForm3.get('lastName')?.hasError('pattern')"> Only A-Z, a-z, space, -, '</span>
                     </ng-container>
                   </mat-error>
@@ -103,13 +103,15 @@
               <div class="col-12 mt-2">
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-label>User Name</mat-label>
-                  <input matInput placeholder="User Name" formControlName="userName">
+                  <input matInput placeholder="User Name" formControlName="userName" 
+                      (keypress)="preventSpaces($event)"
+                      [attr.maxlength]="registerForm3.get('userName')?.errors?.['maxlength']?.requiredLength - 1">
                   <mat-icon  *ngIf="!registerForm3.get('userName')?.value" 
                     class="show-error" matSuffix>
                     edit
                   </mat-icon>
                   <mat-icon matSuffix *ngIf="!isUserNameAvailable && !isUserNameChecked && !isUserNameCheckInProgress && registerForm3.get('userName')?.value 
-                       && !registerForm3.controls['userName']?.errors?.['invalidUsername']" 
+                       && !registerForm3.get('userName')?.invalid && isUserNameValid()" 
                             [class.show-silver]="!registerForm3.get('userName')?.value"
                             (click)="checkUserName($event)">refresh</mat-icon>
                   <mat-progress-spinner matSuffix mode="indeterminate" [diameter]="'25'"  style="position: relative;margin-right:10px;" 
@@ -117,7 +119,7 @@
                   <mat-icon matSuffix *ngIf="isUserNameAvailable && (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched)" 
                             class="show-green"  (click)="checkUserName($event)">check</mat-icon>
                   <mat-hint class="show-error" *ngIf="!isUserNameAvailable && !isUserNameChecked && !isUserNameCheckInProgress && registerForm3.get('userName')?.value && 
-                  !registerForm3.controls['userName']?.errors?.['invalidUsername']">
+                  !registerForm3.get('userName')?.invalid && isUserNameValid()">
                     Check User Name Availability. 
                   </mat-hint>
                   <mat-error *ngIf="!isUserNameChecked && !registerForm3.get('userName')?.value && (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched)">
@@ -129,15 +131,10 @@
                   <mat-hint class="show-green" *ngIf="isUserNameChecked && isUserNameAvailable && !isUserNameCheckInProgress">
                     Congratulations!! User Name Available
                   </mat-hint>
-                  <mat-hint class="show-info" *ngIf="registerForm3.controls['userName']?.errors?.['invalidUsername'] && 
-                    !isUserNameAvailable && !isUserNameChecked && !isUserNameCheckInProgress && 
-                    registerForm3.get('userName')?.value">
-                    Allowed (a-z,A-Z, 0-9, Dot & Underscore)
+                  <mat-hint class="show-info" *ngIf="registerForm3.get('userName')?.invalid">
+                      Allowed (a-z,A-Z, 0-9, Dot & Underscore)
                   </mat-hint>
-                  <mat-error class="ng-dirty ng-invalid w-100 text-right show-error" *ngIf="!isUserNameChecked && !isUserNameCheckInProgress && 
-                  registerForm3.get('userName')?.value && !registerForm3.controls['userName']?.errors?.['invalidUsername']">
-                    Check User Name
-                  </mat-error>
+                  
                 </mat-form-field>
               </div>
               <div class="col-12 mt-2">
@@ -153,7 +150,7 @@
                   <mat-error class="ng-dirty ng-invalid" *ngIf="registerForm3.get('email')?.hasError('required') && (registerForm3.get('email')?.dirty || registerForm3.get('email')?.touched)">
                     Required.
                   </mat-error>
-                  <mat-error class="ng-dirty ng-invalid" *ngIf="registerForm3.get('email')?.hasError('email') && (registerForm3.get('email')?.dirty || registerForm3.get('email')?.touched)">
+                  <mat-error class="ng-dirty ng-invalid" *ngIf="!registerForm3.get('email')?.hasError('required') && registerForm3.get('email')?.invalid && (registerForm3.get('email')?.dirty || registerForm3.get('email')?.touched)">
                     Please enter a valid email address
                   </mat-error>
                   <mat-hint  *ngIf="signUpError">
@@ -230,7 +227,9 @@
             
               <div class="col-12 mt-3">
                 <button pButton type="submit" label="Sign Up"  [disabled]="registerForm3.invalid || !isUserNameAvailable"
-                     [ngClass]="(registerForm3.invalid || !isUserNameAvailable) ? 'disabled-button' : 'enabled-button'" class="w-100 p-button-lg" [loading]="isLoading" ></button>
+                     [ngClass]="(registerForm3.invalid || !isUserNameAvailable) ? 'disabled-button' : 'enabled-button'" 
+                     class="w-100 p-button-lg" [loading]="isLoading" >
+                </button>
               </div>
               <div class="col-12 mb-3 mt-3" style="align-items: center;margin-top:10px;">
                 <span class="d-block f-w-500 text-center show-accent"

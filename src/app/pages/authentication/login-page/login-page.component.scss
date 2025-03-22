@@ -111,5 +111,144 @@
   height: auto;    /* Adjust height if needed */
 }
 
+/* Ensure the section takes the full height of the viewport */
+.login-page-full-section {
+  // display: flex;
+  // flex-direction: column;
+  // height: auto; /* Change from min-height: 100vh */
+
+  position: fixed;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
+/* Allows the content to expand and push the footer down */
+.content-wrapper {
+  flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // padding: 20px;
+    min-height: auto; /* Allow content to grow naturally */
+}
+
+/* Prevents the footer from being overlapped */
+app-work-ifence-footer {
+  flex-shrink: 0;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.blank-layout-container{
+  min-height: 100vh !important;
+}
+
+
+//////////////////
+/* Ensure the page takes up the full viewport */
+.login-page-full-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Ensure the header stays at the top */
+.content-header {
+  flex-shrink: 0;
+}
+
+/* Allow the content to grow dynamically */
+.content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // padding: 20px;
+}
+
+/* Ensure the main container expands properly */
+.container-fluid {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Ensure form content does not overlap */
+mat-form-field {
+  width: 100%;
+}
+
+/* Push footer to the bottom */
+.content-footer {
+  flex-shrink: 0;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+// /* Ensure body and html allow scrolling */
+// body, html {
+//   height: auto;
+//   overflow-x: hidden;
+//   overflow-y: auto;
+// }
+
+// /* Adjust buttons for better visibility */
+// button:disabled {
+//   background-color: lightgray !important;
+//   cursor: not-allowed !important;
+// }
+
+// /* Fix spacing for social sign-in buttons */
+// .social-button {
+//   align-items: center;
+//   display: flex;
+//   justify-content: center;
+//   border-radius: 5px;
+// }
+
+// /* Ensure mat-card doesn't overlap */
+// .boxed-auth {
+//   max-width: 500px;
+//   width: 100%;
+// }
+
+// /* Ensure proper spacing for forgot password section */
+.forgot-password-link {
+  // color: #007bff;
+  cursor: pointer;
+  // font-weight: bold;
+
+  &:hover{
+    // color: var(--primary-color);
+    // font-weight: bold;
+    text-decoration: underline;
+  }
+}
+
+// /* Adjust "Create an Account" link */
+// .create-account-link {
+//   color: #007bff;
+//   font-weight: bold;
+//   text-decoration: none;
+// }
+
+// .create-account-link i {
+//   margin-right: 5px;
+// }
+
+// /* Ensure footer is positioned correctly */
+// app-work-ifence-footer {
+//   width: 100%;
+// }
+
+
 
 

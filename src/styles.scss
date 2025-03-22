@@ -71,7 +71,7 @@ $workifence-theme: mat.define-theme((
     --headingFontFamily: Poppins, sans-serif !important;
     --primaryColor: #f05b45;
     --dangerColor: #EE368C;
-    --infoColor: #2DB6F5;
+    --infoColor: #1a6cca;
     --warningColor: #ffb264;
     --successColor: #2ed47e;
     --darkColor: #262626;
@@ -93,7 +93,7 @@ $workifence-theme: mat.define-theme((
     --mainColor3: #ff3d00;
     --secondaryColor: #3a6773;
     --secondaryColorLight: #20434d3f;
-    --infoColor3: #0077ff;
+    --infoColor3: #1a6cca;
     --optionalColor: rgb(249, 107, 7);
     --whiteColor: #ffffff;
     --whiteTrnasparentColor: #ffffff8f;
@@ -7065,7 +7065,7 @@ $gutter: 1rem; //for primeflex grid system
     color: rgb(69, 122, 69);
   }
 .show-info{
-    color:#3280da;
+    color:#1a6cca;
 }
 .m-t-3{
     margin-top: 24px;
@@ -8229,6 +8229,11 @@ $gutter: 1rem; //for primeflex grid system
     bottom:0px;
     overflow-y:auto;
     overflow-x:hidden;
+  }
+
+  .page-content-full-section{
+    display: flex;
+    flex-direction: column;
   }
 
 /// 

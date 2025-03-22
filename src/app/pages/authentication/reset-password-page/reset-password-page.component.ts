@@ -71,12 +71,13 @@ export class ResetPasswordPageComponent implements OnInit, OnDestroy {
     isLoading = false;
     resetPasswordFormSubmitted = false;
     isActionInProgress = false;
-
+    hidePassword: boolean = true;
+    hideConfirmPassword: boolean = true;
     username:string = '';
 
     resetKey: string = '';
     public resetPasswordForm: FormGroup = new FormGroup({
-      password1: new FormControl('', [Validators.required]),
+      password1: new FormControl('', [Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]),
       password2: new FormControl('', [Validators.required]),
     });
 
@@ -144,8 +145,8 @@ export class ResetPasswordPageComponent implements OnInit, OnDestroy {
               '',
               [
                 Validators.required,
-                Validators.minLength(6),
-                Validators.maxLength(40)
+                Validators.minLength(8),
+                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
               ]
             ],
             password2: ['', Validators.required]

@@ -1,6 +1,9 @@
 //////////////
+
 :host {
   font-family: 'Poppins', sans-serif;
+  --mdc-outlined-text-field-focus-outline-color: var(--mdc-theme-secondary) !important;
+  --mdc-outlined-text-field-focus-label-text-color: var(--mdc-theme-secondary) !important;
 }
 
 /* Force font on all elements within this component */

@@ -210,7 +210,7 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
           console.log('resetResponse  == ' + resetResponse);
           this.isActionInProgress = false;
 
-          this.snackBarService.openSnackBar('Please check your email for reset link!!', this.constantService.snackbarType.SUCCESS, 3000500);
+          this.snackBarService.openMultiLineSnackBar('Reset Password ', 'Please check your email for reset link!!', this.constantService.snackbarType.SUCCESS, 3000500);
           this.router.navigateByUrl('/');
         }, (error: any) => {
           this.isActionInProgress = false;
