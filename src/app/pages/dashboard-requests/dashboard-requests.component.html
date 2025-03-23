@@ -10,13 +10,13 @@
               <!-- Menus Section -->
                <div class="dropdown-container">
                   <div class="flex justify-content-center">
-                    <!-- <p-dropdown 
-                        [options]="resumeCategories" 
-                        [formControl]="filteredResumeCategoryValue"
+                    <p-dropdown 
+                        [options]="requestTypes" 
+                        [formControl]="filterRequestType"
                         [checkmark]="true" 
                         optionLabel="name" 
                         placeholder="Request Type"
-                        [disabled]="!isFilterOff || !isSearchOff || isActionInProgress"  /> -->
+                        [disabled]="!isFilterOff || !isSearchOff || isActionInProgress"  />
                   </div>
                   <!-- <div class="flex justify-content-center">
                     <p-dropdown 
@@ -29,7 +29,7 @@
                   </div> -->
                   <div class="flex justify-content-center">
                     @if(isFilterOff){
-                    <button class="add-job-btn" (click)="filterApplications()" [disabled]="!isSearchOff">
+                    <button class="add-job-btn" (click)="filterServiceRequests()" [disabled]="!isSearchOff">
                       <p-icon class="pi pi-filter"></p-icon>
                       <span>Filter</span>
                     </button>
@@ -69,7 +69,6 @@
             <div class="sections">
               <div class="col-12 p-0 pb-100">
                   <request-list  
-                      [reqlist]="serviceRequests"
                       [isActionInProgress]="isActionInProgress"
                       (childEvent)="receiveFromChild($event)">
                   </request-list>

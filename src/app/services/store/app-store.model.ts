@@ -1,7 +1,8 @@
 export interface AppState{
-    actionInProgress: boolean
-    errorMessage: any
-    serviceRequests: Array<ServiceRequestItem>
+    actionInProgress: boolean;
+    errorMessage: any;
+    serviceRequests: Array<ServiceRequestItem>;
+    filteredServiceRequests: Array<ServiceRequestItem>;
 }
 
 export class ServiceRequestItem{
