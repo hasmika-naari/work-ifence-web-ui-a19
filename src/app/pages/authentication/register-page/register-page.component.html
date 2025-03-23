@@ -103,39 +103,87 @@
               <div class="col-12 mt-2">
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-label>User Name</mat-label>
-                  <input matInput placeholder="User Name" formControlName="userName" 
-                      (keypress)="preventSpaces($event)"
-                      [attr.maxlength]="registerForm3.get('userName')?.errors?.['maxlength']?.requiredLength - 1">
-                  <mat-icon  *ngIf="!registerForm3.get('userName')?.value" 
-                    class="show-error" matSuffix>
-                    edit
+                
+                  <input matInput
+                         placeholder="User Name"
+                         formControlName="userName"
+                         (keypress)="preventSpaces($event)"
+                         [attr.maxlength]="registerForm3.get('userName')?.errors?.['maxlength']?.requiredLength - 1">
+                
+                  <!-- Show pencil icon if input is empty -->
+                  <mat-icon *ngIf="!registerForm3.get('userName')?.value" matSuffix class="show-error">edit</mat-icon>
+                
+                  <!-- Show refresh icon if user name is filled and needs availability check -->
+                  <mat-icon matSuffix
+                            *ngIf="registerForm3.get('userName')?.value &&
+                                   !registerForm3.get('userName')?.invalid &&
+                                   !isUserNameChecked &&
+                                   !isUserNameCheckInProgress &&
+                                   isUserNameValid()"
+                            (click)="checkUserName($event)">
+                    refresh
                   </mat-icon>
-                  <mat-icon matSuffix *ngIf="!isUserNameAvailable && !isUserNameChecked && !isUserNameCheckInProgress && registerForm3.get('userName')?.value 
-                       && !registerForm3.get('userName')?.invalid && isUserNameValid()" 
-                            [class.show-silver]="!registerForm3.get('userName')?.value"
-                            (click)="checkUserName($event)">refresh</mat-icon>
-                  <mat-progress-spinner matSuffix mode="indeterminate" [diameter]="'25'"  style="position: relative;margin-right:10px;" 
-                          *ngIf=isUserNameCheckInProgress></mat-progress-spinner>
-                  <mat-icon matSuffix *ngIf="isUserNameAvailable && (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched)" 
-                            class="show-green"  (click)="checkUserName($event)">check</mat-icon>
-                  <mat-hint class="show-error" *ngIf="!isUserNameAvailable && !isUserNameChecked && !isUserNameCheckInProgress && registerForm3.get('userName')?.value && 
-                  !registerForm3.get('userName')?.invalid && isUserNameValid()">
-                    Check User Name Availability. 
-                  </mat-hint>
-                  <mat-error *ngIf="!isUserNameChecked && !registerForm3.get('userName')?.value && (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched)">
-                    Required.
+                
+                  <!-- Show loading spinner while checking -->
+                  <mat-progress-spinner matSuffix
+                                        *ngIf="isUserNameCheckInProgress"
+                                        mode="indeterminate"
+                                        [diameter]="25"
+                                        style="margin-right: 10px;">
+                  </mat-progress-spinner>
+                
+                  <!-- Show green check if available and touched -->
+                  <mat-icon matSuffix
+                            *ngIf="isUserNameAvailable &&
+                                   isUserNameChecked &&
+                                   (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched)"
+                            class="show-green"
+                            (click)="checkUserName($event)">
+                    check
+                  </mat-icon>
+                
+                  <!-- Error: Required -->
+                  <mat-error *ngIf="registerForm3.get('userName')?.hasError('required') &&
+                                    (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched)">
+                    User name is required.
                   </mat-error>
-                  <mat-hint class="show-error"  *ngIf="isUserNameChecked && !isUserNameAvailable  && !isUserNameCheckInProgress">
-                    SORRY! User Name Not Available - Check Another
+                
+                  <!-- Error: Pattern or invalid characters -->
+                  <mat-error class="show-error"
+                            *ngIf="registerForm3.get('userName')?.invalid &&
+                                   (registerForm3.get('userName')?.dirty || registerForm3.get('userName')?.touched) &&
+                                   registerForm3.get('userName')?.errors?.['pattern']">
+                    Allowed characters: a-z, A-Z, 0-9, dot (.), and underscore (_)
+                  </mat-error>
+                
+                  <!-- Hint: Prompt to check availability -->
+                  <mat-hint class="show-error"
+                            *ngIf="!isUserNameAvailable &&
+                                   !isUserNameChecked &&
+                                   !isUserNameCheckInProgress &&
+                                   registerForm3.get('userName')?.value &&
+                                   !registerForm3.get('userName')?.invalid &&
+                                   isUserNameValid()">
+                    Click refresh to check username availability.
                   </mat-hint>
-                  <mat-hint class="show-green" *ngIf="isUserNameChecked && isUserNameAvailable && !isUserNameCheckInProgress">
-                    Congratulations!! User Name Available
+                
+                  <!-- Error: User name already taken -->
+                  <mat-hint class="show-error"
+                            *ngIf="isUserNameChecked &&
+                                   !isUserNameAvailable &&
+                                   !isUserNameCheckInProgress">
+                    ❌ Sorry! This username is already taken. Try another.
                   </mat-hint>
-                  <mat-hint class="show-info" *ngIf="registerForm3.get('userName')?.invalid">
-                      Allowed (a-z,A-Z, 0-9, Dot & Underscore)
+                
+                  <!-- Success: Username available -->
+                  <mat-hint class="show-green"
+                            *ngIf="isUserNameChecked &&
+                                   isUserNameAvailable &&
+                                   !isUserNameCheckInProgress">
+                    ✅ Congratulations! This username is available.
                   </mat-hint>
-                  
                 </mat-form-field>
+                
               </div>
               <div class="col-12 mt-2">
                 <mat-form-field appearance="outline" class="w-100">
