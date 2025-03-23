@@ -39,7 +39,6 @@ export class ContactComponent implements OnInit {
   isToggled = false;
   categories: Array<Category> = new Array<Category>();
   pCategories: Array<PCategory> = new Array<PCategory>();
-	private dealsService: WorkifenceDataService= inject(WorkifenceDataService);
   private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
   public themeService: ThemeCustomizerService=  inject(ThemeCustomizerService);
   private platformId: object =  inject(PLATFORM_ID);
@@ -109,7 +108,7 @@ export class ContactComponent implements OnInit {
       serviceRequest.phone = this.serviceRequestForm.controls.phone.value? this.serviceRequestForm.controls.phone.value: "";
       serviceRequest.requestType = this.serviceRequestForm.controls.requestType.value? this.serviceRequestForm.controls.requestType.value : "";
       serviceRequest.requestDescription = this.serviceRequestForm.controls.requestDescription.value? this.serviceRequestForm.controls.requestDescription.value : "";
-      serviceRequest.createdDate = dateTime.toDateString()+ " " + dateTime.toTimeString();
+      serviceRequest.createdDate = dateTime.toISOString();
       serviceRequest.lastModifiedBy = serviceRequest.email;
       serviceRequest.lastModifiedDate = serviceRequest.createdDate;
       serviceRequest.status = "New"
@@ -125,6 +124,9 @@ export class ContactComponent implements OnInit {
           duration: 3000
         });
         this.serviceRequestForm.reset();
+        Object.keys(this.serviceRequestForm.controls).forEach(key => {
+          this.serviceRequestForm.get(key)?.setErrors(null);
+        });
       }, 2000);
     }
   }

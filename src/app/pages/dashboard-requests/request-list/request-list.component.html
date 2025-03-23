@@ -1,12 +1,12 @@
 <div class="row" style="margin:16px 0 48px 0;padding-bottom:100px;">
-		<div *ngIf="getFilteredData().length === 0 && !isActionInProgress" class="empty-list-container">
-			<p>No resumes found.</p>
+		<div *ngIf="filteredServiceRequests().length === 0 && !isActionInProgress" class="empty-list-container">
+			<p>No Requests found.</p>
 	  	</div>
 		  <div *ngIf="isActionInProgress" class="empty-list-container">
 			<p>Loading Please wait...</p>
 	  	</div>
 		  <div class="container-fluid">
-			<mat-card class="table-card mat-elevation-z0" *ngIf="!isActionInProgress && getFilteredData().length">
+			<mat-card class="table-card mat-elevation-z0" *ngIf="!isActionInProgress && filteredServiceRequests().length">
 			  <!-- <div class="row mb-3">
 				<div class="col-md-4">
 				  <mat-form-field appearance="outline" class="full-width">
@@ -20,7 +20,7 @@
 				  </mat-form-field>
 				</div>
 			  </div> -->
-			  <table mat-table [dataSource]="getFilteredData()" class="mat-elevation-z0 full-width">
+			  <table mat-table [dataSource]="filteredServiceRequests()" class="mat-elevation-z0 full-width">
 		  
 				<!-- Date Received Column -->
 				<ng-container matColumnDef="dateReceived">
@@ -79,7 +79,7 @@
 				<tr mat-row *matRowDef="let row; columns: displayedColumns;" class="expandable-row" ></tr>
 		  
 				<!-- Expanded Row -->
-				<tr *ngFor="let row of getFilteredData()" [class.expanded]="false">
+				<tr *ngFor="let row of filteredServiceRequests()" [class.expanded]="false">
 				  <td colspan="7">
 					<mat-expansion-panel [expanded]="false">
 					  <mat-expansion-panel-header>

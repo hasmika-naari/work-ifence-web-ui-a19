@@ -9,7 +9,8 @@ import { AppState, ServiceRequestItem } from "./app-store.model";
     { 
         actionInProgress : false,
         errorMessage : "",
-        serviceRequests: new Array<ServiceRequestItem>()
+        serviceRequests: new Array<ServiceRequestItem>(),
+        filteredServiceRequests: new Array<ServiceRequestItem>(),
         });
 
         resetStore() {
@@ -24,7 +25,14 @@ import { AppState, ServiceRequestItem } from "./app-store.model";
     updateServiceRequests(requests: Array<ServiceRequestItem>){
         this.state.update((state) => ({
             ...state,
-            serviceRequests: requests
+            serviceRequests: this.cleanServiceRequests(requests)
+        }))
+    }
+
+    updateFilteredServiceRequests(searchText: String){
+        this.state.update((state) => ({
+            ...state,
+            filteredServiceRequests: searchText != "" ? state.serviceRequests.filter((item) => item.requestType === searchText) : state.serviceRequests
         }))
     }
 
@@ -39,8 +47,30 @@ import { AppState, ServiceRequestItem } from "./app-store.model";
         return computed(() => this.state().serviceRequests);
     }
 
+    getFilteredServiceRequests(){
+        return computed(() => this.state().filteredServiceRequests);
+    }
+
     getActionInProgress(): Signal<boolean> {
         return computed(() => this.state().actionInProgress);
     } 
+
+    cleanServiceRequests(list: Array<ServiceRequestItem>) {
+        return list
+        .reverse()
+        .map(item => {
+          const date = new Date(item.createdDate);
+          const formattedDate = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+      
+          return {
+            ...item,
+            createdDate: formattedDate
+          };
+        });
+      }
       
   }

@@ -73,22 +73,13 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy {
   searchQuery = new FormControl();
 
   filteredRoleCategoryValue = new FormControl()
-  filteredRequestCategoryValue = new FormControl()
   roleCategories : Array<Option> = [];
-  resumeCategories : Array<Option> = [{
-    name: 'All',
-    code: 'All'
-  }, {
-    name: 'Request for New Org Account',
-    code: 'Request for New Org Account'
-  },{
-    name: 'Request for New Feature',
-    code: 'Request for New Feature'
-  },{
-    name: 'Issue with Login',
-    code: 'Issue with Login'
-  }];
-
+  requestTypes = [
+    { value: 'newOrg', name: 'Request for new Org Account' },
+    { value: 'newFeature', name: 'Request for New Feature' },
+    { value: 'loginIssue', name: 'Issue with Login' }
+  ];
+  filterRequestType = new FormControl() ;
   private ifenceService: IfenceService = inject(IfenceService);
   private appStore: AppStoreService = inject(AppStoreService);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -96,51 +87,32 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy {
   isFilterOff : boolean = true
   isSearchOff : boolean = true
   loginStatus : Signal<boolean> = this.userStore.getUserLoginStatus();
-  serviceRequests : ServiceRequestItem[] = []
   filteredServiceRequests : ServiceRequestItem[] = []
-
-  receivedRequests: Array<FeedbackRequest> = [
-    {
-      id: 1,
-      dateReceived: '2024-02-28',
-      firstName: 'John',
-      lastName: 'Doe',
-      emailId: 'john.doe@example.com',
-      phoneNumber: '9876543210',
-      requestType: 'Request for New Org Account',
-      requestDescription: 'Need an organization account for new employees.',
-      status: 'New',
-      expanded: false
-    },
-    {
-      id: 2,
-      dateReceived: '2024-02-27',
-      firstName: 'Jane',
-      lastName: 'Smith',
-      emailId: 'jane.smith@example.com',
-      phoneNumber: '9876543211',
-      requestType: 'Issue with Login',
-      requestDescription: 'Unable to log in to the portal with my credentials.',
-      status: 'Addressed',
-      expanded: false
-    }
-  ];
+  isFirstTimeCalling : boolean = true;
 
 
   constructor(private router: Router, public layoutService: LayoutService) {
-
+    effect(()=>{
+      // this.setFilterValues();
+      if(this.loginStatus() && this.isFirstTimeCalling){
+        this.isFirstTimeCalling = false;
+        this.getServiceRequests()
+      }
+    })
   }
 
   ngOnInit() {
+    if(this.loginStatus() && !this.isFirstTimeCalling){
       this.getServiceRequests()
+    }
   }
 
   getServiceRequests(){
     this.isActionInProgress = true;
     this.subscriptions.push(this.ifenceService.getServiceRequests().subscribe((data: ServiceRequestItem[])=> {
           console.log(data);
-          this.serviceRequests = data
           this.appStore.updateServiceRequests(data);
+          this.appStore.updateFilteredServiceRequests("");
           this.isActionInProgress = false;
         }));    
   }
@@ -157,16 +129,20 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy {
   }
 
   unselectFilter(){
-    return null;
+    this.isFilterOff = true
+    this.searchQuery.enable()
+    this.filterRequestType.setValue("");
+    this.appStore.updateFilteredServiceRequests("");
   }
 
   receiveFromChild(event : Boolean){
-    return null;
 
   }
 
-  filterApplications(){
-    return null;
-
+  filterServiceRequests(){
+    this.isFilterOff = false
+    this.searchQuery.disable()
+    console.log("Filter Request Type: " + this.filterRequestType.value?.name);
+    this.appStore.updateFilteredServiceRequests(this.filterRequestType.value?.value)
   }
 }
