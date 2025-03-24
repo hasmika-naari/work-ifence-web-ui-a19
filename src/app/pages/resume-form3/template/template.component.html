@@ -518,10 +518,23 @@
           <span class="summary-section-title">Projects
             @if(!isPreview){
               <div class="section-actions">
-            <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
-            <!-- <p-icon class="pi pi-pencil" title="Edit"></p-icon> -->
-            <!-- <p-icon class="pi pi-eye-slash" title="Hide"></p-icon> -->
-            <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Project
+                  </div>
+              </div>
+          
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove Project
+                </div>
+            </div>
           </div>
         }
           </span>  
@@ -548,17 +561,67 @@
               </div>
               @if(!isPreview){
                 <div class="sub-items-actions">
-                  <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('PROJECT', item)"></p-icon>
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('PROJECT', item)"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Edit Project
+                    </div>
+                </div>
+                  
                   @if(!item.isHideSelected){
-                    <p-icon class="pi pi-eye icon" title="Show" (click)="hideSectionElement('PROJECT', item)"></p-icon>
+                      <div class="wif-tooltip" data-direction="bottom">
+                        <div class="wif-tooltip__initiator">
+                          <p-icon class="pi pi-eye icon" title="Show" (click)="hideSectionElement('PROJECT', item)"></p-icon>
+                        </div>
+                        <div class="wif-tooltip__item">
+                          Hide Project
+                        </div>
+                    </div>
+                    
                   }
                   @else{
-                    <p-icon class="pi pi-eye-slash icon" title="Hide" (click)="unHideSectionElement('PROJECT', item)"></p-icon>
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-eye-slash icon" title="Hide" (click)="unHideSectionElement('PROJECT', item)"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Show Project
+                      </div>
+                  </div>
+                    
                   }
                   <!-- <p-icon class="pi pi-eye-slash icon" title="Hide"></p-icon> -->
-                  <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('PROJECT', item.id, 'up')"></p-icon>
-                  <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('PROJECT', item.id, 'down')"></p-icon>
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('PROJECT', item.id, 'up')"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Move Up
+                    </div>
+                </div>
+
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('PROJECT', item.id, 'down')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Down
+                  </div>
+              </div>
+
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
                   <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('PROJECT', item)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove Project
+                </div>
+            </div>
+                 
+                  
+                  
                 </div>
               }
             </div>
@@ -583,10 +646,23 @@
           <span class="summary-section-title trigger-area">Projects
             @if(!isPreview){
               <div class="section-actions">
-            <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
-            <!-- <p-icon class="pi pi-pencil" title="Edit"></p-icon> -->
-            <!-- <p-icon class="pi pi-eye-slash" title="Hide"></p-icon> -->
-            <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add Project
+                  </div>
+              </div>
+          
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove Project
+                </div>
+            </div>
           </div>
         }
           </span>  
