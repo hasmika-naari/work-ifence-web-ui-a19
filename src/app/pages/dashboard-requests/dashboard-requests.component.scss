@@ -1,0 +1,450 @@
+/* General Styling */
+/* Customize mat-form-field height */
+// ::ng-deep .custom-select-dp .mat-mdc-form-field {
+//   --mat-mdc-form-field-height: 36px; /* Adjust as needed */
+// }
+
+// ::ng-deep .custom-select-dp .mat-mdc-select {
+//   height: 36px !important;
+// }
+
+// ::ng-deep .custom-select-dp .mat-mdc-select-trigger {
+//   height: 36px !important;
+//   line-height: 36px !important;
+//   padding: 0 12px !important; /* Adjust padding if needed */
+// }
+
+// ::ng-deep .custom-select-dp .mat-mdc-select-value {
+//   line-height: 36px !important;
+// }
+
+// ::ng-deep .custom-select-dp .mat-mdc-form-field-wrapper {
+//   padding-top: 0 !important;
+//   padding-bottom: 0 !important;
+// }
+
+body {
+    //font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    // background-color: #f7f7f7;
+}
+
+.job-tracker {
+  margin: 0 auto;
+  // padding: 20px;
+  // background-color: #fafafa !important;
+  position: relative;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Filter Section */
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 5px 16px;
+}
+
+.filters button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+/* Section Container */
+.sections {
+    display: flex;
+    gap: 20px;
+    overflow: hidden;
+}
+
+/* Individual Section */
+.section {
+    flex: 1;
+    background-color: white;
+    padding: 10px;
+    overflow: hidden;
+}
+
+/* Section Header */
+.section-header {
+    padding: 10px 15px;
+    font-weight: bold;
+    border-radius: 8px 8px 0 0;
+}
+
+.applied {
+    background-color: #e6f7ff;
+    color: #0056b3;
+}
+
+.interview {
+    background-color: #fff4e6;
+    color: #d66a00;
+}
+
+.offer {
+    background-color: #e6ffe6;
+    color: #1d9a0d;
+}
+
+.not-chosen {
+    background-color: #ffe6e6;
+    color: #c70000;
+}
+
+/* Card Styling */
+.outer-container {
+  // height: 100vh; /* Example height; adjust based on your layout */
+  overflow: hidden; /* Prevent unnecessary scrolling for the entire page */
+  display: flex;
+  justify-content: center; /* Centering example */
+  align-items: center;     /* Centering example */
+}
+
+.interview-outer-container{
+  overflow: hidden; /* Prevent unnecessary scrolling for the entire page */
+  display: flex;
+  justify-content: center; /* Centering example */
+  align-items: center;     /* Centering example */
+}
+
+.offer-outer-container{
+  overflow: hidden; /* Prevent unnecessary scrolling for the entire page */
+  display: flex;
+  justify-content: center; /* Centering example */
+  align-items: center;     /* Centering example */
+}
+
+.not-choosen-outer-container{
+  overflow: hidden; /* Prevent unnecessary scrolling for the entire page */
+  display: flex;
+  justify-content: center; /* Centering example */
+  align-items: center;     /* Centering example */
+}
+
+.cards {
+    padding: 10px 0;
+    overflow-y: auto !important;
+    width: 100%;
+}
+
+.interview-cards {
+  padding: 10px 0;
+  overflow-y: auto !important;
+  width: 100%;
+}
+
+.offer-cards {
+  padding: 10px 0;
+  overflow-y: auto !important;
+  width: 100%;
+}
+
+.not-choosen-cards {
+  padding: 10px 0;
+  overflow-y: auto !important;
+  width: 100%;
+}
+
+.resume-container{
+    height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+}
+
+.resume-container::-webkit-scrollbar{
+    display: none;
+  }
+
+.cards::-webkit-scrollbar{
+  display: none;
+}
+
+.interview-cards::-webkit-scrollbar{
+  display: none;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    color: #333333;
+    margin-bottom: 10px !important;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .title-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-grow: 1; /* Ensures the title section takes the available space */
+  }
+  
+  .menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto; /* Pushes the menu button to the right edge */
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  
+  .job-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .icon {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  
+//   .menu-button:hover {
+//     background-color: rgba(0, 0, 0, 0.1);
+//     border-radius: 50%;
+//   }
+  
+  .menu-button mat-icon {
+    font-size: 20px;
+    color: #666666;
+  }
+  
+  .company {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .location-date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .location {
+    font-size: 14px;
+    color: #666666;
+  }
+  
+  .date {
+    font-size: 12px;
+    color: #999999;
+  }
+
+  mat-icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  
+// .card:hover {
+//     transform: translateY(-3px);
+// }
+
+/* Toolbar styles */
+/* Toolbar Styles */
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* Toolbar Styling */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+  background-color: #fff;
+//   border-bottom: 1px solid #ddd;
+}
+
+/* Header */
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 20px 10px 0 10px;
+}
+
+/* Content Row: Menus and Actions */
+.content-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-container {
+  display: flex;
+  gap: 10px;
+}
+
+.dropdown {
+  position: relative;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.p-icon {
+  font-size: 16px;
+  color: #888;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  list-style: none;
+  padding: 0;
+  display: none;
+  min-width: 120px;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(-10px);
+}
+
+.dropdown-menu.open {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-menu li {
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+/* Right Section: Search + Add Job */
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Search Input Styling */
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.search-input {
+  border: none;
+  padding: 8px 12px;
+  font-size: 1rem;
+  outline: none;
+  flex: 1;
+  width: 250px;
+  color: black;
+}
+
+
+.search-btn {
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: black;
+  font-size: 1.2rem;
+  background-color: transparent;
+}
+
+.search-btn:hover {
+  background-color: #cccccc80;
+}
+
+/* Add Job Button Styling */
+.add-job-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  border: 1px solid #cccccc61;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #cccccc61;
+}
+
+.add-job-btn mat-icon {
+  font-size: 1.2rem;
+}
+
+.add-job-btn:hover {
+  background-color: #cccccc80;
+  border: 1px solid #cccccc80;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.p-dropdown-clear-icon{
+  top: 1.2rem !important;
+}
+
+:host {
+  ::ng-deep .p-dropdown-clear-icon{
+    top: 0.97rem !important;
+    right: 2.5rem !important;
+  }
+
+  ::ng-deep .p-dropdown-item{
+    font-size: 1rem !important;
+  }
+
+  ::ng-deep .p-dropdown-label{
+    padding: 8px !important;
+  }
+
+  ::ng-deep .p-dropdown{
+    border: 1px solid #ccc !important;
+  }
+
+  ::ng-deep .p-dropdown, input[type=text].p-inputtext {
+    width: 220px;
+}
+}

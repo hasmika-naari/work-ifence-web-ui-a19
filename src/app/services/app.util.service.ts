@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { LocalStorageService } from './local-storage.service';
 import { AppConstantsService } from './app-constants.service';
 import { UserStoreService } from './store/user-store.service';
-import { Account, BioProfile } from './profile.model';
+import { Account, BioProfile, WifRole } from './profile.model';
 import { UserResume } from './store/user-store';
 import { JobFeedItem } from './ifence.model';
 import { WINDOW } from './window.token';
@@ -121,6 +121,17 @@ export class AppUtilService {
                         console.log('account: ' + account.id);
                         // alert('User Account: ' + account.id);
                         this.userStore.updateAccount(account);
+                          let roles: Array<WifRole> = [];
+                          account.authorities.forEach(authr => {
+                            if(authr === 'ROLE_ADMIN'){
+                              roles.push({title:'App Admin ',role:authr, url: '/user/dashboard-admin' });
+                            }else if(authr === 'ROLE_USER'){
+                              roles.push({title: 'Member' ,role:authr, url: '/user/dashboard' });
+                            }
+                          });
+                          this.userStore.updateRoles(roles);
+                          this.userStore.updateActiveRole(roles[0]);
+                          debugger;
                         this.authService.getLoginProfile(account.login).subscribe(
                           (profile)=>{
                             this.userStore.updateLoginProfile(profile);

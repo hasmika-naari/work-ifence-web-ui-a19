@@ -11,15 +11,15 @@ import { Account, BioProfile, WifRole } from 'src/app/services/profile.model';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
 
 @Component({
-  selector: 'fury-dashboard',
+  selector: 'db-app-admin',
   standalone: true,
   imports: [CommonModule ,RouterOutlet, MatCardModule ],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  templateUrl: './dashboard-app-admin.component.html',
+  styleUrls: ['./dashboard-app-admin.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardAppAdminComponent implements OnInit, AfterViewInit {
 
   private static isInitialLoad = true;
  
@@ -35,6 +35,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private userStore: UserStoreService =  inject(UserStoreService);
   private resumeService: ResumeService =  inject(ResumeService);
   private pdfToImageService: PdfToImageService =  inject(PdfToImageService);
+  public userRoles: Signal<Array<WifRole>> = this.userStore.getUserRoles();
 
 
   isBrowser = false;
@@ -43,10 +44,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   userAccount: Signal<Account> = this.userStore.getUserAccount();
   bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   resumes : Array<ResumeListDataItem> = []
-  public userRoles: Signal<Array<WifRole>> = this.userStore.getUserRoles();
-
-
-
 
   constructor(
     // private dashboardService: DashboardService,
@@ -64,10 +61,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     //     DashboardComponent.isInitialLoad = false;
     //   }
     // }
- effect(() => {
-    let aRoles = this.userRoles();
-      this.userStore.updateActiveRole(aRoles[0]);
-    });
+
+     effect(() => {
+        let aRoles = this.userRoles();
+          this.userStore.updateActiveRole(aRoles[1]);
+        });
 
   }
 
@@ -111,71 +109,60 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 tools = [
   {
     icon: 'assets/img/home/resume_animated.jpg', // Replace with your actual icon path
-    title: 'Build Your Resume',
-    description: 'Create the perfect resume to land your dream job',
-    route: '/user/resumes/resume'
+    title: 'Add Organization',
+    description: 'Add Organization and Manage Services',
+    route: '/user/org-list/add-org'
   },
   {
     icon: 'assets/img/home/resume_animated.jpg', // Replace with your actual icon path
-    title: 'Create Job Application',
-    description: 'Create Job Application to Track',
-    route: '/user/job-applications/application'
+    title: 'Add User',
+    description: 'Add User and Assign Organization',
+    route: '/user/user-list/add-user'
   },
   {
     icon: 'assets/jobtrackerai-icon.png', // Replace with your actual icon path
-    title: 'Manage Resumes',
-    description: 'Organize and track all Resumes',
-    route: '/user/resumes'
+    title: 'Manage Services',
+    description: 'Create and Manage Services',
+    route: '/user/service-list/service'
   },
   {
     icon: 'assets/jobtrackerai-icon.png', // Replace with your actual icon path
-    title: 'Manage Job Applications',
-    description: 'Organize and track all your job applications in one place',
-    route: '/user/job-applications'
-  }
+    title: 'Manage Requests',
+    description: 'Manage User Requests',
+    route: '/user/request-list/service'
+  }    
 ];
-
-
 
 stats = [
   {
-    title: 'Resumes Created',
+    title: "Open Requests",
     value: '25',
     sub: '',
     color: '#4285F4',
-    icon: 'pi pi-file',
+    icon: 'pi pi-folder-open', // Represents open requests
   },
   {
-    title: 'Applications Sent',
+    title: "Organizations",
     value: '35',
     sub: '',
-    color : '#9C27B0',
-    icon: 'pi pi-send',
+    color: '#9C27B0',
+    icon: 'pi pi-building', // Represents organizations or institutions
   },
   {
-    title: 'Ongoing Applications',
+    title: 'Registered Users',
     value: '10',
     sub: '',
     color: '#FBBC05',
-    icon: 'pi pi-clock',
+    icon: 'pi pi-users', // Represents users/people
   },
   {
-    title: 'Offered',
-    value : '1',
-    sub : '',
-    color : '#34A853',
-    icon : 'pi pi-thumbs-up'
-  },
-  {
-    title: 'Rejected Applications',
-    value: '5',
+    title: 'Subscriptions',
+    value: '1',
     sub: '',
-    color: '#EA4335',
-    icon: 'pi pi-thumbs-down',
-  },
+    color: '#34A853',
+    icon: 'pi pi-credit-card', // Represents a subscription or payment
+  }
 ];
-
-
 
 goToSelectedPage($event: any, tool: any){
   this.routerService.navigate([tool.route]);

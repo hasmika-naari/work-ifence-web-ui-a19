@@ -1,0 +1,166 @@
+<div class="row" style="margin:16px 0 48px 0;padding-bottom:100px;">
+		<div *ngIf="filteredServiceRequests().length === 0 && !isActionInProgress" class="empty-list-container">
+			<p>No Requests found.</p>
+	  	</div>
+		  <div *ngIf="isActionInProgress" class="empty-list-container">
+			<p>Loading Please wait...</p>
+	  	</div>
+		  <div class="container-fluid pr-5">
+			<!-- <mat-card class="table-card mat-elevation-z0" *ngIf="!isActionInProgress && filteredServiceRequests().length"> -->
+			  <!-- <div class="row mb-3">
+				<div class="col-md-4">
+				  <mat-form-field appearance="outline" class="full-width">
+					<mat-label>Filter by Request Type</mat-label>
+					<mat-select [formControl]="requestFilter">
+					  <mat-option value="">All</mat-option>
+					  <mat-option value="Request for New Org Account">Request for New Org Account</mat-option>
+					  <mat-option value="Request for New Feature">Request for New Feature</mat-option>
+					  <mat-option value="Issue with Login">Issue with Login</mat-option>
+					</mat-select>
+				  </mat-form-field>
+				</div>
+			  </div> -->
+			  <!-- <table mat-table [dataSource]="filteredServiceRequests()"
+			  			multiTemplateDataRows  class="mat-elevation-z0 full-width">
+		  
+				<ng-container matColumnDef="dateReceived">
+				  <th mat-header-cell *matHeaderCellDef>Date Received</th>
+				  <td mat-cell *matCellDef="let element">{{ element.createdDate }}</td>
+				</ng-container>
+		  
+				<ng-container matColumnDef="user">
+				  <th mat-header-cell *matHeaderCellDef>User</th>
+				  <td mat-cell *matCellDef="let element">{{ element.firstName }} {{ element.lastName }}</td>
+				</ng-container>
+		  
+				<ng-container matColumnDef="email">
+				  <th mat-header-cell *matHeaderCellDef>Email</th>
+				  <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+				</ng-container>
+		  
+				<ng-container matColumnDef="phone">
+				  <th mat-header-cell *matHeaderCellDef>Phone</th>
+				  <td mat-cell *matCellDef="let element">{{ element.phone }}</td>
+				</ng-container>
+		  
+				<ng-container matColumnDef="requestType">
+				  <th mat-header-cell *matHeaderCellDef>Request Type</th>
+				  <td mat-cell *matCellDef="let element">{{ element.requestType }}</td>
+				</ng-container>
+		  
+				<ng-container matColumnDef="status">
+				  <th mat-header-cell *matHeaderCellDef>Status</th>
+				  <td mat-cell *matCellDef="let element">
+					<span class="status-badge" [ngClass]="{'new': element.status === 'New', 'addressed': element.status === 'Addressed'}">
+					  {{ element.status }}
+					</span>
+				  </td>
+				</ng-container>
+		  
+				<ng-container matColumnDef="actions">
+				  <th mat-header-cell *matHeaderCellDef>Actions</th>
+				  <td mat-cell *matCellDef="let element">
+					<button mat-icon-button color="primary" (click)="editRequest(element.id)">
+					  <mat-icon>edit</mat-icon>
+					</button>
+					<button mat-icon-button color="warn" (click)="deleteRequest(element.id)">
+					  <mat-icon>delete</mat-icon>
+					</button>
+				  </td>
+				</ng-container>
+				<ng-container matColumnDef="expand">
+					<mat-header-cell *matHeaderCellDef></mat-header-cell>
+					<mat-cell *matCellDef="let element">
+					  <button mat-icon-button (click)="toggleRow(element)">
+						<mat-icon>
+						  {{ expandedElement === element ? 'expand_less' : 'expand_more' }}
+						</mat-icon>
+					  </button>
+					</mat-cell>
+				</ng-container>
+		  
+				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+					class="expandable-row" [class.expanded]="expandedElement === element"
+					(click)="toggleRow(element)">
+				</tr>
+		  
+				<tr *ngFor="let row of filteredServiceRequests()" [class.expanded]="false">
+				  <td colspan="7">
+					<mat-expansion-panel [expanded]="false">
+					  <mat-expansion-panel-header>
+						<span>Request Description</span>
+					  </mat-expansion-panel-header>
+					  <p>{{ row.requestDescription }}</p>
+					</mat-expansion-panel>
+				  </td>
+				</tr>
+				<mat-row *matRowDef="let element; columns: ['detail']" class="detail-row">
+					<mat-cell [attr.colspan]="displayedColumns.length">
+						<div class="element-detail" [@detailExpand]="expandedElement === element ? 'expanded' : 'collapsed'">
+							<p>{{ row.requestDescription }}</p>
+						</div>
+					</mat-cell>
+				</mat-row>
+
+			  </table> -->
+			  <mat-accordion multi class="request-accordian" *ngIf="!isActionInProgress && filteredServiceRequests().length">
+				<mat-expansion-panel *ngFor="let request of filteredServiceRequests()" class="custom-panel">
+			  
+				  <mat-expansion-panel-header>
+					<div class="header-container">
+					  <!-- Left: Values with labels below -->
+					  <div class="header-left">
+						<div class="header-block">
+						  <div class="header-value">{{ request.createdDate }}</div>
+						  <div class="header-label">Date Received</div>
+						</div>
+						<div class="header-block">
+						  <div class="header-value">{{ request.requestType }}</div>
+						  <div class="header-label">Request Type</div>
+						</div>
+						<div class="header-block">
+						  <div class="header-value">{{ request.firstName }} {{ request.lastName }}</div>
+						  <div class="header-label">User Name</div>
+						</div>
+					  </div>
+			  
+					  <!-- Right: Status badge (not overlapping arrow) -->
+					  <div class="header-right">
+						<span class="status-badge" [ngClass]="{
+						  'new': request.status === 'New',
+						  'addressed': request.status === 'Addressed'
+						}">
+						  {{ request.status }}
+						</span>
+					  </div>
+					</div>
+				  </mat-expansion-panel-header>
+			  
+				  <div class="panel-content">
+					<!-- Action buttons in top-right -->
+					<div class="panel-actions">
+					  <button mat-icon-button color="primary" (click)="editRequest(request.id)">
+						<mat-icon>edit</mat-icon>
+					  </button>
+					  <button mat-icon-button color="warn" (click)="deleteRequest(request.id)">
+						<mat-icon>delete</mat-icon>
+					  </button>
+					</div>
+			  
+					<!-- Panel body content -->
+					<div class="details">
+					  <p><strong>Email:</strong> {{ request.email }}</p>
+					  <p><strong>Phone:</strong> {{ request.phone }}</p>
+					  <p><strong>Description:</strong> {{ request.requestDescription }}</p>
+					</div>
+				  </div>
+			  
+				</mat-expansion-panel>
+			  </mat-accordion>
+			  
+			  
+			<!-- </mat-card> -->
+		  </div>
+		  
+</div>

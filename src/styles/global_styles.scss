@@ -639,7 +639,7 @@ Subscribe CSS
     color: green !important;
 }
 .show-info{
-    color:#3280da;
+    color:#1a6cca;
 }
 
 .show-silver{
@@ -685,6 +685,11 @@ Subscribe CSS
     }
 }
 
+::ng-deep .custom-snackbar {
+    background-color: green !important;
+    color: white;
+  }
+
 .success{
     background-color: rgba(0, 128, 0, 0.973) !important;
     color: white !important;
@@ -696,17 +701,20 @@ Subscribe CSS
     }
 }
 
-.mat-mdc-snack-bar-container {
+::ng-deep.mat-mdc-snack-bar-container {
     .mdc-snackbar__surface{
-        background-color: white !important;
+        background-color: #388E3C;
     }
 
     .mdc-snackbar__label{
-        color: #333333 !important;
+        color: #388E3C !important;
       }
 
     .success {
         background: #388E3C !important;
+        .mdc-snackbar__surface{
+            background-color: #388E3C !important;
+        }
     }
 
     .error {

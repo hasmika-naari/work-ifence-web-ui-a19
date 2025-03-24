@@ -27,14 +27,14 @@
         <div class="contact-form">
           <div class="container">
             <div class="form-card">
-              <form [formGroup]="feedbackForm" 
+              <form [formGroup]="serviceRequestForm" 
                     (ngSubmit)="onSubmit()">
                 <div class="row">
                   <div class="col-md-6 mt-2">
                     <mat-form-field appearance="outline" class="w-100">
                       <mat-label>First Name</mat-label>
                       <input matInput formControlName="firstName" />
-                      <mat-error *ngIf="feedbackForm.controls['firstName'].hasError('required')">
+                      <mat-error *ngIf="serviceRequestForm.controls['firstName'].hasError('required')">
                         First Name is required.
                       </mat-error>
                     </mat-form-field>
@@ -44,7 +44,7 @@
                     <mat-form-field appearance="outline" class="w-100">
                       <mat-label>Last Name</mat-label>
                       <input matInput formControlName="lastName" />
-                      <mat-error *ngIf="feedbackForm.controls['lastName'].hasError('required')">
+                      <mat-error *ngIf="serviceRequestForm.controls['lastName'].hasError('required')">
                         Last Name is required.
                       </mat-error>
                     </mat-form-field>
@@ -55,11 +55,11 @@
                   <div class="col-md-6 mt-2">
                     <mat-form-field appearance="outline" class="w-100">
                       <mat-label>Email</mat-label>
-                      <input matInput type="email" formControlName="emailId" />
-                      <mat-error *ngIf="feedbackForm.controls['emailId'].hasError('required')">
+                      <input matInput type="email" formControlName="email" />
+                      <mat-error *ngIf="serviceRequestForm.controls['email'].hasError('required')">
                         Email is required.
                       </mat-error>
-                      <mat-error *ngIf="feedbackForm.controls['emailId'].hasError('email')">
+                      <mat-error *ngIf="serviceRequestForm.controls['email'].hasError('email')">
                         Enter a valid email address.
                       </mat-error>
                     </mat-form-field>
@@ -68,11 +68,11 @@
                   <div class="col-md-6 mt-2">
                     <mat-form-field appearance="outline" class="w-100">
                       <mat-label>Phone Number</mat-label>
-                      <input matInput type="text" formControlName="phoneNumber" />
-                      <mat-error *ngIf="feedbackForm.controls['phoneNumber'].hasError('required')">
+                      <input matInput type="text" formControlName="phone" />
+                      <mat-error *ngIf="serviceRequestForm.controls['phone'].hasError('required')">
                         Phone number is required.
                       </mat-error>
-                      <mat-error *ngIf="feedbackForm.controls['phoneNumber'].hasError('pattern')">
+                      <mat-error *ngIf="serviceRequestForm.controls['phone'].hasError('pattern')">
                         Enter a valid 10-digit phone number.
                       </mat-error>
                     </mat-form-field>
@@ -88,7 +88,7 @@
                           {{ type.label }}
                         </mat-option>
                       </mat-select>
-                      <mat-error *ngIf="feedbackForm.controls['requestType'].hasError('required')">
+                      <mat-error *ngIf="serviceRequestForm.controls['requestType'].hasError('required')">
                         Request type is required.
                       </mat-error>
                     </mat-form-field>
@@ -100,7 +100,7 @@
                     <mat-form-field appearance="outline" class="w-100">
                       <mat-label>Request Description</mat-label>
                       <textarea matInput formControlName="requestDescription" rows="7"></textarea>
-                      <mat-error *ngIf="feedbackForm.controls['requestDescription'].hasError('required')">
+                      <mat-error *ngIf="serviceRequestForm.controls['requestDescription'].hasError('required')">
                         Description is required.
                       </mat-error>
                     </mat-form-field>
@@ -109,8 +109,8 @@
           
                 <div class="text-end mt-3">
                   <button mat-raised-button color="primary" type="submit" 
-                    [class.contact-form-submit-btn]="!feedbackForm.invalid"
-                  [disabled]="feedbackForm.invalid">
+                    [class.contact-form-submit-btn]="!serviceRequestForm.invalid"
+                  [disabled]="serviceRequestForm.invalid">
                     Submit
                   </button>
                 </div>

@@ -1,0 +1,329 @@
+/* ===========================
+   General Layout & Containers
+============================= */
+:host{
+  font-family: Poppins !important;
+  .mat-mdc-icon-button.mat-mdc-button-base {
+    --mdc-icon-button-state-layer-size: 40px !important;
+    width: var(--mdc-icon-button-state-layer-size);
+    height: var(--mdc-icon-button-state-layer-size);
+    padding: 8px !important;
+  }
+}
+
+.row {
+  margin: 16px 0 48px 0;
+  padding-bottom: 100px;
+}
+
+.container-fluid {
+  padding: 20px;
+}
+
+.table-card {
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: white;
+}
+
+/* ===========================
+   Empty State Messages
+============================= */
+.empty-list-container {
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-medium);
+  padding: 20px;
+}
+
+.empty-list-container p {
+  margin: 0;
+  font-style: italic;
+}
+
+/* ===========================
+   Form Fields
+============================= */
+mat-form-field.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.mat-form-field-outline {
+  border-color: var(--text-medium);
+}
+
+mat-select {
+  background: white;
+}
+
+/* ===========================
+   Material Table Styles
+============================= */
+table.mat-table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th.mat-header-cell {
+  background: var(--background-light);
+  font-weight: bold;
+  color: var(--text-dark);
+  padding: 12px 16px;
+  text-align: left;
+}
+
+td.mat-cell {
+  padding: 12px 16px;
+  color: var(--text-medium);
+}
+
+tr.mat-header-row {
+  height: 56px;
+}
+
+tr.mat-row {
+  transition: background 0.3s ease-in-out;
+}
+
+tr.mat-row:hover {
+  background: var(--background-light);
+}
+
+.panel-content {
+  position: relative;
+  padding: 16px;
+  padding-top: 40px; // To give space for top-right buttons
+}
+
+.panel-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.details p {
+  margin: 4px 0;
+}
+
+.request-accordian{
+  margin-right: 50px;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  margin-left: 25px;
+}
+
+// .status-badge {
+//   padding: 2px 8px;
+//   border-radius: 4px;
+//   font-weight: 600;
+// }
+
+// .status-badge.new {
+//   background-color: #e0f7fa;
+//   color: #00796b;
+// }
+
+// .status-badge.addressed {
+//   background-color: #e3f2fd;
+//   color: #0d47a1;
+// }
+
+.custom-panel {
+  margin-bottom: 8px;
+}
+
+mat-expansion-panel-header {
+  padding: 0 16px;
+  min-height: 56px !important;
+}
+
+mat-expansion-panel-header.mat-expanded {
+  min-height: 56px !important;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.header-left {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.header-block {
+  text-align: left;
+}
+
+.header-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.header-label {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.header-right {
+  margin-left: auto;
+  padding-right: 100px; // Ensures it doesn't overlap the arrow icon
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-badge.new {
+  color: #00796b;
+  // border: 1px solid #00796b;
+}
+
+.status-badge.addressed {
+  color: #0d47a1;
+  border: 1px solid #0d47a1;
+}
+
+.panel-content {
+  position: relative;
+  padding: 16px;
+  padding-top: 40px;
+}
+
+.panel-actions {
+  position: absolute;
+  // top: 8px;
+  // right: 8px;
+}
+
+.details p {
+  margin: 6px 0;
+}
+
+
+
+/* ===========================
+   Status Badges
+============================= */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.status-badge.new {
+  background: var(--primary-color);
+  color: white;
+}
+
+.status-badge.addressed {
+  background: var(--secondary-color);
+  color: white;
+}
+
+/* ===========================
+   Action Buttons
+============================= */
+.mat-icon-button {
+  transition: transform 0.2s;
+  color: var(--primary-color);
+}
+
+.mat-icon-button:hover {
+  transform: scale(1.1);
+}
+/* Primary Button */
+.mat-button-primary {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Apply Darker Shade on Hover */
+.mat-button-primary:hover {
+  filter: brightness(90%) !important; /* Darken by 10% */
+}
+
+/* Warn Button */
+.mat-button-warn {
+  background-color: var(--warn-color) !important;
+  color: white !important;
+}
+
+/* Apply Darker Shade on Hover */
+.mat-button-warn:hover {
+  filter: brightness(90%) !important;
+}
+
+
+/* ===========================
+   Expanded Row (Mat Expansion Panel)
+============================= */
+.expandable-row {
+  cursor: pointer;
+}
+
+tr.expanded td {
+  padding: 0 !important;
+}
+
+.mat-expansion-panel {
+  width: 100%;
+  background: var(--background-light);
+  border-left: 4px solid var(--primary-color);
+  padding: 10px;
+}
+
+.mat-expansion-panel-header {
+  font-weight: 500;
+}
+
+.mat-expansion-panel p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--text-medium);
+}
+
+/* ===========================
+   Responsive Styles
+============================= */
+@media (max-width: 768px) {
+  th.mat-header-cell, td.mat-cell {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .mat-expansion-panel {
+    border-left: none;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    padding: 3px 10px;
+  }
+
+  .mat-icon-button {
+    margin: 4px;
+  }
+}

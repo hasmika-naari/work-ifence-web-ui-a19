@@ -354,6 +354,11 @@ export const routes: Routes = [
             //     data: { breadcrumb: 'Account Settings' } 
             // },
             {   
+                path: 'requests', 
+                loadComponent: () => import('./pages/dashboard-requests/dashboard-requests.component').then(m => m.DashboardRequestsComponent), 
+                data: { breadcrumb: 'Requests' } 
+            },
+            {   
                 path: 'mail-box', 
                 loadComponent: () => import('./pages/email-box/email.component').then(m => m.EmailComponent), 
                 data: { breadcrumb: 'Account Settings' } 
@@ -371,7 +376,12 @@ export const routes: Routes = [
             {   
                 path: 'dashboard', 
                 loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent), 
-                data: { breadcrumb: 'Account Settings' } 
+                data: { breadcrumb: 'Employee Dashboard' } 
+            },
+            {   
+                path: 'dashboard-admin', 
+                loadComponent: () => import('./pages/dashboard-app-admin/dashboard-app-admin.component').then(m => m.DashboardAppAdminComponent), 
+                data: { breadcrumb: 'Employee Dashboard' } 
             },
             {   
                 path: 'profile', 

@@ -1,6 +1,6 @@
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
 import { Address } from "../contact.model";
-import { Account, BioProfile, LoginProfile } from "../profile.model";
+import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
 import { Education, Experience, Project, Resume, Certification, JobDescriptionAIResponse, JobApplication, RoundDetails, Accomplishment} from "../resume.model";
 import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, ResumeListDataItem } from "../work-ifence-data.model";
 
@@ -8,6 +8,8 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
   
   export interface UserState {
     account: Account;
+    roles: Array<WifRole>;
+    activeRole: WifRole;
     bioProfile: BioProfile; 
     loginProfile: LoginProfile;
     addresses: Array<Address>;
@@ -34,7 +36,9 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
   
   export const userStateConfig = {
     initState: {
-      taccount: new Account(),
+      account: new Account(),
+      roles: new Array<WifRole>(),
+      activeRole: new WifRole(),
       token: '',
       MenuListItem: new Array<MenuListItem>(),
       jobApplications: new Array<JobApplication>(),

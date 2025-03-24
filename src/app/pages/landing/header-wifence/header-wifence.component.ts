@@ -8,7 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { WINDOW } from '../../../services/window.token';
 import { LocalStorageService } from '../../../services/local-storage.service';
 import { UserStoreService } from '../../../services/store/user-store.service';
-import { Account } from '../../../services/profile.model';
+import { Account, WifRole } from '../../../services/profile.model';
 import { MenuListItem } from '../../../services/bee-compete.model';
 import { ThemeCustomizerService } from '../../../services/theme-customizer/theme-customizer.service';
 import { FeathericonsModule } from 'src/app/icons/feathericons/feathericons.module';
@@ -32,10 +32,13 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
     isSticky: boolean = false;
     private storageService: LocalStorageService = inject(LocalStorageService);
+    private userStore: UserStoreService = inject(UserStoreService);
+
     private router:Router =  inject(Router);
     private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
     private platformId: object =  inject(PLATFORM_ID);
     private locationService:Location =  inject(Location);
+    public userActiveRole: Signal<WifRole> = this.userStore.getUserActiveRole();
 
     isMobile = false;
     isTablet = false;
@@ -54,7 +57,6 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
     isToggled = false;
 
-    private userStore: UserStoreService = inject(UserStoreService);
     userAccount: Signal<Account> = this.userStore.getUserAccount();
     menuListStore: Signal<Array<MenuListItem>> = this.userStore.getMenuList();
 
@@ -116,6 +118,13 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
         this.userStore.resetStore();
          this.router.navigateByUrl("/");
+    }
+    goToDashboard($event: any){
+        if(this.userActiveRole().role === 'ROLE_ADMIN'){
+            this.router.navigateByUrl("/user/dashboard-admin");
+        }else if(this.userActiveRole().role === 'ROLE_USER'){
+            this.router.navigateByUrl("/user/dashboard");
+        }
     }
 
     goBackScreen($event: any){

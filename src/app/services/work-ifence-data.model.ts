@@ -193,3 +193,30 @@ export class JobApplication {
     selected: boolean = false;
     constructor() {}
   }
+
+  export class FeedbackRequest {
+    id: number;
+    dateReceived: string;
+    firstName: string;
+    lastName: string;
+    emailId: string;
+    phoneNumber: string;
+    requestType: string;
+    requestDescription: string;
+    status: 'New' | 'Addressed' | 'Pending'; // Enum-like restriction for status
+    expanded: boolean;
+  
+    constructor(data: Partial<FeedbackRequest> = {}) {
+      this.id = data.id ?? 0;
+      this.dateReceived = data.dateReceived ?? '';
+      this.firstName = data.firstName ?? '';
+      this.lastName = data.lastName ?? '';
+      this.emailId = data.emailId ?? '';
+      this.phoneNumber = data.phoneNumber ?? '';
+      this.requestType = data.requestType ?? '';
+      this.requestDescription = data.requestDescription ?? '';
+      this.status = data.status ?? 'New';
+      this.expanded = data.expanded ?? false;
+    }
+  }
+  

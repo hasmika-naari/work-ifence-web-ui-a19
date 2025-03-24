@@ -84,6 +84,7 @@ export class RegisterPageComponent {
   isLoading =  false;
   valCheck: string[] = ['remember'];
   password!: string;
+  showPasswordHint = false;
   showBack = true;
   months: any = [
     {
@@ -164,14 +165,12 @@ export class RegisterPageComponent {
         firstName: new FormControl('', [
           Validators.required,
           Validators.pattern(/^[a-zA-Z'’\- ]+$/), // Alphabets, spaces, hyphens, and apostrophes allowed
-          Validators.minLength(5),
-          Validators.maxLength(20),
+          Validators.maxLength(32),
         ]),
         lastName: new FormControl('', [
           Validators.required,
           Validators.pattern(/^[a-zA-Z'’\- ]+$/), // Same pattern as firstName
-          Validators.minLength(5),
-          Validators.maxLength(20),
+          Validators.maxLength(32),
         ]),
         email: new FormControl('', [
           Validators.required,
@@ -180,10 +179,13 @@ export class RegisterPageComponent {
         userName: new FormControl('', [
           Validators.required,
           Validators.minLength(4),
-          Validators.maxLength(30),
-          Validators.pattern(/^[a-zA-Z0-9._-]+$/), // Allows alphanumeric, dots, underscores, and hyphens
+          Validators.maxLength(32),
+          Validators.pattern(/^[a-zA-Z0-9._-]+$/), // Ensures no spaces
         ]),
-        password: new FormControl('', [Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]),
+        password: new FormControl('', [
+          Validators.minLength(8), 
+          Validators.maxLength(30),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]),
         confirmPassword: new FormControl('', [
           Validators.required,
         ]),
@@ -208,7 +210,14 @@ export class RegisterPageComponent {
     });
     }
 
+    isUserNameValid(): boolean {
+      return this.registerForm3.get('userName')?.valid ?? false;
+    }
 
+    onPasswordInput() {
+      const passwordValue = this.registerForm3.get('password')?.value;
+      this.showPasswordHint = passwordValue.length > 0; // Show hint when at least one character is entered
+    }
  
     ngOnInit(): void {
       this.maxYear = new Date().getFullYear();
@@ -233,16 +242,14 @@ export class RegisterPageComponent {
               '',
               [
                 Validators.required,
-                Validators.minLength(3),
-                Validators.maxLength(20),
+                Validators.maxLength(32),
               ],
             ],
             lastName: [
               '',
               [
                 Validators.required,
-                Validators.minLength(3),
-                Validators.maxLength(20),
+                Validators.maxLength(32),
               ],
             ],
             userName: [
@@ -250,7 +257,7 @@ export class RegisterPageComponent {
               [
                 Validators.required,
                 Validators.minLength(3),
-                Validators.maxLength(20),
+                Validators.maxLength(32),
               ],
             ],
             email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
@@ -277,8 +284,7 @@ export class RegisterPageComponent {
               [
                 Validators.required,
                 Validators.pattern(/^[a-zA-Z'’\- ]+$/), // Alphabets, spaces, hyphens, and apostrophes allowed
-                Validators.minLength(2),
-                Validators.maxLength(20),
+                Validators.maxLength(32),
               ],
             ],
             lastName: [
@@ -286,8 +292,7 @@ export class RegisterPageComponent {
               [
                 Validators.required,
                 Validators.pattern(/^[a-zA-Z'’\- ]+$/), // Same pattern as firstName
-                Validators.minLength(2),
-                Validators.maxLength(20),
+                Validators.maxLength(32),
               ],
             ],
             email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
@@ -296,7 +301,7 @@ export class RegisterPageComponent {
               [
                 Validators.required,
                 Validators.minLength(4),
-                Validators.maxLength(30),
+                Validators.maxLength(32),
                 Validators.pattern(/^[a-zA-Z0-9._-]+$/), // Allows alphanumeric, dots, underscores, and hyphens
               ],
             ],
@@ -376,7 +381,11 @@ export class RegisterPageComponent {
       } 
   }
 
-  
+  preventSpaces(event: KeyboardEvent) {
+    if (event.key === ' ') {
+      event.preventDefault();
+    }
+  }
     onFirstFormSubmit(): void {
       console.log('onSubmit - 1');
       

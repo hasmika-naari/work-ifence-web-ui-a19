@@ -29,7 +29,7 @@ export class YeaSnackBarService {
   openSnackBar(message: any, mtype: any, duration: any) {
     const config = new MatSnackBarConfig();
     config.duration = duration ? duration : this.autoHide;
-    config.panelClass =  mtype;
+    config.panelClass =  [mtype];
     config.horizontalPosition = this.horizontalPosition;
     config.verticalPosition = this.verticalPosition;
 

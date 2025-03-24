@@ -187,13 +187,28 @@
                         </div>
                     </div>
                     <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
+                        @for (role of userRoles(); track role) {
+                            <li class="position-relative transition fw-medium cursor-pointer"
+                               [class.active-role]="userActiveRole().title === role.title"
+                               (click)="switchDashboard($event, role)" >
+                                <i class="material-symbols-outlined">
+                                    dashboard
+                                </i>
+                                {{role.title}}
+                            </li>
+                        }   
+                    </ul>
+                      <!-- Separator -->
+                      <mat-divider class="custom-divider"></mat-divider>
+                    <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
                         <li class="position-relative transition fw-medium" [routerLink]="['/user/profile']">
                             <i class="material-symbols-outlined">
                                 person
                             </i>
-                            My Profile
+                            My Profile - {{userRoles().length}}
                             <a routerLink="/my-profile" class="link-btn d-block position-absolute left-0 right-0 top-0 bottom-0 z-1"></a>
                         </li>
+                      
                         <li class="position-relative transition fw-medium show-silver">
                             <i class="material-symbols-outlined show-silver">
                                 settings

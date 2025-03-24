@@ -912,3 +912,12 @@
 
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {}
+
+.custom-divider {
+    border-top: 1px dashed lightgray !important;
+    margin: 4px 0;
+  }
+
+  .active-role{
+    color: var(--primaryColor) !important;
+  }

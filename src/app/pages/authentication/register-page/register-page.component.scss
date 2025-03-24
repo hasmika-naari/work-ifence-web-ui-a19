@@ -1,6 +1,9 @@
 //////////////
+
 :host {
   font-family: 'Poppins', sans-serif;
+  --mdc-outlined-text-field-focus-outline-color: var(--mdc-theme-secondary) !important;
+  --mdc-outlined-text-field-focus-label-text-color: var(--mdc-theme-secondary) !important;
 }
 
 /* Force font on all elements within this component */
@@ -18,12 +21,32 @@
     box-shadow: none !important;
   }
 
+  .mat-mdc-form-field-hint{
+    color: var(--infoColor) !important;
+  }
+
 }
 
 ::ng-deep .remember-check .mdc-label {
   font-size: 14px !important;
 }
 
+.fade-in {
+  opacity: 0;
+  transform: translateY(5px);
+  animation: fadeInUp 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 
 .enabled-button {

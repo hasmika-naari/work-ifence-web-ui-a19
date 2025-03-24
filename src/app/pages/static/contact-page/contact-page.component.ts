@@ -19,6 +19,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { IfenceService } from 'src/app/services/ifence.service';
+import { ServiceRequestItem } from 'src/app/services/store/app-store.model';
 
 @Component({
   selector: 'app-contact',
@@ -37,7 +39,6 @@ export class ContactComponent implements OnInit {
   isToggled = false;
   categories: Array<Category> = new Array<Category>();
   pCategories: Array<PCategory> = new Array<PCategory>();
-	private dealsService: WorkifenceDataService= inject(WorkifenceDataService);
   private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
   public themeService: ThemeCustomizerService=  inject(ThemeCustomizerService);
   private platformId: object =  inject(PLATFORM_ID);
@@ -54,25 +55,27 @@ export class ContactComponent implements OnInit {
     { value: 'newFeature', label: 'Request for New Feature' },
     { value: 'loginIssue', label: 'Issue with Login' }
   ];
-  feedbackForm: FormGroup<{ firstName: FormControl<string | null>; lastName: FormControl<string | null>; emailId: FormControl<string | null>; phoneNumber: FormControl<string | null>; requestType: FormControl<string | null>; requestDescription: FormControl<string | null>; }>;
+  serviceRequestForm = this.formBuilder.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+    requestType: ['', Validators.required],
+    requestDescription: ['', Validators.required]
+  });
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar) {
+  constructor(
+    private snackBar: MatSnackBar,
+    private ifenceService: IfenceService
+  ) {
       this.browser = isPlatformBrowser(this.platformId);
       this.themeService.isToggled$.subscribe(isToggled => {
         this.isToggled = isToggled;
     });
-    this.feedbackForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      emailId: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      requestType: ['', Validators.required],
-      requestDescription: ['', Validators.required]
-    });
+    
      }
 
   ngOnInit() {
-    this.fetchData();
     if(this.browser){
       if(this.deviceService.isDesktop()){
         this.isDesktop = true;
@@ -91,12 +94,28 @@ export class ContactComponent implements OnInit {
   }
 
   get f(): { [key: string]: AbstractControl } {
-    return this.feedbackForm.controls;
+    return this.serviceRequestForm.controls;
   }
 
   onSubmit() {
-    if (this.feedbackForm.valid) {
+    if (this.serviceRequestForm.valid) {
       this.loading = true; // Show progress bar
+      let serviceRequest = new ServiceRequestItem();
+      let dateTime = new Date();
+      serviceRequest.firstName = this.serviceRequestForm.controls.firstName.value? this.serviceRequestForm.controls.firstName.value : "";
+      serviceRequest.lastName = this.serviceRequestForm.controls.lastName.value? this.serviceRequestForm.controls.lastName.value : "";
+      serviceRequest.email = this.serviceRequestForm.controls.email.value? this.serviceRequestForm.controls.email.value : "";
+      serviceRequest.phone = this.serviceRequestForm.controls.phone.value? this.serviceRequestForm.controls.phone.value: "";
+      serviceRequest.requestType = this.serviceRequestForm.controls.requestType.value? this.serviceRequestForm.controls.requestType.value : "";
+      serviceRequest.requestDescription = this.serviceRequestForm.controls.requestDescription.value? this.serviceRequestForm.controls.requestDescription.value : "";
+      serviceRequest.createdDate = dateTime.toISOString();
+      serviceRequest.lastModifiedBy = serviceRequest.email;
+      serviceRequest.lastModifiedDate = serviceRequest.createdDate;
+      serviceRequest.status = "New"
+
+      this.ifenceService.saveServiceRequest(serviceRequest).subscribe(e => {
+        this.loading = false;
+      })
 
       // Simulate API request
       setTimeout(() => {
@@ -104,46 +123,12 @@ export class ContactComponent implements OnInit {
         this.snackBar.open('Feedback Submitted Successfully!', 'Close', {
           duration: 3000
         });
-        this.feedbackForm.reset();
+        this.serviceRequestForm.reset();
+        Object.keys(this.serviceRequestForm.controls).forEach(key => {
+          this.serviceRequestForm.get(key)?.setErrors(null);
+        });
       }, 2000);
     }
   }
-
-  // onSubmit(): void {
-  //   this.feedbackSubmitted = true;
-  //   console.log('onSubmit - 1');
-  //   if (this.feedbackForm.invalid) {
-  //     return;
-  //   }
-  //   console.log('onSubmit - 2');
-
-  //   // let registerRequest = new RegisterRequest();
-  //   // registerRequest.login = this.registerForm.value.username; 
-  //   // registerRequest.email = this.registerForm.value.email; 
-  //   // registerRequest.password = this.registerForm.value.password;
-  //   // registerRequest.langKey = "en";
-  //   // this.authService.signUp(registerRequest).subscribe((resp) => {
-  //   //     this.activationForm.controls['username'].setValue(this.registerForm.value.username);
-  //   //     this.activationForm.controls['username'].disable();
-
-  //   //     this.showActivationForm = true;
-  //   // }, (error) => {
-
-  //   // });
-  //   console.log('onSubmit - 3');
-
-  //   console.log(JSON.stringify(this.feedbackForm.value.fullname, null, 2));
-  // }
-
-fetchData(): void{
-  // this.dealsService.getCategoriesByCountry('usa', this.platformId).subscribe((categories) => {
-  //   this.categories = [...categories];
-  //   /// divide into parentList
-  //   // Group categories by parent and map them to the desired format
-  //   this.pCategories = [..._.map(
-  //       _.groupBy(categories, 'parent'),
-  //       (categories, parent) => ({ parent, categories }))];
-  // });
-}
 
 }

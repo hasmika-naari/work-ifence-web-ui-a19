@@ -171,6 +171,7 @@ export class AppConstantsService {
     public DELETE_VENDOR_CONTACT : string;
     public DELETE_CLIENT_CONTACT : string;
 
+    public SERVICE_REQUEST_URL: string;
 
     public snackbarType: SnackTypes;
     public passwordResetState: PassWordResetState;
@@ -241,7 +242,7 @@ export class AppConstantsService {
         this.DELETE_APPLIED_JOB_BY_ID_URL = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/job-applications';
 
         this.GET_ENTERPRISE_BY_CATEGORY = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/enterprise-profiles';
-
+        this.SERVICE_REQUEST_URL = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/service-requests';
 
         ////////////// Deal START
         this.GET_ALL_DEALS_BY_COUNTRY = APP_CONTEXT

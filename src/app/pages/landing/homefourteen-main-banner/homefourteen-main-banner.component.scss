@@ -16,7 +16,7 @@
         size: cover;
     };
     padding: {
-        top: 100px;
+        top: 40px;
         bottom: 100px;
     };
     .container-fluid {
@@ -46,22 +46,25 @@
 }
 .training-course-banner-content {
     h1 {
-        font-size: 6.2rem;
+        font-size: 6rem;
         letter-spacing: -2px !important;
-        margin-bottom: 25px;
+        margin-bottom: 10px;
         font-weight: bold;
         line-height: 5.2rem;
         color: var(--secondaryColor);
         span {
             color: var(--mainColor) !important;
             font-size: 4.5rem !important;
+            position: relative;
+            top: 0px !important;
+            display: block;
         }
     }
     p {
-        margin-bottom: 0;
-        max-width: 650px;
+        margin-top: 30px;
+        max-width: 575px;
         color: var(--paragraphColor);
-        font-size: medium;
+        font-size: large;
     }
     .btn-box {
         margin-top: 30px;
@@ -148,7 +151,7 @@
 
     .training-course-banner-area {
         padding: {
-            top: 60px;
+            top: 30px;
             bottom: 60px;
         };
         .container-fluid {
@@ -176,7 +179,7 @@
     text-align: left !important;
     font-family: (--fontFamily1) !important;
     position: relative;
-    margin-top: 50px;
+    margin-top: 30px;
     .show-angle-down{
         color: var(--secondaryColor) !important;
         cursor: pointer;

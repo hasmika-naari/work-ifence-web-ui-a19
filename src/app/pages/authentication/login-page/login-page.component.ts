@@ -30,7 +30,7 @@ import { AppConstantsService } from 'src/app/services/app-constants.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoginRequest } from 'src/app/services/auth.models';
-import { BioProfile, LoginProfile, PasswordResetRqst } from 'src/app/services/profile.model';
+import { Account, BioProfile, LoginProfile, PasswordResetRqst, WifRole } from 'src/app/services/profile.model';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { WifProgressDisplayComponent } from 'src/app/shared/wif-progress-display/wif-progress-display.component';
@@ -210,7 +210,7 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
           console.log('resetResponse  == ' + resetResponse);
           this.isActionInProgress = false;
 
-          this.snackBarService.openSnackBar('Please check your email for reset link!!', this.constantService.snackbarType.SUCCESS, 3000500);
+          this.snackBarService.openMultiLineSnackBar('Reset Password ', 'Please check your email for reset link!!', this.constantService.snackbarType.SUCCESS, 3000500);
           this.router.navigateByUrl('/');
         }, (error: any) => {
           this.isActionInProgress = false;
@@ -288,11 +288,22 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                     this.localStorageService.setItem('authenticated', true);
                   }
                   this.authService.getAccountProfile().subscribe(
-                    (account) =>
+                    (account:Account) =>
                     {
                       ;
                       console.log('account: ' + account.id);
                       this.userStore.updateAccount(account);
+                      let roles: Array<WifRole> = [];
+                      account.authorities.forEach(authr => {
+                        if(authr === 'ROLE_ADMIN'){
+                          roles.push({title:'App Admin',role:authr, url: '/user/dashboard-admin' });
+                        }else if(authr === 'ROLE_USER'){
+                          roles.push({title:'Member',role:authr, url: '/user/dashboard' });
+                        }
+                      });
+                      this.userStore.updateRoles(roles);
+                      this.userStore.updateActiveRole(roles[0]);
+
                       this.authService.getLoginProfile(account.login).subscribe(
                         (profile)=>{
                           this.userStore.updateLoginProfile(profile);
@@ -306,7 +317,13 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                                 }
                                 else{
                                   this.userStore.updateBioProfile(bioProfile);
-                                  this.router.navigate(['/user/dashboard']);
+                                  debugger;
+                                  if(this.hasRoleAdmin(account.authorities)){
+                                    this.userStore.updateActiveRole(roles[1]);
+                                    this.router.navigate(['/user/dashboard-admin']);
+                                  }else{
+                                    this.router.navigate(['/user/dashboard']);
+                                  }
                                 }
                                 // bioProfile: 
                                 // {...bioProfile, imageUrl: bioProfile?.imageUrl?this.constantService.BASE_AWS_S3_API_URL + bioProfile?.imageUrl:'' }}),
@@ -332,6 +349,10 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
           this.isLoading = false;
         });
   }
+
+  hasRoleAdmin(authorities: string[]): boolean {
+    return authorities.includes("ROLE_ADMIN");
+}
 
   onReset(): void {
     this.submitted = false;
