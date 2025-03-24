@@ -29,9 +29,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { ServiceRequestItem } from 'src/app/services/store/app-store.model';
 import { AppStoreService } from 'src/app/services/store/app-store.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
     selector: 'request-list',
+      animations: [
+          trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
+            state('expanded', style({ height: '*', display: 'block' })),
+            transition('expanded <=> collapsed', animate('250ms ease-in-out')),
+          ]),
+        ],
     templateUrl: './request-list.component.html',
     styleUrl : './request-list.component.scss',
     standalone: true,
@@ -79,8 +87,8 @@ export class RequestsListComponent implements OnInit, OnChanges, OnDestroy {
     subs: Array<Subscription> = [];
     imageSrc: string | null = null;
 
-    displayedColumns: string[] = ['dateReceived', 'user', 'email', 'phone', 'requestType', 'status', 'actions'];
-  
+    displayedColumns: string[] = ['dateReceived', 'user', 'email', 'phone', 'requestType', 'status', 'actions', 'expand'];
+    expandedElement: any | null = null;
 
     constructor(
         public templateService : TemplatesService,
@@ -97,15 +105,19 @@ export class RequestsListComponent implements OnInit, OnChanges, OnDestroy {
 
     }
 
+    toggleRow(row: any) {
+        this.expandedElement = this.expandedElement === row ? null : row;
+      }
+
     ngOnDestroy(): void {
         this.subs.forEach(s => s.unsubscribe());
     }
 
-    deleteRequest(id: number) {
+    deleteRequest(id: string) {
         alert(`Delete request with ID: ${id}`);
     }
 
-    editRequest(id: number) {
+    editRequest(id: string) {
         alert(`Edit request with ID: ${id}`);
     }  
 

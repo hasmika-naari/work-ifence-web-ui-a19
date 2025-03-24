@@ -1,6 +1,16 @@
 /* ===========================
    General Layout & Containers
 ============================= */
+:host{
+  font-family: Poppins !important;
+  .mat-mdc-icon-button.mat-mdc-button-base {
+    --mdc-icon-button-state-layer-size: 40px !important;
+    width: var(--mdc-icon-button-state-layer-size);
+    height: var(--mdc-icon-button-state-layer-size);
+    padding: 8px !important;
+  }
+}
+
 .row {
   margin: 16px 0 48px 0;
   padding-bottom: 100px;
@@ -85,6 +95,131 @@ tr.mat-row {
 tr.mat-row:hover {
   background: var(--background-light);
 }
+
+.panel-content {
+  position: relative;
+  padding: 16px;
+  padding-top: 40px; // To give space for top-right buttons
+}
+
+.panel-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.details p {
+  margin: 4px 0;
+}
+
+.request-accordian{
+  margin-right: 50px;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  margin-left: 25px;
+}
+
+// .status-badge {
+//   padding: 2px 8px;
+//   border-radius: 4px;
+//   font-weight: 600;
+// }
+
+// .status-badge.new {
+//   background-color: #e0f7fa;
+//   color: #00796b;
+// }
+
+// .status-badge.addressed {
+//   background-color: #e3f2fd;
+//   color: #0d47a1;
+// }
+
+.custom-panel {
+  margin-bottom: 8px;
+}
+
+mat-expansion-panel-header {
+  padding: 0 16px;
+  min-height: 56px !important;
+}
+
+mat-expansion-panel-header.mat-expanded {
+  min-height: 56px !important;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.header-left {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.header-block {
+  text-align: left;
+}
+
+.header-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.header-label {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.header-right {
+  margin-left: auto;
+  padding-right: 100px; // Ensures it doesn't overlap the arrow icon
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-badge.new {
+  color: #00796b;
+  // border: 1px solid #00796b;
+}
+
+.status-badge.addressed {
+  color: #0d47a1;
+  border: 1px solid #0d47a1;
+}
+
+.panel-content {
+  position: relative;
+  padding: 16px;
+  padding-top: 40px;
+}
+
+.panel-actions {
+  position: absolute;
+  // top: 8px;
+  // right: 8px;
+}
+
+.details p {
+  margin: 6px 0;
+}
+
+
 
 /* ===========================
    Status Badges

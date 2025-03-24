@@ -41,6 +41,7 @@ interface Option {
 @Component({
     selector: 'app-requests-dashboard',
     standalone: true,
+  
     imports: [CommonModule, RouterLink, RouterModule, 
         StyleClassModule,
         NgOptimizedImage, MenuModule, ChartModule, FormsModule,

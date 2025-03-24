@@ -6,6 +6,7 @@ export interface AppState{
 }
 
 export class ServiceRequestItem{
+    id!: string;
     firstName: string = '';
     lastName: string = '';
     email: string = '';
