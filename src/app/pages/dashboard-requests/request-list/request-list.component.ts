@@ -81,6 +81,8 @@ export class RequestsListComponent implements OnInit, OnChanges, OnDestroy {
     
     @Input() isActionInProgress: boolean = true; 
     @Output() childEvent = new EventEmitter<boolean>();
+    @Output() edit = new EventEmitter<ServiceRequestItem>();
+    @Output() delete = new EventEmitter<ServiceRequestItem>();
     userAccount: Signal<Account> = this.userStore.getUserAccount();
     filteredServiceRequests: Signal<ServiceRequestItem[]> = this.appStore.getFilteredServiceRequests();
 

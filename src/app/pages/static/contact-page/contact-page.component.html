@@ -15,115 +15,23 @@
         </div>
     </div>
 </div>
-<div
-    class="contact-area pt-100 pb-100"
-    [class.dark-contact-area]="themeService.isDark()"
->
-    <div class="container">
-        <div class="section-title">
-            <span class="sub-title">Contact Us</span>
-            <h2>Drop us Message for any Query</h2>
-        </div>
-        <div class="contact-form">
-          <div class="container">
-            <div class="form-card">
-              <form [formGroup]="serviceRequestForm" 
-                    (ngSubmit)="onSubmit()">
-                <div class="row">
-                  <div class="col-md-6 mt-2">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>First Name</mat-label>
-                      <input matInput formControlName="firstName" />
-                      <mat-error *ngIf="serviceRequestForm.controls['firstName'].hasError('required')">
-                        First Name is required.
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
-          
-                  <div class="col-md-6 mt-2">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Last Name</mat-label>
-                      <input matInput formControlName="lastName" />
-                      <mat-error *ngIf="serviceRequestForm.controls['lastName'].hasError('required')">
-                        Last Name is required.
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
-                </div>
-          
-                <div class="row">
-                  <div class="col-md-6 mt-2">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Email</mat-label>
-                      <input matInput type="email" formControlName="email" />
-                      <mat-error *ngIf="serviceRequestForm.controls['email'].hasError('required')">
-                        Email is required.
-                      </mat-error>
-                      <mat-error *ngIf="serviceRequestForm.controls['email'].hasError('email')">
-                        Enter a valid email address.
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
-          
-                  <div class="col-md-6 mt-2">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Phone Number</mat-label>
-                      <input matInput type="text" formControlName="phone" />
-                      <mat-error *ngIf="serviceRequestForm.controls['phone'].hasError('required')">
-                        Phone number is required.
-                      </mat-error>
-                      <mat-error *ngIf="serviceRequestForm.controls['phone'].hasError('pattern')">
-                        Enter a valid 10-digit phone number.
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
-                </div>
-          
-                <div class="row">
-                  <div class="col-md-12 mt-2">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Request Type</mat-label>
-                      <mat-select formControlName="requestType">
-                        <mat-option *ngFor="let type of requestTypes" [value]="type.value">
-                          {{ type.label }}
-                        </mat-option>
-                      </mat-select>
-                      <mat-error *ngIf="serviceRequestForm.controls['requestType'].hasError('required')">
-                        Request type is required.
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
-                </div>
-          
-                <div class="row">
-                  <div class="col-md-12 mt-2">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Request Description</mat-label>
-                      <textarea matInput formControlName="requestDescription" rows="7"></textarea>
-                      <mat-error *ngIf="serviceRequestForm.controls['requestDescription'].hasError('required')">
-                        Description is required.
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
-                </div>
-          
-                <div class="text-end mt-3">
-                  <button mat-raised-button color="primary" type="submit" 
-                    [class.contact-form-submit-btn]="!serviceRequestForm.invalid"
-                  [disabled]="serviceRequestForm.invalid">
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
+<div>
+  <mat-progress-bar *ngIf="loading()" color="primary" mode="indeterminate"></mat-progress-bar>
+  <div
+      class="contact-area pt-100 pb-100"
+      [class.dark-contact-area]="themeService.isDark()"
+  >
+      <div class="container">
+          <div class="section-title">
+              <span class="sub-title">Contact Us</span>
+              <h2>Drop us Message for any Query</h2>
           </div>
-          
-        
-          </div>
-    </div>
-    <div class="contact-bg-image">
-        <img src="assets/img/map.png" alt="image">
-    </div>
+          <app-contact-form [action] = "action"></app-contact-form>
+      </div>
+      <div class="contact-bg-image">
+          <img src="assets/img/map.png" alt="image">
+      </div>
+  </div>
 </div>
 <app-work-ifence-footer></app-work-ifence-footer>
 </section>
