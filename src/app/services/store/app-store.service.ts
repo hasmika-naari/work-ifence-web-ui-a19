@@ -36,6 +36,13 @@ import { AppState, ServiceRequestItem } from "./app-store.model";
         }))
     }
 
+    updateActionInProgress(status: boolean){
+        this.state.update((state) => ({
+            ...state,
+            actionInProgress: status
+        }))
+    }
+
     updateErrorMessage(message: string) {
         this.state.update((state) => ({
           ...state,

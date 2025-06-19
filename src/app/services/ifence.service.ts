@@ -190,11 +190,27 @@ export class IfenceService {
       .pipe(catchError(this.handleError));
   }
 
+  updateServiceRequest(serviceRequest: ServiceRequestItem){
+    let url:string = this.appConstants.BASE_API_URL + this.appConstants.SERVICE_REQUEST_URL + "/" + serviceRequest.id;
+    console.log('updateServiceRequest: api call');
+    return this.http
+      .put<any>(url, serviceRequest)
+      .pipe(catchError(this.handleError));
+  }
+
   getServiceRequests() : Observable<Array<ServiceRequestItem>>{
     let url:string = this.appConstants.BASE_API_URL + this.appConstants.SERVICE_REQUEST_URL;
     console.log('getServiceRequests: api call');
     return this.http
       .get<any>(url)
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteServiceRequest(id : string){
+    let url:string = this.appConstants.BASE_API_URL + this.appConstants.SERVICE_REQUEST_URL + "/" + id;
+    console.log('getServiceRequests: api call');
+    return this.http
+      .delete<any>(url)
       .pipe(catchError(this.handleError));
   }
 

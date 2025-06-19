@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, inject, Signal,           CUSTOM_ELEMENTS_SCHEMA, 
-          Output, EventEmitter, effect, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Signal, CUSTOM_ELEMENTS_SCHEMA, effect } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuModule } from 'primeng/menu';
@@ -22,16 +21,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { Account } from 'src/app/services/profile.model';
-import { FeedbackRequest } from 'src/app/services/work-ifence-data.model';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSelectModule } from '@angular/material/select';
 import { DropdownModule } from 'primeng/dropdown';
 import { ApplicationListComponent } from '../dashboard-job-application/application-list/application-list.component';
-import { MatProgressBar, MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RequestsListComponent } from './request-list/request-list.component';
 import { IfenceService } from 'src/app/services/ifence.service';
 import { ServiceRequestItem } from 'src/app/services/store/app-store.model';
 import { AppStoreService } from 'src/app/services/store/app-store.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ContactDialogComponent } from './contact-dialog/contact-dialog.component';
+import { ConfirmDialogComponent2 } from 'src/app/common/dialog/confirm-dialog/confirm-dialog.component';
 
 interface Option {
   name : string;
@@ -48,7 +49,7 @@ interface Option {
         MenuModule,DividerModule, MatFormFieldModule, MatInputModule,
         TableModule,DialogModule,InputTextModule, MatProgressBarModule,
         StyleClassModule,RequestsListComponent,
-        PanelMenuModule,
+        PanelMenuModule, MatDialogModule,
         ButtonModule,TemplatesPageComponent, ApplicationListComponent, 
         MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule
         ],
@@ -57,8 +58,6 @@ interface Option {
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class DashboardRequestsComponent implements OnInit, OnDestroy {
-
-  isActionInProgress: boolean = true;
 
   items!: MenuItem[];
 
@@ -89,9 +88,15 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy {
   loginStatus : Signal<boolean> = this.userStore.getUserLoginStatus();
   filteredServiceRequests : ServiceRequestItem[] = []
   isFirstTimeCalling : boolean = true;
+  loading: Signal<boolean> = this.appStore.getActionInProgress();
 
 
-  constructor(private router: Router, public layoutService: LayoutService) {
+
+  constructor(
+    private router: Router, 
+    public layoutService: LayoutService,
+    public dialog: MatDialog
+  ) {
     effect(()=>{
       // this.setFilterValues();
       if(this.loginStatus() && this.isFirstTimeCalling){
@@ -108,12 +113,12 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy {
   }
 
   getServiceRequests(){
-    this.isActionInProgress = true;
+    this.appStore.updateActionInProgress(true);
     this.subscriptions.push(this.ifenceService.getServiceRequests().subscribe((data: ServiceRequestItem[])=> {
           console.log(data);
           this.appStore.updateServiceRequests(data);
           this.appStore.updateFilteredServiceRequests("");
-          this.isActionInProgress = false;
+          this.appStore.updateActionInProgress(false);
         }));    
   }
 
@@ -125,7 +130,13 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy {
    * Handles the "Add Job Application" button click.
    */
   onAddServiceRequest(): void {
-
+    let dialogRef = this.dialog.open(ContactDialogComponent, {
+      width: '800px'
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      this.getServiceRequests();
+      console.log('The dialog was closed', result);
+    });
   }
 
   unselectFilter(){
@@ -144,5 +155,30 @@ export class DashboardRequestsComponent implements OnInit, OnDestroy {
     this.searchQuery.disable()
     console.log("Filter Request Type: " + this.filterRequestType.value?.name);
     this.appStore.updateFilteredServiceRequests(this.filterRequestType.value?.value)
+  }
+
+  onEditEventHandler($event : any){
+    let dialogRef = this.dialog.open(ContactDialogComponent, {
+      width: '800px',
+      data: {action: 'edit', serviceRequestItem : $event}
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      this.getServiceRequests();
+      console.log('The dialog was closed', result);
+    });
+  }
+
+  onDeleteEventHandler($event : any){
+    let dialogRef = this.dialog.open(ConfirmDialogComponent2, {
+      width: '400px',
+      data: {title: 'Delete Service Request?', message : `The service request with id ${$event.id} will be deleted.`}
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.ifenceService.deleteServiceRequest($event.id).subscribe(() => {
+          this.getServiceRequests();
+        });
+      }
+    });
   }
 }

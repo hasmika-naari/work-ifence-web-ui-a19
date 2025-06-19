@@ -16,7 +16,7 @@
                         [checkmark]="true" 
                         optionLabel="name" 
                         placeholder="Request Type"
-                        [disabled]="!isFilterOff || !isSearchOff || isActionInProgress"  />
+                        [disabled]="!isFilterOff || !isSearchOff || loading()"  />
                   </div>
                   <!-- <div class="flex justify-content-center">
                     <p-dropdown 
@@ -49,7 +49,7 @@
                   <input
                     type="text"
                     class="search-input"
-                    [disabled]="isActionInProgress"
+                    [disabled]="loading()"
                     placeholder="Search request by title"
                     [formControl]="searchQuery"
                   />
@@ -64,13 +64,15 @@
             </div>
         </div>
         <section>
-          <mat-progress-bar *ngIf="isActionInProgress" style="margin-bottom: 16px;" mode="indeterminate"></mat-progress-bar>
+          <mat-progress-bar *ngIf="loading()" style="margin-bottom: 16px;" mode="indeterminate"></mat-progress-bar>
          </section>
             <div class="sections">
               <div class="col-12 p-0 pb-100">
                   <request-list  
-                      [isActionInProgress]="isActionInProgress"
-                      (childEvent)="receiveFromChild($event)">
+                      [isActionInProgress]="loading()"
+                      (childEvent)="receiveFromChild($event)"
+                      (edit)="onEditEventHandler($event)"
+                      (delete)="onDeleteEventHandler($event)">
                   </request-list>
               </div>
             </div>
