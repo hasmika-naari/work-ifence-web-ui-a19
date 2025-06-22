@@ -306,6 +306,7 @@ export class LoginFormEditorComponent implements OnInit, OnDestroy {
       ulProfile.emailId = this.loginProfile().emailId;
       this.userStore.setPhoneInLoginProfile(form.phoneNumber);
       this.phoneNumberUpdateSuccess = true;
+      this.formSaved.emit()
       setTimeout(() => {
         this.phoneNumberUpdateSuccess = false;
       }, 1500);

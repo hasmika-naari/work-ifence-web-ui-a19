@@ -1,6 +1,6 @@
-<div class="container">
+<div class="container" cdkDropList [cdkDropListData]="sections" (cdkDropListDropped)="drop($event)" >
   @if(resumeForm().isSectionPresent?.isContact){
-    <header class="trigger-area resume-contact-us" >
+    <header class="trigger-area resume-contact-us">
       <div>
           <h1 class="profile-full-name" id="resumeName">{{resumeForm().contact.fname + ' ' + resumeForm().contact.lname}}</h1>
           @if(resumeForm().contact.subTitle.length > 0){
@@ -62,9 +62,9 @@
     }
     </header>
   }
-
+   <ng-container *ngFor="let section of sections" (cdkDragStarted)="dragStarted($event)">
     @if(resumeForm().profileSummary.profile_summary.length > 0 && resumeForm().isSectionPresent?.isSummary){
-      <section class="trigger-area resume-summary"  >
+      <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'SUMMARY'">
         <span class="summary-section-title">Summary
           @if(!isPreview){
             <div class="section-actions">
@@ -92,7 +92,7 @@
       </section>
     }
     @else if(resumeForm().isSectionPresent?.isSummary){
-      <section class="trigger-area resume-summary"  >
+      <section class="trigger-area resume-summary" cdkDrag *ngIf="section === 'SUMMARY'">
         <span class="summary-section-title">Summary
           @if(!isPreview){
             <div class="section-actions">
@@ -121,7 +121,7 @@
     }
 
     @if(resumeForm().education.length > 0 && resumeForm().isSectionPresent?.isEducation){
-      <section  class="trigger-area resume-education">
+      <section  class="trigger-area resume-education" cdkDrag *ngIf="section === 'EDUCATION'">
           <span class="summary-section-title">Education
             @if(!isPreview){
               <div class="section-actions">
@@ -235,7 +235,7 @@
       </section>
     }
     @else if(resumeForm().isSectionPresent?.isEducation){
-      <section  class="resume-education trigger-area">
+      <section  class="resume-education trigger-area" cdkDrag *ngIf="section === 'EDUCATION'">
           <span class="summary-section-title">Education
             @if(!isPreview){
               <div class="section-actions">
@@ -284,7 +284,7 @@
     }
 
     @if(resumeForm().isSectionPresent?.isCourseWork){
-      <section  class="trigger-area course-work">
+      <section  class="trigger-area course-work" cdkDrag *ngIf="section === 'RELEVANT_COURSEWORK'">
         <span class="summary-section-title">Relevant Coursework
           @if(!isPreview){
             <div class="section-actions">
@@ -333,7 +333,7 @@
     }
 
     @if(resumeForm().isSectionPresent?.isSkill){
-      <section  class="trigger-area course-work">
+      <section  class="trigger-area course-work" cdkDrag *ngIf="section === 'SKILLS'">
         <span class="summary-section-title">Skills
           @if(!isPreview){
             <div class="section-actions">
@@ -384,7 +384,7 @@
 
 
     @if(resumeForm().experience.length > 0 && resumeForm().isSectionPresent?.isExperience){
-      <section class="course-work section-details trigger-area">
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'EXPERIENCE'">
         <!-- <span class="template1-section-title"> -->
           <span class="summary-section-title">Experience
             @if(!isPreview){
@@ -477,7 +477,7 @@
       </section>
     }
     @else if(resumeForm().isSectionPresent?.isExperience){
-      <section class="course-work section-details trigger-area">
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'EXPERIENCE'">
           <span class="summary-section-title">Experience
             @if(!isPreview){
               <div class="section-actions">
@@ -514,7 +514,7 @@
     }
 
     @if(resumeForm().project.length > 0 && resumeForm().isSectionPresent?.isProject){
-      <section class="course-work section-details trigger-area">
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'PROJECTS'">
           <span class="summary-section-title">Projects
             @if(!isPreview){
               <div class="section-actions">
@@ -642,7 +642,7 @@
       </section>
     }
     @else if(resumeForm().isSectionPresent?.isProject){
-      <section class="course-work section-details trigger-area">
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'PROJECTS'">
           <span class="summary-section-title trigger-area">Projects
             @if(!isPreview){
               <div class="section-actions">
@@ -694,7 +694,7 @@
     }
 
     @if(resumeForm().certification.length > 0 && resumeForm().isSectionPresent?.isCertification){
-      <section class="course-work section-details trigger-area">
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS'">
         <!-- <span class="template1-section-title"> -->
           <span class="summary-section-title">Certifications
             @if(!isPreview){
@@ -785,7 +785,7 @@
       </section>
     }
     @else if(resumeForm().isSectionPresent?.isCertification){
-      <section class="course-work section-details trigger-area">
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS'">
           <span class="summary-section-title">Certifications
             @if(!isPreview){
               <div class="section-actions">
@@ -820,7 +820,7 @@
     }
 
     @if(!resumeForm().achievement.isDefault && resumeForm().isSectionPresent?.isAchievement){
-      <section  class="trigger-area course-work trigger-area">
+      <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS'">
         <span class="summary-section-title">Achievements
           @if(!isPreview){
             <div class="section-actions">
@@ -863,7 +863,7 @@
       </section>
     }
     @else if(resumeForm().isSectionPresent?.isAchievement){
-      <section  class="trigger-area course-work trigger-area">
+      <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS'">
         <span class="summary-section-title">Achievements
           @if(!isPreview){
             <div class="section-actions">
@@ -893,6 +893,7 @@
         </div>
       </section>
     }
+    </ng-container>
     <footer style="padding-top: 100px;padding-bottom:30px;">
         <div class="row">
             <div class="text-left">

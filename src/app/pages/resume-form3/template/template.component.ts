@@ -25,6 +25,7 @@ import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
+import { CdkDragDrop, CdkDragStart, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
 
 
@@ -37,7 +38,7 @@ import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
     MatFormFieldModule,InputTextModule, MatTooltipModule,
     MatInputModule,ButtonModule,ConfirmDialogComponent,
     MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule],
+    MatIconModule,MatExpansionModule, DragDropModule],
   templateUrl: './template.component.html',
   styleUrls: ['./template.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -56,7 +57,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   @Input() isPreview : boolean = false;
 
-  
+  sections = ['SUMMARY', 'EDUCATION', 'RELEVANT_COURSEWORK', 'SKILLS', 'EXPERIENCE', 'PROJECTS', 'CERTIFICATIONS', 'ACHIEVEMENTS']
 
   constructor(
       private _formBuilder: FormBuilder, 
@@ -369,6 +370,19 @@ removeSection(section : string){
       }
   })
 }
+
+sectionOrder = ['Profile Summary', 'Education', 'Course Work'];
+
+drop(event: CdkDragDrop<string[]>) {
+  moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
+  this.cdr.detectChanges();
+}
+
+dragStarted(event: CdkDragStart) {
+  const element = (event.source.element.nativeElement as HTMLElement);
+  element.parentElement?.style.setProperty('--drag-placeholder-height', `${element.offsetHeight}px`);
+}
+
 
   
 }

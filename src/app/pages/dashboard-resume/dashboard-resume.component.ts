@@ -226,7 +226,8 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
       this.subs.push(this.resumeService.getResumeListByOwnerId(
           this.userAccount().id).subscribe((data: ResumeListDataItem[])=> {
             console.log(data);
-          data.map(async (e : ResumeListDataItem)=>{
+            if(data.length>0){
+              data.map(async (e : ResumeListDataItem)=>{
           await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + e.documentUrl).then((bytes)=>{
               e.imageBytes = bytes;
               this.resumes = [...this.resumes, e]
@@ -244,6 +245,11 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
           this.userStore.setFilteredResumes([...this.resumes]);
           this.isActionInProgress = false;
           })
+            }
+          else{
+            this.isActionInProgress = false;
+          }
+          
           }));
         }
       else{
