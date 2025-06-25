@@ -57,7 +57,7 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
     private themeToggleSubscription: Subscription;
 
 
-    public dialogRef: MatDialogRef<ConfirmDialogComponent> = inject( MatDialogRef<ConfirmDialogComponent>);
+    public dialogRef: MatDialogRef<PreviewResumeComponent> = inject( MatDialogRef<PreviewResumeComponent>);
     public themeService: ThemeCustomizerService = inject(ThemeCustomizerService);
     public data: DialogData = inject(MAT_DIALOG_DATA);
 

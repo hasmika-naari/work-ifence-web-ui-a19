@@ -1,4 +1,4 @@
-import { ResumeTemplateDto } from "./store/user-store";
+import { ResumeTemplateDto, SectionDesc } from "./store/user-store";
 
 export class Education{
     id! : string
@@ -252,7 +252,7 @@ export class Education{
     }
   }
 
-  export class Other{
+  export class SkillsCategory{
     point : string;
     original_html_content : string;
     isDefault : boolean = true
@@ -284,7 +284,7 @@ export class Education{
     isCertification : boolean
     isAchievement : boolean
     isAccomplishments : boolean
-    isOther : boolean
+    isSkillsCategory : boolean
     constructor(){
       this.isContact = false
       this.isSummary = false
@@ -297,7 +297,7 @@ export class Education{
       this.isCertification = false
       this.isAchievement = false
       this.isAccomplishments = false
-      this.isOther = false
+      this.isSkillsCategory = false
     }
   }
 
@@ -346,7 +346,7 @@ export class Education{
     subTitle: string;
     contact : ResumeContact;
     profileSummary : ProfileSummary;
-    skill : Array<string>;
+    skill : Array<Skill>;
     skill_v2 : Array<SkillV2>;
     education : Array<Education>;
     project : Array<Project>;
@@ -354,7 +354,7 @@ export class Education{
     certification : Array<Certification>;
     achievement : Achievement;
     accomplishment : Array<Accomplishment>;
-    other : Other;
+    skillsCategory : SkillsCategory;
     courseWork : Array<string>;
     award : Array<Award>;
     language : Array<Language>;
@@ -364,6 +364,7 @@ export class Education{
     volunteer_experience : Array<Volunteer_Experience>;
     imageBase64Encoded : any
     isSectionPresent : IsSectionPresent;
+    sections : Array<SectionDesc>
 
     constructor(){
       this.title = '';
@@ -391,8 +392,9 @@ export class Education{
       this.professional_membership = []
       this.volunteer_experience = []
       this.accomplishment = []
-      this.isSectionPresent = {isContact : false, isSummary : false, isEducation : false, isCourseWork : false, isSkill : false,isSkillV2 : false, isProject : false, isExperience : false, isCertification : false, isAchievement : false, isOther : false, isAccomplishments : false},
-      this.other = {point : '', original_html_content : '', isDefault : true}
+      this.isSectionPresent = {isContact : false, isSummary : false, isEducation : false, isCourseWork : false, isSkill : false,isSkillV2 : false, isProject : false, isExperience : false, isCertification : false, isAchievement : false, isSkillsCategory : false, isAccomplishments : false},
+      this.skillsCategory = {point : '', original_html_content : '', isDefault : true}
+      this.sections = []
     }
   }
 

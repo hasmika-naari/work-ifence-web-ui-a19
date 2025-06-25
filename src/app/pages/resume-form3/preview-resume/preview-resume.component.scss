@@ -1,7 +1,7 @@
 .preview-resume-renderer-page {
     background-color: #fff;
     max-height: 100vh !important;
-    width: 940px;
+    width:940px
   }
 
   .preview-browser-resume-page {
@@ -15,6 +15,10 @@
     height: 10px !important;
     width: 60% !important;
     z-index: -1 !important;
+  }
+
+.cdk-overlay-pane.mat-mdc-dialog-panel{
+    max-width: none !important;
   }
   
   .preview-browser-resume-page:before {

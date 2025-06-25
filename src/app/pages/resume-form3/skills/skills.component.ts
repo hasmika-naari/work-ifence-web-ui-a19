@@ -92,6 +92,9 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
 
   @Input()
   skillsValue! : number
+
+  @Input()
+  sectionName : string = ''
   options: string[] = [];
   filteredOptions: Observable<string[]> | undefined;
   isSuffixVisible: boolean | string = false;
@@ -107,7 +110,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       public templateService : TemplatesService, 
       public dialog: MatDialog) {
         effect(()=>{
-          if(this.resumeSignalForm().template_details.template_name != "TEMPLATE_10"){
+          if(this.sectionName == "SKILLS"){
             this.setSkillsValues()
           }
           else{
@@ -119,6 +122,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     
   ngOnChanges(changes: SimpleChanges): void {
     this.setSkillsV2Values()
+
   }
 
 
@@ -140,7 +144,8 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
 
   skillsForm = this._formBuilder.group({
     skills: [''],
-    sub_title : ['']
+    sub_title : [''],
+    skillsv2 : ['']
   });
 
   subs: Array<Subscription> = [];
@@ -198,6 +203,8 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
 
   ngOnInit() {
     this.getAISkills();
+    console.log(this.sectionName);
+    this.skillsForm.controls['skillsv2'].disable();
     this.subs.push(this.router.events.subscribe(() => {
       const currentUrl = this.router.url;
       if (currentUrl.includes('/resumes/resume')) {
@@ -213,16 +220,12 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       map(value => this._filter(value || '')),
     );
 
-    if(this.resumeSignalForm().template_details.template_name == "TEMPLATE_10"){
-      this.skillsForm.controls['skills'].disable();
-    }
-
     this.skillsForm.controls['sub_title'].valueChanges.subscribe((e)=>{
       if(e){
-        this.skillsForm.controls['skills'].enable();
+        this.skillsForm.controls['skillsv2'].enable();
       }
       else{
-        this.skillsForm.controls['skills'].disable();
+        this.skillsForm.controls['skillsv2'].disable();
       }
     })
   }
@@ -297,8 +300,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   saveAndContinue(): void {
     this.markFormGroupTouched(this.skillsForm);
   
-    if (this.resumeSignalForm().template_details.template_name !== "TEMPLATE_10") {
-      // Add skills for non-TEMPLATE_10
+    if (this.sectionName == "SKILLS") {
       this.userStore.addSkill(this.fruits);
     } else {
       // Handle TEMPLATE_10
@@ -310,7 +312,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       });
   
       this.userStore.addSkillV2(this.skills_v2);
-      this.userStore.addSkill(skills);
+      // this.userStore.addSkill(skills);
     }
   
     // Reset form
@@ -379,6 +381,10 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     return this.skillsForm.controls['skills'].value?this.skillsForm.controls['skills'].value.length > 0 : false 
   }
 
+  isVisiblev2(){
+    return this.skillsForm.controls['skillsv2'].value?this.skillsForm.controls['skillsv2'].value.length > 0 : false 
+  }
+
   checkForOptions(event : any): void {
     this.isSuffixVisible = event.target.value && !this.options.some(option => option.toLowerCase() === event.target.value.toLowerCase());
   }
@@ -424,14 +430,14 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   }
 
   addSkillV2(){
-    if(this.skillsForm.controls['skills'].value){
+    if(this.skillsForm.controls['skillsv2'].value){
     let selected_skills = this.skills_v2.find(e => e.sub_title == this.skillsForm.controls['sub_title'].value)?.skills;
     let lowerSkills : string[]= []
     selected_skills?.map((e : string)=>{
       lowerSkills = [...lowerSkills, e.toLowerCase()]
     })
-    if (this.skillsForm.controls['skills'].value && !lowerSkills.includes(this.skillsForm.controls['skills'].value.toLowerCase())) {
-      selected_skills?.push(this.skillsForm.controls['skills'].value)
+    if (this.skillsForm.controls['skillsv2'].value && !lowerSkills.includes(this.skillsForm.controls['skillsv2'].value.toLowerCase())) {
+      selected_skills?.push(this.skillsForm.controls['skillsv2'].value)
     }
     let selected_skill_v2 = this.skills_v2.find(e=> e.sub_title == this.skillsForm.controls['sub_title'].value);
     if(selected_skill_v2 && selected_skills){
@@ -439,7 +445,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       let index = this.skills_v2.findIndex(obj => obj.sub_title === this.skillsForm.controls['sub_title'].value);
       this.skills_v2 = [...this.skills_v2.slice(0,index), selected_skill_v2, ...this.skills_v2.slice(index + 1,)]
     }
-    this.skillsForm.controls['skills'].setValue(null);
+    this.skillsForm.controls['skillsv2'].setValue(null);
     }
   }
 

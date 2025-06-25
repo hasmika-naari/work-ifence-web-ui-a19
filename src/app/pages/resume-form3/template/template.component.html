@@ -1,5 +1,4 @@
 <div class="container" cdkDropList [cdkDropListData]="sections" (cdkDropListDropped)="drop($event)" >
-  @if(resumeForm().isSectionPresent?.isContact){
     <header class="trigger-area resume-contact-us">
       <div>
           <h1 class="profile-full-name" id="resumeName">{{resumeForm().contact.fname + ' ' + resumeForm().contact.lname}}</h1>
@@ -36,7 +35,7 @@
               <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CONTACT')"></p-icon>
             </div>
             <div class="wif-tooltip__item">
-              Add Contact
+              Add contact
             </div>
           </div>
         }
@@ -46,25 +45,25 @@
               <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('CONTACT', null)"></p-icon>
             </div>
             <div class="wif-tooltip__item">
-              Edit Contact
+              Edit contact
             </div>
           </div>
         }
-        <div class="wif-tooltip" data-direction="bottom">
+        <!-- <div class="wif-tooltip" data-direction="bottom">
           <div class="wif-tooltip__initiator">
             <p-icon class="pi pi-times" title="" (click)="removeSection('CONTACT')"></p-icon>
           </div>
           <div class="wif-tooltip__item">
             Remove Contact
           </div>
-        </div>
+        </div> -->
       </div>
     }
     </header>
-  }
-   <ng-container *ngFor="let section of sections" (cdkDragStarted)="dragStarted($event)">
-    @if(resumeForm().profileSummary.profile_summary.length > 0 && resumeForm().isSectionPresent?.isSummary){
-      <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'SUMMARY'">
+
+   <ng-container *ngFor="let section of sections">
+    @if(resumeForm().profileSummary.profile_summary.length > 0){
+      <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
         <span class="summary-section-title">Summary
           @if(!isPreview){
             <div class="section-actions">
@@ -73,15 +72,15 @@
                    <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('SUMMARY', null)"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Edit Summary
+                  Edit summary
                 </div>
               </div>
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-times" title="" (click)="removeSection('SUMMARY')"></p-icon>
+                  <p-icon class="pi pi-times" title="" (click)="removeSection('PROFILE_SUMMARY')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Remove Summary
+                  Remove summary section
                 </div>
               </div>
             </div>
@@ -91,8 +90,8 @@
         </div>
       </section>
     }
-    @else if(resumeForm().isSectionPresent?.isSummary){
-      <section class="trigger-area resume-summary" cdkDrag *ngIf="section === 'SUMMARY'">
+    @else{
+      <section class="trigger-area resume-summary" cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
         <span class="summary-section-title">Summary
           @if(!isPreview){
             <div class="section-actions">
@@ -101,15 +100,15 @@
                   <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('SUMMARY')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Add Summary
+                  Add summary
                 </div>
               </div>
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-times" title="" (click)="removeSection('SUMMARY')"></p-icon>
+                  <p-icon class="pi pi-times" title="" (click)="removeSection('PROFILE_SUMMARY')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Remove Summary
+                  Remove summary section
                 </div>
               </div>
             </div>
@@ -120,7 +119,7 @@
       </section>
     }
 
-    @if(resumeForm().education.length > 0 && resumeForm().isSectionPresent?.isEducation){
+    @if(resumeForm().education.length > 0){
       <section  class="trigger-area resume-education" cdkDrag *ngIf="section === 'EDUCATION'">
           <span class="summary-section-title">Education
             @if(!isPreview){
@@ -130,7 +129,7 @@
                     <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Education
+                    Add education
                   </div>
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
@@ -138,7 +137,7 @@
                     <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Remove Education
+                    Remove education section
                   </div>
                 </div>
             </div>
@@ -181,7 +180,7 @@
                       <p-icon class="pi pi-pencil icon" title="" (click)="editSectionHandler('EDUCATION', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Edit Education
+                      Edit education
                     </div>
                   </div>
                   @if(!item.isHideSelected){
@@ -190,7 +189,7 @@
                         <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('EDUCATION', item)"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
-                        Hide Education
+                        Hide education
                       </div>
                     </div>
                   }
@@ -200,7 +199,7 @@
                         <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('EDUCATION', item)"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
-                        Show Education
+                        Show education
                       </div>
                     </div>
                   }
@@ -209,7 +208,7 @@
                       <p-icon class="pi pi-angle-up icon" title="" (click)="moveObjectById('EDUCATION', item.id, 'up')"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Move Up
+                      Move up
                     </div>
                   </div>
                   <div class="wif-tooltip" data-direction="bottom">
@@ -217,7 +216,7 @@
                       <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('EDUCATION', item.id, 'down')"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Move Down
+                      Move down
                     </div>
                   </div>
                   <div class="wif-tooltip" data-direction="bottom">
@@ -225,7 +224,7 @@
                       <p-icon class="pi pi-times icon" title="" (click)="confirmDeleteItemDialog('EDUCATION', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Remove Education
+                      Remove education
                     </div>
                   </div>
                 </div>
@@ -234,7 +233,7 @@
         </div>
       </section>
     }
-    @else if(resumeForm().isSectionPresent?.isEducation){
+    @else{
       <section  class="resume-education trigger-area" cdkDrag *ngIf="section === 'EDUCATION'">
           <span class="summary-section-title">Education
             @if(!isPreview){
@@ -244,7 +243,7 @@
                     <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Education
+                    Add education
                   </div>
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
@@ -252,7 +251,7 @@
                     <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Remove Education
+                    Remove education section
                   </div>
                 </div>
           </div>
@@ -283,7 +282,6 @@
       </section>
     }
 
-    @if(resumeForm().isSectionPresent?.isCourseWork){
       <section  class="trigger-area course-work" cdkDrag *ngIf="section === 'RELEVANT_COURSEWORK'">
         <span class="summary-section-title">Relevant Coursework
           @if(!isPreview){
@@ -294,7 +292,7 @@
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('COURSEWORK')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Course Work
+                    Add course Work
                   </div>
                 </div>
               }
@@ -304,16 +302,16 @@
                     <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('COURSEWORK', null)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Edit Course Work
+                    Edit course Work
                   </div>
                 </div>
                   }
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('COURSEWORK')"></p-icon>
+                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('RELEVANT_COURSEWORK')"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Remove Course Work
+                      Remove course work section
                     </div>
                   </div>
                 </div>
@@ -330,10 +328,7 @@
           }
         </div>
       </section>
-    }
-
-    @if(resumeForm().isSectionPresent?.isSkill){
-      <section  class="trigger-area course-work" cdkDrag *ngIf="section === 'SKILLS'">
+      <section  class="trigger-area course-work" cdkDrag *ngIf="section === 'SKILLS_BULLET_POINTS'">
         <span class="summary-section-title">Skills
           @if(!isPreview){
             <div class="section-actions">
@@ -343,7 +338,7 @@
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Skills
+                    Add skills
                   </div>
                 </div>
               }
@@ -353,16 +348,16 @@
                     <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS', null)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Edit Skills
+                    Edit skills
                   </div>
                 </div>
               }
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS')"></p-icon>
+                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_BULLET_POINTS')"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Remove Skills
+                      Remove skills section
                     </div>
                   </div>
                 </div>
@@ -374,17 +369,84 @@
           }
           @else{
             <ul class="course-work-list">
-                <li class="course-work-lisit-item" *ngFor="let item of resumeForm().skill">{{item}}</li>
+                <li class="course-work-lisit-item" *ngFor="let item of resumeForm().skill">{{item.name}}</li>
             </ul>
           }
        
         </div>
       </section>
-    }
+
+      <section  class="trigger-area course-work" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
+        <span class="summary-section-title">Skills
+          @if(!isPreview){
+            <div class="section-actions">
+              @if(resumeForm().skill_v2.length == 0){
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Add skills category
+                  </div>
+                </div>
+              }
+              @else{
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_CATEGORY', null)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Edit skills category
+                  </div>
+                </div>
+              }
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_CATEGORY')"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Remove skills category section
+                    </div>
+                  </div>
+                </div>
+              }
+        </span>
+        <div  class="course-work-section-content">
+          @if(resumeForm().skill_v2.length == 0){
+            <div class="skills-content opacity-half">
+                <ul class="skill-category">
+                    <li><span>Programming:</span> Python, SQL, Java, JavaScript</li>
+                    <li><span>Data Analysis:</span> Advanced Excel, SPSS, Pandas, NumPy, Matplotlib, Seaborn, Data Wrangling</li>
+                    <li><span>Visualization:</span> Microsoft Power BI, Tableau Desktop, Tableau Prep, D3.JS, Splunk</li>
+                </ul>
+                <ul class="skill-category">
+                    <li><span>Machine Learning:</span> Scikit-learn</li>
+                    <li><span>Web:</span> Django, Flask, Spring Boot, React, Angular</li>
+                    <li><span>Soft Skills:</span> Collaboration, Adaptability, Communication, Teamwork, Problem-Solving, Analytical Thinking</li>
+                </ul>
+            </div>
+          }
+          @else{
+           <div class="skills-content">
+            <ul class="skill-category">
+                @for(item of firstHalfSkills; track item){
+                    <li><span>{{item.sub_title}}:</span> {{formatSkills(item.skills)}}</li>
+                }
+            </ul>
+            <ul class="skill-category">
+                @for(item of secondHalfSkills; track item){
+                  <li><span>{{item.sub_title}}:</span> {{formatSkills(item.skills)}}</li>
+                }
+            </ul>
+        </div>
+          }
+       
+        </div>
+      </section>
 
 
-    @if(resumeForm().experience.length > 0 && resumeForm().isSectionPresent?.isExperience){
-      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'EXPERIENCE'">
+    @if(resumeForm().experience.length > 0){
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
         <!-- <span class="template1-section-title"> -->
           <span class="summary-section-title">Experience
             @if(!isPreview){
@@ -394,15 +456,15 @@
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('EXPERIENCE')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Experience
+                    Add experience
                   </div>
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('EXPERIENCE')"></p-icon>
+                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('WORK_EXPERIENCE')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Remove Experience
+                    Remove experience section
                   </div>
                 </div>
           </div>
@@ -411,7 +473,7 @@
           <div class="course-work-section-content template1-section-content trigger-area" *ngFor="let item of resumeForm().experience">
             <div *ngIf="!isPreview || !item.isHideSelected" >
               <div style="display: flex;justify-content: space-between;" [class]="getDivClass(item)">
-                  <p style="flex: 1;text-align: left;margin: 0;"><b>{{item.position_title}}</b><span>, {{item.company_name}}</span></p><span style="flex: 1;text-align: right;">{{item.start_date}} - {{item.end_date}}</span></div>
+                  <p style="flex: 1;text-align: left;margin: 0;font-size: 14px;"><b>{{item.position_title}}</b><span>, {{item.company_name}}</span></p><span style="flex: 1;text-align: right;font-size: 14px;">{{item.start_date}} - {{item.end_date}}</span></div>
               <div class="project-content-container">
                 <div [innerHTML]="item.description" class="project-content" [class]="getDivClass(item)">
                 </div>
@@ -422,7 +484,7 @@
                         <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('EXPERIENCE', item)"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
-                        Edit Experience
+                        Edit experience
                       </div>
                     </div>
                     @if(!item.isHideSelected){
@@ -431,7 +493,7 @@
                           <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('EXPERIENCE', item)"></p-icon>
                         </div>
                         <div class="wif-tooltip__item">
-                          Hide Experience
+                          Hide experience
                         </div>
                       </div>
                     }
@@ -441,7 +503,7 @@
                           <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('EXPERIENCE', item)"></p-icon>
                         </div>
                         <div class="wif-tooltip__item">
-                          Show Experience
+                          Show experience
                         </div>
                       </div>
                     }
@@ -450,7 +512,7 @@
                         <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('EXPERIENCE', item.id, 'up')"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
-                        Move Up
+                        Move up
                       </div>
                     </div>
                     <div class="wif-tooltip" data-direction="bottom">
@@ -458,7 +520,7 @@
                         <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('EXPERIENCE', item.id, 'down')"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
-                        Move Down
+                        Move down
                       </div>
                     </div>
                     <div class="wif-tooltip" data-direction="bottom">
@@ -466,7 +528,7 @@
                         <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('EXPERIENCE', item)"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
-                        Remove Experience
+                        Remove experience
                       </div>
                     </div>
                   </div>
@@ -476,8 +538,8 @@
         </div>
       </section>
     }
-    @else if(resumeForm().isSectionPresent?.isExperience){
-      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'EXPERIENCE'">
+    @else{
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
           <span class="summary-section-title">Experience
             @if(!isPreview){
               <div class="section-actions">
@@ -486,15 +548,15 @@
                     <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EXPERIENCE')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Experience
+                    Add experience
                   </div>
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times" title="" (click)="removeSection('EXPERIENCE')"></p-icon>
+                    <p-icon class="pi pi-times" title="" (click)="removeSection('WORK_EXPERIENCE')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Remove Experience
+                    Remove experience section
                   </div>
                 </div>
           </div>
@@ -513,8 +575,8 @@
       </section>
     }
 
-    @if(resumeForm().project.length > 0 && resumeForm().isSectionPresent?.isProject){
-      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'PROJECTS'">
+    @if(resumeForm().project.length > 0){
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
           <span class="summary-section-title">Projects
             @if(!isPreview){
               <div class="section-actions">
@@ -523,7 +585,7 @@
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Project
+                    Add project
                   </div>
               </div>
           
@@ -532,7 +594,7 @@
                   <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Remove Project
+                  Remove project section
                 </div>
             </div>
           </div>
@@ -566,7 +628,7 @@
                       <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('PROJECT', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Edit Project
+                      Edit project
                     </div>
                 </div>
                   
@@ -576,7 +638,7 @@
                           <p-icon class="pi pi-eye icon" title="Show" (click)="hideSectionElement('PROJECT', item)"></p-icon>
                         </div>
                         <div class="wif-tooltip__item">
-                          Hide Project
+                          Hide project
                         </div>
                     </div>
                     
@@ -587,7 +649,7 @@
                         <p-icon class="pi pi-eye-slash icon" title="Hide" (click)="unHideSectionElement('PROJECT', item)"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
-                        Show Project
+                        Show project
                       </div>
                   </div>
                     
@@ -598,7 +660,7 @@
                       <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('PROJECT', item.id, 'up')"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Move Up
+                      Move up
                     </div>
                 </div>
 
@@ -607,7 +669,7 @@
                     <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('PROJECT', item.id, 'down')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Move Down
+                    Move down
                   </div>
               </div>
 
@@ -616,7 +678,7 @@
                   <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('PROJECT', item)"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Remove Project
+                  Remove project
                 </div>
             </div>
                  
@@ -641,8 +703,8 @@
         </div>
       </section>
     }
-    @else if(resumeForm().isSectionPresent?.isProject){
-      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'PROJECTS'">
+    @else{
+      <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
           <span class="summary-section-title trigger-area">Projects
             @if(!isPreview){
               <div class="section-actions">
@@ -651,7 +713,7 @@
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Project
+                    Add project
                   </div>
               </div>
           
@@ -660,7 +722,7 @@
                   <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Remove Project
+                  Remove project section
                 </div>
             </div>
           </div>
@@ -693,7 +755,7 @@
       </section>
     }
 
-    @if(resumeForm().certification.length > 0 && resumeForm().isSectionPresent?.isCertification){
+    @if(resumeForm().certification.length > 0){
       <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS'">
         <!-- <span class="template1-section-title"> -->
           <span class="summary-section-title">Certifications
@@ -704,15 +766,15 @@
                     <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CERTIFICATION')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Certification 
+                    Add certification 
                   </div>
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times" title="" (click)="removeSection('CERTIFICATION')"></p-icon>
+                    <p-icon class="pi pi-times" title="" (click)="removeSection('CERTIFICATIONS')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Delete Certification 
+                    Remove certification section
                   </div>
                 </div>
           </div>
@@ -731,7 +793,7 @@
                     <p-icon class="pi pi-pencil icon" title="" (click)="editSectionHandler('CERTIFICATION', item)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Edit Certification 
+                    Edit certification 
                   </div>
                 </div>
                 @if(!item.isHideSelected){
@@ -740,7 +802,7 @@
                       <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('CERTIFICATION', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Hide Certification 
+                      Hide certification 
                     </div>
                   </div>
                 }
@@ -750,7 +812,7 @@
                       <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('CERTIFICATION', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Show Certification 
+                      Show certification 
                     </div>
                   </div>
                 }
@@ -759,7 +821,7 @@
                     <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('CERTIFICATION', item.id, 'up')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Move Up 
+                    Move up 
                   </div>
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
@@ -767,7 +829,7 @@
                     <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('CERTIFICATION', item.id, 'down')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Move Down 
+                    Move down 
                   </div>
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
@@ -775,7 +837,7 @@
                     <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('CERTIFICATION', item)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Remove Certification 
+                    Remove certification 
                   </div>
                 </div>
               </div>
@@ -784,7 +846,7 @@
         </div>
       </section>
     }
-    @else if(resumeForm().isSectionPresent?.isCertification){
+    @else{
       <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS'">
           <span class="summary-section-title">Certifications
             @if(!isPreview){
@@ -794,15 +856,15 @@
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATION')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Certification 
+                    Add certification 
                   </div>
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATION')"></p-icon>
+                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Remove Certification 
+                    Remove certification section
                   </div>
                 </div>
           </div>
@@ -819,8 +881,8 @@
       </section>
     }
 
-    @if(!resumeForm().achievement.isDefault && resumeForm().isSectionPresent?.isAchievement){
-      <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS'">
+    @if(!resumeForm().achievement.isDefault){
+      <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
         <span class="summary-section-title">Achievements
           @if(!isPreview){
             <div class="section-actions">
@@ -830,7 +892,7 @@
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add Achievements 
+                    Add achievement
                   </div>
                 </div>
               }
@@ -840,16 +902,16 @@
                     <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS', null)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Edit Achievements 
+                    Edit achievement
                   </div>
                 </div>
               }
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS')"></p-icon>
+                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Delete Achievements 
+                  Remove achievement section
                 </div>
               </div>
         </div>
@@ -862,8 +924,8 @@
         </div>
       </section>
     }
-    @else if(resumeForm().isSectionPresent?.isAchievement){
-      <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS'">
+    @else{
+      <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
         <span class="summary-section-title">Achievements
           @if(!isPreview){
             <div class="section-actions">
@@ -872,15 +934,15 @@
                   <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Add Achievements 
+                  Add achievement
                 </div>
               </div>
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS')"></p-icon>
+                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
-                  Remove Achievements 
+                  Remove achievement section
                 </div>
               </div>
         </div>

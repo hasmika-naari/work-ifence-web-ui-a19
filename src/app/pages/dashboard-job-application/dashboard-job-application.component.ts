@@ -383,13 +383,14 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
                   this.not_chosen_applications = [...this.not_chosen_applications , jobApplication];
               }
               jobApplications = [...jobApplications, jobApplication];
-              let locationExists = this.locations.some(location => location.name.includes(application.jobApplication.companySize));
+              let locationExists = this.locations.some(location => location.name.trim().toLowerCase() === application.jobApplication.companySize.trim().toLowerCase());
               
               if (!locationExists && application.jobApplication.companySize.length>0) {
                 this.locations = [...this.locations , { name: application.jobApplication.companySize, code: '' }];
                 this.locationsFull = [...this.locations];
                 // this.locations = [];
               }
+              console.log("Location: ", application.jobApplication.companySize, "LocationExist: ", locationExists, "LocationsList: ", this.locations);
               // let jobTitleExists = this.jobTitles.some(title => title.name.includes(application.jobApplication.jobRole));
               // if (!jobTitleExists && application.jobApplication.jobRole.length > 0) {
               //   this.jobTitles = [...this.jobTitles , { name: application.jobApplication.jobRole, code: '' }];
@@ -401,15 +402,20 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
               }
               this.jobTitlesFull = [...this.jobTitles];
 
-              let companyExists = this.companies.some(company => company.name.includes(application.jobApplication.companyName));
+              console.log("Job Title: ", application.jobApplication.jobRole, "JobTitleExist: ", jobTitleExists, "JobTitleList: ", this.jobTitles);
+
+
+              let companyExists = this.companies.some(company => company.name.trim().toLowerCase() === application.jobApplication.companyName.trim().toLowerCase());
                 
               if (!companyExists && application.jobApplication.companyName.length >0) {
                 this.companies = [...this.companies , { name: application.jobApplication.companyName, code: '' }];
                 this.companiesFull = [...this.companies];
               }
+              console.log("Company: ", application.jobApplication.companyName, "CompanyExist: ", companyExists, "CompaniesList: ", this.companies);
           })
           this.userStore.addJobApplicationList(jobApplications);
           this.isActionInProgress = false;
+          this.cdr.detectChanges()
           // alert('Stopped progressbar' + this.isActionInProgress);
       }, (error: any) => {
           debugger;
@@ -718,7 +724,7 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
       else if(application.job_application_details.status == "Rejected" || application.job_application_details.status == "Offer Declined" || application.job_application_details.status == "Withdrawn by Applicant" || application.job_application_details.status == "Position Closed"){
           this.not_chosen_applications = [...this.not_chosen_applications , application];
       }
-      let locationExists = this.locations.some(location => location.name.includes(application.job_application_details.location));
+      let locationExists = this.locations.some(location => location.name.trim().toLowerCase() === application.job_application_details.location.trim().toLowerCase());
       if (!locationExists && application.job_application_details.location.length > 0) {
         this.locations = [...this.locations , { name: application.job_application_details.location, code: '' }];
       }
@@ -726,7 +732,7 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
       if (!jobTitleExists && application.job_application_details.job_role.length > 0) {
         this.jobTitles = [...this.jobTitles , { name: application.job_application_details.job_role, code: '' }];
       }
-      let companyExists = this.companies.some(company => company.name.includes(application.job_application_details.company_name));
+      let companyExists = this.companies.some(company => company.name.trim().toLowerCase() === application.job_application_details.company_name.trim().toLowerCase());
       if (!companyExists && application.job_application_details.company_name.length>0) {
         this.companies = [...this.companies , { name: application.job_application_details.company_name, code: '' }];
       }

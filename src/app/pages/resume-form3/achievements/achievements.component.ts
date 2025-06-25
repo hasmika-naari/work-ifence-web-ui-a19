@@ -22,7 +22,7 @@ import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.compone
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Achievement, Education, IsSectionPresent, Other, Resume, TemplateVariables } from 'src/app/services/resume.model';
+import { Achievement, Education, IsSectionPresent, SkillsCategory, Resume, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -219,8 +219,8 @@ export class AchievementsComponent implements OnInit, OnDestroy {
           if(this.sectionName == 'ACHIEVEMENT'){
             this.setAchievements()
           }
-          else if(this.sectionName == 'OTHER'){
-            this.setOther()
+          else if(this.sectionName == 'SKILLS_CATEGORY'){
+            this.setSkillsCategory()
           }
         })
 
@@ -477,9 +477,9 @@ setAchievements(){
   }
 }
 
-setOther(){
+setSkillsCategory(){
   if(this.editor?.clipboard){
-    this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().other.original_html_content);
+    this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().skillsCategory.original_html_content);
   }
 }
 
@@ -591,26 +591,26 @@ private _filterSkills(title : string): any[]{
       this.userStore.updateSectionStatus(status);
     }
     }
-    else if(this.sectionName == 'OTHER'){
-      let other = new Other();
+    else if(this.sectionName == 'SKILLS_CATEGORY'){
+      let skillsCategory = new SkillsCategory();
     if(des.includes('data-list="bullet"')){
       const correctedHTML = des.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
-      other.point = correctedHTML.length>0? correctedHTML : "";
+      skillsCategory.point = correctedHTML.length>0? correctedHTML : "";
     }
     else{
-      other.point = des.length>0? des : "";
+      skillsCategory.point = des.length>0? des : "";
     }
-    other.original_html_content = des;
+    skillsCategory.original_html_content = des;
     if(des.length > 0){
-      other.isDefault = false
+      skillsCategory.isDefault = false
     }
     else{
-      other.isDefault = true
+      skillsCategory.isDefault = true
     }
-    this.userStore.addOther(other);
-    if(!this.sectionStatus().isOther){
+    this.userStore.addSkillsCategory(skillsCategory);
+    if(!this.sectionStatus().isSkillsCategory){
       let status = this.sectionStatus()
-      status.isOther = true;
+      status.isSkillsCategory = true;
       this.userStore.updateSectionStatus(status);
     }
     }
@@ -1277,7 +1277,7 @@ private _filterSkills(title : string): any[]{
       const Quill = (await import('quill')).default; // Dynamically import Quill
       this.editor = new Quill(this.editorContainer.nativeElement, {
         theme: 'snow',
-        placeholder: this.sectionName == 'ACHIEVEMENT'?'Achievements' : 'Certifications', // Set placeholder text
+        placeholder: this.sectionName == 'ACHIEVEMENT'?'Achievements' : 'Skills', // Set placeholder text
         modules: {
           toolbar: [
             ['bold', 'italic', 'underline'], // Text formatting
@@ -1303,8 +1303,8 @@ private _filterSkills(title : string): any[]{
     if(this.sectionName == 'ACHIEVEMENT'){
       this.setAchievements()
     }
-    else if(this.sectionName == 'OTHER'){
-      this.setOther()
+    else if(this.sectionName == 'SKILLS_CATEGORY'){
+      this.setSkillsCategory()
     }
 
   }

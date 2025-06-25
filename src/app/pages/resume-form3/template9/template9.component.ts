@@ -18,7 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Achievement, Certification, Education, Experience, IsSectionPresent, Other, ProfileSummary, Project, Resume, ResumeContact } from 'src/app/services/resume.model';
+import { Achievement, Certification, Education, Experience, IsSectionPresent, SkillsCategory, ProfileSummary, Project, Resume, ResumeContact } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -79,7 +79,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       isSection.isSkill = true;
       isSection.isProject = true;
       isSection.isExperience =true;
-      isSection.isOther= true;
+      isSection.isSkillsCategory= true;
       isSection.isAchievement = true;
       this.userStore.updateSectionStatus(isSection);
       }
@@ -92,7 +92,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       isSection.isSkill = true;
       isSection.isProject = true;
       isSection.isExperience =true;
-      isSection.isOther= true;
+      isSection.isSkillsCategory= true;
       isSection.isAchievement = true;
       this.userStore.updateSectionStatus(isSection);
       }
@@ -371,9 +371,9 @@ removeSection(section : string){
           resume.experience = []
           status.isExperience = false;
         }
-        else if(section === "OTHER"){
-          resume.other = new Other();
-          status.isOther = false
+        else if(section === "SkillsCategory"){
+          resume.skillsCategory = new SkillsCategory();
+          status.isSkillsCategory = false
         }
         else if(section === "ACHIEVEMENTS"){
           resume.achievement = new Achievement()

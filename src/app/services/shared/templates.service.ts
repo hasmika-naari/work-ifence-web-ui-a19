@@ -1,5 +1,5 @@
 import { Injectable, Signal, inject } from '@angular/core';
-import { Accomplishment, achievement, Award, Certification, Education, Experience, Language, Project, Resume, SkillV2, TemplateVariables } from '../resume.model';
+import { Accomplishment, achievement, Award, Certification, Education, Experience, Language, Project, Resume, Skill, SkillV2, TemplateVariables } from '../resume.model';
 import { UserStoreService } from '../store/user-store.service';
 
 @Injectable({
@@ -712,7 +712,7 @@ export class TemplatesService {
         
         
       
-    //       <!-- Other sections will be added here -->
+    //       <!-- SkillsCategory sections will be added here -->
       
     //     </div>
     //   </body>
@@ -742,6 +742,12 @@ export class TemplatesService {
   public formatListItems(items : String[]) : string {
     return items.map((item : String)=> `
     <li style="margin: 5px 0; font-size: 12px">${item}</li>
+    `).join('');
+  }
+
+    public formatSkillListItems(items : Skill[]) : string {
+    return items.map((item : Skill)=> `
+    <li style="margin: 5px 0; font-size: 12px">${item.name}</li>
     `).join('');
   }
 
@@ -1122,9 +1128,16 @@ a{
     `).join('');
   }
 
-  public formatDefaultSkill(items : string[]) : string{
-    return items.map((item : string)=> `
-    ${item != ''?`<li class="skills-list-item">${item}</li>`:''}
+    public formatDefaultSKillWork(items : Skill[]) : string{
+    return items.map((item : Skill)=> `
+    ${item.name != ''?`<li class="course-work-lisit-item">${item.name}</li>`:''}
+    `).join('');
+  }
+
+
+  public formatDefaultSkill(items : Skill[]) : string{
+    return items.map((item : Skill)=> `
+    ${item.name != ''?`<li class="skills-list-item">${item.name}</li>`:''}
     `).join('');
   }
 
@@ -1472,7 +1485,7 @@ a{
         <span class="skills-section-title">Technical Skills</span>
          <div  class="course-work-section-content">
           <ul  class="course-work-list" style="padding-left:18px">
-            ${this.formatDefaultCourseWork(resumeForm.skill)}
+            ${this.formatDefaultSKillWork(resumeForm.skill)}
           </ul>
          
         </div>
@@ -1722,7 +1735,7 @@ list-style-type: disc;
             <h2 style="margin:0px;padding:0px">Skills</h2>
            <div  class="course-work-section-content" style="margin:0px;padding:0px">
               <ul  class="course-work-list" style="color:black !important; padding-left:17px;margin:0px;padding:0px">
-                ${this.formatDefaultCourseWork(resume.skill)}
+                ${this.formatDefaultSKillWork(resume.skill)}
               </ul>
             
             </div>
@@ -2016,7 +2029,7 @@ list-style-type: disc;
             <h2>Skills</h2>
             <div  class="course-work-section-content">
               <ul  class="course-work-list" style="color:black !important;padding-left: 18px;">
-                ${this.formatDefaultCourseWork(resume.skill)}
+                ${this.formatDefaultSKillWork(resume.skill)}
               </ul>
             </div>
         </div>
@@ -2327,7 +2340,7 @@ list-style-type: disc;
             <h2>Skills</h2>
             <div  class="course-work-section-content">
               <ul  class="course-work-list" style="color:black !important;padding-left: 18px;">
-                ${this.formatDefaultCourseWork(resume.skill)}
+                ${this.formatDefaultSKillWork(resume.skill)}
               </ul>
             </div>
         </div>
@@ -2725,7 +2738,7 @@ list-style-type: disc;
                 <div style="width: 82%;margin: 0;padding: 0;height: fit-content;">
                     <div class="skills-bullets">
                         <ul style="list-style-type: none;padding: 0;margin: 0;">
-                            ${this.formatListItems(resume.skill)}
+                            ${this.formatSkillListItems(resume.skill)}
                         </ul>
                     </div>
                 </div>
@@ -2899,7 +2912,7 @@ ul {
         <h2 class="section-header">Skills</h2>
          <div  class="course-work-section-content">
               <ul  class="course-work-list" style="color:black !important;padding-left: 23px;">
-                ${this.formatDefaultCourseWork(resume.skill)}
+                ${this.formatDefaultSKillWork(resume.skill)}
               </ul>
             </div>
     </section>
@@ -3013,7 +3026,7 @@ ul {
         <h2 style="margin:0px; margin-bottom:12px;">Skills</h2>
         <div  class="course-work-section-content">
               <ul  class="course-work-list" style="padding-left: 20px;color:#333">
-                ${this.formatDefaultCourseWork(resume.skill)}
+                ${this.formatDefaultSKillWork(resume.skill)}
               </ul>
             </div>
     </section>
@@ -3170,7 +3183,7 @@ ul {
         <div class="section-title" style="font-weight : 500 !important">Technical Skills</div>
        <div  class="course-work-section-content">
               <ul  class="course-work-list" style="color:black !important;padding-left: 40px;">
-                ${this.formatDefaultCourseWork(resume.skill)}
+                ${this.formatDefaultSKillWork(resume.skill)}
               </ul>
             </div>
     </div>
@@ -3225,6 +3238,8 @@ ul {
 
 
   getTemplate1HTMLV1(resumeForm : Resume){
+    let firstHalfSkills = [...resumeForm.skill_v2.slice(0, Math.ceil(resumeForm.skill_v2.length/2))]
+    let secondHalfSkills = [...resumeForm.skill_v2.slice(Math.ceil(resumeForm.skill_v2.length/2),)]
     console.log(resumeForm);
     return `
     <!DOCTYPE html>
@@ -3270,6 +3285,28 @@ ul {
             justify-content: left;
             flex-wrap: wrap;
           }
+
+          .skills-content {
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 20px;
+            row-gap: 10px;
+            margin-left: 12px;
+        }
+         .skill-category span {
+            font-weight: bold;
+        }
+
+        .skill-category {
+            flex: 1 1 calc(50% - 20px); /* Two columns */
+            list-style-type: disc;
+            margin: 0;
+            padding: 0;
+        }
+        .skill-category li {
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
 
           .contact-li{
                 white-space: pre-wrap;
@@ -3622,12 +3659,28 @@ ul {
           <span class="summary-section-title">Skills</span>
           <div  class="course-work-section-content project-content" style="margin-top:7px;">
               <ul class="course-work-list">
-                ${this.formatHTMLTemplate1CourseWorkV1(resumeForm.skill)}
+                ${this.formatHTMLTemplate1SkillWorkV1(resumeForm.skill)}
               </ul>
           </div>
         </section>
         ` : ''
       }
+
+      ${resumeForm.skill_v2.length > 0 && resumeForm.isSectionPresent?.isSkillV2?
+          `
+        <section  class="trigger-area course-work">
+            <div class="section-title">Skills</div>
+            <div class="skills-content">
+                <ul class="skill-category">
+                ${this.formatSkillsTemplate10(firstHalfSkills)}
+                </ul>
+                <ul class="skill-category">
+                    ${this.formatSkillsTemplate10(secondHalfSkills)}
+                </ul>
+            </div>
+        </section>
+        ` : ''
+        }
 
       ${(resumeForm.experience.length > 0 && resumeForm.isSectionPresent.isExperience)?
         `
@@ -3734,7 +3787,18 @@ ul {
   }
 
 
-  public formatHTMLTemplate1CourseWorkV1(items : string[]) : string{
+  public formatHTMLTemplate1SkillWorkV1(items : Skill[]) : string{
+    return items.map((item : Skill)=> 
+    `
+    ${items.length > 0 ?
+        `
+    <li class="course-work-lisit-item" style="margin:0;padding:0;">${item.name}</li>
+    ` : ''
+    }
+    `).join('');
+  }
+
+    public formatHTMLTemplate1CourseWorkV1(items : string[]) : string{
     return items.map((item : string)=> 
     `
     ${item.length > 0 ?
@@ -4159,7 +4223,7 @@ ul {
                 <section class="skills">
                     <h2 class="skills-h2">Skills</h2>
                     <div class="skill-items">
-                        ${this.formatHTMLTemplate9CourseWork(resumeForm.skill)}
+                        ${this.formatHTMLTemplate9SkillWork(resumeForm.skill)}
                     </div>
                 </section>
                 ` : ''
@@ -4174,12 +4238,12 @@ ul {
                 ` : ''
                 }
 
-                ${(resumeForm.other.point.length > 0 && resumeForm.isSectionPresent?.isOther)?
+                ${(resumeForm.skillsCategory.point.length > 0 && resumeForm.isSectionPresent?.isSkillsCategory)?
                 `
                 <section class="skills">
                     <h2 class="skills-h2">Certifications</h2>
                     <div class="project-content">
-                    ${resumeForm.other.point}
+                    ${resumeForm.skillsCategory.point}
                     </div>
                 </section>
                 ` : ''
@@ -4235,6 +4299,15 @@ public formatHTMLTemplate9Project(items : Project[]) : string{
     `).join('');
 }
 
+
+public formatHTMLTemplate9SkillWork(items : Skill[]) : string{
+    return items.map((item : Skill)=> 
+    `
+    <div class="skill-item">
+        ${item.name}
+    </div>
+    `).join('');
+}
 
 public formatHTMLTemplate9CourseWork(items : string[]) : string{
     return items.map((item : string)=> 

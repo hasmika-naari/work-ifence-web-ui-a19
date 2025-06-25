@@ -1,5 +1,5 @@
 
-@if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
+@if(sectionName == "SKILLS"){
 <div class="row h-100 pl-5 pr-5" style="overflow-y:auto;padding-bottom:50px;overflow-x: hidden;">
     <div class="col-12"  >
         <form [formGroup]="skillsForm" >
@@ -17,7 +17,7 @@
                         </span>
                     </mat-form-field>
                 </div>
-                <div class="col-12 p-b-1 p-t-2"  *ngIf="fruits && fruits.length"
+                <!-- <div class="col-12 p-b-1 p-t-2"  *ngIf="fruits && fruits.length"
                             style="border: dashed 1px silver; border-radius: 10px; ">
                     <mat-chip-list
                     cdkDropList class="custom-chip-list"
@@ -39,7 +39,20 @@
                       </div>
                     </mat-chip>
                   </mat-chip-list>
-                </div>
+                </div> -->
+
+                      <div class="col-12 p-b-1 p-t-2" style="padding-left: 0;padding-right: 0;">
+                            <div cdkDropList cdkDropListOrientation="mixed" 
+                              class="example-list" (cdkDropListDropped)="drop($event)">
+                              @for (skill of fruits; track skill) {
+                                <div class="example-box" cdkDrag>
+                                  <span class="skill-text">{{skill.name}}</span>
+                                  <span class="remove-icon" (click)="remove(skill)">✖</span>
+                                </div>
+                              }
+                            </div>
+                      </div>
+
                 <!-- <div class="col-12 p-b-1 p-t-2">
                     <mat-chip-list #chipList>
                         <mat-chip
@@ -137,8 +150,8 @@
                     <div class="col-12 p-b-1 p-t-1">
                         <mat-form-field appearance="outline" class="w-100" >
                             <mat-label>Skill</mat-label>
-                            <input matInput placeholder="Skill" formControlName="skills">
-                            <span matSuffix (click)="addSkillV2()" *ngIf="isVisible()" style="color: black;">
+                            <input matInput placeholder="Skill" formControlName="skillsv2">
+                            <span matSuffix (click)="addSkillV2()" *ngIf="isVisiblev2()" style="color: black;">
                                 <!-- <p-icon class="pi pi-plus" style="cursor: pointer;"></p-icon> -->
                                 <p style="font-size: 14px;
                                 line-height: 17px;

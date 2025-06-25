@@ -46,7 +46,7 @@ import { ResumeTemplate } from 'src/app/services/bee-compete.model';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Account } from 'src/app/services/profile.model';
 import { AppUtilService } from 'src/app/services/app.util.service';
-import { ResumeTemplateDto, UserResume } from 'src/app/services/store/user-store';
+import { ResumeTemplateDto, SectionDesc, UserResume } from 'src/app/services/store/user-store';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { ResumeTemplate2Component } from './template2/template2.component';
 import { ResumeTemplate3Component } from './template3/template3.component';
@@ -70,6 +70,9 @@ import {MessageModule} from 'primeng/message';
 import { ResumeTemplate9Component } from './template9/template9.component';
 import { ResumeTemplate10Component } from './template10/template10.component';
 import { AccomplishmentsComponent } from './accomplishments/accomplishments.component';
+import { AddSectionComponent } from './add-section/add-section.component';
+import * as _ from 'lodash'
+import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -154,7 +157,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   isChangeInNewResume : Signal<boolean> = this.userStore.getIsChangeInNewResume();
   jobDescAIRes : Signal<JobDescriptionAIResponse> = this.userStore.getJobDescAIRes();
   resumeDataItemList: Signal<ResumeListDataItem[]> = this.userStore.getResumeDataItemList();
-
+  currentSections!: Signal<SectionDesc[]>;
   visible = true;
   outLineButton = true;
 
@@ -174,10 +177,12 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       public appUtilService: AppUtilService,
       private el: ElementRef,
       public genaiService : GenAIService, 
-      public templateService : TemplatesService, 
+      public templateService : Templatesv2Service, 
       public dialog: MatDialog,
       public resumeService : ResumeService,
-      public pdfToImageService : PdfToImageService) {}
+      public pdfToImageService : PdfToImageService) {
+        this.userStore.setResumeSections([])
+      }
 
   experienceForm = this._formBuilder.group({
     position_title: [''],
@@ -270,7 +275,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   showEducationDetailsWindow = false;
   showCertificationsDetailsWindow =  false;
   showAchievementsDetailsWindow = false;
-  showOtherDetailsWindow = false;
+  showSkillsCategoryDetailsWindow = false;
   showCourseWorkDetailsWindow = false;
   showSkillsDetailsWindow =  false;
   showSummaryDetailsWindow = false;
@@ -408,6 +413,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
 
 
   subs: Array<Subscription> = [];
+  sectionName : string  = ''
   overlayVisible = true;
   selectedTemplate : Array<TemplateVariables> = [
     {
@@ -472,6 +478,7 @@ ngAfterViewInit(): void {
 }
 
   ngOnInit() {
+    this.currentSections = this.userStore.getCurrentSections();
     this.browser = isPlatformBrowser(this.platformId);
     if(isPlatformBrowser(this.platformId)){
       setTimeout(() => {
@@ -774,6 +781,17 @@ hideMenu() {
     this.userStore.setExperience(new Experience());
   }
 
+  addSection(){
+     const dialogRef = this.dialog.open(AddSectionComponent, {
+      data: {name: this.resumeSignalForm().template_details.template_name},
+      panelClass: 'preview-resume-model-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {    
+      
+    });
+  }
+
   saveAndContinue(display : String | null){
     const saveSuccessCard = document.getElementById("saveSuccessCard");
     if(saveSuccessCard){
@@ -988,6 +1006,7 @@ hideMenu() {
     }
     else if($event.section === "SKILLS"){
       this.showSkillsDetails()
+      this.sectionName = 'SKILLS'
     }
     else if($event.section === "PROJECT"){
       this.showProjectWorkDetails()
@@ -1001,8 +1020,9 @@ hideMenu() {
     else if($event.section == "ACHIEVEMENTS"){
       this.showAchievementsDetails()
     }
-    else if($event.section == "OTHER"){
-      this.showSectionDetails('OTHER')
+    else if($event.section == "SKILLS_CATEGORY"){
+      this.showSkillsDetails()
+      this.sectionName = 'SKILLS_CATEGORY'
     }
     else if($event.section == "ACCOMPLISHMENT"){
       this.showAccomplishmentsDetails()
@@ -1024,7 +1044,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = false;
   }
 
@@ -1043,7 +1063,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = false;
   }
 
@@ -1062,7 +1082,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = false;
   }
 
@@ -1081,7 +1101,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.isFormPanleClosed = false;
     this.showAccomplishmentsWindow = false;
   }
@@ -1102,7 +1122,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = false;
   }
 
@@ -1121,7 +1141,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.isFormPanleClosed = false;
     this.showAccomplishmentsWindow = false;
   }
@@ -1140,7 +1160,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = false;
   }
   showCertificationsDetails(){
@@ -1158,7 +1178,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = false;
   }
 
@@ -1177,7 +1197,7 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= true;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = false;
   }
 
@@ -1196,30 +1216,30 @@ hideMenu() {
     this.showSkillsDetailsWindow =  false;
     this.showSummaryDetailsWindow = false;
     this.showAchievementsDetailsWindow= false;
-    this.showOtherDetailsWindow = false;
+    this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = true;
   }
 
-  showSectionDetails(section : string){
-    if(section == 'OTHER'){
-      this.formLabel = 'Certifications';
-      this.hidePanelWindow = false;
-      this.showResumeTitleWindow = false;
-      this.showResumeTemplateList = false;
-      this.showJobDescriptionWindow = false;
-      this.showWorkExperianceDetailsWindow = false;
-      this.showContactDetailsWindow = false;
-      this.showProjectWorkDetailsWindow = false;
-      this.showEducationDetailsWindow = false;
-      this.showCertificationsDetailsWindow =  false;
-      this.showCourseWorkDetailsWindow = false;
-      this.showSkillsDetailsWindow =  false;
-      this.showSummaryDetailsWindow = false;
-      this.showAchievementsDetailsWindow= false;
-      this.showOtherDetailsWindow = true;
-      this.showAccomplishmentsWindow = false;
-    }
-  }
+  // showSectionDetails(section : string){
+  //   if(section == 'SKILLS_CATEGORY'){
+  //     this.formLabel = 'Skills Category';
+  //     this.hidePanelWindow = false;
+  //     this.showResumeTitleWindow = false;
+  //     this.showResumeTemplateList = false;
+  //     this.showJobDescriptionWindow = false;
+  //     this.showWorkExperianceDetailsWindow = false;
+  //     this.showContactDetailsWindow = false;
+  //     this.showProjectWorkDetailsWindow = false;
+  //     this.showEducationDetailsWindow = false;
+  //     this.showCertificationsDetailsWindow =  false;
+  //     this.showCourseWorkDetailsWindow = false;
+  //     this.showSkillsDetailsWindow =  false;
+  //     this.showSummaryDetailsWindow = false;
+  //     this.showAchievementsDetailsWindow= false;
+  //     this.showSkillsCategoryDetailsWindow = true;
+  //     this.showAccomplishmentsWindow = false;
+  //   }
+  // }
   
   showCourseWorkDetails(){
     this.formLabel = 'Course Work';
@@ -1277,6 +1297,18 @@ hideMenu() {
     this.showAchievementsDetailsWindow= false;
     this.isFormPanleClosed = false;
     this.showAccomplishmentsWindow = false;
+  }
+
+  isSectionActive(section : string){
+    let status = false;
+    this.currentSections().map((e : SectionDesc)=>{
+      if(e.section === section){
+        status = true
+      }
+    })
+    
+    
+    return status
   }
 
   goback($event: any){
@@ -1360,7 +1392,7 @@ hideMenu() {
     }
   }
 
-  addSectionHandler(step : String) : void{
+  addSectionHandler(step : string) : void{
     if(step == 'Work_History'){
       this.workFields.enable();
       this.isWorkHistorySkipped = false;
@@ -1379,7 +1411,8 @@ hideMenu() {
       }
       // this.educationForm.controls['education'].addValidators([Validators.required]);
     }
-    else if(step == 'Skills'){
+    else if(step == 'SKILLS' || step == 'SKILLS_CATEGORY'){
+      this.sectionName = step
       this.skillsForm.controls['skills'].enable();
       this.isSkillsSkipped = false;
       const element = document.getElementById("Skills");
@@ -1840,7 +1873,9 @@ hideMenu() {
       this.custom_fileName = this.resumeSignalForm().title.replace(/\s+/g, "") +  this.appUtilService.generateUniqueString() + '.pdf';
       request.old_documentUrl =this.selectedResumeListItem().documentUrl;
       request.current_documentUrl = this.userAccount().login + "/wif-resume/" +  this.custom_fileName
-      request.resumeJson = JSON.stringify(this.resumeSignalForm());
+      let resumeData : Resume = this.resumeSignalForm()
+      resumeData.sections = this.currentSections()
+      request.resumeJson = JSON.stringify(resumeData);
       request.status = this.resumeSignalForm().isActive?"ACTIVE":"IN_ACTIVE";
       request.isPrimary = this.resumeSignalForm().isPrimary;
       request.lastUpdatedDate = Date.now().toString();
@@ -1946,7 +1981,9 @@ hideMenu() {
     this.custom_fileName = this.resumeSignalForm().title.replace(/\s+/g, "")+ this.appUtilService.generateUniqueString() + '.pdf';
     request.old_documentUrl =this.selectedResumeListItem().documentUrl;
     request.current_documentUrl = this.userAccount().login + "/wif-resume/" +  this.custom_fileName
-    request.resumeJson = JSON.stringify(this.resumeSignalForm());
+    let resumeData : Resume = this.resumeSignalForm()
+    resumeData.sections = this.currentSections()
+    request.resumeJson = JSON.stringify(resumeData);
     request.status = this.resumeSignalForm().isActive?"ACTIVE":"IN_ACTIVE";
     request.isPrimary = this.resumeSignalForm().isPrimary;
     request.lastUpdatedDate = Date.now().toString();

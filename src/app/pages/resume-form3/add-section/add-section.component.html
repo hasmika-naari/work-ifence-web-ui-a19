@@ -1,0 +1,26 @@
+<h2 mat-dialog-title  align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+</h2>
+<mat-dialog-content class="preview-resume-renderer-page preview-browser-resume-page preview-browserResumePage">
+  <h2 style="display: flex;justify-content: center;align-items: center;margin: 10px 0 5px 0;padding: 0;color: black;">Add a new section</h2>
+  <p style="display: flex;justify-content: center;align-items: center;margin: 0 0 10px 0;padding: 0;font-size: 14px;color: black;">Click on a section to add it to your resume</p>
+<div class="card-grid">
+  <mat-card class="custom-card" *ngFor="let item of add_sections">
+    <div class="image-container">
+      <img mat-card-image [src]="'assets/img/avatars/space.jpeg'" alt="Card Image" />
+
+      <!-- Centered Button -->
+      <div class="overlay" (click)="addSection(item)">
+      <div class="overlay-button">Add to resume</div>
+    </div>
+    </div>
+
+    <mat-card-content>
+      <h3 class="card-title">{{ item.title }}</h3>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+</mat-dialog-content>

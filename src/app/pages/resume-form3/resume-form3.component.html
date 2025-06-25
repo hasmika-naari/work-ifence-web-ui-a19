@@ -27,61 +27,61 @@
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
-                                    @if(resumeSignalForm().isSectionPresent?.isExperience){
+                                    @if(isSectionActive('WORK_EXPERIENCE')){
                                     <li (click)="showWorkExperianceDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> EXPERIENCE</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
-                                    @if(resumeSignalForm().isSectionPresent?.isProject){
+                                    @if(isSectionActive('PROJECT')){
                                     <li (click)="showProjectWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> PROJECT</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
-                                    @if(resumeSignalForm().isSectionPresent?.isEducation){
+                                    @if(isSectionActive('EDUCATION')){
                                     <li (click)="showEducationDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> EDUCATION</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
-                                    @if(resumeSignalForm().isSectionPresent?.isCertification){
+                                    @if(isSectionActive('CERTIFICATIONS')){
                                     <li (click)="showCertificationsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CERTIFICATIONS</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
-                                    @if(resumeSignalForm().isSectionPresent?.isOther){
-                                        <li (click)="showSectionDetails('OTHER')"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CERTIFICATIONS</div>
+                                    @if(isSectionActive('SKILLS_CATEGORY')){
+                                        <li (click)="showSkillsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS CATEGORY</div>
                                             @if(false){
                                                 <div class="wave-point"></div>
                                             }</li>
                                     }
-                                    @if(resumeSignalForm().isSectionPresent?.isCourseWork){
+                                    @if(isSectionActive('RELEVANT_COURSEWORK')){
                                     <li (click)="showCourseWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> COURSE WORK</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
-                                    @if(resumeSignalForm().isSectionPresent?.isSkill){
+                                    @if(isSectionActive('SKILLS_BULLET_POINTS')){
                                     <li (click)="showSkillsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
-                                    @if(resumeSignalForm().isSectionPresent?.isAchievement){
+                                    @if(isSectionActive('ACHIEVEMENTS_BULLET_POINTS')){
                                     <li (click)="showAchievementsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> ACHIEVEMENTS</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
-                                    @if(resumeSignalForm().isSectionPresent?.isAccomplishments){
+                                    @if(isSectionActive('ACHIEVEMENT_WITH_DESC')){
                                         <li (click)="showAccomplishmentsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> ACCOMPLISHMENTS</div>
                                             @if(false){
                                                 <div class="wave-point"></div>
                                             }</li>
                                         }
-                                    @if(resumeSignalForm().isSectionPresent?.isSummary){
+                                    @if(isSectionActive('PROFILE_SUMMARY')){
                                     <li (click)="showSummaryDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SUMMARY</div>
                                         @if(false){
                                             <div class="wave-point"></div>
@@ -93,6 +93,10 @@
                             <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
                                 <ul class="menu" style="padding-left: 0rem !important;">
                                     <li (click)="showJobDescription()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> JOB DESCRIPTION</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    <li (click)="addSection()"><div><span class="checkmark"><p-icon class="pi pi-plus"></p-icon></span> ADD SECTION</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
@@ -136,9 +140,9 @@
                         <app-resume-education (contact)="saveContact()" *ngIf="showEducationDetailsWindow"></app-resume-education>
                         <app-resume-certificate (contact)="saveContact()" *ngIf="showCertificationsDetailsWindow"></app-resume-certificate>
                         <app-resume-course-work [courseValue]="courseWorkCount" (contact)="saveContact()" *ngIf="showCourseWorkDetailsWindow"></app-resume-course-work>
-                        <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" *ngIf="showSkillsDetailsWindow" ></app-resume-skills>
+                        <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" [sectionName]="sectionName" *ngIf="showSkillsDetailsWindow" ></app-resume-skills>
                         <app-resume-achievements (contact)="saveContact()" [sectionName]="'ACHIEVEMENT'" *ngIf="showAchievementsDetailsWindow"></app-resume-achievements>
-                        <app-resume-achievements (contact)="saveContact()" [sectionName]="'OTHER'" *ngIf="showOtherDetailsWindow"></app-resume-achievements>
+                        <!-- <app-resume-achievements (contact)="saveContact()" [sectionName]="'SKILLS_CATEGORY'" *ngIf="showSkillsCategoryDetailsWindow"></app-resume-achievements> -->
                         <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngIf="showSummaryDetailsWindow"></app-resume-summary>
                         <app-resume-accomplishments (contact)="saveContact()" *ngIf="showAccomplishmentsWindow"></app-resume-accomplishments>
                     </div>

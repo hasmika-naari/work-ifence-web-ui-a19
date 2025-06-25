@@ -1,8 +1,8 @@
 import { Injectable, Signal, computed, signal } from "@angular/core";
-import { ResumeTemplateDto, UserResume, UserState } from "./user-store";
+import { ResumeTemplateDto, SectionDesc, UserResume, UserState } from "./user-store";
 import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
-import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, Achievement, IsSectionPresent, Other, SkillV2, Accomplishment, Skill} from "../resume.model";
+import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, Achievement, IsSectionPresent, SkillsCategory, SkillV2, Accomplishment, Skill} from "../resume.model";
 import { ApplicationListDataItem, ClientContact, JobApplicationFeedback, JobApplicationRequest, JobInterviewRounds, ResumeListDataItem, VendorContact } from "../work-ifence-data.model";
 import { Address } from "../contact.model";
 
@@ -37,6 +37,7 @@ import { Address } from "../contact.model";
         selectedResumeListItem: new ResumeListDataItem(),
         resumeListItems : new Array<ResumeListDataItem>,
         filteredResumes : new Array<ResumeListDataItem>,
+        currentResumeSections : new Array<SectionDesc>,
         isChangeInNewResume : false,
         isUserLoggedIn : false
        });
@@ -57,6 +58,15 @@ import { Address } from "../contact.model";
         }));
       }
 
+
+    setResumeSections(sections : Array<SectionDesc>){
+      console.log("Set Sections", sections);
+      
+      this.state.update((state)=>({
+        ...state,
+        currentResumeSections : sections
+      }))
+    }
 
     updateAccount(account: Account) {
         this.state.update((state) => ({
@@ -236,7 +246,7 @@ import { Address } from "../contact.model";
             currentTab : 'SKILLS',
             isEdit : false,
             isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skills : [...skills]} }
+            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skill : [...skills]} }
             }))
     }
 
@@ -300,13 +310,13 @@ import { Address } from "../contact.model";
             }))
     }
 
-    addOther(ach : Other){
+    addSkillsCategory(ach : SkillsCategory){
       this.state.update((state)=>({
           ...state,
-          currentTab : 'OTHER',
+          currentTab : 'SkillsCategory',
           isEdit : false,
           isChangeInNewResume : true,
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , other : ach} }
+          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , SkillsCategory : ach} }
           }))
   }
 
@@ -406,6 +416,16 @@ import { Address } from "../contact.model";
           isChangeInNewResume : true
         }));
       }
+
+removeSection(section: string) {
+  console.log("Before:", this.state().currentResumeSections);
+  this.state.update((state) => ({
+    ...state,
+    currentResumeSections: state.currentResumeSections.filter(e => e.section !== section)
+  }));
+  console.log("After:", this.state().currentResumeSections);
+}
+
 
       setResumeForm(resume: Resume) {
         this.state.update((state) => ({
@@ -977,6 +997,11 @@ import { Address } from "../contact.model";
       getSelectedResumeListItem() : Signal<ResumeListDataItem> {
         return computed(()=> this.state().selectedResumeListItem);
       }
+
+      getCurrentSections() : Signal<SectionDesc[]> {
+        return computed(()=> this.state().currentResumeSections??[]);
+      }
+
 
       getJobDescAIRes() : Signal<JobDescriptionAIResponse> {
         return computed(()=> this.state().jobDescriptionAIResponse);

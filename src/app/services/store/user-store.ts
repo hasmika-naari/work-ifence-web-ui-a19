@@ -29,6 +29,7 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
     selectedResumeListItem: ResumeListDataItem;
     resumeListItems : Array<ResumeListDataItem>;
     filteredResumes : Array<ResumeListDataItem>;
+    currentResumeSections : Array<SectionDesc>;
     isChangeInNewResume : boolean;
     isUserLoggedIn : boolean;
   }
@@ -67,6 +68,58 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
       this.imgPath = '-'
     }
   };
+
+  export class SectionDesc{
+    section : string;
+    title : string;
+    constructor(){
+      this.section = '',
+      this.title = ''
+    }
+  }
+
+  export const sections : Array<SectionDesc> = [
+    {
+      section : 'PROFILE_SUMMARY',
+      title : 'Profile summary'
+    },
+    {
+      section : 'EDUCATION',
+      title : 'Education'
+    },
+    {
+      section : 'RELEVANT_COURSEWORK',
+      title : 'Relevant coursework'
+    },
+    {
+      section : 'SKILLS_BULLET_POINTS',
+      title : 'Skills with bullet points'
+    },
+    {
+      section : 'SKILLS_CATEGORY',
+      title : 'Skills category'
+    },
+    {
+      section : 'WORK_EXPERIENCE',
+      title : 'Work experience'
+    },
+    {
+      section : 'PROJECT',
+      title : 'Project'
+    },
+    {
+      section : 'CERTIFICATIONS',
+      title : 'Certification'
+    },
+    {
+      section : 'ACHIEVEMENTS_BULLET_POINTS',
+      title : 'Achievements with bullet points'
+    },
+    {
+      section : 'ACHIEVEMENT_WITH_DESC',
+      title : 'Accomplishments'
+    }
+  ]
 
   export class UserResume{
     resumeForm :Resume = new Resume();

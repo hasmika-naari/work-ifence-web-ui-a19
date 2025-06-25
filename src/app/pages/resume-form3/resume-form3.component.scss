@@ -15,6 +15,10 @@
   font-size: 1rem;
 }
 
+::ng-deep .cdk-overlay-pane.mat-mdc-dialog-panel {
+  max-width: none !important;
+}
+
 
 // // .container{
 // //   min-height: 100vh;

@@ -637,7 +637,7 @@
                 </section>
             }
 
-            @if(!resumeForm().other.isDefault && resumeForm().isSectionPresent?.isOther){
+            @if(!resumeForm().skillsCategory.isDefault && resumeForm().isSectionPresent?.isSkillsCategory){
                 <section class="skills">
                     <h2 class="action-hover" style="position: relative;">Certifications
                         @if(!isPreview){
@@ -661,17 +661,17 @@
                         </div>
                       }
                     </h2>
-                    <div [innerHTML]="resumeForm().other.point" class="project-content"></div>
+                    <div [innerHTML]="resumeForm().skillsCategory.point" class="project-content"></div>
                 </section>
             }
-            @else if(resumeForm().isSectionPresent?.isOther){
+            @else if(resumeForm().isSectionPresent?.isSkillsCategory){
                 <section class="skills">
                     <h2 class="action-hover" style="position: relative;">Certifications
                         @if(!isPreview){
                             <div class="section-actions">
                               <div class="wif-tooltip" data-direction="bottom">
                                 <div class="wif-tooltip__initiator">
-                                  <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('OTHER')"></p-icon>
+                                  <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('SkillsCategory')"></p-icon>
                                 </div>
                                 <div class="wif-tooltip__item">
                                   Add Certification 
@@ -679,7 +679,7 @@
                               </div>
                               <div class="wif-tooltip" data-direction="bottom">
                                 <div class="wif-tooltip__initiator">
-                                  <p-icon class="pi pi-times" title="" (click)="removeSection('OTHER')"></p-icon>
+                                  <p-icon class="pi pi-times" title="" (click)="removeSection('SkillsCategory')"></p-icon>
                                 </div>
                                 <div class="wif-tooltip__item">
                                   Delete Certification 
