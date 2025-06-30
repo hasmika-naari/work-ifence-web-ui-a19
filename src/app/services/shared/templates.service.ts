@@ -1512,7 +1512,7 @@ a{
         ${this.formatCertificationListItems(resumeForm.certification)}
       </section>` : ''
     }
-     ${resumeForm.achievement.ach.length > 0?
+     ${resumeForm.achievementBulletPoints.ach.length > 0?
       `<section style="color: black !important;">
         <span class="course-work-section-title">Achievements</span>
       </section>` : ''
@@ -3710,14 +3710,14 @@ ul {
         ` : ''
       }
   
-      ${(resumeForm.achievement.ach.length > 0 && resumeForm.isSectionPresent.isAchievement)?
+      ${(resumeForm.achievementBulletPoints.ach.length > 0 && resumeForm.isSectionPresent.isAchievement)?
         `
         <section  class="trigger-area course-work trigger-area">
           <span class="summary-section-title">Achievements</span>
           <div  class="course-work-section-content">
           <div class="project-content">
             ${
-            resumeForm.achievement.ach
+            resumeForm.achievementBulletPoints.ach
             }
             </div>
           </div>
@@ -4238,23 +4238,23 @@ ul {
                 ` : ''
                 }
 
-                ${(resumeForm.skillsCategory.point.length > 0 && resumeForm.isSectionPresent?.isSkillsCategory)?
+                ${(resumeForm.certificationBulletPoints.point.length > 0 && resumeForm.isSectionPresent?.isSkillsCategory)?
                 `
                 <section class="skills">
                     <h2 class="skills-h2">Certifications</h2>
                     <div class="project-content">
-                    ${resumeForm.skillsCategory.point}
+                    ${resumeForm.certificationBulletPoints.point}
                     </div>
                 </section>
                 ` : ''
                 }
 
-                ${!resumeForm.achievement.isDefault && resumeForm.isSectionPresent?.isAchievement?
+                ${!resumeForm.achievementBulletPoints.isDefault && resumeForm.isSectionPresent?.isAchievement?
                     `
                     <section class="skills">
                         <h2 class="skills-h2">Achievements</h2>
                         <div class="project-content">
-                        ${resumeForm.achievement.ach}
+                        ${resumeForm.achievementBulletPoints.ach}
                         </div>
                     </section>
                     ` : ''

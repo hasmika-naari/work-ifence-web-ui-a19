@@ -516,14 +516,14 @@ export class Templatesv2Service {
             }`:
             e.section == 'ACHIEVEMENTS_BULLET_POINTS'?
             `
-            ${(resume.achievement.ach.length > 0)?
+            ${(resume.achievementBulletPoints.ach.length > 0)?
             `
             <section  class="trigger-area course-work trigger-area">
                 <span class="summary-section-title">Achievements</span>
                 <div  class="course-work-section-content">
                     <div class="project-content">
                     ${
-                        resume.achievement.ach
+                        resume.achievementBulletPoints.ach
                     }
                     </div>
                 </div>

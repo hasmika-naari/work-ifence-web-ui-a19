@@ -9,16 +9,16 @@
       <div>
             <ul class="profile-contact-details-list">
                 @if(resumeForm().contact.phone_number.length > 0){
-                <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-phone contact-detail-icon"></p-icon> {{resumeForm().contact.phone_number}}</li>
+                <li [ngClass]="isDefaultData(resumeForm().contact.phone_number)?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-phone contact-detail-icon"></p-icon> {{resumeForm().contact.phone_number}}</li>
                 }
                 @if(resumeForm().contact.email.length > 0){
-                <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-at contact-detail-icon"></p-icon> {{resumeForm().contact.email}}</li>
+                <li [ngClass]="isDefaultData(resumeForm().contact.email)?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-at contact-detail-icon"></p-icon> {{resumeForm().contact.email}}</li>
                 }
                 @if(resumeForm().contact.linkedIn_profile.length > 0){
-                <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-linkedin contact-detail-icon"></p-icon> <a href="{{resumeForm().contact.linkedIn_profile}}" target="_blank">{{resumeForm().contact.linkedIn_profile_display_name}}</a></li>
+                <li [ngClass]="isDefaultData(resumeForm().contact.linkedIn_profile)?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-linkedin contact-detail-icon"></p-icon> <a href="{{resumeForm().contact.linkedIn_profile}}" target="_blank">{{resumeForm().contact.linkedIn_profile_display_name}}</a></li>
                 }
                 @if(resumeForm().contact.github_profile.length > 0){
-                <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-github contact-detail-icon"></p-icon> <a  href="{{resumeForm().contact.github_profile}}" target="_blank">{{resumeForm().contact.github_profile_display_name}}</a></li>
+                <li [ngClass]="isDefaultData(resumeForm().contact.github_profile)?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-github contact-detail-icon"></p-icon> <a  href="{{resumeForm().contact.github_profile}}" target="_blank">{{resumeForm().contact.github_profile_display_name}}</a></li>
                 }
                 @if(resumeForm().contact.portfolio_link.length > 0){
                   <li><b>Potfolio :</b> <a  href="{{resumeForm().contact.portfolio_link}}" target="_blank"> 
@@ -29,7 +29,7 @@
       </div>
       @if(!isPreview){
             <div class="section-actions">
-        @if(resumeForm().contact.isDefaultData){
+        @if(isContactDefaultData()){
           <div class="wif-tooltip" data-direction="bottom">
             <div class="wif-tooltip__initiator">
               <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CONTACT')"></p-icon>
@@ -881,22 +881,11 @@
       </section>
     }
 
-    @if(!resumeForm().achievement.isDefault){
+    @if(!isAchievementDefaultData()){
       <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
         <span class="summary-section-title">Achievements
           @if(!isPreview){
             <div class="section-actions">
-              @if(resumeForm().achievement.isDefault){
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS')"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Add achievement
-                  </div>
-                </div>
-              }
-              @else{
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS', null)"></p-icon>
@@ -905,7 +894,6 @@
                     Edit achievement
                   </div>
                 </div>
-              }
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
                   <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
@@ -919,7 +907,7 @@
         </span>
         <div  class="course-work-section-content">
           <div>
-            <div [innerHTML]="resumeForm().achievement.ach" class="project-content"></div>
+            <div [innerHTML]="resumeForm().achievementBulletPoints.ach" class="project-content"></div>
           </div>
         </div>
       </section>

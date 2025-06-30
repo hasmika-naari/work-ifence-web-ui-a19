@@ -269,7 +269,7 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
 
     getUnHideElements(resumeForm : Resume){
         let resume = new Resume();
-        resume.achievement = resumeForm.achievement;
+        resume.achievementBulletPoints = resumeForm.achievementBulletPoints;
         resume.award = resumeForm.award;
         resume.certification = resumeForm.certification.filter(e=>e.isHideSelected == false)
         resume.contact = resumeForm.contact;

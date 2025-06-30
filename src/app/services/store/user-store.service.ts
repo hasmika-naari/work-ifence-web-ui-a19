@@ -2,7 +2,7 @@ import { Injectable, Signal, computed, signal } from "@angular/core";
 import { ResumeTemplateDto, SectionDesc, UserResume, UserState } from "./user-store";
 import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
-import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, Achievement, IsSectionPresent, SkillsCategory, SkillV2, Accomplishment, Skill} from "../resume.model";
+import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, AchievementBulletPoints, IsSectionPresent, SkillV2, Accomplishment, Skill, CertificationBulletPoints} from "../resume.model";
 import { ApplicationListDataItem, ClientContact, JobApplicationFeedback, JobApplicationRequest, JobInterviewRounds, ResumeListDataItem, VendorContact } from "../work-ifence-data.model";
 import { Address } from "../contact.model";
 
@@ -163,6 +163,16 @@ import { Address } from "../contact.model";
             }))
         }
 
+        addCertificationBulletPoints(certification : CertificationBulletPoints){
+        this.state.update((state)=>({
+            ...state,
+            currentTab : 'CERTIFICATION_BULLET_POINTS',
+            isEdit : false,
+            isChangeInNewResume : true,
+            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm,certificationBulletPoints : certification } }
+            }))
+        }
+
     addSummary(summary : ProfileSummary){
         this.state.update((state)=>({
             ...state,
@@ -300,7 +310,7 @@ import { Address } from "../contact.model";
           }))
   }
 
-    addAchievement(ach : Achievement){
+    addAchievement(ach : AchievementBulletPoints){
         this.state.update((state)=>({
             ...state,
             currentTab : 'ACHIEVEMENT',
@@ -309,16 +319,6 @@ import { Address } from "../contact.model";
             selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , achievement : ach} }
             }))
     }
-
-    addSkillsCategory(ach : SkillsCategory){
-      this.state.update((state)=>({
-          ...state,
-          currentTab : 'SkillsCategory',
-          isEdit : false,
-          isChangeInNewResume : true,
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , SkillsCategory : ach} }
-          }))
-  }
 
     updateCertificationItem(edu : Certification, index : number){
       this.state.update((state)=>({

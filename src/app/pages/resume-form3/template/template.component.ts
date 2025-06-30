@@ -19,7 +19,7 @@ import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { AccordionModule } from 'primeng/accordion';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Achievement, Certification, Education, Experience, IsSectionPresent, ProfileSummary, Project, Resume, ResumeContact, SkillsCategory, SkillV2 } from 'src/app/services/resume.model';
+import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, ProfileSummary, Project, Resume, ResumeContact, CertificationBulletPoints, SkillV2 } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -434,11 +434,11 @@ removeSection(section : string){
           status.isCertification = false
         }
         else if(section === "ACHIEVEMENTS_BULLET_POINTS"){
-          resume.achievement = new Achievement()
+          resume.achievementBulletPoints = new AchievementBulletPoints()
           status.isAchievement = false
         }
-        else if(section === "SKILLS_CATEGORY"){
-          resume.skillsCategory = new SkillsCategory();
+        else if(section === "CERTIFICATION_BULLET_POINTS"){
+          resume.certificationBulletPoints = new CertificationBulletPoints();
         }
         this.userStore.removeSection(section);
         this.userStore.updateResumeForm(resume);
@@ -462,6 +462,19 @@ drop(event: CdkDragDrop<string[]>) {
 dragStarted(event: CdkDragStart) {
   const element = (event.source.element.nativeElement as HTMLElement);
   element.parentElement?.style.setProperty('--drag-placeholder-height', `${element.offsetHeight}px`);
+}
+
+isDefaultData(data : string){
+return data?.length>0
+}
+
+isContactDefaultData(){
+  return this.resumeForm().contact?.fname.length>0 || this.resumeForm().contact?.lname.length>0 || this.resumeForm().contact?.subTitle.length>0 || this.resumeForm().contact?.phone_number.length>0
+  || this.resumeForm().contact?.email.length>0 || this.resumeForm().contact?.github_profile.length>0 || this.resumeForm().contact?.linkedIn_profile.length>0
+}
+
+isAchievementDefaultData(){
+  return this.resumeForm().achievementBulletPoints?.ach.length>0
 }
 
 

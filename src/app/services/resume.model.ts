@@ -242,7 +242,7 @@ export class Education{
     isActive! : boolean
   }
 
-  export class Achievement{
+  export class AchievementBulletPoints{
     ach : string;
     original_html_achievement : string;
     isDefault : boolean = true
@@ -252,7 +252,7 @@ export class Education{
     }
   }
 
-  export class SkillsCategory{
+  export class CertificationBulletPoints{
     point : string;
     original_html_content : string;
     isDefault : boolean = true
@@ -352,9 +352,9 @@ export class Education{
     project : Array<Project>;
     experience : Array<Experience>;
     certification : Array<Certification>;
-    achievement : Achievement;
+    achievementBulletPoints : AchievementBulletPoints;
     accomplishment : Array<Accomplishment>;
-    skillsCategory : SkillsCategory;
+    certificationBulletPoints : CertificationBulletPoints;
     courseWork : Array<string>;
     award : Array<Award>;
     language : Array<Language>;
@@ -383,7 +383,7 @@ export class Education{
       this.project = []
       this.experience = []
       this.certification = []
-      this.achievement = { ach : "", original_html_achievement : '', isDefault : true}
+      this.achievementBulletPoints = { ach : "", original_html_achievement : '', isDefault : true}
       this.courseWork = []
       this.award = []
       this.language = []
@@ -393,7 +393,7 @@ export class Education{
       this.volunteer_experience = []
       this.accomplishment = []
       this.isSectionPresent = {isContact : false, isSummary : false, isEducation : false, isCourseWork : false, isSkill : false,isSkillV2 : false, isProject : false, isExperience : false, isCertification : false, isAchievement : false, isSkillsCategory : false, isAccomplishments : false},
-      this.skillsCategory = {point : '', original_html_content : '', isDefault : true}
+      this.certificationBulletPoints = {point : '', original_html_content : '', isDefault : true}
       this.sections = []
     }
   }

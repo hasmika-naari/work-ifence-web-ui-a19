@@ -22,7 +22,7 @@ import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.compone
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Accomplishment, Achievement, Education, IsSectionPresent, SkillsCategory, Resume, TemplateVariables } from 'src/app/services/resume.model';
+import { Accomplishment, AchievementBulletPoints, Education, IsSectionPresent, CertificationBulletPoints, Resume, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -135,7 +135,7 @@ setAccomplishments(){
 
 setSkillsCategory(){
   if(this.editor?.clipboard){
-    this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().skillsCategory.original_html_content);
+    this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().certificationBulletPoints.original_html_content);
   }
 }
 

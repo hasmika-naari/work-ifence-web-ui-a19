@@ -1135,7 +1135,7 @@ ngAfterViewInit(): void {
 
 getUnHideElements(){
   let resume = new Resume();
-  resume.achievement = this.resumeSignalForm().achievement;
+  resume.achievementBulletPoints = this.resumeSignalForm().achievementBulletPoints;
   resume.award = this.resumeSignalForm().award;
   resume.certification = this.resumeSignalForm().certification.filter(e=>e.isHideSelected == false)
   resume.contact = this.resumeSignalForm().contact;

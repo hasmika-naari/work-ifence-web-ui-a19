@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" cdkDropList [cdkDropListData]="sections" (cdkDropListDropped)="drop($event)">
     <!-- Header Section -->
     <div class="header">
         <div class="name">{{resumeForm().contact.fname + ' ' + resumeForm().contact.lname}}</div>
@@ -53,20 +53,21 @@
           </div>
         </div>
       }
-      <div class="wif-tooltip" data-direction="bottom">
+      <!-- <div class="wif-tooltip" data-direction="bottom">
         <div class="wif-tooltip__initiator">
           <p-icon class="pi pi-times" title="" (click)="removeSection('CONTACT')"></p-icon>
         </div>
         <div class="wif-tooltip__item">
           Remove Contact
         </div>
-      </div>
+      </div> -->
     </div>
   }
     </div>
 
-    @if(resumeForm().profileSummary.profile_summary.length > 0 && resumeForm().isSectionPresent?.isSummary){
-      <div class="section" style="position: relative;">
+     <ng-container *ngFor="let section of sections">
+    @if(resumeForm().profileSummary.profile_summary.length > 0){
+      <div class="section" style="position: relative;" cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
         <span class="section-title">Summary
           @if(!isPreview){
             <div class="section-actions">
@@ -94,8 +95,8 @@
           <!-- <p class="resume-summary-text" [ngClass]="resumeForm().profileSummary.isDefault?'opacity-half' : 'opacity-full'">{{resumeForm().profileSummary.profile_summary}}</p> -->
       </div>
     }
-    @else if(resumeForm().isSectionPresent?.isSummary){
-      <div class="section" style="position: relative;">
+    @else{
+      <div class="section" style="position: relative;" cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
         <span class="section-title">Summary
           @if(!isPreview){
             <div class="section-actions">
@@ -124,8 +125,8 @@
     }
 
     <!-- Education Section -->
-    @if(resumeForm().education.length > 0 && resumeForm().isSectionPresent?.isEducation){
-    <div class="section education" style="position: relative;">
+    @if(resumeForm().education.length > 0){
+    <div class="section education" style="position: relative;" cdkDrag *ngIf="section === 'EDUCATION'">
         <div class="section-title" style="position: relative;">Education
           @if(!isPreview){
             <div class="section-actions">
@@ -231,8 +232,8 @@
     </div>
     </div>
     }
-    @else if(resumeForm().isSectionPresent?.isEducation){
-        <div class="section education default-education" style="position: relative;">
+    @else{
+        <div class="section education default-education" style="position: relative;" cdkDrag *ngIf="section === 'EDUCATION'">
             <div class="section-title">Education</div>
             <p class="opacity-half education-p" style="padding-left: 0;font-size: 14px;"><b>Degree | University | Period | GPA</b></p>
             @if(!isPreview){
@@ -259,8 +260,8 @@
     }
 
     <!-- Skills Section -->
-     @if(resumeForm().skill_v2.length > 0 && resumeForm().isSectionPresent?.isSkillV2){
-    <div class="section skills" style="position: relative;">
+     @if(resumeForm().skill_v2.length > 0){
+    <div class="section skills" style="position: relative;" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
         <div class="section-title">Skills
         </div>
         <div class="skills-content">
@@ -309,8 +310,8 @@
             }
     </div>
     }
-    @else if(resumeForm().isSectionPresent?.isSkillV2){
-        <div class="section skills default-skills" style="position: relative;">
+    @else{
+        <div class="section skills default-skills" style="position: relative;" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
             <div class="section-title">Skills</div>
             <div class="skills-content opacity-half">
                 <ul class="skill-category">
@@ -359,8 +360,8 @@
         </div>
     }
 
-    @if(resumeForm().accomplishment.length > 0 && resumeForm().isSectionPresent?.isAccomplishments){
-        <div class="section education" style="position: relative;">
+    @if(resumeForm().accomplishment.length > 0){
+        <div class="section education" style="position: relative;" cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
             <div class="section-title">Accomplishments
               @if(!isPreview){
                 <div class="section-actions">
@@ -457,8 +458,8 @@
             </div>
         </div>
         }
-      @else if(resumeForm().isSectionPresent?.isAccomplishments){
-        <div class="section experince trigger-area">
+      @else{
+        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
             <div class="section-title">Accomplishments
               @if(!isPreview){
                 <div class="section-actions">
@@ -488,8 +489,8 @@
             <p style="font-size: 14px;" class="opacity-half">Poster Presentation on unpacking...........</p>
         </div>
       }
-    @if(resumeForm().experience.length > 0 && resumeForm().isSectionPresent?.isExperience){
-        <div class="section experince trigger-area">
+    @if(resumeForm().experience.length > 0){
+        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
             <div class="section-title">Experience
               @if(!isPreview){
                 <div class="section-actions">
@@ -576,8 +577,8 @@
         </div>
         </div>
         }
-      @else if(resumeForm().isSectionPresent?.isExperience){
-        <div class="section experince trigger-area">
+      @else{
+        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
             <div class="section-title">Experience
               @if(!isPreview){
                 <div class="section-actions">
@@ -608,8 +609,8 @@
             </div>
         </div>
       }
-      @if(resumeForm().project.length > 0 && resumeForm().isSectionPresent?.isProject){
-        <div class="section experince trigger-area">
+      @if(resumeForm().project.length > 0){
+        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
             <div class="section-title">Projects
               @if(!isPreview){
                 <div class="section-actions">
@@ -706,8 +707,8 @@
             </div>
         </div>
         }
-      @else if(resumeForm().isSectionPresent?.isProject){
-        <div class="section experince trigger-area">
+      @else{
+        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
             <div class="section-title">Projects
               @if(!isPreview){
                 <div class="section-actions">
@@ -739,4 +740,5 @@
             </div>
         </div>
       }
+    </ng-container>
 </div>

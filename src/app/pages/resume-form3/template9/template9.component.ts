@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,12 +18,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Achievement, Certification, Education, Experience, IsSectionPresent, SkillsCategory, ProfileSummary, Project, Resume, ResumeContact } from 'src/app/services/resume.model';
+import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, CertificationBulletPoints, ProfileSummary, Project, Resume, ResumeContact, SkillV2 } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
+import { SectionDesc } from 'src/app/services/store/user-store';
+import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
 
 
@@ -36,7 +38,7 @@ import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
     MatFormFieldModule,InputTextModule, MatTooltipModule,
     MatInputModule,ButtonModule,ConfirmDialogComponent,
     MatButtonModule,AccordionModule,
-    MatIconModule,MatExpansionModule],
+    MatIconModule,MatExpansionModule, DragDropModule],
   templateUrl: './template9.component.html',
   styleUrls: ['./template9.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -48,15 +50,62 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
   sectionStatus: Signal<IsSectionPresent> = this.userStore.getSectionStatus();
   resumeForm: Signal<Resume> = this.userStore.getResumeForm();
   selectedResumeListItem: Signal<ResumeListDataItem> = this.userStore.getSelectedResumeListItem();
-  
+  currentSections : Signal<SectionDesc[]> = this.userStore.getCurrentSections()
 
   
   @Output() editSection = new EventEmitter<any>();
 
   @Input() isPreview : boolean = false;
 
-  
+  staticSections = ['PROFILE_SUMMARY', 'WORK_EXPERIENCE', 'PROJECT'];
+  dynamicSections = ['RELEVANT_COURSEWORK','SKILLS_BULLET_POINTS', 'EDUCATION', 'CERTIFICATION_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS'];
 
+  // Keep track of original dynamic sections
+  originalDynamicSections = [...this.dynamicSections];
+
+   sections  : string[]= ['PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS', 'ACHIEVEMENTS_BULLET_POINTS']
+  
+    sectionsDesc  : Array<SectionDesc> = [
+      {
+        section : 'PROFILE_SUMMARY',
+        title : 'Profile summary'
+      },
+      {
+        section : 'EDUCATION',
+        title : 'Education'
+      },
+      {
+        section : 'RELEVANT_COURSEWORK',
+        title : 'Relevant coursework'
+      },
+      {
+        section : 'SKILLS_BULLET_POINTS',
+        title : 'Skills with bullet points'
+      },
+      {
+        section : 'WORK_EXPERIENCE',
+        title : 'Work experience'
+      },
+      {
+        section : 'PROJECT',
+        title : 'Project'
+      },
+      {
+        section : 'CERTIFICATIONS',
+        title : 'Certification'
+      },
+      {
+        section : 'ACHIEVEMENTS_BULLET_POINTS',
+        title : 'Achievements with bullet points'
+      }
+    ]
+
+      firstHalfSkills : SkillV2[] = []
+      secondHalfSkills : SkillV2[] = []
+        
+      isSectionsSetCount : number = 1
+    
+    
   constructor(
       private _formBuilder: FormBuilder, 
       private router : Router, 
@@ -64,7 +113,30 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       public dialog: MatDialog,
       public promptService : PromptService, 
       public genaiService : GenAIService, 
-      public templateService : TemplatesService) {}
+      public templateService : TemplatesService) {
+        effect(()=>{
+            if(this.resumeForm().sections.length>0 && this.isSectionsSetCount == 1 && this.currentSections().length == 0){
+              this.sections = []
+              this.resumeForm().sections.map((e : SectionDesc)=>{
+              this.sections = [...this.sections, e.section]
+              })
+              this.userStore.setResumeSections(this.resumeForm().sections)
+              this.isSectionsSetCount = this.isSectionsSetCount + 1
+            }
+            else if(this.resumeForm().sections.length == 0 && this.currentSections().length == 0){
+              this.userStore.setResumeSections(this.sectionsDesc)
+            }
+            else if(this.currentSections().length !== this.sections.length){
+              this.sections = []
+              this.currentSections().map((e : SectionDesc)=>{
+              this.sections = [...this.sections, e.section]
+            })
+          }
+          let skills = this.resumeForm().skill_v2
+          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills.length/2))]
+          this.secondHalfSkills = [...skills.slice(Math.ceil(skills.length/2),)]
+          })
+      }
 
   ngOnDestroy(): void {
   }
@@ -121,6 +193,49 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       }
     });
   }
+
+  drop(event: CdkDragDrop<string[]>) {
+    console.log("Before: ", this.sections, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
+    console.log("After: ",this.sections, event.previousIndex, event.currentIndex);
+    let formattedSections: any[] = []
+    this.sections.map((e)=>{
+      let section = this.currentSections().filter( s=> s.section == e)
+      formattedSections = [...formattedSections, ...section]
+    })
+    this.userStore.setResumeSections(formattedSections)
+    this.cdr.detectChanges();
+  }
+
+  onDrop(event: CdkDragDrop<string[]>, container: 'static' | 'dynamic') {
+    const previousContainer = event.previousContainer;
+    const currentContainer = event.container;
+
+    // Same list - reorder
+    if (previousContainer === currentContainer) {
+      moveItemInArray(currentContainer.data, event.previousIndex, event.currentIndex);
+    }
+    // Cross-container
+    else {
+      const draggedItem = previousContainer.data[event.previousIndex];
+
+      if (
+        container === 'dynamic' &&
+        !this.originalDynamicSections.includes(draggedItem)
+      ) {
+        // Block drop if item was not originally from dynamic list
+        return;
+      }
+
+      transferArrayItem(
+        previousContainer.data,
+        currentContainer.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
+
 
 
   getDivClass(item : any){
@@ -371,12 +486,12 @@ removeSection(section : string){
           resume.experience = []
           status.isExperience = false;
         }
-        else if(section === "SkillsCategory"){
-          resume.skillsCategory = new SkillsCategory();
+        else if(section === "CERTIFICATION_BULLET_POINTS"){
+          resume.certificationBulletPoints = new CertificationBulletPoints();
           status.isSkillsCategory = false
         }
-        else if(section === "ACHIEVEMENTS"){
-          resume.achievement = new Achievement()
+        else if(section === "ACHIEVEMENTS_BULLET_POINTS"){
+          resume.achievementBulletPoints = new AchievementBulletPoints()
           status.isAchievement = false
         }
         this.userStore.updateSectionStatus(status);
