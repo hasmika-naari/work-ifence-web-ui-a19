@@ -31,6 +31,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../resume-form3/confirm-dialog/confirm-dialog.component';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
 import { WorkIfenceDataService } from 'src/app/services/work-ifence-data.service';
+import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 
 @Component({
     selector: 'resume-list2',
@@ -147,7 +148,7 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
         private resumeService: ResumeService,
         private router : Router, 
         private wifenceDataService: WorkIfenceDataService,
-        public templateService : TemplatesService,
+        public templateService : Templatesv2Service,
         public dialog: MatDialog,
         public pdfToImageService : PdfToImageService) {
          }
