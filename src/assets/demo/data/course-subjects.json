@@ -1,0 +1,97 @@
+[
+  {
+    "title": "Computer Science",
+    "description": "Programming, algorithms, data structures, AI & more",
+    "courseCount": 20
+  },
+  {
+    "title": "Psychology",
+    "description": "Cognitive science, mental health and human behavior",
+    "courseCount": 8
+  },
+  {
+    "title": "Economics",
+    "description": "Finance, game theory, markets and economic models",
+    "courseCount": 5
+  },
+  {
+    "title": "Health",
+    "description": "Medical, nutrition, physiology, neuroscience",
+    "courseCount": 8
+  },
+  {
+    "title": "Education",
+    "description": "Learning strategies, teaching practices, pedagogy",
+    "courseCount": 7
+  },
+  {
+    "title": "Science",
+    "description": "Physics, astronomy, biology, general sciences",
+    "courseCount": 7
+  },
+  {
+    "title": "Humanities",
+    "description": "Philosophy, poetry, and cultural studies",
+    "courseCount": 4
+  },
+  {
+    "title": "Business",
+    "description": "Leadership, communication, product management",
+    "courseCount": 6
+  },
+  {
+    "title": "Data Science",
+    "description": "Data analysis, R, machine learning foundations",
+    "courseCount": 4
+  },
+  {
+    "title": "Arts & Design",
+    "description": "Graphic design, game art, creative expression",
+    "courseCount": 3
+  },
+  {
+    "title": "Language",
+    "description": "Foreign language learning and communication",
+    "courseCount": 4
+  },
+  {
+    "title": "Neuroscience",
+    "description": "Study of the brain, behavior, neuroimaging",
+    "courseCount": 1
+  },
+  {
+    "title": "Biology",
+    "description": "Genetics, evolution, organismal biology",
+    "courseCount": 1
+  },
+  {
+    "title": "Philosophy",
+    "description": "Ethics, logic, and foundational thinking",
+    "courseCount": 2
+  },
+  {
+    "title": "Writing",
+    "description": "Academic and scientific writing styles",
+    "courseCount": 2
+  },
+  {
+    "title": "Communication",
+    "description": "Public speaking and effective interpersonal skills",
+    "courseCount": 1
+  },
+  {
+    "title": "Social Sciences",
+    "description": "Sociology, human rights, and societal patterns",
+    "courseCount": 2
+  },
+  {
+    "title": "Geography",
+    "description": "Geospatial tech and environmental mapping",
+    "courseCount": 1
+  },
+  {
+    "title": "Marketing",
+    "description": "Digital marketing fundamentals and strategies",
+    "courseCount": 1
+  }
+]

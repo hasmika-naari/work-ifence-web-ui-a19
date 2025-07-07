@@ -206,6 +206,12 @@ export const routes: Routes = [
             import('./pages/intro/job-app-manager-intro/job-app-manager-intro.component')
                 .then(m => m.JobAppManagerIntroComponent), data: {reuseComponent: true, breadcrumb: 'Job Application Optimizer' }
     },
+     {
+        path: 'course-central',
+        loadComponent: () => 
+            import('./pages/course-central/course-central.component')
+                .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+    },
     {
         path: 'dashboard-intro',
         loadComponent: () => 

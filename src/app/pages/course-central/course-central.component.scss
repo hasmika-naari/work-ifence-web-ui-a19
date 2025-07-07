@@ -1,0 +1,458 @@
+.dashboard-container {
+  height: 100vh;
+  background-color: #fafafa;
+}
+
+.top-carousel {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  font-family: Poppins, Verdana, Geneva, Tahoma, sans-serif !important;
+
+.carousel-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  color: #222;
+  background: white;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease-in-out;
+  align-self: stretch; // 🔥 ensures same height in flex/grid layout
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-grow: 1;
+
+    .provider-line {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+
+        .provider {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .separator {
+            color: #555;
+        }
+
+        .platform {
+            color: #222;
+        }
+        }
+
+
+    .provider {
+      font-size: 11px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+     .card-rating{
+        padding-top: 0px;
+        margin-top: 0px;
+        font-size: medium;
+        color: var(--secondaryColor);
+    }
+
+    .card-cost {
+      font-size: small;
+      font-weight: 600;
+      margin-bottom: 2px;
+    //   color: var(--primaryColor) !important;
+
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 4px;
+      line-height: 1.4;
+      min-height: 2.8em;   // enough space for 2 lines
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+        color: #222;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    // .cost {
+    //   font-size: 12px;
+    //   font-weight: 500;
+    //   margin-bottom: 2px;
+    //   color: #444;
+    // }
+
+    .certificate {
+      font-size: 11px;
+      color: #666;
+    }
+  }
+
+ .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 6px;
+
+  .mode {
+    font-size: 12px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+
+      mat-icon {
+        font-size: 20px;
+        color: #333;
+      }
+    }
+  }
+}
+
+}
+
+  // 🎨 Random Background Themes (light overlays with readable text)
+  .bg-rose      { background-color: #e91e6221; }
+  .bg-skyblue   { background-color: #03a9f421; }
+  .bg-emerald   { background-color: #2ecc7121; }
+  .bg-sunset    { background-color: #ff6f6121; }
+  .bg-royalblue { background-color: #4169e121; }
+  .bg-coral     { background-color: #ff704321; }
+  .bg-violet    { background-color: #9c27b021; }
+  .bg-mint      { background-color: #1de9b621; }
+  .bg-gold      { background-color: #fbc02d21; }
+  .bg-steel     { background-color: #607d8b21; }
+}
+
+.fw-semibold{
+    font-weight: 500;
+}
+
+
+.course-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  flex-wrap: wrap;
+  background-color: #fff;
+
+  h4 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #666;
+  }
+
+  h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .left,
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .right {
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  button {
+    padding: 4px;
+  }
+}
+
+
+.course-grid {
+  display: grid;
+  gap: 10px;
+//   padding: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  font-family: Poppins, Verdana, Geneva, Tahoma, sans-serif !important;
+   padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 100px;
+.carousel-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  color: #222;
+  background: white;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease-in-out;
+  align-self: stretch; // 🔥 ensures same height in flex/grid layout
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-grow: 1;
+
+    .provider-line {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+
+        .provider {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .separator {
+            color: #555;
+        }
+
+        .platform {
+            color: #222;
+        }
+        }
+
+
+    .provider {
+      font-size: 11px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .card-cost {
+      font-size: small;
+      font-weight: 600;
+      margin-bottom: 2px;
+    //   color: var(--primaryColor) !important;
+
+    }
+
+    .card-rating{
+        padding-top: 0px;
+        margin-top: 0px;
+        font-size: medium;
+        color: var(--secondaryColor);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 4px;
+      line-height: 1.4;
+      min-height: 2.8em;   // enough space for 2 lines
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+        color: #222;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    // .cost {
+    //   font-size: 12px;
+    //   font-weight: 500;
+    //   margin-bottom: 2px;
+    //   color: #444;
+    // }
+
+    .certificate {
+      font-size: 11px;
+      color: #666;
+    }
+  }
+
+ .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 6px;
+
+  .mode {
+    font-size: 12px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+
+      mat-icon {
+        font-size: 20px;
+        color: #333;
+      }
+    }
+  }
+}
+
+}
+}
+
+.filter-sidenav {
+  width: 280px;
+  padding: 16px;
+  background-color: #fafafa;
+  border-left: 1px solid #ddd;
+  height: calc(100vh);
+//   position: sticky;
+//   top: 180px;
+  overflow-y: auto;
+ border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    mat-checkbox {
+      margin-top: 4px;
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .top-carousel {
+    .carousel-card {
+      max-width: 85vw;
+    }
+  }
+
+  .course-grid {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+
+  .course-card mat-card-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-sidenav {
+    // width: 100vw;
+    // height: auto;
+    // top: unset;
+  }
+}
+::ng-deep .owl-carousel .owl-stage-outer {
+ padding-bottom: 20px;
+}
+
+::ng-deep .owl-carousel .owl-nav {
+  position: absolute;
+//   top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 10px;
+  pointer-events: none; // allow clicks to pass through (except buttons)
+  z-index: 100;
+  text-align: right;
+}
+
+::ng-deep .owl-carousel .owl-nav button.owl-prev,
+::ng-deep .owl-carousel .owl-nav button.owl-next {
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  width: 46px;
+  height: 46px;
+  pointer-events: all; // make nav buttons clickable again
+  transition: background 0.3s ease;
+  z-index: 1000;
+}
+
+::ng-deep .owl-carousel .owl-nav button:hover {
+  background: rgba(0, 0, 0, 0.7);
+  float: right;
+}
+
+::ng-deep .owl-theme .owl-nav.disabled + .owl-dots {
+    margin-top: -11px;
+    margin-bottom: 10px;
+    text-align: center;
+    z-index: 0;
+    position: relative;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  font-size: 28px;
+  z-index: 1000;
+  cursor: pointer;
+}
+
