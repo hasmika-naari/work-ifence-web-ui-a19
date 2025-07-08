@@ -32,6 +32,8 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
     currentResumeSections : Array<SectionDesc>;
     isChangeInNewResume : boolean;
     isUserLoggedIn : boolean;
+    isMultipleColumnTemplateSelected : boolean
+    multipleSectionsList : Array<Array<SectionDesc>>
   }
 
   

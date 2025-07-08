@@ -136,6 +136,10 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
 
   selectTemplateHandler($event: any, template: ResumeTemplate){
     this.userStore.updateResumeTemplate(template);
+    if(template.template_name != 'TEMPLATE_9'){
+      this.userStore.emptyMultipleColumnTemplateSections()
+    }
+    this.userStore.setFlagOnTemplateSelected(template.template_name)
     this.contact.emit();
 
   }

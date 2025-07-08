@@ -55,7 +55,7 @@
 }
 
 .header .summary {
-    font-size: 13px !important;
+    font-size: 12px !important;
     line-height: 15px;
     font-weight: 400;
     color: #666;
@@ -89,14 +89,14 @@
 }
 
 .job h3 {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
     font-weight: 400;
     margin: 0;
 }
 
 .job .date {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
     font-weight: 400;
     color: #777;
@@ -105,7 +105,7 @@
 }
 
 .job .company {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
     font-weight: 400;
     color: #555;
@@ -121,7 +121,7 @@
 }
 
 .job ul li {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
     font-weight: 400;
     margin-bottom: 5px;
@@ -134,7 +134,7 @@
 
 .contact ul li, .skills ul li {
     margin-bottom: 3px;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
     font-weight: 400;
 }
@@ -162,7 +162,7 @@
 // .skill-item{
 //     margin-top: 5px;
 //     margin-bottom: 0;
-//     font-size: 13px;
+//     font-size: 12px;
 //     line-height: 15px;
 //     font-weight: 400;
 // }
@@ -177,7 +177,7 @@
 
 .education p {
     margin: 5px 0;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
     font-weight: 400;
 }
@@ -192,7 +192,7 @@
     padding: 5px 10px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
     font-weight: 400;
 }
@@ -203,11 +203,11 @@
 }
 
 :host ::ng-deep .project-content ol li {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 16px;
   font-weight: 400;
   padding: 3px 0px;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--fontFamily2);
   color: black;
   white-space: pre-wrap;
 }
@@ -218,21 +218,21 @@
 }
 
 :host ::ng-deep .project-content ul li {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 16px;
   font-weight: 400;
   padding: 3px 0px;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--fontFamily2);
   color: black;
   white-space: pre-wrap;
 }
 
 :host ::ng-deep .project-content p {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 16px;
   font-weight: 400;
   padding: 3px 0px;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--fontFamily2);
   color: black;
   white-space: pre-wrap;
   margin: 0;

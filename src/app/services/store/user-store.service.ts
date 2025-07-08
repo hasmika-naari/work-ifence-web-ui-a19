@@ -39,7 +39,9 @@ import { Address } from "../contact.model";
         filteredResumes : new Array<ResumeListDataItem>,
         currentResumeSections : new Array<SectionDesc>,
         isChangeInNewResume : false,
-        isUserLoggedIn : false
+        isUserLoggedIn : false,
+        isMultipleColumnTemplateSelected : false,
+        multipleSectionsList : new Array<Array<SectionDesc>>
        });
 
        resetStore() {
@@ -65,6 +67,33 @@ import { Address } from "../contact.model";
       this.state.update((state)=>({
         ...state,
         currentResumeSections : sections
+      }))
+    }
+
+    setMultipleColumnTemplateSections(list : Array<Array<SectionDesc>>){
+    
+      this.state.update((state)=>({
+        ...state,
+        multipleSectionsList : list,
+        currentResumeSections : list.flat(2),
+        isMultipleColumnTemplateSelected : true
+      }))
+    }
+
+    
+    emptyMultipleColumnTemplateSections(){
+    
+      this.state.update((state)=>({
+        ...state,
+        multipleSectionsList : [],
+        isMultipleColumnTemplateSelected : false
+      }))
+    }
+
+    setFlagOnTemplateSelected(template : string){
+      this.state.update((state)=>({
+        ...state,
+       isMultipleColumnTemplateSelected : template == 'TEMPLATE_9'
       }))
     }
 
@@ -984,6 +1013,15 @@ removeSection(section: string) {
 
       getSelectedIsEdit() : Signal<boolean> {
         return computed(()=> this.state().selectedResume.isEdit);
+      }
+
+      getMultipleColumnTemplateSections() : Signal<Array<Array<SectionDesc>>> {
+        return computed(()=> this.state().multipleSectionsList);
+      }
+
+      
+      getFlagforMultipleColumnTemplateSections() : Signal<boolean> {
+        return computed(()=> this.state().isMultipleColumnTemplateSelected);
       }
 
       getSelectedCertificate() : Signal<Certification> {

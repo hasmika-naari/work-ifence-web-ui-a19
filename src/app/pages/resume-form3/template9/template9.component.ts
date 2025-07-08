@@ -24,7 +24,7 @@ import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
-import { SectionDesc } from 'src/app/services/store/user-store';
+import { SectionDesc, sections } from 'src/app/services/store/user-store';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
 
@@ -51,6 +51,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
   resumeForm: Signal<Resume> = this.userStore.getResumeForm();
   selectedResumeListItem: Signal<ResumeListDataItem> = this.userStore.getSelectedResumeListItem();
   currentSections : Signal<SectionDesc[]> = this.userStore.getCurrentSections()
+  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections()
 
   
   @Output() editSection = new EventEmitter<any>();
@@ -115,23 +116,81 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       public genaiService : GenAIService, 
       public templateService : TemplatesService) {
         effect(()=>{
-            if(this.resumeForm().sections.length>0 && this.isSectionsSetCount == 1 && this.currentSections().length == 0){
-              this.sections = []
-              this.resumeForm().sections.map((e : SectionDesc)=>{
-              this.sections = [...this.sections, e.section]
+            if(this.resumeForm().template_details.template_name == 'TEMPLATE_9' && this.resumeForm().multipleSections.length>0 && this.isSectionsSetCount == 1 && this.multipleSections().length == 0){
+              this.staticSections = []
+              this.dynamicSections = []
+              this.sectionsDesc = []
+              this.resumeForm().multipleSections.map((e : SectionDesc[], index : number)=>{
+                if(index == 0){
+                  e.map((section)=>{
+                    this.staticSections = [...this.staticSections, section.section]
+                  })
+                }
+                else{
+                  e.map((section)=>{
+                    this.dynamicSections = [...this.dynamicSections, section.section]
+                  })
+                }
+                e.map((section)=>{
+                    this.sectionsDesc = [...this.sectionsDesc, section]
+                })
               })
-              this.userStore.setResumeSections(this.resumeForm().sections)
+              this.userStore.setMultipleColumnTemplateSections(this.resumeForm().multipleSections)
               this.isSectionsSetCount = this.isSectionsSetCount + 1
             }
-            else if(this.resumeForm().sections.length == 0 && this.currentSections().length == 0){
-              this.userStore.setResumeSections(this.sectionsDesc)
-            }
-            else if(this.currentSections().length !== this.sections.length){
-              this.sections = []
+            else if(this.resumeForm().multipleSections.length == 0 && this.currentSections().length != 0 && this.multipleSections().length == 0){
+               this.staticSections = []
+               this.dynamicSections = []
+               this.sectionsDesc = [...this.currentSections()]
+               let staticSectionsFull : SectionDesc[]= []
+               let dynamicSectionsFull : SectionDesc[]= []
               this.currentSections().map((e : SectionDesc)=>{
-              this.sections = [...this.sections, e.section]
+                if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT", "SKILLS_CATEGORY"].includes(e.section)){
+                  this.staticSections = [...this.staticSections , e.section]
+                  staticSectionsFull = [...staticSectionsFull, e]
+                  console.log(staticSectionsFull);
+                }
+                else{
+                  this.dynamicSections= [ ...this.dynamicSections, e.section]
+                  dynamicSectionsFull = [...dynamicSectionsFull, e]
+                  // console.log(e);
+                }
+              })
+              console.log(this.staticSections,  this.currentSections());
+              
+              this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
+            }
+            else if(this.resumeForm().multipleSections.length == 0 && this.currentSections().length == 0 && this.multipleSections().length == 0){
+               let staticSectionsFull : SectionDesc[]= []
+               let dynamicSectionsFull : SectionDesc[]= []
+              sections.map((e : SectionDesc)=>{
+                if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT"].includes(e.section)){
+                  this.staticSections = [...this.staticSections , e.section]
+                  staticSectionsFull = [...staticSectionsFull, e]
+                  console.log(e);
+                }
+                else if(['RELEVANT_COURSEWORK','SKILLS_BULLET_POINTS', 'EDUCATION', 'CERTIFICATION_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS'].includes(e.section)){
+                  this.dynamicSections= [ ...this.dynamicSections, e.section]
+                  dynamicSectionsFull = [...dynamicSectionsFull, e]
+                  console.log(e);
+                }
+              })
+              this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
+            }
+            if(this.multipleSections()[0].length !== this.staticSections.length){
+              console.log(this.multipleSections()[0] , "MultipleSection");
+              
+              this.staticSections = []
+              this.multipleSections()[0].map((e : SectionDesc)=>{
+              this.staticSections = [...this.staticSections, e.section]
             })
-          }
+            }
+            if(this.multipleSections()[1].length !== this.dynamicSections.length){
+              this.dynamicSections = []
+                this.multipleSections()[1].map((e : SectionDesc)=>{
+                this.dynamicSections = [...this.dynamicSections, e.section]
+              })
+            }
           let skills = this.resumeForm().skill_v2
           this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills.length/2))]
           this.secondHalfSkills = [...skills.slice(Math.ceil(skills.length/2),)]
@@ -142,6 +201,61 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    //  if(this.resumeForm().template_details.template_name == 'TEMPLATE_9' && this.resumeForm().multipleSections.length>0 && this.isSectionsSetCount == 1 && this.multipleSections().length == 0){
+    //           this.staticSections = []
+    //           this.dynamicSections = []
+    //           this.sectionsDesc = []
+    //           this.resumeForm().multipleSections.map((e : SectionDesc[], index : number)=>{
+    //             if(index == 0){
+    //               e.map((section)=>{
+    //                 this.staticSections = [...this.staticSections, section.section]
+    //               })
+    //             }
+    //             else{
+    //               e.map((section)=>{
+    //                 this.dynamicSections = [...this.dynamicSections, section.section]
+    //               })
+    //             }
+    //             e.map((section)=>{
+    //                 this.sectionsDesc = [...this.sectionsDesc, section]
+    //             })
+    //           })
+    //           this.userStore.setMultipleColumnTemplateSections(this.resumeForm().multipleSections)
+    //           this.isSectionsSetCount = this.isSectionsSetCount + 1
+    //   }
+    //   else if(this.resumeForm().multipleSections.length == 0 && this.currentSections().length != 0 && this.multipleSections().length == 0){
+    //       this.staticSections = []
+    //       this.dynamicSections = []
+    //       this.sectionsDesc = [...this.currentSections()]
+    //       let staticSectionsFull : SectionDesc[]= []
+    //       let dynamicSectionsFull : SectionDesc[]= []
+    //     this.currentSections().map((e : SectionDesc)=>{
+    //       if(e.section in ['PROFILE_SUMMARY','WORK_EXPERIENCE', 'PROJECT', 'SKILLS_CATEGORY']){
+    //         this.staticSections = [...this.staticSections , e.section]
+    //         staticSectionsFull = [...staticSectionsFull, e]
+    //       }
+    //       else{
+    //         this.dynamicSections= [ ...this.dynamicSections, e.section]
+    //         dynamicSectionsFull = [...dynamicSectionsFull, e]
+    //       }
+    //     })
+    //     this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
+    //   }
+    //   else if(this.resumeForm().multipleSections.length == 0 && this.currentSections().length == 0 && this.multipleSections().length == 0){
+    //       let staticSectionsFull : SectionDesc[]= []
+    //       let dynamicSectionsFull : SectionDesc[]= []
+    //     sections.map((e : SectionDesc)=>{
+    //       if(e.section in ['PROFILE_SUMMARY','WORK_EXPERIENCE', 'PROJECT']){
+    //         this.staticSections = [...this.staticSections , e.section]
+    //         staticSectionsFull = [...staticSectionsFull, e]
+    //       }
+    //       else if(e.section in ['RELEVANT_COURSEWORK','SKILLS_BULLET_POINTS', 'EDUCATION', 'CERTIFICATION_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS']){
+    //         this.dynamicSections= [ ...this.dynamicSections, e.section]
+    //         dynamicSectionsFull = [...dynamicSectionsFull, e]
+    //       }
+    //     })
+    //     this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
+    //   }
     if(this.selectedResumeListItem().id){
       let isSection : IsSectionPresent = new IsSectionPresent();
       isSection.isContact = true;
@@ -498,6 +612,23 @@ removeSection(section : string){
         this.userStore.updateResumeForm(resume);
       }
   })
+}
+
+isDefaultData(data : string){
+return data?.length==0
+}
+
+isContactNotDefaultData(){
+  return this.resumeForm().contact?.fname.length>0 || this.resumeForm().contact?.lname.length>0 || this.resumeForm().contact?.subTitle.length>0 || this.resumeForm().contact?.phone_number.length>0
+  || this.resumeForm().contact?.email.length>0 || this.resumeForm().contact?.github_profile.length>0 || this.resumeForm().contact?.linkedIn_profile.length>0
+}
+
+isAchievementDefaultData(){
+  return this.resumeForm().achievementBulletPoints?.ach.length == 0
+}
+
+isCertificationDefaultData(){
+  return this.resumeForm().certificationBulletPoints?.point.length == 0
 }
 
   

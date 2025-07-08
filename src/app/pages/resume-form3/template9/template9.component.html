@@ -66,7 +66,7 @@
                               }
                           </h2>
                           <div class="summary-hover">
-                              <p class="summary opacity-half" style="font-size: 13px;">Briefly explian why you're a great fit for the role - use the AI assistant to tailor this summary for each job posting.</p>
+                              <p class="summary opacity-half" style="font-size: 12px;">Briefly explian why you're a great fit for the role - use the AI assistant to tailor this summary for each job posting.</p>
                           </div>
                         </section>
                     }
@@ -94,7 +94,7 @@
                             </div>
                           }
                         </h2>
-                        @for(item of resumeForm().experience; track item.position_title){
+                        @for(item of resumeForm().experience; track item.end_date){
                         <div class="job">
                             <div style="display: grid;grid-template-columns: 2fr 1fr;">
                                 <h3><b>{{item.position_title}}</b></h3>
@@ -556,7 +556,7 @@
                         </section>
                     }
 
-                    @if(!resumeForm().certificationBulletPoints.isDefault){
+                    @if(!isCertificationDefaultData()){
                         <section class="skills" cdkDrag *ngIf="section === 'CERTIFICATION_BULLET_POINTS'">
                             <h2 class="action-hover" style="position: relative;">Certifications
                                 @if(!isPreview){
@@ -613,22 +613,12 @@
                         </section>
                     }
 
-                    @if(!resumeForm().achievementBulletPoints.isDefault){
+                    @if(!isAchievementDefaultData()){
                         <section class="skills" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
                             <h2 class="action-hover" style="position: relative;">Achievements
                                 @if(!isPreview){
                                     <div class="section-actions">
-                                      @if(resumeForm().achievementBulletPoints.isDefault){
-                                        <div class="wif-tooltip" data-direction="bottom">
-                                          <div class="wif-tooltip__initiator">
-                                            <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
-                                          </div>
-                                          <div class="wif-tooltip__item">
-                                            Add Achievements 
-                                          </div>
-                                        </div>
-                                      }
-                                      @else{
+                                     
                                         <div class="wif-tooltip" data-direction="bottom">
                                           <div class="wif-tooltip__initiator">
                                             <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS_BULLET_POINTS', null)"></p-icon>
@@ -637,7 +627,7 @@
                                             Edit Achievements 
                                           </div>
                                         </div>
-                                      }
+                                      
                                       <div class="wif-tooltip" data-direction="bottom">
                                         <div class="wif-tooltip__initiator">
                                           <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
@@ -693,7 +683,7 @@
                     <h2 class="action-hover">Contact
                         @if(!isPreview){
                             <div class="section-actions">
-                        @if(resumeForm().contact.isDefaultData){
+                        @if(!isContactNotDefaultData()){
                           <div class="wif-tooltip" data-direction="bottom">
                             <div class="wif-tooltip__initiator">
                               <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CONTACT')"></p-icon>
@@ -726,16 +716,16 @@
                     </h2>
                     <ul>
                         @if(resumeForm().contact.phone_number.length > 0){
-                        <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'">{{resumeForm().contact.phone_number}}</li>
+                        <li [ngClass]="isDefaultData(resumeForm().contact.phone_number)?'opacity-half' : 'opacity-full'">{{resumeForm().contact.phone_number}}</li>
                         }
                         @if(resumeForm().contact.email.length > 0){
-                        <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><a href="mailto:{{resumeForm().contact.email}}">{{resumeForm().contact.email}}</a></li>
+                        <li [ngClass]="isDefaultData(resumeForm().contact.email)?'opacity-half' : 'opacity-full'"><a href="mailto:{{resumeForm().contact.email}}">{{resumeForm().contact.email}}</a></li>
                         }
                         @if(resumeForm().contact.linkedIn_profile.length > 0){
-                        <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{resumeForm().contact.linkedIn_profile}}">{{resumeForm().contact.linkedIn_profile_display_name}}</a></li>
+                        <li [ngClass]="isDefaultData(resumeForm().contact.linkedIn_profile)?'opacity-half' : 'opacity-full'"><a href="{{resumeForm().contact.linkedIn_profile}}">{{resumeForm().contact.linkedIn_profile_display_name}}</a></li>
                         }
                         @if(resumeForm().contact.github_profile.length > 0){
-                        <li [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{resumeForm().contact.github_profile}}">{{resumeForm().contact.github_profile_display_name}}</a></li>
+                        <li [ngClass]="isDefaultData(resumeForm().contact.github_profile)?'opacity-half' : 'opacity-full'"><a href="{{resumeForm().contact.github_profile}}">{{resumeForm().contact.github_profile_display_name}}</a></li>
                         }
                     </ul>
               </section>
@@ -965,7 +955,7 @@
                     </section>
                 }
 
-                @if(!resumeForm().certificationBulletPoints.isDefault){
+                @if(!isCertificationDefaultData()){
                     <section class="skills" cdkDrag *ngIf="section === 'CERTIFICATION_BULLET_POINTS'">
                         <h2 class="action-hover" style="position: relative;">Certifications
                             @if(!isPreview){
@@ -1022,22 +1012,12 @@
                     </section>
                 }
 
-                @if(!resumeForm().achievementBulletPoints.isDefault){
+                @if(!isAchievementDefaultData()){
                     <section class="skills" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
                         <h2 class="action-hover" style="position: relative;">Achievements
                             @if(!isPreview){
                                 <div class="section-actions">
-                                  @if(resumeForm().achievementBulletPoints.isDefault){
-                                    <div class="wif-tooltip" data-direction="bottom">
-                                      <div class="wif-tooltip__initiator">
-                                        <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
-                                      </div>
-                                      <div class="wif-tooltip__item">
-                                        Add Achievements 
-                                      </div>
-                                    </div>
-                                  }
-                                  @else{
+                                 
                                     <div class="wif-tooltip" data-direction="bottom">
                                       <div class="wif-tooltip__initiator">
                                         <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS_BULLET_POINTS', null)"></p-icon>
@@ -1046,7 +1026,7 @@
                                         Edit Achievements 
                                       </div>
                                     </div>
-                                  }
+                                  
                                   <div class="wif-tooltip" data-direction="bottom">
                                     <div class="wif-tooltip__initiator">
                                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>

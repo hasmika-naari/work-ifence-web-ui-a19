@@ -365,6 +365,7 @@ export class Education{
     imageBase64Encoded : any
     isSectionPresent : IsSectionPresent;
     sections : Array<SectionDesc>
+    multipleSections : Array<Array<SectionDesc>>
 
     constructor(){
       this.title = '';
@@ -394,7 +395,8 @@ export class Education{
       this.accomplishment = []
       this.isSectionPresent = {isContact : false, isSummary : false, isEducation : false, isCourseWork : false, isSkill : false,isSkillV2 : false, isProject : false, isExperience : false, isCertification : false, isAchievement : false, isSkillsCategory : false, isAccomplishments : false},
       this.certificationBulletPoints = {point : '', original_html_content : '', isDefault : true}
-      this.sections = []
+      this.sections = [],
+      this.multipleSections = []
     }
   }
 

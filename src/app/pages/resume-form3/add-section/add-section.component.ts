@@ -15,6 +15,7 @@ import { ButtonModule } from 'primeng/button';
 import { MatCardModule } from '@angular/material/card';
 import { SectionDesc, sections } from 'src/app/services/store/user-store';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
+import { Resume } from 'src/app/services/resume.model';
 
 
 @Component({
@@ -39,8 +40,10 @@ export class AddSectionComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<AddSectionComponent> = inject( MatDialogRef<AddSectionComponent>);
     public themeService: ThemeCustomizerService = inject(ThemeCustomizerService);
     public data: DialogData = inject(MAT_DIALOG_DATA);
+    resumeForm!: Signal<Resume>;
 
     currentSections! : Signal<SectionDesc[]>
+    multipleSections! : Signal<SectionDesc[][]>
 
     add_sections : Array<SectionDesc> = []
 
@@ -58,6 +61,9 @@ export class AddSectionComponent implements OnInit, OnDestroy {
     }
  
     ngOnInit(): void {
+      this.resumeForm = this.userStore.getResumeForm();
+      this.multipleSections= this.userStore.getMultipleColumnTemplateSections()
+
       sections.map((e)=>{
         let sec = this.currentSections().find(s=> s.section == e.section)
         if(!sec){
@@ -68,7 +74,17 @@ export class AddSectionComponent implements OnInit, OnDestroy {
   }
 
   addSection(section : SectionDesc){
-    this.userStore.setResumeSections([...this.currentSections(), section])
+    if(this.resumeForm().template_details.template_name != 'TEMPLATE_9'){
+      this.userStore.setResumeSections([...this.currentSections(), section])
+    }
+    else{
+      if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT"].includes(section.section)){
+        this.userStore.setMultipleColumnTemplateSections([ [...this.multipleSections()[0], section], [...this.multipleSections()[1]]])
+      }
+      else{
+        this.userStore.setMultipleColumnTemplateSections([ [...this.multipleSections()[0]], [...this.multipleSections()[1], section]])
+      }
+    }
     this.dialogRef.close()
   }
 

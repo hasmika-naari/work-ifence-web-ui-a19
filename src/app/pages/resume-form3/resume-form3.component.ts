@@ -157,6 +157,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   isChangeInNewResume : Signal<boolean> = this.userStore.getIsChangeInNewResume();
   jobDescAIRes : Signal<JobDescriptionAIResponse> = this.userStore.getJobDescAIRes();
   resumeDataItemList: Signal<ResumeListDataItem[]> = this.userStore.getResumeDataItemList();
+  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections()
   currentSections!: Signal<SectionDesc[]>;
   visible = true;
   outLineButton = true;
@@ -1875,6 +1876,7 @@ hideMenu() {
       request.current_documentUrl = this.userAccount().login + "/wif-resume/" +  this.custom_fileName
       let resumeData : Resume = this.resumeSignalForm()
       resumeData.sections = this.currentSections()
+      resumeData.multipleSections = this.multipleSections()
       request.resumeJson = JSON.stringify(resumeData);
       request.status = this.resumeSignalForm().isActive?"ACTIVE":"IN_ACTIVE";
       request.isPrimary = this.resumeSignalForm().isPrimary;
@@ -1983,6 +1985,7 @@ hideMenu() {
     request.current_documentUrl = this.userAccount().login + "/wif-resume/" +  this.custom_fileName
     let resumeData : Resume = this.resumeSignalForm()
     resumeData.sections = this.currentSections()
+    resumeData.multipleSections = this.multipleSections()
     request.resumeJson = JSON.stringify(resumeData);
     request.status = this.resumeSignalForm().isActive?"ACTIVE":"IN_ACTIVE";
     request.isPrimary = this.resumeSignalForm().isPrimary;

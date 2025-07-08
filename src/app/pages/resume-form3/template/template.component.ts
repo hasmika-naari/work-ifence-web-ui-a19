@@ -465,7 +465,7 @@ dragStarted(event: CdkDragStart) {
 }
 
 isDefaultData(data : string){
-return data?.length>0
+return data?.length==0
 }
 
 isContactDefaultData(){
@@ -474,7 +474,7 @@ isContactDefaultData(){
 }
 
 isAchievementDefaultData(){
-  return this.resumeForm().achievementBulletPoints?.ach.length>0
+  return this.resumeForm().achievementBulletPoints?.ach.length == 0
 }
 
 
