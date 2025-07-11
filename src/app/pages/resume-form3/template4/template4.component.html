@@ -40,7 +40,7 @@
             <h2 style="font-size: 16px;color: black;font-weight: 500;margin: 0;padding: 0;text-transform: uppercase;">Summary</h2>
             <p class="resume-summary" style="padding-top: 10px !important;">{{resumeForm().profileSummary.profile_summary}}</p>
             <div class="edit-context-menu"  *ngIf="!isPreview">
-                <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('SUMMARY', null)"  ></i>
+                <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('PROFILE_SUMMARY', null)"  ></i>
                 <i class="fa fa-trash show-orange-red" (click)="confirmDeleteDialog('SUMMARY', null)"  ></i>
             </div>
         </div>
@@ -58,7 +58,7 @@
                    
                     </div>
                 <div class="edit-context-menu"  *ngIf="!isPreview">
-                    <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('SKILLS', null)"  ></i>
+                    <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('SKILLS_BULLET_POINTS', null)"  ></i>
                     <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('SKILLS', null)"></i>
                 </div>
               </div>
@@ -139,7 +139,7 @@
                 </div>
                 </div>
                 <div class="edit-context-menu menuFadeInUp" *ngIf="!isPreview">
-                    <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('EXPERIENCE', item)"  ></i>
+                    <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('WORK_EXPERIENCE', item)"  ></i>
                     <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('EXPERIENCE', item)"></i>
                     @if(item.isHideSelected){
                       <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('EXPERIENCE', item)"></i>

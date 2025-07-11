@@ -69,7 +69,7 @@
             <div class="section-actions">
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
-                   <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('SUMMARY', null)"></p-icon>
+                   <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('PROFILE_SUMMARY', null)"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
                   Edit summary
@@ -97,7 +97,7 @@
             <div class="section-actions">
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('SUMMARY')"></p-icon>
+                  <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('PROFILE_SUMMARY')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
                   Add summary
@@ -289,7 +289,7 @@
               @if(resumeForm().courseWork.length == 0){
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('COURSEWORK')"></p-icon>
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('RELEVANT_COURSEWORK')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Add course Work
@@ -299,7 +299,7 @@
               @else{
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('COURSEWORK', null)"></p-icon>
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('RELEVANT_COURSEWORK', null)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Edit course Work
@@ -335,7 +335,7 @@
               @if(resumeForm().skill.length == 0){
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS')"></p-icon>
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_BULLET_POINTS')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Add skills
@@ -345,7 +345,7 @@
               @else{
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS', null)"></p-icon>
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_BULLET_POINTS', null)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Edit skills
@@ -453,7 +453,7 @@
               <div class="section-actions">
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('EXPERIENCE')"></p-icon>
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('WORK_EXPERIENCE')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Add experience
@@ -481,7 +481,7 @@
                   <div class="sub-items-actions">
                     <div class="wif-tooltip" data-direction="bottom">
                       <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('EXPERIENCE', item)"></p-icon>
+                        <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('WORK_EXPERIENCE', item)"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
                         Edit experience
@@ -490,7 +490,7 @@
                     @if(!item.isHideSelected){
                       <div class="wif-tooltip" data-direction="bottom">
                         <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('EXPERIENCE', item)"></p-icon>
+                          <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('WORK_EXPERIENCE', item)"></p-icon>
                         </div>
                         <div class="wif-tooltip__item">
                           Hide experience
@@ -500,7 +500,7 @@
                     @else{
                       <div class="wif-tooltip" data-direction="bottom">
                         <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('EXPERIENCE', item)"></p-icon>
+                          <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('WORK_EXPERIENCE', item)"></p-icon>
                         </div>
                         <div class="wif-tooltip__item">
                           Show experience
@@ -509,7 +509,7 @@
                     }
                     <div class="wif-tooltip" data-direction="bottom">
                       <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('EXPERIENCE', item.id, 'up')"></p-icon>
+                        <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('WORK_EXPERIENCE', item.id, 'up')"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
                         Move up
@@ -517,7 +517,7 @@
                     </div>
                     <div class="wif-tooltip" data-direction="bottom">
                       <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('EXPERIENCE', item.id, 'down')"></p-icon>
+                        <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('WORK_EXPERIENCE', item.id, 'down')"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
                         Move down
@@ -525,7 +525,7 @@
                     </div>
                     <div class="wif-tooltip" data-direction="bottom">
                       <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('EXPERIENCE', item)"></p-icon>
+                        <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('WORK_EXPERIENCE', item)"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
                         Remove experience
@@ -545,7 +545,7 @@
               <div class="section-actions">
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EXPERIENCE')"></p-icon>
+                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('WORK_EXPERIENCE')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Add experience
@@ -763,7 +763,7 @@
               <div class="section-actions">
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CERTIFICATION')"></p-icon>
+                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CERTIFICATIONS')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Add certification 
@@ -790,7 +790,7 @@
               <div class="cer-sub-items-actions">
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-pencil icon" title="" (click)="editSectionHandler('CERTIFICATION', item)"></p-icon>
+                    <p-icon class="pi pi-pencil icon" title="" (click)="editSectionHandler('CERTIFICATIONS', item)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Edit certification 
@@ -799,7 +799,7 @@
                 @if(!item.isHideSelected){
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('CERTIFICATION', item)"></p-icon>
+                      <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('CERTIFICATIONS', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
                       Hide certification 
@@ -809,7 +809,7 @@
                 @else{
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('CERTIFICATION', item)"></p-icon>
+                      <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('CERTIFICATIONS', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
                       Show certification 
@@ -818,7 +818,7 @@
                 }
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('CERTIFICATION', item.id, 'up')"></p-icon>
+                    <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('CERTIFICATIONS', item.id, 'up')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Move up 
@@ -826,7 +826,7 @@
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('CERTIFICATION', item.id, 'down')"></p-icon>
+                    <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('CERTIFICATIONS', item.id, 'down')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Move down 
@@ -834,7 +834,7 @@
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('CERTIFICATION', item)"></p-icon>
+                    <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('CERTIFICATIONS', item)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Remove certification 
@@ -853,7 +853,7 @@
               <div class="section-actions">
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATION')"></p-icon>
+                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Add certification 
@@ -888,7 +888,7 @@
             <div class="section-actions">
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS', null)"></p-icon>
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS_BULLET_POINTS', null)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Edit achievement
@@ -919,7 +919,7 @@
             <div class="section-actions">
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS')"></p-icon>
+                  <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
                   Add achievement
@@ -940,6 +940,68 @@
          <ul>
           <li class="opacity-half">Describe what you did and the impact it had.</li>
          </ul>
+        </div>
+      </section>
+    }
+    @if(!isCertificationDefaultData()){
+      <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS_BULLET_POINTS'">
+        <span class="summary-section-title">Certifications
+          @if(!isPreview){
+            <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('CERTIFICATIONS_BULLET_POINTS', null)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Edit certifications
+                  </div>
+                </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove certifications section
+                </div>
+              </div>
+        </div>
+      }
+        </span>
+        <div  class="course-work-section-content">
+          <div>
+            <div [innerHTML]="resumeForm().certificationBulletPoints.point" class="project-content"></div>
+          </div>
+        </div>
+      </section>
+    }
+    @else{
+      <section  class="trigger-area course-work trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS_BULLET_POINTS'">
+        <span class="summary-section-title">Certifications
+          @if(!isPreview){
+            <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Add certifications
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove certifications section
+                </div>
+              </div>
+        </div>
+      }
+        </span>
+        <div  class="course-work-section-content trigger-area">
+         <ul>
+            <li class="opacity-half"><a href="#">Certificate Name</a>, Which institution issued the certificate?</li>
+          </ul>
         </div>
       </section>
     }

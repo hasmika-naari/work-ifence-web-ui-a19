@@ -64,12 +64,23 @@ export class AddSectionComponent implements OnInit, OnDestroy {
       this.resumeForm = this.userStore.getResumeForm();
       this.multipleSections= this.userStore.getMultipleColumnTemplateSections()
 
+      if(this.resumeForm().template_details.template_name != 'TEMPLATE_9'){
       sections.map((e)=>{
         let sec = this.currentSections().find(s=> s.section == e.section)
         if(!sec){
           this.add_sections = [...this.add_sections, e]
         }
       })
+    }
+    else{
+      sections.map((e)=>{
+        let sec_right = this.multipleSections()[0].find(s=> s.section == e.section)
+        let sec_left = this.multipleSections()[1].find(s=> s.section == e.section)
+        if(!sec_right && !sec_left){
+          this.add_sections = [...this.add_sections, e]
+        }
+      })
+    }
 
   }
 

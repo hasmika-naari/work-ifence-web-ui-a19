@@ -26,6 +26,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { SectionDesc, sections } from 'src/app/services/store/user-store';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
 
 
@@ -59,12 +60,12 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
   @Input() isPreview : boolean = false;
 
   staticSections = ['PROFILE_SUMMARY', 'WORK_EXPERIENCE', 'PROJECT'];
-  dynamicSections = ['RELEVANT_COURSEWORK','SKILLS_BULLET_POINTS', 'EDUCATION', 'CERTIFICATION_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS'];
+  dynamicSections = ['RELEVANT_COURSEWORK','SKILLS_BULLET_POINTS', 'EDUCATION', 'CERTIFICATIONS_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS'];
 
   // Keep track of original dynamic sections
   originalDynamicSections = [...this.dynamicSections];
 
-   sections  : string[]= ['PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS', 'ACHIEVEMENTS_BULLET_POINTS']
+   sections  : string[]= ['PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS']
   
     sectionsDesc  : Array<SectionDesc> = [
       {
@@ -92,8 +93,8 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
         title : 'Project'
       },
       {
-        section : 'CERTIFICATIONS',
-        title : 'Certification'
+        section : 'CERTIFICATIONS_BULLET_POINTS',
+        title : 'Certification with bullet points'
       },
       {
         section : 'ACHIEVEMENTS_BULLET_POINTS',
@@ -114,9 +115,9 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       public dialog: MatDialog,
       public promptService : PromptService, 
       public genaiService : GenAIService, 
-      public templateService : TemplatesService) {
+      public templateService : Templatesv2Service) {
         effect(()=>{
-            if(this.resumeForm().template_details.template_name == 'TEMPLATE_9' && this.resumeForm().multipleSections.length>0 && this.isSectionsSetCount == 1 && this.multipleSections().length == 0){
+            if(this.resumeForm().template_details.template_name == 'TEMPLATE_9' && this.resumeForm()?.multipleSections?.length>0 && this.isSectionsSetCount == 1 && this.multipleSections().length == 0){
               this.staticSections = []
               this.dynamicSections = []
               this.sectionsDesc = []
@@ -135,10 +136,12 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
                     this.sectionsDesc = [...this.sectionsDesc, section]
                 })
               })
+            console.log(this.resumeForm().multipleSections);
+            
               this.userStore.setMultipleColumnTemplateSections(this.resumeForm().multipleSections)
               this.isSectionsSetCount = this.isSectionsSetCount + 1
             }
-            else if(this.resumeForm().multipleSections.length == 0 && this.currentSections().length != 0 && this.multipleSections().length == 0){
+            else if(this.resumeForm()?.multipleSections?.length == 0 && this.currentSections().length != 0 && this.multipleSections()?.length == 0){
                this.staticSections = []
                this.dynamicSections = []
                this.sectionsDesc = [...this.currentSections()]
@@ -160,7 +163,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
               
               this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
             }
-            else if(this.resumeForm().multipleSections.length == 0 && this.currentSections().length == 0 && this.multipleSections().length == 0){
+            else if(this.resumeForm()?.multipleSections?.length == 0 && this.currentSections().length == 0 && this.multipleSections().length == 0){
                let staticSectionsFull : SectionDesc[]= []
                let dynamicSectionsFull : SectionDesc[]= []
               sections.map((e : SectionDesc)=>{
@@ -169,7 +172,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
                   staticSectionsFull = [...staticSectionsFull, e]
                   console.log(e);
                 }
-                else if(['RELEVANT_COURSEWORK','SKILLS_BULLET_POINTS', 'EDUCATION', 'CERTIFICATION_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS'].includes(e.section)){
+                else if(['RELEVANT_COURSEWORK','SKILLS_BULLET_POINTS', 'EDUCATION', 'CERTIFICATIONS_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS'].includes(e.section)){
                   this.dynamicSections= [ ...this.dynamicSections, e.section]
                   dynamicSectionsFull = [...dynamicSectionsFull, e]
                   console.log(e);
@@ -201,61 +204,12 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    //  if(this.resumeForm().template_details.template_name == 'TEMPLATE_9' && this.resumeForm().multipleSections.length>0 && this.isSectionsSetCount == 1 && this.multipleSections().length == 0){
-    //           this.staticSections = []
-    //           this.dynamicSections = []
-    //           this.sectionsDesc = []
-    //           this.resumeForm().multipleSections.map((e : SectionDesc[], index : number)=>{
-    //             if(index == 0){
-    //               e.map((section)=>{
-    //                 this.staticSections = [...this.staticSections, section.section]
-    //               })
-    //             }
-    //             else{
-    //               e.map((section)=>{
-    //                 this.dynamicSections = [...this.dynamicSections, section.section]
-    //               })
-    //             }
-    //             e.map((section)=>{
-    //                 this.sectionsDesc = [...this.sectionsDesc, section]
-    //             })
-    //           })
-    //           this.userStore.setMultipleColumnTemplateSections(this.resumeForm().multipleSections)
-    //           this.isSectionsSetCount = this.isSectionsSetCount + 1
-    //   }
-    //   else if(this.resumeForm().multipleSections.length == 0 && this.currentSections().length != 0 && this.multipleSections().length == 0){
-    //       this.staticSections = []
-    //       this.dynamicSections = []
-    //       this.sectionsDesc = [...this.currentSections()]
-    //       let staticSectionsFull : SectionDesc[]= []
-    //       let dynamicSectionsFull : SectionDesc[]= []
-    //     this.currentSections().map((e : SectionDesc)=>{
-    //       if(e.section in ['PROFILE_SUMMARY','WORK_EXPERIENCE', 'PROJECT', 'SKILLS_CATEGORY']){
-    //         this.staticSections = [...this.staticSections , e.section]
-    //         staticSectionsFull = [...staticSectionsFull, e]
-    //       }
-    //       else{
-    //         this.dynamicSections= [ ...this.dynamicSections, e.section]
-    //         dynamicSectionsFull = [...dynamicSectionsFull, e]
-    //       }
-    //     })
-    //     this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
-    //   }
-    //   else if(this.resumeForm().multipleSections.length == 0 && this.currentSections().length == 0 && this.multipleSections().length == 0){
-    //       let staticSectionsFull : SectionDesc[]= []
-    //       let dynamicSectionsFull : SectionDesc[]= []
-    //     sections.map((e : SectionDesc)=>{
-    //       if(e.section in ['PROFILE_SUMMARY','WORK_EXPERIENCE', 'PROJECT']){
-    //         this.staticSections = [...this.staticSections , e.section]
-    //         staticSectionsFull = [...staticSectionsFull, e]
-    //       }
-    //       else if(e.section in ['RELEVANT_COURSEWORK','SKILLS_BULLET_POINTS', 'EDUCATION', 'CERTIFICATION_BULLET_POINTS', 'ACHIEVEMENTS_BULLET_POINTS']){
-    //         this.dynamicSections= [ ...this.dynamicSections, e.section]
-    //         dynamicSectionsFull = [...dynamicSectionsFull, e]
-    //       }
-    //     })
-    //     this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
-    //   }
+    console.log(this.multipleSections()?.length == 0, this.resumeForm().multipleSections?.length>0);
+    
+    if(this.multipleSections()?.length == 0 && this.resumeForm().multipleSections?.length>0){
+       this.userStore.setMultipleColumnTemplateSections(this.resumeForm().multipleSections)
+       console.log(this.resumeForm().multipleSections);
+    }
     if(this.selectedResumeListItem().id){
       let isSection : IsSectionPresent = new IsSectionPresent();
       isSection.isContact = true;
@@ -298,10 +252,10 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
           console.log(selectedJson);
           this.userStore.deleteProject(selectedJson)
         }
-        else if(section === "EXPERIENCE"){
+        else if(section === "WORK_EXPERIENCE"){
           this.userStore.deleteExperience(selectedJson)
         }
-        else if(section === "CERTIFICATION"){
+        else if(section === "CERTIFICATIONS"){
           this.userStore.deleteCertification(selectedJson)
         }
       }
@@ -380,17 +334,17 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       let index = this.resumeForm().project.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateProjectItem(selectedJson, index)
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       selectedJson.isHideSelected = true;
       let index = this.resumeForm().experience.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateExperienceItem(selectedJson, index)
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       selectedJson.isHideSelected = true;
       let index = this.resumeForm().certification.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateCertificationItem(selectedJson, index)
     }
-    else if(section === "ACCOMPLISHMENT"){
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
       selectedJson.isHideSelected = true;
       let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateAccomplishmentItem(selectedJson, index);
@@ -417,17 +371,17 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       let index = this.resumeForm().project.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateProjectItem(selectedJson, index)
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       selectedJson.isHideSelected = false;
       let index = this.resumeForm().experience.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateExperienceItem(selectedJson, index)
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       selectedJson.isHideSelected = false;
       let index = this.resumeForm().certification.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateCertificationItem(selectedJson, index)
     }
-    else if(section === "ACCOMPLISHMENT"){
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
       selectedJson.isHideSelected = false;
       let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateAccomplishmentItem(selectedJson, index);
@@ -441,10 +395,10 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     else if(section === "PROJECT"){
       this.userStore.setProject(new Project())
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       this.userStore.setExperience(new Experience())
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       this.userStore.setCertification(new Certification());
     }
     
@@ -458,7 +412,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     else if(section == "PROJECT"){
       this.userStore.updateProject(selectedJson)
     }
-    else if(section == "EXPERIENCE"){
+    else if(section == "WORK_EXPERIENCE"){
       this.userStore.updateExperience(selectedJson)
     }
 
@@ -522,7 +476,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     }
     this.userStore.updateProjectList(array);
   }
-  else if(section === "EXPERIENCE"){
+  else if(section === "WORK_EXPERIENCE"){
     const array = this.resumeForm().experience;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -541,7 +495,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     }
     this.userStore.updateExperienceList(array);
   }
-  else if(section === "CERTIFICATION"){
+  else if(section === "CERTIFICATIONS"){
     const array = this.resumeForm().certification;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -572,19 +526,15 @@ removeSection(section : string){
     if(result.event === "CONFIRM"){
         let status = this.sectionStatus()
         let resume = this.resumeForm()
-        if(section === "CONTACT"){
-          resume.contact = new ResumeContact()
-          status.isContact = false;
-        }
-        else if(section === "SUMMARY"){
+        if(section === "PROFILE_SUMMARY"){
           resume.profileSummary = new ProfileSummary()
           status.isSummary = false;
         }
-        else if(section === "COURSEWORK"){
+        else if(section === "RELEVANT_COURSEWORK"){
           resume.courseWork = []
           status.isCourseWork = false;
         }
-        else if(section === "SKILLS"){
+        else if(section === "SKILLS_BULLET_POINTS"){
           resume.skill = []
           status.isSkill = false;
         }
@@ -596,11 +546,11 @@ removeSection(section : string){
           resume.project = []
           status.isProject = false;
         }
-        else if(section === "EXPERIENCE"){
+        else if(section === "WORK_EXPERIENCE"){
           resume.experience = []
           status.isExperience = false;
         }
-        else if(section === "CERTIFICATION_BULLET_POINTS"){
+        else if(section === "CERTIFICATIONS_BULLET_POINTS"){
           resume.certificationBulletPoints = new CertificationBulletPoints();
           status.isSkillsCategory = false
         }
@@ -608,7 +558,11 @@ removeSection(section : string){
           resume.achievementBulletPoints = new AchievementBulletPoints()
           status.isAchievement = false
         }
-        this.userStore.updateSectionStatus(status);
+        else if(section === "CERTIFICATIONS"){
+          resume.certification = []
+          status.isCertification = false
+        }
+        this.userStore.removeSectionFromMultipleSectionsList(section);
         this.userStore.updateResumeForm(resume);
       }
   })
@@ -624,11 +578,11 @@ isContactNotDefaultData(){
 }
 
 isAchievementDefaultData(){
-  return this.resumeForm().achievementBulletPoints?.ach.length == 0
+  return this.resumeForm().achievementBulletPoints?.ach == null || this.resumeForm().achievementBulletPoints?.ach.length == 0 || this.resumeForm().achievementBulletPoints?.ach == undefined
 }
 
 isCertificationDefaultData(){
-  return this.resumeForm().certificationBulletPoints?.point.length == 0
+  return  this.resumeForm().certificationBulletPoints?.point == null || this.resumeForm().certificationBulletPoints?.point.length == 0 || this.resumeForm().certificationBulletPoints?.point == undefined
 }
 
   

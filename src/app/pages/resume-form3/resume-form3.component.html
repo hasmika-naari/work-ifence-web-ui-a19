@@ -51,8 +51,14 @@
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
+                                    @if(isSectionActive('CERTIFICATIONS_BULLET_POINTS')){
+                                    <li (click)="showCertificationBulletpointsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CERTIFICATIONS</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
                                     @if(isSectionActive('SKILLS_CATEGORY')){
-                                        <li (click)="showSkillsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS CATEGORY</div>
+                                        <li (click)="showSkillsDetails('SKILLS_CATEGORY')"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS CATEGORY</div>
                                             @if(false){
                                                 <div class="wave-point"></div>
                                             }</li>
@@ -64,7 +70,7 @@
                                         }</li>
                                     }
                                     @if(isSectionActive('SKILLS_BULLET_POINTS')){
-                                    <li (click)="showSkillsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS</div>
+                                    <li (click)="showSkillsDetails('SKILLS_BULLET_POINTS')"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
@@ -141,7 +147,7 @@
                         <app-resume-certificate (contact)="saveContact()" *ngIf="showCertificationsDetailsWindow"></app-resume-certificate>
                         <app-resume-course-work [courseValue]="courseWorkCount" (contact)="saveContact()" *ngIf="showCourseWorkDetailsWindow"></app-resume-course-work>
                         <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" [sectionName]="sectionName" *ngIf="showSkillsDetailsWindow" ></app-resume-skills>
-                        <app-resume-achievements (contact)="saveContact()" [sectionName]="'ACHIEVEMENT'" *ngIf="showAchievementsDetailsWindow"></app-resume-achievements>
+                        <app-resume-achievements (contact)="saveContact()" [sectionName]="sectionName" *ngIf="showAchievementsDetailsWindow"></app-resume-achievements>
                         <!-- <app-resume-achievements (contact)="saveContact()" [sectionName]="'SKILLS_CATEGORY'" *ngIf="showSkillsCategoryDetailsWindow"></app-resume-achievements> -->
                         <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngIf="showSummaryDetailsWindow"></app-resume-summary>
                         <app-resume-accomplishments (contact)="saveContact()" *ngIf="showAccomplishmentsWindow"></app-resume-accomplishments>

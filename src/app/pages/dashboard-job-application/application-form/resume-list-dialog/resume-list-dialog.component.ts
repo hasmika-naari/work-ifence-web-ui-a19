@@ -17,6 +17,8 @@ import { Account } from 'src/app/services/profile.model';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
+import { Resume } from 'src/app/services/resume.model';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 
 
@@ -59,6 +61,107 @@ export class ResumeListDialogComponent {
 
   imageCache: { [url: string]: string } = {};
 
+    template1_sections  : Array<SectionDesc> = [
+        {
+          section : 'PROFILE_SUMMARY',
+          title : 'Profile summary'
+        },
+        {
+          section : 'EDUCATION',
+          title : 'Education'
+        },
+        {
+          section : 'RELEVANT_COURSEWORK',
+          title : 'Relevant coursework'
+        },
+        {
+          section : 'SKILLS_BULLET_POINTS',
+          title : 'Skills with bullet points'
+        },
+        {
+          section : 'WORK_EXPERIENCE',
+          title : 'Work experience'
+        },
+        {
+          section : 'PROJECT',
+          title : 'Project'
+        },
+        {
+          section : 'CERTIFICATIONS',
+          title : 'Certification'
+        },
+        {
+          section : 'ACHIEVEMENTS_BULLET_POINTS',
+          title : 'Achievements with bullet points'
+        }
+      ]
+  
+    template9right_sections  : Array<SectionDesc> = [
+        {
+        section : 'PROFILE_SUMMARY',
+        title : 'Profile summary'
+      },
+      {
+        section : 'WORK_EXPERIENCE',
+        title : 'Work experience'
+      },
+      {
+        section : 'PROJECT',
+        title : 'Project'
+      }
+      ]
+  
+      template9left_sections : Array<SectionDesc> = [
+     
+      {
+        section : 'RELEVANT_COURSEWORK',
+        title : 'Relevant coursework'
+      },
+      {
+        section : 'SKILLS_BULLET_POINTS',
+        title : 'Skills with bullet points'
+      },
+       {
+        section : 'EDUCATION',
+        title : 'Education'
+      },
+      {
+        section : 'CERTIFICATIONS_BULLET_POINTS',
+        title : 'Certification with bullet points'
+      },
+      {
+        section : 'ACHIEVEMENTS_BULLET_POINTS',
+        title : 'Achievements with bullet points'
+      }
+    ]
+  
+    template10_sections : Array<SectionDesc> = [
+      {
+        section : 'PROFILE_SUMMARY',
+        title : 'Profile summary'
+      },
+      {
+        section : 'EDUCATION',
+        title : 'Education'
+      },
+      {
+        section : 'SKILLS_CATEGORY',
+        title : 'Skills category'
+      },
+      {
+        section : 'WORK_EXPERIENCE',
+        title : 'Work experience'
+      },
+      {
+        section : 'PROJECT',
+        title : 'Project'
+      },
+      {
+        section : 'ACHIEVEMENT_WITH_DESC',
+        title : 'Accomplishments'
+      }
+    ]
+
 
   constructor(
     public dialogRef: MatDialogRef<ResumeListDialogComponent>,
@@ -76,6 +179,22 @@ export class ResumeListDialogComponent {
             data.map(async (e : ResumeListDataItem)=>{
             await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + e.documentUrl).then((bytes)=>{
                 e.imageBytes = bytes;
+                 let resume : Resume = JSON.parse(e.resumeJson);
+                              if(!resume?.sections && !resume?.multipleSections){
+                                if(resume.template_details.template_name == 'TEMPLATE_1'){
+                                  resume.sections= this.template1_sections
+                                  resume.multipleSections = []
+                                }
+                                else if(resume.template_details.template_name == 'TEMPLATE_9'){
+                                  resume.multipleSections = [this.template9right_sections, this.template9left_sections]
+                                  resume.sections = []
+                                }
+                                else if(resume.template_details.template_name == 'TEMPLATE_10'){
+                                  resume.sections= this.template10_sections
+                                  resume.multipleSections = []
+                                }
+                              }
+                              e.resumeJson = JSON.stringify(resume)
                 this.resumes = [...this.resumes, e]
                 this.filteredResumes = [...this.filteredResumes, e]
             })

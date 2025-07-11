@@ -114,6 +114,10 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
       title : 'Certification'
     },
     {
+      section : 'CERTIFICATIONS_BULLET_POINTS',
+      title : 'Certification with bullet points'
+    },
+    {
       section : 'ACHIEVEMENTS_BULLET_POINTS',
       title : 'Achievements with bullet points'
     },

@@ -102,7 +102,7 @@ export class AchievementsComponent implements OnInit, OnDestroy {
           if(this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'){
             this.setAchievements()
           }
-          else if(this.sectionName == 'CERTIFICATION_BULLET_POINTS'){
+          else if(this.sectionName == 'CERTIFICATIONS_BULLET_POINTS'){
             this.setCertification()
           }
         })
@@ -167,7 +167,7 @@ setCertification(){
       this.userStore.updateSectionStatus(status);
     }
     }
-    else if(this.sectionName == 'CERTIFICATION_BULLET_POINTS'){
+    else if(this.sectionName == 'CERTIFICATIONS_BULLET_POINTS'){
       let certification = new CertificationBulletPoints();
     if(des.includes('data-list="bullet"')){
       const correctedHTML = des.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
@@ -238,7 +238,7 @@ setCertification(){
     if(this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'){
       this.setAchievements()
     }
-    else if(this.sectionName == 'CERTIFICATION_BULLET_POINTS'){
+    else if(this.sectionName == 'CERTIFICATIONS_BULLET_POINTS'){
       this.setCertification()
     }
 

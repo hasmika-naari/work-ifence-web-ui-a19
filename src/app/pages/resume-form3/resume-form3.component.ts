@@ -383,7 +383,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       label: 'SKILLS',
       icon: 'pi pi-check-circle',
       command: () => {
-          this.showSkillsDetails();
+          // this.showSkillsDetails();
       }
     },
     {
@@ -996,38 +996,40 @@ hideMenu() {
       console.log("**************** showEditSection ******************");
       this.showContact()
     }
-    else if($event.section === "SUMMARY"){
+    else if($event.section === "PROFILE_SUMMARY"){
       this.showSummaryDetails()
     }
     else if($event.section === "EDUCATION"){
       this.showEducationDetails()
     }
-    else if($event.section === "COURSEWORK"){
+    else if($event.section === "RELEVANT_COURSEWORK"){
       this.showCourseWorkDetails()
     }
-    else if($event.section === "SKILLS"){
-      this.showSkillsDetails()
-      this.sectionName = 'SKILLS'
+    else if($event.section === "SKILLS_BULLET_POINTS"){
+      this.showSkillsDetails("SKILLS_BULLET_POINTS")
     }
     else if($event.section === "PROJECT"){
       this.showProjectWorkDetails()
     }
-    else if($event.section === "EXPERIENCE"){
+    else if($event.section === "WORK_EXPERIENCE"){
       this.showWorkExperianceDetails()
     }
-    else if($event.section === "CERTIFICATION"){
+    else if($event.section === "CERTIFICATIONS"){
       this.showCertificationsDetails()
     }
-    else if($event.section == "ACHIEVEMENTS"){
+    else if($event.section == "ACHIEVEMENTS_BULLET_POINTS"){
       this.showAchievementsDetails()
     }
     else if($event.section == "SKILLS_CATEGORY"){
-      this.showSkillsDetails()
-      this.sectionName = 'SKILLS_CATEGORY'
+      this.showSkillsDetails("SKILLS_CATEGORY")
     }
-    else if($event.section == "ACCOMPLISHMENT"){
+    else if($event.section == "ACHIEVEMENT_WITH_DESC"){
       this.showAccomplishmentsDetails()
     }
+     else if($event.section == "CERTIFICATIONS_BULLET_POINTS"){
+      this.showCertificationBulletpointsDetails()
+    }
+
   }
 
   showResumeTemplates(){
@@ -1200,6 +1202,27 @@ hideMenu() {
     this.showAchievementsDetailsWindow= true;
     this.showSkillsCategoryDetailsWindow = false;
     this.showAccomplishmentsWindow = false;
+    this.sectionName = 'ACHIEVEMENTS_BULLET_POINTS'
+  }
+
+  showCertificationBulletpointsDetails(){
+    this.formLabel = 'Certification';
+    this.hidePanelWindow = false;
+    this.showResumeTitleWindow = false;
+    this.showResumeTemplateList = false;
+    this.showJobDescriptionWindow = false;
+    this.showWorkExperianceDetailsWindow = false;
+    this.showContactDetailsWindow = false;
+    this.showProjectWorkDetailsWindow = false;
+    this.showEducationDetailsWindow = false;
+    this.showCertificationsDetailsWindow =  false;
+    this.showCourseWorkDetailsWindow = false;
+    this.showSkillsDetailsWindow =  false;
+    this.showSummaryDetailsWindow = false;
+    this.showAchievementsDetailsWindow= true;
+    this.showSkillsCategoryDetailsWindow = false;
+    this.showAccomplishmentsWindow = false;
+    this.sectionName = 'CERTIFICATIONS_BULLET_POINTS'
   }
 
   showAccomplishmentsDetails(){
@@ -1262,7 +1285,7 @@ hideMenu() {
 
 
   }
-  showSkillsDetails(){
+  showSkillsDetails(section :string){
     this.formLabel = 'Skill Details';
     this.hidePanelWindow = false;
     this.showResumeTitleWindow = false;
@@ -1279,6 +1302,7 @@ hideMenu() {
     this.showAchievementsDetailsWindow= false;
     this.showAccomplishmentsWindow = false;
     this.skillCount = this.skillCount + 1;
+    this.sectionName=section
   }
 
   showSummaryDetails(){
@@ -1302,13 +1326,27 @@ hideMenu() {
 
   isSectionActive(section : string){
     let status = false;
-    this.currentSections().map((e : SectionDesc)=>{
+    if(this.currentSections().length > 0){
+      this.currentSections().map((e : SectionDesc)=>{
       if(e.section === section){
         status = true
       }
     })
-    
-    
+    }
+    else if(this.multipleSections()[0]?.length >0){
+      this.multipleSections()[0].map((e : SectionDesc)=>{
+      if(e.section === section){
+        status = true
+      }
+    })
+    }
+    else if(this.multipleSections()[1]?.length >0){
+      this.multipleSections()[1].map((e : SectionDesc)=>{
+      if(e.section === section){
+        status = true
+      }
+    })
+    }
     return status
   }
 

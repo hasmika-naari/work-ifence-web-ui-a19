@@ -37,6 +37,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ApplicationListComponent } from '../dashboard-job-application/application-list/application-list.component';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
 import { MatProgressBar, MatProgressBarModule } from '@angular/material/progress-bar';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 interface Option {
   name : string;
@@ -86,6 +87,107 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   roleCategories : Array<Option> = []
   resumeCategories : Array<Option> = []
   tempResumes : ResumeListDataItem[] = []
+
+  template1_sections  : Array<SectionDesc> = [
+      {
+        section : 'PROFILE_SUMMARY',
+        title : 'Profile summary'
+      },
+      {
+        section : 'EDUCATION',
+        title : 'Education'
+      },
+      {
+        section : 'RELEVANT_COURSEWORK',
+        title : 'Relevant coursework'
+      },
+      {
+        section : 'SKILLS_BULLET_POINTS',
+        title : 'Skills with bullet points'
+      },
+      {
+        section : 'WORK_EXPERIENCE',
+        title : 'Work experience'
+      },
+      {
+        section : 'PROJECT',
+        title : 'Project'
+      },
+      {
+        section : 'CERTIFICATIONS',
+        title : 'Certification'
+      },
+      {
+        section : 'ACHIEVEMENTS_BULLET_POINTS',
+        title : 'Achievements with bullet points'
+      }
+    ]
+
+  template9right_sections  : Array<SectionDesc> = [
+      {
+      section : 'PROFILE_SUMMARY',
+      title : 'Profile summary'
+    },
+    {
+      section : 'WORK_EXPERIENCE',
+      title : 'Work experience'
+    },
+    {
+      section : 'PROJECT',
+      title : 'Project'
+    }
+    ]
+
+    template9left_sections : Array<SectionDesc> = [
+   
+    {
+      section : 'RELEVANT_COURSEWORK',
+      title : 'Relevant coursework'
+    },
+    {
+      section : 'SKILLS_BULLET_POINTS',
+      title : 'Skills with bullet points'
+    },
+     {
+      section : 'EDUCATION',
+      title : 'Education'
+    },
+    {
+      section : 'CERTIFICATIONS_BULLET_POINTS',
+      title : 'Certification with bullet points'
+    },
+    {
+      section : 'ACHIEVEMENTS_BULLET_POINTS',
+      title : 'Achievements with bullet points'
+    }
+  ]
+
+  template10_sections : Array<SectionDesc> = [
+    {
+      section : 'PROFILE_SUMMARY',
+      title : 'Profile summary'
+    },
+    {
+      section : 'EDUCATION',
+      title : 'Education'
+    },
+    {
+      section : 'SKILLS_CATEGORY',
+      title : 'Skills category'
+    },
+    {
+      section : 'WORK_EXPERIENCE',
+      title : 'Work experience'
+    },
+    {
+      section : 'PROJECT',
+      title : 'Project'
+    },
+    {
+      section : 'ACHIEVEMENT_WITH_DESC',
+      title : 'Accomplishments'
+    }
+  ]
 
   private resumeService: ResumeService = inject(ResumeService);
   private pdfToImageService: PdfToImageService = inject(PdfToImageService);
@@ -230,6 +332,24 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
               data.map(async (e : ResumeListDataItem)=>{
           await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + e.documentUrl).then((bytes)=>{
               e.imageBytes = bytes;
+              let resume : Resume = JSON.parse(e.resumeJson);
+              if(!resume?.sections && !resume?.multipleSections){
+                if(resume.template_details.template_name == 'TEMPLATE_1'){
+                  resume.sections= this.template1_sections
+                  resume.multipleSections = []
+                }
+                else if(resume.template_details.template_name == 'TEMPLATE_9'){
+                  resume.multipleSections = [[...this.template9right_sections], [...this.template9left_sections]]
+                  resume.sections = []
+                }
+                else if(resume.template_details.template_name == 'TEMPLATE_10'){
+                  resume.sections= this.template10_sections
+                  resume.multipleSections = []
+                }
+              }
+              console.log(resume);
+              
+              e.resumeJson = JSON.stringify(resume)
               this.resumes = [...this.resumes, e]
               let roleExists = this.roleCategories.some(role => role.name.includes(e.roleCategory));
               if (!roleExists && e.roleCategory.length > 0) {

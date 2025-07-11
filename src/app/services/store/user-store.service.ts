@@ -195,7 +195,7 @@ import { Address } from "../contact.model";
         addCertificationBulletPoints(certification : CertificationBulletPoints){
         this.state.update((state)=>({
             ...state,
-            currentTab : 'CERTIFICATION_BULLET_POINTS',
+            currentTab : 'CERTIFICATIONS_BULLET_POINTS',
             isEdit : false,
             isChangeInNewResume : true,
             selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm,certificationBulletPoints : certification } }
@@ -453,6 +453,15 @@ removeSection(section: string) {
     currentResumeSections: state.currentResumeSections.filter(e => e.section !== section)
   }));
   console.log("After:", this.state().currentResumeSections);
+}
+
+removeSectionFromMultipleSectionsList(section: string) {
+  console.log("Before:", this.state().multipleSectionsList);
+  this.state.update((state) => ({
+    ...state,
+    multipleSectionsList: state.multipleSectionsList.map((e)=>e.filter((s)=> s.section != section))
+  }));
+  console.log("After:", this.state().multipleSectionsList);
 }
 
 

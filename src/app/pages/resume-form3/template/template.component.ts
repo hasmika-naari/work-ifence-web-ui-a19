@@ -110,7 +110,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       public genaiService : GenAIService, 
       public templateService : TemplatesService) {
         effect(()=>{
-          if(this.resumeForm().sections.length>0 && this.isSectionsSetCount == 1 && this.currentSections().length == 0){
+          if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections().length == 0){
             this.sections = []
             this.resumeForm().sections.map((e : SectionDesc)=>{
               this.sections = [...this.sections, e.section]
@@ -118,7 +118,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
             this.userStore.setResumeSections(this.resumeForm().sections)
             this.isSectionsSetCount = this.isSectionsSetCount + 1
           }
-          else if(this.resumeForm().sections.length == 0 && this.currentSections().length == 0){
+          else if(this.currentSections().length == 0){
             this.userStore.setResumeSections(this.sectionsDesc)
           }
           else if(this.currentSections().length !== this.sections.length){
@@ -190,10 +190,10 @@ formatSkills(items : string[]){
           console.log(selectedJson);
           this.userStore.deleteProject(selectedJson)
         }
-        else if(section === "EXPERIENCE"){
+        else if(section === "WORK_EXPERIENCE"){
           this.userStore.deleteExperience(selectedJson)
         }
-        else if(section === "CERTIFICATION"){
+        else if(section === "CERTIFICATIONS"){
           this.userStore.deleteCertification(selectedJson)
         }
       }
@@ -227,11 +227,11 @@ formatSkills(items : string[]){
       selectedJson.isHideSelected = true;
       this.userStore.updateProject(selectedJson)
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       selectedJson.isHideSelected = true;
       this.userStore.updateExperience(selectedJson)
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       selectedJson.isHideSelected = true;
       this.userStore.updateCertification(selectedJson)
     }
@@ -255,11 +255,11 @@ formatSkills(items : string[]){
       selectedJson.isHideSelected = false;
       this.userStore.updateProject(selectedJson)
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       selectedJson.isHideSelected = false;
       this.userStore.updateExperience(selectedJson)
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       selectedJson.isHideSelected = false;
       this.userStore.updateCertification(selectedJson)
     }
@@ -272,10 +272,10 @@ formatSkills(items : string[]){
     else if(section === "PROJECT"){
       this.userStore.setProject(new Project())
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       this.userStore.setExperience(new Experience())
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       this.userStore.setCertification(new Certification());
     }
     
@@ -289,10 +289,10 @@ formatSkills(items : string[]){
     else if(section == "PROJECT"){
       this.userStore.updateProject(selectedJson)
     }
-    else if(section == "EXPERIENCE"){
+    else if(section == "WORK_EXPERIENCE"){
       this.userStore.updateExperience(selectedJson)
     }
-    else if(section == "CERTIFICATION"){
+    else if(section == "CERTIFICATIONS"){
       this.userStore.updateCertification(selectedJson)
     }
     this.editSection.emit({section : section})
@@ -355,7 +355,7 @@ formatSkills(items : string[]){
     }
     this.userStore.updateProjectList(array);
   }
-  else if(section === "EXPERIENCE"){
+  else if(section === "WORK_EXPERIENCE"){
     const array = this.resumeForm().experience;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -374,7 +374,7 @@ formatSkills(items : string[]){
     }
     this.userStore.updateExperienceList(array);
   }
-  else if(section === "CERTIFICATION"){
+  else if(section === "CERTIFICATIOND"){
     const array = this.resumeForm().certification;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -437,7 +437,7 @@ removeSection(section : string){
           resume.achievementBulletPoints = new AchievementBulletPoints()
           status.isAchievement = false
         }
-        else if(section === "CERTIFICATION_BULLET_POINTS"){
+        else if(section === "CERTIFICATIONS_BULLET_POINTS"){
           resume.certificationBulletPoints = new CertificationBulletPoints();
         }
         this.userStore.removeSection(section);
@@ -476,6 +476,11 @@ isContactDefaultData(){
 isAchievementDefaultData(){
   return this.resumeForm().achievementBulletPoints?.ach.length == 0
 }
+
+isCertificationDefaultData(){
+  return this.resumeForm().certificationBulletPoints?.point.length == 0
+}
+
 
 
   

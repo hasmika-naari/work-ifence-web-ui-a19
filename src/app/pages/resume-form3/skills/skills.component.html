@@ -1,5 +1,5 @@
 
-@if(sectionName == "SKILLS"){
+@if(sectionName == "SKILLS_BULLET_POINTS"){
 <div class="row h-100 pl-5 pr-5" style="overflow-y:auto;padding-bottom:50px;overflow-x: hidden;">
     <div class="col-12"  >
         <form [formGroup]="skillsForm" >
@@ -46,7 +46,7 @@
                               class="example-list" (cdkDropListDropped)="drop($event)">
                               @for (skill of fruits; track skill) {
                                 <div class="example-box" cdkDrag>
-                                  <span class="skill-text">{{skill.name}}</span>
+                                  <span class="skill-text">{{skill.name || skill}}</span>
                                   <span class="remove-icon" (click)="remove(skill)">✖</span>
                                 </div>
                               }

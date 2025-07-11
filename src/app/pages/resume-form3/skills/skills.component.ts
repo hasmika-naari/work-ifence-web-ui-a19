@@ -110,7 +110,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       public templateService : TemplatesService, 
       public dialog: MatDialog) {
         effect(()=>{
-          if(this.sectionName == "SKILLS"){
+          if(this.sectionName == "SKILLS_BULLET_POINTS"){
             this.setSkillsValues()
           }
           else{
@@ -300,7 +300,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   saveAndContinue(): void {
     this.markFormGroupTouched(this.skillsForm);
   
-    if (this.sectionName == "SKILLS") {
+    if (this.sectionName == "SKILLS_BULLET_POINTS") {
       this.userStore.addSkill(this.fruits);
     } else {
       // Handle TEMPLATE_10

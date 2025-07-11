@@ -27,6 +27,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { SectionDesc } from 'src/app/services/store/user-store';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
 
 
@@ -46,7 +47,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 })
 export class ResumeTemplate10Component implements OnInit, OnDestroy {
 
-   sections  : string[]= ['PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS', 'ACHIEVEMENTS_BULLET_POINTS']
+   sections  : string[]= ['PROFILE_SUMMARY','EDUCATION','SKILLS_CATEGORY', 'WORK_EXPERIENCE', 'PROJECT', 'ACHIEVEMENT_WITH_DESC']
 
   sectionsDesc  : Array<SectionDesc> = [
     {
@@ -58,12 +59,8 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       title : 'Education'
     },
     {
-      section : 'RELEVANT_COURSEWORK',
-      title : 'Relevant coursework'
-    },
-    {
-      section : 'SKILLS_BULLET_POINTS',
-      title : 'Skills with bullet points'
+      section : 'SKILLS_CATEGORY',
+      title : 'Skills category'
     },
     {
       section : 'WORK_EXPERIENCE',
@@ -74,12 +71,8 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       title : 'Project'
     },
     {
-      section : 'CERTIFICATIONS',
-      title : 'Certification'
-    },
-    {
-      section : 'ACHIEVEMENTS_BULLET_POINTS',
-      title : 'Achievements with bullet points'
+      section : 'ACHIEVEMENT_WITH_DESC',
+      title : 'Accomplishments'
     }
   ]
 
@@ -109,9 +102,9 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       public dialog: MatDialog,
       public promptService : PromptService, 
       public genaiService : GenAIService, 
-      public templateService : TemplatesService) {
+      public templateService : Templatesv2Service) {
        effect(()=>{
-          if(this.resumeForm().sections.length>0 && this.isSectionsSetCount == 1 && this.currentSections().length == 0){
+          if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections().length == 0){
             this.sections = []
             this.resumeForm().sections.map((e : SectionDesc)=>{
               this.sections = [...this.sections, e.section]
@@ -119,7 +112,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
             this.userStore.setResumeSections(this.resumeForm().sections)
             this.isSectionsSetCount = this.isSectionsSetCount + 1
           }
-          else if(this.resumeForm().sections.length == 0 && this.currentSections().length == 0){
+          else if(this.currentSections().length == 0){
             this.userStore.setResumeSections(this.sectionsDesc)
           }
           else if(this.currentSections().length !== this.sections.length){
@@ -182,10 +175,10 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
           console.log(selectedJson);
           this.userStore.deleteProject(selectedJson)
         }
-        else if(section === "EXPERIENCE"){
+        else if(section === "WORK_EXPERIENCE"){
           this.userStore.deleteExperience(selectedJson)
         }
-        else if(section === "CERTIFICATION"){
+        else if(section === "CERTIFICATIONS"){
           this.userStore.deleteCertification(selectedJson)
         }
       }
@@ -235,17 +228,17 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       let index = this.resumeForm().project.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateProjectItem(selectedJson, index)
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       selectedJson.isHideSelected = true;
       let index = this.resumeForm().experience.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateExperienceItem(selectedJson, index)
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       selectedJson.isHideSelected = true;
       let index = this.resumeForm().certification.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateCertificationItem(selectedJson, index)
     }
-    else if(section === "ACCOMPLISHMENT"){
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
       selectedJson.isHideSelected = true;
       let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateAccomplishmentItem(selectedJson, index);
@@ -272,17 +265,17 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       let index = this.resumeForm().project.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateProjectItem(selectedJson, index)
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       selectedJson.isHideSelected = false;
       let index = this.resumeForm().experience.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateExperienceItem(selectedJson, index)
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       selectedJson.isHideSelected = false;
       let index = this.resumeForm().certification.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateCertificationItem(selectedJson, index)
     }
-    else if(section === "ACCOMPLISHMENT"){
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
       selectedJson.isHideSelected = false;
       let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateAccomplishmentItem(selectedJson, index);
@@ -296,13 +289,13 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     else if(section === "PROJECT"){
       this.userStore.setProject(new Project())
     }
-    else if(section === "EXPERIENCE"){
+    else if(section === "WORK_EXPERIENCE"){
       this.userStore.setExperience(new Experience())
     }
-    else if(section === "CERTIFICATION"){
+    else if(section === "CERTIFICATIONS"){
       this.userStore.setCertification(new Certification());
     }
-    else if(section === "ACCOMPLISHMENT"){
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
       this.userStore.setSelectedAccomplishment(new Accomplishment());
     }
     
@@ -316,10 +309,10 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     else if(section == "PROJECT"){
       this.userStore.updateProject(selectedJson)
     }
-    else if(section == "EXPERIENCE"){
+    else if(section == "WORK_EXPERIENCE"){
       this.userStore.updateExperience(selectedJson)
     }
-    else if(section === "ACCOMPLISHMENT"){
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
       this.userStore.setSelectedAccomplishment(selectedJson)
     }
 
@@ -383,7 +376,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     }
     this.userStore.updateProjectList(array);
   }
-  else if(section === "EXPERIENCE"){
+  else if(section === "WORK_EXPERIENCE"){
     const array = this.resumeForm().experience;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -402,7 +395,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     }
     this.userStore.updateExperienceList(array);
   }
-  else if(section === "CERTIFICATION"){
+  else if(section === "CERTIFICATIONS"){
     const array = this.resumeForm().certification;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -421,7 +414,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     }
     this.userStore.updateCertificationList(array);
   }
-  else if(section === "ACCOMPLISHMENT"){
+  else if(section === "ACHIEVEMENT_WITH_DESC"){
     const array = this.resumeForm().accomplishment;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -454,19 +447,15 @@ removeSection(section : string){
     if(result.event === "CONFIRM"){
         let status = this.sectionStatus()
         let resume = this.resumeForm()
-        if(section === "CONTACT"){
-          resume.contact = new ResumeContact()
-          status.isContact = false;
-        }
-        else if(section === "SUMMARY"){
+        if(section === "PROFILE_SUMMARY"){
           resume.profileSummary = new ProfileSummary()
           status.isSummary = false;
         }
-        else if(section === "COURSEWORK"){
+        else if(section === "RELEVANT_COURSEWORK"){
           resume.courseWork = []
           status.isCourseWork = false;
         }
-        else if(section === "SKILLS"){
+        else if(section === "SKILLS_BULLET_POINTS"){
           resume.skill = []
           status.isSkill = false;
         }
@@ -478,11 +467,11 @@ removeSection(section : string){
           resume.project = []
           status.isProject = false;
         }
-        else if(section === "EXPERIENCE"){
+        else if(section === "WORK_EXPERIENCE"){
           resume.experience = []
           status.isExperience = false;
         }
-        else if(section === "CERTIFICATION_BULLET_POINTS"){
+        else if(section === "CERTIFICATIONS_BULLET_POINTS"){
           resume.certificationBulletPoints = new CertificationBulletPoints();
           status.isSkillsCategory = false
         }
@@ -490,13 +479,17 @@ removeSection(section : string){
           resume.achievementBulletPoints = new AchievementBulletPoints()
           status.isAchievement = false
         }
-        else if(section === "ACCOMPLISHMENT"){
+        else if(section === "ACHIEVEMENT_WITH_DESC"){
           resume.accomplishment = [];
           status.isAccomplishments = false;
         }
-        else if(section === "SKILLSV2"){
+        else if(section === "SKILLS_CATEGORY"){
           resume.skill_v2 = []
           status.isSkillV2 = false;
+        }
+        else if(section === "CERTIFICATIONS"){
+          resume.certification = []
+          status.isCertification = false
         }
         this.userStore.updateSectionStatus(status);
         this.userStore.updateResumeForm(resume);
