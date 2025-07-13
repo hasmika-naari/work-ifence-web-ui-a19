@@ -30,6 +30,7 @@ import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent } 
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import Quill from 'quill';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 
 
@@ -73,6 +74,8 @@ export class AccomplishmentsComponent implements OnInit, OnDestroy {
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
   selectedAccomplishment : Signal<Accomplishment> = this.userStore.getSelectedAccomplishment();
+    sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+    multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
 
   outLineButton = true;
@@ -98,7 +101,8 @@ export class AccomplishmentsComponent implements OnInit, OnDestroy {
   accomplishmentForm = this._formBuilder.group({
     acplsmnt : [''],
     date : [''],
-    accomplishments: ['']
+    accomplishments: [''],
+    section_title : ['', Validators.required]
   })
   
   is_achievement_loading : boolean = false;
@@ -131,6 +135,24 @@ setAccomplishments(){
   if(this.editor?.clipboard){
     this.editor.clipboard.dangerouslyPasteHTML(this.selectedAccomplishment().original_html_description);
   }
+  let section_title;
+  if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+    this.multipleSections().map((e : SectionDesc[])=>{
+      e.map((section : SectionDesc)=>{
+        if(section.section == 'ACHIEVEMENT_WITH_DESC'){
+          section_title = section.editable_section_title
+        }
+      })
+    })
+  }
+  else{
+    this.sections().map((section : SectionDesc)=>{
+        if(section.section == 'ACHIEVEMENT_WITH_DESC'){
+          section_title = section.editable_section_title
+        }
+      })
+  }
+  this.accomplishmentForm.controls['section_title'].setValue(section_title??'Accomplishments')
 }
 
 setSkillsCategory(){
@@ -176,6 +198,24 @@ setSkillsCategory(){
       let status = this.sectionStatus()
       status.isAccomplishments = true;
       this.userStore.updateSectionStatus(status);
+    }
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'ACHIEVEMENT_WITH_DESC'){
+            section.editable_section_title = this.accomplishmentForm.controls['section_title'].value?? 'Accomplishments'
+          }
+        })
+      })
+      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'ACHIEVEMENT_WITH_DESC'){
+            section.editable_section_title = this.accomplishmentForm.controls['section_title'].value?? 'Accomplishments'
+          }
+        })
+        this.userStore.setResumeSections(this.sections())
     }
     this.contact.emit();
   }

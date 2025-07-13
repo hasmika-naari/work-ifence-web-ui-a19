@@ -27,6 +27,7 @@ import { Education, IsSectionPresent, Resume, TemplateVariables } from 'src/app/
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -95,6 +96,8 @@ export class EducationComponent implements OnInit, OnDestroy {
   selectedEducation : Signal<Education> = this.userStore.getSelectedEducation();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
+    sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+    multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
 
   visible = true;
@@ -131,7 +134,8 @@ export class EducationComponent implements OnInit, OnDestroy {
     degree: ['', Validators.required],
     field_of_study: [''],
     gpa: [''],
-    graduation_year: ['']
+    graduation_year: [''],
+    section_title : ['', Validators.required]
   });
   skillsForm = this._formBuilder.group({
     skills: [''],
@@ -341,6 +345,24 @@ export class EducationComponent implements OnInit, OnDestroy {
     this.educationForm.controls['field_of_study'].setValue(this.selectedEducation().field_of_study) 
     this.educationForm.controls['gpa'].setValue(this.selectedEducation().gpa)
     this.educationForm.controls['graduation_year'].setValue(this.selectedEducation().graduation_date) 
+        let section_title;
+        if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+          this.multipleSections().map((e : SectionDesc[])=>{
+            e.map((section : SectionDesc)=>{
+              if(section.section == 'EDUCATION'){
+                section_title = section.editable_section_title
+              }
+            })
+          })
+        }
+        else{
+          this.sections().map((section : SectionDesc)=>{
+              if(section.section == 'EDUCATION'){
+                section_title = section.editable_section_title
+              }
+            })
+        }
+        this.educationForm.controls['section_title'].setValue(section_title??'Education')
   }
 
   addEducationField() {
@@ -446,6 +468,24 @@ export class EducationComponent implements OnInit, OnDestroy {
       let status = this.sectionStatus()
       status.isEducation = true;
       this.userStore.updateSectionStatus(status);
+    }
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'EDUCATION'){
+            section.editable_section_title = this.educationForm.controls['section_title'].value?? 'Education'
+          }
+        })
+      })
+      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'EDUCATION'){
+            section.editable_section_title = this.educationForm.controls['section_title'].value?? 'Education'
+          }
+        })
+        this.userStore.setResumeSections(this.sections())
     }
     this.contact.emit();
   }

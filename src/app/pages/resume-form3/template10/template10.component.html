@@ -68,7 +68,7 @@
      <ng-container *ngFor="let section of sections">
     @if(resumeForm().profileSummary.profile_summary.length > 0){
       <div class="section" style="position: relative;" cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
-        <span class="section-title">Summary
+        <span class="section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
               <div class="wif-tooltip" data-direction="bottom">
@@ -97,7 +97,7 @@
     }
     @else{
       <div class="section" style="position: relative;" cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
-        <span class="section-title">Summary
+        <span class="section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
               <div class="wif-tooltip" data-direction="bottom">
@@ -127,7 +127,7 @@
     <!-- Education Section -->
     @if(resumeForm().education.length > 0){
     <div class="section education" style="position: relative;" cdkDrag *ngIf="section === 'EDUCATION'">
-        <div class="section-title" style="position: relative;">Education
+        <div class="section-title" style="position: relative;">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
               <div class="wif-tooltip" data-direction="bottom">
@@ -234,7 +234,7 @@
     }
     @else{
         <div class="section education default-education" style="position: relative;" cdkDrag *ngIf="section === 'EDUCATION'">
-            <div class="section-title">Education</div>
+            <div class="section-title">{{getSectionTitle(section)}}</div>
             <p class="opacity-half education-p" style="padding-left: 0;font-size: 14px;"><b>Degree | University | Period | GPA</b></p>
             @if(!isPreview){
               <div class="section-actions">
@@ -262,7 +262,7 @@
     <!-- Skills Section -->
      @if(resumeForm().skill_v2.length > 0){
     <div class="section skills" style="position: relative;" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
-        <div class="section-title">Skills
+        <div class="section-title">{{getSectionTitle(section)}}
         </div>
         <div class="skills-content">
             <ul class="skill-category">
@@ -312,7 +312,7 @@
     }
     @else{
         <div class="section skills default-skills" style="position: relative;" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
-            <div class="section-title">Skills</div>
+            <div class="section-title">{{getSectionTitle(section)}}</div>
             <div class="skills-content opacity-half">
                 <ul class="skill-category">
                     <li><span>Programming:</span> Python, SQL, Java, JavaScript</li>
@@ -362,7 +362,7 @@
 
     @if(resumeForm().accomplishment.length > 0){
         <div class="section education" style="position: relative;" cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
-            <div class="section-title">Accomplishments
+            <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
                 <div class="section-actions">
                   <div class="wif-tooltip" data-direction="bottom">
@@ -460,7 +460,7 @@
         }
       @else{
         <div class="section experince trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
-            <div class="section-title">Accomplishments
+            <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
                 <div class="section-actions">
                   <div class="wif-tooltip" data-direction="bottom">
@@ -483,15 +483,15 @@
           }
             </div>
             <div style="display: flex;">
-                <p style="flex: 1;text-align: left;margin: 0;font-size: 14px;color: #000;" class="opacity-half"><b>People’s Choice Award Third Place, Kansas Data Science Consortium 2024</b></p>
-                <p style="text-align: right;font-size: 14px;"class="opacity-half">Apr 2024</p>
+                <p style="flex: 1;text-align: left;margin: 0;font-size: 14px;color: #000;" class="opacity-half"><b>Title</b></p>
+                <p style="text-align: right;font-size: 14px;"class="opacity-half">Date</p>
             </div>
-            <p style="font-size: 14px;" class="opacity-half">Poster Presentation on unpacking...........</p>
+            <p style="font-size: 14px;" class="opacity-half">Highlight your accomplishments, using numbers if possible.</p>
         </div>
       }
     @if(resumeForm().experience.length > 0){
         <div class="section experince trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
-            <div class="section-title">Experience
+            <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
                 <div class="section-actions">
                   <div class="wif-tooltip" data-direction="bottom">
@@ -579,7 +579,7 @@
         }
       @else{
         <div class="section experince trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
-            <div class="section-title">Experience
+            <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
                 <div class="section-actions">
                   <div class="wif-tooltip" data-direction="bottom">
@@ -611,7 +611,7 @@
       }
       @if(resumeForm().project.length > 0){
         <div class="section experince trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
-            <div class="section-title">Projects
+            <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
                 <div class="section-actions">
                   <div class="wif-tooltip" data-direction="bottom">
@@ -709,7 +709,7 @@
         }
       @else{
         <div class="section experince trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
-            <div class="section-title">Projects
+            <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
                 <div class="section-actions">
                   <div class="wif-tooltip" data-direction="bottom">

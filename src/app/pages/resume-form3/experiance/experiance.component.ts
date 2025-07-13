@@ -44,6 +44,7 @@ import Quill from 'quill';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SectionDesc } from 'src/app/services/store/user-store';
 const moment = _rollupMoment || _moment;
 
 export const MY_FORMATS = {
@@ -149,6 +150,10 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
   selectedAIResponse : WorkData = {bulletPoints :[], ats_score : ""}
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
   private _formBuilder: FormBuilder = inject(FormBuilder);
+  sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
+  
+  
 
   visible = true;
   outLineButton = true;
@@ -190,6 +195,7 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
     isCurrentlyWorkHere : [false],
     bullet_points : [''],
     content: [''], // Bind FormControl here
+    section_title : ['', Validators.required]
   });
   
   public sdate = new FormControl(moment());
@@ -497,7 +503,25 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
 
     if(this.editor?.clipboard){
       this.editor.clipboard.dangerouslyPasteHTML(this.selectedExperience().original_description_html);
-    }    
+    }
+    let section_title;
+        if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+          this.multipleSections().map((e : SectionDesc[])=>{
+            e.map((section : SectionDesc)=>{
+              if(section.section == 'WORK_EXPERIENCE'){
+                section_title = section.editable_section_title
+              }
+            })
+          })
+        }
+        else{
+          this.sections().map((section : SectionDesc)=>{
+              if(section.section == 'WORK_EXPERIENCE'){
+                section_title = section.editable_section_title
+              }
+            })
+        }
+        this.experienceForm.controls['section_title'].setValue(section_title??'Experience')
   }
 
   // addEducationField() {
@@ -644,6 +668,24 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       status.isExperience = true;
       this.userStore.updateSectionStatus(status);
     }
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+          this.multipleSections().map((e : SectionDesc[])=>{
+            e.map((section : SectionDesc)=>{
+              if(section.section == 'WORK_EXPERIENCE'){
+                section.editable_section_title = this.experienceForm.controls['section_title'].value??'Experience'
+              }
+            })
+          })
+          this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+        }
+        else{
+          this.sections().map((section : SectionDesc)=>{
+              if(section.section == 'WORK_EXPERIENCE'){
+               section.editable_section_title = this.experienceForm.controls['section_title'].value??'Experience'
+              }
+            })
+          this.userStore.setResumeSections(this.sections())
+        }
     this.closePanelWindow()
     this.contact.emit();
   }

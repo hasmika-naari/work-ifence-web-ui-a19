@@ -22,6 +22,7 @@ export class Templatesv2Service {
       return "";
     }
 
+
     getHTMLTemplateForMonoPro(resumeForm : Resume){
         return `
     <!DOCTYPE html>
@@ -418,7 +419,7 @@ export class Templatesv2Service {
             ${(resume.profileSummary.profile_summary.length > 0)?
             `
             <section class="trigger-area resume-summary">
-                <span class="summary-section-title">Summary</span>
+                <span class="summary-section-title">${e.editable_section_title}</span>
                 <div class="project-content">
                 ${
                     resume.profileSummary.profile_summary
@@ -432,7 +433,7 @@ export class Templatesv2Service {
             ${(resume.education.length > 0)?
             `
             <section  class="trigger-area resume-education">
-                <span class="summary-section-title">Education</span>  
+                <span class="summary-section-title">${e.editable_section_title}</span>  
                 ${this.getEducationSectionForMonoPro(resume.education)}        
             </section>
             ` : ''
@@ -442,7 +443,7 @@ export class Templatesv2Service {
             ${(resume.courseWork.length > 0)?
             `
             <section  class="trigger-area course-work">
-                <span class="summary-section-title">Relevant Coursework</span>
+                <span class="summary-section-title">${e.editable_section_title}</span>
                 <div  class="course-work-section-content project-content" style="margin-top:7px;">
                     <ul class="course-work-list">
                         ${this.getCourseWorkSectionForMonoPro(resume.courseWork)}
@@ -456,7 +457,7 @@ export class Templatesv2Service {
             ${(resume.skill.length > 0)?
             `
             <section  class="trigger-area course-work">
-                <span class="summary-section-title">Skills</span>
+                <span class="summary-section-title">${e.editable_section_title}</span>
                 <div  class="course-work-section-content project-content" style="margin-top:7px;">
                     <ul class="course-work-list">
                         ${this.getSkillsWithBulletPointsSectionForMonoPro(resume.skill)}
@@ -470,7 +471,7 @@ export class Templatesv2Service {
             ${resume.skill_v2.length > 0?
             `
             <section  class="trigger-area course-work">
-                <div class="summary-section-title" style="margin-bottom:5px">Skills</div>
+                <div class="summary-section-title" style="margin-bottom:5px">${e.editable_section_title}</div>
                 <div  class="course-work-section-content template1-section-content">
                     <div class="skills-content">
                         <ul class="skill-category">
@@ -489,7 +490,7 @@ export class Templatesv2Service {
             ${(resume.experience.length > 0)?
             `
             <section class="course-work section-details trigger-area">
-                <span class="summary-section-title">Experience</span>  
+                <span class="summary-section-title">${e.editable_section_title}</span>  
                 ${this.getExperienceSectionForMonoPro(resume.experience)}
             </section>
             ` : ''
@@ -499,7 +500,7 @@ export class Templatesv2Service {
              ${(resume.project.length > 0)?
             `
             <section class="course-work section-details trigger-area">
-                <span class="summary-section-title">Projects</span>
+                <span class="summary-section-title">${e.editable_section_title}</span>
                     ${this.getProjectSectionForMonoPro(resume.project)}  
                 </section>
             ` : ''
@@ -509,7 +510,7 @@ export class Templatesv2Service {
             ${(resume.certification.length > 0)?
             `
             <section class="course-work section-details trigger-area">
-                <span class="summary-section-title">Certifications</span>  
+                <span class="summary-section-title">${e.editable_section_title}</span>  
                 ${this.getCertificationSectionForMonoPro(resume.certification)}
             </section>
             ` : ''
@@ -519,7 +520,7 @@ export class Templatesv2Service {
             ${(resume.achievementBulletPoints.ach.length > 0)?
             `
             <section  class="trigger-area course-work trigger-area">
-                <span class="summary-section-title">Achievements</span>
+                <span class="summary-section-title">${e.editable_section_title}</span>
                 <div  class="course-work-section-content">
                     <div class="project-content">
                     ${
@@ -527,6 +528,32 @@ export class Templatesv2Service {
                     }
                     </div>
                 </div>
+            </section>
+            ` : ''
+            }`:
+            e.section == 'CERTIFICATIONS_BULLET_POINTS'?
+            `
+            ${(resume.certificationBulletPoints.point.length > 0)?
+            `
+            <section  class="trigger-area course-work trigger-area">
+                <span class="summary-section-title">${e.editable_section_title}</span>
+                <div  class="course-work-section-content">
+                    <div class="project-content">
+                    ${
+                        resume.certificationBulletPoints.point
+                    }
+                    </div>
+                </div>
+            </section>
+            ` : ''
+            }`:
+            e.section == 'ACHIEVEMENT_WITH_DESC'?
+            `
+            ${(resume.accomplishment.length > 0)?
+            `
+            <section class="course-work section-details trigger-area">
+                <span class="summary-section-title">${e.editable_section_title}</span>  
+                ${this.getAccomplishmentSectionForMonoPro(resume.accomplishment)}
             </section>
             ` : ''
             }`:''
@@ -697,6 +724,32 @@ export class Templatesv2Service {
           </div>
         `).join('');
     }
+
+    
+    public getAccomplishmentSectionForMonoPro(items : Accomplishment[]) : string{
+    return items.map((item : Accomplishment)=> 
+        `
+        <div class="course-work-section-content template1-section-content trigger-area" style="margin-top:7px">
+            <div style="display: flex;justify-content: space-between;margin:0;padding:0;" class="project-content">
+                <p style="flex: 1;text-align: left;margin: 0;padding:0;"><b>${item.accomplisment}</b></span></p>
+                ${item.date.length > 0?
+                `
+                <p style="flex: 1;text-align: right;margin:0;padding:0;">${item.date}</p>
+                ` : ''
+                }
+            </div>
+            <div class="project-content-container" style="margin:0;padding:0;">
+            <div class="project-content">
+            ${
+              item.description
+            }
+            </div>
+            </div>
+        </div>
+        `).join('');
+    }
+
+    
 
     getHTMLTemplateForDualEdge(resumeForm : Resume){
       return `
@@ -1040,7 +1093,7 @@ export class Templatesv2Service {
             ${(resume.profileSummary.profile_summary.length > 0)?
             `
             <section class="resume-summary">
-                <h2 class="work-experience-h2">Profile Summary</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="project-content">
                 ${
                     resume.profileSummary.profile_summary
@@ -1054,17 +1107,17 @@ export class Templatesv2Service {
             ${(resume.education.length > 0)?
             `
             <section  class="education">
-                <h2 class="work-experience-h2">Education</h2>  
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>  
                 ${this.getEducationSectionForDualEdge(resume.education)}        
             </section>
             ` : ''
             }`:
-             e.section == 'RELEVANT_COURSEWORK'?
+            e.section == 'RELEVANT_COURSEWORK'?
             `
             ${(resume.courseWork.length > 0)?
             `
             <section class="skills">
-                <h2 class="work-experience-h2">Courseworks</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="skill-items">
                     ${this.getCourseWorkSectionForDualEdge(resume.courseWork)}
                 </div>
@@ -1076,7 +1129,7 @@ export class Templatesv2Service {
             ${(resume.skill.length > 0)?
             `
             <section class="skills">
-                <h2 class="work-experience-h2">Skills</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="skill-items">
                     ${this.getSkillsSectionForDualEdge(resume.skill)}
                 </div>
@@ -1088,7 +1141,7 @@ export class Templatesv2Service {
             ${resume.skill_v2.length > 0?
             `
             <section  class="trigger-area course-work">
-                <h2 class="work-experience-h2">Skills</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div  class="course-work-section-content">
                     <div class="skills-content">
                         <ul class="skill-category">
@@ -1107,7 +1160,7 @@ export class Templatesv2Service {
             ${(resume.experience.length > 0)?
             `
             <section>
-                <h2 class="work-experience-h2">Experience</h2>  
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>  
                 ${this.getExperienceSectionForDualEdge(resume.experience)}
             </section>
             ` : ''
@@ -1117,7 +1170,7 @@ export class Templatesv2Service {
              ${(resume.project.length > 0)?
             `
             <section>
-                <h2 class="work-experience-h2">Projects</h2> 
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2> 
                 ${this.getProjectSectionForDualEdge(resume.project)}  
             </section>
             ` : ''
@@ -1127,7 +1180,7 @@ export class Templatesv2Service {
             ${(resume.certification.length > 0)?
             `
             <section>
-                <h2 class="work-experience-h2">Certifications</h2>  
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>  
                 ${this.getCertificationSectionForDualEdge(resume.certification)}
             </section>
             ` : ''
@@ -1137,7 +1190,7 @@ export class Templatesv2Service {
             ${(resume.achievementBulletPoints.ach.length > 0)?
             `
              <section class="resume-summary">
-                <h2 class="work-experience-h2">Achievements</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="project-content">
                     ${
                         resume.achievementBulletPoints.ach
@@ -1151,7 +1204,7 @@ export class Templatesv2Service {
             ${(resume.certificationBulletPoints.point.length > 0)?
             `
             <section class="resume-summary">
-                <h2 class="work-experience-h2">Certifications</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="project-content">
                 ${
                     resume.certificationBulletPoints.point
@@ -1165,7 +1218,7 @@ export class Templatesv2Service {
             ${(resume.accomplishment.length > 0)?
             `
             <section class="resume-summary">
-                <h2 class="work-experience-h2">Accomplishments</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 ${this.getAccomplishmentsSectionForDualEdge(resume.accomplishment)}
             </section>
             ` : ''
@@ -1184,17 +1237,17 @@ export class Templatesv2Service {
             ${(resume.education.length > 0)?
             `
             <section  class="education">
-                <h2 class="work-experience-h2">Education</h2>  
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>  
                 ${this.getEducationSectionForDualEdge(resume.education)}        
             </section>
             ` : ''
             }`:
-             e.section == 'RELEVANT_COURSEWORK'?
+            e.section == 'RELEVANT_COURSEWORK'?
             `
             ${(resume.courseWork.length > 0)?
             `
             <section class="skills">
-                <h2 class="work-experience-h2">Courseworks</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="skill-items">
                     ${this.getCourseWorkSectionForDualEdge(resume.courseWork)}
                 </div>
@@ -1206,7 +1259,7 @@ export class Templatesv2Service {
             ${(resume.skill.length > 0)?
             `
             <section class="skills">
-                <h2 class="work-experience-h2">Skills</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="skill-items">
                     ${this.getSkillsSectionForDualEdge(resume.skill)}
                 </div>
@@ -1218,7 +1271,7 @@ export class Templatesv2Service {
             ${(resume.achievementBulletPoints.ach.length > 0)?
             `
              <section class="resume-summary">
-                <h2 class="work-experience-h2">Achievements</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="project-content">
                     ${
                         resume.achievementBulletPoints.ach
@@ -1232,7 +1285,7 @@ export class Templatesv2Service {
             ${(resume.certificationBulletPoints.point.length > 0)?
             `
             <section class="resume-summary">
-                <h2 class="work-experience-h2">Certifications</h2>
+                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
                 <div class="project-content">
                 ${
                     resume.certificationBulletPoints.point
@@ -1646,7 +1699,7 @@ export class Templatesv2Service {
             ${(resume.profileSummary.profile_summary.length > 0)?
             `
             <div class="section">
-                <span class="section-title">Profile Summary</span>
+                <span class="section-title">${e.editable_section_title}</span>
                 <div class="project-content-container" style="margin:0;padding:0;">
                 <div class="project-content">
                     ${
@@ -1662,7 +1715,7 @@ export class Templatesv2Service {
             ${(resume.education.length > 0)?
             `
             <div class="section education">
-                <div class="section-title">Education</div>
+                <div class="section-title">${e.editable_section_title}</div>
                 ${this.getEducationSectionForModern(resume.education)}
             </div>
             ` : ''
@@ -1672,7 +1725,7 @@ export class Templatesv2Service {
             ${(resume.courseWork.length > 0)?
             `
             <div  class="section">
-                <div class="section-title">Relevant Coursework</div>
+                <div class="section-title">${e.editable_section_title}</div>
                 <div  class="course-work-section-content project-content" style="margin-top:7px;">
                     <ul class="course-work-list">
                         ${this.getCourseWorkSectionForMonoPro(resume.courseWork)}
@@ -1686,7 +1739,7 @@ export class Templatesv2Service {
             ${(resume.skill.length > 0)?
             `
             <div class="section">
-                <div class="section-title">Skills</div>
+                <div class="section-title">${e.editable_section_title}</div>
                 <div  class="course-work-section-content project-content" style="margin-top:7px;">
                     <ul class="course-work-list">
                         ${this.getSkillsWithBulletPointsSectionForMonoPro(resume.skill)}
@@ -1700,7 +1753,7 @@ export class Templatesv2Service {
             ${resume.skill_v2.length > 0?
             `
             <div class="section skills">
-                <div class="section-title">Skills</div>
+                <div class="section-title">${e.editable_section_title}</div>
                 <div class="skills-content">
                     <ul class="skill-category">
                         ${this.getSkillsCategorySectionForModern(firstHalfSkills)}
@@ -1717,7 +1770,7 @@ export class Templatesv2Service {
             ${(resume.experience.length > 0)?
             `
             <div class="section experince trigger-area">
-                <div class="section-title">Experience</div>
+                <div class="section-title">${e.editable_section_title}</div>
                 ${this.getExperienceSectionForModern(resume.experience)}
             </div>
             ` : ''
@@ -1727,7 +1780,7 @@ export class Templatesv2Service {
              ${(resume.project.length > 0)?
             `
             <div class="section experince trigger-area">
-                <div class="section-title">Projects</div>
+                <div class="section-title">${e.editable_section_title}</div>
                 ${this.getProjectSectionForModern(resume.project)}
             </div>
             ` : ''
@@ -1737,7 +1790,7 @@ export class Templatesv2Service {
             ${(resume.certification.length > 0)?
             `
             <div class="section experince trigger-area">
-            <div class="section-title">Certifications</div>
+            <div class="section-title">${e.editable_section_title}</div>
                 ${this.getCertificationSectionForDualEdge(resume.certification)}
             </div>
             ` : ''
@@ -1747,7 +1800,7 @@ export class Templatesv2Service {
             ${(resume.achievementBulletPoints.ach.length > 0)?
             `
              <div class="section experince trigger-area">
-             <div class="section-title">Achievements</div>
+             <div class="section-title">${e.editable_section_title}</div>
                 <div class="project-content">
                     ${
                         resume.achievementBulletPoints.ach
@@ -1761,7 +1814,7 @@ export class Templatesv2Service {
             ${(resume.certificationBulletPoints.point.length > 0)?
             `
              <div class="section experince trigger-area">
-             <div class="section-title">Certifications</div>
+             <div class="section-title">${e.editable_section_title}</div>
                 <div class="project-content">
                 ${
                     resume.certificationBulletPoints.point
@@ -1775,7 +1828,7 @@ export class Templatesv2Service {
             ${(resume.accomplishment.length > 0)?
             `
              <div class="section education">
-                <div class="section-title">Accomplishments</div>
+                <div class="section-title">${e.editable_section_title}</div>
                 ${this.getAccomplishmentsSectionForModern(resume.accomplishment)}
             </div>
             ` : ''

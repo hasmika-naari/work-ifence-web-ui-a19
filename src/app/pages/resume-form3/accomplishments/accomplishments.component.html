@@ -4,6 +4,15 @@
             <div class="row wrap">
                 <div class="col-12 p-b-1 p-t-2">
                     <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Section title</mat-label>
+                        <input matInput placeholder="Section Title" #role formControlName="section_title">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="accomplishmentForm.get('section_title')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
                         <mat-label>Accomplishment</mat-label>
                         <input matInput placeholder="Accomplishment" formControlName="acplsmnt">
                         <mat-error class="ng-dirty ng-invalid" *ngIf="accomplishmentForm.get('acplsmnt')?.hasError('required')">

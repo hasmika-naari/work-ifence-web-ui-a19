@@ -30,6 +30,7 @@ import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { ResumeService } from 'src/app/services/resume.service';
 import Quill from 'quill';
 import { MatCardModule } from '@angular/material/card';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 
 export interface DialogData {
@@ -119,6 +120,8 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   jobDescAISuggestions : Signal<JobDescriptionAIResponse> = this.userStore.getJobDescAIRes();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
+  sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
 
   visible = true;
@@ -183,7 +186,8 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       project_link : ['', Validators.pattern('^https?:\\/\\/(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[a-zA-Z0-9._~-]*)*\\/?$')],
       description : ['', Validators.required],
       period: [''],
-      bullet_points : ['']
+      bullet_points : [''],
+      section_title : ['', Validators.required]
   });
   certifyForm = this._formBuilder.group({
       certification_name : [''],
@@ -378,6 +382,24 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     if(this.editor?.clipboard){
       this.editor.clipboard.dangerouslyPasteHTML(this.selectedProject().original_description_html);
     }
+    let section_title;
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'PROJECT'){
+            section_title = section.editable_section_title
+          }
+        })
+      })
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'PROJECT'){
+            section_title = section.editable_section_title
+          }
+        })
+    }
+    this.projectForm.controls['section_title'].setValue(section_title??'Project')
   }
 
   addEducationField() {
@@ -492,6 +514,24 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       let status = this.sectionStatus()
       status.isProject = true;
       this.userStore.updateSectionStatus(status);
+    }
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'PROJECT'){
+            section.editable_section_title = this.projectForm.controls['section_title'].value?? 'Project'
+          }
+        })
+      })
+      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'PROJECT'){
+            section.editable_section_title = this.projectForm.controls['section_title'].value?? 'Project'
+          }
+        })
+        this.userStore.setResumeSections(this.sections())
     }
     console.log(this.resumeSignalForm());
     this.closePanelWindow();

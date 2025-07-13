@@ -30,6 +30,7 @@ import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 
 export interface DialogData {
@@ -99,6 +100,8 @@ export class CertificationComponent implements OnInit, OnDestroy {
   selectedCertification : Signal<Certification> = this.userStore.getSelectedCertificate();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
+    sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+      multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
 
   visible = true;
@@ -189,7 +192,8 @@ export class CertificationComponent implements OnInit, OnDestroy {
       issued_month : ['', Validators.required],
       issued_year : ['', [Validators.required, Validators.pattern(/^\d{4}$/), this.yearValidator()]],
       certification_link : ['', Validators.pattern('^https?:\\/\\/(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[a-zA-Z0-9._~-]*)*\\/?$')],
-      description : ['']
+      description : [''],
+      section_title : ['', Validators.required]
   })
   achievementForm = this._formBuilder.group({
     achievement : ['']
@@ -386,6 +390,24 @@ private _filterYears(value: string): number[] {
       this.certifyForm.controls['issued_month'].setValue(this.selectedCertification().issued_month)
       this.certifyForm.controls['issued_year'].setValue(this.selectedCertification().issued_year) 
       this.certifyForm.controls['certification_link'].setValue(this.selectedCertification().certification_link)
+      let section_title;
+      if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+        this.multipleSections().map((e : SectionDesc[])=>{
+          e.map((section : SectionDesc)=>{
+            if(section.section == 'CERTIFICATIONS'){
+              section_title = section.editable_section_title
+            }
+          })
+        })
+      }
+      else{
+        this.sections().map((section : SectionDesc)=>{
+            if(section.section == 'CERTIFICATIONS'){
+              section_title = section.editable_section_title
+            }
+          })
+      }
+      this.certifyForm.controls['section_title'].setValue(section_title??'Certifications')
   }
 
   // yearValidator(): ValidatorFn {
@@ -521,6 +543,24 @@ private _filterYears(value: string): number[] {
       let status = this.sectionStatus()
       status.isCertification = true;
       this.userStore.updateSectionStatus(status);
+    }
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'CERTIFICATIONS'){
+            section.editable_section_title = this.certifyForm.controls['section_title'].value?? 'Certifications'
+          }
+        })
+      })
+      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'CERTIFICATIONS'){
+            section.editable_section_title = this.certifyForm.controls['section_title'].value?? 'Certifications'
+          }
+        })
+        this.userStore.setResumeSections(this.sections())
     }
     this.contact.emit();
   }

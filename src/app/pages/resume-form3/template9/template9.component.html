@@ -15,7 +15,7 @@
                     @if(resumeForm().profileSummary.profile_summary.length > 0){
                       <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
                           <div class="summary-hover">
-                            <h2 class="action-hover" style="position: relative;">Profile Summary
+                            <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                               @if(!isPreview){
                                   <div class="section-actions">
                                       <div class="wif-tooltip" data-direction="bottom">
@@ -43,7 +43,7 @@
                     }
                     @else{
                       <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
-                          <h2 class="action-hover" style="position: relative;">Profile Summary
+                          <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                               @if(!isPreview){
                                   <div class="section-actions">
                                       <div class="wif-tooltip" data-direction="bottom">
@@ -70,9 +70,81 @@
                           </div>
                         </section>
                     }
+
+                    <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
+                        <div class="summary-hover">
+                          <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
+                            @if(!isPreview){
+                          <div class="section-actions">
+                            @if(resumeForm().skill_v2.length == 0){
+                              <div class="wif-tooltip" data-direction="bottom">
+                                <div class="wif-tooltip__initiator">
+                                  <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
+                                </div>
+                                <div class="wif-tooltip__item">
+                                  Add skills category
+                                </div>
+                              </div>
+                            }
+                            @else{
+                              <div class="wif-tooltip" data-direction="bottom">
+                                <div class="wif-tooltip__initiator">
+                                  <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_CATEGORY', null)"></p-icon>
+                                </div>
+                                <div class="wif-tooltip__item">
+                                  Edit skills category
+                                </div>
+                              </div>
+                            }
+                                <div class="wif-tooltip" data-direction="bottom">
+                                  <div class="wif-tooltip__initiator">
+                                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_CATEGORY')"></p-icon>
+                                  </div>
+                                  <div class="wif-tooltip__item">
+                                    Remove skills category section
+                                  </div>
+                                </div>
+                              </div>
+                            }
+                          </h2>
+                            <div  class="course-work-section-content">
+                              @if(resumeForm().skill_v2.length == 0){
+                                <div class="skills-content opacity-half">
+                                    <ul class="skill-category">
+                                        <li><span>Programming:</span> Python, SQL, Java, JavaScript</li>
+                                        <li><span>Data Analysis:</span> Advanced Excel, SPSS, Pandas, NumPy, Matplotlib, Seaborn, Data Wrangling</li>
+                                        <li><span>Visualization:</span> Microsoft Power BI, Tableau Desktop, Tableau Prep, D3.JS, Splunk</li>
+                                    </ul>
+                                    <ul class="skill-category">
+                                        <li><span>Machine Learning:</span> Scikit-learn</li>
+                                        <li><span>Web:</span> Django, Flask, Spring Boot, React, Angular</li>
+                                        <li><span>Soft Skills:</span> Collaboration, Adaptability, Communication, Teamwork, Problem-Solving, Analytical Thinking</li>
+                                    </ul>
+                                </div>
+                              }
+                              @else{
+                              <div class="skills-content">
+                                <ul class="skill-category">
+                                    @for(item of firstHalfSkills; track item){
+                                        <li><span>{{item.sub_title}}:</span> {{formatSkills(item.skills)}}</li>
+                                    }
+                                </ul>
+                                <ul class="skill-category">
+                                    @for(item of secondHalfSkills; track item){
+                                      <li><span>{{item.sub_title}}:</span> {{formatSkills(item.skills)}}</li>
+                                    }
+                                </ul>
+                            </div>
+                              }
+                          
+                            </div>
+                        </div>
+                    </section>
+                    
+                    
                     @if(resumeForm().experience.length > 0){
                       <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
-                        <h2 class="action-hover" style="position: relative;">Work Experience
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">
@@ -164,7 +236,7 @@
                     }
                     @else{
                       <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
-                        <h2 class="action-hover" style="position: relative;">Work Experience
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">
@@ -200,7 +272,7 @@
                     }
                     @if(resumeForm().project.length > 0){
                       <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'PROJECT'">
-                        <h2 class="action-hover" style="position: relative;">Project
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">
@@ -300,7 +372,7 @@
                     }
                     @else{
                       <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'PROJECT'">
-                        <h2 class="action-hover" style="position: relative;">Project
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">
@@ -333,7 +405,7 @@
                       </section>
                     }
                     <section class="skills" style="margin-bottom: 15px;" cdkDrag *ngIf="section === 'RELEVANT_COURSEWORK'">
-                    <h2 class="action-hover" style="position: relative;">Courseworks
+                    <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                         @if(!isPreview){
                             <div class="section-actions">
                               @if(resumeForm().courseWork.length == 0){
@@ -386,7 +458,7 @@
                     </section>
 
                     <section class="skills" style="margin-bottom: 15px;" cdkDrag *ngIf="section === 'SKILLS_BULLET_POINTS'">
-                        <h2 class="action-hover" style="position: relative;">Skills
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   @if(resumeForm().skill.length == 0){
@@ -439,7 +511,7 @@
                     </section>
                     @if(resumeForm().education.length > 0){
                       <section class="education" style="margin-bottom: 15px;" cdkDrag *ngIf="section === 'EDUCATION'">
-                          <h2 class="action-hover" style="position: relative;">Education
+                          <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                               @if(!isPreview){
                                   <div class="section-actions">
                                     <div class="wif-tooltip" data-direction="bottom">
@@ -528,7 +600,7 @@
                     }
                     @else{
                         <section class="education" style="margin-bottom: 15px;" cdkDrag *ngIf="section === 'EDUCATION'">
-                            <h2 class="action-hover" style="position: relative;">Education
+                            <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                                 @if(!isPreview){
                                     <div class="section-actions">
                                       <div class="wif-tooltip" data-direction="bottom">
@@ -558,7 +630,7 @@
 
                     @if(!isCertificationDefaultData()){
                         <section class="skills" cdkDrag *ngIf="section === 'CERTIFICATIONS_BULLET_POINTS'">
-                            <h2 class="action-hover" style="position: relative;">Certifications
+                            <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                                 @if(!isPreview){
                                     <div class="section-actions">
                                       <div class="wif-tooltip" data-direction="bottom">
@@ -585,7 +657,7 @@
                     }
                     @else{
                         <section class="skills" cdkDrag *ngIf="section === 'CERTIFICATIONS_BULLET_POINTS'">
-                            <h2 class="action-hover" style="position: relative;">Certifications
+                            <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                                 @if(!isPreview){
                                     <div class="section-actions">
                                       <div class="wif-tooltip" data-direction="bottom">
@@ -615,7 +687,7 @@
 
                     @if(!isAchievementDefaultData()){
                         <section class="skills" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
-                            <h2 class="action-hover" style="position: relative;">Achievements
+                            <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                                 @if(!isPreview){
                                     <div class="section-actions">
                                      
@@ -644,7 +716,7 @@
                     }
                     @else{
                         <section class="skills" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
-                            <h2 class="action-hover" style="position: relative;">Achievements
+                            <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                                 @if(!isPreview){
                                     <div class="section-actions">
                                       <div class="wif-tooltip" data-direction="bottom">
@@ -731,7 +803,7 @@
               </section>
               <ng-container *ngFor="let section of dynamicSections">
                 <section class="skills" style="margin-bottom: 15px;" cdkDrag *ngIf="section === 'RELEVANT_COURSEWORK'">
-                    <h2 class="action-hover" style="position: relative;">Courseworks
+                    <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                         @if(!isPreview){
                             <div class="section-actions">
                               @if(resumeForm().courseWork.length == 0){
@@ -784,7 +856,7 @@
                 </section>
 
                 <section class="skills" style="margin-bottom: 15px;" cdkDrag *ngIf="section === 'SKILLS_BULLET_POINTS'">
-                    <h2 class="action-hover" style="position: relative;">Skills
+                    <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                         @if(!isPreview){
                             <div class="section-actions">
                               @if(resumeForm().skill.length == 0){
@@ -838,7 +910,7 @@
 
                 @if(resumeForm().education.length > 0){
                     <section class="education" style="margin-bottom: 15px;" cdkDrag *ngIf="section === 'EDUCATION'">
-                        <h2 class="action-hover" style="position: relative;">Education
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">
@@ -927,7 +999,7 @@
                 }
                 @else{
                     <section class="education" style="margin-bottom: 15px;" cdkDrag *ngIf="section === 'EDUCATION'">
-                        <h2 class="action-hover" style="position: relative;">Education
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">
@@ -957,7 +1029,7 @@
 
                 @if(!isCertificationDefaultData()){
                     <section class="skills" cdkDrag *ngIf="section === 'CERTIFICATIONS_BULLET_POINTS'">
-                        <h2 class="action-hover" style="position: relative;">Certifications
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">
@@ -984,7 +1056,7 @@
                 }
                 @else{
                     <section class="skills" cdkDrag *ngIf="section === 'CERTIFICATIONS_BULLET_POINTS'">
-                        <h2 class="action-hover" style="position: relative;">Certifications
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">
@@ -1014,7 +1086,7 @@
 
                 @if(!isAchievementDefaultData()){
                     <section class="skills" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
-                        <h2 class="action-hover" style="position: relative;">Achievements
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                  
@@ -1043,7 +1115,7 @@
                 }
                 @else{
                     <section class="skills" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
-                        <h2 class="action-hover" style="position: relative;">Achievements
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                                 <div class="section-actions">
                                   <div class="wif-tooltip" data-direction="bottom">

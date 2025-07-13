@@ -4,6 +4,15 @@
     <div class="col-12"  >
         <form [formGroup]="skillsForm" >
             <div class="row wrap pl-1 pr-1">
+              <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Section title</mat-label>
+                        <input matInput placeholder="Section Title" #role formControlName="section_title">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="skillsForm.get('section_title')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
                 <div class="col-12 p-0 m-t-3">
                     <mat-form-field appearance="outline" class="w-100" >
                         <mat-label>Skill</mat-label>
@@ -114,6 +123,15 @@
         <div class="col-12"  >
             <form [formGroup]="skillsForm" >
                 <div class="row wrap">
+                  <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Section title</mat-label>
+                        <input matInput placeholder="Section Title" #role formControlName="section_title">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="skillsForm.get('section_title')?.hasError('required')">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
                     <div class="col-12 p-t-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>Sub Title</mat-label>

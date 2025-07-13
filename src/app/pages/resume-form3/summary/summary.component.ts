@@ -32,6 +32,7 @@ import { ResumeService } from 'src/app/services/resume.service';
 import { TooltipModule } from 'primeng/tooltip';
 import Quill from 'quill';
 import { MatCardModule } from '@angular/material/card';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 
 export interface DialogData {
@@ -112,6 +113,8 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   jobDescAIRes : Signal<JobDescriptionAIResponse> = this.userStore.getJobDescAIRes();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
+  sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
 
   
@@ -168,7 +171,8 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
     profile_summary: [''],
     position_highlight : [''],
     skills_highlight : [''],
-    job_description : ['']
+    job_description : [''],
+    section_title : ['', Validators.required]
   });
   certificationsForm = this._formBuilder.group({
     certifications : [''],
@@ -394,6 +398,24 @@ openPanelWindow(){
     if(this.editor?.clipboard){
       this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().profileSummary.original_summary_html);
     }
+    let section_title;
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'PROFILE_SUMMARY'){
+            section_title = section.editable_section_title
+          }
+        })
+      })
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'PROFILE_SUMMARY'){
+            section_title = section.editable_section_title
+          }
+        })
+    }
+    this.summaryForm.controls['section_title'].setValue(section_title??'Profile Summary')
   }
 
   addEducationField() {
@@ -495,6 +517,26 @@ openPanelWindow(){
     summary.original_summary_html = profile_summary;
     summary.position_highlight = this.summaryForm.controls['position_highlight'].value?this.summaryForm.controls['position_highlight'].value : "";
     summary.skills_highlight = this.summaryForm.controls['skills_highlight'].value?this.summaryForm.controls['skills_highlight'].value : "";
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'PROFILE_SUMMARY'){
+            section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary'
+          }
+        })
+      })
+      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'PROFILE_SUMMARY'){
+           section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary'
+          }
+        })
+      this.userStore.setResumeSections(this.sections())
+    }
+    console.log(this.sections());
+    
     if(profile_summary.length > 0){
       summary.isDefault = false
     }

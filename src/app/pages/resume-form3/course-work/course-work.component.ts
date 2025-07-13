@@ -28,6 +28,7 @@ import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 
 export interface DialogData {
@@ -66,7 +67,8 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
-
+    sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+      multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
   @Output() contact = new EventEmitter();
 
@@ -90,6 +92,7 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   courseWorkForm = this._formBuilder.group({
     coursework: [''],
+    section_title : ['', Validators.required] 
   });
 
   subs: Array<Subscription> = [];
@@ -117,6 +120,24 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   setCourseWorkValues(){  
   this.fruits = [...this.resumeSignalForm().courseWork]
+  let section_title;
+  if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+    this.multipleSections().map((e : SectionDesc[])=>{
+      e.map((section : SectionDesc)=>{
+        if(section.section == 'RELEVANT_COURSEWORK'){
+          section_title = section.editable_section_title
+        }
+      })
+    })
+  }
+  else{
+    this.sections().map((section : SectionDesc)=>{
+        if(section.section == 'RELEVANT_COURSEWORK'){
+          section_title = section.editable_section_title
+        }
+      })
+  }
+  this.courseWorkForm.controls['section_title'].setValue(section_title??'Coursework')
 }
 
 
@@ -130,6 +151,24 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
       let status = this.sectionStatus()
       status.isCourseWork = true;
       this.userStore.updateSectionStatus(status);
+    }
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'RELEVANT_COURSEWORK'){
+            section.editable_section_title = this.courseWorkForm.controls['section_title'].value?? 'Coursework'
+          }
+        })
+      })
+      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'RELEVANT_COURSEWORK'){
+            section.editable_section_title = this.courseWorkForm.controls['section_title'].value?? 'Coursework'
+          }
+        })
+        this.userStore.setResumeSections(this.sections())
     }
     this.contact.emit();
   }

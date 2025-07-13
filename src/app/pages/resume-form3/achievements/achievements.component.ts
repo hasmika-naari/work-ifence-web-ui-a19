@@ -30,6 +30,7 @@ import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent } 
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import Quill from 'quill';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 
 
@@ -75,6 +76,8 @@ export class AchievementsComponent implements OnInit, OnDestroy {
   // sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
+  sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+    multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
 
   outLineButton = true;
@@ -83,7 +86,8 @@ export class AchievementsComponent implements OnInit, OnDestroy {
   @Input() sectionName : string = '';
 
   achievementsForm = this._formBuilder.group({
-    'achievements' : new FormControl('')
+    'achievements' : new FormControl(''),
+    'section_title' : new FormControl('', Validators.required)
   })
 
 
@@ -126,12 +130,48 @@ setAchievements(){
   if(this.editor?.clipboard){
     this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().achievementBulletPoints.original_html_achievement);
   }
+  let section_title;
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'ACHIEVEMENTS_BULLET_POINTS'){
+            section_title = section.editable_section_title
+          }
+        })
+      })
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'ACHIEVEMENTS_BULLET_POINTS'){
+            section_title = section.editable_section_title
+          }
+        })
+    }
+    this.achievementsForm.controls['section_title'].setValue(section_title??'Achievements')
 }
 
 setCertification(){
   if(this.editor?.clipboard){
     this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().certificationBulletPoints.original_html_content);
   }
+  let section_title;
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'CERTIFICATIONS_BULLET_POINTS'){
+            section_title = section.editable_section_title
+          }
+        })
+      })
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'CERTIFICATIONS_BULLET_POINTS'){
+            section_title = section.editable_section_title
+          }
+        })
+    }
+    this.achievementsForm.controls['section_title'].setValue(section_title??'Certifications')
 }
 
 
@@ -185,7 +225,24 @@ setCertification(){
     }
     this.userStore.addCertificationBulletPoints(certification);
     }
-    
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+          this.multipleSections().map((e : SectionDesc[])=>{
+            e.map((section : SectionDesc)=>{
+              if(section.section == this.sectionName){
+                section.editable_section_title = this.achievementsForm.controls['section_title'].value??this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'? 'Achievements' : 'Certifications'
+              }
+            })
+          })
+          this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+        }
+        else{
+          this.sections().map((section : SectionDesc)=>{
+              if(section.section == this.sectionName){
+               section.editable_section_title = this.achievementsForm.controls['section_title'].value??this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'? 'Achievements' : 'Certifications'
+              }
+            })
+          this.userStore.setResumeSections(this.sections())
+        }
     this.contact.emit();
   }
 

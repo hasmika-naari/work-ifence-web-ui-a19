@@ -70,35 +70,43 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     sectionsDesc  : Array<SectionDesc> = [
       {
         section : 'PROFILE_SUMMARY',
-        title : 'Profile summary'
+        title : 'Profile summary',
+        editable_section_title : 'Profile Summary'
       },
       {
         section : 'EDUCATION',
-        title : 'Education'
+        title : 'Education',
+        editable_section_title : 'Education'
       },
       {
         section : 'RELEVANT_COURSEWORK',
-        title : 'Relevant coursework'
+        title : 'Relevant coursework',
+        editable_section_title : 'Relevant Coursework'
       },
       {
         section : 'SKILLS_BULLET_POINTS',
-        title : 'Skills with bullet points'
+        title : 'Skills with bullet points',
+        editable_section_title : 'Skills'
       },
       {
         section : 'WORK_EXPERIENCE',
-        title : 'Work experience'
+        title : 'Work experience',
+        editable_section_title : 'Experience'
       },
       {
         section : 'PROJECT',
-        title : 'Project'
+        title : 'Project',
+        editable_section_title : 'Project'
       },
       {
         section : 'CERTIFICATIONS_BULLET_POINTS',
-        title : 'Certification with bullet points'
+        title : 'Certification with bullet points',
+        editable_section_title : 'Certifications'
       },
       {
         section : 'ACHIEVEMENTS_BULLET_POINTS',
-        title : 'Achievements with bullet points'
+        title : 'Achievements with bullet points',
+        editable_section_title : 'Achievements'
       }
     ]
 
@@ -148,7 +156,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
                let staticSectionsFull : SectionDesc[]= []
                let dynamicSectionsFull : SectionDesc[]= []
               this.currentSections().map((e : SectionDesc)=>{
-                if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT", "SKILLS_CATEGORY"].includes(e.section)){
+                if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT", "SKILLS_CATEGORY", "ACHIEVEMENT_WITH_DESC", "CERTIFICATIONS"].includes(e.section)){
                   this.staticSections = [...this.staticSections , e.section]
                   staticSectionsFull = [...staticSectionsFull, e]
                   console.log(staticSectionsFull);
@@ -167,7 +175,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
                let staticSectionsFull : SectionDesc[]= []
                let dynamicSectionsFull : SectionDesc[]= []
               sections.map((e : SectionDesc)=>{
-                if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT"].includes(e.section)){
+                if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT", "SKILLS_CATEGORY", "ACHIEVEMENT_WITH_DESC", "CERTIFICATIONS"].includes(e.section)){
                   this.staticSections = [...this.staticSections , e.section]
                   staticSectionsFull = [...staticSectionsFull, e]
                   console.log(e);
@@ -584,6 +592,28 @@ isAchievementDefaultData(){
 isCertificationDefaultData(){
   return  this.resumeForm().certificationBulletPoints?.point == null || this.resumeForm().certificationBulletPoints?.point.length == 0 || this.resumeForm().certificationBulletPoints?.point == undefined
 }
+
+formatSkills(items : string[]){
+  return items.join(", ");
+}
+
+getSectionTitle(section : string){
+  let sectionTitle = null;
+  this.multipleSections()[0].map((e : SectionDesc)=>{
+    if(e.section == section){
+      sectionTitle = e.editable_section_title
+    }
+  })
+  if(!sectionTitle){
+    this.multipleSections()[1].map((e : SectionDesc)=>{
+    if(e.section == section){
+      sectionTitle = e.editable_section_title
+    }
+  })
+  }
+  return sectionTitle??'Section Title'
+}
+
 
   
 }

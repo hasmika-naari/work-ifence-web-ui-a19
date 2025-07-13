@@ -19,7 +19,7 @@ import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { AccordionModule } from 'primeng/accordion';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, ProfileSummary, Project, Resume, ResumeContact, CertificationBulletPoints, SkillV2 } from 'src/app/services/resume.model';
+import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, ProfileSummary, Project, Resume, ResumeContact, CertificationBulletPoints, SkillV2, Accomplishment } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -64,35 +64,43 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   sectionsDesc  : Array<SectionDesc> = [
     {
       section : 'PROFILE_SUMMARY',
-      title : 'Profile summary'
+      title : 'Profile summary',
+      editable_section_title : 'Profile Summary'
     },
     {
       section : 'EDUCATION',
-      title : 'Education'
+      title : 'Education',
+      editable_section_title : 'Education'
     },
     {
       section : 'RELEVANT_COURSEWORK',
-      title : 'Relevant coursework'
+      title : 'Relevant coursework',
+      editable_section_title : 'Relevant Coursework'
     },
     {
       section : 'SKILLS_BULLET_POINTS',
-      title : 'Skills with bullet points'
+      title : 'Skills with bullet points',
+      editable_section_title : 'Skills'
     },
     {
       section : 'WORK_EXPERIENCE',
-      title : 'Work experience'
+      title : 'Work experience',
+      editable_section_title : "Experience"
     },
     {
       section : 'PROJECT',
-      title : 'Project'
+      title : 'Project',
+      editable_section_title : 'Project'
     },
     {
       section : 'CERTIFICATIONS',
-      title : 'Certification'
+      title : 'Certification',
+      editable_section_title : 'Certifications'
     },
     {
       section : 'ACHIEVEMENTS_BULLET_POINTS',
-      title : 'Achievements with bullet points'
+      title : 'Achievements with bullet points',
+      editable_section_title : 'Achievements'
     }
   ]
 
@@ -235,6 +243,11 @@ formatSkills(items : string[]){
       selectedJson.isHideSelected = true;
       this.userStore.updateCertification(selectedJson)
     }
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
+      selectedJson.isHideSelected = true;
+      let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
+      this.userStore.updateAccomplishmentItem(selectedJson, index);
+    }
   }
 
   unHideSectionElement(section: string, selectedJson : any){
@@ -263,6 +276,11 @@ formatSkills(items : string[]){
       selectedJson.isHideSelected = false;
       this.userStore.updateCertification(selectedJson)
     }
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
+      selectedJson.isHideSelected = false;
+      let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
+      this.userStore.updateAccomplishmentItem(selectedJson, index);
+    }
   }
 
   addSectionHandler(section : string){
@@ -277,6 +295,9 @@ formatSkills(items : string[]){
     }
     else if(section === "CERTIFICATIONS"){
       this.userStore.setCertification(new Certification());
+    }
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
+      this.userStore.setSelectedAccomplishment(new Accomplishment());
     }
     
     this.editSection.emit({section : section})
@@ -294,6 +315,9 @@ formatSkills(items : string[]){
     }
     else if(section == "CERTIFICATIONS"){
       this.userStore.updateCertification(selectedJson)
+    }
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
+      this.userStore.setSelectedAccomplishment(selectedJson)
     }
     this.editSection.emit({section : section})
   }
@@ -374,7 +398,7 @@ formatSkills(items : string[]){
     }
     this.userStore.updateExperienceList(array);
   }
-  else if(section === "CERTIFICATIOND"){
+  else if(section === "CERTIFICATIONS"){
     const array = this.resumeForm().certification;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -392,6 +416,25 @@ formatSkills(items : string[]){
       console.log("Move not possible");
     }
     this.userStore.updateCertificationList(array);
+  }
+  else if(section === "ACHIEVEMENT_WITH_DESC"){
+    const array = this.resumeForm().accomplishment;
+    const index = array.findIndex(obj => obj.id === id);
+    if (index === -1) {
+      console.log("Object with the given id not found");
+      return;
+    }
+    
+    if (direction === "up" && index > 0) {
+      // Swap with the previous element
+      [array[index], array[index - 1]] = [array[index - 1], array[index]];
+    } else if (direction === "down" && index < array.length - 1) {
+      // Swap with the next element
+      [array[index], array[index + 1]] = [array[index + 1], array[index]];
+    } else {
+      console.log("Move not possible");
+    }
+    this.userStore.updateAccomplishmentList(array);
   }
 
 }
@@ -440,6 +483,10 @@ removeSection(section : string){
         else if(section === "CERTIFICATIONS_BULLET_POINTS"){
           resume.certificationBulletPoints = new CertificationBulletPoints();
         }
+        else if(section === "ACHIEVEMENT_WITH_DESC"){
+          resume.accomplishment = [];
+          status.isAccomplishments = false;
+        }
         this.userStore.removeSection(section);
         this.userStore.updateResumeForm(resume);
       }
@@ -479,6 +526,16 @@ isAchievementDefaultData(){
 
 isCertificationDefaultData(){
   return this.resumeForm().certificationBulletPoints?.point.length == 0
+}
+
+getSectionTitle(section : string){
+  let sectionTitle;
+  this.currentSections().map((e : SectionDesc)=>{
+    if(e.section == section){
+      sectionTitle = e.editable_section_title
+    }
+  })
+  return sectionTitle??'Section Title'
 }
 
 

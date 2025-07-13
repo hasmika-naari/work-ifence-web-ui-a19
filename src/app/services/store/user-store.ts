@@ -74,56 +74,69 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
   export class SectionDesc{
     section : string;
     title : string;
+    editable_section_title : string;
     constructor(){
       this.section = '',
-      this.title = ''
+      this.title = '',
+      this.editable_section_title = ''
     }
   }
 
   export const sections : Array<SectionDesc> = [
     {
       section : 'PROFILE_SUMMARY',
-      title : 'Profile summary'
+      title : 'Profile summary',
+      editable_section_title : 'Profile Summary'
     },
     {
       section : 'EDUCATION',
-      title : 'Education'
+      title : 'Education',
+      editable_section_title : "Education"
     },
     {
       section : 'RELEVANT_COURSEWORK',
-      title : 'Relevant coursework'
+      title : 'Relevant coursework',
+      editable_section_title :'Relevant Coursework'
     },
     {
       section : 'SKILLS_BULLET_POINTS',
-      title : 'Skills with bullet points'
+      title : 'Skills with bullet points',
+      editable_section_title : 'Skills'
     },
     {
       section : 'SKILLS_CATEGORY',
-      title : 'Skills category'
+      title : 'Skills category',
+      editable_section_title : 'Skills'
     },
     {
       section : 'WORK_EXPERIENCE',
-      title : 'Work experience'
+      title : 'Work experience',
+      editable_section_title : 'Experience'
     },
     {
       section : 'PROJECT',
-      title : 'Project'
+      title : 'Project',
+      editable_section_title : 'Project'
     },
     {
       section : 'CERTIFICATIONS',
-      title : 'Certification'
+      title : 'Certification',
+      editable_section_title : 'Certifications'
     },
     {
       section : 'CERTIFICATIONS_BULLET_POINTS',
-      title : 'Certification with bullet points'
+      title : 'Certification with bullet points',
+      editable_section_title : 'Certifications'
     },
     {
       section : 'ACHIEVEMENTS_BULLET_POINTS',
-      title : 'Achievements with bullet points'
+      title : 'Achievements with bullet points',
+      editable_section_title : 'Achievements'
     },
     {
       section : 'ACHIEVEMENT_WITH_DESC',
-      title : 'Accomplishments'
+      title : 'Accomplishments',
+      editable_section_title : 'Accomplishments'
     }
   ]
 

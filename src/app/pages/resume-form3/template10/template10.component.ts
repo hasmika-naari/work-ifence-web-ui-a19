@@ -52,27 +52,33 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
   sectionsDesc  : Array<SectionDesc> = [
     {
       section : 'PROFILE_SUMMARY',
-      title : 'Profile summary'
+      title : 'Profile summary',
+      editable_section_title : 'Profile Summary'
     },
     {
       section : 'EDUCATION',
-      title : 'Education'
+      title : 'Education',
+      editable_section_title : "Education"
     },
     {
       section : 'SKILLS_CATEGORY',
-      title : 'Skills category'
+      title : 'Skills category',
+      editable_section_title :'Skills'
     },
     {
       section : 'WORK_EXPERIENCE',
-      title : 'Work experience'
+      title : 'Work experience',
+      editable_section_title : 'Experience'
     },
     {
       section : 'PROJECT',
-      title : 'Project'
+      title : 'Project',
+      editable_section_title : 'Project'
     },
     {
       section : 'ACHIEVEMENT_WITH_DESC',
-      title : 'Accomplishments'
+      title : 'Accomplishments',
+      editable_section_title : 'Accomplishments'
     }
   ]
 
@@ -491,7 +497,7 @@ removeSection(section : string){
           resume.certification = []
           status.isCertification = false
         }
-        this.userStore.updateSectionStatus(status);
+        this.userStore.removeSection(section);
         this.userStore.updateResumeForm(resume);
       }
   })
@@ -499,6 +505,16 @@ removeSection(section : string){
 
 formatSkills(items : string[]){
   return items.join(", ");
+}
+
+getSectionTitle(section : string){
+  let sectionTitle;
+  this.currentSections().map((e : SectionDesc)=>{
+    if(e.section == section){
+      sectionTitle = e.editable_section_title
+    }
+  })
+  return sectionTitle??'Section Title'
 }
 
   

@@ -30,6 +30,7 @@ import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent } 
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { CdkDragDrop, CdkDragEnter, CdkDragExit, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { SectionDesc } from 'src/app/services/store/user-store';
 
 
 export interface DialogData {
@@ -86,6 +87,8 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   jobDescAISuggestions : Signal<JobDescriptionAIResponse> = this.userStore.getJobDescAIRes();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
+    sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+    multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
 
   @Output() contact = new EventEmitter();
@@ -145,7 +148,8 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   skillsForm = this._formBuilder.group({
     skills: [''],
     sub_title : [''],
-    skillsv2 : ['']
+    skillsv2 : [''],
+    section_title : ['', Validators.required]
   });
 
   subs: Array<Subscription> = [];
@@ -242,6 +246,24 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     
     // Assign the array to fruits
     this.fruits = [...skillValues];
+    let section_title;
+        if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+          this.multipleSections().map((e : SectionDesc[])=>{
+            e.map((section : SectionDesc)=>{
+              if(section.section == this.sectionName){
+                section_title = section.editable_section_title
+              }
+            })
+          })
+        }
+        else{
+          this.sections().map((section : SectionDesc)=>{
+              if(section.section == this.sectionName){
+                section_title = section.editable_section_title
+              }
+            })
+        }
+        this.skillsForm.controls['section_title'].setValue(section_title??'Skills')
   }
   
   setSkillsV2Values(){
@@ -313,6 +335,24 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   
       this.userStore.addSkillV2(this.skills_v2);
       // this.userStore.addSkill(skills);
+    }
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == this.sectionName){
+            section.editable_section_title = this.skillsForm.controls['section_title'].value?? 'Skills'
+          }
+        })
+      })
+      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == this.sectionName){
+            section.editable_section_title = this.skillsForm.controls['section_title'].value?? 'Skills'
+          }
+        })
+        this.userStore.setResumeSections(this.sections())
     }
   
     // Reset form
