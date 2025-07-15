@@ -1333,23 +1333,25 @@ hideMenu() {
       }
     })
     }
-    else if(this.multipleSections()[0]?.length >0){
+    else{
+      if(this.multipleSections()[0]?.length >0){
       this.multipleSections()[0].map((e : SectionDesc)=>{
       if(e.section === section){
         status = true
       }
     })
     }
-    else if(this.multipleSections()[1]?.length >0){
+    if(this.multipleSections()[1]?.length >0){
       this.multipleSections()[1].map((e : SectionDesc)=>{
       if(e.section === section){
         status = true
       }
     })
     }
-    return status
   }
+    return status
 
+  }
   goback($event: any){
     if(this.isChangeInNewResume()){
       this.confirmDiscardAction();
