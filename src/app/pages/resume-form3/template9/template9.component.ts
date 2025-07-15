@@ -18,7 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, CertificationBulletPoints, ProfileSummary, Project, Resume, ResumeContact, SkillV2 } from 'src/app/services/resume.model';
+import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, CertificationBulletPoints, ProfileSummary, Project, Resume, ResumeContact, SkillV2, Accomplishment } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -266,6 +266,9 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
         else if(section === "CERTIFICATIONS"){
           this.userStore.deleteCertification(selectedJson)
         }
+        else if(section == 'ACHIEVEMENT_WITH_DESC'){
+          this.userStore.deleteAccomplishment(selectedJson)
+        }
       }
     });
   }
@@ -409,6 +412,9 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     else if(section === "CERTIFICATIONS"){
       this.userStore.setCertification(new Certification());
     }
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
+      this.userStore.setSelectedAccomplishment(new Accomplishment());
+    }
     
     this.editSection.emit({section : section})
   }
@@ -422,6 +428,12 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     }
     else if(section == "WORK_EXPERIENCE"){
       this.userStore.updateExperience(selectedJson)
+    }
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
+      this.userStore.setSelectedAccomplishment(selectedJson)
+    }
+        else if(section == "CERTIFICATIONS"){
+      this.userStore.updateCertification(selectedJson)
     }
 
     this.editSection.emit({section : section})
@@ -522,6 +534,25 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     }
     this.userStore.updateCertificationList(array);
   }
+    else if(section === "ACHIEVEMENT_WITH_DESC"){
+    const array = this.resumeForm().accomplishment;
+    const index = array.findIndex(obj => obj.id === id);
+    if (index === -1) {
+      console.log("Object with the given id not found");
+      return;
+    }
+    
+    if (direction === "up" && index > 0) {
+      // Swap with the previous element
+      [array[index], array[index - 1]] = [array[index - 1], array[index]];
+    } else if (direction === "down" && index < array.length - 1) {
+      // Swap with the next element
+      [array[index], array[index + 1]] = [array[index + 1], array[index]];
+    } else {
+      console.log("Move not possible");
+    }
+    this.userStore.updateAccomplishmentList(array);
+  }
 
 }
 
@@ -569,6 +600,10 @@ removeSection(section : string){
         else if(section === "CERTIFICATIONS"){
           resume.certification = []
           status.isCertification = false
+        }
+        else if(section === "ACHIEVEMENT_WITH_DESC"){
+          resume.accomplishment = [];
+          status.isAccomplishments = false;
         }
         this.userStore.removeSectionFromMultipleSectionsList(section);
         this.userStore.updateResumeForm(resume);

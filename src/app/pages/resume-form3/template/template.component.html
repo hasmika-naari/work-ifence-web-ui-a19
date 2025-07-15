@@ -29,6 +29,7 @@
       </div>
       @if(!isPreview){
             <div class="section-actions">
+              
         @if(isContactDefaultData()){
           <div class="wif-tooltip" data-direction="bottom">
             <div class="wif-tooltip__initiator">
@@ -62,8 +63,12 @@
     </header>
 
    <ng-container *ngFor="let section of sections">
+    <!-- <div class="cdk-drop-placeholder" *ngIf="isDragging">
+              Drop {{ currentDraggingSection }} Section Here
+    </div> -->
     @if(resumeForm().profileSummary.profile_summary.length > 0){
-      <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
+      <section class="trigger-area resume-summary"  cdkDrag  (cdkDragStarted)="onDragStart('Profile Summary')"
+  (cdkDragEnded)="onDragEnd()" *ngIf="section === 'PROFILE_SUMMARY'">
         <span class="summary-section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
@@ -292,7 +297,7 @@
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('RELEVANT_COURSEWORK')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Add course Work
+                    Add coursework
                   </div>
                 </div>
               }
@@ -302,7 +307,7 @@
                     <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('RELEVANT_COURSEWORK', null)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Edit course Work
+                    Edit coursework
                   </div>
                 </div>
                   }
@@ -311,7 +316,7 @@
                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('RELEVANT_COURSEWORK')"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Remove course work section
+                      Remove coursework section
                     </div>
                   </div>
                 </div>
@@ -369,7 +374,7 @@
           }
           @else{
             <ul class="course-work-list">
-                <li class="course-work-lisit-item" *ngFor="let item of resumeForm().skill">{{item.name}}</li>
+                <li class="course-work-lisit-item" *ngFor="let item of resumeForm().skill">{{item.name || item}}</li>
             </ul>
           }
        

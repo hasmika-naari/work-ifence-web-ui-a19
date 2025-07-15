@@ -120,7 +120,7 @@ export class AchievementsComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    
+    this.achievementsForm.controls['section_title'].setValue(this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'? 'Achievements' : 'Certifications')
   
   }
 

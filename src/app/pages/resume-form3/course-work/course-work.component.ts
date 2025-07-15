@@ -92,7 +92,7 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   courseWorkForm = this._formBuilder.group({
     coursework: [''],
-    section_title : ['', Validators.required] 
+    section_title : ['Coursework', Validators.required] 
   });
 
   subs: Array<Subscription> = [];

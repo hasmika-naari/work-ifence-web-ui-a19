@@ -4,7 +4,7 @@
     <div class="col-12"  >
         <form [formGroup]="skillsForm" >
             <div class="row wrap pl-1 pr-1">
-              <div class="col-12 p-b-1 p-t-2">
+              <div class="col-12 p-0 m-t-3">
                     <mat-form-field appearance="outline" class="w-100" >
                         <mat-label>Section title</mat-label>
                         <input matInput placeholder="Section Title" #role formControlName="section_title">
@@ -13,7 +13,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-12 p-0 m-t-3">
+                <div class="col-12 p-0 m-t-1">
                     <mat-form-field appearance="outline" class="w-100" >
                         <mat-label>Skill</mat-label>
                         <input matInput placeholder="Skill" formControlName="skills">
@@ -122,8 +122,8 @@
     <div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
         <div class="col-12"  >
             <form [formGroup]="skillsForm" >
-                <div class="row wrap">
-                  <div class="col-12 p-b-1 p-t-2">
+                <div class="row wrap pl-1 pr-1">
+                  <div class="col-12 p-b-1 p-t-1 m-t-3">
                     <mat-form-field appearance="outline" class="w-100" >
                         <mat-label>Section title</mat-label>
                         <input matInput placeholder="Section Title" #role formControlName="section_title">
@@ -132,7 +132,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                    <div class="col-12 p-t-4">
+                    <div class="col-12 p-b-1 p-t-1">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>Sub Title</mat-label>
                             <input type="text"

@@ -172,7 +172,7 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
     position_highlight : [''],
     skills_highlight : [''],
     job_description : [''],
-    section_title : ['', Validators.required]
+    section_title : ['Profile Summary', Validators.required]
   });
   certificationsForm = this._formBuilder.group({
     certifications : [''],

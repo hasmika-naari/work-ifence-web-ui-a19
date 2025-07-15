@@ -588,6 +588,16 @@ removeSectionFromMultipleSectionsList(section: string) {
           }))
       }
 
+      deleteAccomplishment(exp : Accomplishment){
+        this.state.update((state)=>({
+            ...state,
+            currentTab : '',
+            selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, accomplishment : [...state.selectedResume.resumeForm.accomplishment.filter(e=>e.id != exp.id)]}},
+            isEdit : false,
+            isChangeInNewResume : true
+          }))
+      }
+
       deleteAchievement(){
         this.state.update((state)=>({
             ...state,

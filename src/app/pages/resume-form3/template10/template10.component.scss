@@ -163,6 +163,34 @@
     margin: 0;
   }
 
+
+.course-work-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.custom-li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none; /* remove default bullet */
+}
+
+.bullet {
+  font-size: 1.2em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ 
+}
+
+
+
 // -------------------------------------------------------
 .opacity-half{
     opacity: 0.5;

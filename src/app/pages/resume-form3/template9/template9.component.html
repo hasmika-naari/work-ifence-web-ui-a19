@@ -31,7 +31,7 @@
                                             <p-icon class="pi pi-times" title="" (click)="removeSection('PROFILE_SUMMARY')"></p-icon>
                                           </div>
                                           <div class="wif-tooltip__item">
-                                            Remove Summary
+                                            Remove summary section
                                           </div>
                                         </div>
                                   </div>
@@ -59,7 +59,7 @@
                                               <p-icon class="pi pi-times" title="" (click)="removeSection('PROFILE_SUMMARY')"></p-icon>
                                           </div>
                                           <div class="wif-tooltip__item">
-                                              Remove Summary
+                                              Remove summary section
                                           </div>
                                       </div>
                                   </div>
@@ -160,7 +160,7 @@
                                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('WORK_EXPERIENCE')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Remove Experience
+                                      Remove experience section
                                     </div>
                                   </div>
                             </div>
@@ -252,7 +252,7 @@
                                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('WORK_EXPERIENCE')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Remove Experience
+                                      Remove experience section
                                     </div>
                                   </div>
                             </div>
@@ -267,6 +267,256 @@
                             <ul>
                                 <li class="opacity-half">Highlight your accomplishments, using numbers if possible.</li> 
                             </ul>
+                        </div>
+                      </section>
+                    }
+                    @if(resumeForm().accomplishment.length > 0){
+                      <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
+                            @if(!isPreview){
+                                <div class="section-actions">
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Add Accomplishment
+                                    </div>
+                                  </div>
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENT_WITH_DESC')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Remove accomplishments section
+                                    </div>
+                                  </div>
+                            </div>
+                          }
+                        </h2>
+                        @for(item of resumeForm().accomplishment; track item.accomplisment){
+                        <div class="job">
+                            <div style="display: grid;grid-template-columns: 2fr 1fr;">
+                                <h3><b>{{item.accomplisment}}</b></h3>
+                                <p class="date">{{item.date}}</p>
+                            </div>
+                            <div [innerHTML]="item.description" class="project-content"></div>
+                            @if(!isPreview){
+                                <div class="sub-items-actions">
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Edit accomplisment
+                                    </div>
+                                  </div>
+                                  @if(!item.isHideSelected){
+                                    <div class="wif-tooltip" data-direction="bottom">
+                                      <div class="wif-tooltip__initiator">
+                                        <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
+                                      </div>
+                                      <div class="wif-tooltip__item">
+                                        Hide accomplisment
+                                      </div>
+                                    </div>
+                                  }
+                                  @else{
+                                    <div class="wif-tooltip" data-direction="bottom">
+                                      <div class="wif-tooltip__initiator">
+                                        <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
+                                      </div>
+                                      <div class="wif-tooltip__item">
+                                        Show accomplisment
+                                      </div>
+                                    </div>
+                                  }
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('ACHIEVEMENT_WITH_DESC', item.id, 'up')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Move Up
+                                    </div>
+                                  </div>
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('ACHIEVEMENT_WITH_DESC', item.id, 'down')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Move Down
+                                    </div>
+                                  </div>
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Remove accomplisment
+                                    </div>
+                                  </div>
+                                </div>
+                              }
+                        </div>
+                        }
+                      </section>
+                    }
+                    @else{
+                      <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
+                            @if(!isPreview){
+                                <div class="section-actions">
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Add accomplisment
+                                    </div>
+                                  </div>
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENT_WITH_DESC')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Remove accomplisments section
+                                    </div>
+                                  </div>
+                            </div>
+                          }
+                        </h2>
+                        <div class="job">
+                            <div style="display: grid;grid-template-columns: 2fr 1fr;">
+                                <h3><b>Title</b></h3>
+                                <p class="date">Date</p>
+                            </div>
+                            <ul>
+                                <li class="opacity-half">Highlight your accomplishments, using numbers if possible.</li> 
+                            </ul>
+                        </div>
+                      </section>
+                    }
+                    @if(resumeForm().certification.length > 0){
+                      <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'CERTIFICATIONS'">
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
+                            @if(!isPreview){
+                                <div class="section-actions">
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Add certification
+                                    </div>
+                                  </div>
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Remove certifications section
+                                    </div>
+                                  </div>
+                            </div>
+                          }
+                        </h2>
+                        @for(item of resumeForm().certification; track item.certification_name){
+                        <div class="job">
+                             <p [class]="getDivClass(item)" style="margin: 0;padding: 0;">
+                            <span><a href="{{item.certification_link}}" target="_blank">{{item.certification_name}}</a>, {{item.issued_organisation}}</span>
+                            <span style="float: right;">{{item.issued_month}} {{item.issued_year}}</span>
+                            </p>
+                            @if(!isPreview){
+                                <div class="sub-items-actions">
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('CERTIFICATIONS', item)"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Edit certification
+                                    </div>
+                                  </div>
+                                  @if(!item.isHideSelected){
+                                    <div class="wif-tooltip" data-direction="bottom">
+                                      <div class="wif-tooltip__initiator">
+                                        <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('CERTIFICATIONS', item)"></p-icon>
+                                      </div>
+                                      <div class="wif-tooltip__item">
+                                        Hide certification
+                                      </div>
+                                    </div>
+                                  }
+                                  @else{
+                                    <div class="wif-tooltip" data-direction="bottom">
+                                      <div class="wif-tooltip__initiator">
+                                        <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('CERTIFICATIONS', item)"></p-icon>
+                                      </div>
+                                      <div class="wif-tooltip__item">
+                                        Show certification
+                                      </div>
+                                    </div>
+                                  }
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('CERTIFICATIONS', item.id, 'up')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Move Up
+                                    </div>
+                                  </div>
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('CERTIFICATIONS', item.id, 'down')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Move Down
+                                    </div>
+                                  </div>
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('CERTIFICATIONS', item)"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Remove certification
+                                    </div>
+                                  </div>
+                                </div>
+                              }
+                        </div>
+                        }
+                      </section>
+                    }
+                    @else{
+                      <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'CERTIFICATIONS'">
+                        <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
+                            @if(!isPreview){
+                                <div class="section-actions">
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Add certification
+                                    </div>
+                                  </div>
+                                  <div class="wif-tooltip" data-direction="bottom">
+                                    <div class="wif-tooltip__initiator">
+                                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS')"></p-icon>
+                                    </div>
+                                    <div class="wif-tooltip__item">
+                                      Remove certifications section
+                                    </div>
+                                  </div>
+                            </div>
+                          }
+                        </h2>
+                        <div class="job">
+                           <div>
+                            <p style="margin: 0;" class="opacity-half">
+                            <span><a href="#" target="_blank">Certificate Name</a>, Which institution issued the certificate?</span>
+                            <span style="float: right;">Date</span>
+                            </p>
+                          </div>
                         </div>
                       </section>
                     }
@@ -289,7 +539,7 @@
                                     <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
                                   </div>
                                   <div class="wif-tooltip__item">
-                                    Remove Project
+                                    Remove project section
                                   </div>
                               </div>
                             </div>
@@ -389,7 +639,7 @@
                                     <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
                                   </div>
                                   <div class="wif-tooltip__item">
-                                    Remove Project
+                                    Remove project section
                                   </div>
                               </div>
                             </div>
@@ -433,7 +683,7 @@
                                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('RELEVANT_COURSEWORK')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Remove Course Work
+                                      Remove coursework section
                                     </div>
                                   </div>
                                 </div>
@@ -486,7 +736,7 @@
                                           <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_BULLET_POINTS')"></p-icon>
                                         </div>
                                         <div class="wif-tooltip__item">
-                                          Remove Skills
+                                          Remove skills section
                                         </div>
                                       </div>
                                     </div>
@@ -527,7 +777,7 @@
                                         <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
                                       </div>
                                       <div class="wif-tooltip__item">
-                                        Remove Education
+                                        Remove education section
                                       </div>
                                     </div>
                                 </div>
@@ -616,7 +866,7 @@
                                           <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
                                         </div>
                                         <div class="wif-tooltip__item">
-                                          Remove Education
+                                          Remove education section
                                         </div>
                                       </div>
                                   </div>
@@ -646,7 +896,7 @@
                                           <p-icon class="pi pi-times" title="" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
                                         </div>
                                         <div class="wif-tooltip__item">
-                                          Delete Certification 
+                                          Remove certifications section 
                                         </div>
                                       </div>
                                 </div>
@@ -673,7 +923,7 @@
                                           <p-icon class="pi pi-times" title="" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
                                         </div>
                                         <div class="wif-tooltip__item">
-                                          Delete Certification 
+                                          Remove certifications section
                                         </div>
                                       </div>
                                 </div>
@@ -705,7 +955,7 @@
                                           <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
                                         </div>
                                         <div class="wif-tooltip__item">
-                                          Delete Achievements 
+                                          Remove achievements section 
                                         </div>
                                       </div>
                                 </div>
@@ -732,7 +982,7 @@
                                           <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
                                         </div>
                                         <div class="wif-tooltip__item">
-                                          Remove Achievements 
+                                          Remove achievements section 
                                         </div>
                                       </div>
                                 </div>
@@ -831,7 +1081,7 @@
                                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('RELEVANT_COURSEWORK')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Remove Course Work
+                                      Remove coursework section
                                     </div>
                                   </div>
                                 </div>
@@ -884,7 +1134,7 @@
                                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_BULLET_POINTS')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Remove Skills
+                                      Remove skills section
                                     </div>
                                   </div>
                                 </div>
@@ -926,7 +1176,7 @@
                                       <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Remove Education
+                                      Remove educations section
                                     </div>
                                   </div>
                               </div>
@@ -1015,7 +1265,7 @@
                                       <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Remove Education
+                                      Remove educations section
                                     </div>
                                   </div>
                               </div>
@@ -1045,7 +1295,7 @@
                                       <p-icon class="pi pi-times" title="" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Delete Certification 
+                                      Remove certifications section 
                                     </div>
                                   </div>
                             </div>
@@ -1072,7 +1322,7 @@
                                       <p-icon class="pi pi-times" title="" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Delete Certification 
+                                      Remove certifications section 
                                     </div>
                                   </div>
                             </div>
@@ -1104,7 +1354,7 @@
                                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Delete Achievements 
+                                      Remove achievements section
                                     </div>
                                   </div>
                             </div>
@@ -1131,7 +1381,7 @@
                                       <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
                                     </div>
                                     <div class="wif-tooltip__item">
-                                      Remove Achievements 
+                                      Remove achievements section
                                     </div>
                                   </div>
                             </div>

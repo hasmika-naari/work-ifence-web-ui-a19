@@ -89,7 +89,7 @@ export class AddSectionComponent implements OnInit, OnDestroy {
       this.userStore.setResumeSections([...this.currentSections(), section])
     }
     else{
-      if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT"].includes(section.section)){
+      if(["PROFILE_SUMMARY","WORK_EXPERIENCE", "PROJECT", "SKILLS_CATEGORY", "ACHIEVEMENT_WITH_DESC", "CERTIFICATIONS"].includes(section.section)){
         this.userStore.setMultipleColumnTemplateSections([ [...this.multipleSections()[0], section], [...this.multipleSections()[1]]])
       }
       else{

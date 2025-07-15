@@ -149,7 +149,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     skills: [''],
     sub_title : [''],
     skillsv2 : [''],
-    section_title : ['', Validators.required]
+    section_title : ['Skills', Validators.required]
   });
 
   subs: Array<Subscription> = [];

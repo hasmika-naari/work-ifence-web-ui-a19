@@ -58,6 +58,8 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   @Output() editSection = new EventEmitter<any>();
 
   @Input() isPreview : boolean = false;
+  currentDraggingSection: string = '';
+  isDragging : boolean = false
 
   sections  : string[]= ['PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS', 'ACHIEVEMENTS_BULLET_POINTS']
 
@@ -179,6 +181,16 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2.length/2) + 1,)]
   }
 
+onDragStart(sectionName: string) {
+  this.currentDraggingSection = sectionName;
+  this.isDragging = true;
+}
+
+onDragEnd() {
+  this.isDragging = false;
+  this.currentDraggingSection = '';
+}
+
   
 formatSkills(items : string[]){
   return items.join(", ");
@@ -203,6 +215,9 @@ formatSkills(items : string[]){
         }
         else if(section === "CERTIFICATIONS"){
           this.userStore.deleteCertification(selectedJson)
+        }
+        else if(section == 'ACHIEVEMENT_WITH_DESC'){
+          this.userStore.deleteAccomplishment(selectedJson)
         }
       }
     });

@@ -135,7 +135,7 @@ export class EducationComponent implements OnInit, OnDestroy {
     field_of_study: [''],
     gpa: [''],
     graduation_year: [''],
-    section_title : ['', Validators.required]
+    section_title : ['Education', Validators.required]
   });
   skillsForm = this._formBuilder.group({
     skills: [''],

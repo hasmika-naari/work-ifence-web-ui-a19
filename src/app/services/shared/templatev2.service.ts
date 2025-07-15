@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Accomplishment, Certification, Education, Experience, Project, Resume, Skill, SkillV2 } from '../resume.model';
+import { Accomplishment, Certification, courseWork, Education, Experience, Project, Resume, Skill, SkillV2 } from '../resume.model';
 import { SectionDesc } from '../store/user-store';
 
 @Injectable({
@@ -634,7 +634,7 @@ export class Templatesv2Service {
         `
         ${items.length > 0 ?
             `
-        <li class="course-work-lisit-item" style="margin:0;padding:0;">${item.name}</li>
+        <li class="course-work-lisit-item" style="margin:0;padding:0;">${item.name || item}</li>
         ` : ''
         }
         `).join('');
@@ -874,7 +874,7 @@ export class Templatesv2Service {
 
     .contact-ul {
     margin: 0;
-    padding: 5px 17px;
+    padding : 0 0 0 16px;
     }
     
     .skills-ul {
@@ -1058,20 +1058,45 @@ export class Templatesv2Service {
     <body>
     <div class="container">    
         <div class="main-content">
-            <header class="work-experience">
-                <div class="header">
-                    <h1 class="header-h1">${resumeForm.contact.fname + ' ' + resumeForm.contact.lname}</h1>
-                    ${resumeForm.contact.subTitle.length > 0 ?
-                    `
-                    <p class="header-title">${resumeForm.contact.subTitle}</p>
-                    ` : ''}
-                </div>
-            </header>
             <div>
+                <header class="work-experience">
+                    <div class="header">
+                        <h1 class="header-h1">${resumeForm.contact.fname + ' ' + resumeForm.contact.lname}</h1>
+                        ${resumeForm.contact.subTitle.length > 0 ?
+                        `
+                        <p class="header-title">${resumeForm.contact.subTitle}</p>
+                        ` : ''}
+                    </div>
+                </header>
                 ${this.getFormattedRightSideSectionsForDualEdge(resumeForm)}
             </div>
 
             <div class="sidebar">
+                <section class="contact">
+                    <h2 class="contact-h2">Contact</h2>
+                    <ul class="contact-ul">
+                        ${resumeForm.contact.phone_number.length > 0?
+                        `
+                        <li class="contact-ul-li">${resumeForm.contact.phone_number}</li>
+                        ` : ''
+                        }
+                        ${resumeForm.contact.email.length > 0?
+                        `
+                        <li class="contact-ul-li"><a href="mailto:${resumeForm.contact.email}" class="contact-ul-li-a">${resumeForm.contact.email}</a></li>
+                        ` : ''
+                        }
+                        ${resumeForm.contact.linkedIn_profile.length > 0?
+                        `
+                        <li class="contact-ul-li"><a href="${resumeForm.contact.linkedIn_profile}" class="contact-ul-li-a">${resumeForm.contact.linkedIn_profile_display_name}</a></li>
+                        ` : ''
+                        }
+                        ${resumeForm.contact.github_profile.length > 0?
+                        `
+                        <li class="contact-ul-li"><a href="${resumeForm.contact.github_profile}" class="contact-ul-li-a">${resumeForm.contact.github_profile_display_name}</a></li>
+                        ` : ''
+                        }
+                    </ul>
+                </section>
                 ${this.getFormattedLeftSideSectionsForDualEdge(resumeForm)}
             </div>
         </div>
@@ -1323,7 +1348,7 @@ export class Templatesv2Service {
         return items.map((item : Skill)=> 
         `
         <div class="skill-item">
-            ${item.name}
+            ${item.name || item}
         </div>
         `).join('');
     }
@@ -1622,6 +1647,29 @@ export class Templatesv2Service {
                 .course-work-lisit-item{
                 flex: 0 0 25%;
                 }
+
+                .skills-list-li {
+                list-style: none;
+                padding: 0;
+                margin: 0 !important;
+                display: flex;
+                flex-wrap: wrap;
+                }
+
+                .custom-li {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                list-style: none; /* remove default bullet */
+                }
+
+                .bullet {
+                font-size: 1.2em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                }
+
             </style>
         </head>
         <body>
@@ -1728,7 +1776,7 @@ export class Templatesv2Service {
                 <div class="section-title">${e.editable_section_title}</div>
                 <div  class="course-work-section-content project-content" style="margin-top:7px;">
                     <ul class="course-work-list">
-                        ${this.getCourseWorkSectionForMonoPro(resume.courseWork)}
+                        ${this.getCourseWorkWithBulletPointsSectionForModern(resume.courseWork)}
                     </ul>
                 </div>
             </div>
@@ -1741,8 +1789,8 @@ export class Templatesv2Service {
             <div class="section">
                 <div class="section-title">${e.editable_section_title}</div>
                 <div  class="course-work-section-content project-content" style="margin-top:7px;">
-                    <ul class="course-work-list">
-                        ${this.getSkillsWithBulletPointsSectionForMonoPro(resume.skill)}
+                    <ul class="skills-list-li">
+                        ${this.getSkillsWithBulletPointsSectionForModern(resume.skill)}
                     </ul>
                 </div>
             </div>
@@ -1938,6 +1986,35 @@ export class Templatesv2Service {
             </div>
         `).join('');
     }
+
+        public getSkillsWithBulletPointsSectionForModern(items : Skill[]) : string{
+        return items.map((item : Skill)=> 
+        `
+        ${items.length > 0 ?
+            `
+                  <li class="custom-li">
+                  <span class="bullet">•</span>
+                  <span style="margin-right: 8px;font-size:12px;">${ item.name || item }</span>
+                  </li>
+        ` : ''
+        }
+        `).join('');
+    }
+
+        public getCourseWorkWithBulletPointsSectionForModern(items : string[]) : string{
+        return items.map((item : string)=> 
+        `
+        ${items.length > 0 ?
+            `
+                  <li class="custom-li">
+                  <span class="bullet">•</span>
+                  <span style="margin-right: 8px;font-size:12px;">${ item }</span>
+                  </li>
+        ` : ''
+        }
+        `).join('');
+    }
+
 
 
 

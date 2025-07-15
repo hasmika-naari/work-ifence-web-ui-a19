@@ -1326,7 +1326,7 @@ hideMenu() {
 
   isSectionActive(section : string){
     let status = false;
-    if(this.currentSections().length > 0){
+    if(this.resumeSignalForm().template_details.template_name != 'TEMPLATE_9'){
       this.currentSections().map((e : SectionDesc)=>{
       if(e.section === section){
         status = true

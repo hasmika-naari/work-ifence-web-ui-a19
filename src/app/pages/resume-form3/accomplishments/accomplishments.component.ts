@@ -102,7 +102,7 @@ export class AccomplishmentsComponent implements OnInit, OnDestroy {
     acplsmnt : [''],
     date : [''],
     accomplishments: [''],
-    section_title : ['', Validators.required]
+    section_title : ['Accomplishments', Validators.required]
   })
   
   is_achievement_loading : boolean = false;

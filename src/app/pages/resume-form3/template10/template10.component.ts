@@ -187,6 +187,9 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
         else if(section === "CERTIFICATIONS"){
           this.userStore.deleteCertification(selectedJson)
         }
+        else if(section == 'ACHIEVEMENT_WITH_DESC'){
+          this.userStore.deleteAccomplishment(selectedJson)
+        }
       }
     });
   }
@@ -320,6 +323,9 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       this.userStore.setSelectedAccomplishment(selectedJson)
+    }
+       else if(section == "CERTIFICATIONS"){
+      this.userStore.updateCertification(selectedJson)
     }
 
     this.editSection.emit({section : section})
@@ -515,6 +521,23 @@ getSectionTitle(section : string){
     }
   })
   return sectionTitle??'Section Title'
+}
+
+isDefaultData(data : string){
+return data?.length==0
+}
+
+isContactDefaultData(){
+  return this.resumeForm().contact?.fname.length>0 || this.resumeForm().contact?.lname.length>0 || this.resumeForm().contact?.subTitle.length>0 || this.resumeForm().contact?.phone_number.length>0
+  || this.resumeForm().contact?.email.length>0 || this.resumeForm().contact?.github_profile.length>0 || this.resumeForm().contact?.linkedIn_profile.length>0
+}
+
+isAchievementDefaultData(){
+  return this.resumeForm().achievementBulletPoints?.ach.length == 0
+}
+
+isCertificationDefaultData(){
+  return this.resumeForm().certificationBulletPoints?.point.length == 0
 }
 
   

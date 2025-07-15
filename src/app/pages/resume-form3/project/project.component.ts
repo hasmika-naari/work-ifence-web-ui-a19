@@ -146,6 +146,7 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
           }else{
             this.projectForm.reset();
             this.projectForm.get('bullet_points')?.setValue('4');
+            this.projectForm.controls['section_title'].setValue('Project')
           }
         })
       }
@@ -187,7 +188,7 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       description : ['', Validators.required],
       period: [''],
       bullet_points : [''],
-      section_title : ['', Validators.required]
+      section_title : ['Project', Validators.required]
   });
   certifyForm = this._formBuilder.group({
       certification_name : [''],

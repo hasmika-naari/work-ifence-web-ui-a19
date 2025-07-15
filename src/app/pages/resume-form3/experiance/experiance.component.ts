@@ -179,6 +179,7 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
           }else{
             this.experienceForm.reset();
             this.experienceForm.get('bullet_points')?.setValue('4');
+            this.experienceForm.get('section_title')?.setValue('Experience');
           }
         })
       }
@@ -195,7 +196,7 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
     isCurrentlyWorkHere : [false],
     bullet_points : [''],
     content: [''], // Bind FormControl here
-    section_title : ['', Validators.required]
+    section_title : ['Experience', Validators.required]
   });
   
   public sdate = new FormControl(moment());
@@ -505,6 +506,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       this.editor.clipboard.dangerouslyPasteHTML(this.selectedExperience().original_description_html);
     }
     let section_title;
+    console.log(this.sections());
+    
         if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
           this.multipleSections().map((e : SectionDesc[])=>{
             e.map((section : SectionDesc)=>{

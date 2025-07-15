@@ -193,7 +193,7 @@ export class CertificationComponent implements OnInit, OnDestroy {
       issued_year : ['', [Validators.required, Validators.pattern(/^\d{4}$/), this.yearValidator()]],
       certification_link : ['', Validators.pattern('^https?:\\/\\/(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[a-zA-Z0-9._~-]*)*\\/?$')],
       description : [''],
-      section_title : ['', Validators.required]
+      section_title : ['Certifications', Validators.required]
   })
   achievementForm = this._formBuilder.group({
     achievement : ['']

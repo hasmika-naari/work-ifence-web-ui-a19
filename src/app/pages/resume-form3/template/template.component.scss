@@ -507,7 +507,7 @@ a{
 
 .sub-items-actions{
   position: absolute;
-  top: 10px;
+  top: -10px;
   right: 0px;
   display: flex;
   // background-color: #eeeeee8f;
@@ -642,6 +642,19 @@ a{
 .cdk-drag-placeholder * {
   display: none !important;
 }
+
+// .cdk-drop-placeholder {
+//   background: #f9f9f9;
+//   border: 2px dashed #999;
+//   min-height: 80px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   border-radius: 6px;
+//   padding: 12px;
+//   position: relative;
+// }
+
 
 /* Optional: Hide floating item entirely */
 .cdk-drag-preview {
