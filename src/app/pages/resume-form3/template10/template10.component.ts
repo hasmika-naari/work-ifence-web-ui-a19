@@ -110,7 +110,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       public genaiService : GenAIService, 
       public templateService : Templatesv2Service) {
        effect(()=>{
-          if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections().length == 0){
+          if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections()?.length == 0){
             this.sections = []
             this.resumeForm().sections.map((e : SectionDesc)=>{
               this.sections = [...this.sections, e.section]
@@ -118,10 +118,10 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
             this.userStore.setResumeSections(this.resumeForm().sections)
             this.isSectionsSetCount = this.isSectionsSetCount + 1
           }
-          else if(this.currentSections().length == 0){
+          else if(this.currentSections()?.length == 0){
             this.userStore.setResumeSections(this.sectionsDesc)
           }
-          else if(this.currentSections().length !== this.sections.length){
+          else if(this.currentSections()?.length !== this.sections?.length){
             this.sections = []
           this.currentSections().map((e : SectionDesc)=>{
             this.sections = [...this.sections, e.section]
@@ -130,8 +130,8 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
           console.log(this.currentSections());
 
           let skills = this.resumeForm().skill_v2
-          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills.length/2))]
-          this.secondHalfSkills = [...skills.slice(Math.ceil(skills.length/2),)]
+          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
+          this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
         })
       }
 
@@ -163,8 +163,8 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       isSection.isSummary = true;
       this.userStore.updateSectionStatus(isSection);
       }
-      this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2.length/2))]
-      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2.length/2) + 1,)]
+      this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2?.length/2))]
+      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2?.length/2) + 1,)]
   }
 
   confirmDeleteItemDialog(section: string, selectedJson : any): void {
@@ -332,19 +332,19 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
   }
 
   checkEducationCondition(){
-      return this.resumeForm().education.filter(obj => obj.isHideSelected === false).length > 0
+      return this.resumeForm().education.filter(obj => obj.isHideSelected === false)?.length > 0
   }
 
   checkProjectCondition(){
-    return this.resumeForm().project.filter(obj => obj.isHideSelected === false).length > 0
+    return this.resumeForm().project.filter(obj => obj.isHideSelected === false)?.length > 0
   }
 
   checkExperienceCondition(){
-    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false).length > 0
+    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false)?.length > 0
   }
 
   checkCertificationCondition(){
-    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false).length > 0
+    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false)?.length > 0
   }
 
 
@@ -361,7 +361,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -380,7 +380,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -399,7 +399,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -418,7 +418,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -437,7 +437,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -528,16 +528,16 @@ return data?.length==0
 }
 
 isContactDefaultData(){
-  return this.resumeForm().contact?.fname.length>0 || this.resumeForm().contact?.lname.length>0 || this.resumeForm().contact?.subTitle.length>0 || this.resumeForm().contact?.phone_number.length>0
-  || this.resumeForm().contact?.email.length>0 || this.resumeForm().contact?.github_profile.length>0 || this.resumeForm().contact?.linkedIn_profile.length>0
+  return this.resumeForm().contact?.fname?.length>0 || this.resumeForm().contact?.lname?.length>0 || this.resumeForm().contact?.subTitle?.length>0 || this.resumeForm().contact?.phone_number?.length>0
+  || this.resumeForm().contact?.email?.length>0 || this.resumeForm().contact?.github_profile?.length>0 || this.resumeForm().contact?.linkedIn_profile?.length>0
 }
 
 isAchievementDefaultData(){
-  return this.resumeForm().achievementBulletPoints?.ach.length == 0
+  return this.resumeForm().achievementBulletPoints?.ach == null || this.resumeForm().achievementBulletPoints?.ach?.length == 0 || this.resumeForm().achievementBulletPoints?.ach == undefined
 }
 
 isCertificationDefaultData(){
-  return this.resumeForm().certificationBulletPoints?.point.length == 0
+   return  this.resumeForm().certificationBulletPoints?.point == null || this.resumeForm().certificationBulletPoints?.point?.length == 0 || this.resumeForm().certificationBulletPoints?.point == undefined
 }
 
   

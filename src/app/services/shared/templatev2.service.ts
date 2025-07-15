@@ -409,8 +409,12 @@ export class Templatesv2Service {
     }
 
     getFormattedSectionsForMonoPro(resume : Resume){
-        let firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
-        let secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
+        let firstHalfSkills : any[]= []
+        let secondHalfSkills : any[]= []
+        if(resume.skill_v2?.length >0){
+            firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
+            secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
+        }
         return resume.sections.map((e : SectionDesc)=>
         `
         ${
@@ -1108,8 +1112,12 @@ export class Templatesv2Service {
 
 
     getFormattedRightSideSectionsForDualEdge(resume : Resume){
-        let firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
-        let secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
+        let firstHalfSkills : any[]= []
+        let secondHalfSkills : any[]= []
+        if(resume.skill_v2?.length >0){
+            firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
+            secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
+        }
         return resume.multipleSections[0].map((e : SectionDesc)=>
         `
         ${
@@ -1737,8 +1745,12 @@ export class Templatesv2Service {
     }
 
     getFormattedSectionsForModern(resume : Resume){
-        let firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
-        let secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
+        let firstHalfSkills : any[]= []
+        let secondHalfSkills : any[]= []
+        if(resume.skill_v2?.length >0){
+            firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
+            secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
+        }
         return resume.sections.map((e : SectionDesc)=>
         `
         ${

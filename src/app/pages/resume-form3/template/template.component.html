@@ -580,7 +580,7 @@
       </section>
     }
 
-    @if(resumeForm().accomplishment.length > 0){
+    @if(!isAccomplishmentDefaultData()){
       <section class="course-work section-details trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
         <!-- <span class="template1-section-title"> -->
           <span class="summary-section-title">{{getSectionTitle(section)}}
@@ -1043,7 +1043,7 @@
         </span>
         <div  class="course-work-section-content">
           <div>
-            <div [innerHTML]="resumeForm().achievementBulletPoints.ach" class="project-content"></div>
+            <div [innerHTML]="resumeForm()?.achievementBulletPoints?.ach??''" class="project-content"></div>
           </div>
         </div>
       </section>

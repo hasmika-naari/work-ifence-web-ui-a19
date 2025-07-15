@@ -382,7 +382,12 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
               if (!resumeCategoryExists && e.resumeCategory.length > 0) {
                 this.resumeCategories = [...this.resumeCategories , { name: e.resumeCategory, code: '' }];
               }
-          })
+          },
+         (error : any)=>{
+          if(error.status == 403){
+            console.log("PDF Fetching Error");
+          }
+         })
           this.userStore.setResumeDataListItems(this.resumes);
           this.userStore.setFilteredResumes([...this.resumes]);
           this.isActionInProgress = false;

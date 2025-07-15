@@ -8,7 +8,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = '../../assets/js/pdf.worker.min.mjs';
   providedIn: 'root',
 })
 export class PdfToImageService {
-  async convertPdfToImageBytes(pdfFile: File): Promise<string[]> {
+async convertPdfToImageBytes(pdfFile: File): Promise<string[]> {
+  try {
     const pdfData = await pdfFile.arrayBuffer();
     const pdf: PDFDocumentProxy = await getDocument({ data: pdfData }).promise;
 
@@ -29,10 +30,16 @@ export class PdfToImageService {
     }
 
     return imageBytes;
+  } catch (error) {
+    console.error('Error converting PDF to image bytes:', error);
+    return [];
   }
+}
 
-  async convertPdfToImageBytesThroughUrl(url: string): Promise<string[]> {
-    const pdf: PDFDocumentProxy = await getDocument(url).promise;
+
+async convertPdfToImageBytesThroughUrl(url: string): Promise<string[]> {
+  try {
+    const pdf: PDFDocumentProxy = await getDocument({ url }).promise;
 
     const imageBytes: string[] = [];
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -51,5 +58,14 @@ export class PdfToImageService {
     }
 
     return imageBytes;
+  } catch (error: any) {
+    console.error('Failed to load PDF from URL:', error);
+    // Optional: handle specific status codes like 403
+    if (error?.message?.includes('403') || error?.status === 403) {
+      // alert('Access denied to PDF (403 Forbidden). Make sure the URL is public or signed.');
+    }
+    return [];
   }
+}
+
 }

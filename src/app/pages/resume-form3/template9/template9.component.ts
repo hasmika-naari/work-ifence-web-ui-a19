@@ -125,7 +125,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
       public genaiService : GenAIService, 
       public templateService : Templatesv2Service) {
         effect(()=>{
-            if(this.resumeForm().template_details.template_name == 'TEMPLATE_9' && this.resumeForm()?.multipleSections?.length>0 && this.isSectionsSetCount == 1 && this.multipleSections().length == 0){
+            if(this.resumeForm().template_details.template_name == 'TEMPLATE_9' && this.resumeForm()?.multipleSections?.length>0 && this.isSectionsSetCount == 1 && this.multipleSections()?.length == 0){
               this.staticSections = []
               this.dynamicSections = []
               this.sectionsDesc = []
@@ -149,7 +149,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
               this.userStore.setMultipleColumnTemplateSections(this.resumeForm().multipleSections)
               this.isSectionsSetCount = this.isSectionsSetCount + 1
             }
-            else if(this.resumeForm()?.multipleSections?.length == 0 && this.currentSections().length != 0 && this.multipleSections()?.length == 0){
+            else if(this.resumeForm()?.multipleSections?.length == 0 && this.currentSections()?.length != 0 && this.multipleSections()?.length == 0){
                this.staticSections = []
                this.dynamicSections = []
                this.sectionsDesc = [...this.currentSections()]
@@ -171,7 +171,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
               
               this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
             }
-            else if(this.resumeForm()?.multipleSections?.length == 0 && this.currentSections().length == 0 && this.multipleSections().length == 0){
+            else if(this.resumeForm()?.multipleSections?.length == 0 && this.currentSections()?.length == 0 && this.multipleSections()?.length == 0){
                let staticSectionsFull : SectionDesc[]= []
                let dynamicSectionsFull : SectionDesc[]= []
               sections.map((e : SectionDesc)=>{
@@ -188,7 +188,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
               })
               this.userStore.setMultipleColumnTemplateSections([staticSectionsFull, dynamicSectionsFull])
             }
-            if(this.multipleSections()[0].length !== this.staticSections.length){
+            if(this.multipleSections()[0]?.length !== this.staticSections?.length){
               console.log(this.multipleSections()[0] , "MultipleSection");
               
               this.staticSections = []
@@ -196,15 +196,15 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
               this.staticSections = [...this.staticSections, e.section]
             })
             }
-            if(this.multipleSections()[1].length !== this.dynamicSections.length){
+            if(this.multipleSections()[1]?.length !== this.dynamicSections?.length){
               this.dynamicSections = []
                 this.multipleSections()[1].map((e : SectionDesc)=>{
                 this.dynamicSections = [...this.dynamicSections, e.section]
               })
             }
           let skills = this.resumeForm().skill_v2
-          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills.length/2))]
-          this.secondHalfSkills = [...skills.slice(Math.ceil(skills.length/2),)]
+          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
+          this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
           })
       }
 
@@ -440,19 +440,19 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
   }
 
   checkEducationCondition(){
-      return this.resumeForm().education.filter(obj => obj.isHideSelected === false).length > 0
+      return this.resumeForm().education.filter(obj => obj.isHideSelected === false)?.length > 0
   }
 
   checkProjectCondition(){
-    return this.resumeForm().project.filter(obj => obj.isHideSelected === false).length > 0
+    return this.resumeForm().project.filter(obj => obj.isHideSelected === false)?.length > 0
   }
 
   checkExperienceCondition(){
-    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false).length > 0
+    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false)?.length > 0
   }
 
   checkCertificationCondition(){
-    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false).length > 0
+    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false)?.length > 0
   }
 
 
@@ -469,7 +469,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -488,7 +488,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -507,7 +507,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -526,7 +526,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -545,7 +545,7 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     if (direction === "up" && index > 0) {
       // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
+    } else if (direction === "down" && index < array?.length - 1) {
       // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
@@ -616,16 +616,16 @@ return data?.length==0
 }
 
 isContactNotDefaultData(){
-  return this.resumeForm().contact?.fname.length>0 || this.resumeForm().contact?.lname.length>0 || this.resumeForm().contact?.subTitle.length>0 || this.resumeForm().contact?.phone_number.length>0
-  || this.resumeForm().contact?.email.length>0 || this.resumeForm().contact?.github_profile.length>0 || this.resumeForm().contact?.linkedIn_profile.length>0
+  return this.resumeForm().contact?.fname?.length>0 || this.resumeForm().contact?.lname?.length>0 || this.resumeForm().contact?.subTitle?.length>0 || this.resumeForm().contact?.phone_number?.length>0
+  || this.resumeForm().contact?.email?.length>0 || this.resumeForm().contact?.github_profile?.length>0 || this.resumeForm().contact?.linkedIn_profile?.length>0
 }
 
 isAchievementDefaultData(){
-  return this.resumeForm().achievementBulletPoints?.ach == null || this.resumeForm().achievementBulletPoints?.ach.length == 0 || this.resumeForm().achievementBulletPoints?.ach == undefined
+  return this.resumeForm().achievementBulletPoints?.ach == null || this.resumeForm().achievementBulletPoints?.ach?.length == 0 || this.resumeForm().achievementBulletPoints?.ach == undefined
 }
 
 isCertificationDefaultData(){
-  return  this.resumeForm().certificationBulletPoints?.point == null || this.resumeForm().certificationBulletPoints?.point.length == 0 || this.resumeForm().certificationBulletPoints?.point == undefined
+  return  this.resumeForm().certificationBulletPoints?.point == null || this.resumeForm().certificationBulletPoints?.point?.length == 0 || this.resumeForm().certificationBulletPoints?.point == undefined
 }
 
 formatSkills(items : string[]){
