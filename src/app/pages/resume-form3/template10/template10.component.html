@@ -260,7 +260,7 @@
     }
 
     <!-- Skills Section -->
-     @if(resumeForm().skill_v2.length > 0){
+     @if(isSkillsCategoryDefault()){
     <div class="section skills" style="position: relative;" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
         <div class="section-title">{{getSectionTitle(section)}}
         </div>
@@ -278,7 +278,7 @@
         </div>
         @if(!isPreview){
           <div class="section-actions">
-            @if(resumeForm().skill.length == 0){
+            @if(isSkillsCategoryDefault()){
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
                   <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
@@ -360,7 +360,7 @@
         </div>
     }
 
-    @if(resumeForm().accomplishment.length > 0){
+    @if(!isAccomplishmentDefaultData()){
         <div class="section education" style="position: relative;" cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
             <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
@@ -839,8 +839,8 @@
                 @else{
                 <ul class="course-work-list">
                   <li *ngFor="let item of resumeForm().skill; let i = index" class="custom-li">
-                  <span class="bullet">•</span>
-                  <span style="margin-right: 8px;">{{ item.name || item }}</span>
+                  <span>{{ item.name || item }}</span>
+                  <span class="bullet" *ngIf=" i != (resumeForm().skill.length-1)">•</span>
                   </li>
                 </ul>
                 }
@@ -890,8 +890,8 @@
                 @else{
                 <ul class="course-work-list">
                   <li *ngFor="let item of resumeForm().courseWork; let i = index" class="custom-li">
-                  <span class="bullet">•</span>
-                  <span style="margin-right: 8px;">{{ item }}</span>
+                  <span>{{ item }}</span>
+                   <span class="bullet" *ngIf=" i != (resumeForm().courseWork.length-1)">•</span>
                   </li>
                 </ul>
                 }

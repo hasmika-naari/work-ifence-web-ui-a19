@@ -559,7 +559,11 @@ getSectionTitle(section : string){
 }
 
 isAccomplishmentDefaultData(){
-  return this.resumeForm().accomplishment?.length == 0
+  return this.resumeForm().accomplishment?.length == 0 || this.resumeForm().accomplishment == null || this.resumeForm().accomplishment == undefined
+}
+
+isSkillsCategoryDefault(){
+  return this.resumeForm().skill_v2?.length == 0 || this.resumeForm().skill_v2 == null || this.resumeForm().skill_v2 == undefined
 }
 
 

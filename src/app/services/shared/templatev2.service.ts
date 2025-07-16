@@ -408,163 +408,152 @@ export class Templatesv2Service {
         `
     }
 
-    getFormattedSectionsForMonoPro(resume : Resume){
-        let firstHalfSkills : any[]= []
-        let secondHalfSkills : any[]= []
-        if(resume.skill_v2?.length >0){
-            firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
-            secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
-        }
-        return resume.sections.map((e : SectionDesc)=>
-        `
-        ${
-            e.section == 'PROFILE_SUMMARY'?
-            `
-            ${(resume.profileSummary.profile_summary.length > 0)?
-            `
+    getFormattedSectionsForMonoPro(resume: Resume) {
+  let firstHalfSkills: any[] = [];
+  let secondHalfSkills: any[] = [];
+
+  if (resume.skill_v2?.length > 0) {
+    const mid = Math.ceil(resume.skill_v2.length / 2);
+    firstHalfSkills = [...resume.skill_v2.slice(0, mid)];
+    secondHalfSkills = [...resume.skill_v2.slice(mid)];
+  }
+
+  return resume.sections.map((e: SectionDesc) => {
+    const title = `<span class="summary-section-title">${e.editable_section_title}</span>`;
+
+    switch (e.section) {
+      case 'PROFILE_SUMMARY':
+        return resume.profileSummary?.profile_summary?.length > 0
+          ? `
             <section class="trigger-area resume-summary">
-                <span class="summary-section-title">${e.editable_section_title}</span>
+              ${title}
+              <div class="project-content">
+                ${resume.profileSummary.profile_summary}
+              </div>
+            </section>`
+          : '';
+
+      case 'EDUCATION':
+        return resume.education?.length > 0
+          ? `
+            <section class="trigger-area resume-education">
+              ${title}
+              ${this.getEducationSectionForMonoPro(resume.education)}
+            </section>`
+          : '';
+
+      case 'RELEVANT_COURSEWORK':
+        return resume.courseWork?.length > 0
+          ? `
+            <section class="trigger-area course-work">
+              ${title}
+              <div class="course-work-section-content project-content" style="margin-top:7px;">
+                <ul class="course-work-list">
+                  ${this.getCourseWorkSectionForMonoPro(resume.courseWork)}
+                </ul>
+              </div>
+            </section>`
+          : '';
+
+      case 'SKILLS_BULLET_POINTS':
+        return resume.skill?.length > 0
+          ? `
+            <section class="trigger-area course-work">
+              ${title}
+              <div class="course-work-section-content project-content" style="margin-top:7px;">
+                <ul class="course-work-list">
+                  ${this.getSkillsWithBulletPointsSectionForMonoPro(resume.skill)}
+                </ul>
+              </div>
+            </section>`
+          : '';
+
+      case 'SKILLS_CATEGORY':
+        return resume.skill_v2?.length > 0
+          ? `
+            <section class="trigger-area course-work">
+              <div class="summary-section-title" style="margin-bottom:5px">${e.editable_section_title}</div>
+              <div class="course-work-section-content template1-section-content">
+                <div class="skills-content">
+                  <ul class="skill-category">
+                    ${this.getSkillsCategorySectionForMonoPro(firstHalfSkills)}
+                  </ul>
+                  <ul class="skill-category">
+                    ${this.getSkillsCategorySectionForMonoPro(secondHalfSkills)}
+                  </ul>
+                </div>
+              </div>
+            </section>`
+          : '';
+
+      case 'WORK_EXPERIENCE':
+        return resume.experience?.length > 0
+          ? `
+            <section class="course-work section-details trigger-area">
+              ${title}
+              ${this.getExperienceSectionForMonoPro(resume.experience)}
+            </section>`
+          : '';
+
+      case 'PROJECT':
+        return resume.project?.length > 0
+          ? `
+            <section class="course-work section-details trigger-area">
+              ${title}
+              ${this.getProjectSectionForMonoPro(resume.project)}
+            </section>`
+          : '';
+
+      case 'CERTIFICATIONS':
+        return resume.certification?.length > 0
+          ? `
+            <section class="course-work section-details trigger-area">
+              ${title}
+              ${this.getCertificationSectionForMonoPro(resume.certification)}
+            </section>`
+          : '';
+
+      case 'ACHIEVEMENTS_BULLET_POINTS':
+        return resume.achievementBulletPoints?.ach?.length > 0
+          ? `
+            <section class="trigger-area course-work">
+              ${title}
+              <div class="course-work-section-content">
                 <div class="project-content">
-                ${
-                    resume.profileSummary.profile_summary
-                }
+                  ${resume.achievementBulletPoints.ach}
                 </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'EDUCATION'?
-            `
-            ${(resume.education.length > 0)?
-            `
-            <section  class="trigger-area resume-education">
-                <span class="summary-section-title">${e.editable_section_title}</span>  
-                ${this.getEducationSectionForMonoPro(resume.education)}        
-            </section>
-            ` : ''
-            }`:
-             e.section == 'RELEVANT_COURSEWORK'?
-            `
-            ${(resume.courseWork.length > 0)?
-            `
-            <section  class="trigger-area course-work">
-                <span class="summary-section-title">${e.editable_section_title}</span>
-                <div  class="course-work-section-content project-content" style="margin-top:7px;">
-                    <ul class="course-work-list">
-                        ${this.getCourseWorkSectionForMonoPro(resume.courseWork)}
-                    </ul>
+              </div>
+            </section>`
+          : '';
+
+      case 'CERTIFICATIONS_BULLET_POINTS':
+        return resume.certificationBulletPoints?.point?.length > 0
+          ? `
+            <section class="trigger-area course-work">
+              ${title}
+              <div class="course-work-section-content">
+                <div class="project-content">
+                  ${resume.certificationBulletPoints.point}
                 </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'SKILLS_BULLET_POINTS'?
-            `
-            ${(resume.skill.length > 0)?
-            `
-            <section  class="trigger-area course-work">
-                <span class="summary-section-title">${e.editable_section_title}</span>
-                <div  class="course-work-section-content project-content" style="margin-top:7px;">
-                    <ul class="course-work-list">
-                        ${this.getSkillsWithBulletPointsSectionForMonoPro(resume.skill)}
-                    </ul>
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'SKILLS_CATEGORY'?
-            `
-            ${resume.skill_v2.length > 0?
-            `
-            <section  class="trigger-area course-work">
-                <div class="summary-section-title" style="margin-bottom:5px">${e.editable_section_title}</div>
-                <div  class="course-work-section-content template1-section-content">
-                    <div class="skills-content">
-                        <ul class="skill-category">
-                            ${this.getSkillsCategorySectionForMonoPro(firstHalfSkills)}
-                        </ul>
-                        <ul class="skill-category">
-                            ${this.getSkillsCategorySectionForMonoPro(secondHalfSkills)}
-                        </ul>
-                    </div>
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'WORK_EXPERIENCE'?
-            `
-            ${(resume.experience.length > 0)?
-            `
+              </div>
+            </section>`
+          : '';
+
+      case 'ACHIEVEMENT_WITH_DESC':
+        return resume.accomplishment?.length > 0
+          ? `
             <section class="course-work section-details trigger-area">
-                <span class="summary-section-title">${e.editable_section_title}</span>  
-                ${this.getExperienceSectionForMonoPro(resume.experience)}
-            </section>
-            ` : ''
-            }`:
-            e.section == 'PROJECT'?
-            `
-             ${(resume.project.length > 0)?
-            `
-            <section class="course-work section-details trigger-area">
-                <span class="summary-section-title">${e.editable_section_title}</span>
-                    ${this.getProjectSectionForMonoPro(resume.project)}  
-                </section>
-            ` : ''
-            }`:
-            e.section == 'CERTIFICATIONS'?
-            `
-            ${(resume.certification.length > 0)?
-            `
-            <section class="course-work section-details trigger-area">
-                <span class="summary-section-title">${e.editable_section_title}</span>  
-                ${this.getCertificationSectionForMonoPro(resume.certification)}
-            </section>
-            ` : ''
-            }`:
-            e.section == 'ACHIEVEMENTS_BULLET_POINTS'?
-            `
-            ${(resume.achievementBulletPoints.ach.length > 0)?
-            `
-            <section  class="trigger-area course-work trigger-area">
-                <span class="summary-section-title">${e.editable_section_title}</span>
-                <div  class="course-work-section-content">
-                    <div class="project-content">
-                    ${
-                        resume.achievementBulletPoints.ach
-                    }
-                    </div>
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'CERTIFICATIONS_BULLET_POINTS'?
-            `
-            ${(resume.certificationBulletPoints.point.length > 0)?
-            `
-            <section  class="trigger-area course-work trigger-area">
-                <span class="summary-section-title">${e.editable_section_title}</span>
-                <div  class="course-work-section-content">
-                    <div class="project-content">
-                    ${
-                        resume.certificationBulletPoints.point
-                    }
-                    </div>
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'ACHIEVEMENT_WITH_DESC'?
-            `
-            ${(resume.accomplishment.length > 0)?
-            `
-            <section class="course-work section-details trigger-area">
-                <span class="summary-section-title">${e.editable_section_title}</span>  
-                ${this.getAccomplishmentSectionForMonoPro(resume.accomplishment)}
-            </section>
-            ` : ''
-            }`:''
-        }
-        `
-        ).join('\n')
+              ${title}
+              ${this.getAccomplishmentSectionForMonoPro(resume.accomplishment)}
+            </section>`
+          : '';
+
+      default:
+        return '';
     }
+  }).join('\n');
+}
+
 
 
     public getEducationSectionForMonoPro(items : Education[]) : string{
@@ -1111,226 +1100,208 @@ export class Templatesv2Service {
     }
 
 
-    getFormattedRightSideSectionsForDualEdge(resume : Resume){
-        let firstHalfSkills : any[]= []
-        let secondHalfSkills : any[]= []
-        if(resume.skill_v2?.length >0){
-            firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
-            secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
-        }
-        return resume.multipleSections[0].map((e : SectionDesc)=>
-        `
-        ${
-            e.section == 'PROFILE_SUMMARY'?
-            `
-            ${(resume.profileSummary.profile_summary.length > 0)?
-            `
-            <section class="resume-summary">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="project-content">
-                ${
-                    resume.profileSummary.profile_summary
-                }
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'EDUCATION'?
-            `
-            ${(resume.education.length > 0)?
-            `
-            <section  class="education">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>  
-                ${this.getEducationSectionForDualEdge(resume.education)}        
-            </section>
-            ` : ''
-            }`:
-            e.section == 'RELEVANT_COURSEWORK'?
-            `
-            ${(resume.courseWork.length > 0)?
-            `
-            <section class="skills">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="skill-items">
-                    ${this.getCourseWorkSectionForDualEdge(resume.courseWork)}
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'SKILLS_BULLET_POINTS'?
-            `
-            ${(resume.skill.length > 0)?
-            `
-            <section class="skills">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="skill-items">
-                    ${this.getSkillsSectionForDualEdge(resume.skill)}
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'SKILLS_CATEGORY'?
-            `
-            ${resume.skill_v2.length > 0?
-            `
-            <section  class="trigger-area course-work">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div  class="course-work-section-content">
-                    <div class="skills-content">
-                        <ul class="skill-category">
-                            ${this.getSkillsCategorySectionForDualEdge(firstHalfSkills)}
-                        </ul>
-                        <ul class="skill-category">
-                            ${this.getSkillsCategorySectionForDualEdge(secondHalfSkills)}
-                        </ul>
-                    </div>
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'WORK_EXPERIENCE'?
-            `
-            ${(resume.experience.length > 0)?
-            `
-            <section>
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>  
-                ${this.getExperienceSectionForDualEdge(resume.experience)}
-            </section>
-            ` : ''
-            }`:
-            e.section == 'PROJECT'?
-            `
-             ${(resume.project.length > 0)?
-            `
-            <section>
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2> 
-                ${this.getProjectSectionForDualEdge(resume.project)}  
-            </section>
-            ` : ''
-            }`:
-            e.section == 'CERTIFICATIONS'?
-            `
-            ${(resume.certification.length > 0)?
-            `
-            <section>
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>  
-                ${this.getCertificationSectionForDualEdge(resume.certification)}
-            </section>
-            ` : ''
-            }`:
-            e.section == 'ACHIEVEMENTS_BULLET_POINTS'?
-            `
-            ${(resume.achievementBulletPoints.ach.length > 0)?
-            `
-             <section class="resume-summary">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="project-content">
-                    ${
-                        resume.achievementBulletPoints.ach
-                    }
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'CERTIFICATIONS_BULLET_POINTS'?
-            `
-            ${(resume.certificationBulletPoints.point.length > 0)?
-            `
-            <section class="resume-summary">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="project-content">
-                ${
-                    resume.certificationBulletPoints.point
-                }
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'ACHIEVEMENT_WITH_DESC'?
-            `
-            ${(resume.accomplishment.length > 0)?
-            `
-            <section class="resume-summary">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                ${this.getAccomplishmentsSectionForDualEdge(resume.accomplishment)}
-            </section>
-            ` : ''
-            }`:''
-        }
-        `
-        ).join('\n')
-    }
+    getFormattedRightSideSectionsForDualEdge(resume: Resume) {
+  let firstHalfSkills: any[] = [];
+  let secondHalfSkills: any[] = [];
 
-    getFormattedLeftSideSectionsForDualEdge(resume : Resume){
-      return resume.multipleSections[1].map((e : SectionDesc)=>
-        `
-        ${
-            e.section == 'EDUCATION'?
-            `
-            ${(resume.education.length > 0)?
-            `
-            <section  class="education">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>  
-                ${this.getEducationSectionForDualEdge(resume.education)}        
-            </section>
-            ` : ''
-            }`:
-            e.section == 'RELEVANT_COURSEWORK'?
-            `
-            ${(resume.courseWork.length > 0)?
-            `
-            <section class="skills">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="skill-items">
-                    ${this.getCourseWorkSectionForDualEdge(resume.courseWork)}
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'SKILLS_BULLET_POINTS'?
-            `
-            ${(resume.skill.length > 0)?
-            `
-            <section class="skills">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="skill-items">
-                    ${this.getSkillsSectionForDualEdge(resume.skill)}
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'ACHIEVEMENTS_BULLET_POINTS'?
-            `
-            ${(resume.achievementBulletPoints.ach.length > 0)?
-            `
-             <section class="resume-summary">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="project-content">
-                    ${
-                        resume.achievementBulletPoints.ach
-                    }
-                </div>
-            </section>
-            ` : ''
-            }`:
-            e.section == 'CERTIFICATIONS_BULLET_POINTS'?
-            `
-            ${(resume.certificationBulletPoints.point.length > 0)?
-            `
+  if (resume.skill_v2?.length > 0) {
+    const mid = Math.ceil(resume.skill_v2.length / 2);
+    firstHalfSkills = [...resume.skill_v2.slice(0, mid)];
+    secondHalfSkills = [...resume.skill_v2.slice(mid)];
+  }
+
+  return resume.multipleSections?.[0]?.map((e: SectionDesc) => {
+    const title = `<h2 class="work-experience-h2">${e.editable_section_title}</h2>`;
+
+    switch (e.section) {
+      case 'PROFILE_SUMMARY':
+        return resume.profileSummary?.profile_summary?.length > 0
+          ? `
             <section class="resume-summary">
-                <h2 class="work-experience-h2">${e.editable_section_title}</h2>
-                <div class="project-content">
-                ${
-                    resume.certificationBulletPoints.point
-                }
+              ${title}
+              <div class="project-content">
+                ${resume.profileSummary.profile_summary}
+              </div>
+            </section>`
+          : '';
+
+      case 'EDUCATION':
+        return resume.education?.length > 0
+          ? `
+            <section class="education">
+              ${title}
+              ${this.getEducationSectionForDualEdge(resume.education)}
+            </section>`
+          : '';
+
+      case 'RELEVANT_COURSEWORK':
+        return resume.courseWork?.length > 0
+          ? `
+            <section class="skills">
+              ${title}
+              <div class="skill-items">
+                ${this.getCourseWorkSectionForDualEdge(resume.courseWork)}
+              </div>
+            </section>`
+          : '';
+
+      case 'SKILLS_BULLET_POINTS':
+        return resume.skill?.length > 0
+          ? `
+            <section class="skills">
+              ${title}
+              <div class="skill-items">
+                ${this.getSkillsSectionForDualEdge(resume.skill)}
+              </div>
+            </section>`
+          : '';
+
+      case 'SKILLS_CATEGORY':
+        return resume.skill_v2?.length > 0
+          ? `
+            <section class="trigger-area course-work">
+              ${title}
+              <div class="course-work-section-content">
+                <div class="skills-content">
+                  <ul class="skill-category">
+                    ${this.getSkillsCategorySectionForDualEdge(firstHalfSkills)}
+                  </ul>
+                  <ul class="skill-category">
+                    ${this.getSkillsCategorySectionForDualEdge(secondHalfSkills)}
+                  </ul>
                 </div>
-            </section>
-            ` : ''
-            }`:''
-        }
-        `
-        ).join('\n')
+              </div>
+            </section>`
+          : '';
+
+      case 'WORK_EXPERIENCE':
+        return resume.experience?.length > 0
+          ? `
+            <section>
+              ${title}
+              ${this.getExperienceSectionForDualEdge(resume.experience)}
+            </section>`
+          : '';
+
+      case 'PROJECT':
+        return resume.project?.length > 0
+          ? `
+            <section>
+              ${title}
+              ${this.getProjectSectionForDualEdge(resume.project)}
+            </section>`
+          : '';
+
+      case 'CERTIFICATIONS':
+        return resume.certification?.length > 0
+          ? `
+            <section>
+              ${title}
+              ${this.getCertificationSectionForDualEdge(resume.certification)}
+            </section>`
+          : '';
+
+      case 'ACHIEVEMENTS_BULLET_POINTS':
+        return resume.achievementBulletPoints?.ach?.length > 0
+          ? `
+            <section class="resume-summary">
+              ${title}
+              <div class="project-content">
+                ${resume.achievementBulletPoints.ach}
+              </div>
+            </section>`
+          : '';
+
+      case 'CERTIFICATIONS_BULLET_POINTS':
+        return resume.certificationBulletPoints?.point?.length > 0
+          ? `
+            <section class="resume-summary">
+              ${title}
+              <div class="project-content">
+                ${resume.certificationBulletPoints.point}
+              </div>
+            </section>`
+          : '';
+
+      case 'ACHIEVEMENT_WITH_DESC':
+        return resume.accomplishment?.length > 0
+          ? `
+            <section class="resume-summary">
+              ${title}
+              ${this.getAccomplishmentsSectionForDualEdge(resume.accomplishment)}
+            </section>`
+          : '';
+
+      default:
+        return '';
     }
+  }).join('\n') || '';
+}
+
+
+    getFormattedLeftSideSectionsForDualEdge(resume: Resume) {
+  return resume.multipleSections?.[1]?.map((e: SectionDesc) => {
+    const title = `<h2 class="work-experience-h2">${e.editable_section_title}</h2>`;
+
+    switch (e.section) {
+      case 'EDUCATION':
+        return resume.education?.length > 0
+          ? `
+            <section class="education">
+              ${title}
+              ${this.getEducationSectionForDualEdge(resume.education)}
+            </section>`
+          : '';
+
+      case 'RELEVANT_COURSEWORK':
+        return resume.courseWork?.length > 0
+          ? `
+            <section class="skills">
+              ${title}
+              <div class="skill-items">
+                ${this.getCourseWorkSectionForDualEdge(resume.courseWork)}
+              </div>
+            </section>`
+          : '';
+
+      case 'SKILLS_BULLET_POINTS':
+        return resume.skill?.length > 0
+          ? `
+            <section class="skills">
+              ${title}
+              <div class="skill-items">
+                ${this.getSkillsSectionForDualEdge(resume.skill)}
+              </div>
+            </section>`
+          : '';
+
+      case 'ACHIEVEMENTS_BULLET_POINTS':
+        return resume.achievementBulletPoints?.ach?.length > 0
+          ? `
+            <section class="resume-summary">
+              ${title}
+              <div class="project-content">
+                ${resume.achievementBulletPoints.ach}
+              </div>
+            </section>`
+          : '';
+
+      case 'CERTIFICATIONS_BULLET_POINTS':
+        return resume.certificationBulletPoints?.point?.length > 0
+          ? `
+            <section class="resume-summary">
+              ${title}
+              <div class="project-content">
+                ${resume.certificationBulletPoints.point}
+              </div>
+            </section>`
+          : '';
+
+      default:
+        return '';
+    }
+  }).join('\n') || '';
+}
 
     public getEducationSectionForDualEdge(items : Array<Education>){
          return items.map((item : Education)=> 
@@ -1612,7 +1583,6 @@ export class Templatesv2Service {
                 width: 100%;
                 display: block;
                 text-align: left;
-                font-family: 'Poppins', sans-serif;
                 }
                 
                 .course-work-section-content{
@@ -1625,7 +1595,6 @@ export class Templatesv2Service {
                 font-size: 12px;
                 font-weight: 400;
                 padding: 3px 0px;
-                font-family: 'Poppins', sans-serif ;
                 color: black;
                 white-space: pre-wrap;
                 }
@@ -1637,7 +1606,6 @@ export class Templatesv2Service {
                 font-size: 12px;
                 font-weight: 400;
                 padding: 3px 0px;
-                font-family: 'Poppins', sans-serif ;
                 color: black;
                 white-space: pre-wrap;
                 }
@@ -1667,7 +1635,6 @@ export class Templatesv2Service {
                 .custom-li {
                 display: flex;
                 align-items: center;
-                gap: 8px;
                 list-style: none; /* remove default bullet */
                 }
 
@@ -1676,6 +1643,8 @@ export class Templatesv2Service {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                margin-right: 8px;
+                margin-left:8px;
                 }
 
             </style>
@@ -1744,159 +1713,148 @@ export class Templatesv2Service {
         `
     }
 
-    getFormattedSectionsForModern(resume : Resume){
-        let firstHalfSkills : any[]= []
-        let secondHalfSkills : any[]= []
-        if(resume.skill_v2?.length >0){
-            firstHalfSkills = [...resume.skill_v2.slice(0, Math.ceil(resume.skill_v2.length/2))]
-            secondHalfSkills = [...resume.skill_v2.slice(Math.ceil(resume.skill_v2.length/2),)]
-        }
-        return resume.sections.map((e : SectionDesc)=>
-        `
-        ${
-            e.section == 'PROFILE_SUMMARY'?
-            `
-            ${(resume.profileSummary.profile_summary.length > 0)?
-            `
+    getFormattedSectionsForModern(resume: Resume) {
+  let firstHalfSkills: any[] = [];
+  let secondHalfSkills: any[] = [];
+
+  if (resume.skill_v2?.length > 0) {
+    const mid = Math.ceil(resume.skill_v2.length / 2);
+    firstHalfSkills = [...resume.skill_v2.slice(0, mid)];
+    secondHalfSkills = [...resume.skill_v2.slice(mid)];
+  }
+
+  return resume.sections?.map((e: SectionDesc) => {
+    const title = `<div class="section-title">${e.editable_section_title}</div>`;
+
+    switch (e.section) {
+      case 'PROFILE_SUMMARY':
+        return resume.profileSummary?.profile_summary?.length > 0
+          ? `
             <div class="section">
-                <span class="section-title">${e.editable_section_title}</span>
-                <div class="project-content-container" style="margin:0;padding:0;">
+              ${title}
+              <div class="project-content-container" style="margin:0;padding:0;">
                 <div class="project-content">
-                    ${
-                        resume.profileSummary.profile_summary
-                    }
+                  ${resume.profileSummary.profile_summary}
                 </div>
-                </div>
-            </div>
-            ` : ''
-            }`:
-            e.section == 'EDUCATION'?
-            `
-            ${(resume.education.length > 0)?
-            `
+              </div>
+            </div>`
+          : '';
+
+      case 'EDUCATION':
+        return resume.education?.length > 0
+          ? `
             <div class="section education">
-                <div class="section-title">${e.editable_section_title}</div>
-                ${this.getEducationSectionForModern(resume.education)}
-            </div>
-            ` : ''
-            }`:
-             e.section == 'RELEVANT_COURSEWORK'?
-            `
-            ${(resume.courseWork.length > 0)?
-            `
-            <div  class="section">
-                <div class="section-title">${e.editable_section_title}</div>
-                <div  class="course-work-section-content project-content" style="margin-top:7px;">
-                    <ul class="course-work-list">
-                        ${this.getCourseWorkWithBulletPointsSectionForModern(resume.courseWork)}
-                    </ul>
-                </div>
-            </div>
-            ` : ''
-            }`:
-            e.section == 'SKILLS_BULLET_POINTS'?
-            `
-            ${(resume.skill.length > 0)?
-            `
+              ${title}
+              ${this.getEducationSectionForModern(resume.education)}
+            </div>`
+          : '';
+
+      case 'RELEVANT_COURSEWORK':
+        return resume.courseWork?.length > 0
+          ? `
             <div class="section">
-                <div class="section-title">${e.editable_section_title}</div>
-                <div  class="course-work-section-content project-content" style="margin-top:7px;">
-                    <ul class="skills-list-li">
-                        ${this.getSkillsWithBulletPointsSectionForModern(resume.skill)}
-                    </ul>
-                </div>
-            </div>
-            ` : ''
-            }`:
-            e.section == 'SKILLS_CATEGORY'?
-            `
-            ${resume.skill_v2.length > 0?
-            `
+              ${title}
+              <div class="course-work-section-content project-content" style="margin-top:7px;">
+                <ul class="skills-list-li" style="padding:0px !important;">
+                  ${this.getCourseWorkWithBulletPointsSectionForModern(resume.courseWork)}
+                </ul>
+              </div>
+            </div>`
+          : '';
+
+      case 'SKILLS_BULLET_POINTS':
+        return resume.skill?.length > 0
+          ? `
+            <div class="section">
+              ${title}
+              <div class="course-work-section-content project-content" style="margin-top:7px;">
+                <ul class="skills-list-li" style="padding:0px !important;">
+                  ${this.getSkillsWithBulletPointsSectionForModern(resume.skill)}
+                </ul>
+              </div>
+            </div>`
+          : '';
+
+      case 'SKILLS_CATEGORY':
+        return resume.skill_v2?.length > 0
+          ? `
             <div class="section skills">
-                <div class="section-title">${e.editable_section_title}</div>
-                <div class="skills-content">
-                    <ul class="skill-category">
-                        ${this.getSkillsCategorySectionForModern(firstHalfSkills)}
-                    </ul>
-                    <ul class="skill-category">
-                        ${this.getSkillsCategorySectionForModern(secondHalfSkills)}
-                    </ul>
-                </div>
-            </div>
-            ` : ''
-            }`:
-            e.section == 'WORK_EXPERIENCE'?
-            `
-            ${(resume.experience.length > 0)?
-            `
+              ${title}
+              <div class="skills-content">
+                <ul class="skill-category">
+                  ${this.getSkillsCategorySectionForModern(firstHalfSkills)}
+                </ul>
+                <ul class="skill-category">
+                  ${this.getSkillsCategorySectionForModern(secondHalfSkills)}
+                </ul>
+              </div>
+            </div>`
+          : '';
+
+      case 'WORK_EXPERIENCE':
+        return resume.experience?.length > 0
+          ? `
             <div class="section experince trigger-area">
-                <div class="section-title">${e.editable_section_title}</div>
-                ${this.getExperienceSectionForModern(resume.experience)}
-            </div>
-            ` : ''
-            }`:
-            e.section == 'PROJECT'?
-            `
-             ${(resume.project.length > 0)?
-            `
+              ${title}
+              ${this.getExperienceSectionForModern(resume.experience)}
+            </div>`
+          : '';
+
+      case 'PROJECT':
+        return resume.project?.length > 0
+          ? `
             <div class="section experince trigger-area">
-                <div class="section-title">${e.editable_section_title}</div>
-                ${this.getProjectSectionForModern(resume.project)}
-            </div>
-            ` : ''
-            }`:
-            e.section == 'CERTIFICATIONS'?
-            `
-            ${(resume.certification.length > 0)?
-            `
+              ${title}
+              ${this.getProjectSectionForModern(resume.project)}
+            </div>`
+          : '';
+
+      case 'CERTIFICATIONS':
+        return resume.certification?.length > 0
+          ? `
             <div class="section experince trigger-area">
-            <div class="section-title">${e.editable_section_title}</div>
-                ${this.getCertificationSectionForDualEdge(resume.certification)}
-            </div>
-            ` : ''
-            }`:
-            e.section == 'ACHIEVEMENTS_BULLET_POINTS'?
-            `
-            ${(resume.achievementBulletPoints.ach.length > 0)?
-            `
-             <div class="section experince trigger-area">
-             <div class="section-title">${e.editable_section_title}</div>
-                <div class="project-content">
-                    ${
-                        resume.achievementBulletPoints.ach
-                    }
-                </div>
-            </div>
-            ` : ''
-            }`:
-            e.section == 'CERTIFICATIONS_BULLET_POINTS'?
-            `
-            ${(resume.certificationBulletPoints.point.length > 0)?
-            `
-             <div class="section experince trigger-area">
-             <div class="section-title">${e.editable_section_title}</div>
-                <div class="project-content">
-                ${
-                    resume.certificationBulletPoints.point
-                }
-                </div>
-            </div>
-            ` : ''
-            }`:
-            e.section == 'ACHIEVEMENT_WITH_DESC'?
-            `
-            ${(resume.accomplishment.length > 0)?
-            `
-             <div class="section education">
-                <div class="section-title">${e.editable_section_title}</div>
-                ${this.getAccomplishmentsSectionForModern(resume.accomplishment)}
-            </div>
-            ` : ''
-            }`:''
-        }
-        `
-        ).join('\n')
+              ${title}
+              ${this.getCertificationSectionForDualEdge(resume.certification)}
+            </div>`
+          : '';
+
+      case 'ACHIEVEMENTS_BULLET_POINTS':
+        return resume.achievementBulletPoints?.ach?.length > 0
+          ? `
+            <div class="section experince trigger-area">
+              ${title}
+              <div class="project-content">
+                ${resume.achievementBulletPoints.ach}
+              </div>
+            </div>`
+          : '';
+
+      case 'CERTIFICATIONS_BULLET_POINTS':
+        return resume.certificationBulletPoints?.point?.length > 0
+          ? `
+            <div class="section experince trigger-area">
+              ${title}
+              <div class="project-content">
+                ${resume.certificationBulletPoints.point}
+              </div>
+            </div>`
+          : '';
+
+      case 'ACHIEVEMENT_WITH_DESC':
+        return resume.accomplishment?.length > 0
+          ? `
+            <div class="section education">
+              ${title}
+              ${this.getAccomplishmentsSectionForModern(resume.accomplishment)}
+            </div>`
+          : '';
+
+      default:
+        return '';
     }
+  }).join('\n') || '';
+}
+
 
     public getEducationSectionForModern(items : Array<Education>){
         return items.map((item : Education)=> 
@@ -2000,13 +1958,13 @@ export class Templatesv2Service {
     }
 
         public getSkillsWithBulletPointsSectionForModern(items : Skill[]) : string{
-        return items.map((item : Skill)=> 
+        return items.map((item : Skill, index: number)=> 
         `
         ${items.length > 0 ?
             `
                   <li class="custom-li">
-                  <span class="bullet">•</span>
-                  <span style="margin-right: 8px;font-size:12px;">${ item.name || item }</span>
+                  <span style="font-size:12px;">${ item.name || item }</span>
+                  ${index !== items.length - 1 ? `<span class="bullet">•</span>` : ''}
                   </li>
         ` : ''
         }
@@ -2014,13 +1972,13 @@ export class Templatesv2Service {
     }
 
         public getCourseWorkWithBulletPointsSectionForModern(items : string[]) : string{
-        return items.map((item : string)=> 
+        return items.map((item : string, index: number)=> 
         `
         ${items.length > 0 ?
             `
                   <li class="custom-li">
-                  <span class="bullet">•</span>
-                  <span style="margin-right: 8px;font-size:12px;">${ item }</span>
+                  <span style="font-size:12px;">${ item }</span>
+                  ${index !== items.length - 1 ? `<span class="bullet">•</span>` : ''}
                   </li>
         ` : ''
         }

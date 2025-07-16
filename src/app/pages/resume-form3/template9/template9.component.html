@@ -76,7 +76,7 @@
                           <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){
                           <div class="section-actions">
-                            @if(resumeForm().skill_v2.length == 0){
+                            @if(isSkillsCategoryDefault()){
                               <div class="wif-tooltip" data-direction="bottom">
                                 <div class="wif-tooltip__initiator">
                                   <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
@@ -108,7 +108,7 @@
                             }
                           </h2>
                             <div  class="course-work-section-content">
-                              @if(resumeForm().skill_v2.length == 0){
+                              @if(isSkillsCategoryDefault()){
                                 <div class="skills-content opacity-half">
                                     <ul class="skill-category">
                                         <li><span>Programming:</span> Python, SQL, Java, JavaScript</li>
@@ -270,7 +270,7 @@
                         </div>
                       </section>
                     }
-                    @if(resumeForm().accomplishment.length > 0){
+                    @if(!isAccomplishmentDefaultData()){
                       <section class="trigger-area resume-summary"  cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
                         <h2 class="action-hover" style="position: relative;">{{getSectionTitle(section)}}
                             @if(!isPreview){

@@ -628,6 +628,16 @@ isCertificationDefaultData(){
   return  this.resumeForm().certificationBulletPoints?.point == null || this.resumeForm().certificationBulletPoints?.point?.length == 0 || this.resumeForm().certificationBulletPoints?.point == undefined
 }
 
+isAccomplishmentDefaultData(){
+  return this.resumeForm().accomplishment?.length == 0 || this.resumeForm().accomplishment == null || this.resumeForm().accomplishment == undefined
+}
+
+isSkillsCategoryDefault(){
+  return this.resumeForm().skill_v2?.length == 0 || this.resumeForm().skill_v2 == null || this.resumeForm().skill_v2 == undefined
+}
+
+
+
 formatSkills(items : string[]){
   return items.join(", ");
 }
