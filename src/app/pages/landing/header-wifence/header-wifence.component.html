@@ -1,11 +1,11 @@
 <!-- Header -->
-<header class="header-area p-relative">
+<header class="header-area">
     <!-- Navbar -->
     <div
         class="navbar-area navbar-style-four"
         [class.dark-navbar-area]="themeService.isDark()"
     >
-        <div class="container">
+        <div [class.container]="container" [class.container-custom]="!container">
             <nav class="navbar navbar-expand-lg navbar-light bg-light" [class.active]="classApplied">
                 @if (browser && !back){
                     <a  
@@ -61,11 +61,39 @@
                                 <!-- <li class="nav-item"><a routerLink="/course-central" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Course Central</a></li> -->
                             </ul>
                         </li>
+                        <li class="nav-item dropdown"
+                            routerLinkActive="active"
+                            [routerLinkActiveOptions]="{ exact: false }">
+                            <!-- Parent link -->
+                            <a [routerLink]="['/central']" class="nav-link">
+                                Central <i class='bx bx-chevron-down'></i>
+                            </a>
+
+                            <!-- Dropdown -->
+                            <ul class="dropdown-menu">
+                                <li class="nav-item"
+                                    routerLinkActive="active"
+                                    [routerLinkActiveOptions]="{ exact: false }">
+                                    <a routerLink="/central/course-central"
+                                    class="nav-link"   >
+                                    Course Central
+                                    </a>
+                                </li>
+                                <li class="nav-item"
+                                    routerLinkActive="active"
+                                    [routerLinkActiveOptions]="{ exact: false }">
+                                    <a routerLink="/central/job-central"
+                                    class="nav-link"
+                                    >
+                                    Job Central
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
                         <li class="nav-item"><a routerLink="/dashboard-intro"  dashboard-intro class="nav-link" routerLinkActive="active"[routerLinkActiveOptions]="{exact: true}">Our Dashboard</a></li>
-                        <li class="nav-item"><a routerLink="/resources" class="nav-link" routerLinkActive="active"[routerLinkActiveOptions]="{exact: true}">Resources</a></li>
                         <li class="nav-item"><a routerLink="/contact-us" class="nav-link" routerLinkActive="active"[routerLinkActiveOptions]="{exact: true}">Contact Us</a></li>
-                        <li class="nav-item"><a routerLink="/course-central" class="nav-link" routerLinkActive="active"[routerLinkActiveOptions]="{exact: true}">Course Central</a></li>
-                        <!-- <li class="nav-item"><a routerLink="/contact" class="nav-link" routerLinkActive="active"[routerLinkActiveOptions]="{exact: true}">Pricing Plans</a></li> -->
+                        <!-- <li class="nav-item"><a routerLink="/course-central" class="nav-link" routerLinkActive="active"[routerLinkActiveOptions]="{exact: true}">Course Central</a></li> -->
                         @if (browser && isMobile){ 
                             <li class="nav-item">
                                 <mat-divider></mat-divider>

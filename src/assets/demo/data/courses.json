@@ -7,7 +7,7 @@
     "certificate": true,
     "cost": "Free",
     "providerLogoUrl": "https://www.coursera.org/favicon.ico",
-    "courseImageUrl": "https://images.classcentral.com/image/upload/m/c_fill,h_200,w_300/v1402580900/hvpxxthkyqx3mdw7xsgh.jpg",
+    "courseImageUrl": "./assets/img/trainings/1.jpg",
     "link": "https://www.classcentral.com/course/machine-learning-2725",
     "mode": "Online"
   },

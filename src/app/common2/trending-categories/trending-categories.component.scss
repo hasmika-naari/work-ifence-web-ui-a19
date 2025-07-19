@@ -1,0 +1,217 @@
+.motivation-categories-area {
+    background: #faf8f8;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+
+    &.dark-motivation-categories-area {
+        background: #010101;
+
+        .motivation-categories-card {
+            .motivation-categories-list {
+                li {
+                    background-color: var(--blackColor);
+        
+                    .icon {
+                        background-color: rgba(255, 255, 255, .10);
+                    }
+                    h3 {
+                        color: var(--whiteColor);
+                    }
+                    span {
+                        color: #a1a4ad;
+                    }
+                    &:hover {
+                        .icon {
+                            background-color: var(--mainColor);
+                            color: var(--whiteColor);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.motivation-categories-card {
+    .motivation-categories-list {
+        padding: 0;
+        margin-bottom: 0;
+
+        li {
+            list-style-type: none;
+            position: relative;
+            background-color: var(--whiteColor);
+            padding: 22.8px 20px 22.8px 115px;
+            margin-bottom: 25px;
+            transition: var(--transition);
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+            .icon {
+                position: absolute;
+                left: 0;
+                top: 0;
+                display: inline-block;
+                height: 100px;
+                width: 105px;
+                line-height: 100px;
+                background-color: var(--blackColor);
+                color: var(--whiteColor);
+                font-size: 45px;
+                text-align: center;
+                clip-path: circle(60% at 30% 50%);
+                transition: var(--transition);
+
+                i {
+                    position: relative;
+                    left: -5.8px;
+                    top: 2.8px;
+                    line-height: 0;
+                }
+            }
+            h3 {
+                font-size: 18.8px;
+                font-weight: 600;
+                color: var(--blackColor);
+                margin-bottom: 0;
+                transition: var(--transition);
+            }
+            span {
+                font-size: 14px;
+                color: var(--paragraphColor);
+                display: inline-block;
+                margin-top: 10.8px;
+            }
+            &:hover {
+                transform: translateY(-5px);
+
+                .icon {
+                    background-color: var(--mainColor);
+                    color: var(--whiteColor);
+                }
+                h3 {
+                    a {
+                        color: var(--mainColor);
+                    }
+                }
+            }
+        }
+    }
+    .motivation-categories-image {
+        text-align: center;
+        padding: {
+            left: 30px;
+            right: 30px;
+        };
+        span {
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 30px;
+            letter-spacing: 1px;
+
+            a {
+                color: var(--mainColor);
+                border-bottom: 1px solid var(--mainColor);
+                font-weight: 600;
+
+                &:hover {
+                    color: var(--optionalColor);
+                    border-bottom: 1px solid var(--optionalColor);
+                }
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .motivation-categories-card {
+        .motivation-categories-image {
+            span {
+                font-size: 13.5px;
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    .motivation-categories-card {
+        .motivation-categories-image {
+            span {
+                font-size: 13.5px;
+            }
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+
+    .motivation-categories-card {
+        .motivation-categories-list {
+            li {
+                padding: 22.8px 10px 22.8px 70px;
+
+                .icon {
+                    height: 100px;
+                    width: 60px;
+                    line-height: 100px;
+                    font-size: 30px;
+                    clip-path: circle(70% at 1% 50%);
+
+                    i {
+                        left: -1.8px;
+                    }
+                }
+                h3 {
+                    font-size: 15.8px;
+                }
+            }
+        }
+    }
+
+}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {
+
+    .motivation-categories-card {
+        .motivation-categories-list {
+            li {
+                padding: 22.8px 10px 22.8px 70px;
+
+                .icon {
+                    height: 100px;
+                    width: 60px;
+                    line-height: 100px;
+                    font-size: 30px;
+                    clip-path: circle(70% at 1% 50%);
+
+                    i {
+                        left: -1.8px;
+                    }
+                }
+                h3 {
+                    font-size: 15.8px;
+                }
+            }
+        }
+    }
+
+}
+
+/* Min width 1550px */
+@media only screen and (min-width: 1550px) {}

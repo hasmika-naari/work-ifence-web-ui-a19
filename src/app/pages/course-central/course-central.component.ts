@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
 
 // Angular Material Modules
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -11,27 +13,46 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 // Owl Carousel
 import { CarouselModule } from 'ngx-owl-carousel-o';
+
+// Layout Components
 import { HeaderWorkIfenceComponent } from '../landing/header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from '../landing/footer-wifence/footer-wifence.component';
-import coursesData from './courses.json'; // Import from same folder
-import { MatMenuModule } from '@angular/material/menu';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+// Course Data
+import coursesData from './courses.json';
+import { NgxScrollTopModule } from 'ngx-scrolltop';
+import { RouterModule } from '@angular/router';
 
 export interface Course {
   title: string;
-  provider: string;           // e.g., "Harvard"
-  platform: string;           // e.g., "edX", "Coursera"
-  subject: string;            // e.g., "Computer Science", "Health"
-  rating: number;             // e.g., 4.7
-  certificate: boolean;       // true if certificate available
-  cost: string;               // e.g., "Free", "$49"
-  providerLogoUrl: string;    // logo of the platform/provider
-  courseImageUrl: string;     // banner/visual image for the course
-  link: string;               // course URL
-  mode: string;               // "Online" or "In-Class"
+  provider: string;
+  platform: string;
+  subject: string;
+  rating: number;
+  certificate: boolean;
+  cost: string;
+  providerLogoUrl: string;
+  courseImageUrl: string;
+  shortDescription: string;
+  instructor: string;
+  instructorImage: string;
+  reviewsCount: number;
+  students: number;
+  slug: string;
+  duration: string;
+  category: string;
+  level: string;
+  language: string;
+  startDate: string;
+  price: number;
+  link: string;
+  image: string
+  mode: string;
 }
 
 export interface Subject {
@@ -45,17 +66,20 @@ export interface Subject {
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MatSidenavModule,
+    RouterModule ,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatCheckboxModule,
     MatCardModule,
     MatButtonModule,
-    ReactiveFormsModule,
     MatIconModule,
     MatMenuModule,
+    MatPaginatorModule,
     CarouselModule,
+    NgxScrollTopModule,
     HeaderWorkIfenceComponent,
     FooterWorkifenceComponent
   ],
@@ -65,61 +89,54 @@ export interface Subject {
 export class CourseDashboardComponent implements OnInit {
   allCourses: Course[] = [];
   filteredCourses: Course[] = [];
+  paginatedCourses: Course[] = [];
   topCourses: Course[] = [];
   filterForm!: FormGroup;
 
-  subjects: Subject[] = [
-  { "title": "Computer Science", "description": "Courses in programming, algorithms, data structures, and computing systems.", "courseCount": 28 },
-  { "title": "Business", "description": "Courses on leadership, marketing, finance, entrepreneurship, and strategy.", "courseCount": 15 },
-  { "title": "Health & Medicine", "description": "Covers public health, anatomy, nutrition, and medical technologies.", "courseCount": 12 },
-  { "title": "Data Science", "description": "Learn data analysis, statistics, machine learning, and data visualization.", "courseCount": 10 },
-  { "title": "Personal Development", "description": "Self-improvement, learning techniques, communication, and mindset courses.", "courseCount": 8 },
-  { "title": "Mathematics", "description": "Courses in calculus, algebra, statistics, and applied mathematics.", "courseCount": 6 },
-  { "title": "Social Sciences", "description": "Topics like psychology, sociology, political science, and economics.", "courseCount": 6 },
-  { "title": "Humanities", "description": "Philosophy, history, literature, and cultural studies.", "courseCount": 5 },
-  { "title": "Education & Teaching", "description": "Courses for teachers, educators, and academic professionals.", "courseCount": 4 },
-  { "title": "Engineering", "description": "Covers electrical, mechanical, and software engineering topics.", "courseCount": 4 },
-  { "title": "Language Learning", "description": "Courses to learn English, Spanish, French, and other languages.", "courseCount": 4 },
-  { "title": "Science", "description": "General science topics including biology, physics, and chemistry.", "courseCount": 3 },
-  { "title": "Arts & Design", "description": "Covers visual arts, music, design theory, and creativity.", "courseCount": 3 }
-]
+  pageSize = 20;
+  currentPage = 0;
+  totalCourses = 0;
+  hdrContainer = false;
 
+  subjects: Subject[] = [
+    { title: 'Computer Science', description: '', courseCount: 28 },
+    { title: 'Business', description: '', courseCount: 15 },
+    { title: 'Health & Medicine', description: '', courseCount: 12 },
+    { title: 'Data Science', description: '', courseCount: 10 },
+    { title: 'Personal Development', description: '', courseCount: 8 },
+    { title: 'Mathematics', description: '', courseCount: 6 },
+    { title: 'Social Sciences', description: '', courseCount: 6 },
+    { title: 'Humanities', description: '', courseCount: 5 },
+    { title: 'Education & Teaching', description: '', courseCount: 4 },
+    { title: 'Engineering', description: '', courseCount: 4 },
+    { title: 'Language Learning', description: '', courseCount: 4 },
+    { title: 'Science', description: '', courseCount: 3 },
+    { title: 'Arts & Design', description: '', courseCount: 3 }
+  ];
 
   carouselOptions = {
     loop: true,
+    autoplay: true,
+    autoplayTimeout: 5000,
     margin: 7,
     nav: false,
-    // navText: [
-    //     '<span class="material-symbols-outlined">chevron_left</span>',
-    //     '<span class="material-symbols-outlined">chevron_right</span>'
-    // ],
     dots: true,
     responsive: {
       0: { items: 1 },
-      600: { items: 3 },
-      960: { items: 4 },
-      1280: { items: 5 },
-      1600: { items: 6 }
+      600: { items: 1.5 },
+      960: { items: 1.7 },
+      1280: { items: 2.2 },
+      1600: { items: 2.5 }
     }
   };
 
-  constructor(private http: HttpClient, private fb: FormBuilder) {
-    
-  }
+  constructor(private http: HttpClient, private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    // this.http.get<Course[]>('./courses.json').subscribe({
-    //   next: (data) => {
-    //     this.allCourses = data;
-    //     this.topCourses = data.slice(0, 6);
-    //   },
-    //   error: (err) => {
-    //     console.error('Failed to load courses:', err);
-    //   }
-    // });
-
-    // this.allCourses = [...coursesData];
     this.topCourses = [...coursesData.slice(0, 12)];
+    this.allCourses = [...this.getCourses()];
+    this.filteredCourses = [...this.allCourses];
+    this.totalCourses = this.filteredCourses.length;
 
     this.filterForm = this.fb.group({
       title: [''],
@@ -131,45 +148,69 @@ export class CourseDashboardComponent implements OnInit {
       platform: ['']
     });
 
-    // fetch your full course list here
-    this.allCourses = [...this.getCourses()]; // mock
-    this.filteredCourses = [...this.allCourses];
+    this.updatePaginatedCourses();
   }
 
-filterCourses($event: any, filterSidenav: any): void {
-  const filters = this.filterForm.value;
-   if(filterSidenav){filterSidenav.close()};
-  const noFiltersApplied = Object.values(filters).every((val: any) => !val || val.trim?.() === '');
-
-  if (noFiltersApplied) {
-    this.filteredCourses = [...this.allCourses];
-    return;
+  getCourses(): Course[] {
+    return coursesData;
   }
 
-  this.filteredCourses = this.allCourses.filter(course => {
-    return (
-      (!filters.title || course.title.toLowerCase().includes(filters.title.toLowerCase())) &&
-      (!filters.provider || course.provider === filters.provider) &&
-      (!filters.subject || course.subject === filters.subject) &&
-      (!filters.mode || course.mode === filters.mode) &&
-      (!filters.cost || course.cost === filters.cost) &&
-      (!filters.certificate || (filters.certificate === 'Yes' ? course.certificate : !course.certificate)) &&
-      (!filters.platform || course.platform === filters.platform)
+  filterCourses($event: any, filterSidenav: any): void {
+    const filters = this.filterForm.value;
+    if (filterSidenav) filterSidenav.close();
+
+    const noFilters = Object.values(filters).every(val =>
+      val === null ||
+      val === undefined ||
+      (typeof val === 'string' && val.trim() === '')
     );
-  });
-}
 
-// Mock course data for demo
-getCourses() {
-    return coursesData as Course[];
-}
+    if (noFilters) {
+      this.filteredCourses = [...this.allCourses];
+    } else {
+      this.filteredCourses = this.allCourses.filter(course => {
+        return (
+          (!filters.title || course.title.toLowerCase().includes(filters.title.toLowerCase())) &&
+          (!filters.provider || course.provider === filters.provider) &&
+          (!filters.subject || course.subject === filters.subject) &&
+          (!filters.mode || course.mode === filters.mode) &&
+          (!filters.cost || course.cost === filters.cost) &&
+          (!filters.certificate || (filters.certificate === 'Yes' ? course.certificate : !course.certificate)) &&
+          (!filters.platform || course.platform === filters.platform)
+        );
+      });
+    }
+
+    this.currentPage = 0;
+    this.totalCourses = this.filteredCourses.length;
+    this.updatePaginatedCourses();
+  }
+
+  updatePaginatedCourses(): void {
+    const start = this.currentPage * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedCourses = this.filteredCourses.slice(start, end);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.updatePaginatedCourses();
+     // ✅ Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.querySelector('.course-grid')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  getMenuId(course: Course): string {
+    return 'menu_' + course.title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20);
+  }
 
   share(course: Course): void {
     const url = course.link;
     if (navigator.share) {
       navigator.share({
         title: course.title,
-        url: course.link
+        url: url
       });
     } else {
       const mailto = `mailto:?subject=${encodeURIComponent(course.title)}&body=${encodeURIComponent(url)}`;
@@ -185,17 +226,9 @@ getCourses() {
     window.open(course.link, '_blank');
   }
 
-  getMenuId(course: Course): string {
-    return 'menu_' + course.title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20);
-    }
-
   getRandomCardClass(course: Course): string {
-    const themes = [
-        'bg-rose', 'bg-skyblue', 'bg-emerald', 'bg-sunset',
-        'bg-royalblue', 'bg-coral', 'bg-violet',
-        'bg-mint', 'bg-gold', 'bg-steel'
-    ];
+    const themes = ['bg-rose', 'bg-skyblue', 'bg-emerald', 'bg-sunset', 'bg-royalblue', 'bg-coral', 'bg-violet', 'bg-mint', 'bg-gold', 'bg-steel'];
     const index = course.title.length % themes.length;
     return themes[index];
-   }
+  }
 }

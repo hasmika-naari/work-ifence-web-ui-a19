@@ -1940,7 +1940,7 @@ hideMenu() {
             element.style.display = "none";
           }
           this.userStore.setIsChangeInNewResume(false);
-          this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + e.documentUrl).then((bytes)=>{
+          this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
             e.imageBytes = bytes;
             this.userStore.addResumeDataListItem(e);
             this.userStore.setFilteredResumes([...this.resumeDataItemList()])
@@ -1960,7 +1960,7 @@ hideMenu() {
             element.style.display = "none";
           }
           this.userStore.setIsChangeInNewResume(false);
-          this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + e.documentUrl).then((bytes)=>{
+          this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
             e.imageBytes = bytes;
             let index = this.resumeDataItemList().findIndex(obj => obj.id === e.id);
             this.userStore.updateResumeDataListItem(e, index);
@@ -2086,7 +2086,7 @@ hideMenu() {
           }
           this.userStore.setIsChangeInNewResume(false);
           if(this.selectedResumeListItem().id){
-            this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + resume_response.documentUrl).then((bytes)=>{
+            this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + resume_response.documentUrl).then((bytes)=>{
               resume_response.imageBytes = bytes;
               let index = this.resumeDataItemList().findIndex(obj => obj.id === resume_response.id);
               this.userStore.updateResumeDataListItem(resume_response, index);
@@ -2094,7 +2094,7 @@ hideMenu() {
             })
           }
           else{
-            this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + resume_response.documentUrl).then((bytes)=>{
+            this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + resume_response.documentUrl).then((bytes)=>{
               resume_response.imageBytes = bytes;
               this.userStore.addResumeDataListItem(resume_response);
               this.userStore.setFilteredResumes([...this.resumeDataItemList()])

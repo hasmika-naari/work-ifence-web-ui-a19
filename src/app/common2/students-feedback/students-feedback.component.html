@@ -1,0 +1,60 @@
+<section
+    class="feedback-area-two pt-100"
+    [class.dark-feedback-area-two]="themeService.isDark()"
+>
+    <div class="container">
+        <div class="section-title">
+            <span class="sub-title">Testimonials</span>
+            <h2>Our Students Feedback</h2>
+        </div>
+        <div class="feedback-slides">
+            <owl-carousel-o [options]="studentsFeedbackSlides">
+                <ng-template carouselSlide>
+                    <div class="single-feedback-box">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                        <div class="info">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <img src="images/user1.jpg" alt="image">
+                                <div class="title">
+                                    <h3>John Smith</h3>
+                                    <span>Python Developer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template carouselSlide>
+                    <div class="single-feedback-box">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                        <div class="info">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <img src="images/user2.jpg" alt="image">
+                                <div class="title">
+                                    <h3>Sarah Taylor</h3>
+                                    <span>PHP Developer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template carouselSlide>
+                    <div class="single-feedback-box">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                        <div class="info">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <img src="images/user3.jpg" alt="image">
+                                <div class="title">
+                                    <h3>James Anderson</h3>
+                                    <span>OOP Developer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </owl-carousel-o>
+        </div>
+    </div>
+    <div class="feedback-image">
+        <img src="images/feedback-img.jpg" alt="image">
+    </div>
+</section>

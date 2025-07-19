@@ -1,0 +1,240 @@
+.motivation-mission-area {
+    overflow: hidden;
+    background-color: #faf8f8;
+
+    .container-fluid {
+        padding: {
+            left: 0;
+            right: 0;
+        };
+    }
+    &.dark-motivation-mission-area {
+        background-color: #010101;
+
+        .motivation-mission-content {
+            .mission-inner-box {
+                .number {
+                    background-color: rgba(255, 255, 255, .08);
+                }
+                &:hover {
+                    .number {
+                        background-color: var(--mainColor);
+                    }
+                }
+            }
+        }
+    }
+}
+.motivation-mission-image {
+    height: 100%;
+    width: 100%;
+    background: {
+        position: center center;
+        repeat: no-repeat;
+        size: cover;
+    };
+}
+.motivation-mission-content {
+    max-width: 635px;
+    margin-left: auto;
+    padding: {
+        top: 100px;
+        right: 40px;
+        bottom: 100px;
+    };
+    .sub-title {
+        text-transform: uppercase;
+        display: block;
+        color: var(--mainColor);
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+    h3 {
+        margin-bottom: 0;
+        line-height: 1.5;
+        font: {
+            size: 38px;
+            weight: 700;
+        };
+    }
+    .mission-inner-box {
+        margin-top: 35px;
+        position: relative;
+        padding-left: 80px;
+
+        .number {
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 50px;
+            line-height: 50px;
+            position: absolute;
+            text-align: center;
+            display: inline-block;
+            color: var(--whiteColor);
+            transition: var(--transition);
+            background-color: var(--blackColor);
+            border-radius: 67% 33% 62% 38% / 65% 35% 65% 35%;
+            font: {
+                size: 18px;
+                weight: 600;
+            };
+        }
+        h4 {
+            margin-bottom: 15px;
+            font: {
+                size: 18px;
+                weight: 700;
+            };
+        }
+        p {
+            margin-bottom: 0;
+        }
+        &:hover {
+            .number {
+                border-radius: 65% 35% 65% 35% / 67% 33% 62% 38%;
+                background-color: var(--mainColor);
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .motivation-mission-area {
+        .container-fluid {
+            padding: {
+                right: calc(var(--bs-gutter-x) * 0.5);
+                left: calc(var(--bs-gutter-x) * 0.5);
+            };
+        }
+    }
+    .motivation-mission-image {
+        height: 450px;
+    }
+    .motivation-mission-content {
+        padding: {
+            bottom: 30px;
+            top: 60px;
+            right: 0;
+        };
+
+        .sub-title {
+            font-size: 13.5px;
+        }
+        h3 {
+            font-size: 26px;
+        }
+        .offer-inner-box {
+            padding-left: 80px;
+
+            .icon {
+                i {
+                    width: 60px;
+                    height: 50px;
+                    line-height: 50px;
+                }
+            }
+            h4 {
+                font-size: 16px;
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {
+
+    .motivation-mission-area {
+        .container-fluid {
+            max-width: 540px;
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    .motivation-mission-area {
+        .container-fluid {
+            max-width: 720px;
+            padding: {
+                right: calc(var(--bs-gutter-x) * 0.5);
+                left: calc(var(--bs-gutter-x) * 0.5);
+            };
+        }
+    }
+    .motivation-mission-image {
+        height: 450px;
+    }
+    .motivation-mission-content {
+        padding: {
+            bottom: 30px;
+            top: 80px;
+            right: 0;
+        };
+        margin: {
+            right: auto;
+            left: 0;
+        };
+        .sub-title {
+            font-size: 13.5px;
+        }
+        h3 {
+            font-size: 26px;
+        }
+        .offer-inner-box {
+            padding-left: 80px;
+
+            .icon {
+                i {
+                    width: 60px;
+                    height: 50px;
+                    line-height: 50px;
+                }
+            }
+            h4 {
+                font-size: 16px;
+            }
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+
+    .motivation-mission-area {
+        .container-fluid {
+            max-width: 960px;
+        }
+    }
+
+}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {
+
+    .motivation-mission-content {
+        padding-right: 15px;
+        max-width: 540px;
+    }
+
+}
+
+/* Min width 1550px */
+@media only screen and (min-width: 1550px) {
+
+    .motivation-mission-area {
+        .container-fluid {
+            max-width: 2000px;
+        }
+    }
+
+}

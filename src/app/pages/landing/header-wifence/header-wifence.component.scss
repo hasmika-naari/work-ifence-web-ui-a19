@@ -8,6 +8,11 @@
     font-family: 'Poppins', sans-serif;
   }
   
+  .container-custom{
+    // max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
   
 .header-area {
     top: 0;
@@ -28,7 +33,7 @@
             border-bottom: 1px solid #343434;
 
             .top-header-social {
-                border-left-color: #343434;
+                // border-left-color: #343434;
             }
         }
         .navbar-style-three {

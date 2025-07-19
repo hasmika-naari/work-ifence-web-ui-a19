@@ -1,32 +1,124 @@
-<app-header-wifence></app-header-wifence>
-<div class="page-title-area item-bg1">
-    <div id="errormask" class="errormask"></div> 
-    <div class="container">
-        <div class="page-title-content">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li>Job Openings</li>
-            </ul>
-            <h2>Latest Job Openings..</h2>
-        </div>
-    </div>
-</div>
+<section class="page-full-section" style="overflow-y: hidden;">
+    <app-header-wifence [container]="hdrContainer"></app-header-wifence>
+    <!-- <app-header-style-one /> -->
+    <mat-sidenav-container class="dashboard-container">
 
-<div
-    class="faq-area"
-    [class.dark-faq-area]="themeService.isDark()">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-md-6">
-                <div class="faq-item">
-                    <h2>Coming Soon..</h2>
+    <!-- Right Sidenav for Filters -->
+        <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
+            <h3>Filter Courses</h3>
+            <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterCourses($event, filterSidenav)">
+                <div class="row">
+                    <div class="col-12 col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Title</mat-label>
+                        <input matInput formControlName="title">
+                    </mat-form-field>
+                    </div>
+
+                    <div class="col-12 col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Provider</mat-label>
+                        <mat-select formControlName="provider">
+                        <mat-option value="">Any</mat-option>
+                        <mat-option value="Coursera">Coursera</mat-option>
+                        <mat-option value="edX">edX</mat-option>
+                        <mat-option value="FutureLearn">FutureLearn</mat-option>
+                        <mat-option value="Independent">Independent</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </div>
+
+                    <div class="col-12 col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Subject</mat-label>
+                        <mat-select formControlName="subject">
+                        <mat-option value="">Any</mat-option>
+                        <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </div>
+
+                    <div class="col-12 col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Mode</mat-label>
+                        <mat-select formControlName="mode">
+                        <mat-option value="">Any</mat-option>
+                        <mat-option value="Self-paced">Self-paced</mat-option>
+                        <mat-option value="Instructor-led">Instructor-led</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </div>
+
+                    <div class="col-12 col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Cost</mat-label>
+                        <mat-select formControlName="cost">
+                        <mat-option value="">Any</mat-option>
+                        <mat-option value="Free">Free</mat-option>
+                        <mat-option value="Paid">Paid</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </div>
+
+                    <div class="col-12 col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Certificate</mat-label>
+                        <mat-select formControlName="certificate">
+                        <mat-option value="">Any</mat-option>
+                        <mat-option value="Yes">Yes</mat-option>
+                        <mat-option value="No">No</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </div>
+
+                    <div class="col-12 col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Platform</mat-label>
+                        <mat-select formControlName="platform">
+                        <mat-option value="">Any</mat-option>
+                        <mat-option value="Coursera">Coursera</mat-option>
+                        <mat-option value="edX">edX</mat-option>
+                        <mat-option value="FutureLearn">FutureLearn</mat-option>
+                        <mat-option value="Independent">Independent</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="text-end mt-2">
+                    <button mat-flat-button type="submit">Apply Filters</button>
+                </div>
+            </form>
+
+        </mat-sidenav>
+    <!-- Main Content -->
+        <mat-sidenav-content  style="position: absolute;top:0px;left: 0px;right: 0px;">
+            <div class="course-list-header">
+                <div class="page-title-content">
+                    <ul>
+                        <li><a routerLink="/">Home</a></li>
+                        <li><a routerLink="/course-central">Course Central</a></li>
+                        <li>Course List</li>
+                    </ul>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-6">
-                <div class="faq-item">
+            <!-- Course List Header + Filter Icon -->
+            <div class="course-list-header">
+                <div class="left">
+                    <div class="section-title mb-0 mt-0">
+                        <div class="text-start">
+                            <span class="sub-title d-block mb-0">Discover</span>
+                            <h2 class="mb-0 mt-0">Courses</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <h5>({{ allCourses.length }}) All Courses</h5>
+                    <button mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
+                    <mat-icon>tune</mat-icon>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<app-work-ifence-footer></app-work-ifence-footer>
+            <app-work-ifence-footer></app-work-ifence-footer>
+        </mat-sidenav-content>
+</mat-sidenav-container>

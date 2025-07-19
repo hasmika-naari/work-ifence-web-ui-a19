@@ -29,6 +29,8 @@ import { DealsService } from '../../services/deals.service';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { JobFeedItem } from '../../services/ifence.model';
 import { ActiveCollegeJobsComponent } from './active-college-jobs/active-college-jobs.component';
+import { environment } from '../../../environments/environment';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-landing',
@@ -156,7 +158,7 @@ export class LandingComponent implements OnInit {
   private transferState: TransferState = inject(TransferState);
   private platformId: object =  inject(PLATFORM_ID);
   private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
-
+  public config: ConfigService=  inject(ConfigService);
 
 
   constructor(@Inject(WINDOW) private window: Window) { 

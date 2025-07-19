@@ -287,7 +287,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
     //       this.userAccount().id).subscribe((data: ResumeListDataItem[])=> {
     //         console.log(data);
     //       data.map(async (e : ResumeListDataItem)=>{
-    //       await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + e.documentUrl).then((bytes)=>{
+    //       await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
     //           e.imageBytes = bytes;
     //           this.resumes = [...this.resumes, e]
     //           let roleExists = this.roleCategories.some(role => role.name.includes(e.roleCategory));
@@ -352,7 +352,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
             console.log(data);
             if(data.length>0){
               data.map(async (e : ResumeListDataItem)=>{
-          await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + e.documentUrl).then((bytes)=>{
+          await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
               e.imageBytes = bytes;
               let resume : Resume = JSON.parse(e.resumeJson);
               if(!resume?.sections && !resume?.multipleSections){

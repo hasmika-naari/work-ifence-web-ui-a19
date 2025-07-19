@@ -1,8 +1,8 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
-import {getWindow} from "ssr-window";
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
+import { getWindow } from 'ssr-window';
 
 @Component({
     selector: 'app-header-style-one',

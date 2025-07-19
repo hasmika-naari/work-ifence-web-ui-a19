@@ -1,0 +1,660 @@
+.dark-theme {
+    background-color: var(--blackColor);
+    color: var(--whiteColor);
+
+    // Default CSS
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        color: var(--whiteColor);
+    }
+    a {
+        color: var(--whiteColor);
+    
+        &:hover, &:focus {
+            color: var(--mainColor);
+        }
+    }
+    p {
+        color: #a1a4ad;
+    }
+    .bg-f7f9fb {
+        background-color: #222222;
+    }
+    .bg-e4feff {
+        background-color: #333333;
+    }
+    .bg-f8e8e9 {
+        background-color: #101010;
+    }
+    .bg-f9f9f9 {
+        background-color: #212121;
+    }
+    .bg-f5faf8 {
+        background-color: #131313;
+    }
+    .bg-f8fafb {
+        background-color: #101010;
+    }
+    .bg-e6fbff {
+        background-color: #202020;
+    }
+
+    // Default Btn
+    .default-btn {
+        &:hover, &:focus {
+            color: var(--whiteColor);
+        }
+    }
+
+    // Form Control
+    .form-control {
+        background-color: var(--blackColor);
+        color: var(--whiteColor);
+        border-color: #3a3737;
+        
+        &::placeholder {
+            color: #a1a4ad;
+        }
+        &:focus {
+            border-color: #a1a4ad;
+        }
+    }
+
+    // Owl Carousel CSS
+    .mission-content {
+        .owl-theme {
+            .owl-nav {
+                [class*=owl-] {
+                    color: var(--whiteColor);
+                    background: var(--blackColor);
+    
+                    &:hover, &:focus {
+                        background-color: var(--mainColor);
+                        color: var(--whiteColor);
+                    }
+                }
+            }
+        }
+    }
+    .courses-categories-slides {
+        .owl-theme {
+            .owl-nav {
+                [class*=owl-] {
+                    color: #a1a4ad;
+                    border: {
+                        color: #3a3737;
+                    };
+                    &:hover, &:focus {
+                        color: var(--whiteColor);
+                        border-color: var(--mainColor);
+                    }
+                    &.disabled {
+                        color: #e3e4ef;
+    
+                        &:hover, &:focus {
+                            color: #e3e4ef;
+                            border-color: #3a3737;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .instructor-slides {
+        .owl-theme {
+            .owl-nav {
+                [class*=owl-] {
+                    color: #a1a4ad;
+                    border: {
+                        color: #3a3737;
+                    };
+                    &:hover, &:focus {
+                        color: var(--whiteColor);
+                        border-color: var(--mainColor);
+                    }
+                    &.disabled {
+                        color: #e3e4ef;
+    
+                        &:hover, &:focus {
+                            color: #e3e4ef;
+                            border-color: #3a3737;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .feedback-slides {
+        .owl-theme {
+            .owl-nav {
+                [class*=owl-] {
+                    color: #a1a4ad;
+                    border: {
+                        color: #3a3737;
+                    };
+                    &:hover, &:focus {
+                        color: var(--whiteColor);
+                        border-color: var(--mainColor);
+                    }
+                    &.disabled {
+                        color: #e3e4ef;
+    
+                        &:hover, &:focus {
+                            color: #e3e4ef;
+                            border-color: #3a3737;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .blog-slides {
+        .owl-theme {
+            .owl-nav {
+                [class*=owl-] {
+                    color: #a1a4ad;
+                    border: {
+                        color: #3a3737;
+                    };
+                    &:hover, &:focus {
+                        color: var(--whiteColor);
+                        border-color: var(--mainColor);
+                    }
+                    &.disabled {
+                        color: #e3e4ef;
+    
+                        &:hover, &:focus {
+                            color: #e3e4ef;
+                            border-color: #3a3737;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .home-slides {
+        .owl-theme {
+            .owl-nav {
+                [class*=owl-] {
+                    color: var(--whiteColor);
+                    background: rgba(0, 0, 0, .7);
+    
+                    &:hover {
+                        background-color: var(--mainColor);
+                        color: var(--whiteColor);
+                    }
+                }
+            }
+            .owl-dots {
+                .owl-dot {
+                    span {
+                        background: var(--blackColor);
+                    }
+                    &:hover, &.active {
+                        span {
+                            background-color: var(--mainColor);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .courses-slides {
+        .owl-theme {
+            .owl-nav {
+                [class*=owl-] {
+                    color: #a1a4ad;
+                    border: {
+                        color: #3a3737;
+                    };
+                    &:hover, &:focus {
+                        color: var(--whiteColor);
+                        border-color: var(--mainColor);
+                    }
+                    &.disabled {
+                        color: #e3e4ef;
+    
+                        &:hover, &:focus {
+                            color: #e3e4ef;
+                            border-color: #3a3737;
+                        }
+                    }
+                }
+            }
+            .owl-dots {
+                .owl-dot {
+                    span {
+                        background: #111111;
+                    }
+                    &:hover, &.active {
+                        span {
+                            background-color: var(--mainColor);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .owl-item {
+        &.active {
+            &.center {
+                .single-testimonials-item {
+                    background-color: var(--mainColor);
+                }
+            }
+        }
+    }
+    .testimonials-slides {
+        .owl-theme {
+            .owl-dots {
+                .owl-dot {
+                    span {
+                        background: #111111;
+                    }
+                    &:hover, &.active {
+                        span {
+                            background-color: var(--mainColor);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Extra CSS
+    .courses-categories-area {
+        &.bg-image {
+            background: #000000 !important;
+        }
+    }
+    .nav-tabset {
+        .nav-tab {
+            span {
+                color: #a1a4ad;
+        
+                &:hover {
+                    color: var(--whiteColor);
+                }
+            }
+            &.active {
+                span {
+                    color: var(--whiteColor);
+                }
+            }
+        }
+    }
+    .feedback-area {
+        background-color: #111111;
+    }
+    .divider {
+        background: var(--blackColor);
+
+        &.bg-e4feff {
+            background-color: #333333;
+        }
+        &.bg-f9f9f9 {
+            background-color: #212121;
+        }
+    }
+    .courses-list-tab {
+        .nav-tabset {
+            background-color: var(--blackColor);
+            box-shadow: 0 2px 16px 0px rgba(0, 0, 0, 0.15);
+            
+            .nav-tab {
+                span {
+                    &::before {
+                        background: #3a3737;
+                    }
+                }
+            }
+        }
+    }
+    .overview-connections-area {
+        background-color: #111111;
+
+        &.bg-faf8f8 {
+            background-color: #020202 !important;
+    
+            .section-title {
+                &.text-start {
+                    h2 {
+                        color: var(--whiteColor) !important;
+                    }
+                }
+                p {
+                    color: #a1a4ad !important;
+                }
+            }
+            .overview-connections-card {
+                h3 {
+                    color: var(--whiteColor) !important;
+                }
+                p {
+                    color: #a1a4ad !important;
+                }
+            }
+        }
+    }
+    .testimonials-wrap-area {
+        background: #010101;
+     
+        &.bg-e7f0fd  {
+            background-color: #111111;
+        }
+    }
+    .courses-topbar {
+        .topbar-ordering-and-search {
+            .topbar-ordering {
+                .form-select {
+                    color: #a1a4ad;
+                    background-color: transparent;
+                }
+            }
+            .topbar-search {
+                form {
+                    .input-search {
+                        color: var(--whiteColor);
+                        background-color: #010101;
+                        
+                        &::placeholder {
+                            color: #a1a4ad;
+                        }
+                        &:focus {
+                            &::placeholder {
+                                color: transparent;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .woocommerce-topbar {
+        .topbar-ordering-and-search {
+            .topbar-ordering {
+                .form-select {
+                    color: #a1a4ad;
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+    .products-details-tab {
+        .nav-tabset {
+            .nav-tab {
+                span {
+                    color: var(--whiteColor);
+                    border-color: #3a3737;
+                    
+                    &:hover {
+                        border-color: var(--mainColor);
+                    }
+                }
+                &.active {
+                    span {
+                        border-color: var(--mainColor);
+                    }
+                }
+            }
+        }
+        .tabs-container {
+            border-color: #3a3737;
+            
+            .products-details-tab-content {
+                .additional-information {
+                    li {
+                        border-color: #3a3737;
+                        color: #a1a4ad;
+    
+                        &:last-child {
+                            border-bottom-color: #3a3737;;
+                        }
+                        span {
+                            color: var(--whiteColor);
+                        }
+                    }
+                }
+                .product-review-form {
+                    .review-title {
+                        .rating {
+                            i {
+                                color: #a1a4ad;
+                            }
+                        }
+                    }
+                    .review-comments {
+                        .review-item {
+                            border-top-color: #3a3737;
+    
+                            .rating {
+                                i {
+                                    color: #a1a4ad;
+                                }
+                            }
+                            .review-report-link {
+                                color: #a1a4ad;
+                                
+                                &:hover {
+                                    color: var(--mainColor);
+                                }
+                            }
+                        }
+                    }
+                    .review-form {
+                        form {
+                            .form-group {
+                                .form-control {
+                                    background-color: #000000;
+                                    color: var(--whiteColor);
+                                    
+                                    &::placeholder {
+                                        color: #a1a4ad;
+                                    }
+                                    &:focus {
+                                        &::placeholder {
+                                            color: transparent;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Quote
+    blockquote, .blockquote {
+        background-color: #000000;
+        
+        p {
+            color: var(--whiteColor);
+        }
+        &::before {
+            opacity: .20;
+        }
+    }
+
+    // Post Navigation
+    .ednuv-post-navigation {
+        border: {
+            top-color: #3a3737;
+            bottom-color: #3a3737;
+        };
+    }
+    .prev-link-wrapper {
+        .prev-link-info-wrapper {
+            color: var(--whiteColor);
+        }
+        .meta-wrapper {
+            color: #a1a4ad;
+        }
+    }
+    .next-link-wrapper {
+        .next-link-info-wrapper {
+            color: var(--whiteColor);
+        }
+        .meta-wrapper {
+            color: #a1a4ad;
+        }
+    }
+
+    // Widget Sidebar CSS
+    .widget-area {
+        .widget {
+            .widget-title {
+                border-left-color: #3a3737;
+            }
+        }
+        .widget_search {
+            form {
+                .search-field {
+                    color: var(--whiteColor);
+                    background-color: #000000;
+                    
+                    &::placeholder {
+                        color: #a1a4ad;
+                    }
+                    &:focus {
+                        &::placeholder {
+                            color: transparent;
+                        }
+                    }
+                }
+            }
+        }
+        .widget_ednuv_posts_thumb {
+            .item {
+                .info {
+                    time {
+                        color: #a1a4ad;
+                    }
+                }
+            }
+        }
+        .widget_categories {
+            ul {
+                li {
+                    color: var(--whiteColor);
+                    
+                    a {
+                        color: var(--whiteColor);
+    
+                        &:hover {
+                            color: var(--mainColor);
+                        }
+                    }
+                    .post-count {
+                        color: #a1a4ad;
+                    }
+                }
+            }
+        }
+        .tagcloud {
+            a {
+                background-color: #000000;
+                border-color: #3a3737;
+                color: #a1a4ad;
+                
+                &:hover, &:focus {
+                    color: var(--whiteColor);
+                    border-color: var(--mainColor);
+                    background-color: var(--mainColor);
+                }
+            }
+        }
+        .widget_events_details {
+            ul {
+                li {
+                    border-bottom-color: #3a3737;
+                    color: #a1a4ad;
+                    
+                    &:first-child {
+                        border-top-color: #3a3737;
+                    }
+                    span {
+                        color: var(--whiteColor);
+                    }
+                    a {
+                        color: #a1a4ad;
+    
+                        &:hover {
+                            color: var(--mainColor);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Pagination CSS
+    .pagination-area {
+        .page-numbers {
+            color: var(--whiteColor);
+            
+            &:hover, &:focus, &.current {
+                color: var(--mainColor);
+            }
+        }
+    }
+
+    // FAQ CSS
+    .faq-accordion {
+        .accordion-item {
+            box-shadow: 2px 8px 20px 0 rgba(0, 0, 0, 0.13) !important;
+            border-color: rgba(255, 255, 255, .125);
+            background-color: var(--blackColor);
+    
+            .accordion-header {
+                color: var(--whiteColor);
+            }
+        }
+    }
+
+    // Switch Btn
+    .dark-light-switch-btn {
+        button {
+            color: var(--whiteColor);
+            background-color: #414040;
+
+            i {
+                &::before {
+                    content: "\ec34";
+                }
+            }
+        }
+    }
+    
+}
+
+// Switch Btn
+.dark-light-switch-btn {
+    transform: translateY(-50%);
+    position: fixed;
+    z-index: 2;
+    left: 20px;
+    top: 50%;
+
+    button {
+        padding: 0;
+        width: 45px;
+        height: 45px;
+        border: none;
+        font-size: 23px;
+        border-radius: 50%;
+        position: relative;
+        display: inline-block;
+        background-color: var(--whiteColor);
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+
+        i {
+            left: 0;
+            right: 0;
+            top: 50%;
+            line-height: 1;
+            position: absolute;
+            transform: translateY(-50%);
+        }
+    }
+}

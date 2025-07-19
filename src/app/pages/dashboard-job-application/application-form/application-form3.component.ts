@@ -701,7 +701,7 @@ ngAfterViewInit(): void {
         if (result.event == "CONFIRM") {
           console.log('Selected Resume:', result);
           let application = this.jobApplication();
-          application.job_application_details.resume_download_link = "https://workifence.s3.amazonaws.com/" + this.selectedResumeListItem().documentUrl;
+          application.job_application_details.resume_download_link = "https://workifence.s3.us-east-1.amazonaws.com/" + this.selectedResumeListItem().documentUrl;
           this.userStore.setJobApplication(application);
           this.isResumeGiven = true;
           this.resumeToImageBytes = this.selectedResumeListItem().imageBytes;
@@ -716,7 +716,7 @@ ngAfterViewInit(): void {
     this.userStore.setJobApplicationFlag(true);
     this.resume_file = event.target.files[0];
     this.resumeFileName = this.resume_file?.name;
-    this.resumeDownloadUrl = "https://workifence.s3.amazonaws.com/"+ this.bioProfile().userName + "/external_resume/" + this.resumeFileName;
+    this.resumeDownloadUrl = "https://workifence.s3.us-east-1.amazonaws.com/"+ this.bioProfile().userName + "/external_resume/" + this.resumeFileName;
     if (this.resume_file) {
       this.pdfToImageService.convertPdfToImageBytes(this.resume_file).then((e)=>{
         this.resumeToImageBytes = e
@@ -936,7 +936,7 @@ ngAfterViewInit(): void {
         let application = this.jobApplication();
         if(this.resume_file){
           this.resumeService.postExternalResume(this.resumeFileName, this.userAccount().login +"/external_resume/"+ this.resumeFileName, this.resume_file).subscribe((e)=>{
-            application.job_application_details.resume_download_link = "https://workifence.s3.amazonaws.com/" + this.userAccount().login +"/external_resume/"+ this.resumeFileName;
+            application.job_application_details.resume_download_link = "https://workifence.s3.us-east-1.amazonaws.com/" + this.userAccount().login +"/external_resume/"+ this.resumeFileName;
             this.userStore.setJobApplication(application);
             this.saveJobApplication("");
           })
@@ -944,7 +944,7 @@ ngAfterViewInit(): void {
       }
       else if(this.selectedResumeListItem().documentUrl && !this.isResumeDeleteConfirm){
         let application = this.jobApplication();
-        application.job_application_details.resume_download_link = "https://workifence.s3.amazonaws.com/" + this.selectedResumeListItem().documentUrl;
+        application.job_application_details.resume_download_link = "https://workifence.s3.us-east-1.amazonaws.com/" + this.selectedResumeListItem().documentUrl;
         this.userStore.setJobApplication(application);
         this.saveJobApplication("");
       }

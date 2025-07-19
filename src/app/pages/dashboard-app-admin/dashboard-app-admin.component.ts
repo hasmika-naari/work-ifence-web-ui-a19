@@ -88,7 +88,7 @@ export class DashboardAppAdminComponent implements OnInit, AfterViewInit {
   //     this.subs.push(this.resumeService.getResumeListByOwnerId(
   //         this.userAccount().id).subscribe((data: ResumeListDataItem[])=> {
   //         data.map(async (e : ResumeListDataItem)=>{
-  //         await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.amazonaws.com/" + e.documentUrl).then((bytes)=>{
+  //         await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
   //             e.imageBytes = bytes;
   //             this.resumes = [...this.resumes, e]
   //         })

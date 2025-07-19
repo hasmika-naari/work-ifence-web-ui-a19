@@ -1,0 +1,185 @@
+.funfacts-style-area {
+    position: relative;
+    z-index: 1;
+    margin-bottom: -70px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        z-index: -1;
+        background: #0E2742;
+        border-radius: 300px 0px 0px 300px;
+        width: 98%;
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        z-index: -1;
+        width: 5%;
+    }
+}
+.single-funfact-card {
+    position: relative;
+    padding-left: 120px;
+
+    .icon {
+        color: var(--whiteColor);
+        line-height: 0;
+        font-size: 50px;
+        position: absolute;
+        left: 50px;
+        top: 10px;
+
+        &::before {
+            position: absolute;
+            content: "";
+            height: 50px;
+            width: 50px;
+            background: #EA9927;
+            left: -10px;
+            top: -10px;
+            z-index: -1;
+            opacity: 0.3;
+            border-radius: 50px;
+        }
+        &.bg-0B767A {
+            &::before {
+                background: #0B767A;
+            }
+        }
+        &.bg-9879B6 {
+            &::before {
+                background: #9879B6;
+            }
+        }
+        &.bg-FF1949 {
+            &::before {
+                background: #FF1949;
+            }
+        }
+    }
+    h3 {
+        margin-bottom: 10px;
+        color: var(--whiteColor);
+        font: {
+            size: 40px;
+            weight: 600;
+        };
+        .odometer-formatting-mark {
+            display: none;
+        }
+    }
+    p {
+        color: var(--whiteColor);
+        line-height: initial;
+        font: {
+            size: 14px;
+            weight: 500;
+        };
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .funfacts-style-area {
+        &::before {
+            border-radius: 0;
+            width: 100%;
+        }
+    }
+    .single-funfact-card {
+        padding-left: 0;
+
+        .icon {
+            position: relative;
+            left: 0;
+            top: 0;
+            margin-bottom: 20px;
+
+            &::before {
+                left: 0;
+                top: 0;
+            }
+        }
+        h3 {
+            font-size: 28px;
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    .funfacts-style-area {
+        &::before {
+            border-radius: 0;
+            width: 100%;
+        }
+    }
+    .single-funfact-card {
+        padding-left: 0;
+
+        .icon {
+            position: relative;
+            left: 0;
+            top: 0;
+            margin-bottom: 20px;
+
+            &::before {
+                left: 0;
+                top: 0;
+            }
+        }
+        h3 {
+            font-size: 28px;
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+
+    .funfacts-style-area {
+        &::before {
+            border-radius: 0;
+            width: 100%;
+        }
+    }
+    .single-funfact-card {
+        padding-left: 0;
+
+        .icon {
+            position: relative;
+            left: 0;
+            top: 0;
+            margin-bottom: 20px;
+
+            &::before {
+                left: 0;
+                top: 0;
+            }
+        }
+    }
+
+}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1550px */
+@media only screen and (min-width: 1550px) {}

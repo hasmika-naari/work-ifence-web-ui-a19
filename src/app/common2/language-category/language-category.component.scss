@@ -1,0 +1,79 @@
+.single-language-courses-box {
+    background-color: #f9f9f9;
+    margin-bottom: 25px;
+    text-align: center;
+    border-radius: 5px;
+
+    a {
+        img {
+            border-radius: 5px 5px 0 0;
+        }
+    }
+    .content {
+        padding: 30px;
+
+        h3 {
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font: {
+                size: 22px;
+                weight: 700;
+            };
+        }
+        .link-btn {
+            color: var(--mainColor);
+            display: inline-block;
+            font-weight: 600;
+
+            &:hover {
+                color: var(--optionalColor);
+            }
+        }
+    }
+}
+.dark-courses-area {
+    .single-language-courses-box {
+        background-color: #101010;
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .single-language-courses-box {
+        .content {
+            h3 {
+                font-size: 18px;
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    .single-language-courses-box {
+        .content {
+            h3 {
+                font-size: 20px;
+            }
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1550px */
+@media only screen and (min-width: 1550px) {}

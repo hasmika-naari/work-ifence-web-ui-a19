@@ -1,0 +1,33 @@
+.values-content {
+    margin-top: -6px;
+
+    p {
+        margin-bottom: 25px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+    h3 {
+        margin-bottom: 12px;
+        font: {
+            size: 20px;
+            weight: 600;
+        };
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .values-content {
+        margin-top: 0;
+        text-align: center;
+
+        h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+    }
+
+}

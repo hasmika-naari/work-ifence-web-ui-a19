@@ -10,11 +10,13 @@ import { PCategory } from 'src/app/services/bee-compete.model';
 import { WorkifenceDataService } from 'src/app/services/bee-compete-data.service';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @Component({
   selector: 'latest-openings-page',
   standalone: true,
-  imports: [CommonModule, RouterLink,LanguageSubscribeComponent,
+  imports: [CommonModule, RouterLink,LanguageSubscribeComponent, MatIconModule, MatSidenavModule,
       NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
   templateUrl: './latest-openings-page.component.html',
   styleUrls: ['./latest-openings-page.component.scss']
@@ -27,6 +29,7 @@ export class LatestJobOpeningsPageComponent implements OnInit {
   private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
   public themeService: ThemeCustomizerService=  inject(ThemeCustomizerService);
   private platformId: object =  inject(PLATFORM_ID);
+  hdrContainer = false;
 
   isMobile = false;
   isTablet = false;

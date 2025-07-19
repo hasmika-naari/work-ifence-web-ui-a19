@@ -1,0 +1,89 @@
+.overview-connections-card {
+    max-width: 350px;
+
+    h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 18px;
+        color: var(--whiteColor);
+
+        span {
+            color: var(--mainColor);
+        }
+    }
+    p {
+        color: var(--whiteColor);
+        font-size: var(--fontSize);
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .overview-connections-area {
+        .section-title {
+            &.text-start {
+                text-align: start !important;
+
+                h2 {
+                    margin-bottom: 15px;
+                }
+            }
+            p {
+                padding-left: 0;
+            }
+        }
+        &.bg-faf8f8 {
+            padding-top: 230px;
+        }
+    }
+    .overview-connections-card {
+        h3 {
+            font-size: 18px;
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    .overview-connections-area {
+        &.bg-faf8f8 {
+            padding-top: 240px;
+        }
+        .section-title {
+            &.text-start {
+                text-align: start !important;
+
+                h2 {
+                    margin-bottom: 15px;
+                }
+            }
+            p {
+                padding-left: 0;
+            }
+        }
+    }
+    .overview-connections-card {
+        h3 {
+            font-size: 18px;
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1550px */
+@media only screen and (min-width: 1550px) {}

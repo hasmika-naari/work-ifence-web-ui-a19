@@ -1,0 +1,114 @@
+.faq-video {
+    position: relative;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 1;
+
+    img {
+        border-radius: 5px;
+    }
+    .video-btn {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        font-size: 60px;
+        text-align: center;
+        line-height: 90px;
+        position: absolute;
+        cursor: pointer;
+        left: 50%;
+        transition: var(--transition);
+        top: 50%;
+        z-index: 1;
+        transform: translateY(-50%) translateX(-50%);
+        background-color: var(--mainColor);
+        border-radius: 50%;
+        color: var(--whiteColor);
+    
+        &::after, &::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: -1;
+            bottom: 0;
+            left: 0;
+            transition: var(--transition);
+            border-radius: 50%;
+            border: 1px solid var(--whiteColor);
+        }
+        &::before {
+            animation: ripple 2s linear infinite;
+        }
+        &::after {
+            animation: ripple 2s linear 1s infinite;
+        }
+        &:hover {
+            color: var(--mainColor);
+            background-color: var(--whiteColor);
+    
+            &::before, &::after {
+                border-color: var(--mainColor);
+            }
+        }
+    }
+}
+.dark-faq {
+    .faq-video {
+        .video-btn {
+            &::after, &::before {
+                border-color: var(--blackColor);
+            }
+            &:hover {
+                &::before, &::after {
+                    border-color: var(--mainColor);
+                }
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+    
+    .faq-video {
+        margin-bottom: 25px;
+
+        .video-btn {
+            width: 55px;
+            height: 55px;
+            font-size: 45px;
+            line-height: 65px;
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    
+    .faq-video {
+        margin-bottom: 25px;
+
+        img {
+            width: 100%;
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1550px */
+@media only screen and (min-width: 1550px) {}

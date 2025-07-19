@@ -28,7 +28,9 @@ import AOS from 'aos';
 export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   @Input('back') back: boolean = false;
+  @Input('container') container: boolean = true;
 
+  
 
     isSticky: boolean = false;
     private storageService: LocalStorageService = inject(LocalStorageService);

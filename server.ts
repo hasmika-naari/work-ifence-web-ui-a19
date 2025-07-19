@@ -123,4 +123,3 @@ function run(): void {
 run();
 
 export * from './src/main.server';
-export { renderApplication } from '@angular/platform-server';

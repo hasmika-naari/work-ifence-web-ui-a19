@@ -144,7 +144,7 @@ ngOnChanges(changes: SimpleChanges): void {
 
 onUploadHandler($event: any){
   this.uploadImageUrl = $event.fileName;
-  this.imageUrl = "https://workifence.s3.amazonaws.com/"+ this.bioProfile().userName + "/profile_picture/" + this.uploadImageUrl;
+  this.imageUrl = "https://workifence.s3.us-east-1.amazonaws.com/"+ this.bioProfile().userName + "/profile_picture/" + this.uploadImageUrl;
 }
 
 get f(): { [key: string]: AbstractControl } {
@@ -286,8 +286,8 @@ saveBioProfile(){
     this.uploadImageUrl = this.image_file.name;
     let fileNameSplit = this.image_file.name.split('.');
     
-    // this.imageUrl = "https://workifence.s3.amazonaws.com/"+ this.bioProfile().userName + "/profile_picture/" + "profile-large." + fileNameSplit[1];
-    this.imageUrl = "https://workifence.s3.amazonaws.com/"+ this.bioProfile().userName + "/profile_picture/" + this.uploadImageUrl;
+    // this.imageUrl = "https://workifence.s3.us-east-1.amazonaws.com/"+ this.bioProfile().userName + "/profile_picture/" + "profile-large." + fileNameSplit[1];
+    this.imageUrl = "https://workifence.s3.us-east-1.amazonaws.com/"+ this.bioProfile().userName + "/profile_picture/" + this.uploadImageUrl;
     if (this.image_file) {
       this.convertImageToBase64(this.image_file);
     }

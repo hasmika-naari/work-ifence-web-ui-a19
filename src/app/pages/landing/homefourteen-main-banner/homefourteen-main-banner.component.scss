@@ -16,7 +16,7 @@
         size: cover;
     };
     padding: {
-        top: 40px;
+        top: 115px;
         bottom: 100px;
     };
     .container-fluid {
@@ -46,7 +46,7 @@
 }
 .training-course-banner-content {
     h1 {
-        font-size: 6rem;
+        font-size: 5rem;
         letter-spacing: -2px !important;
         margin-bottom: 10px;
         font-weight: bold;
@@ -54,7 +54,7 @@
         color: var(--secondaryColor);
         span {
             color: var(--mainColor) !important;
-            font-size: 4.5rem !important;
+            font-size: 4.2rem !important;
             position: relative;
             top: 0px !important;
             display: block;
@@ -162,6 +162,9 @@
     .training-course-banner-content {
         h1 {
             font-size: 32px;
+            span{
+                font-size: 28px !important;
+            }
         }
     }
     .training-course-banner-image {
@@ -195,13 +198,15 @@
         // background-color: var(--whiteColor);
         // color: var(--mainColor);
         // border: 1px solid var(--mainColor);
-        background-color: #d1cdcd;
+        // background-color: #d1cdcd;
         color: black;
-        border-color: #f5f4f4;
+        // border-color: #f5f4f4;
         height: 35px;
         padding: 0 20px;
         border-radius: 70px;
         // transition: var(--transition);
+        border: none !important;
+
         text-transform: capitalize;
         margin: 5px;
         width: 165px;
@@ -224,15 +229,16 @@
         // background-color: var(--mainColor);
         // color: var(--whiteColor);
         // border: 1px solid var(--mainColor);
-        background-color: #d1cdcd;
+        // background-color: #d1cdcd;
         color: black;
-        border-color: #f5f4f4;
+        // border-color: #f5f4f4;
         height: 35px;
         padding: 0 20px;
         border-radius: 70px;
         // transition: var(--transition);
         text-transform: capitalize;
         margin: 5px;
+        border: none !important;
         font: {
             size: var(--fontSize);
             weight: 400;
@@ -241,6 +247,22 @@
             background-color: var(--mainColor);
             color: var(--whiteColor);
             border: 1px solid var(--mainColor);
+        }
+    }
+
+    .link-button-wifence {
+        cursor: pointer;
+        background-color: var(--grayBackgroundColor);
+        color: var(--fontColor);
+        border-radius: 15px;
+        padding: 5px 15px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+
+        &:hover,
+        &:focus {
+            background-color: var(--grayBackgroundHoverColor);
+            color: var(--fontColor);
+            text-decoration: underline;
         }
     }
 }
@@ -273,6 +295,9 @@
     .training-course-banner-content {
         h1 {
             font-size: 55px;
+              span{
+                font-size: 50px !important;
+            }
         }
     }
     .training-course-banner-image {
@@ -299,6 +324,9 @@
     .training-course-banner-content {
         h1 {
             font-size: 55px;
+            span{
+                font-size: 50px !important;
+            }
         }
     }
 

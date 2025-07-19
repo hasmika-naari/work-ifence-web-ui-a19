@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:workifence": "node dist/workifence/server/server.mjs",
-    "build:ssr": "ng build --configuration=production && ng run workifence:server:production",
+    "build:ssr": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build --configuration=production && ng run workifence:server:production",
     "serve:ssr": "node dist/workifence/server/server.mjs",
     "dev:ssr": "ng run workifence:serve-ssr",
     "prerender": "ng run workifence:prerender"

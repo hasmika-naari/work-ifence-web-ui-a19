@@ -1,0 +1,184 @@
+.free-trial-area {
+    position: relative;
+    z-index: 1;
+    padding: {
+        top: 130px;
+        bottom: 130px;
+    };
+    background: {
+        position: center center;
+        repeat: no-repeat;
+        size: cover;
+    };
+    &.dark-free-trial-area {
+        .free-trial-form {
+            background-color: #101010;
+        
+            &::before {
+                background-color: rgba(0, 0, 0, .85);
+            }
+            &::after {
+                background-color: #000000;
+            }
+        }
+    }
+}
+.free-trial-form {
+    background-color: #f3f3f3;
+    position: relative;
+    border-radius: 5px;
+    margin-left: auto;
+    max-width: 600px;
+    padding: 50px;
+    z-index: 1;
+
+    &::before {
+        transform: rotate(6.5deg);
+        content: '';
+        position: absolute;
+        border-radius: 5px;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: rgba(243, 243, 243, .85);
+        transition: var(--transition);
+        z-index: -2;
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        border-radius: 5px;
+        bottom: 0;
+        background-color: #f3f3f3;
+        z-index: -1;
+    }
+    .sub-title {
+        display: block;
+        text-transform: uppercase;
+        color: var(--mainColor);
+        margin-bottom: 10px;
+        font: {
+            weight: 500;
+        };
+    }
+    h2 {
+        margin-bottom: 25px;
+        font: {
+            size: 37px;
+            weight: 700;
+        };
+    }
+    form {
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            border: none;
+            padding-top: 2px;
+            padding-left: 15px;
+
+            &::placeholder {
+                transition: var(--transition);
+            }
+            &:focus {
+                &::placeholder {
+                    color: transparent;
+                }
+            }
+        }
+        button {
+            display: block;
+            width: 100%;
+            background-color: var(--mainColor);
+            color: var(--whiteColor);
+            border: none;
+            transition: var(--transition);
+            border-radius: 5px;
+            margin-top: 20px;
+            font: {
+                size: 14.5px;
+                weight: 700;
+            };
+            padding: {
+                top: 15px;
+                bottom: 14px;
+                left: 25px;
+                right: 25px;
+            };
+            &:hover {
+                background-color: var(--optionalColor);
+                color: var(--whiteColor);
+            }
+        }
+    }
+    &:hover {
+        &::before {
+            transform: rotate(-6.5deg);
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .free-trial-area {
+        padding: {
+            top: 60px;
+            bottom: 60px;
+        };
+    }
+    .free-trial-form {
+        max-width: 100%;
+        text-align: center;
+        padding: 30px 20px;
+
+        .sub-title {
+            font-size: 13.5px;
+        }
+        h2 {
+            font-size: 27px;
+        }
+        &::before {
+            display: none;
+        }
+        &::after {
+            display: none;
+        }
+        form {
+            .form-control {
+                padding-top: 2px;
+                font-size: 13px;
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+
+    .free-trial-form {
+        max-width: 570px;
+        padding: 40px;
+    }
+
+}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1550px */
+@media only screen and (min-width: 1550px) {}

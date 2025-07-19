@@ -1,90 +1,118 @@
 <section class="page-full-section" style="overflow-y: hidden;">
-    <app-header-wifence ></app-header-wifence>
+    <app-header-wifence [container]="hdrContainer"></app-header-wifence>
+    <!-- <app-header-style-one /> -->
     <mat-sidenav-container class="dashboard-container">
 
     <!-- Right Sidenav for Filters -->
     <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
         <h3>Filter Courses</h3>
-       <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterCourses($event, filterSidenav)">
-        <mat-form-field appearance="outline">
-            <mat-label>Title</mat-label>
-            <input matInput formControlName="title">
-        </mat-form-field>
+        <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterCourses($event, filterSidenav)">
+  <div class="row">
+    <div class="col-12 col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title">
+      </mat-form-field>
+    </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Provider</mat-label>
-            <mat-select formControlName="provider">
-            <mat-option value="">Any</mat-option>
-            <mat-option value="Coursera">Coursera</mat-option>
-            <mat-option value="edX">edX</mat-option>
-            <mat-option value="FutureLearn">FutureLearn</mat-option>
-            <mat-option value="Independent">Independent</mat-option>
-            </mat-select>
-        </mat-form-field>
+    <div class="col-12 col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Provider</mat-label>
+        <mat-select formControlName="provider">
+          <mat-option value="">Any</mat-option>
+          <mat-option value="Coursera">Coursera</mat-option>
+          <mat-option value="edX">edX</mat-option>
+          <mat-option value="FutureLearn">FutureLearn</mat-option>
+          <mat-option value="Independent">Independent</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Subject</mat-label>
-            <mat-select formControlName="subject">
-            <mat-option value="">Any</mat-option>
-            <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
-            </mat-select>
-        </mat-form-field>
+    <div class="col-12 col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Subject</mat-label>
+        <mat-select formControlName="subject">
+          <mat-option value="">Any</mat-option>
+          <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Mode</mat-label>
-            <mat-select formControlName="mode">
-            <mat-option value="">Any</mat-option>
-            <mat-option value="Self-paced">Self-paced</mat-option>
-            <mat-option value="Instructor-led">Instructor-led</mat-option>
-            </mat-select>
-        </mat-form-field>
+    <div class="col-12 col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Mode</mat-label>
+        <mat-select formControlName="mode">
+          <mat-option value="">Any</mat-option>
+          <mat-option value="Self-paced">Self-paced</mat-option>
+          <mat-option value="Instructor-led">Instructor-led</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Cost</mat-label>
-            <mat-select formControlName="cost">
-            <mat-option value="">Any</mat-option>
-            <mat-option value="Free">Free</mat-option>
-            <mat-option value="Paid">Paid</mat-option>
-            </mat-select>
-        </mat-form-field>
+    <div class="col-12 col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Cost</mat-label>
+        <mat-select formControlName="cost">
+          <mat-option value="">Any</mat-option>
+          <mat-option value="Free">Free</mat-option>
+          <mat-option value="Paid">Paid</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Certificate</mat-label>
-            <mat-select formControlName="certificate">
-            <mat-option value="">Any</mat-option>
-            <mat-option value="Yes">Yes</mat-option>
-            <mat-option value="No">No</mat-option>
-            </mat-select>
-        </mat-form-field>
+    <div class="col-12 col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Certificate</mat-label>
+        <mat-select formControlName="certificate">
+          <mat-option value="">Any</mat-option>
+          <mat-option value="Yes">Yes</mat-option>
+          <mat-option value="No">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Platform</mat-label>
-            <mat-select formControlName="platform">
-            <mat-option value="">Any</mat-option>
-            <mat-option value="Coursera">Coursera</mat-option>
-            <mat-option value="edX">edX</mat-option>
-            <mat-option value="FutureLearn">FutureLearn</mat-option>
-            <mat-option value="Independent">Independent</mat-option>
-            </mat-select>
-        </mat-form-field>
+    <div class="col-12 col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Platform</mat-label>
+        <mat-select formControlName="platform">
+          <mat-option value="">Any</mat-option>
+          <mat-option value="Coursera">Coursera</mat-option>
+          <mat-option value="edX">edX</mat-option>
+          <mat-option value="FutureLearn">FutureLearn</mat-option>
+          <mat-option value="Independent">Independent</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
 
-        <div class="mt-2">
-            <button mat-flat-button  type="submit" >Apply Filters</button>
-        </div>
+  <div class="text-end mt-2">
+    <button mat-flat-button type="submit">Apply Filters</button>
+  </div>
         </form>
+
     </mat-sidenav>
 
     <!-- Main Content -->
-    <mat-sidenav-content  >
+    <mat-sidenav-content  style="position: absolute;top:0px;left: 0px;right: 0px;">
+        <div class="course-list-header">
+            <div class="page-title-content">
+                <ul>
+                    <li><a routerLink="/">Home</a></li>
+                    <li><a routerLink="/course-central">Course Central</a></li>
+                    <li>Course List</li>
+                </ul>
+            </div>
+        </div>
         <!-- Course List Header + Filter Icon -->
         <div class="course-list-header">
             <div class="left">
-                <div>
-                <h4>Course Central</h4>
-                <p>Explore a wide range of courses from top providers</p>
+                <div class="section-title mb-0 mt-0">
+                    <div class="text-start">
+                        <span class="sub-title d-block mb-0">Discover</span>
+                        <h2 class="mb-0 mt-0">Courses</h2>
+                    </div>
                 </div>
             </div>
-
             <div class="right">
                 <h5>({{ allCourses.length }}) All Courses</h5>
                 <button mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
@@ -98,14 +126,90 @@
             <owl-carousel-o [options]="carouselOptions">
             <ng-container *ngFor="let course of topCourses; let i = index">
             <ng-template carouselSlide>
-              <mat-card  
+                 <div   class="single-courses-list-box mb-25 animate__animated animate__fadeInUp"
+                        [ngStyle]="{ 'animation-delay': (i * 100) + 'ms' }">
+                            <div class="box-item">
+                                <div class="courses-image">
+                                    <div
+                                        class="image"
+                                        [ngStyle]="{'background-image': 'url(' + course.courseImageUrl + ')'}"  >
+                                        <img  src="images/courses/courses1.jpg" alt="image">
+                                        <a [href]="course.link" target="_blank" class="link-btn"></a>
+                                        <div class="courses-tag">
+                                            <a routerLink="/courses-list" class="d-block">{{course.subject}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="courses-desc">
+                                    <div class="courses-content">
+                                        <div class="course-author d-flex align-items-center">
+                                            <!-- <img [src]="course.providerLogoUrl" class="rounded-circle mr-2" alt="image"> -->
+                                            <span class="d-flex flex-column align-items-start">
+                                                <span class="fw-semibold platform"><small class="text-muted">via</small>{{ course.platform }}</span>
+                                                <span>{{course.provider}}</span>
+                                                <!-- <span class="text-muted small">via</span> -->
+                                            </span>
+
+                                        </div>
+                                        <h3 class="two-line-ellipsis">
+                                            <a  [href]="course.link" target="_blank" class="d-inline-block">
+                                            {{course.title}}</a>
+                                        </h3>
+                                        <div class="courses-rating">
+                                            <div class="review-stars-rated">
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                                <i class='bx bxs-star'></i>
+                                            </div>
+                                            <div class="rating-total">
+                                                5.0 (1 rating)
+                                            </div>
+                                        </div>
+                                        <p>Education encompasses both the teaching and learning of knowledge.</p>
+                                    </div>
+                                    <div class="courses-box-footer ">
+                                       <ul>
+                                            <li class="students-number">
+                                                Free
+                                            </li>
+                                        
+                                            <li class="courses-price">
+                                                <button
+                                                        mat-icon-button
+                                                        [matMenuTriggerFor]="menu"
+                                                        [attr.aria-controls]="getMenuId(course)"
+                                                    >
+                                                        <mat-icon>more_vert</mat-icon>
+                                                </button>
+                                                <mat-menu #menu="matMenu" yPosition="above" xPosition="before" [attr.id]="getMenuId(course)">
+                                                    <button mat-menu-item (click)="share(course)">
+                                                    <mat-icon>share</mat-icon>
+                                                    <span>Share</span>
+                                                    </button>
+                                                    <button mat-menu-item (click)="viewDetails(course)">
+                                                    <mat-icon>info</mat-icon>
+                                                    <span>View Details</span>
+                                                    </button>
+                                                    <button mat-menu-item (click)="goToCourse(course)">
+                                                    <mat-icon>open_in_new</mat-icon>
+                                                    <span>Go to Course</span>
+                                                    </button>
+                                                </mat-menu>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+              <!-- <mat-card  
                         class="carousel-card animate__animated animate__fadeInUp"
                         [ngStyle]="{ 'animation-delay': (i * 100) + 'ms' }" 
                         [ngClass]="getRandomCardClass(course)">
                 <div class="card-content">
                    <span class="provider-line">
                         <span class="provider">{{ course.provider }}</span>
-                        <!-- <img class="provider-logo" [src]="course.providerLogoUrl" alt="{{ course.provider }} logo"> -->
                         <span class="separator"> via </span>
                         <span class="fw-semibold platform">{{ course.platform }}</span>
                         
@@ -142,7 +246,7 @@
                     </mat-menu>
                     </span>
                 </div>
-              </mat-card>
+              </mat-card> -->
             </ng-template>
             </ng-container>
           </owl-carousel-o>
@@ -151,61 +255,182 @@
 
         <!-- Course Grid Section -->
         <div class="course-grid">
-            <ng-container *ngIf="filteredCourses.length > 0; else noCourses">
-                <mat-card  class="carousel-card animate__animated animate__fadeInUp"
-                            [ngStyle]="{ 'animation-delay': (i * 100) + 'ms' }"  
-                            [ngClass]="getRandomCardClass(course)" 
-                            *ngFor="let course of filteredCourses; let i = index">
-                        <div class="card-content">
-                        <span class="provider-line">
-                                <span class="provider">{{ course.provider }}</span>
-                                <!-- <img class="provider-logo" [src]="course.providerLogoUrl" alt="{{ course.provider }} logo"> -->
-                                <span class="separator"> via </span>
-                                <span class="fw-semibold platform">{{ course.platform }}</span>
-                                
-                            </span>
-                            <a [href]="course.link" target="_blank" rel="noopener noreferrer">
-                                <h4 class="card-title">{{ course.title }}</h4>
-                                <h4 class="card-rating">{{ course.rating }}⭐</h4>
-                            </a>
-                            <p class="cost card-cost">{{ course.cost }}</p>
-                            <p class="certificate">{{ course.certificate ? 'Certificate' : 'No Certificate' }}</p>
+        <ng-container *ngIf="paginatedCourses.length > 0; else noCourses">
+            <mat-card
+            class="single-courses-list-box-v carousel-card animate__animated animate__fadeInUp"
+            *ngFor="let course of paginatedCourses; let i = index"
+            [ngStyle]="{ 'animation-delay': (i * 100) + 'ms' }"
+            [ngClass]="getRandomCardClass(course)"
+            >
+              <div class="box-item">
+                    <div class="courses-image">
+                        <div
+                            class="image"
+                            [ngStyle]="{'background-image': 'url(' + course.courseImageUrl + ')'}"  >
+                            <img    [src]="course.courseImageUrl"   [alt]="course.title" loading="lazy"/>
+                            <a [href]="course.link" target="_blank" class="link-btn"></a>
+                            <div class="courses-tag">
+                                <a routerLink="/courses-list" class="d-block">{{course.subject}}</a>
+                            </div>
                         </div>
+                    </div>
+                    <div class="courses-desc">
+                        <div class="courses-content">
+                            <div class="course-author d-flex align-items-center">
+                                <!-- <img [src]="course.providerLogoUrl" class="rounded-circle mr-2" alt="image"> -->
+                                <span class="d-flex flex-column align-items-start">
+                                     <span class="fw-semibold platform"><small class="text-muted">via</small>{{ course.platform }}</span>
+                                     <span>{{course.provider}}</span>
+                                </span>
 
-                        <div class="card-footer">
-                            <span class="mode">{{ course.mode }}</span>
-                            <span class="card-actions">
-                            <button mat-icon-button 
-                                    [matMenuTriggerFor]="menu" 
-                                        [attr.aria-controls]="getMenuId(course)">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #menu="matMenu" [attr.id]="getMenuId(course)">
-                                <button mat-menu-item (click)="share(course)">
-                                <mat-icon>share</mat-icon>
-                                <span>Share</span>
-                                </button>
-                                <button mat-menu-item (click)="viewDetails(course)">
-                                <mat-icon>info</mat-icon>
-                                <span>View Details</span>
-                                </button>
-                                <button mat-menu-item (click)="goToCourse(course)">
-                                <mat-icon>open_in_new</mat-icon>
-                                <span>Go to Course</span>
-                                </button>
-                            </mat-menu>
-                            </span>
+                            </div>
+                            <h3 class="two-line-ellipsis">
+                                <a [href]="course.link" target="_blank" class="d-inline-block">
+                                {{course.title}}</a>
+                            </h3>
+                            <div class="courses-rating">
+                                <div class="review-stars-rated">
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                </div>
+                                <div class="rating-total">
+                                    5.0 (1 rating)
+                                </div>
+                            </div>
+                            <p>Education encompasses both the teaching and learning of knowledge.</p>
                         </div>
-                </mat-card>
-            </ng-container>
-           <!-- Show this when no courses match the filters -->
-            <ng-template #noCourses>
-                <div class="no-courses-message">
-                <p>No courses found matching your filters.</p>
+                        <div class="courses-box-footer ">
+                            <ul>
+                                <li class="students-number">
+                                    Free
+                                </li>
+                            
+                                <li class="courses-price">
+                                    <button
+                                            mat-icon-button
+                                            [matMenuTriggerFor]="menu"
+                                            [attr.aria-controls]="getMenuId(course)"
+                                        >
+                                            <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #menu="matMenu" yPosition="above" xPosition="before" [attr.id]="getMenuId(course)">
+                                        <button mat-menu-item (click)="share(course)">
+                                        <mat-icon>share</mat-icon>
+                                        <span>Share</span>
+                                        </button>
+                                        <button mat-menu-item (click)="viewDetails(course)">
+                                        <mat-icon>info</mat-icon>
+                                        <span>View Details</span>
+                                        </button>
+                                        <button mat-menu-item (click)="goToCourse(course)">
+                                        <mat-icon>open_in_new</mat-icon>
+                                        <span>Go to Course</span>
+                                        </button>
+                                    </mat-menu>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </ng-template>
+
+
+
+             <!-- <div class="box-item">
+                <div class="card-content">
+                    <img
+                    class="course-image"
+                    [src]="course.courseImageUrl"
+                    [alt]="course.title"
+                    loading="lazy"
+                    />
+
+                    <div class="courses-tag">
+                        <a routerLink="/courses-list" class="d-block">{{course.subject}}</a>
+                    </div>
+                </div>
+          
+                    <div class="courses-desc">
+                    <div class="courses-content">
+                        <h3 class="two-line-ellipsis">
+                            <a routerLink="/single-course" class="d-inline-block">
+                            {{course.title}}</a>
+                        </h3>
+                        <div class="courses-rating">
+                            <div class="review-stars-rated">
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                            <div class="rating-total">
+                                5.0 (1 rating)
+                            </div>
+                        </div>
+                        <p>Education encompasses both the teaching and learning of knowledge.</p>
+                    </div>
+                    <div class="courses-box-footer">
+                        <ul>
+                            <li class="students-number">
+                                Free
+                            </li>
+                         
+                            <li class="courses-price">
+                                 <button
+                                        mat-icon-button
+                                        [matMenuTriggerFor]="menu"
+                                        [attr.aria-controls]="getMenuId(course)"
+                                    >
+                                        <mat-icon>more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu" [attr.id]="getMenuId(course)">
+                                    <button mat-menu-item (click)="share(course)">
+                                    <mat-icon>share</mat-icon>
+                                    <span>Share</span>
+                                    </button>
+                                    <button mat-menu-item (click)="viewDetails(course)">
+                                    <mat-icon>info</mat-icon>
+                                    <span>View Details</span>
+                                    </button>
+                                    <button mat-menu-item (click)="goToCourse(course)">
+                                    <mat-icon>open_in_new</mat-icon>
+                                    <span>Go to Course</span>
+                                    </button>
+                                </mat-menu>
+                            </li>
+                        </ul>
+                    </div>
+                    </div>
+             </div> -->
+            </mat-card>
+            <!-- Pagination -->
+           
+        </ng-container>
+
+        <!-- 🔎 No Courses Fallback -->
+        <ng-template #noCourses>
+            <div class="no-courses-message">
+            <p>No courses found matching your filters.</p>
+            </div>
+        </ng-template>
+        </div>
+        <div class="d-flex justify-content-center mt-4 p-3 show-white">
+            <mat-paginator
+                class="custom-paginator"
+                [length]="totalCourses"
+                [pageSize]="pageSize"
+                [pageSizeOptions]="[20, 40, 80, 100]"
+                (page)="onPageChange($event)"
+                class="custom-paginator"
+                showFirstLastButtons
+            >
+            </mat-paginator>
         </div>
         <app-work-ifence-footer></app-work-ifence-footer>
     </mat-sidenav-content>
     </mat-sidenav-container>
 </section>
+<ngx-scrolltop></ngx-scrolltop>

@@ -1,0 +1,80 @@
+.learning-area {
+    .section-title {
+        h2 {
+            max-width: 600px;
+            margin: {
+                left: auto;
+                right: auto;
+            };
+        }
+    }
+}
+.single-learning-box {
+    border: 1px solid #2b2635;
+    margin-bottom: 25px;
+    border-radius: 5px;
+    padding: 40px 25px;
+    text-align: center;
+
+    .icon {
+        line-height: 1;
+        font-size: 50px;
+        margin-bottom: 25px;
+        color: var(--mainColor);
+    }
+    h3 {
+        margin-bottom: 12px;
+        font: {
+            size: 22px;
+            weight: 700;
+        };
+    }
+    .link-btn {
+        color: var(--mainColor);
+        display: inline-block;
+        font-weight: 500;
+        margin-top: 2px;
+
+        &:hover {
+            color: var(--optionalColor);
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .single-learning-box {
+        .icon {
+            font-size: 35px;
+        }
+        h3 {
+            font-size: 18px;
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+
+    .single-learning-box {
+        padding: 30px 20px;
+    }
+
+}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1550px */
+@media only screen and (min-width: 1550px) {}

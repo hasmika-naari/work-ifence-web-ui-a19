@@ -1,0 +1,390 @@
+// .main-banner {
+//     z-index: 1;
+//     width: 100%;
+//     height: 100vh; // This makes it full viewport height
+//     background-size: 100% 100%;
+//     background-position: center;
+//     background-repeat: no-repeat;
+// }
+// .main-banner-content {
+//     // overflow: hidden;
+//     // max-width: 750px;
+//     // margin-top: 150px;
+
+//   background-color: rgba(0, 0, 0, 0.5); // semi-transparent black
+//   padding: 40px;
+//   border-radius: 8px;
+//   max-width: 750px;
+//   margin-top: 150px;
+//   color: var(--whiteColor);
+
+//     .sub-title {
+//         display: block;
+//         color: var(--whiteColor);
+//         margin-bottom: 17px;
+//         text-transform: uppercase;
+//         position: relative;
+//         padding-left: 10px;
+//         font: {
+//             size: 14px;
+//             weight: 700;
+//         };
+//         &::before {
+//             content: '';
+//             position: absolute;
+//             left: 0;
+//             top: 0;
+//             height: 100%;
+//             width: 3px;
+//             background-color: var(--mainColor);
+//         }
+//     }
+//     h1 {
+//         color: var(--whiteColor);
+//         margin-bottom: 20px;
+//         animation-delay: 1s !important;
+//         font: {
+//             size: 58px;
+//             weight: 700;
+//         };
+//     }
+//     p {
+//         animation-delay: 1.7s !important;
+//         color: var(--whiteColor);
+//         max-width: 650px;
+//         line-height: 1.9;
+//         font: {
+//             size: 16px;
+//         };
+//     }
+//     .btn-box {
+//         margin-top: 35px;
+
+//         .default-btn {
+//             animation-delay: 2.2s !important;
+//         }
+//         .optional-btn {
+//             animation-delay: 2.9s !important;
+//             display: inline-block;
+//             color: var(--whiteColor);
+//             position: relative;
+//             margin-left: 25px;
+//             font: {
+//                 size: var(--fontSize);
+//                 weight: 600;
+//             };
+//             &::before {
+//                 content: '';
+//                 position: absolute;
+//                 left: 0;
+//                 bottom: 0;
+//                 width: 100%;
+//                 height: 2px;
+//                 background-color: var(--whiteColor);
+//                 transition: var(--transition);
+//             }
+//             &::after {
+//                 content: '';
+//                 position: absolute;
+//                 right: 0;
+//                 bottom: 0;
+//                 width: 0;
+//                 height: 2px;
+//                 background-color: var(--optionalColor);
+//                 transition: var(--transition);
+//             }
+//             &:hover, &:focus {
+//                 color: var(--whiteColor);
+
+//                 &::before {
+//                     width: 0;
+//                 }
+//                 &::after {
+//                     width: 100%;
+//                     right: auto;
+//                     left: 0;
+//                 }
+//             }
+//         }
+//     }
+//     &.text-center {
+//         margin: {
+//             left: auto;
+//             right: auto;
+//         };
+//         .sub-title {
+//             padding-left: 0;
+
+//             &::before {
+//                 display: none;
+//             }
+//         }
+//         p {
+//             margin: {
+//                 left: auto;
+//                 right: auto;
+//             };
+//         }
+//         .btn-box {
+//             .default-btn {
+//                 margin-right: 12px;
+//             }
+//             .optional-btn {
+//                 margin-left: 12px;
+//             }
+//         }
+//     }
+// }
+.main-banner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+//   background-image: url('images/main-banner5.png');
+  background-size: 100% 100%; // better than 100% 100% to maintain aspect ratio
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+
+  // Full banner overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(225, 225, 225, 0.7); // adjust opacity as needed
+    z-index: 0;
+  }
+
+  // Ensure children are above overlay
+  .d-table,
+  .d-table-cell,
+  .container,
+  .main-banner-content {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.main-banner-content {
+//   background-color: rgba(0, 0, 0, 0.6); // semi-transparent box
+  padding: 40px;
+  border-radius: 8px;
+  max-width: 750px;
+  margin-top: 150px;
+  color: var(--mainColor);
+
+  .sub-title {
+    display: block;
+    color: var(--mainColor);
+    margin-bottom: 17px;
+    text-transform: uppercase;
+    position: relative;
+    padding-left: 10px;
+    font: {
+      size: 14px;
+      weight: 700;
+    };
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background-color: var(--mainColor);
+    }
+  }
+
+  h1 {
+    color: var(--mainColor);
+    margin-bottom: 20px;
+    animation-delay: 1s !important;
+    font: {
+      size: 58px;
+      weight: 700;
+    };
+  }
+
+  p {
+    animation-delay: 1.7s !important;
+    color: var(--whiteColor);
+    max-width: 650px;
+    line-height: 1.9;
+    font: {
+      size: 16px;
+    };
+  }
+
+  .btn-box {
+    margin-top: 35px;
+
+    .default-btn {
+      animation-delay: 2.2s !important;
+    }
+
+    .optional-btn {
+      animation-delay: 2.9s !important;
+      display: inline-block;
+      color: var(--whiteColor);
+      position: relative;
+      margin-left: 25px;
+      font: {
+        size: var(--fontSize);
+        weight: 600;
+      };
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--whiteColor);
+        transition: var(--transition);
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--optionalColor);
+        transition: var(--transition);
+      }
+      &:hover,
+      &:focus {
+        color: var(--whiteColor);
+        &::before {
+          width: 0;
+        }
+        &::after {
+          width: 100%;
+          right: auto;
+          left: 0;
+        }
+      }
+    }
+  }
+
+  &.text-center {
+    margin: {
+      left: auto;
+      right: auto;
+    };
+    .sub-title {
+      padding-left: 0;
+      &::before {
+        display: none;
+      }
+    }
+    p {
+      margin: {
+        left: auto;
+        right: auto;
+      };
+    }
+    .btn-box {
+      .default-btn {
+        margin-right: 12px;
+      }
+      .optional-btn {
+        margin-left: 12px;
+      }
+    }
+  }
+}
+
+/* Max width 767px */
+@media only screen and (max-width: 767px) {
+
+    .main-banner {
+        height: 100%;
+        padding: {
+            top: 250px;
+            bottom: 125px;
+        };
+    }
+    .main-banner-content {
+        max-width: 100%;
+        margin-top: 0;
+        text-align: center;
+
+        .sub-title {
+            padding-left: 0;
+            margin-bottom: 13px;
+            font: {
+                weight: 500;
+                size: 13px;
+            };
+            &::before {
+                display: none;
+            }
+        }
+        h1 {
+            font-size: 30px;
+            margin-bottom: 17px;
+        }
+        p {
+            max-width: 100%;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        .btn-box {
+            margin-top: 30px;
+
+            .default-btn {
+                margin-right: 6px;
+            }
+            .optional-btn {
+                margin-left: 6px;
+                font-size: 13px;
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width: 576px) and (max-width: 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    .main-banner {
+        height: 100%;
+        padding: {
+            top: 280px;
+            bottom: 165px;
+        };
+    }
+    .main-banner-content {
+        margin-top: 0;
+        max-width: 650px;
+
+        .sub-title {
+            font-size: 13px;
+        }
+        h1 {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 15px;
+            max-width: 570px;
+        }
+        .btn-box {
+            margin-top: 30px;
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {}
+
+/* Min width 1200px to Max width 1275px */
+@media only screen and (min-width: 1200px) and (max-width: 1275px) {}

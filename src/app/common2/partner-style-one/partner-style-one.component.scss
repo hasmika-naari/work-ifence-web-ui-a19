@@ -1,0 +1,28 @@
+.single-partner-item {
+    text-align: center;
+    
+    a {
+        img {
+            width: auto !important;
+            display: inline-block !important;
+            transition: var(--transition);
+            opacity: .9;
+        }
+    }
+    &:hover, &:focus {
+        a {
+            img {
+                opacity: 1;
+            }
+        }
+    }
+}
+.dark-partner-slides {
+    .single-partner-item {
+        a {
+            img {
+                filter: brightness(100);
+            }
+        }
+    }
+}

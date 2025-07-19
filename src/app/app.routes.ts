@@ -206,11 +206,65 @@ export const routes: Routes = [
             import('./pages/intro/job-app-manager-intro/job-app-manager-intro.component')
                 .then(m => m.JobAppManagerIntroComponent), data: {reuseComponent: true, breadcrumb: 'Job Application Optimizer' }
     },
+      {
+        path: 'central', 
+        children: [
+            {
+                path: '',
+                redirectTo: 'course-central',
+                pathMatch: 'full'
+            },
+            {
+                path: 'course-central',
+                 children: [
+                        {
+                            path: '',
+                            loadComponent: () => 
+                            import('./pages/online-motivation-course/online-motivation-course.component')
+                            .then(m => m.OnlineMotivationCourseComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+                        },
+                         {
+                            path: 'courses',
+                            loadComponent: () => 
+                                import('./pages/course-central/course-central.component')
+                                    .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+                        }
+                    ]
+            },
+           {
+                path: 'job-central',
+                loadComponent: () => 
+                    import('./pages/useful-links/latest-openings-page/latest-openings-page.component')
+                        .then(m => m.LatestJobOpeningsPageComponent), data: {reuseComponent: true, breadcrumb: 'Job Openings' }
+            }
+        ]
+    },
      {
         path: 'course-central',
         loadComponent: () => 
+            import('./pages/online-motivation-course/online-motivation-course.component')
+                .then(m => m.OnlineMotivationCourseComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+        //   loadComponent: () => 
+        //     import('./pages/course-portal-online/course-portal-online.component')
+        //         .then(m => m.CoursePortalOnlineComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+        //   loadComponent: () => 
+        //     import('./pages/online-schooling/online-schooling.component')
+        //         .then(m => m.OnlineSchoolingComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+        // loadComponent: () => 
+        //     import('./pages/course-central/course-central.component')
+        //         .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+    },
+    {
+        path: 'course-central-list',
+        loadComponent: () => 
             import('./pages/course-central/course-central.component')
                 .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+    },
+    {
+        path: 'single-course',
+        loadComponent: () => 
+            import('./pages/courses-details-page/courses-details-page.component')
+                .then(m => m.CoursesDetailsPageComponent), data: {reuseComponent: true, breadcrumb: 'Single Course' }
     },
     {
         path: 'dashboard-intro',
