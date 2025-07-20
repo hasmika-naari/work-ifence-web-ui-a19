@@ -13,7 +13,7 @@
     }
   }  
 
-.courses-details-header {
+.job-details-header {
     margin-bottom: 30px;
 
     .courses-title {
@@ -159,7 +159,7 @@
         }
     }
 }
-.courses-details-image {
+.job-details-image {
     border-radius: 5px;
 
     img {
@@ -167,7 +167,7 @@
         border-radius: 5px;
     }
 }
-.courses-details-desc {
+.job-details-desc {
     margin-top: 35px;
 
     h3 {
@@ -631,8 +631,8 @@
         }
     }
 }
-.dark-courses-details-area {
-    .courses-details-header {
+.dark-job-details-area {
+    .job-details-header {
         .courses-meta {
             ul {
                 li {
@@ -659,7 +659,7 @@
             }
         }
     }
-    .courses-details-desc {
+    .job-details-desc {
         .why-you-learn {
             ul {
                 li {
@@ -818,7 +818,7 @@
 /* Max width 767px */
 @media only screen and (max-width: 767px) {
     
-    .courses-details-header {
+    .job-details-header {
         .courses-title {
             h2 {
                 margin-bottom: 10px;
@@ -862,7 +862,7 @@
             }
         }
     }
-    .courses-details-desc {
+    .job-details-desc {
         h3 {
             font-size: 18px;
         }
@@ -950,7 +950,7 @@
 /* Min width 768px to Max width 991px */
 @media only screen and (min-width: 768px) and (max-width: 991px) {
 
-    .courses-details-header {
+    .job-details-header {
         .courses-price {
             text-align: start;
             margin-top: 30px;

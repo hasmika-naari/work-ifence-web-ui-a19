@@ -233,10 +233,22 @@ export const routes: Routes = [
             },
            {
                 path: 'job-central',
-                loadComponent: () => 
-                    import('./pages/useful-links/latest-openings-page/latest-openings-page.component')
-                        .then(m => m.LatestJobOpeningsPageComponent), data: {reuseComponent: true, breadcrumb: 'Job Openings' }
+                 children: [
+                        {
+                            path: '',
+                           loadComponent: () => 
+                                import('./pages/useful-links/latest-openings-page/latest-openings-page.component')
+                                .then(m => m.LatestJobOpeningsPageComponent), data: {reuseComponent: true, breadcrumb: 'Job Openings' }
+                        },
+                        {
+                            path: 'opening/:id',
+                            loadComponent: () => 
+                                import('./pages/openings/opening-details-page/opening-details-page.component')
+                                    .then(m => m.OpeningDetailsPageComponent), data: {reuseComponent: true, breadcrumb: 'Opening Details'}
+                        }
+                    ]
             }
+           
         ]
     },
      {
