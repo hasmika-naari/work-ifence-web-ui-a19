@@ -1,3 +1,4 @@
+
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
@@ -16,7 +17,22 @@
 @use "./dark";
 
 @use "./styles/_theme-colors.scss" as theme-colors;
+
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* Fade-in animation for SSR smooth loading */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -351,22 +367,22 @@ input {
     0%,100% {
         border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
     } 
-	14% {
+    14% {
         border-radius: 40% 60% 54% 46% / 49% 60% 40% 51%;
     } 
-	28% {
+    28% {
         border-radius: 54% 46% 38% 62% / 49% 70% 30% 51%;
     } 
-	42% {
+    42% {
         border-radius: 61% 39% 55% 45% / 61% 38% 62% 39%;
     } 
-	56% {
+    56% {
         border-radius: 61% 39% 67% 33% / 70% 50% 50% 30%;
     } 
-	70% {
+    70% {
         border-radius: 50% 50% 34% 66% / 56% 68% 32% 44%;
     } 
-	84% {
+    84% {
         border-radius: 46% 54% 50% 50% / 35% 61% 39% 65%;
     } 
 }
@@ -1313,7 +1329,7 @@ img {
 }
 .tb-border{
     border-top: 1px solid #e4e4e4;
-	border-bottom: 1px solid #e4e4e4;
+    border-bottom: 1px solid #e4e4e4;
 }
 // .resume-content3{
 //     height: 160px;
@@ -1820,12 +1836,12 @@ img {
 }
 .tb-border{
     border-top: 1px solid #e4e4e4;
-	border-bottom: 1px solid #e4e4e4;
+    border-bottom: 1px solid #e4e4e4;
 }
 .resume-content3{
     height: 160px;
     // border-top: 1px solid #e4e4e4;
-	// border-bottom: 1px solid #e4e4e4;
+    // border-bottom: 1px solid #e4e4e4;
     padding: 0px;
     padding-top: 10px;
     .p-menu{
@@ -2926,22 +2942,22 @@ textarea.form-control {
     0%,100% {
         border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
     } 
-	14% {
+    14% {
         border-radius: 40% 60% 54% 46% / 49% 60% 40% 51%;
     } 
-	28% {
+    28% {
         border-radius: 54% 46% 38% 62% / 49% 70% 30% 51%;
     } 
-	42% {
+    42% {
         border-radius: 61% 39% 55% 45% / 61% 38% 62% 39%;
     } 
-	56% {
+    56% {
         border-radius: 61% 39% 67% 33% / 70% 50% 50% 30%;
     } 
-	70% {
+    70% {
         border-radius: 50% 50% 34% 66% / 56% 68% 32% 44%;
     } 
-	84% {
+    84% {
         border-radius: 46% 54% 50% 50% / 35% 61% 39% 65%;
     } 
 }
@@ -5289,9 +5305,9 @@ blockquote, .blockquote {
 .faq-accordion {
     .accordion-item {
         box-shadow: 2px 8px 20px 0 rgba(25, 42, 70, 0.13) !important;
-		border: 1px solid rgba(0, 0, 0, .125);
+        border: 1px solid rgba(0, 0, 0, .125);
         background-color: var(--whiteColor);
-		margin-bottom: 15px;
+        margin-bottom: 15px;
         border-radius: 5px;
         display: block;
 
@@ -6106,7 +6122,7 @@ blockquote, .blockquote {
             }
         }
     }
-	
+    
     .courses-categories-slides {
         .owl-theme {
             .owl-nav {

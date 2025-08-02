@@ -9,6 +9,7 @@ import fs from 'fs';
 import http from 'http';
 import { createProxyMiddleware, Options } from 'http-proxy-middleware'; 
 import bootstrap from './src/main.server';
+import 'zone.js/node';
 
 // Function to determine if compression should be applied
 function shouldCompress(req: Request, res: Response) {

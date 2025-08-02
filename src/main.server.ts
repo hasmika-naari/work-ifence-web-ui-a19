@@ -2,6 +2,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { config } from './app/app.config.server';
 import { provideAnimations, provideNoopAnimations } from '@angular/platform-browser/animations';
+import 'zone.js/node';
 
 global['window'] = global['window'] || {};
 global['document'] = global['document'] || {

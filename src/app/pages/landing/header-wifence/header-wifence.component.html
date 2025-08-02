@@ -12,7 +12,7 @@
                         class="navbar-brand"
                         routerLink="/"
                         [class.d-none]="themeService.isDark()"
-                         data-aos="fade" data-aos-delay="0" data-aos-duration="1500" data-aos-easing="ease-in" data-aos-offset="10"
+                         
                     >
                         <img src="assets/img/black-logo.png" alt="logo">
                     </a>
@@ -20,7 +20,7 @@
                         class="navbar-brand d-none"
                         routerLink="/"
                         [class.d-block]="themeService.isDark()"
-                         data-aos="fade" data-aos-delay="0" data-aos-duration="1500" data-aos-easing="ease-in" data-aos-offset="10"
+                         
                     >
                         <img src="assets/img/logo.png" alt="logo">
                     </a>
@@ -35,7 +35,7 @@
                     </button> -->
                 }
                 <button class="navbar-toggler" type="button" (click)="toggleClass()"
-                data-aos="fade" data-aos-delay="0" data-aos-duration="1500" data-aos-easing="ease-in" data-aos-offset="10">
+                >
                     <span class="burger-menu">
                         <span class="top-bar"></span>
                         <span class="middle-bar"></span>
@@ -43,7 +43,7 @@
                     </span>
                 </button>
                 @if (browser && isMobile && userAccount().login){
-                    <div class="streach-h-100"  data-aos="fade" data-aos-delay="0" data-aos-duration="1500" data-aos-easing="ease-in" data-aos-offset="10">
+                    <div class="streach-h-100"  >
                         <span>
                             <i class='bx bx-user' style="margin-right: 4px;;" (click)="toggleClass2()"></i>
                             <span style="position: relative;">Hi! {{userAccount().firstName}} {{ userAccount().lastName}}</span>
@@ -51,7 +51,7 @@
                     </div>
                 }
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav"  data-aos="fade" data-aos-delay="0" data-aos-duration="1500" data-aos-easing="ease-in" data-aos-offset="10">
+                    <ul class="navbar-nav"  >
                         <li class="nav-item">
                                 <a href="javascript:void(0)" class="nav-link" routerLinkActive="active" >Features <i class='bx bx-chevron-down'></i></a>
                             <ul class="dropdown-menu">
