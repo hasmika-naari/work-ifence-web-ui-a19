@@ -1,0 +1,17 @@
+<!-- SSR Splash Screen HTML (add to your main app component template, e.g. app.component.html) -->
+<div id="ssr-splash-screen">
+  <div class="ssr-splash-logo">Wifence</div>
+  <div class="ssr-splash-messages">
+    <div class="ssr-splash-message">Loading AI-powered experience...</div>
+    <div class="ssr-splash-message">Securing your career journey...</div>
+    <div class="ssr-splash-message">Preparing smart tools for you!</div>
+  </div>
+</div>
+<!-- Add a script to hide splash screen after content loads -->
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      document.getElementById('ssr-splash-screen').classList.add('hide');
+    }, 1800); // Adjust delay as needed
+  });
+</script>
