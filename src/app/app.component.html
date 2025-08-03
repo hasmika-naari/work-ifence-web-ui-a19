@@ -4,12 +4,13 @@
 >
     <!-- Sidebar -->
     <!-- <app-sidebar /> -->
-    <app-loading-screen ></app-loading-screen>
+    <app-loading-screen *ngIf="isLoading"></app-loading-screen>
     <ngx-loading-bar></ngx-loading-bar>
     <!-- Main Content -->
     <div
         class="main-content transition d-flex flex-column"
         [ngClass]="{'active': isToggled}"
+        style="background:#fff;color:#2d3a4a;box-shadow:0 4px 32px 0 rgba(34,41,70,0.08);border-radius:24px;"
     >
         <!-- <app-header /> -->
         <router-outlet />

@@ -38,12 +38,13 @@
   width: 100%;
   max-width: 480px;
   padding: 2rem 1.5rem;
-  background: linear-gradient(135deg, rgba(58,103,115,0.22) 70%, rgba(255,255,255,0.10) 100%);
+  // background: linear-gradient(135deg, rgba(58,103,115,0.22) 70%, rgba(255,255,255,0.10) 100%);
+  background: rgba(255,255,255,0.50) ;
   border-radius: 2rem;
   box-shadow: 0 8px 32px 0 rgba(40, 40, 80, 0.13);
   backdrop-filter: blur(22px) saturate(1.5);
   -webkit-backdrop-filter: blur(22px) saturate(1.5);
-  border: 1.5px solid rgba(58,103,115,0.13);
+  border: 1px solid rgba(237, 242, 243, 0.43);
 }
 
 // File stack animation
@@ -79,11 +80,12 @@
   color: #fff;
   font-size: clamp(1.1rem, 2vw, 1.5rem);
   font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-  font-weight: 600;
+  font-weight: 400;
   text-align: center;
   margin-bottom: 0.2rem;
   letter-spacing: 0.01em;
-  text-shadow: 0 2px 8px #23294699;
+  // text-shadow: 0 2px 8px #23294699;
+ 
 }
 .loading-sub {
   color: #f05b45;
@@ -117,6 +119,7 @@
     max-width: 98vw;
     padding: 1.2rem 0.2rem;
     border-radius: 1.2rem;
+    border: 1px solid #ffffff;
   }
   .file-stack {
     gap: 0.7rem;
