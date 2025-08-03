@@ -1,3 +1,11 @@
+// Smooth fade transition for main content
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.main-content {
+  opacity: 0;
+}
 // Main Content
 .main-content {
     overflow: hidden;
