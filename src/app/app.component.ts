@@ -64,50 +64,33 @@ export class AppComponent implements OnInit, AfterViewInit{
     menuList: Array<MenuListItem> =[
         {
           id: '1',
-          parent: 'Features',
-          menuItems: [
-            {
-              id: '1',
-              title: 'AI Resume Optimizer',
-              count: '31',
-              code: 'AIRESUME',
-              status: 'active',
-              isSelected: false
-            },
-            {
-              id: '2',
-              title: 'Resume Manager',
-              count: '40',
-              code: 'RESUME-OPTI',
-              status: 'active',
-              isSelected: false
-            },
-            {
-              id: '3',
-              title: 'JOB Application Manager',
-              count: '31',
-              code: 'JOB-MANAGER',
-              status: 'active',
-              isSelected: false
-            }
-          ]
+          parent: 'Course Central',
+          route: '/central/course-central',
+          icon: 'graduation-cap',
+          menuItems:[]
         },
         {
           id: '2',
-          parent: 'Our Dashboard',
+          parent: 'Job Central',
+          route: '/central/job-central',
+          icon: 'briefcase',
           menuItems:[]
         },
         {
           id: '3',
-          parent: 'Resources',
+          parent: 'Contact Us',
+          route: '/contact-us',
+          icon: 'info',
           menuItems: []
         },
         {
-          id: '4',
-          parent: 'Trends',
-          menuItems: []
+            id: '4',
+            parent: 'Sign In',
+            route: '/sign-in',
+            icon: 'log-in',
+            menuItems: []
         }
-      ];
+    ];
       private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
       private loadingBarService: LoadingBarService =  inject(LoadingBarService);
     // private appUtilService: AppUtilService =  inject(AppUtilService);

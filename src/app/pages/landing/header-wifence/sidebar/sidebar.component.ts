@@ -1,5 +1,6 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
+import { Input, Output, EventEmitter } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from '../../../../services/local-storage.service';
@@ -12,6 +13,8 @@ import { LocalStorageService } from '../../../../services/local-storage.service'
   styleUrls: ['./sidebar.component.scss']
 })
 export class SaasSidebarComponent implements OnInit {
+  @Input() userAccount: any;
+  @Output() closeSidebar = new EventEmitter<void>();
   country: string = '';
   selectedCountry: any = '';
 

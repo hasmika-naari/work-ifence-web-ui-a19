@@ -17,7 +17,17 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import {VERSION as CDK_VERSION} from '@angular/cdk';
 import {VERSION as MAT_VERSION, MatNativeDateModule} from '@angular/material/core';
 import { LOADING_BAR_CONFIG } from '@ngx-loading-bar/core';
-
+import { LucideAngularModule } from 'lucide-angular';
+import { 
+  BookOpen, 
+  Briefcase, 
+  GraduationCap, 
+  Info, 
+  LogIn, 
+  Bell, 
+  LayoutGrid, 
+  Menu 
+} from 'lucide';
 
 /* eslint-disable no-console */
 console.info('Angular CDK version', CDK_VERSION.full);
@@ -61,7 +71,19 @@ export const appConfig: ApplicationConfig = {
       useClass:HttpRequestInterceptor,
       multi:true
     },
-  importProvidersFrom([BrowserModule, BrowserAnimationsModule, MatNativeDateModule,
+  importProvidersFrom([BrowserModule, 
+      BrowserAnimationsModule, 
+      MatNativeDateModule,
+        LucideAngularModule.pick({
+        BookOpen,
+        Briefcase,
+        GraduationCap,
+        Info,
+        LogIn,
+        Bell,
+        LayoutGrid,
+        Menu
+      })
   ]),
   provideRouter(routes,
     withComponentInputBinding(),

@@ -94,15 +94,19 @@ export class ResumeTemplate{
 export class MenuItem {
   id: string = "";
   title: string = "";
+  icon?: string;
   count: string = "";
   code: string = "";
   status: string = "";
   isSelected:boolean = false;
+  route?: string;
 }
 
 export class MenuListItem{
-  id: string = '';
-  parent: String = '';
+  id: string = "";
+  parent: String = "";
+  icon?: string;
+  route?: string;
   menuItems: Array<MenuItem>;
   constructor(){
     this.menuItems = new Array<MenuItem>();

@@ -1,5 +1,6 @@
+    // Use correct signal for login state
 import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location, ViewportScroller } from '@angular/common';
-import { Component, OnInit, ElementRef, inject, Signal, Input, PLATFORM_ID, Inject, AfterViewInit, AfterViewChecked, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, inject, Input, PLATFORM_ID, Inject, AfterViewInit, AfterViewChecked, OnDestroy, Renderer2, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { SaasSidebarComponent } from './sidebar/sidebar.component';
@@ -11,27 +12,33 @@ import { UserStoreService } from '../../../services/store/user-store.service';
 import { Account, WifRole } from '../../../services/profile.model';
 import { MenuListItem } from '../../../services/bee-compete.model';
 import { ThemeCustomizerService } from '../../../services/theme-customizer/theme-customizer.service';
-import { FeathericonsModule } from 'src/app/icons/feathericons/feathericons.module';
 import AOS from 'aos';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { Subscription } from 'rxjs';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
     selector: 'app-header-wifence',
     standalone: true,
     imports: [
-                CommonModule, NgOptimizedImage, RouterModule, 
-                RouterLink, NgbModule, NgbNavModule, FeathericonsModule,
-                SaasSidebarComponent, MatDividerModule
-            ],
+        CommonModule, NgOptimizedImage, RouterModule,
+        RouterLink, NgbModule, NgbNavModule,
+        SaasSidebarComponent, MatDividerModule,
+        IconsModule,
+    ],
     templateUrl: './header-wifence.component.html',
-    styleUrls: ['./header-wifence.component.scss']
+    styleUrls: ['./header-wifence.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+    public isLoggedIn: any;
+    sidebarOpen = false;
 
   @Input('back') back: boolean = false;
   @Input('container') container: boolean = true;
   @Input() isSticky: boolean = false;
+
+  isMenuVisible = false;
 
   private scroller: ViewportScroller;
   private renderer: Renderer2;
@@ -45,7 +52,7 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
     private platformId: object =  inject(PLATFORM_ID);
     private locationService:Location =  inject(Location);
-    public userActiveRole: Signal<WifRole> = this.userStore.getUserActiveRole();
+    public userActiveRole: any = this.userStore.getUserActiveRole();
 
     isMobile = false;
     isTablet = false;
@@ -68,15 +75,16 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
     isToggled = false;
 
-    userAccount: Signal<Account> = this.userStore.getUserAccount();
-    menuListStore: Signal<Array<MenuListItem>> = this.userStore.getMenuList();
+    userAccount: any = this.userStore.getUserAccount();
+    menuListStore: any = this.userStore.getMenuList();
 
     constructor(
         @Inject(WINDOW) private window: Window,
         public themeService: ThemeCustomizerService,
         renderer: Renderer2,
         private el: ElementRef,
-        public layoutService: LayoutService
+        public layoutService: LayoutService,
+        private cdr: ChangeDetectorRef
     ) {
         this.themeService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
@@ -86,6 +94,15 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
         this.stickySubscription = this.layoutService.isSticky$.subscribe((isSticky: boolean) => {
           this.isSticky = isSticky;
         });
+    this.isLoggedIn = this.userStore.getUserLoginStatus();
+    }
+
+    openSidebar() {
+        this.sidebarOpen = true;
+    }
+
+    closeSidebar() {
+        this.sidebarOpen = false;
     }
 
     toggleTheme() {
@@ -157,6 +174,16 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
         }else if(this.userActiveRole().role === 'ROLE_USER'){
             this.router.navigateByUrl("/user/dashboard");
         }
+    }
+
+    isMenuOpen(){
+        return this.isMenuVisible;
+    }
+
+    toggleMenu() {
+        this.isMenuVisible = !this.isMenuVisible;
+        // Since we're using OnPush change detection, explicitly mark for check
+        this.cdr.markForCheck();
     }
 
     goBackScreen($event: any){

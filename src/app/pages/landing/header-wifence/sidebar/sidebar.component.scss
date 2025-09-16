@@ -1,0 +1,15 @@
+// Sidebar profile section
+.sidebar-profile {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 1rem;
+}
+.profile-img {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid #eee;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}

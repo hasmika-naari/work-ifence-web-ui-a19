@@ -17,7 +17,6 @@ import { CategoriesComponent } from './categories/categories.component';
 import { PopularFeaturesComponent } from './popular-features/popular-features.component';
 import { HomefourteenMainBannerComponent } from './homefourteen-main-banner/homefourteen-main-banner.component';
 import { OurDashboardDemoComponent } from './our-dashboard-demo/our-dashboard-demo.component';
-import { HeaderWorkIfenceComponent } from './header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from './footer-wifence/footer-wifence.component';
 import { Category, CompetationDataItem, Competitionsorting, MenuListItem, PCategory, Slide } from '../../services/bee-compete.model';
 import { ActiveJobsComponent } from './active-jobs/active-jobs.component';
@@ -31,6 +30,7 @@ import { JobFeedItem } from '../../services/ifence.model';
 import { ActiveCollegeJobsComponent } from './active-college-jobs/active-college-jobs.component';
 import { environment } from '../../../environments/environment';
 import { ConfigService } from 'src/app/services/config.service';
+import { HeaderWorkIfenceComponent } from './header-wifence/header-wifence.component';
 
 @Component({
   selector: 'app-landing',

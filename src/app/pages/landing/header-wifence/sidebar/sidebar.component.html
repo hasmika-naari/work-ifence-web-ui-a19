@@ -4,14 +4,16 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" 
-                        data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" (click)="closeSidebar.emit()" aria-label="Close">
                         <span aria-hidden="true">
                             <i class="icofont-close"></i>
                         </span>
                     </button>
                     <h2 class="modal-title" id="myModalLabel2"><a routerLink="/">
                         <img src="assets/img/guru-class-time-tp-bg-full-h.png" alt="logo"></a></h2>
+                    <div *ngIf="userAccount" class="sidebar-profile">
+                        <img *ngIf="userAccount.profileImage" [src]="userAccount.profileImage" alt="Profile" class="profile-img" />
+                    </div>
                 </div>
                 <div class="modal-body">
                     <div class="sidebar-modal-widget">
