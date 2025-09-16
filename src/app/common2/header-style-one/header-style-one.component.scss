@@ -631,7 +631,7 @@
         margin-top: 0;
         position: fixed;
         box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.09);
-        background-color: var(--whiteColor) !important;
+        // background-color: var(--whiteColor);
         animation: 500ms ease-in-out 0s normal none 1 running fadeInDown;
 
         .navbar {
@@ -642,7 +642,7 @@
         }
     }
     .navbar {
-        background-color: var(--whiteColor) !important;
+        // background-color: var(--whiteColor);
         border-radius: 3px;
         padding: 0 20px;
         
@@ -1924,7 +1924,7 @@
 
     // Navbar
     .navbar-area {
-        background-color: var(--whiteColor);
+        // background-color: var(--whiteColor);
         margin-top: 0;
         padding: {
             top: 15px;
@@ -2318,7 +2318,7 @@
 
     // Navbar
     .navbar-area {
-        background-color: var(--whiteColor);
+        // background-color: var(--whiteColor);
         margin-top: 0;
         padding: {
             top: 15px;

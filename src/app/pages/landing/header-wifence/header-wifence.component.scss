@@ -1,12 +1,20 @@
-// Header
-:host {
-    font-family: 'Poppins', sans-serif;
-  }
-  
+// Force transparent background for Angular-emulated host selectors
+
   /* Force font on all elements within this component */
   :host * {
     font-family: 'Poppins', sans-serif;
   }
+// Header
+:host {
+    font-family: 'Poppins', sans-serif;
+
+    .navbar-area .navbar {
+        background: transparent !important;
+        background-color: transparent !important;
+        
+    } 
+ }
+  
   
   .container-custom{
     // max-width: 1200px;
@@ -22,7 +30,21 @@
     height: auto;
     z-index: 999;
     position: absolute;
-    background-color: var(--whiteColor);
+    background: transparent !important;
+    transition: background 0.3s, box-shadow 0.3s, backdrop-filter 0.3s;
+    &.header-glossy {
+    background: rgba(255,255,255,0.6);
+    box-shadow: none;
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-bottom: 1px solid rgba(255,255,255,0.3);
+        transition: background 0.3s, box-shadow 0.3s, backdrop-filter 0.3s;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
     font-family:"Poppins", sans-serif !important; ;
     &.p-relative {
         position: relative;
@@ -64,7 +86,7 @@
                                     font-family: var(--fontFamily1) !important;
                                     font-size: medium !important;    
                                     &:hover, &:focus, &.active {
-                                        color: #4a6f8a !important;
+                                background: transparent !important;
                                     }
                                 }
                                 .dropdown-menu {
@@ -87,7 +109,7 @@
                 
                                                     &:hover, &:focus, &.active {
                                                         color: #4a6f8a !important;
-                                                    }
+                                            background-color: transparent !important;
                                                 }
                                                 .dropdown-menu {
                                                     li {
@@ -238,9 +260,9 @@
                             }
                             .dropdown-menu {
                                 background: #000000;
-            
+                                            background-color: transparent !important;
                                 li {
-                                    a {
+                                                background-color: transparent !important;
                                         color: #a1a4ad;
                                         border-bottom-color: #3a3737;
                                         
@@ -413,7 +435,7 @@
         margin-top: 0;
         position: fixed;
         box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.09);
-        background-color: var(--whiteColor) !important;
+        // background-color: var(--whiteColor) !important;
         animation: 500ms ease-in-out 0s normal none 1 running fadeInDown;
 
         .navbar {
@@ -424,7 +446,7 @@
         }
     }
     .navbar {
-        background-color: var(--whiteColor) !important;
+        // background-color: var(--whiteColor) !important;
         border-radius: 3px;
         padding: 0 20px;
         
@@ -1171,6 +1193,7 @@
 
 .bg-light {
     background-color: transparent !important;
+    background: transparent !important;
 }
 .d-none {
     &.d-block {
@@ -1183,7 +1206,7 @@
 
     // Navbar
     .navbar-area {
-        background-color: var(--whiteColor);
+        // background-color: var(--whiteColor);
         margin-top: 0;
         padding: {
             top: 15px;
@@ -1462,7 +1485,7 @@
 
     // Navbar
     .navbar-area {
-        background-color: var(--whiteColor);
+        // background-color: var(--whiteColor);
         margin-top: 0;
         padding: {
             top: 15px;

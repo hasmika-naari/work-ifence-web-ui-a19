@@ -46,6 +46,7 @@ import { ConfigService } from 'src/app/services/config.service';
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent implements OnInit {
+  public randomGradientStyle: string = '';
   faWhatsapp = 'faWhatsapp';
   faHotjar = 'faHotjar';
   isActionInProgress = true;
@@ -117,6 +118,7 @@ export class LandingComponent implements OnInit {
   ];
   slides!: Array<Slide>;
   dailyCompetations: Array<CompetationDataItem> = new Array<CompetationDataItem>();
+  // Removed duplicate and misplaced property
   hover = true;
   browser = false;
   myCounttry: string = '';
@@ -254,7 +256,6 @@ export class LandingComponent implements OnInit {
 
     
     
-  // }
   }
 
   
@@ -262,16 +263,15 @@ export class LandingComponent implements OnInit {
     this.window.open(dealUrl);
   }
 
-  getLatestDealsdelay(i: any){
-		let delayText = 'ms';
-		if(i > 0){
-			delayText = (+i*60).toString() + 'ms';
-		}
-  
-		return delayText;
-	}
+  getLatestDealsdelay(i: any): string {
+    let delayText = 'ms';
+    if (i > 0) {
+      delayText = (+i * 60).toString() + 'ms';
+    }
+    return delayText;
+  }
   public onPageChanged(event: any){
-    this.page = event;
+  this.page = event;
     // this.getAllProducts(); 
     // if (isPlatformBrowser(this.platformId)) {
       this.window.scrollTo(0, document.documentElement.clientHeight - 50);
@@ -280,7 +280,7 @@ export class LandingComponent implements OnInit {
   public changeSorting(sort: any){
     ;
 
-    this.selectedSorting = sort;
+  this.selectedSorting = sort;
     if(this.selectedSorting && this.selectedSorting.title === 'Lowest Discount First'){
       ;
       this.dailyCompetations = [..._.orderBy(this.competations, d => d.startDate, ['asc'])];
@@ -292,10 +292,42 @@ export class LandingComponent implements OnInit {
     }
     ;
     this.window.scrollTo(0, document.documentElement.clientHeight - 50);
+        this.setRandomGradientBackground();
   }
   public openProductDialog(deal: CompetationDataItem){   
-    this._localStorageService.setItem('selectedDealKey', deal);
+  this._localStorageService.setItem('selectedDealKey', deal);
     this.router.navigate(['/deal', deal.id]); 
+  }
+
+  public setRandomGradientBackground() {
+    // Light theme color palette
+    const lightColors = [
+      '#f8fafc', '#e0f7fa', '#ffe0b2', '#e1bee7', '#c8e6c9', '#fffde7', '#fce4ec', '#e3f2fd', '#f3e5f5', '#f5f5f5', '#e0f2f1', '#f9fbe7'
+    ];
+    // Pick 2-4 random colors
+    const colorCount = Math.floor(Math.random() * 3) + 2;
+    const colors = Array.from({length: colorCount}, () => lightColors[Math.floor(Math.random() * lightColors.length)]);
+    // Pick random gradient type
+    const gradientTypes = ['linear', 'radial'];
+    const type = gradientTypes[Math.floor(Math.random() * gradientTypes.length)];
+    // For linear, pick random angle; for radial, pick random position
+    let gradient = '';
+    if(type === 'linear') {
+      const angle = Math.floor(Math.random() * 360);
+      gradient = `linear-gradient(${angle}deg, ${colors.join(', ')})`;
+    } else {
+      // Radial at random corner
+      const positions = ['top left', 'top right', 'bottom left', 'bottom right', 'center'];
+      const pos = positions[Math.floor(Math.random() * positions.length)];
+      gradient = `radial-gradient(circle at ${pos}, ${colors.join(', ')})`;
+    }
+    this.randomGradientStyle = gradient;
+    // Apply to body or host element
+    const el = document.querySelector('body');
+    if(el) {
+      (el as HTMLElement).style.background = gradient;
+      (el as HTMLElement).style.transition = 'background 1s';
+    }
   }
 
   showStartDate(startDate: any){

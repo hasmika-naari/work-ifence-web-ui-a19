@@ -1,7 +1,26 @@
 <div
-    class="training-course-banner-area"
-    [class.dark-training-course-banner-area]="themeService.isDark()"
+        class="training-course-banner-area"
+        [class.dark-training-course-banner-area]="themeService.isDark()"
+        [ngStyle]="{ background: gradient }"
+        style="position:relative;overflow:hidden;"
 >
+        <ng-container *ngFor="let overlay of overlays">
+            <div
+                class="gradient-overlay"
+                [ngStyle]="{
+                    position: 'absolute',
+                    top: overlay.top,
+                    left: overlay.left,
+                    width: overlay.width,
+                    height: overlay.height,
+                    background: overlay.gradient,
+                    opacity: 0.5,
+                    borderRadius: '50%',
+                    zIndex: overlay.zIndex,
+                    pointerEvents: 'none'
+                }"
+            ></div>
+        </ng-container>
     <div class="container">
         <div class="row  mb-7 pb-5">
             <div class="col-lg-6 col-md-12 ml-20 mr-20">

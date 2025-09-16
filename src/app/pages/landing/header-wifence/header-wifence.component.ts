@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
-import { Component, OnInit, HostListener, inject, Signal, Input, PLATFORM_ID, Inject, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ElementRef, inject, Signal, Input, PLATFORM_ID, Inject, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { SaasSidebarComponent } from './sidebar/sidebar.component';
@@ -47,13 +47,23 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     isDesktop = true;
     browser = false;
 
-    @HostListener('window:scroll', ['$event'])
-    checkScroll() {
-        const scrollPosition = this.window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        if (scrollPosition >= 50) {
-            this.isSticky = true;
-        } else {
-            this.isSticky = false;
+    private observer: IntersectionObserver | undefined;
+    ngAfterViewInit() {
+        // AOS.refresh(); // Ensures AOS scans new elements
+        AOS.init();
+
+        // Sticky header logic using IntersectionObserver
+        if (isPlatformBrowser(this.platformId)) {
+            const headerEl = document.querySelector('.header-area');
+            if (headerEl) {
+                this.observer = new IntersectionObserver(
+                    ([entry]) => {
+                        this.isSticky = !entry.isIntersecting;
+                    },
+                    { threshold: [0] }
+                );
+                this.observer.observe(headerEl);
+            }
         }
     }
 
@@ -133,12 +143,9 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
         this.locationService.back();
     }
 
-    ngAfterViewInit() {
-        // AOS.refresh(); // Ensures AOS scans new elements
-        AOS.init();
-      }
+        // (removed duplicate ngAfterViewInit)
     ngAfterViewChecked() {
-    // AOS.refreshHard(); // Forces AOS to scan for hidden elements
+        // AOS.refreshHard(); // Forces AOS to scan for hidden elements
     }
 
 }

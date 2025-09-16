@@ -1,3 +1,6 @@
+.gradient-overlay {
+    transition: background 1s;
+}
 :host {
     font-family: 'Poppins', sans-serif;
   }
@@ -9,12 +12,55 @@
   
 
 .training-course-banner-area {
-    background: {
-        // image: url(../../../../../assets/img/motivation-course/training-course-banner-bg.jpg);
-        position: center center;
-        repeat: no-repeat;
-        size: cover;
-    };
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Modern glassmorphism background */
+    background: linear-gradient(120deg, #f8fafc 0%, #fff 60%, #e0f7fa 100%) !important;
+    background-blend-mode: lighten;
+    position: relative;
+    overflow: hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    /* Large blurred theme gradient blobs */
+    &::before {
+        content: '';
+        position: absolute;
+        top: -120px;
+        left: -80px;
+        width: 480px;
+        height: 320px;
+        background: radial-gradient(circle at 40% 40%, #a5b4fc 0%, #fff 80%);
+        opacity: 0.35;
+        filter: blur(48px);
+        z-index: 0;
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -100px;
+        right: -60px;
+        width: 420px;
+        height: 260px;
+        background: radial-gradient(circle at 60% 60%, #f9a8d4 0%, #fff 80%);
+        opacity: 0.32;
+        filter: blur(40px);
+        z-index: 0;
+    }
+    .glass-sweep {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(100deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.32) 60%, rgba(255,255,255,0.08) 100%);
+        mix-blend-mode: lighten;
+        pointer-events: none;
+        z-index: 1;
+    }
     padding: {
         top: 115px;
         bottom: 100px;
