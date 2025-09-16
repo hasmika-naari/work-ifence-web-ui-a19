@@ -17,7 +17,7 @@
     left: 0;
     width: 100%;
     /* Modern glassmorphism background */
-    background: linear-gradient(120deg, #f8fafc 0%, #fff 60%, #e0f7fa 100%) !important;
+    // background: linear-gradient(120deg, #f8fafc 0%, #fff 60%, #e0f7fa 100%) !important;
     background-blend-mode: lighten;
     position: relative;
     overflow: hidden;
@@ -33,8 +33,9 @@
         left: -80px;
         width: 480px;
         height: 320px;
-        background: radial-gradient(circle at 40% 40%, #a5b4fc 0%, #fff 80%);
+        // background: linear-gradient(100deg,#f05b45 0%, #f05c45b7 30%, #fff 80%);
         opacity: 0.35;
+        border-radius: 0 !important;
         filter: blur(48px);
         z-index: 0;
     }
@@ -45,7 +46,7 @@
         right: -60px;
         width: 420px;
         height: 260px;
-        background: radial-gradient(circle at 60% 60%, #f9a8d4 0%, #fff 80%);
+        // background: linear-gradient(120deg, #f9a8d4 0%, #fff 80%);
         opacity: 0.32;
         filter: blur(40px);
         z-index: 0;

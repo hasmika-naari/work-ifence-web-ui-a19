@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
-import { Component, OnInit, ElementRef, inject, Signal, Input, PLATFORM_ID, Inject, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location, ViewportScroller } from '@angular/common';
+import { Component, OnInit, ElementRef, inject, Signal, Input, PLATFORM_ID, Inject, AfterViewInit, AfterViewChecked, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { SaasSidebarComponent } from './sidebar/sidebar.component';
@@ -13,6 +13,8 @@ import { MenuListItem } from '../../../services/bee-compete.model';
 import { ThemeCustomizerService } from '../../../services/theme-customizer/theme-customizer.service';
 import { FeathericonsModule } from 'src/app/icons/feathericons/feathericons.module';
 import AOS from 'aos';
+import { LayoutService } from 'src/app/layout/layout.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-header-wifence',
@@ -25,14 +27,17 @@ import AOS from 'aos';
     templateUrl: './header-wifence.component.html',
     styleUrls: ['./header-wifence.component.scss']
 })
-export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
 
   @Input('back') back: boolean = false;
   @Input('container') container: boolean = true;
+  @Input() isSticky: boolean = false;
 
-  
+  private scroller: ViewportScroller;
+  private renderer: Renderer2;
+  private scrollListener: (() => void) | undefined = undefined;
+  @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
 
-    isSticky: boolean = false;
     private storageService: LocalStorageService = inject(LocalStorageService);
     private userStore: UserStoreService = inject(UserStoreService);
 
@@ -48,23 +53,17 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     browser = false;
 
     private observer: IntersectionObserver | undefined;
+    private stickySubscription: Subscription;
+
     ngAfterViewInit() {
+        if (this.pageSectionRef?.nativeElement) {
+          this.scrollListener = this.renderer.listen(this.pageSectionRef.nativeElement, 'scroll', () => {
+            const yOffset = this.pageSectionRef.nativeElement.scrollTop;
+            this.isSticky = yOffset > 100;
+          });
+        }
         // AOS.refresh(); // Ensures AOS scans new elements
         AOS.init();
-
-        // Sticky header logic using IntersectionObserver
-        if (isPlatformBrowser(this.platformId)) {
-            const headerEl = document.querySelector('.header-area');
-            if (headerEl) {
-                this.observer = new IntersectionObserver(
-                    ([entry]) => {
-                        this.isSticky = !entry.isIntersecting;
-                    },
-                    { threshold: [0] }
-                );
-                this.observer.observe(headerEl);
-            }
-        }
     }
 
     isToggled = false;
@@ -74,10 +73,18 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
     constructor(
         @Inject(WINDOW) private window: Window,
-        public themeService: ThemeCustomizerService
+        public themeService: ThemeCustomizerService,
+        renderer: Renderer2,
+        private el: ElementRef,
+        public layoutService: LayoutService
     ) {
         this.themeService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
+        });
+        this.scroller = inject(ViewportScroller);
+        this.renderer = renderer;
+        this.stickySubscription = this.layoutService.isSticky$.subscribe((isSticky: boolean) => {
+          this.isSticky = isSticky;
         });
     }
 
@@ -86,10 +93,14 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     }
 
     ngOnInit(): void {
-        if(isPlatformBrowser(this.platformId)){
+        if (isPlatformBrowser(this.platformId)) {
             this.browser = true;
-            console.log('ITS Browser Running');
-          }
+            this.scroller.scrollToPosition([0, 0]);
+            // this.scrollListener = this.renderer.listen('window', 'scroll', () => {
+            //     const yOffset = this.scroller.getScrollPosition()[1];
+            //     this.isSticky = yOffset > 100;
+            // });
+        }
         if(this.browser){
             if(this.deviceService.isDesktop()){
               this.isDesktop = true;
@@ -105,6 +116,15 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
               this.isDesktop = false;
             }
           } 
+    }
+
+    ngOnDestroy(): void {
+        if (this.scrollListener) {
+          this.scrollListener();
+        }
+        if (this.stickySubscription) {
+          this.stickySubscription.unsubscribe();
+        }
     }
 
     classApplied = false;

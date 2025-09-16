@@ -195,6 +195,7 @@ $workifence-theme: mat.define-theme((
 
 html, body {
     scroll-behavior: smooth !important;
+    overflow-x: hidden;
 }
 
 body {

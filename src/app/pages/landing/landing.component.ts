@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage, isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, TransferState, inject, makeStateKey } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, TransferState, inject, makeStateKey, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatChipsModule } from '@angular/material/chips';
@@ -45,8 +45,12 @@ import { ConfigService } from 'src/app/services/config.service';
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent implements OnInit, AfterViewInit {
   public randomGradientStyle: string = '';
+  @ViewChild('pageSection', { static: true }) pageSectionRef!: ElementRef;
+  @ViewChild('sentinel', { static: true }) sentinel!: ElementRef;
+  public isSticky: boolean = false;
+  private observer!: IntersectionObserver;
   faWhatsapp = 'faWhatsapp';
   faHotjar = 'faHotjar';
   isActionInProgress = true;
@@ -183,11 +187,7 @@ export class LandingComponent implements OnInit {
     }
 
     if(isPlatformBrowser(this.platformId)){
-      // this.loadFetcheddata();
       this.browser = true;
-      // setTimeout(() => {
-      //   this.isActionInProgress = false;
-      // }, 10);
     if(this.deviceService.isDesktop()){
       this.isDesktop = true;
       this.isMobile = false;
@@ -201,13 +201,22 @@ export class LandingComponent implements OnInit {
       this.isMobile = false;
       this.isDesktop = false;
     }
-    // let userName:string = this._localStorageService.getItem("userName");
-    // let passWord:string = this._localStorageService.getItem("passWord");
-    // 
-    // console.log('UserName: ' + userName);
-    // console.log('passWord: ' + passWord);
-    // this.appUtilService.loginWithCredentials(userName, passWord, '/user/dashboard');
   }
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+        this.observer = new IntersectionObserver(entries => {
+            this.isSticky = !entries[0].isIntersecting;
+        }, { root: this.pageSectionRef.nativeElement });
+        this.observer.observe(this.sentinel.nativeElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+        this.observer.disconnect();
+    }
   }
 
   fetchData(): void{

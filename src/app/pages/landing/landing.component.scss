@@ -1,6 +1,22 @@
-/* Ensure content is not hidden behind sticky header */
+:host {
+    display: block;
+    height: 100vh;
+    overflow: hidden;
+}
+
 .page-full-section {
-  padding-top: 0px;
+    height: 100%;
+    overflow-y: auto;
+    padding-top: 0;
+    position: relative;
+    background-color: #f8fafc;
+    background-image:
+        radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.2), transparent 35%),
+        radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.2), transparent 35%),
+        radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.25), transparent 40%),
+        radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.15), transparent 40%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
 }
 
 ///////////////
@@ -346,4 +362,4 @@
       
     }
 }
-  
+
