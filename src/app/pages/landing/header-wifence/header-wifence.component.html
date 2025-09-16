@@ -13,21 +13,11 @@
                         <ul class="navbar-nav main-nav">
                             @for (item of menuListStore(); track item.id) {
                                 <li class="nav-item" [class.dropdown]="item.menuItems && item.menuItems.length > 0">
-                                    <a [routerLink]="item.route === '/sign-in' ? '/sign-in' : item.route" routerLinkActive="active" class="nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
+                                    <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
                                         @if(item.icon && item.route !== '/sign-in') {
                                             <lucide-icon [name]="item.icon"></lucide-icon>
                                         }
-                                        @if(item.route === '/sign-in') {
-                                            @if(isLoggedIn()) {
-                                                <span class="avatar-trigger" (click)="openSidebar()">
-                                                    <lucide-icon name="user"></lucide-icon>
-                                                    Avatar
-                                                </span>
-                                            } @else {
-                                                <lucide-icon [name]="item.icon"></lucide-icon>
-                                                Sign In
-                                            }
-                                        } @else {
+                                        @if(item.route !== '/sign-in') {
                                             {{ item.parent }}
                                         }
                                         @if (item.menuItems && item.menuItems.length > 0) {
@@ -52,7 +42,18 @@
                         <a routerLink="/notifications" class="icon-link" aria-label="Notifications">
                             <lucide-icon name="bell"></lucide-icon>
                         </a>
-                        <!-- Dashboard icon removed -->
+                        @if(isLoggedIn()) {
+                            <span class="avatar-trigger no-underline" (click)="openSidebar()">
+                                <span class="avatar-bg">
+                                    <img *ngIf="userAccount?.profileImage" [src]="userAccount.profileImage" alt="Avatar" class="header-avatar" />
+                                    <lucide-icon *ngIf="!userAccount?.profileImage" name="user"></lucide-icon>
+                                </span>
+                            </span>
+                        } @else {
+                            <a routerLink="/sign-in" class="icon-link" aria-label="Sign In">
+                                <lucide-icon name="log-in"></lucide-icon>
+                            </a>
+                        }
                         <button class="navbar-toggler menu-trigger" type="button" aria-label="Toggle Menu" aria-controls="mainNav" [attr.aria-expanded]="isMenuOpen()" (click)="toggleMenu()">
                             <lucide-icon name="menu"></lucide-icon>
                         </button>

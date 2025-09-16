@@ -63,14 +63,24 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     private stickySubscription: Subscription;
 
     ngAfterViewInit() {
-        if (this.pageSectionRef?.nativeElement) {
-          this.scrollListener = this.renderer.listen(this.pageSectionRef.nativeElement, 'scroll', () => {
-            const yOffset = this.pageSectionRef.nativeElement.scrollTop;
-            this.isSticky = yOffset > 100;
-          });
-        }
-        // AOS.refresh(); // Ensures AOS scans new elements
-        AOS.init();
+                if (isPlatformBrowser(this.platformId)) {
+                    const pageSection = document.querySelector('.page-full-section');
+                    if (pageSection) {
+                        this.scrollListener = this.renderer.listen(pageSection, 'scroll', () => {
+                            const yOffset = (pageSection as HTMLElement).scrollTop;
+                            this.isSticky = yOffset > 100;
+                            this.cdr.markForCheck();
+                        });
+                    } else {
+                        // fallback to window scroll if not found
+                        this.scrollListener = this.renderer.listen('window', 'scroll', () => {
+                            const yOffset = window.scrollY || window.pageYOffset;
+                            this.isSticky = yOffset > 100;
+                            this.cdr.markForCheck();
+                        });
+                    }
+                }
+                AOS.init();
     }
 
     isToggled = false;
