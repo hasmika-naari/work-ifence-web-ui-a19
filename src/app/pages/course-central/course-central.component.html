@@ -6,88 +6,89 @@
     <!-- Right Sidenav for Filters -->
     <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
         <h3>Filter Courses</h3>
-        <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterCourses($event, filterSidenav)">
-  <div class="row">
-    <div class="col-12 col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Title</mat-label>
-        <input matInput formControlName="title">
-      </mat-form-field>
-    </div>
+        <form [formGroup]="filterForm" 
+            class="filter-form" (ngSubmit)="filterCourses($event, filterSidenav)">
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="title">
+                </mat-form-field>
+                </div>
 
-    <div class="col-12 col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Provider</mat-label>
-        <mat-select formControlName="provider">
-          <mat-option value="">Any</mat-option>
-          <mat-option value="Coursera">Coursera</mat-option>
-          <mat-option value="edX">edX</mat-option>
-          <mat-option value="FutureLearn">FutureLearn</mat-option>
-          <mat-option value="Independent">Independent</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+                <div class="col-12 col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Provider</mat-label>
+                    <mat-select formControlName="provider">
+                    <mat-option value="">Any</mat-option>
+                    <mat-option value="Coursera">Coursera</mat-option>
+                    <mat-option value="edX">edX</mat-option>
+                    <mat-option value="FutureLearn">FutureLearn</mat-option>
+                    <mat-option value="Independent">Independent</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
 
-    <div class="col-12 col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Subject</mat-label>
-        <mat-select formControlName="subject">
-          <mat-option value="">Any</mat-option>
-          <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+                <div class="col-12 col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Subject</mat-label>
+                    <mat-select formControlName="subject">
+                    <mat-option value="">Any</mat-option>
+                    <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
 
-    <div class="col-12 col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Mode</mat-label>
-        <mat-select formControlName="mode">
-          <mat-option value="">Any</mat-option>
-          <mat-option value="Self-paced">Self-paced</mat-option>
-          <mat-option value="Instructor-led">Instructor-led</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+                <div class="col-12 col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Mode</mat-label>
+                    <mat-select formControlName="mode">
+                    <mat-option value="">Any</mat-option>
+                    <mat-option value="Self-paced">Self-paced</mat-option>
+                    <mat-option value="Instructor-led">Instructor-led</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
 
-    <div class="col-12 col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Cost</mat-label>
-        <mat-select formControlName="cost">
-          <mat-option value="">Any</mat-option>
-          <mat-option value="Free">Free</mat-option>
-          <mat-option value="Paid">Paid</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+                <div class="col-12 col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Cost</mat-label>
+                    <mat-select formControlName="cost">
+                    <mat-option value="">Any</mat-option>
+                    <mat-option value="Free">Free</mat-option>
+                    <mat-option value="Paid">Paid</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
 
-    <div class="col-12 col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Certificate</mat-label>
-        <mat-select formControlName="certificate">
-          <mat-option value="">Any</mat-option>
-          <mat-option value="Yes">Yes</mat-option>
-          <mat-option value="No">No</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+                <div class="col-12 col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Certificate</mat-label>
+                    <mat-select formControlName="certificate">
+                    <mat-option value="">Any</mat-option>
+                    <mat-option value="Yes">Yes</mat-option>
+                    <mat-option value="No">No</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
 
-    <div class="col-12 col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Platform</mat-label>
-        <mat-select formControlName="platform">
-          <mat-option value="">Any</mat-option>
-          <mat-option value="Coursera">Coursera</mat-option>
-          <mat-option value="edX">edX</mat-option>
-          <mat-option value="FutureLearn">FutureLearn</mat-option>
-          <mat-option value="Independent">Independent</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </div>
+                <div class="col-12 col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Platform</mat-label>
+                    <mat-select formControlName="platform">
+                    <mat-option value="">Any</mat-option>
+                    <mat-option value="Coursera">Coursera</mat-option>
+                    <mat-option value="edX">edX</mat-option>
+                    <mat-option value="FutureLearn">FutureLearn</mat-option>
+                    <mat-option value="Independent">Independent</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
+            </div>
 
-  <div class="text-end mt-2">
-    <button mat-flat-button type="submit">Apply Filters</button>
-  </div>
+            <div class="text-end mt-2">
+                <button mat-flat-button type="submit">Apply Filters</button>
+            </div>
         </form>
 
     </mat-sidenav>

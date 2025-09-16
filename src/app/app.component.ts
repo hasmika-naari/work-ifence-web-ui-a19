@@ -165,7 +165,7 @@ export class AppComponent implements OnInit, AfterViewInit{
           });
         
           setTimeout(() => {
-            this.isLoading = false; // Set to false when data is loaded
+            this.isLoading = false; // Set to true when data is loading
           }, 10);
           // this.loadingBarService.start();
            // Import WOW.js dynamically only on the client side
