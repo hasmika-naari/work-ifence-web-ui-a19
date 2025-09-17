@@ -285,11 +285,15 @@
         margin-bottom: 25px;
         color: var(--secondaryColor);
         font: {
-            size: 22px;
-            weight: 700;
+            size: 20px;
+            weight: 600;
+            family: 'Poppins', sans-serif;
         };
         position: relative;
         display: inline-block; /* Ensures the underline matches the text width */
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         
         &::after {
             content: '';
@@ -877,9 +881,10 @@
     .single-footer-widget {
         h3 {
             margin-bottom: 20px;
-            font-size: 18px;
+            font-size: 16px;
             position: relative;
             display: inline-block;
+            letter-spacing: 0.4px;
             
             &::after {
                 height: 1.5px; /* Slightly thinner underline for mobile */
