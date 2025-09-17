@@ -2,7 +2,10 @@
 import { NgModule } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
-         LayoutGrid, Menu, ChevronDown, User, BookOpenCheck, BookMarked, Award, Facebook, Instagram, MessageCircle } from 'lucide-angular';
+         LayoutGrid, Menu, ChevronDown, User, BookOpenCheck, BookMarked,
+         Award, Facebook, Instagram, MessageCircle, ArrowRight, LayoutDashboard,
+         Linkedin, X, Shield, FileText, HelpCircle, UserPlus, CornerDownRight,
+         Settings, LogOut } from 'lucide-angular';
 
 @NgModule({
   imports: [
@@ -22,7 +25,18 @@ import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
       Award,
       Facebook,
       Instagram,
-      MessageCircle
+      MessageCircle,
+      ArrowRight,
+      LayoutDashboard,
+      Linkedin,
+      X,
+      Shield,
+      FileText,
+      HelpCircle,
+      UserPlus,
+      CornerDownRight,
+      Settings,
+      LogOut
     })
   ],
   exports: [LucideAngularModule],

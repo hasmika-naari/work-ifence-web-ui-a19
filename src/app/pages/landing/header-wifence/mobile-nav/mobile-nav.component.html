@@ -1,0 +1,39 @@
+<div class="mobile-menu" [class.show]="isMenuOpen">
+    @for (item of menuItems; track item.id) {
+        <div class="mobile-menu-item">
+            <a 
+                [routerLink]="item.route" 
+                routerLinkActive="active" 
+                class="mobile-menu-link" 
+                [attr.aria-expanded]="item.isExpanded"
+                (click)="item.menuItems && item.menuItems.length ? toggleSubmenu(item) : navigateTo(item.route)">
+                @if(item.icon) {
+                    <lucide-icon [name]="item.icon"></lucide-icon>
+                }
+                {{ item.parent }}
+                @if (item.menuItems && item.menuItems.length > 0) {
+                    <lucide-icon name="chevron-down" class="dropdown-indicator"></lucide-icon>
+                }
+            </a>
+            @if (item.menuItems && item.menuItems.length > 0) {
+                <div class="dropdown-submenu" [style.display]="item.isExpanded ? 'block' : 'none'">
+                    @for (subItem of item.menuItems; track subItem.id) {
+                        <div class="mobile-menu-item">
+                            <a [routerLink]="subItem.route" class="mobile-menu-link" (click)="navigateTo(subItem.route)">
+                                {{ subItem.title }}
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<button 
+    class="menu-toggler" 
+    type="button" 
+    aria-label="Toggle Mobile Navigation" 
+    (click)="toggleMenu()">
+    <lucide-icon [name]="isMenuOpen ? 'x' : 'menu'"></lucide-icon>
+</button>

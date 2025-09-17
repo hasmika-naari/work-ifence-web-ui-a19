@@ -1,29 +1,36 @@
 .gradient-overlay {
-    transition: background 1s;
+    transition: all 0.5s ease-in-out;
 }
 :host {
     font-family: 'Poppins', sans-serif;
-  }
+}
   
-  /* Force font on all elements within this component */
-  :host * {
+/* Force font on all elements within this component */
+:host * {
     font-family: 'Poppins', sans-serif;
-  }
+}
   
+// Animation for fade-in effect
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 .training-course-banner-area {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
     /* Modern glassmorphism background */
-    // background: linear-gradient(120deg, #f8fafc 0%, #fff 60%, #e0f7fa 100%) !important;
     background-blend-mode: lighten;
-    position: relative;
     overflow: hidden;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    transition: all 0.3s ease-in-out;
 
     /* Large blurred theme gradient blobs */
     &::before {
@@ -33,11 +40,18 @@
         left: -80px;
         width: 480px;
         height: 320px;
-        // background: linear-gradient(100deg,#f05b45 0%, #f05c45b7 30%, #fff 80%);
         opacity: 0.35;
         border-radius: 0 !important;
         filter: blur(48px);
         z-index: 0;
+        
+        @media (max-width: 767px) {
+            width: 240px;
+            height: 160px;
+            top: -60px;
+            left: -40px;
+            filter: blur(24px);
+        }
     }
     &::after {
         content: '';
@@ -46,10 +60,17 @@
         right: -60px;
         width: 420px;
         height: 260px;
-        // background: linear-gradient(120deg, #f9a8d4 0%, #fff 80%);
         opacity: 0.32;
         filter: blur(40px);
         z-index: 0;
+        
+        @media (max-width: 767px) {
+            width: 210px;
+            height: 130px;
+            bottom: -50px;
+            right: -30px;
+            filter: blur(20px);
+        }
     }
     .glass-sweep {
         position: absolute;
@@ -62,16 +83,21 @@
         pointer-events: none;
         z-index: 1;
     }
-    padding: {
-        top: 115px;
-        bottom: 100px;
-    };
+    
     .container-fluid {
         padding: {
             left: 60px;
             right: 60px;
         };
+        
+        @media (max-width: 767px) {
+            padding: {
+                left: 15px;
+                right: 15px;
+            };
+        }
     }
+    
     &.dark-training-course-banner-area {
         background: #000000;
 
@@ -91,7 +117,11 @@
         }
     }
 }
+
+// Main content styles with responsive adjustments
 .training-course-banner-content {
+    text-align: left !important;
+    
     h1 {
         font-size: 5rem;
         letter-spacing: -2px !important;
@@ -99,23 +129,57 @@
         font-weight: bold;
         line-height: 5.2rem;
         color: var(--secondaryColor);
+        transition: all 0.3s ease-in-out;
+        text-align: left !important;
+        
         span {
             color: var(--mainColor) !important;
             font-size: 4.2rem !important;
             position: relative;
             top: 0px !important;
             display: block;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        @media (max-width: 1199px) {
+            font-size: 3.8rem;
+            line-height: 4rem;
+            
+            span {
+                font-size: 3.4rem !important;
+            }
+        }
+        
+        @media (max-width: 991px) {
+            font-size: 3.2rem;
+            line-height: 3.4rem;
+            
+            span {
+                font-size: 2.8rem !important;
+            }
         }
     }
+    
     p {
         margin-top: 30px;
         max-width: 575px;
         color: var(--paragraphColor);
         font-size: large;
+        
+        @media (max-width: 991px) {
+            margin-top: 20px;
+            font-size: medium;
+        }
     }
+    
     .btn-box {
         margin-top: 30px;
+        
+        @media (max-width: 767px) {
+            margin-top: 20px;
+        }
     }
+    
     .trusted-by-content {
         margin-top: 45px;
 
@@ -140,271 +204,290 @@
     }
 }
 
+// Mobile-specific styling
 .training-course-banner-content-mobile {
+    text-align: left;
+    padding: 0 15px;
     
     h1 {
         font-size: 32px;
         letter-spacing: -1px !important;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         font-weight: bold;
-        line-height: 1.5rem;
+        line-height: 36px;
         color: var(--secondaryColor);
+        
         span {
             color: var(--mainColor) !important;
+            font-size: 28px !important;
+            display: block;
         }
     }
+    
     p {
-        margin-bottom: 0;
-        max-width: 650px;
+        margin: 15px auto;
+        max-width: 100%;
         color: var(--paragraphColor);
         font-size: medium;
     }
+    
     .btn-box {
-        margin-top: 30px;
+        margin-top: 20px;
     }
+    
     .trusted-by-content {
-        margin-top: 45px;
-
-        .title {
-            margin-bottom: 25px;
-            color: #002846;
-            font-size: 16px;
-            font-weight: 400;
-            display: inline-block;
-            text-transform: uppercase;
-        }
-        .single-partner-item {
-            text-align: center;
-            position: relative;
-
-            a {
-                img {
-                    max-width: 90px;
-                }
-            }
-        }
-    }
-}
-
-
-.training-course-banner-image{
-    img{
-        max-width: 100% !important;
-    }
-}
-
-/* Max width 767px */
-@media only screen and (max-width: 767px) {
-
-    .training-course-banner-area {
-        padding: {
-            top: 30px;
-            bottom: 60px;
-        };
-        .container-fluid {
-            padding-right: var(--bs-gutter-x,.75rem);
-            padding-left: var(--bs-gutter-x,.75rem);
-        }
-    }
-    .training-course-banner-content {
-        h1 {
-            font-size: 32px;
-            span{
-                font-size: 28px !important;
-            }
-        }
-    }
-    .training-course-banner-image {
-        text-align: center;
         margin-top: 30px;
-
-        img{
-            max-width: 100% !important;
+        
+        .title {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .single-partner-item a img {
+            max-width: 70px;
         }
     }
-
 }
 
-.option-buttons{
+// Image container with responsive sizing
+.training-course-banner-image {
+    img {
+        max-width: 100% !important;
+        transition: all 0.3s ease-in-out;
+        
+        @media (max-width: 767px) {
+            max-width: 90% !important;
+            margin: 0 auto;
+        }
+    }
+}
+
+// Button styling with responsive adjustments
+.option-buttons {
     text-align: left !important;
-    font-family: (--fontFamily1) !important;
+    font-family: var(--fontFamily1, inherit) !important;
     position: relative;
     margin-top: 30px;
-    .show-angle-down{
+    
+    @media (max-width: 767px) {
+        margin-top: 20px;
+        // Keep text left aligned even on mobile
+    }
+    
+    .show-angle-down {
         color: var(--secondaryColor) !important;
         cursor: pointer;
-        &:hover{
+        &:hover {
             color: var(--mainColor) !important;
         }
     }
-    .get-started{
+    
+    .get-started, .dashboard-demo {
         position: relative;
-        font-family: var(--fontFamily) !important;
-        // right: 5px;
-        // top: 5px;
-        // background-color: var(--whiteColor);
-        // color: var(--mainColor);
-        // border: 1px solid var(--mainColor);
-        // background-color: #d1cdcd;
+        font-family: var(--fontFamily, inherit) !important;
         color: black;
-        // border-color: #f5f4f4;
-        height: 35px;
+        height: 40px; // Increased height for icon
         padding: 0 20px;
         border-radius: 70px;
-        // transition: var(--transition);
         border: none !important;
-
         text-transform: capitalize;
         margin: 5px;
-        width: 165px;
+        width: 180px; // Increased width for icon
         font: {
-            size: var(--fontSize);
-            weight: 400;
+            size: var(--fontSize, 16px);
+            weight: 500; // Slightly bolder
         };
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        
+        @media (max-width: 767px) {
+            width: 100%;
+            max-width: 220px;
+            margin: 5px auto;
+            display: flex;
+        }
+        
         &:hover, &:focus {
             background-color: var(--mainColor);
             color: var(--whiteColor);
             border: 1px solid var(--mainColor);
+            
+            lucide-icon {
+                transform: translateX(3px);
+            }
+        }
+        
+        // Icon styling
+        lucide-icon {
+            width: 18px;
+            height: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-text {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .btn-icon-right {
+            margin-left: 4px;
         }
     }
-
-    .dashboard-demo{
-        position: relative;
-        font-family:Poppins  !important;
-        // right: 5px;
-        // top: 5px;
-        // background-color: var(--mainColor);
-        // color: var(--whiteColor);
-        // border: 1px solid var(--mainColor);
-        // background-color: #d1cdcd;
-        color: black;
-        // border-color: #f5f4f4;
-        height: 35px;
-        padding: 0 20px;
-        border-radius: 70px;
-        // transition: var(--transition);
-        text-transform: capitalize;
-        margin: 5px;
-        border: none !important;
-        font: {
-            size: var(--fontSize);
-            weight: 400;
-        };
-        &:hover, &:focus {
-            background-color: var(--mainColor);
-            color: var(--whiteColor);
-            border: 1px solid var(--mainColor);
+    
+    // Custom styles for specific buttons
+    .get-started {
+        lucide-icon {
+            stroke-width: 2.5;
         }
+        
+        &:hover lucide-icon {
+            animation: bounce-right 0.8s infinite alternate;
+        }
+    }
+    
+    .dashboard-demo {
+        lucide-icon {
+            stroke-width: 1.8;
+        }
+        
+        &:hover lucide-icon {
+            animation: pulse 1s infinite;
+        }
+    }
+    
+    @keyframes bounce-right {
+        from { transform: translateX(0); }
+        to { transform: translateX(4px); }
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+        100% { transform: scale(1); }
     }
 
     .link-button-wifence {
         cursor: pointer;
-        background-color: var(--grayBackgroundColor);
-        color: var(--fontColor);
+        background-color: var(--grayBackgroundColor, #f5f5f5);
+        color: var(--fontColor, #333);
         border-radius: 15px;
         padding: 5px 15px;
         transition: background-color 0.3s ease, color 0.3s ease;
 
         &:hover,
         &:focus {
-            background-color: var(--grayBackgroundHoverColor);
-            color: var(--fontColor);
+            background-color: var(--grayBackgroundHoverColor, #e0e0e0);
+            color: var(--fontColor, #333);
             text-decoration: underline;
         }
     }
 }
 
-/* Min width 576px to Max width 767px */
-@media only screen and (min-width: 576px) and (max-width: 767px) {
-
-    .training-course-banner-area {
-        .container-fluid {
-            max-width: 540px;
-        }
-    }
-
+/* Utilities for responsive layout */
+.w-90 {
+    width: 90% !important;
 }
 
-/* Min width 768px to Max width 991px */
-@media only screen and (min-width: 768px) and (max-width: 991px) {
+.w-100 {
+    width: 100% !important;
+}
 
+.text-left {
+    text-align: left !important;
+}
+
+/* Comprehensive responsive breakpoints */
+
+/* Max width 767px - Mobile */
+@media only screen and (max-width: 767px) {
     .training-course-banner-area {
         padding: {
-            top: 80px;
+            top: 30px;
+            bottom: 60px;
+        };
+    }
+    
+    .row {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    
+    [class*="col-"] {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+/* Min width 576px to Max width 767px - Large Mobile */
+@media only screen and (min-width: 576px) and (max-width: 767px) {
+    .training-course-banner-area .container {
+        max-width: 540px;
+    }
+    
+    .training-course-banner-content-mobile h1 {
+        font-size: 36px;
+        line-height: 40px;
+        
+        span {
+            font-size: 32px !important;
+        }
+    }
+}
+
+/* Min width 768px to Max width 991px - Tablet */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .training-course-banner-area {
+        padding: {
+            top: 60px;
             bottom: 80px;
         };
-        .container-fluid {
-            padding-right: var(--bs-gutter-x,.75rem);
-            padding-left: var(--bs-gutter-x,.75rem);
-            max-width: 720px;
+    }
+    
+    .training-course-banner-content h1 {
+        font-size: 42px;
+        line-height: 46px;
+        
+        span {
+            font-size: 38px !important;
         }
     }
-    .training-course-banner-content {
-        h1 {
-            font-size: 55px;
-              span{
-                font-size: 50px !important;
-            }
-        }
-    }
-    .training-course-banner-image {
-        text-align: center;
-        margin-top: 30px;
-
-        img{
-            max-width: 100% !important;
-        }
-    }
-
 }
 
-/* Min width 992px to Max width 1199px */
+/* Min width 992px to Max width 1199px - Small Desktop */
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
-
-    .training-course-banner-area {
-        .container-fluid {
-            max-width: 960px;
-            padding-right: var(--bs-gutter-x,.75rem);
-            padding-left: var(--bs-gutter-x,.75rem);
+    .training-course-banner-content h1 {
+        font-size: 50px;
+        line-height: 54px;
+        
+        span {
+            font-size: 46px !important;
         }
     }
-    .training-course-banner-content {
-        h1 {
-            font-size: 55px;
-            span{
-                font-size: 50px !important;
-            }
-        }
-    }
-
 }
 
-/* Min width 1200px to Max width 1275px */
-@media only screen and (min-width: 1200px) and (max-width: 1275px) {}
-
-/* Min width 1200px to Max width 1399px */
+/* Min width 1200px to Max width 1399px - Medium Desktop */
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
-
-    .training-course-banner-area {
-        .container-fluid {
-            padding-left: 40px;
-            padding-right: 40px;
+    .training-course-banner-content h1 {
+        font-size: 4.5rem;
+        line-height: 4.7rem;
+        
+        span {
+            font-size: 4rem !important;
         }
     }
-
 }
 
-/* Min width 1550px */
-@media only screen and (min-width: 1550px) {
-
-    .training-course-banner-area {
-        .container-fluid {
-            max-width: 2000px;
-            padding: {
-                left: 125px;
-                right: 125px;
-            };
+/* Min width 1400px - Large Desktop */
+@media only screen and (min-width: 1400px) {
+    .training-course-banner-content h1 {
+        font-size: 5rem;
+        line-height: 5.2rem;
+        
+        span {
+            font-size: 4.2rem !important;
         }
     }
-
 }

@@ -9,7 +9,8 @@
                         <img src="assets/img/logo.png" alt="logo" class="logo-light">
                     </a>
 
-                    <div id="mainNav" class="collapse navbar-collapse flex-menu" [class.show]="isMenuOpen()">
+                    <!-- Desktop menu - only show on desktop -->
+                    <div id="mainNav" class="collapse navbar-collapse flex-menu" [class.show]="isMenuOpen() && !isMobile && !isTablet">
                         <ul class="navbar-nav main-nav">
                             @for (item of menuListStore(); track item.id) {
                                 <li class="nav-item" [class.dropdown]="item.menuItems && item.menuItems.length > 0">
@@ -64,7 +65,10 @@
                                 <lucide-icon name="log-in"></lucide-icon>
                             </a>
                         }
-                        <button class="navbar-toggler menu-trigger" type="button" aria-label="Toggle Menu" aria-controls="mainNav" [attr.aria-expanded]="isMenuOpen()" (click)="toggleMenu()">
+                        <button class="navbar-toggler menu-trigger" type="button" aria-label="Toggle Menu" aria-controls="mainNav" 
+                            [attr.aria-expanded]="isMenuOpen()" 
+                            [class.active]="menuSidebarOpen"
+                            (click)="toggleMenu()">
                             <lucide-icon name="menu"></lucide-icon>
                         </button>
                         <!-- Debug info for sidebar -->
@@ -74,6 +78,13 @@
                             [sidebarOpen]="sidebarOpen"
                             (closeSidebar)="closeSidebar()">
                         </app-saas-sidebar>
+                        
+                        <!-- Menu Sidebar for Mobile Navigation -->
+                        <app-menu-sidebar
+                            [menuItems]="menuListStore()"
+                            [menuSidebarOpen]="menuSidebarOpen"
+                            (closeMenuSidebar)="closeMenuSidebar()">
+                        </app-menu-sidebar>
                     </div>
                 </div>
             </div>

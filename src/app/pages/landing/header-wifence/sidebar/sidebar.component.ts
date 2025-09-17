@@ -1,7 +1,7 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnInit, inject, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Input, Output, EventEmitter } from '@angular/core';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from '../../../../services/local-storage.service';
 import { LucideAngularModule } from 'lucide-angular';
@@ -36,6 +36,7 @@ export class SaasSidebarComponent implements OnInit, OnChanges {
 
   private _localStorageService: LocalStorageService = inject(LocalStorageService);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private router: Router = inject(Router);
 
   constructor() {
     // Country logic commented out
@@ -66,5 +67,26 @@ export class SaasSidebarComponent implements OnInit, OnChanges {
   //     this.country = 'india';
   //   }
   // }
+
+  /**
+   * Logout the user and redirect to home page
+   */
+  logout(): void {
+    // Clear user data from local storage
+    this._localStorageService.removeItem('user');
+    this._localStorageService.removeItem('token');
+    
+    // Close the sidebar
+    this.closeSidebar.emit();
+    
+    // Reset user account
+    this.userAccount = null;
+    
+    // Navigate to home page
+    this.router.navigate(['/']);
+    
+    // Force change detection
+    this.cdr.detectChanges();
+  }
 
 }

@@ -8,7 +8,7 @@
 
     <!-- Close button -->
     <button class="sidebar-close-btn" (click)="closeSidebar.emit()" aria-label="Close Sidebar">
-        &times;
+        <lucide-icon name="x"></lucide-icon>
     </button>
 
     <!-- Sidebar content -->
@@ -26,21 +26,31 @@
         </div>
 
         <div class="sidebar-body">
+            <div class="sidebar-widget" *ngIf="userAccount">
+                <h3 class="title">Account</h3>
+                <ul>
+                    <li><a routerLink="/user/dashboard"><lucide-icon name="layout-dashboard"></lucide-icon> Dashboard</a></li>
+                    <li><a routerLink="/user/profile"><lucide-icon name="user"></lucide-icon> My Profile</a></li>
+                    <li><a routerLink="/user/settings"><lucide-icon name="settings"></lucide-icon> Settings</a></li>
+                </ul>
+            </div>
+
             <div class="sidebar-widget">
                 <h3 class="title">Additional Links</h3>
                 <ul>
-                    <li><a routerLink="/sign-in"><i class="icon-login"></i> Login</a></li>
-                    <li><a routerLink="/sign-up"><i class="icon-user-plus"></i> Register</a></li>
-                    <li><a routerLink="/faq"><i class="icon-question-circle"></i> FAQs</a></li>
+                    <li *ngIf="!userAccount"><a routerLink="/sign-in"><lucide-icon name="log-in"></lucide-icon> Login</a></li>
+                    <li *ngIf="!userAccount"><a routerLink="/sign-up"><lucide-icon name="user-plus"></lucide-icon> Register</a></li>
+                    <li *ngIf="userAccount"><a (click)="logout()" style="cursor: pointer;"><lucide-icon name="log-out"></lucide-icon> Logout</a></li>
+                    <li><a routerLink="/faq"><lucide-icon name="help-circle"></lucide-icon> FAQs</a></li>
                 </ul>
             </div>
 
             <div class="sidebar-widget">
                 <h3 class="title">Support</h3>
                 <ul class="support-link">
-                    <li><i class="icon-Double-arrow"></i><a [routerLink]="['/privacy']">Privacy Policy</a></li>
-                    <li><i class="icon-Double-arrow"></i><a [routerLink]="['/terms']">Terms of Service</a></li>
-                    <li><i class="icon-Double-arrow"></i><a [routerLink]="['/contact-us']">Contact Us</a></li>
+                    <li><a [routerLink]="['/privacy']"><lucide-icon name="shield"></lucide-icon> Privacy Policy</a></li>
+                    <li><a [routerLink]="['/terms']"><lucide-icon name="file-text"></lucide-icon> Terms of Service</a></li>
+                    <li><a [routerLink]="['/contact-us']"><lucide-icon name="message-circle"></lucide-icon> Contact Us</a></li>
                 </ul>
             </div>
 
@@ -48,23 +58,23 @@
                 <h3 class="title">Connect With Us</h3>
                 <ul class="social-list">
                     <li>
-                        <a href="https://www.facebook.com/people/Naari-Deals/100088113458576" target="_blank" class="facebook-icon">
-                            <lucide-icon [name]="'facebook'"></lucide-icon>
+                        <a href="https://www.facebook.com/people/Naari-Deals/100088113458576" target="_blank" aria-label="Facebook">
+                            <lucide-icon name="facebook"></lucide-icon>
                         </a>
                     </li>
                     <li>
-                        <a href="https://www.instagram.com/naarideals/?igshid=YmMyMTA2M2Y%3D" target="_blank" class="instagram-icon">
-                            <lucide-icon [name]="'instagram'"></lucide-icon>
+                        <a href="https://www.instagram.com/naarideals/?igshid=YmMyMTA2M2Y%3D" target="_blank" aria-label="Instagram">
+                            <lucide-icon name="instagram"></lucide-icon>
                         </a>
                     </li>
                     <li *ngIf="country === 'usa'">
-                        <a href="https://chat.whatsapp.com/C3OZtNNrgOg5p2uIoRVhVs" target="_blank" class="whatsapp-icon">
-                            <lucide-icon [name]="'message-circle'"></lucide-icon>
+                        <a href="https://chat.whatsapp.com/C3OZtNNrgOg5p2uIoRVhVs" target="_blank" aria-label="WhatsApp">
+                            <lucide-icon name="message-circle"></lucide-icon>
                         </a>
                     </li>
                     <li *ngIf="country === 'india'">
-                        <a href="https://chat.whatsapp.com/EB8UQJflmNrCq6pvZojsJR" target="_blank" class="whatsapp-icon">
-                            <lucide-icon [name]="'message-circle'"></lucide-icon>
+                        <a href="https://chat.whatsapp.com/EB8UQJflmNrCq6pvZojsJR" target="_blank" aria-label="WhatsApp">
+                            <lucide-icon name="message-circle"></lucide-icon>
                         </a>
                     </li>
                 </ul>

@@ -4,6 +4,7 @@ import { Component, OnInit, ElementRef, inject, Input, PLATFORM_ID, Inject, Afte
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { SaasSidebarComponent } from './sidebar/sidebar.component';
+import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -29,6 +30,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
         NgbModule, 
         NgbNavModule, 
         SaasSidebarComponent,
+        MenuSidebarComponent,
         MatDividerModule,
         MatProgressSpinnerModule,
         IconsModule,
@@ -40,6 +42,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
 export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
     public isLoggedIn: any;
     sidebarOpen = false;
+    menuSidebarOpen = false; // Property for menu sidebar
     isAutoLoggingIn = false; // Property to track auto login state
     authStateUndetermined = true; // Flag to track if auth state is still being determined
     private loginStatusSubscription: Subscription | null = null;
@@ -138,6 +141,11 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
         if (isPlatformBrowser(this.platformId)) {
             this.browser = true;
             this.scroller.scrollToPosition([0, 0]);
+            
+            // Set device detection flags
+            this.isMobile = this.deviceService.isMobile();
+            this.isTablet = this.deviceService.isTablet();
+            this.isDesktop = this.deviceService.isDesktop();
             
             // Always start with showing spinner
             this.isAutoLoggingIn = true;
@@ -276,8 +284,20 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     }
 
     toggleMenu() {
-        this.isMenuVisible = !this.isMenuVisible;
+        // Check if we're on mobile
+        if (this.isMobile || this.isTablet) {
+            // On mobile, open the menu sidebar instead of toggling dropdown
+            this.menuSidebarOpen = !this.menuSidebarOpen;
+        } else {
+            // On desktop, toggle the dropdown menu as before
+            this.isMenuVisible = !this.isMenuVisible;
+        }
         // Since we're using OnPush change detection, explicitly mark for check
+        this.cdr.markForCheck();
+    }
+    
+    closeMenuSidebar() {
+        this.menuSidebarOpen = false;
         this.cdr.markForCheck();
     }
 
