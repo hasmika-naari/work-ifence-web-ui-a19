@@ -52,8 +52,9 @@
             <div class="sidebar-widget">
                 <h3 class="title">Quick Links</h3>
                 <ul>
-                    <li><a routerLink="/sign-in"><lucide-icon name="log-in"></lucide-icon> Login</a></li>
-                    <li><a routerLink="/sign-up"><lucide-icon name="user-plus"></lucide-icon> Register</a></li>
+                    <li *ngIf="!userAccount"><a routerLink="/sign-in"><lucide-icon name="log-in"></lucide-icon> Login</a></li>
+                    <li *ngIf="!userAccount"><a routerLink="/sign-up"><lucide-icon name="user-plus"></lucide-icon> Register</a></li>
+                    <li *ngIf="userAccount"><a (click)="logout()" style="cursor: pointer;"><lucide-icon name="log-out"></lucide-icon> Logout</a></li>
                     <li><a routerLink="/faq"><lucide-icon name="help-circle"></lucide-icon> FAQs</a></li>
                 </ul>
             </div>
