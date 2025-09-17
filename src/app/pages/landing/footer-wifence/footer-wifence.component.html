@@ -1,11 +1,14 @@
 <footer class="footer-area">
-    <div class="footer-blend-overlay"></div>
-    <div class="floating-dots"></div>
-    <div class="geometric-shapes"></div>
-    <div class="footer-top-decoration"></div>
-    <div class="left-gradient-blob"></div>
-    <div class="glossy-streaks"></div>
+    <!-- <div class="footer-blend-overlay"></div> -->
+    <!-- <div class="floating-dots"></div> -->
+    <!-- <div class="geometric-shapes"></div> -->
+    <!-- <div class="footer-top-decoration"></div> -->
+    <!-- <div class="left-gradient-blob"></div> -->
+    <!-- <div class="glossy-streaks"></div> -->
     <div class="container">
+        <div class="decorative-orb"></div>
+        <div class="decorative-orb-2"></div>
+        <div class="glossy-streaks"></div>
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="single-footer-widget mb-3">
@@ -25,11 +28,11 @@
                         </li>
                     </ul>
                     <ul class="social-link">
-                        <li><a href="#" class="d-block" target="_blank"><i class='bx bxl-facebook'></i></a></li>
-                        <li><a href="#" class="d-block" target="_blank"><i class='bx bxl-twitter'></i></a></li>
-                        <li><a href="#" class="d-block" target="_blank"><i class='bx bxl-instagram'></i></a></li>
-                        <li><a href="#" class="d-block" target="_blank"><i class='bx bxl-linkedin'></i></a></li>
-                        <!-- <li><a href="#" class="d-block" target="_blank"><i class='bx bxl-pinterest-alt'></i></a></li> -->
+                        <li><a href="#" target="_blank"><i class='bx bxl-facebook'></i></a></li>
+                        <li><a href="#" target="_blank"><i class='bx bxl-twitter'></i></a></li>
+                        <li><a href="#" target="_blank"><i class='bx bxl-instagram'></i></a></li>
+                        <li><a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a></li>
+                        <!-- <li><a href="#" target="_blank"><i class='bx bxl-pinterest-alt'></i></a></li> -->
                     </ul>
                 </div>
             </div>
@@ -37,10 +40,10 @@
                 <div class="single-footer-widget mb-3">
                     <h3>Support</h3>
                     <ul class="support-link">
-                        <li><a routerLink="/privacy">Privacy</a></li>
-                        <li><a routerLink="/faq">FAQ's</a></li>
+                        <li><a routerLink="/privacy"><i class='bx bx-shield-quarter'></i> Privacy</a></li>
+                        <li><a routerLink="/faq"><i class='bx bx-question-mark'></i> FAQ's</a></li>
                         <!-- <li><a routerLink="/">Support</a></li> -->
-                        <li><a routerLink="/terms">Terms</a></li>
+                        <li><a routerLink="/terms"><i class='bx bx-file'></i> Terms</a></li>
                         <!-- <li><a routerLink="/">Condition</a></li> -->
                         <!-- <li><a routerLink="/">Policy</a></li> -->
                     </ul>
@@ -50,10 +53,10 @@
                 <div class="single-footer-widget mb-3">
                     <h3>Useful Link</h3>
                     <ul class="useful-link">
-                        <li><a routerLink="/job-openings">Latest Openings</a></li>
-                        <li><a routerLink="/job-market">Job Market Blog</a></li>
-                        <li><a routerLink="/training-options">Training Options</a></li>
-                        <li><a routerLink="/tech-talks">Tech Talks</a></li>
+                        <li><a routerLink="/job-openings"><i class='bx bx-briefcase'></i> Latest Openings</a></li>
+                        <li><a routerLink="/job-market"><i class='bx bx-line-chart'></i> Job Market Blog</a></li>
+                        <li><a routerLink="/training-options"><i class='bx bx-book-alt'></i> Training Options</a></li>
+                        <li><a routerLink="/tech-talks"><i class='bx bx-conversation'></i> Tech Talks</a></li>
                         <!-- <li><a routerLink="/">Whitepaper</a></li> -->
                         <!-- <li><a routerLink="/">Web Development</a></li> -->
                     </ul>
@@ -64,10 +67,19 @@
                     <h3>Newsletter</h3>
                     <div class="newsletter-box">
                         <p>To get the latest news and latest updates from us.</p>
-                        <form class="newsletter-form">
+                        <form [formGroup]="newsletterForm" (ngSubmit)="onSubmit()" class="newsletter-form">
                             <label>Your e-mail address:</label>
-                            <input type="email" class="input-newsletter" placeholder="Enter your email" name="EMAIL">
-                            <button type="submit">Subscribe</button>
+                            <div class="input-group" [ngClass]="{'invalid': submittedForm && f['email'].errors}">
+                                <i class='bx bx-envelope input-icon'></i>
+                                <input type="email" formControlName="email" class="input-newsletter" placeholder="Enter your email address" name="EMAIL">
+                                <i *ngIf="f['email'].valid" class='bx bx-check-circle validation-icon valid'></i>
+                                <i *ngIf="submittedForm && f['email'].errors" class='bx bx-error-circle validation-icon invalid'></i>
+                            </div>
+                            <div *ngIf="submittedForm && f['email'].errors" class="validation-message">
+                                <div *ngIf="f['email'].errors['required']">Email is required</div>
+                                <div *ngIf="f['email'].errors['pattern']">Please enter a valid email address</div>
+                            </div>
+                            <button type="submit" [disabled]="newsletterForm.invalid"><i class='bx bx-paper-plane'></i> Subscribe</button>
                         </form>
                     </div>
                 </div>
@@ -81,10 +93,9 @@
             </div>
             <p class="copyright-text">
                 <i class='bx bx-copyright'></i>2025 
-                <a routerLink="/" target="_blank">Work ifence</a> | All rights reserved.
+                <a routerLink="/" target="_blank"><i class='bx bx-building-house'></i> Work ifence</a> | All rights reserved.
             </p>
         </div>
     </div>
 </footer>
-
 <ngx-scrolltop></ngx-scrolltop>
