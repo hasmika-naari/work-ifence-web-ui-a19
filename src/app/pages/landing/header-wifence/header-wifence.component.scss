@@ -5,8 +5,15 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 42px; /* Slightly larger again */
+    min-height: 42px;
+    margin-left: 0; /* Normal spacing */
+    
+    @media (min-width: 1200px) {
+        min-width: 40px; /* Still compact but not too small */
+        min-height: 40px;
+        margin-left: 0; /* Normal spacing */
+    }
 }
 
 /* Animation for avatar and login spinner transitions */
@@ -32,7 +39,7 @@
 }
 
 .header-avatar {
-    width: 32px;
+    width: 32px; /* Back to original comfortable size */
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
@@ -40,6 +47,11 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     display: inline-block;
     vertical-align: middle;
+    
+    @media (min-width: 1200px) {
+        width: 30px; /* Slightly smaller on desktop but still visible */
+        height: 30px;
+    }
 }
 
 /* Login progress spinner styling */
@@ -153,8 +165,16 @@
     --wf-header-hover-color: var(--mainColor, #0A66C2);
     --wf-header-underline-height: 2px;
     --wf-header-underline-radius: 2px;
-    --wf-header-utility-gap: 40px;
+    --wf-header-utility-gap: 18px; /* Moderate gap between utility icons */
     --wf-header-utility-margin-left: 36px; /* fallback spacing when not using auto push */
+    
+    /* Desktop optimized variables */
+    @media (min-width: 1200px) {
+        --wf-header-utility-gap: 15px; /* Slightly smaller gap on desktop, but still comfortable */
+    }
+    @media (min-width: 1600px) {
+        --wf-header-utility-gap: 12px; /* Still maintain some gap on large desktop */
+    }
     --wf-header-brand-gap: 45px; /* distance between logo and first menu item */
     --wf-header-utility-icon-size: 16px;
     --wf-header-stroke-width: 2;
@@ -353,20 +373,28 @@
             margin-left: var(--wf-header-brand-gap);
             display: flex;
             align-items: center;
-            gap: var(--wf-header-utility-gap);
+            gap: var(--wf-header-utility-gap); /* Using the design token value */
             height: var(--wf-header-height);
+            
+            /* Removing custom gap overrides to use design tokens */
 
             .icon-link {
                 display: inline-flex;
-                min-width: 44px;
-                min-height: 44px;
+                min-width: 42px; /* More comfortable size */
+                min-height: 42px;
                 align-items: center;
                 justify-content: center;
                 position: relative;
+                margin: 0; /* Normal margin */
 
                 lucide-icon {
-                    width: 24px;
-                    height: 24px;
+                    width: 22px; /* Maintain consistent icon size */
+                    height: 22px;
+                    
+                    @media (min-width: 1200px) {
+                        width: 22px; /* Keeping size consistent across breakpoints */
+                        height: 22px;
+                    }
                 }
             }
             

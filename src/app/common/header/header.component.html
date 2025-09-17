@@ -18,7 +18,7 @@
                 </button>
             </form> -->
         </div>
-        <ul class="header-right-side d-flex align-items-center m-0 p-0 list-unstyled">
+        <ul class="header-right-side d-flex align-items-center m-0 p-0 list-unstyled justify-content-end">
             <li>
                 <button
                     mat-button
@@ -88,7 +88,7 @@
                     </div>
                 </mat-menu> -->
             </li>
-            <li>
+            <li class="notification-container">
                 <button mat-button [matMenuTriggerFor]="notificationsMenu" class="notifications-menu-btn">
                     <i-feather name="bell"></i-feather>
                     <span class="workifence-badge fw-bold bg-primary text-center text-white rounded-circle d-flex align-items-center justify-content-center">
@@ -170,7 +170,7 @@
                     <i-feather name="calendar"></i-feather> {{ formattedDate }}
                 </div>
             </li> -->
-            <li>
+            <li class="avatar-container">
                 <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-menu-btn">
                     <img [src]="bioProfile().imageUrl?bioProfile().imageUrl:'assets/img/avatars/noavatar.png'" class="rounded-circle" alt="user-image">
                 </button>

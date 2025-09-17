@@ -78,13 +78,20 @@ export class AppComponent implements OnInit, AfterViewInit{
         },
         {
           id: '3',
+          parent: 'Resume Portal',
+          route: '/central/resume-portal',
+          icon: 'file-text',
+          menuItems:[]
+        },
+        {
+          id: '4',
           parent: 'Contact Us',
           route: '/contact-us',
           icon: 'info',
           menuItems: []
         },
         {
-            id: '4',
+            id: '5',
             parent: 'Sign In',
             route: '/sign-in',
             icon: 'log-in',

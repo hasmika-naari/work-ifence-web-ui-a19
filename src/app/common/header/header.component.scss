@@ -24,6 +24,17 @@
         top: 0;
         box-shadow: rgba(77, 77, 77, 0.16) 0px -1px 0px 0px inset !important;
         background-color: #fff !important;
+        
+        /* Improve header layout on large screens */
+        @media (min-width: 1600px) {
+            padding: 17px 40px;
+            
+            .d-md-flex {
+                max-width: 1800px;
+                margin: 0 auto;
+                padding: 0 15px;
+            }
+        }
         .header-left-side {
             .burger-menu {
                 top: 1px;
@@ -68,11 +79,34 @@
             }
         }
         .header-right-side {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            max-width: 130px; /* Reduced from 300px to force icons closer together */
+            margin-left: auto;
+            
+            @media (min-width: 1200px) {
+                max-width: 80px; /* Much tighter on desktop screens */
+            }
+            
+            @media (min-width: 1600px) {
+                max-width: 70px; /* Extra tight on large desktop screens */
+            }
+            
             li {
                 margin: {
-                    left: 6px;
-                    right: 6px;
+                    left: 0px; /* Reduced from 6px */
+                    right: 0px; /* Reduced from 6px */
                 };
+                @media (min-width: 1200px) {
+                    margin: {
+                        left: 0px; /* Reduced from 2px */
+                        right: 0px; /* Reduced from 2px */
+                    };
+                }
+                &:last-child {
+                    margin-right: 0;
+                }
                 .dark-swtich-btn {
                     &.mat-mdc-button {
                         padding: 0;
@@ -143,12 +177,44 @@
                         }
                     }
                 }
+                /* Special styling for notification and avatar containers */
+                &.notification-container {
+                    margin-right: -5px; /* Push notification closer to avatar */
+                    
+                    @media (min-width: 1200px) {
+                        margin-right: -10px; /* More aggressive on desktop */
+                    }
+                    
+                    @media (min-width: 1600px) {
+                        margin-right: -12px; /* Even more aggressive on large desktop */
+                    }
+                }
+                
+                &.avatar-container {
+                    margin-left: -8px; /* Pull avatar closer to notification */
+                    
+                    @media (min-width: 1200px) {
+                        margin-left: -14px; /* More aggressive on desktop */
+                    }
+                    
+                    @media (min-width: 1600px) {
+                        margin-left: -16px; /* Even more aggressive on large desktop */
+                    }
+                }
+                
+                /* Button styling adjustments */
                 .notifications-menu-btn {
                     &.mat-mdc-button {
                         padding: 0;
-                        width: 42px;
-                        height: 42px;
+                        width: 38px; /* Slightly smaller */
+                        height: 38px; /* Slightly smaller */
                         min-width: auto;
+                        
+                        @media (min-width: 1200px) {
+                            width: 36px; /* Even smaller on desktop */
+                            height: 36px;
+                            margin-right: -2px; /* Shift right slightly */
+                        }
                         color: #818093;
                         border-radius: 50%;
                         display: inline-block;
@@ -237,17 +303,25 @@
                     &.mat-mdc-button {
                         display: inline-block;
                         border-radius: 50%;
-                        margin-left: 8px;
+                        margin-left: 0; /* Reduced from 8px to remove space */
                         min-width: auto;
                         height: auto;
                         padding: 0;
+                        
+                        @media (min-width: 1200px) {
+                            margin-left: -2px; /* Shift left slightly on desktop */
+                        }
 
                         .mdc-button__label {
                             display: block;
                             line-height: 1;
 
                             img {
-                                width: 40px;
+                                width: 38px; /* Slightly smaller to match notification icon */
+                                
+                                @media (min-width: 1200px) {
+                                    width: 36px; /* Even smaller on desktop */
+                                }
                             }
                         }
                         .mat-mdc-button-touch-target {
