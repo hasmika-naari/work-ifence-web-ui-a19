@@ -22,8 +22,8 @@ import { IconsModule } from 'src/app/shared/icons.module';
     standalone: true,
     imports: [
         CommonModule, NgOptimizedImage, RouterModule,
-        RouterLink, NgbModule, NgbNavModule,
-        SaasSidebarComponent, MatDividerModule,
+        RouterLink, NgbModule, NgbNavModule, SaasSidebarComponent,
+        MatDividerModule,
         IconsModule,
     ],
     templateUrl: './header-wifence.component.html',
@@ -108,11 +108,15 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     }
 
     openSidebar() {
+        console.log('Opening sidebar');
         this.sidebarOpen = true;
+        this.cdr.detectChanges();
     }
 
     closeSidebar() {
+        console.log('Closing sidebar');
         this.sidebarOpen = false;
+        this.cdr.detectChanges();
     }
 
     toggleTheme() {

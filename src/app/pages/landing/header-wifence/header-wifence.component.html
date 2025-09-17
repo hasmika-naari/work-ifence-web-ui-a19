@@ -57,7 +57,9 @@
                         <button class="navbar-toggler menu-trigger" type="button" aria-label="Toggle Menu" aria-controls="mainNav" [attr.aria-expanded]="isMenuOpen()" (click)="toggleMenu()">
                             <lucide-icon name="menu"></lucide-icon>
                         </button>
-                        <app-saas-sidebar *ngIf="sidebarOpen" [userAccount]="userAccount" (closeSidebar)="closeSidebar()"></app-saas-sidebar>
+                        <!-- Debug info for sidebar -->
+                        <div style="display: none;">Sidebar open: {{sidebarOpen}}</div>
+                        <app-saas-sidebar [userAccount]="userAccount" [sidebarOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-saas-sidebar>
                     </div>
                 </div>
             </div>

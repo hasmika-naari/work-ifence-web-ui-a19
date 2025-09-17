@@ -1,41 +1,52 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Input, Output, EventEmitter } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from '../../../../services/local-storage.service';
+import { LucideAngularModule } from 'lucide-angular';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
   selector: 'app-saas-sidebar',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, RouterModule, RouterLink, NgbModule, NgbNavModule],
+  imports: [
+    CommonModule, 
+    NgOptimizedImage, 
+    RouterModule, 
+    RouterLink, 
+    NgbModule, 
+    NgbNavModule,
+    IconsModule
+   
+  ],
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SaasSidebarComponent implements OnInit {
+export class SaasSidebarComponent implements OnInit, OnChanges {
   @Input() userAccount: any;
   @Output() closeSidebar = new EventEmitter<void>();
+  @Input() sidebarOpen: boolean = false;
   country: string = '';
   selectedCountry: any = '';
 
-  private _localStorageService: LocalStorageService= inject(LocalStorageService);
+  private _localStorageService: LocalStorageService = inject(LocalStorageService);
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   constructor() {
-    // this.country = this._localStorageService.getItem('naariCountry');
-    // if(this.country){
-    //   this.country = this.country.replace(/\"/g, " ");
-    //   this.country = this.country.replace(/\s+/g, '');
-    //   this.country = this.country.replace(/\\/g, '');
-
-    //   if(this.country === 'usa'){
-    //     this.selectedCountry = '1';
-    //   }else{
-    //     this.selectedCountry = '2';
-    //   }
-    // }
-   }
+    // Country logic commented out
+  }
 
   ngOnInit() {
+    console.log('Sidebar initialized, open state:', this.sidebarOpen);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['sidebarOpen']) {
+      console.log('Sidebar open state changed:', this.sidebarOpen);
+      this.cdr.detectChanges();
+    }
   }
 
   // countrySelectionChanged($event){
