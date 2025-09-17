@@ -18,7 +18,10 @@
                 <img src="assets/img/black-logo.png" alt="logo" class="sidebar-logo">
             </a></h2>
             <div *ngIf="userAccount" class="sidebar-profile">
-                <img *ngIf="userAccount.profileImage" [src]="userAccount.profileImage" alt="Profile" class="profile-img" />
+                <div *ngIf="isAutoLoggingIn" class="login-progress-container">
+                    <mat-spinner [diameter]="70" [strokeWidth]="4" color="accent"></mat-spinner>
+                </div>
+                <img *ngIf="!isAutoLoggingIn && userAccount.profileImage" [src]="userAccount.profileImage" alt="Profile" class="profile-img" />
             </div>
         </div>
 

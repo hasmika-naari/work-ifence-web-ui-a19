@@ -7,6 +7,17 @@
     justify-content: center;
     // padding: 10px !important;
 }
+
+/* Animation for avatar and login spinner transitions */
+.avatar-bg, .login-progress-container {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0.4; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
 .avatar-trigger:hover .avatar-bg {
         // background: var(--secondaryColor, #0A66C2);  
         // background: var(--mainColor, #0A66C2);
@@ -28,6 +39,44 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     display: inline-block;
     vertical-align: middle;
+}
+
+/* Login progress spinner styling */
+.login-progress-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: linear-gradient(135deg, #f3f4f8 60%, #e9eaf3 100%);
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.login-progress-container:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.login-progress-container::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: inset 0 0 6px rgba(0, 102, 194, 0.2);
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: inset 0 0 3px rgba(0, 102, 194, 0.2);
+    }
+    100% {
+        box-shadow: inset 0 0 10px rgba(0, 102, 194, 0.4);
+    }
 }
 // Responsive menu for mobile and tablet
 @media (max-width: 991px) {

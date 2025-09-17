@@ -42,7 +42,16 @@
                         <a routerLink="/notifications" class="icon-link" aria-label="Notifications">
                             <lucide-icon name="bell"></lucide-icon>
                         </a>
-                        @if(isLoggedIn()) {
+                        
+                        <!-- Always show progress spinner until auth state is determined -->
+                        @if(isAutoLoggingIn || authStateUndetermined) {
+                            <span class="avatar-trigger no-underline">
+                                <span class="avatar-bg login-progress-container" title="Checking login status...">
+                                    <mat-spinner [diameter]="32" [strokeWidth]="3" color="primary"></mat-spinner>
+                                </span>
+                            </span>
+                        } @else if(isLoggedIn()) {
+                            <!-- Show avatar once logged in -->
                             <span class="avatar-trigger no-underline" (click)="openSidebar()">
                                 <span class="avatar-bg">
                                     <img *ngIf="userAccount?.profileImage" [src]="userAccount.profileImage" alt="Avatar" class="header-avatar" />
@@ -50,6 +59,7 @@
                                 </span>
                             </span>
                         } @else {
+                            <!-- Show login icon when not logged in -->
                             <a routerLink="/sign-in" class="icon-link" aria-label="Sign In">
                                 <lucide-icon name="log-in"></lucide-icon>
                             </a>
@@ -59,7 +69,11 @@
                         </button>
                         <!-- Debug info for sidebar -->
                         <div style="display: none;">Sidebar open: {{sidebarOpen}}</div>
-                        <app-saas-sidebar [userAccount]="userAccount" [sidebarOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-saas-sidebar>
+                        <app-saas-sidebar 
+                            [userAccount]="userAccount" 
+                            [sidebarOpen]="sidebarOpen"
+                            (closeSidebar)="closeSidebar()">
+                        </app-saas-sidebar>
                     </div>
                 </div>
             </div>

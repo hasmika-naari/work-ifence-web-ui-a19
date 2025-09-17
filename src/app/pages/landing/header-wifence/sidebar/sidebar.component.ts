@@ -6,6 +6,7 @@ import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from '../../../../services/local-storage.service';
 import { LucideAngularModule } from 'lucide-angular';
 import { IconsModule } from 'src/app/shared/icons.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-saas-sidebar',
@@ -17,7 +18,8 @@ import { IconsModule } from 'src/app/shared/icons.module';
     RouterLink, 
     NgbModule, 
     NgbNavModule,
-    IconsModule
+    IconsModule,
+    MatProgressSpinnerModule
    
   ],
   templateUrl: './sidebar.component.html',
@@ -28,6 +30,7 @@ export class SaasSidebarComponent implements OnInit, OnChanges {
   @Input() userAccount: any;
   @Output() closeSidebar = new EventEmitter<void>();
   @Input() sidebarOpen: boolean = false;
+  @Input() isAutoLoggingIn: boolean = false; // New property to track auto login state
   country: string = '';
   selectedCountry: any = '';
 

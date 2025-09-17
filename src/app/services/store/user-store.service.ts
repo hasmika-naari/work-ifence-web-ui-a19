@@ -1,4 +1,6 @@
 import { Injectable, Signal, computed, signal } from "@angular/core";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { Observable } from "rxjs";
 import { ResumeTemplateDto, SectionDesc, UserResume, UserState } from "./user-store";
 import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
@@ -1106,6 +1108,11 @@ removeSectionFromMultipleSectionsList(section: string) {
       
       getUserLoginStatus(): Signal<boolean> {
         return computed(()=> this.state().isUserLoggedIn);
+      }
+      
+      // Observable version of getUserLoginStatus for use with subscribe
+      getUserLoginStatus$(): Observable<boolean> {
+        return toObservable(this.getUserLoginStatus());
       }
 
       getUserRoles(): Signal<Array<WifRole>> {

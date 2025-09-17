@@ -6,6 +6,7 @@ import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { SaasSidebarComponent } from './sidebar/sidebar.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WINDOW } from '../../../services/window.token';
 import { LocalStorageService } from '../../../services/local-storage.service';
 import { UserStoreService } from '../../../services/store/user-store.service';
@@ -21,9 +22,15 @@ import { IconsModule } from 'src/app/shared/icons.module';
     selector: 'app-header-wifence',
     standalone: true,
     imports: [
-        CommonModule, NgOptimizedImage, RouterModule,
-        RouterLink, NgbModule, NgbNavModule, SaasSidebarComponent,
+        CommonModule, 
+        NgOptimizedImage, 
+        RouterModule,
+        RouterLink, 
+        NgbModule, 
+        NgbNavModule, 
+        SaasSidebarComponent,
         MatDividerModule,
+        MatProgressSpinnerModule,
         IconsModule,
     ],
     templateUrl: './header-wifence.component.html',
@@ -33,6 +40,10 @@ import { IconsModule } from 'src/app/shared/icons.module';
 export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
     public isLoggedIn: any;
     sidebarOpen = false;
+    isAutoLoggingIn = false; // Property to track auto login state
+    authStateUndetermined = true; // Flag to track if auth state is still being determined
+    private loginStatusSubscription: Subscription | null = null;
+    private autoLoginTimeoutId: any = null; // Timeout reference for cleanup
 
   @Input('back') back: boolean = false;
   @Input('container') container: boolean = true;
@@ -127,26 +138,90 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
         if (isPlatformBrowser(this.platformId)) {
             this.browser = true;
             this.scroller.scrollToPosition([0, 0]);
-            // this.scrollListener = this.renderer.listen('window', 'scroll', () => {
-            //     const yOffset = this.scroller.getScrollPosition()[1];
-            //     this.isSticky = yOffset > 100;
-            // });
-        }
-        if(this.browser){
-            if(this.deviceService.isDesktop()){
-              this.isDesktop = true;
-              this.isMobile = false;
-              this.isTablet = false;
-            }else if(this.deviceService.isMobile()){
-              this.isMobile = true;
-              this.isDesktop = false;
-              this.isTablet = false;
-            }else if(this.deviceService.isTablet()){
-              this.isTablet = true;
-              this.isMobile = false;
-              this.isDesktop = false;
+            
+            // Always start with showing spinner
+            this.isAutoLoggingIn = true;
+            this.authStateUndetermined = true;
+            this.cdr.detectChanges();
+            
+            // Check if user account already exists in store
+            const currentUserAccount = this.userStore.getUserAccount()();
+            const isLoggedIn = this.userStore.getUserLoginStatus()();
+            
+            console.log('Initial auth check - Logged in:', isLoggedIn, 'User account:', !!currentUserAccount);
+            
+            // If we have clear auth state already, update UI after a short delay
+            if (isLoggedIn !== undefined) {
+                // Keep showing the auth spinner for a moment for better UX
+                setTimeout(() => {
+                    this.authStateUndetermined = false;
+                    this.cdr.detectChanges();
+                    
+                    // Keep auto login spinner visible for a bit longer
+                    setTimeout(() => {
+                        this.isAutoLoggingIn = false;
+                        this.cdr.detectChanges();
+                    }, 500);
+                }, 800);
             }
-          } 
+            
+            // Subscribe to login status changes
+            this.loginStatusSubscription = this.userStore.getUserLoginStatus$().subscribe((loggedIn: boolean) => {
+                console.log('Login status determined:', loggedIn);
+                
+                // Keep showing the spinner for a moment before updating auth state
+                setTimeout(() => {
+                    // Clear auth state uncertainty
+                    this.authStateUndetermined = false;
+                    this.cdr.detectChanges();
+                    
+                    // Keep spinner for a longer moment after state is determined for smoother transition
+                    setTimeout(() => {
+                        this.isAutoLoggingIn = false;
+                        this.cdr.detectChanges();
+                    }, 500);
+                }, 800);
+                
+                // Clear the timeout if login status is determined
+                if (this.autoLoginTimeoutId) {
+                    clearTimeout(this.autoLoginTimeoutId);
+                    this.autoLoginTimeoutId = null;
+                }
+            });
+            
+            // Auto-reset after a timeout to ensure UI is responsive even if auth state determination fails
+            this.autoLoginTimeoutId = setTimeout(() => {
+                if (this.authStateUndetermined || this.isAutoLoggingIn) {
+                    console.log('Auto-hiding login spinner after timeout');
+                    // First hide auth determination spinner
+                    this.authStateUndetermined = false;
+                    this.cdr.detectChanges();
+                    
+                    // Then hide auto login spinner after a small delay
+                    setTimeout(() => {
+                        this.isAutoLoggingIn = false;
+                        this.cdr.detectChanges();
+                    }, 500);
+                }
+                this.autoLoginTimeoutId = null;
+            }, 3000); // Increased timeout to give more time for auth state to be determined
+            
+            if(this.browser){
+                if(this.deviceService.isDesktop()){
+                  this.isDesktop = true;
+                  this.isMobile = false;
+                  this.isTablet = false;
+                }else if(this.deviceService.isMobile()){
+                  this.isMobile = true;
+                  this.isDesktop = false;
+                  this.isTablet = false;
+                }else if(this.deviceService.isTablet()){
+                  this.isTablet = true;
+                  this.isMobile = false;
+                  this.isDesktop = false;
+                }
+            }
+        }
     }
 
     ngOnDestroy(): void {
@@ -155,6 +230,12 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
         }
         if (this.stickySubscription) {
           this.stickySubscription.unsubscribe();
+        }
+        if (this.loginStatusSubscription) {
+          this.loginStatusSubscription.unsubscribe();
+        }
+        if (this.autoLoginTimeoutId) {
+          clearTimeout(this.autoLoginTimeoutId);
         }
     }
 
