@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 export class SpecialOfferComponent {
   // Benefits included in the special offer
   benefits = [
-    'Unlimited resume storage',
+    'Up to 5 resumes storage',
     'Basic AI-powered resume analysis',
     'Track up to 10 job applications',
     'Access to resume templates',

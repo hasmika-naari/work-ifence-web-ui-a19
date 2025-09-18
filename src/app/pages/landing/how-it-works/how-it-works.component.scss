@@ -153,11 +153,12 @@
     h3 {
         font-size: 26px;
         margin-bottom: 15px;
+        color: var(--whiteColor);
     }
     
     p {
         font-size: 16px;
-        opacity: 0.9;
+        color: rgba(255, 255, 255, 0.9);
         margin-bottom: 25px;
     }
     
@@ -179,6 +180,68 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             background-color: var(--mainColor5);
             color: var(--mainColor);
+        }
+    }
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    
+    .sub-title {
+        background-color: transparent;
+        color: var(--mainColor, #0A66C2);
+        padding: 6px 0;
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    
+    h2 {
+        color: var(--secondaryColor);
+        font-size: 38px;
+        margin-bottom: 0;
+    }
+}
+
+.glossy-section {
+    text-align: center;
+    margin-bottom: 50px;
+    
+    .sub-title {
+        background-color: transparent;
+        color: var(--mainColor, #0A66C2);
+        padding: 6px 0;
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    
+    .title-container {
+        position: relative;
+        display: inline-block;
+        
+        h2 {
+            color: var(--secondaryColor);
+            font-size: 38px;
+            margin-bottom: 0;
+        }
+        
+        .title-underline {
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--mainColor), transparent);
         }
     }
 }
@@ -214,5 +277,10 @@
         h3 {
             font-size: 22px;
         }
+    }
+    
+    .section-title h2,
+    .glossy-section .title-container h2 {
+        font-size: 28px;
     }
 }

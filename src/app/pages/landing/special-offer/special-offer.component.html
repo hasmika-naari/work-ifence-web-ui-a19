@@ -7,7 +7,7 @@
         </div>
     </div>
     
-    <div class="row align-items-center">
+    <div class="row align-items-stretch">
         <div class="col-lg-6">
             <div class="offer-content">
                 <div class="offer-badge">
@@ -39,32 +39,31 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="premium-upgrade-card card glossy-card">
-                <div class="card-header">
-                    <h3>Upgrade to Premium AI</h3>
-                    <p>Unlock the full power of AI for your job search</p>
+            <div class="premium-upgrade-card">
+                <div class="premium-badge">
+                    <span>Coming Soon</span>
                 </div>
-                <div class="card-body">
-                    <div class="price-tag">
-                        <span class="currency">$</span>
-                        <span class="amount">9.99</span>
-                        <span class="period">/month</span>
-                    </div>
-                    <p class="upgrade-description">
-                        When you're ready to take your job search to the next level, upgrade to access our
-                        advanced AI features designed to maximize your chances of landing interviews.
-                    </p>
-                    <div class="premium-benefits">
-                        <h4>Premium AI Features:</h4>
-                        <ul>
-                            <li *ngFor="let benefit of premiumBenefits">
-                                <i class="material-icons">stars</i>
-                                <span>{{benefit}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="upgrade-action">
-                        <a href="#" class="btn-secondary">Learn More</a>
+                <h2>Premium AI Features</h2>
+                <p class="premium-description">
+                    We're working on advanced AI features to supercharge your job search experience. 
+                    Stay tuned for these premium capabilities coming in the near future.
+                </p>
+                
+                <div class="premium-benefits-list">
+                    <h4>Future Premium Features:</h4>
+                    <ul>
+                        <li *ngFor="let benefit of premiumBenefits">
+                            <i class="material-icons">stars</i>
+                            <span>{{benefit}}</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="premium-actions">
+                    <a href="#" class="btn-secondary">Join Waitlist</a>
+                    <div class="premium-guarantee">
+                        <i class="material-icons">verified</i>
+                        <span>Coming Soon</span>
                     </div>
                 </div>
             </div>
