@@ -32,7 +32,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    color: var(--mainColor, #4353ff);
+    color: var(--secondaryColor); /* Changed to secondaryColor */
     font-weight: 500;
     font-size: 15px;
     line-height: 1;
@@ -52,7 +52,7 @@
     }
     
     &:hover {
-      color: var(--secondaryColor, #2d3bda);
+      color: var(--mainColor); /* Stays as mainColor for hover */
     }
   }
   
@@ -72,6 +72,7 @@
   }
   
   .back-button {
+    cursor: pointer;
     &:hover {
       transform: translateX(-3px);
     }
@@ -214,9 +215,11 @@
   font-weight: 600;
   color: var(--secondaryColor);
   position: relative;
-  padding-bottom: 10px;
+  /* Removed padding-bottom since we're removing the underline */
 }
 
+/* Removing the underline by commenting out this block */
+/* 
 .privacy-area .story-content h4.title::after {
   content: '';
   position: absolute;
@@ -226,6 +229,7 @@
   height: 2px;
   background: linear-gradient(90deg, var(--mainColor), var(--secondaryColor));
 }
+*/
 
 .privacy-area .story-content ul {
   margin-bottom: 30px;
@@ -295,7 +299,7 @@
   .privacy-area .story-content h4.title {
     font-size: 18px;
     margin-bottom: 15px;
-    padding-bottom: 8px;
+    /* Removed padding-bottom since we removed the underline */
   }
   
   .privacy-area .story-content p {

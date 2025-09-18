@@ -256,6 +256,7 @@
   }
   
   .back-button {
+    cursor: pointer;
     &:hover {
       transform: translateX(-3px);
     }
