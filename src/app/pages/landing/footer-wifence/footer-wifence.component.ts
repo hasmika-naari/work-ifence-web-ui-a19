@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, RouterModule } from '@angular/router';
 import { NgxScrollTopModule } from 'ngx-scrolltop';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
   selector: 'app-work-ifence-footer',
@@ -13,7 +14,8 @@ import { NgxScrollTopModule } from 'ngx-scrolltop';
     NgxScrollTopModule, 
     RouterModule,
     RouterLink,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    IconsModule
   ],
   templateUrl: './footer-wifence.component.html',
   styleUrls: ['./footer-wifence.component.scss']
@@ -46,7 +48,7 @@ export class FooterWorkifenceComponent implements OnInit {
     }
     
     // Form is valid, proceed with subscription
-    console.log('Newsletter subscription for email:', this.newsletterForm.value.email);
+    console.log('News Letter subscription for email:', this.newsletterForm.value.email);
     
     // Reset form after submission
     this.newsletterForm.reset();

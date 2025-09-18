@@ -1,7 +1,174 @@
   
+/* Add crossbrowser cursor support */
+* {
+    cursor: default;
+}
+
 /* Force font on all elements within this component */
 :host * {
     font-family: 'Poppins', sans-serif;
+}
+
+/* Ensure all link columns maintain consistent width */
+.footer-area .single-footer-widget {
+    ul li a {
+        display: block !important; /* Make links full width of their container */
+        width: 100% !important; /* Force full width */
+        cursor: hand !important; /* Old IE */
+        cursor: pointer !important; /* Standard */
+        white-space: nowrap !important; /* Prevent wrapping to second line */
+        overflow: hidden !important; /* Hide overflow text */
+        text-overflow: ellipsis !important; /* Show ellipsis for overflowing text */
+    }
+}
+
+footer a, 
+footer button,
+footer [role="link"],
+footer [role="button"] {
+    cursor: hand !important; /* Old IE */
+    cursor: pointer !important; /* Standard */
+}
+
+/* Add specific style to prevent any transforms or layout shifts on hover */
+.footer-area li:hover {
+    transform: none !important; /* Prevent any transform that might cause line wrapping */
+}
+
+/* Make all footer link columns maintain consistent width */
+.contact-us-link a,
+.support-link a,
+.useful-link a {
+    display: block !important; /* Make links full width of their container */
+    width: 100% !important; /* Force full width */
+    white-space: nowrap !important; /* Prevent text wrapping */
+    overflow: hidden !important; /* Hide overflow */
+    text-overflow: ellipsis !important; /* Show ellipsis for overflow text */
+}
+
+/* Fix alignment of icons in links */
+.footer-area a i {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Specific fix for longer links to prevent wrapping */
+.useful-link li a {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    padding-right: 5px !important;
+    font-size: 0.95em !important; /* Slightly reduce font size */
+}
+
+/* Add a visual hover effect to all links for better user feedback */
+.footer-area a:hover {
+    background-color: rgba(var(--secondaryColorRGB), 0.15) !important; /* More visible shade */
+    cursor: hand !important; /* Hand cursor instead of pointer */
+    cursor: pointer !important; /* Standard cursor for modern browsers */
+    transform: scale(1.03) !important; /* Keep the animation but make it subtle */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Make all columns consistent */
+.footer-area .single-footer-widget {
+    min-height: 280px; /* Set a minimum height for all widgets */
+    padding: 0 10px; /* Add some padding for better spacing */
+}
+
+/* Contact column specific styling to show full text */
+.footer-area .contact-us-link {
+    li a {
+        font-size: 0.95em; /* Slightly smaller font but more readable */
+        padding-right: 0; /* Remove right padding to fit better */
+        white-space: normal !important; /* Allow text to wrap to multiple lines */
+        overflow: visible !important; /* Show all text */
+        text-overflow: clip !important; /* Don't use ellipsis */
+        line-height: 1.5 !important; /* Improve line spacing for wrapped address */
+    }
+    
+    /* Add some bottom spacing for the address with line break */
+    li:first-child {
+        margin-bottom: 20px;
+    }
+}
+
+/* Support and Useful Link columns specific styling */
+.footer-area .support-link,
+.footer-area .useful-link {
+    li a {
+        font-size: 0.9em; /* Slightly smaller font */
+        padding-right: 0; /* Remove right padding to fit better */
+        white-space: nowrap !important; /* Prevent text wrapping to second line */
+        overflow: hidden !important; /* Hide overflow text */
+        text-overflow: ellipsis !important; /* Show ellipsis for overflowing text */
+    }
+}
+
+/* Newsletter column specific styling */
+.footer-area .newsletter-box {
+    max-width: 100%; /* Ensure the content uses the full width of the column */
+    padding-right: 10px; /* Add some padding for better spacing */
+}
+
+/* Force cursor: hand on all clickable elements in footer */
+footer a, 
+footer .contact-us-link a, 
+footer .support-link a, 
+footer .useful-link a, 
+footer .social-link a, 
+footer .logo a, 
+footer .copyright-text a {
+    cursor: hand !important;
+}
+
+/* Add enhanced styling for footer links */
+.footer-area a {
+    color: var(--secondaryColor) !important;
+    opacity: 0.95 !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    margin: -3px -8px !important; /* Offset the padding to maintain original layout */
+    cursor: hand !important; /* Use hand cursor for a more clickable feel */
+    position: relative !important;
+}
+
+.footer-area a:hover,
+.footer-area a:focus {
+    opacity: 1 !important;
+    background-color: rgba(var(--secondaryColorRGB), 0.15) !important; /* More visible shade */
+    text-decoration: none !important;
+    cursor: hand !important;
+    transform: scale(1.03) !important; /* Subtle scale animation */
+    z-index: 1 !important; /* Ensure hover state appears above other elements */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow for depth */
+}
+
+/* Ensure all links within the footer show a pointer cursor */
+:host {
+    a, 
+    .contact-us-link li a, 
+    .support-link li a, 
+    .useful-link li a, 
+    .social-link li a, 
+    .logo a, 
+    .copyright-text a,
+    [routerLink] {
+        cursor: pointer !important;
+        cursor: hand !important; /* For older browsers */
+    }
+    
+    /* Add a visual hover effect to all links for better user feedback */
+    a:hover {
+        opacity: 1 !important;
+        transform: translateY(0) !important; /* Remove transform to prevent text wrapping issues */
+        text-shadow: none !important; /* Remove text shadow */
+        color: var(--secondaryColor) !important; /* Keep original color */
+        background-color: rgba(var(--secondaryColorRGB), 0.1) !important;
+        cursor: pointer !important;
+    }
 }
   
 
@@ -283,10 +450,10 @@
     
     h3 {
         margin-bottom: 25px;
-        color: var(--secondaryColor);
+        color: rgba(var(--secondaryColorRGB), 0.7); /* Lighter than the links */
         font: {
-            size: 20px;
-            weight: 600;
+            size: 18px; /* Slightly smaller */
+            weight: 500; /* Less bold */
             family: 'Poppins', sans-serif;
         };
         position: relative;
@@ -294,6 +461,7 @@
         letter-spacing: 0.5px;
         text-transform: uppercase;
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        opacity: 0.85; /* Slightly transparent */
         
         &::after {
             content: '';
@@ -301,14 +469,14 @@
             bottom: -8px;
             left: 0;
             width: 100%; /* Extends to the full width of the text */
-            height: 2px;
+            height: 1px; /* Thinner underline */
             border-radius: 2px;
             background: linear-gradient(to right, 
-                var(--secondaryColor) 0%, 
-                var(--secondaryColor) 70%, 
+                rgba(var(--secondaryColorRGB), 0.4) 0%, /* More transparent */
+                rgba(var(--secondaryColorRGB), 0.4) 70%, 
                 rgba(var(--secondaryColorRGB), 0) 100%
             );
-            opacity: 1;
+            opacity: 0.7; /* More transparent */
             visibility: visible;
             transition: all 0.3s ease;
         }
@@ -324,6 +492,8 @@
             left: 0;
             right: 10px;
         };
+        width: 100%; /* Ensure full width */
+        
         li {
             margin-bottom: 15px;
             color: var(--secondaryColor);
@@ -332,6 +502,7 @@
             line-height: 1.6;
             transition: all 0.3s ease;
             font-weight: 500;
+            width: 100%; /* Ensure full width */
 
             i {
                 color: var(--secondaryColor);
@@ -341,13 +512,22 @@
                 top: 3px;
             }
             a {
-                display: inline-block;
-                color: var(--secondaryColor);
+                display: block; /* Changed to block for full width */
+                width: 100%; /* Ensure consistent width */
+                color: var(--secondaryColor); /* Full strength color */
                 font-weight: 500;
                 transition: all 0.3s ease;
+                cursor: pointer;
+                cursor: hand;
+                position: relative;
+                opacity: 0.95; /* Slightly more vibrant than headings */
 
                 &:hover, &:focus {
-                    color: rgba(var(--primaryColorRGB), 1);
+                    color: var(--secondaryColor);
+                    opacity: 1;
+                    background-color: rgba(var(--secondaryColorRGB), 0.1);
+                    cursor: pointer;
+                    cursor: hand;
                 }
             }
             &:last-child {
@@ -355,7 +535,7 @@
             }
             
             &:hover {
-                transform: translateX(3px);
+                transform: none; /* Remove the transform to prevent inconsistent width */
             }
         }
     }
@@ -363,20 +543,24 @@
         padding-left: 0;
         list-style-type: none;
         margin-bottom: 0;
+        width: 100%; /* Ensure full width */
 
         li {
             margin-bottom: 13px;
             position: relative;
             transition: all 0.3s ease;
+            width: 100%; /* Ensure full width */
 
             &:last-child {
                 margin-bottom: 0;
             }
             a {
-                display: inline-flex;
+                display: block; /* Changed to block for full width */
+                width: 100%; /* Ensure consistent width */
                 align-items: center;
                 color: var(--secondaryColor);
                 cursor: pointer;
+                cursor: hand;
                 transition: all 0.3s ease;
                 position: relative;
                 padding-left: 0;
@@ -402,11 +586,14 @@
                 
                 &:hover, &:focus {
                     color: var(--secondaryColor);
-                    padding-left: 5px;
+                    background-color: rgba(var(--secondaryColorRGB), 0.15) !important;
+                    cursor: hand !important;
+                    cursor: pointer !important;
+                    transform: scale(1.03) !important;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
                     
                     i {
                         opacity: 1;
-                        transform: scale(1.1);
                     }
                     
                     &::before {
@@ -417,7 +604,7 @@
             }
             
             &:hover {
-                transform: translateX(3px);
+                transform: none; /* Remove the transform to prevent inconsistent width */
             }
         }
     }
@@ -425,20 +612,24 @@
         padding-left: 0;
         list-style-type: none;
         margin-bottom: 0;
+        width: 100%; /* Ensure full width */
 
         li {
             margin-bottom: 13px;
             position: relative;
             transition: all 0.3s ease;
+            width: 100%; /* Ensure full width */
 
             &:last-child {
                 margin-bottom: 0;
             }
             a {
-                display: inline-flex;
+                display: block; /* Changed to block for full width */
+                width: 100%; /* Ensure consistent width */
                 align-items: center;
                 color: var(--secondaryColor);
                 cursor: pointer;
+                cursor: hand;
                 transition: all 0.3s ease;
                 position: relative;
                 padding-left: 0;
@@ -463,13 +654,16 @@
                 }
                 
                 &:hover, &:focus {
-                    color: var(--textHighlightColor);
-                    padding-left: 5px;
+                    color: var(--secondaryColor);
+                    background-color: rgba(var(--secondaryColorRGB), 0.15) !important;
+                    cursor: hand !important;
+                    cursor: pointer !important;
+                    transform: scale(1.03) !important;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
                     
                     i {
                         opacity: 1;
-                        transform: scale(1.1);
-                        color: var(--textHighlightColor);
+                        color: var(--secondaryColor);
                     }
                     
                     &::before {
@@ -480,56 +674,60 @@
             }
             
             &:hover {
-                transform: translateX(3px);
+                transform: none; /* Remove the transform to prevent inconsistent width */
             }
         }
     }
     .social-link {
         padding-left: 0;
         list-style-type: none;
-        margin: {
-            top: 25px;
-            bottom: 0;
-        };
+        margin-top: 15px;
+        margin-bottom: 0;
         display: flex;
-        gap: 10px;
+        gap: 2px;
         
         li {
             display: inline-block;
 
             a {
-                width: 40px;
-                height: 40px;
-                display: flex;
+                width: 24px;
+                // height: 24px;
+                display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                color: var(--secondaryColor);
-                background-color: rgba(255, 255, 255, 0.08);
-                border: 1px solid rgba(var(--secondaryColorRGB), 0.4);
-                border-radius: 50%;
-                transition: all 0.3s ease;
-                backdrop-filter: blur(3px);
-                -webkit-backdrop-filter: blur(3px);
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+                background-color: rgba(255, 255, 255, 0.85);
+                border-radius: 4px;
+                cursor: pointer !important;
+                padding: 5px !important;
+                margin: 0 !important;
                 
-                i {
-                    font-size: 18px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    height: 18px;
-                    width: 18px;
-                    line-height: 1;
-                    position: relative;
-                    top: 1px; /* Fine-tune vertical alignment */
+                lucide-icon {
+                    color: #557380;
+                    width: 12px;
+                    height: 12px;
+                    stroke-width: 1.5px;
+                }
+                
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.95);
+                    
+                    lucide-icon {
+                        color: #3a6773;
+                    }
                 }
                 
                 &:hover, &:focus {
-                    background-color: rgba(var(--secondaryColorRGB), 0.15);
-                    border-color: rgba(var(--secondaryColorRGB), 0.6);
-                    color: var(--secondaryColor);
-                    transform: translateY(-3px);
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                    transform: none; /* No movement on hover for more subtle effect */
+                    opacity: 1; /* Full opacity on hover */
+                    cursor: pointer !important;
+                    
+                    .social-icon-wrapper {
+                        background-color: rgba(255, 255, 255, 0.95); /* Slightly more solid on hover */
+                        
+                        lucide-icon {
+                            color: #3a6773; /* Slightly darker on hover */
+                        }
+                    }
                 }
             }
         }
@@ -821,6 +1019,10 @@
                 transform: scale(1.05);
             }
         }
+        
+        a {
+            cursor: pointer;
+        }
     }
     .copyright-text {
         color: var(--secondaryColor);
@@ -850,10 +1052,15 @@
             font-weight: 600;
             color: var(--secondaryColor);
             transition: all 0.3s ease;
+            cursor: pointer;
 
             &:hover, &:focus {
-                color: var(--textHighlightColor);
-                text-decoration: underline;
+                color: var(--secondaryColor);
+                background-color: rgba(var(--secondaryColorRGB), 0.15);
+                text-decoration: none;
+                cursor: hand !important;
+                transform: scale(1.03);
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             }
         }
     }
@@ -942,15 +1149,19 @@
             position: relative;
             display: inline-block;
             letter-spacing: 0.4px;
+            color: rgba(var(--secondaryColorRGB), 0.7); /* Lighter than the links */
+            font-weight: 500; /* Less bold */
+            opacity: 0.85; /* Slightly transparent */
             
             &::after {
-                height: 1.5px; /* Slightly thinner underline for mobile */
+                height: 1px; /* Thinner underline for mobile */
                 width: 100%;
                 background: linear-gradient(to right, 
-                    var(--secondaryColor) 0%, 
-                    var(--secondaryColor) 70%, 
+                    rgba(var(--secondaryColorRGB), 0.4) 0%, 
+                    rgba(var(--secondaryColorRGB), 0.4) 70%, 
                     rgba(var(--secondaryColorRGB), 0) 100%
                 );
+                opacity: 0.7; /* More transparent */
                 bottom: -6px; /* Slightly closer to text on mobile */
                 opacity: 1;
                 visibility: visible;
