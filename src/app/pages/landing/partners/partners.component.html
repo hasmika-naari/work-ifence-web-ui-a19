@@ -21,9 +21,13 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="partners-wrapper">
-                <div class="row align-items-center justify-content-center">
-                    <div *ngFor="let partner of partners" class="col-lg-2 col-md-3 col-sm-4 col-6">
-                        <div class="partner-item">
+                <div class="partners-carousel">
+                    <div class="partners-track">
+                        <div *ngFor="let partner of partners" class="partner-item">
+                            <img [src]="partner.logo" [alt]="partner.name">
+                        </div>
+                        <!-- Duplicate items for seamless looping -->
+                        <div *ngFor="let partner of partners" class="partner-item">
                             <img [src]="partner.logo" [alt]="partner.name">
                         </div>
                     </div>
@@ -41,12 +45,12 @@
             <div class="row mt-4">
                 <div *ngFor="let integration of integrations" class="col-lg-3 col-md-6">
                     <div class="integration-card card glossy-card">
-                        <div class="integration-icon">
+                        <div class="integration-icon" [ngClass]="integration.colorType === 'secondary' ? 'secondary-icon' : 'primary-icon'">
                             <i class="material-icons">{{integration.icon}}</i>
                         </div>
                         <h4>{{integration.name}}</h4>
                         <p>{{integration.description}}</p>
-                        <a href="#" class="connect-btn">Connect</a>
+                        <a href="#" class="connect-btn" [ngClass]="integration.colorType === 'secondary' ? 'secondary-btn' : 'primary-btn'">Connect</a>
                     </div>
                 </div>
             </div>
