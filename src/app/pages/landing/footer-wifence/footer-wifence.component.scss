@@ -130,15 +130,16 @@ footer .copyright-text a {
 
 /* Add enhanced styling for footer links */
 .footer-area a {
-    color: var(--secondaryColor) !important;
-    opacity: 0.95 !important;
-    font-weight: 500 !important;
+    color: var(--secondaryColor, #2d3bda) !important;
+    opacity: 1 !important;
+    font-weight: 600 !important;
     transition: all 0.3s ease !important;
     padding: 3px 8px !important;
     border-radius: 4px !important;
     margin: -3px -8px !important; /* Offset the padding to maintain original layout */
     cursor: hand !important; /* Use hand cursor for a more clickable feel */
     position: relative !important;
+    text-shadow: 0 0 0 transparent !important; /* Remove any text shadow */
 }
 
 .footer-area a:hover,
@@ -197,7 +198,7 @@ footer .copyright-text a {
     
     /* Adding a container style for the main content area only (not footer bottom) */
     > .container:first-of-type {
-        background-color: rgba(255, 255, 255, 0.12);
+        background-color: rgba(255, 255, 255, 0.65); /* More opaque background for better readability */
         background-image: linear-gradient(
             to bottom,
             rgba(255, 255, 255, 0.16),

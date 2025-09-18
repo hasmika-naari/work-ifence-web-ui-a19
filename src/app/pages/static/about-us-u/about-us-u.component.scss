@@ -49,33 +49,31 @@
   }
   
   .nav-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 8px 16px;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--mainColor, #4353ff);
+    justify-content: center;
+    gap: 8px;
+    color: var(--secondaryColor, #2d3bda);
     font-weight: 500;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-    
-    &:hover {
-      background-color: var(--mainColor, #4353ff);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(67, 83, 255, 0.2);
-    }
+    font-size: 15px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 4px 0;
     
     lucide-icon {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
+      stroke-width: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -1px; /* Fine-tune vertical alignment */
+    }
+    
+    &:hover {
+      color: var(--mainColor, #4353ff);
     }
   }
   
@@ -83,7 +81,7 @@
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--mainColor, #242d60);
-    margin: 0;
+    margin: 25px 0 0 0;
     position: relative;
     /* Removed the underline as requested */
   }
@@ -117,7 +115,7 @@
 .section-heading {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--mainColor, #242d60);
+  color: var(--secondaryColor, #2d3bda);
   margin: 0 0 25px 0;
   /* No underline as requested */
 }
@@ -163,7 +161,7 @@
     h3 {
       font-size: 1.5rem;
       font-weight: 600;
-      color: var(--mainColor, #4353ff);
+      color: var(--secondaryColor, #2d3bda);
       margin-bottom: 15px;
       position: relative;
       display: inline-block;
@@ -230,7 +228,7 @@
   .feature-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--mainColor, #242d60);
+    color: var(--secondaryColor, #2d3bda);
     margin: 0 0 15px 0;
   }
   
@@ -258,16 +256,8 @@
   }
   
   .back-button {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    
     &:hover {
       transform: translateX(-3px);
-    }
-    
-    lucide-icon {
-      margin-right: 3px;
     }
   }
   
@@ -307,11 +297,16 @@
     
     .nav-button {
       font-size: 14px;
+      color: var(--secondaryColor, #2d3bda);
       
       lucide-icon {
         width: 16px;
         height: 16px;
         margin-top: -1px;
+      }
+      
+      &:hover {
+        color: var(--mainColor, #4353ff);
       }
     }
   }
@@ -327,11 +322,16 @@
     
     .nav-button {
       font-size: 13px;
+      color: var(--secondaryColor, #2d3bda);
       
       lucide-icon {
         width: 15px;
         height: 15px;
         margin-top: -1px;
+      }
+      
+      &:hover {
+        color: var(--mainColor, #4353ff);
       }
     }
     
@@ -556,7 +556,7 @@
 .feature-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--mainColor, #242d60);
+  color: var(--secondaryColor, #2d3bda);
   margin: 0 0 15px 0;
 }
 
@@ -565,12 +565,26 @@
   margin: 60px 0;
 }
 
+/* New approach intro section */
+.approach-intro {
+  margin: 20px 0 30px;
+  max-width: 100%;
+  text-align: left;
+}
+
+.approach-intro p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--paragraphColor, #525f7f);
+  margin-bottom: 15px;
+}
+
 .approach-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .approach-image {
@@ -604,21 +618,24 @@
 }
 
 .approach-list li {
-  padding: 10px 0;
+  padding: 12px 0;
   display: flex;
   align-items: flex-start;
   gap: 15px;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 5px;
 }
 
-.approach-list .list-icon {
-  color: var(--mainColor, #4353ff);
-  flex-shrink: 0;
-  margin-top: 3px;
-}
-
-.approach-list .list-icon lucide-icon {
-  width: 20px;
-  height: 20px;
+.bullet-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ea5540; /* Red/coral dot color */
+  position: absolute;
+  left: 0;
+  top: 16px; /* Vertically center with text */
+  display: block;
 }
 
 /* Testimonial Section */
@@ -752,7 +769,7 @@
 .value-card h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--mainColor, #242d60);
+  color: var(--secondaryColor, #2d3bda);
   margin: 0 0 15px 0;
 }
 
@@ -767,70 +784,120 @@
 .cta-section {
   margin: 70px 0 30px;
   text-align: center;
-  background: linear-gradient(135deg, rgba(67, 83, 255, 0.1), rgba(45, 59, 218, 0.07));
-  padding: 50px 30px;
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.3); /* Even more transparent white background */
+  padding: 50px 40px;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 1); /* Thicker solid white border */
+  box-shadow: none; /* Removed box shadow */
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+  pointer-events: none;
 }
 
 .cta-section h2 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: var(--mainColor, #242d60);
+  color: #3a4d6a; /* Darker blue-gray color for better contrast */
   margin: 0 0 15px 0;
+  position: relative;
 }
 
 .cta-section p {
   font-size: 1.1rem;
   line-height: 1.7;
-  color: var(--paragraphColor, #525f7f);
+  color: #5d6b82; /* Slightly lighter than heading for better readability */
   margin: 0 0 30px 0;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
 }
 
 .cta-buttons {
   display: flex;
-  gap: 20px;
+  gap: 0;
   justify-content: center;
+  margin-top: 10px;
+  position: relative;
+}
+
+/* Add separator between buttons */
+.cta-buttons a:first-child {
+  margin-right: 10px;
+}
+
+.cta-buttons a:last-child {
+  margin-left: 10px;
+}
+
+.cta-buttons::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 40%;
+  width: 1px;
+  background-color: rgba(150, 150, 150, 0.4);
+  z-index: 1;
 }
 
 .btn-primary, .btn-outline {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 14px 30px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.3s ease;
   text-decoration: none;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: none; /* Removed box shadow */
 }
 
 .btn-primary {
-  background: var(--mainColor, #4353ff);
-  color: white;
-  border: none;
+  background: rgba(255, 255, 255, 0.5); /* White transparent background */
+  color: var(--mainColor, #4353ff); /* Primary color text */
+  border: 1px solid rgba(255, 255, 255, 1);
 }
 
 .btn-primary:hover {
-  background: var(--secondaryColor, #2d3bda);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(67, 83, 255, 0.2);
+  background: rgba(255, 255, 255, 0.8); /* More opaque white on hover */
+  color: var(--mainColor, #4353ff);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
 }
 
 .btn-outline {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--mainColor, #4353ff);
-  border: 1px solid var(--mainColor, #4353ff);
+  background: rgba(255, 255, 255, 0.3); /* More transparent white */
+  color: var(--mainColor, #4353ff); /* Primary color text */
+  border: 1px solid rgba(255, 255, 255, 0.8); /* White border */
+  box-shadow: none;
 }
 
 .btn-outline:hover {
-  background: rgba(67, 83, 255, 0.05);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(67, 83, 255, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--mainColor, #4353ff);
+  border-color: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary lucide-icon, .btn-outline lucide-icon {
@@ -842,6 +909,10 @@
 @media only screen and (max-width: 992px) {
   .approach-content {
     grid-template-columns: 1fr;
+  }
+  
+  .approach-intro {
+    max-width: 100%;
   }
   
   .values-grid {
@@ -860,6 +931,7 @@
   
   .cta-section h2 {
     font-size: 1.7rem;
+    color: var(--secondaryColor, #2d3bda);
   }
   
   .cta-section p {
