@@ -198,11 +198,25 @@
         box-shadow: none;
 
         &.header-glossy {
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px) saturate(180%);
             -webkit-backdrop-filter: blur(10px) saturate(180%);
             border-bottom: 1px solid rgba(200, 200, 200, 0.3);
-            box-shadow: none;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            animation: headerGlassyFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes headerGlassyFadeIn {
+            from { 
+                background: rgba(255, 255, 255, 0);
+                backdrop-filter: blur(0px);
+                -webkit-backdrop-filter: blur(0px);
+            }
+            to { 
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(10px) saturate(180%);
+                -webkit-backdrop-filter: blur(10px) saturate(180%);
+            }
         }
     }
 
@@ -488,8 +502,25 @@
     // Dark theme adjustments
     :host-context(.dark) {
         .header.header-glossy {
-            background: rgba(20, 20, 20, 0.6);
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(10px) saturate(180%);
+            -webkit-backdrop-filter: blur(10px) saturate(180%);
             border-bottom: 1px solid rgba(80, 80, 80, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            animation: headerGlassyDarkFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes headerGlassyDarkFadeIn {
+            from { 
+                background: rgba(20, 20, 20, 0);
+                backdrop-filter: blur(0px);
+                -webkit-backdrop-filter: blur(0px);
+            }
+            to { 
+                background: rgba(20, 20, 20, 0.8);
+                backdrop-filter: blur(10px) saturate(180%);
+                -webkit-backdrop-filter: blur(10px) saturate(180%);
+            }
         }
 
         .navbar-style-three {

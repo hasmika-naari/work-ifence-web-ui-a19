@@ -3,13 +3,16 @@
     [class.dark-motivation-courses-area]="themeService.isDark()"
 >
     <div class="container">
-        <div class="section-title text-start">
-            <span class="sub-title ">Discover Our Components</span>
-            <h2 >Features</h2>
+        <div class="section-title glossy-section">
+            <span class="sub-title">Discover Our Components</span>
+            <div class="title-container">
+                <h2>Features</h2>
+                <div class="title-underline"></div>
+            </div>
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6">
-                <div class="single-motivation-courses-box mb-3 card"
+                <div class="single-motivation-courses-box mb-3 card glossy-card"
                          (click)="showResumeOptimizer($event)">
                     <div class="courses-image">
                         <a routerLink="/single-courses" class="d-block"><img src="assets/img/home/wifence-4.png" alt="image"></a>
@@ -21,7 +24,7 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
-                <div class="single-motivation-courses-box mb-3 card"  (click)="showResumeManager($event)">
+                <div class="single-motivation-courses-box mb-3 card glossy-card"  (click)="showResumeManager($event)">
                     <div class="courses-image">
                         <a routerLink="/single-courses" class="d-block"><img src="assets/img/home/wifence-3.png" alt="image"></a>
                     </div>
@@ -33,7 +36,7 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
-                <div class="single-motivation-courses-box mb-3 card" (click)="showJobApplicationManager($event)">
+                <div class="single-motivation-courses-box mb-3 card glossy-card" (click)="showJobApplicationManager($event)">
                     <div class="courses-image">
                         <a routerLink="/single-courses" class="d-block"><img style="bottom: 0px;" src="assets/img/home/wifence-2.png" alt="image"></a>
                     </div>

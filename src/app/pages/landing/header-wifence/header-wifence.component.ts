@@ -78,6 +78,12 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
     ngAfterViewInit() {
                 if (isPlatformBrowser(this.platformId)) {
+                    // Check initial scroll position
+                    const initialYOffset = window.scrollY || window.pageYOffset;
+                    this.isSticky = initialYOffset > 100;
+                    this.cdr.markForCheck();
+                    
+                    // Try to find the page section first
                     const pageSection = document.querySelector('.page-full-section');
                     if (pageSection) {
                         this.scrollListener = this.renderer.listen(pageSection, 'scroll', () => {
@@ -93,6 +99,13 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
                             this.cdr.markForCheck();
                         });
                     }
+                    
+                    // Force detection on page load
+                    setTimeout(() => {
+                        const currentYOffset = window.scrollY || window.pageYOffset;
+                        this.isSticky = currentYOffset > 100;
+                        this.cdr.markForCheck();
+                    }, 100);
                 }
                 AOS.init();
     }
@@ -110,6 +123,7 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
         public layoutService: LayoutService,
         private cdr: ChangeDetectorRef
     ) {
+        this.renderer = renderer; // Assign renderer to class property
         this.themeService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
         });
