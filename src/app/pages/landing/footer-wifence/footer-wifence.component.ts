@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, RouterModule } from '@angular/router';
 import { NgxScrollTopModule } from 'ngx-scrolltop';
-import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
   selector: 'app-work-ifence-footer',
@@ -14,8 +13,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
     NgxScrollTopModule, 
     RouterModule,
     RouterLink,
-    ReactiveFormsModule,
-    IconsModule
+    ReactiveFormsModule
   ],
   templateUrl: './footer-wifence.component.html',
   styleUrls: ['./footer-wifence.component.scss']

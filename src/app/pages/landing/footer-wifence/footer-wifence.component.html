@@ -28,10 +28,10 @@
                         </li>
                     </ul>
                     <ul class="social-link">
-                        <li><a href="#" target="_blank" role="link" tabindex="0" aria-label="Facebook"><lucide-icon name="facebook"></lucide-icon></a></li>
-                        <li><a href="#" target="_blank" role="link" tabindex="0" aria-label="Twitter"><lucide-icon name="x"></lucide-icon></a></li>
-                        <li><a href="#" target="_blank" role="link" tabindex="0" aria-label="Instagram"><lucide-icon name="instagram"></lucide-icon></a></li>
-                        <li><a href="#" target="_blank" role="link" tabindex="0" aria-label="LinkedIn"><lucide-icon name="linkedin"></lucide-icon></a></li>
+                        <li><a href="#" target="_blank" role="link" tabindex="0" aria-label="Facebook"><i class='bx bxl-facebook'></i></a></li>
+                        <li><a href="#" target="_blank" role="link" tabindex="0" aria-label="Twitter"><i class='bx bxl-twitter'></i></a></li>
+                        <li><a href="#" target="_blank" role="link" tabindex="0" aria-label="Instagram"><i class='bx bxl-instagram'></i></a></li>
+                        <li><a href="#" target="_blank" role="link" tabindex="0" aria-label="LinkedIn"><i class='bx bxl-linkedin'></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -39,10 +39,11 @@
                 <div class="single-footer-widget mb-3">
                     <h3>Support</h3>
                     <ul class="support-link">
-                        <li><a routerLink="/privacy" role="link" tabindex="0"><i class='bx bx-shield-quarter'></i> Privacy</a></li>
+                        <li><a routerLink="/about-us" role="link" tabindex="0"><i class='bx bx-info-circle'></i> About Us</a></li>
                         <li><a routerLink="/faq" role="link" tabindex="0"><i class='bx bx-question-mark'></i> FAQ's</a></li>
-                        <!-- <li><a routerLink="/">Support</a></li> -->
+                        <li><a routerLink="/privacy" role="link" tabindex="0"><i class='bx bx-shield-quarter'></i> Privacy</a></li>
                         <li><a routerLink="/terms" role="link" tabindex="0"><i class='bx bx-file'></i> Terms</a></li>
+                        <!-- <li><a routerLink="/">Support</a></li> -->
                         <!-- <li><a routerLink="/">Condition</a></li> -->
                         <!-- <li><a routerLink="/">Policy</a></li> -->
                     </ul>
@@ -68,17 +69,16 @@
                         <p>To get the latest news and latest updates from us.</p>
                         <form [formGroup]="newsletterForm" (ngSubmit)="onSubmit()" class="newsletter-form">
                             <label>Your e-mail address:</label>
-                            <div class="input-group" [ngClass]="{'invalid': submittedForm && f['email'].errors}">
+                            <div class="input-group-merged" [ngClass]="{'invalid': submittedForm && f['email'].errors, 'valid-input': f['email'].valid}">
                                 <i class='bx bx-envelope input-icon'></i>
-                                <input type="email" formControlName="email" class="input-newsletter" placeholder="Enter your email for News Letter" name="EMAIL">
-                                <i *ngIf="f['email'].valid" class='bx bx-check-circle validation-icon valid'></i>
+                                <input type="email" formControlName="email" class="input-newsletter" placeholder="Subscribe your email" name="EMAIL">
                                 <i *ngIf="submittedForm && f['email'].errors" class='bx bx-error-circle validation-icon invalid'></i>
+                                <button type="submit" [disabled]="newsletterForm.invalid" class="btn-merged" [ngClass]="{'valid-button': f['email'].valid}"><i class='bx bx-paper-plane'></i></button>
                             </div>
                             <div *ngIf="submittedForm && f['email'].errors" class="validation-message">
                                 <div *ngIf="f['email'].errors['required']">Email is required</div>
                                 <div *ngIf="f['email'].errors['pattern']">Please enter a valid email address</div>
                             </div>
-                            <button type="submit" [disabled]="newsletterForm.invalid"><i class='bx bx-paper-plane'></i> Subscribe</button>
                         </form>
                     </div>
                 </div>
