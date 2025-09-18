@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, inject, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import * as _ from 'lodash';
@@ -20,8 +20,12 @@ import { IconsModule } from 'src/app/shared/icons.module';
   templateUrl: './privacy-page.component.html',
   styleUrls: ['./privacy-page.component.scss']
 })
-export class PrivacyPageComponent implements OnInit {
+export class PrivacyPageComponent implements OnInit, AfterViewInit, OnDestroy {
   isToggled = false;
+  public isSticky: boolean = false;
+  private observer!: IntersectionObserver;
+  @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
+  @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
 
   categories: Array<Category> = new Array<Category>();
   pCategories: Array<PCategory> = new Array<PCategory>();
@@ -66,6 +70,22 @@ export class PrivacyPageComponent implements OnInit {
   
 
   }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId) && this.sentinel && this.pageSectionRef) {
+      this.observer = new IntersectionObserver(entries => {
+        this.isSticky = !entries[0].isIntersecting;
+      }, { root: this.pageSectionRef.nativeElement });
+      this.observer.observe(this.sentinel.nativeElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
   backToHomePage($event: any){
     this.location.back();
   }

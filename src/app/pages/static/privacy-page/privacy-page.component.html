@@ -1,5 +1,6 @@
-<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;">
-    <app-header-wifence></app-header-wifence>
+<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
+    <div #sentinel></div>
+    <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
     <div
         class="privacy-area"
         [class.dark-privacy-area]="themeService.isDark()"
@@ -159,9 +160,9 @@
             </div>
             </div>
         </div>
+        <app-work-ifence-footer></app-work-ifence-footer>
     </div>
     <!-- <section>
         <app-language-subscribe1 [isMobile]="isMobile" ></app-language-subscribe1>
     </section> -->
-    <app-work-ifence-footer></app-work-ifence-footer>
 </div>
