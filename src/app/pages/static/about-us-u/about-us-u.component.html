@@ -1,0 +1,200 @@
+<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
+    <div #sentinel></div>
+    <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
+    <div
+        class="about-us--area"
+        [class.dark-about-us--area]="themeService.isDark()"
+    >
+        <div class="container" >
+            <div class="row g-5">
+                <div class="story-content">
+                    <!-- Modern Title Section -->
+                    <div class="modern-title-section">
+                        <div class="title-wrapper">
+                            <div class="navigation-buttons">
+                                <a class="nav-button home-button" [routerLink]="['/']">
+                                    <lucide-icon name="home"></lucide-icon>
+                                    Home
+                                </a>
+                                <a class="nav-button back-button" (click)="goBack($event)">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Back
+                                </a>
+                            </div>
+                            <h1 class="about-us--title">About Work iFence</h1>
+                        </div>
+                    </div>
+                    <!-- Add About Us Content here -->
+                    <div class="about-us-content">
+                        <div class="company-intro">
+                            <p class="lead-text">
+                                At <strong>Work iFence</strong>, we're revolutionizing how professionals navigate their career journeys through AI-powered guidance, personalized coaching, and cutting-edge tools that unlock your full potential.
+                            </p>
+                            
+                            <div class="mission-vision-section">
+                                <div class="mission-card">
+                                    <h3>Our Mission</h3>
+                                    <p>To empower every professional with the tools, insights, and connections they need to build meaningful careers in a rapidly evolving workplace.</p>
+                                </div>
+                                <div class="vision-card">
+                                    <h3>Our Vision</h3>
+                                    <p>A world where career growth is accessible to everyone, where talent meets opportunity without barriers, and where professionals thrive in roles that fulfill their potential.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="why-choose-section">
+                            <h2 class="section-heading">Why Choose Work iFence</h2>
+                            
+                            <div class="feature-cards">
+                                <div class="feature-card">
+                                    <div class="feature-icon-container">
+                                        <lucide-icon name="target" class="feature-icon"></lucide-icon>
+                                    </div>
+                                    <h3 class="feature-title">Personalized Career Pathways</h3>
+                                    <p>Our AI analyzes your skills, experience, and goals to create customized career roadmaps that guide your professional journey with precision.</p>
+                                </div>
+                                
+                                <div class="feature-card">
+                                    <div class="feature-icon-container">
+                                        <lucide-icon name="trending-up" class="feature-icon"></lucide-icon>
+                                    </div>
+                                    <h3 class="feature-title">Skills Enhancement</h3>
+                                    <p>Access curated learning resources tailored to your industry, with real-time feedback on which skills will maximize your market value.</p>
+                                </div>
+                                
+                                <div class="feature-card">
+                                    <div class="feature-icon-container">
+                                        <lucide-icon name="users" class="feature-icon"></lucide-icon>
+                                    </div>
+                                    <h3 class="feature-title">Expert Mentorship</h3>
+                                    <p>Connect with industry leaders and career coaches who provide actionable guidance based on real-world experience in your field.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="approach-section">
+                            <h2 class="section-heading">Our Approach</h2>
+                            <div class="approach-content">
+                                <div class="approach-image">
+                                    <img src="assets/img/work-ifence/photos/career-coaching.jpg" alt="Career Coaching Session">
+                                </div>
+                                <div class="approach-text">
+                                    <p>We believe career development isn't just about finding jobs—it's about building a fulfilling professional life aligned with your values and aspirations.</p>
+                                    <p>Through a holistic approach that combines technology with human expertise, we've created a platform that:</p>
+                                    <ul class="approach-list">
+                                        <li>
+                                            <span class="list-icon"><lucide-icon name="check-circle"></lucide-icon></span>
+                                            Analyzes market trends to identify emerging opportunities
+                                        </li>
+                                        <li>
+                                            <span class="list-icon"><lucide-icon name="check-circle"></lucide-icon></span>
+                                            Provides honest assessments of your professional strengths and growth areas
+                                        </li>
+                                        <li>
+                                            <span class="list-icon"><lucide-icon name="check-circle"></lucide-icon></span>
+                                            Builds personalized development plans with actionable milestones
+                                        </li>
+                                        <li>
+                                            <span class="list-icon"><lucide-icon name="check-circle"></lucide-icon></span>
+                                            Connects you with opportunities that align with your unique career goals
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="testimonial-section">
+                            <h2 class="section-heading">What Our Users Say</h2>
+                            <div class="testimonial-slider">
+                                <div class="testimonial-card">
+                                    <div class="quote-icon">
+                                        <lucide-icon name="quote"></lucide-icon>
+                                    </div>
+                                    <p class="testimonial-text">Work iFence completely transformed my job search. The personalized guidance helped me pivot to a new industry and land a role I never thought possible.</p>
+                                    <div class="testimonial-author">
+                                        <div class="author-image">
+                                            <img src="assets/img/users/user5.jpg" alt="Testimonial Author">
+                                        </div>
+                                        <div class="author-info">
+                                            <h5>Michael T.</h5>
+                                            <p>Software Engineer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="testimonial-card">
+                                    <div class="quote-icon">
+                                        <lucide-icon name="quote"></lucide-icon>
+                                    </div>
+                                    <p class="testimonial-text">The skills assessment and learning recommendations were spot-on. I was able to identify exactly what I needed to develop to advance in my career.</p>
+                                    <div class="testimonial-author">
+                                        <div class="author-image">
+                                            <img src="assets/img/users/user6.jpg" alt="Testimonial Author">
+                                        </div>
+                                        <div class="author-info">
+                                            <h5>Jennifer K.</h5>
+                                            <p>Marketing Director</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="values-section">
+                            <h2 class="section-heading">Our Core Values</h2>
+                            <div class="values-grid">
+                                <div class="value-card">
+                                    <div class="value-icon">
+                                        <lucide-icon name="shield"></lucide-icon>
+                                    </div>
+                                    <h3>Integrity</h3>
+                                    <p>We're committed to honest guidance that prioritizes your best interests, even when it's not the easiest path.</p>
+                                </div>
+                                <div class="value-card">
+                                    <div class="value-icon">
+                                        <lucide-icon name="lightbulb"></lucide-icon>
+                                    </div>
+                                    <h3>Innovation</h3>
+                                    <p>We continuously evolve our platform to stay ahead of workplace trends and provide cutting-edge career solutions.</p>
+                                </div>
+                                <div class="value-card">
+                                    <div class="value-icon">
+                                        <lucide-icon name="users"></lucide-icon>
+                                    </div>
+                                    <h3>Inclusivity</h3>
+                                    <p>We believe career growth should be accessible to everyone, regardless of background, and design our platform accordingly.</p>
+                                </div>
+                                <div class="value-card">
+                                    <div class="value-icon">
+                                        <lucide-icon name="heart"></lucide-icon>
+                                    </div>
+                                    <h3>Empathy</h3>
+                                    <p>We understand career transitions can be challenging, and provide support that addresses both practical and emotional needs.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cta-section">
+                            <h2>Ready to Transform Your Career Journey?</h2>
+                            <p>Join thousands of professionals who have discovered their career potential with Work iFence.</p>
+                            <div class="cta-buttons">
+                                <a [routerLink]="['/authentication/sign-up']" class="btn-primary">
+                                    <lucide-icon name="user-plus"></lucide-icon>
+                                    Get Started Today
+                                </a>
+                                <a [routerLink]="['/contact']" class="btn-outline">
+                                    <lucide-icon name="message-circle"></lucide-icon>
+                                    Contact Our Team
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </div>
+        </div>
+        <app-work-ifence-footer></app-work-ifence-footer>
+    </div>
+    <!-- <section>
+        <app-language-subscribe1 [isMobile]="isMobile" ></app-language-subscribe1>
+    </section> -->
+</div>

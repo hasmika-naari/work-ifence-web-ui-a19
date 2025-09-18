@@ -1,0 +1,108 @@
+/* AboutUs Page Styles */
+:host {
+  font-family: 'Poppins', sans-serif;
+}
+
+:host .mat-icon {
+  font-family: 'Material Icons' !important;
+}
+
+/* Modern Title Section */
+.modern-title-section {
+  position: relative;
+  padding: 0 0 30px 0;
+  z-index: 10;
+  margin-bottom: 20px;
+  
+  .title-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .navigation-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  
+  .nav-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--mainColor, #4353ff);
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 4px 0;
+    
+    lucide-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -1px; /* Fine-tune vertical alignment */
+    }
+    
+    &:hover {
+      color: var(--secondaryColor, #2d3bda);
+    }
+  }
+  
+  .home-button {
+    &:after {
+      content: '|';
+      margin-left: 16px;
+      color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3);
+      font-weight: 300;
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      line-height: 1;
+      position: relative;
+      top: -1px; /* Fine-tune vertical alignment */
+    }
+  }
+  
+  .back-button {
+    &:hover {
+      transform: translateX(-3px);
+    }
+  }
+  
+  .about-us-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 15px 0 0 0;
+    color: var(--mainColor, #242d60);
+  }
+  
+  /* Add a gradient effect for the title in dark mode */
+  .dark-about-us-area .about-us-title {
+    background: linear-gradient(90deg, var(--mainColor), var(--secondaryColor));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  @media (max-width: 576px) {
+    .dark-about-us-area .about-us-title {
+      background-size: 100% 100%;
+    }
+  }
+}
+
+/* This is the important part */
+.about-us-area.dark-about-us-area .navigation-buttons .nav-button {
+  color: var(--mainColor, #4353ff);
+}
+
+/* Rest of your existing styles... */

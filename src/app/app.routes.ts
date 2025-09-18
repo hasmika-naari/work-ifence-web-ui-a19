@@ -370,6 +370,12 @@ export const routes: Routes = [
                 .then(m => m.ResourcesPageComponent), data: {reuseComponent: true, breadcrumb: 'Resources' }
     },
     {
+        path: 'about-us',
+        loadComponent: () => 
+            import('./pages/static/about-us-u/about-us-u.component')
+                .then(m => m.AboutUsUPageComponent), data: {reuseComponent: true, breadcrumb: 'About Us' }
+    },
+    {
         path: 'job-openings',
         loadComponent: () => 
             import('./pages/useful-links/latest-openings-page/latest-openings-page.component')

@@ -1,0 +1,210 @@
+<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
+    <div #sentinel></div>
+    <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
+    <div class="about-us-area" [class.dark-about-us-area]="themeService.isDark()">
+        <div class="container">
+            <!-- <div class="decorative-orb"></div> -->
+            <!-- <div class="decorative-orb-2"></div> -->
+            <!-- <div class="glossy-streaks"></div> -->
+            <div class="row g-5">
+                <div class="story-content">
+                    <!-- Modern Title Section -->
+                    <div class="modern-title-section">
+                        <div class="title-wrapper">
+                            <div class="navigation-buttons">
+                                <a class="nav-button home-button" [routerLink]="['/']">
+                                    <lucide-icon name="home"></lucide-icon>
+                                    Home
+                                </a>
+                                <a class="nav-button back-button" (click)="goBack($event)">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Back
+                                </a>
+                            </div>
+                            <h1 class="about-us-title">About Work iFence</h1>
+                        </div>
+                    </div>
+
+                    <p>
+                        Founded in 2022, <strong>Work iFence</strong> has rapidly established itself as a premier platform connecting talent with opportunity in today's dynamic job market. Our innovative approach combines cutting-edge technology with personalized career guidance to create a seamless job-seeking experience for professionals at all stages of their careers.
+                    </p>
+
+                    <p>
+                        In a world where the job landscape is constantly evolving, we recognized the need for a solution that does more than just list openings—one that empowers candidates with the tools, resources, and insights needed to stand out in competitive markets. This vision led to the creation of Work iFence, a comprehensive ecosystem designed to transform how professionals approach their career journeys.
+                    </p>
+
+                    <div class="vision-section">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="vision-card">
+                                    <i class="bx bx-target-lock vision-icon"></i>
+                                    <h3 class="vision-title">Our Mission</h3>
+                                    <p class="vision-text">To empower professionals with the tools, resources, and connections they need to build fulfilling careers in an ever-changing job market.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="vision-card">
+                                    <i class="bx bx-bulb vision-icon"></i>
+                                    <h3 class="vision-title">Our Vision</h3>
+                                    <p class="vision-text">To become the world's most trusted career ecosystem where every professional can discover their potential and connect with meaningful opportunities.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="vision-card">
+                                    <i class="bx bx-badge-check vision-icon"></i>
+                                    <h3 class="vision-title">Our Values</h3>
+                                    <p class="vision-text">We're driven by integrity, innovation, empowerment, inclusivity, excellence, and security in all that we do.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="title">Our Story</h4>
+                    <p>
+                        Work iFence was born from a simple observation: despite the abundance of job platforms, many professionals still struggle to find meaningful opportunities that align with their skills and aspirations. Our founders, having experienced the challenges of job hunting firsthand, envisioned a platform that would not only connect candidates with employers but also provide the resources needed to thrive in today's competitive landscape.
+                    </p>
+                    <p>
+                        What began as a small team of passionate innovators has grown into a global community dedicated to revolutionizing career development. Today, Work iFence serves thousands of job seekers and employers across multiple industries, guided by our commitment to excellence, integrity, and user-centric design.
+                    </p>
+
+                    <div class="mission-vision-section">
+                        <div class="mission-vision-content">
+                            <div class="mission-card">
+                                <h3 class="card-title"><i class="bx bx-target-lock"></i> Our Mission</h3>
+                                <p class="card-text">To empower professionals with the tools, resources, and connections they need to build fulfilling careers in an ever-changing job market. We strive to democratize access to opportunity by creating a platform where talent and potential are recognized regardless of background.</p>
+                            </div>
+                            <div class="vision-card">
+                                <h3 class="card-title"><i class="bx bx-bulb"></i> Our Vision</h3>
+                                <p class="card-text">To become the world's most trusted career ecosystem where every professional can discover their potential, connect with meaningful opportunities, and receive the support needed to thrive in their chosen path. We envision a future where career transitions are seamless, and professional growth is accessible to all.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="title">What Sets Us Apart</h4>
+                    <p>
+                        In a sea of job platforms, Work iFence stands out through our holistic approach to career development. Unlike traditional job boards, we offer a comprehensive suite of services designed to support you at every stage of your professional journey:
+                    </p>
+                    <ul>
+                        <li><strong>Intelligent Job Matching:</strong> Our advanced algorithms go beyond keyword matching to understand the nuances of your skills and preferences, connecting you with opportunities that truly fit your profile.</li>
+                        <li><strong>Resume Optimization:</strong> Our AI-powered tools analyze and enhance your resume to highlight your strengths and improve visibility to potential employers.</li>
+                        <li><strong>Career Resources:</strong> From industry insights to skill-building resources, we provide everything you need to stay competitive in your field.</li>
+                        <li><strong>Personalized Guidance:</strong> Our career advisors offer tailored advice to help you navigate complex career decisions with confidence.</li>
+                        <li><strong>Employer Partnerships:</strong> We collaborate with leading companies across industries to bring you exclusive opportunities not found elsewhere.</li>
+                    </ul>
+
+                    <div class="values-section">
+                        <h4 class="title">Our Core Values</h4>
+                        <div class="values-grid">
+                            <div class="value-card">
+                                <i class="bx bx-badge-check value-icon"></i>
+                                <h3 class="value-title">Integrity</h3>
+                                <p class="value-text">We uphold the highest standards of honesty and transparency in all our interactions, ensuring trust remains at the foundation of our platform.</p>
+                            </div>
+                            <div class="value-card">
+                                <i class="bx bx-rocket value-icon"></i>
+                                <h3 class="value-title">Innovation</h3>
+                                <p class="value-text">We continuously push boundaries to develop cutting-edge solutions that address the evolving needs of modern professionals.</p>
+                            </div>
+                            <div class="value-card">
+                                <i class="bx bx-user-voice value-icon"></i>
+                                <h3 class="value-title">Empowerment</h3>
+                                <p class="value-text">We believe in equipping individuals with the knowledge and tools they need to take control of their career trajectories.</p>
+                            </div>
+                            <div class="value-card">
+                                <i class="bx bx-group value-icon"></i>
+                                <h3 class="value-title">Inclusivity</h3>
+                                <p class="value-text">We celebrate diversity and strive to create equal opportunities for professionals from all backgrounds, experiences, and identities.</p>
+                            </div>
+                            <div class="value-card">
+                                <i class="bx bx-brightness value-icon"></i>
+                                <h3 class="value-title">Excellence</h3>
+                                <p class="value-text">We are committed to delivering exceptional experiences that exceed expectations and set new standards in our industry.</p>
+                            </div>
+                            <div class="value-card">
+                                <i class="bx bx-shield-quarter value-icon"></i>
+                                <h3 class="value-title">Security</h3>
+                                <p class="value-text">We prioritize the protection of user data and privacy through robust security measures and ethical data practices.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="title">Our Team</h4>
+                    <p>
+                        Behind Work iFence is a diverse team of industry experts, technologists, and career advisors united by a shared passion for transforming how people find and pursue professional opportunities. With backgrounds spanning recruitment, human resources, data science, and user experience design, our team brings a wealth of insights to every aspect of our platform.
+                    </p>
+
+                    <div class="team-section">
+                        <div class="team-grid">
+                            <div class="team-member">
+                                <img src="assets/images/users/user1.jpg" alt="Alex Chen" class="member-image">
+                                <div class="member-info">
+                                    <h3 class="member-name">Alex Chen</h3>
+                                    <div class="member-position">Chief Executive Officer</div>
+                                    <p class="member-bio">With 15+ years in tech and HR innovation, Alex leads our mission to revolutionize career development.</p>
+                                    <div class="social-icons">
+                                        <a href="#"><i class="bx bxl-linkedin"></i></a>
+                                        <a href="#"><i class="bx bxl-twitter"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-member">
+                                <img src="assets/images/users/user2.jpg" alt="Sarah Johnson" class="member-image">
+                                <div class="member-info">
+                                    <h3 class="member-name">Sarah Johnson</h3>
+                                    <div class="member-position">Chief Technology Officer</div>
+                                    <p class="member-bio">Former Google engineer who oversees our platform development and AI-driven matching algorithms.</p>
+                                    <div class="social-icons">
+                                        <a href="#"><i class="bx bxl-linkedin"></i></a>
+                                        <a href="#"><i class="bx bxl-github"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-member">
+                                <img src="assets/images/users/user3.jpg" alt="Michael Rodriguez" class="member-image">
+                                <div class="member-info">
+                                    <h3 class="member-name">Michael Rodriguez</h3>
+                                    <div class="member-position">Head of Career Services</div>
+                                    <p class="member-bio">Certified career coach with expertise in helping professionals navigate complex career transitions.</p>
+                                    <div class="social-icons">
+                                        <a href="#"><i class="bx bxl-linkedin"></i></a>
+                                        <a href="#"><i class="bx bxl-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-member">
+                                <img src="assets/images/users/user4.jpg" alt="Priya Patel" class="member-image">
+                                <div class="member-info">
+                                    <h3 class="member-name">Priya Patel</h3>
+                                    <div class="member-position">Director of Employer Relations</div>
+                                    <p class="member-bio">Building partnerships with industry leaders to bring exclusive opportunities to our platform.</p>
+                                    <div class="social-icons">
+                                        <a href="#"><i class="bx bxl-linkedin"></i></a>
+                                        <a href="#"><i class="bx bxl-twitter"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="title">Join Our Community</h4>
+                    <p>
+                        At Work iFence, we're more than just a job platform—we're a community of professionals committed to growth, learning, and mutual support. When you join Work iFence, you become part of an ecosystem designed to nurture your career aspirations and connect you with like-minded individuals who share your professional interests.
+                    </p>
+                    <p>
+                        Our community extends beyond the digital realm through webinars, networking events, and industry-specific forums where members can exchange insights, build meaningful connections, and discover new opportunities. We believe that the strongest careers are built on collaboration and shared knowledge, which is why we foster an environment where professionals can learn from and inspire one another.
+                    </p>
+
+                    <div class="cta-section">
+                        <h3>Ready to Transform Your Career Journey?</h3>
+                        <p>Join thousands of professionals who have discovered the Work iFence advantage. Create your profile today and start exploring opportunities tailored to your unique skills and aspirations.</p>
+                        <div class="cta-buttons">
+                            <a [routerLink]="['/authentication/sign-up']" class="btn btn-primary">Register Now</a>
+                            <a [routerLink]="['/job-openings']" class="btn btn-outline">Explore Jobs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-work-ifence-footer></app-work-ifence-footer>
+    </div>
+</div>

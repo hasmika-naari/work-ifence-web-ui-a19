@@ -1,0 +1,94 @@
+<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
+    <div #sentinel></div>
+    <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
+    <div
+        class="about-us-area"
+        [class.dark-about-us-area]="themeService.isDark()"
+    >
+        <div class="container" >
+            <div class="row g-5">
+                <div class="story-content">
+                    <!-- Modern Title Section -->
+                    <div class="modern-title-section">
+                        <div class="title-wrapper">
+                            <div class="navigation-buttons">
+                                <a class="nav-button home-button" [routerLink]="['/']">
+                                    <lucide-icon name="home"></lucide-icon>
+                                    Home
+                                </a>
+                                <a class="nav-button back-button" (click)="goBack($event)">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Back
+                                </a>
+                            </div>
+                            <h1 class="about-us-title">About Work iFence</h1>
+                        </div>
+                    </div>
+                    
+                    <p>
+                        Founded in 2022, <strong>Work iFence</strong> has rapidly established itself as a premier platform connecting talent with opportunity in today's dynamic job market. Our innovative approach combines cutting-edge technology with personalized career guidance to create a seamless job-seeking experience for professionals at all stages of their careers.
+                    </p>
+
+                    <p>
+                        In a world where the job landscape is constantly evolving, we recognized the need for a solution that does more than just list openings—one that empowers candidates with the tools, resources, and insights needed to stand out in competitive markets. This vision led to the creation of Work iFence, a comprehensive ecosystem designed to transform how professionals approach their career journeys.
+                    </p>
+
+                    <div class="vision-section">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="vision-card">
+                                    <i class="bx bx-target-lock vision-icon"></i>
+                                    <h3 class="vision-title">Our Mission</h3>
+                                    <p class="vision-text">To empower professionals with the tools, resources, and connections they need to build fulfilling careers in an ever-changing job market.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="vision-card">
+                                    <i class="bx bx-bulb vision-icon"></i>
+                                    <h3 class="vision-title">Our Vision</h3>
+                                    <p class="vision-text">To become the world's most trusted career ecosystem where every professional can discover their potential and connect with meaningful opportunities.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="vision-card">
+                                    <i class="bx bx-heart vision-icon"></i>
+                                    <h3 class="vision-title">Our Values</h3>
+                                    <p class="vision-text">Integrity, innovation, inclusivity, and impact guide everything we do as we strive to make a positive difference in people's professional lives.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="title">What Sets Us Apart</h4>
+                    <p>
+                        Work iFence is more than just a job board—it's a comprehensive career platform that takes a holistic approach to professional development. Our platform stands out through:
+                    </p>
+                    <ul>
+                        <li><strong>Smart Matching Technology</strong> - Our proprietary algorithms analyze not just skills and experience, but also career goals, work preferences, and cultural fit to connect professionals with opportunities where they'll truly thrive.</li>
+                        <li><strong>Career Development Resources</strong> - From resume optimization tools to interview preparation guides, we provide resources that help professionals showcase their talents effectively.</li>
+                        <li><strong>Personalized Insights</strong> - Data-driven recommendations help users understand industry trends, skill demands, and compensation benchmarks relevant to their career paths.</li>
+                        <li><strong>Employer Partnerships</strong> - We collaborate with leading companies across industries to ensure our users have access to quality opportunities with organizations that value talent.</li>
+                        <li><strong>Community Support</strong> - Our platform fosters connections between professionals, creating a supportive community for networking, mentorship, and knowledge sharing.</li>
+                    </ul>
+
+                    <h4 class="title">Our Team</h4>
+                    <p>
+                        Behind Work iFence is a diverse team of professionals passionate about transforming how people navigate their careers. Our team combines expertise in technology, human resources, career coaching, data science, and user experience design to create a platform that truly serves the needs of today's workforce.
+                    </p>
+                    <p>
+                        Led by industry veterans with extensive experience in both traditional and digital recruitment, our leadership team brings a deep understanding of the challenges and opportunities in today's job market. This expertise guides our approach to innovation, ensuring that we're always at the forefront of career technology.
+                    </p>
+
+                    <h4 class="title">Looking Forward</h4>
+                    <p>
+                        As we continue to grow, we remain committed to our founding vision: making meaningful careers accessible to everyone. We're constantly enhancing our platform with new features, expanding our employer partnerships, and refining our technology to better serve job seekers worldwide.
+                    </p>
+                    <p>
+                        Thank you for being part of the Work iFence community. Whether you're a job seeker looking for your next opportunity or an employer searching for exceptional talent, we're honored to be part of your journey.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <app-work-ifence-footer></app-work-ifence-footer>
+    </div>
+</div>

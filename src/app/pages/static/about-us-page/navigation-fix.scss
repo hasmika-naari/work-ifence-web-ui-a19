@@ -1,0 +1,64 @@
+// Modern Title Section Navigation Buttons
+.modern-title-section {
+  .navigation-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  
+  .nav-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--mainColor, #4353ff);
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 4px 0;
+    
+    lucide-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -1px; /* Fine-tune vertical alignment */
+    }
+    
+    &:hover {
+      color: var(--secondaryColor, #2d3bda);
+    }
+  }
+  
+  .home-button {
+    &:after {
+      content: '|';
+      margin-left: 16px;
+      color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3);
+      font-weight: 300;
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      line-height: 1;
+      position: relative;
+      top: -1px; /* Fine-tune vertical alignment */
+    }
+  }
+  
+  .back-button {
+    &:hover {
+      transform: translateX(-3px);
+    }
+  }
+}
+
+// Dark mode styles for navigation buttons
+.about-us-area.dark-about-us-area .navigation-buttons .nav-button {
+  color: var(--mainColor, #4353ff);
+}

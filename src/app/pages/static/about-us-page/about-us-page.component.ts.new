@@ -1,0 +1,56 @@
+import { Component, HostListener, ElementRef, ViewChild, Inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, Router } from '@angular/router';
+import { LanguageSubscribeComponent } from '../../shared/language-subscribe/language-subscribe.component';
+import { NgOptimizedImage } from '@angular/common';
+import { FooterWorkifenceComponent } from '../../shared/footer-workifence/footer-workifence.component';
+import { HeaderWorkIfenceComponent } from '../../shared/header-workifence/header-workifence.component';
+import { ThemeService } from 'src/@navan/services/theme.service';
+import { LucideAngularModule } from 'lucide-angular';
+
+@Component({
+  selector: 'app-about-us-page',
+  standalone: true,
+  imports: [CommonModule, RouterLink, LanguageSubscribeComponent,
+      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent,
+      LucideAngularModule],
+  templateUrl: './about-us-page.component.html',
+  styleUrls: ['./about-us-page.component.scss'],
+  // Add this extra style to override the dark mode navigation button styles
+  styles: [`
+    .about-us-area.dark-about-us-area .navigation-buttons .nav-button {
+      background-color: transparent !important;
+      color: var(--mainColor, #4353ff) !important;
+    }
+  `]
+})
+export class AboutUsPageComponent {
+  @ViewChild('pageSection') pageSection!: ElementRef;
+  @ViewChild('sentinel') sentinel!: ElementRef;
+  
+  isSticky = signal(false);
+  
+  constructor(
+    private router: Router,
+    public themeService: ThemeService
+  ) {}
+  
+  goBack(event: Event) {
+    event.preventDefault();
+    window.history.back();
+  }
+  
+  @HostListener('window:scroll', ['$event'])
+  checkScroll() {
+    if (!this.sentinel) return;
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        this.isSticky.set(!entry.isIntersecting);
+      },
+      { threshold: [0], rootMargin: '0px 0px 0px 0px' }
+    );
+    
+    observer.observe(this.sentinel.nativeElement);
+  }
+}

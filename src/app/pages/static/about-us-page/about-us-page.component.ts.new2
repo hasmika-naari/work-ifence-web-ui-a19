@@ -1,0 +1,89 @@
+import { Component, ElementRef, HostListener, OnInit, ViewChild, Inject, PLATFORM_ID, AfterViewInit, OnDestroy, NO_ERRORS_SCHEMA } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
+import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
+import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { LucideAngularModule } from 'lucide-angular';
+import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
+import { IconsModule } from 'src/app/shared/icons.module';
+
+@Component({
+  selector: 'app-about-us-page',
+  templateUrl: './about-us-page.component.html',
+  styleUrls: ['./about-us-page.component.scss'],
+  standalone: true,
+  schemas: [NO_ERRORS_SCHEMA],
+  imports: [CommonModule, RouterLink, HeaderWorkIfenceComponent, FooterWorkifenceComponent, LucideAngularModule, IconsModule],
+  // Add this extra style to override the dark mode navigation button styles
+  styles: [`
+    .about-us-area.dark-about-us-area .navigation-buttons .nav-button {
+      background-color: transparent !important;
+      color: var(--mainColor, #4353ff) !important;
+    }
+  `]
+})
+export class AboutUsPageComponent implements OnInit, AfterViewInit, OnDestroy {
+  isToggled = false;
+  public isSticky: boolean = false;
+  private observer!: IntersectionObserver;
+  @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
+  @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
+  isMobile = false;
+  isTablet = false;
+  isDesktop = true;
+  browser = false;
+
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: object,
+    public themeService: ThemeCustomizerService
+  ) {
+    this.browser = isPlatformBrowser(this.platformId);
+    this.themeService.isToggled$.subscribe(isToggled => {
+      this.isToggled = isToggled;
+    });
+  }
+
+  ngOnInit(): void {
+    if (this.browser) {
+      this.isMobile = window.innerWidth < 768;
+      this.isTablet = window.innerWidth >= 768 && window.innerWidth <= 1024;
+      this.isDesktop = window.innerWidth > 1024;
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (this.browser) {
+      this.observer = new IntersectionObserver(
+        ([e]) => {
+          this.isSticky = e.intersectionRatio < 1;
+        },
+        { threshold: [1] }
+      );
+
+      if (this.sentinel && this.sentinel.nativeElement) {
+        this.observer.observe(this.sentinel.nativeElement);
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    if (this.browser) {
+      this.isMobile = window.innerWidth < 768;
+      this.isTablet = window.innerWidth >= 768 && window.innerWidth <= 1024;
+      this.isDesktop = window.innerWidth > 1024;
+    }
+  }
+
+  goBack(event: Event) {
+    event.preventDefault();
+    this.router.navigate(['/']);
+  }
+}
