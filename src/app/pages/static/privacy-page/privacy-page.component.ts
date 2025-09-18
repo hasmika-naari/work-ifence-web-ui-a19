@@ -1,6 +1,6 @@
 import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import * as _ from 'lodash';
 import { LanguageSubscribeComponent } from '../../language-subscribe/language-subscribe.component';
@@ -10,12 +10,13 @@ import { PCategory } from 'src/app/services/bee-compete.model';
 import { WorkifenceDataService } from 'src/app/services/bee-compete-data.service';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
   selector: 'app-privacy-page',
   standalone: true,
-  imports: [CommonModule, RouterLink,LanguageSubscribeComponent,
-      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
+  imports: [CommonModule, RouterLink, LanguageSubscribeComponent,
+      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
   templateUrl: './privacy-page.component.html',
   styleUrls: ['./privacy-page.component.scss']
 })
@@ -24,7 +25,8 @@ export class PrivacyPageComponent implements OnInit {
 
   categories: Array<Category> = new Array<Category>();
   pCategories: Array<PCategory> = new Array<PCategory>();
-  private location: Location =  inject(Location);
+  private location: Location = inject(Location);
+  private router: Router = inject(Router);
   
   private dealsService: WorkifenceDataService= inject(WorkifenceDataService);
   private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
@@ -65,6 +67,11 @@ export class PrivacyPageComponent implements OnInit {
 
   }
   backToHomePage($event: any){
+    this.location.back();
+  }
+
+  goBack($event: any){
+    $event.preventDefault();
     this.location.back();
   }
 

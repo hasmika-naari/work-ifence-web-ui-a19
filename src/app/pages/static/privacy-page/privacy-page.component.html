@@ -1,17 +1,5 @@
 <div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;">
     <app-header-wifence></app-header-wifence>
-    <div class="page-title-area item-bg1">
-        <div id="errormask" class="errormask"></div> 
-        <div class="container">
-            <div class="page-title-content">
-                <ul>
-                    <li><a (click)="backToHomePage($event)">Home</a></li>
-                    <li>Privacy</li>
-                </ul>
-                <h2>Privacy</h2>
-            </div>
-        </div>
-    </div>
     <div
         class="privacy-area"
         [class.dark-privacy-area]="themeService.isDark()"
@@ -19,6 +7,22 @@
         <div class="container" >
             <div class="row g-5">
                 <div class="story-content">
+                    <!-- Modern Title Section -->
+                    <div class="modern-title-section">
+                        <div class="title-wrapper">
+                            <div class="navigation-buttons">
+                                <a class="nav-button home-button" [routerLink]="['/']">
+                                    <lucide-icon name="home"></lucide-icon>
+                                    Home
+                                </a>
+                                <a class="nav-button back-button" (click)="goBack($event)">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Back
+                                </a>
+                            </div>
+                            <h1 class="privacy-title">Privacy Policy</h1>
+                        </div>
+                    </div>
                     <h4 class="title">Effective Date: March 31, 2023</h4>
                     <p>
                         WorkiFence.com (“Work iFence,” “we,” “us,” or “our”) values its users’ privacy across the WorkiFence.com website (WorkiFence.com), mobile site, and apps (collectively, the “Properties”). This Privacy Policy pertains to our Properties, the services that we offer on our Properties and your interactions with us outside our Properties other than through our browser extensions (collectively, the “Services”). We have implemented this Privacy Policy to provide you with information about how Work iFence collects, uses, and discloses information about you. By visiting our Properties or using our Services in any other way, you are agreeing to the practices described in this Privacy Policy.

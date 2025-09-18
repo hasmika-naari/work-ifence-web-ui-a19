@@ -5,7 +5,7 @@ import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
          LayoutGrid, Menu, ChevronDown, User, BookOpenCheck, BookMarked,
          Award, Facebook, Instagram, MessageCircle, ArrowRight, LayoutDashboard,
          Linkedin, X, Shield, FileText, HelpCircle, UserPlus, CornerDownRight,
-         Settings, LogOut } from 'lucide-angular';
+         Settings, LogOut, Undo2, Home } from 'lucide-angular';
 
 @NgModule({
   imports: [
@@ -36,7 +36,9 @@ import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
       UserPlus,
       CornerDownRight,
       Settings,
-      LogOut
+      LogOut,
+      Undo2,
+      Home
     })
   ],
   exports: [LucideAngularModule],
