@@ -44,6 +44,36 @@
         }
     }
 }
+.testimonials-slides {
+    padding-top: 40px !important;
+    .owl-theme {
+        .owl-dots {
+            margin-top: 15px;
+
+            .owl-dot {
+                span {
+                    width: 13px;
+                    height: 13px;
+                    margin: 0 5px;
+                    background: #dddddd;
+                    transition: var(--transition);
+                    border-radius: 50%;
+                    transform: scale(.9);
+                }
+                &:hover, &.active {
+                    span {
+                        background-color: var(--mainColor);
+                    }
+                }
+                &.active {
+                    span {
+                        transform: scale(1.2);
+                    }
+                }
+            }
+        }
+    }
+}
 .dark-testimonials-slides {
     .single-testimonials-item {
         background-color: var(--blackColor);

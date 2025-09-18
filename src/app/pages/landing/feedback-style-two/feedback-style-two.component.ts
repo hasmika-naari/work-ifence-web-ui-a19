@@ -58,9 +58,9 @@ export class FeedbackStyleTwoComponent implements OnInit {
     }
 
 	ngOnInit(): void {
-
-		 if(isPlatformBrowser(this.platformId)){
-			this.isBrowser = true
+		if(isPlatformBrowser(this.platformId)){
+			this.isBrowser = true;
+			
 			this.testimonialsSlides = {
 				loop: true,
 				nav: false,
