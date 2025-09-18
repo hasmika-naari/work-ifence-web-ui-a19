@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="section-title glossy-section">
+        <span class="sub-title">Why Choose Us</span>
+        <div class="title-container">
+            <h2>Trusted Career Management</h2>
+            <div class="title-underline"></div>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="trust-banner">
+                <p class="trust-message">
+                    We're dedicated to helping you achieve your career goals with tools that are
+                    <span class="highlight">secure</span>, <span class="highlight">effective</span>, and
+                    <span class="highlight">tailored to your needs</span>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div *ngFor="let indicator of trustIndicators" class="col-lg-3 col-md-6 col-sm-6">
+            <div class="trust-card card glossy-card">
+                <div class="trust-icon">
+                    <i class="material-icons">{{indicator.icon}}</i>
+                </div>
+                <h3>{{indicator.title}}</h3>
+                <p>{{indicator.description}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-10">
+            <div class="trust-quote card glossy-card">
+                <p class="quote-text">
+                    "Our mission is to empower job seekers with the tools they need to stand out 
+                    in today's competitive job market."
+                </p>
+                <div class="quote-author">
+                    <div class="author-avatar">
+                        <img src="assets/img/users/user1.jpg" alt="CEO">
+                    </div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <span>CEO & Founder</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

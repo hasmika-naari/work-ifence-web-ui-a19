@@ -9,9 +9,23 @@
   <section class="pt-50">
       <app-popular-features></app-popular-features>
   </section>
+  
+  <section class="pt-70 pb-50">
+    <app-trust-indicators></app-trust-indicators>
+  </section>
+  
+  <section class="pt-70 pb-70 bg-light-section">
+    <app-how-it-works></app-how-it-works>
+  </section>
+  
   <div class="courses-categories-area pt-50">
       <app-our-dashboard-demo></app-our-dashboard-demo>
   </div>
+  
+  <section class="pt-70 pb-70">
+    <app-special-offer></app-special-offer>
+  </section>
+  
   <!-- @if (config.country === 'usa') {
     <div class="courses-categories-area pt-50">
       <app-active-college-jobs></app-active-college-jobs>
@@ -21,7 +35,7 @@
     <app-active-jobs></app-active-jobs>
   </div> -->
 
-  <div class="testimonials-area pt-100 pb-100 mb-50" *ngIf="browser">
+  <div class="testimonials-area pt-100 pb-100 mb-50 bg-light-section" *ngIf="browser">
     <div class="container">
         <div class="section-title">
             <span class="sub-title">Testimonials</span>
@@ -30,6 +44,14 @@
         <app-feedback-style-two />
     </div>
   </div>
+  
+  <section class="pt-70 pb-70">
+    <app-partners></app-partners>
+  </section>
+  
+  <section class="pt-70 pb-70 bg-light-section">
+    <app-career-resources></app-career-resources>
+  </section>
 
     <!-- @defer (on timer(2s)) { -->
       <app-work-ifence-footer></app-work-ifence-footer>

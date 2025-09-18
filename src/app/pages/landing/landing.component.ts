@@ -31,6 +31,11 @@ import { ActiveCollegeJobsComponent } from './active-college-jobs/active-college
 import { environment } from '../../../environments/environment';
 import { ConfigService } from 'src/app/services/config.service';
 import { HeaderWorkIfenceComponent } from './header-wifence/header-wifence.component';
+import { TrustIndicatorsComponent } from './trust-indicators/trust-indicators.component';
+import { HowItWorksComponent } from './how-it-works/how-it-works.component';
+import { SpecialOfferComponent } from './special-offer/special-offer.component';
+import { PartnersComponent } from './partners/partners.component';
+import { CareerResourcesComponent } from './career-resources/career-resources.component';
 
 @Component({
   selector: 'app-landing',
@@ -40,7 +45,9 @@ import { HeaderWorkIfenceComponent } from './header-wifence/header-wifence.compo
     CategoriesComponent,FooterWorkifenceComponent,OurDashboardDemoComponent,
     MatButtonModule, MatChipsModule, MatIconModule,
     MatMenuModule,PopularFeaturesComponent, ActiveJobsComponent, ActiveCollegeJobsComponent,
-    MatCardModule, MatProgressBarModule, FeedbackStyleTwoComponent
+    MatCardModule, MatProgressBarModule, FeedbackStyleTwoComponent,
+    TrustIndicatorsComponent, HowItWorksComponent, SpecialOfferComponent,
+    PartnersComponent, CareerResourcesComponent
      ],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']

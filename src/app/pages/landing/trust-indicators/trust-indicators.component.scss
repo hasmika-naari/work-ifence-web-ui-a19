@@ -1,0 +1,213 @@
+.trust-banner {
+    background: linear-gradient(120deg, var(--secondaryColor) 0%, var(--secondaryColor) 100%);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 30px rgba(31, 38, 135, 0.1);
+    
+    .trust-message {
+        color: var(--whiteColor);
+        font-size: 18px;
+        line-height: 1.6;
+        margin: 0;
+        
+        .highlight {
+            font-weight: 600;
+            color: var(--mainColor5);
+            position: relative;
+            
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background-color: var(--mainColor);
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+.trust-card {
+    padding: 30px 20px;
+    text-align: center;
+    height: 100%;
+    transition: var(--transition);
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(31, 38, 135, 0.15);
+    }
+    
+    .trust-icon {
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: var(--mainColor5);
+        color: var(--mainColor);
+        font-size: 40px;
+        margin: 0 auto 20px;
+        transition: var(--transition);
+        
+        i {
+            font-size: 40px;
+        }
+    }
+    
+    h3 {
+        font-size: 20px;
+        margin-bottom: 15px;
+        color: var(--blackColor);
+    }
+    
+    p {
+        margin-bottom: 0;
+        color: var(--paragraphColor);
+    }
+    
+    &:hover .trust-icon {
+        background-color: var(--mainColor);
+        color: var(--whiteColor);
+    }
+}
+
+.trust-quote {
+    padding: 40px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    
+    .quote-text {
+        font-size: 22px;
+        font-style: italic;
+        line-height: 1.6;
+        color: var(--blackColor);
+        margin-bottom: 30px;
+        position: relative;
+        
+        &::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            font-size: 80px;
+            color: var(--mainColor);
+            opacity: 0.2;
+            font-family: Georgia, serif;
+        }
+    }
+    
+    .quote-author {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            overflow: hidden;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 3px solid var(--mainColor5);
+            
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+        
+        .author-info {
+            text-align: left;
+            
+            h4 {
+                font-size: 18px;
+                margin-bottom: 0;
+                color: var(--blackColor);
+            }
+            
+            span {
+                font-size: 14px;
+                color: var(--secondaryColor);
+            }
+        }
+    }
+}
+
+.glossy-section {
+    text-align: center;
+    margin-bottom: 50px;
+    
+    .sub-title {
+        display: block;
+        margin-bottom: 15px;
+        color: var(--secondaryColor);
+        font-weight: 600;
+        font-size: 16px;
+    }
+    
+    .title-container {
+        position: relative;
+        display: inline-block;
+        
+        h2 {
+            font-size: 38px;
+            margin-bottom: 0;
+            color: var(--blackColor);
+        }
+        
+        .title-underline {
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--mainColor), transparent);
+        }
+    }
+}
+
+.glossy-card {
+    background-color: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+}
+
+@media (max-width: 767px) {
+    .trust-banner .trust-message {
+        font-size: 16px;
+    }
+    
+    .trust-quote {
+        padding: 30px 20px;
+        
+        .quote-text {
+            font-size: 18px;
+        }
+    }
+    
+    .glossy-section .title-container h2 {
+        font-size: 28px;
+    }
+    
+    .trust-card {
+        margin-bottom: 20px;
+    }
+}
