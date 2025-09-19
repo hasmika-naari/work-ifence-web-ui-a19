@@ -47,9 +47,9 @@ footer [role="button"] {
 .useful-link a {
     display: block !important; /* Make links full width of their container */
     width: 100% !important; /* Force full width */
-    white-space: nowrap !important; /* Prevent text wrapping */
-    overflow: hidden !important; /* Hide overflow */
-    text-overflow: ellipsis !important; /* Show ellipsis for overflow text */
+    white-space: normal !important; /* Allow text to wrap */
+    overflow: visible !important; /* Show all content */
+    text-overflow: clip !important; /* Don't use ellipsis */
 }
 
 /* Fix alignment of icons in links */
@@ -60,11 +60,11 @@ footer [role="button"] {
 
 /* Specific fix for longer links to prevent wrapping */
 .useful-link li a {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    white-space: normal !important; /* Allow text to wrap */
+    overflow: visible !important; /* Show all content */
+    text-overflow: clip !important; /* Don't use ellipsis */
     padding-right: 5px !important;
-    font-size: 0.95em !important; /* Slightly reduce font size */
+    font-size: 15px !important; /* Increased from 0.95em for better readability */
 }
 
 /* Add a visual hover effect to all links for better user feedback */
@@ -85,7 +85,7 @@ footer [role="button"] {
 /* Contact column specific styling to show full text */
 .footer-area .contact-us-link {
     li a {
-        font-size: 0.95em; /* Slightly smaller font but more readable */
+        font-size: 15px; /* Increased from 0.95em for better readability */
         padding-right: 0; /* Remove right padding to fit better */
         white-space: normal !important; /* Allow text to wrap to multiple lines */
         overflow: visible !important; /* Show all text */
@@ -103,11 +103,11 @@ footer [role="button"] {
 .footer-area .support-link,
 .footer-area .useful-link {
     li a {
-        font-size: 0.9em; /* Slightly smaller font */
+        font-size: 15px; /* Increased from 0.9em for better readability */
         padding-right: 0; /* Remove right padding to fit better */
-        white-space: nowrap !important; /* Prevent text wrapping to second line */
-        overflow: hidden !important; /* Hide overflow text */
-        text-overflow: ellipsis !important; /* Show ellipsis for overflowing text */
+        white-space: normal !important; /* Allow text to wrap to second line */
+        overflow: visible !important; /* Show all text */
+        text-overflow: clip !important; /* Don't use ellipsis */
     }
 }
 
@@ -132,7 +132,7 @@ footer .copyright-text a {
 .footer-area a {
     color: var(--secondaryColor, #2d3bda) !important;
     opacity: 1 !important;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     transition: all 0.3s ease !important;
     padding: 3px 8px !important;
     border-radius: 4px !important;
@@ -725,7 +725,7 @@ footer .copyright-text a {
                 
                 i {
                     color: #557380;
-                    font-size: 20px;
+                    font-size: 24px;
                     cursor: pointer;    
                 }
                 
@@ -914,7 +914,7 @@ footer .copyright-text a {
                 padding-left: 40px;
                 padding-right: 55px; /* Make space for the button */
                 color: var(--secondaryColor);
-                font-size: 14px;
+                font-size: 15px; /* Increased from 14px for better readability */
                 transition: all 0.3s ease;
 
                 &::placeholder {
@@ -1066,7 +1066,7 @@ footer .copyright-text a {
     }
     .copyright-text {
         color: var(--secondaryColor);
-        font-size: 14px;
+        font-size: 15px; /* Increased from 14px for better readability */
         position: relative;
         z-index: 1;
         transition: all 0.3s ease;
