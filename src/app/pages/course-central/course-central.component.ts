@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
+import { Location } from '@angular/common';
 
 // Angular Material Modules
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -27,6 +28,8 @@ import { FooterWorkifenceComponent } from '../landing/footer-wifence/footer-wife
 import coursesData from './courses.json';
 import { NgxScrollTopModule } from 'ngx-scrolltop';
 import { RouterModule } from '@angular/router';
+import { IconsModule } from 'src/app/shared/icons.module';
+import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 
 export interface Course {
   title: string;
@@ -68,7 +71,7 @@ export interface Subject {
     CommonModule,
     ReactiveFormsModule,
     MatSidenavModule,
-    RouterModule ,
+    RouterModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -80,13 +83,18 @@ export interface Subject {
     MatPaginatorModule,
     CarouselModule,
     NgxScrollTopModule,
+    IconsModule,
     HeaderWorkIfenceComponent,
     FooterWorkifenceComponent
   ],
   templateUrl: './course-central.component.html',
   styleUrls: ['./course-central.component.scss']
 })
-export class CourseDashboardComponent implements OnInit {
+export class CourseDashboardComponent implements OnInit, AfterViewInit {
+  @ViewChild('sentinel') sentinel!: ElementRef;
+  @ViewChild('pageSection') pageSection!: ElementRef;
+  
+  isSticky = false;
   allCourses: Course[] = [];
   filteredCourses: Course[] = [];
   paginatedCourses: Course[] = [];
@@ -130,7 +138,12 @@ export class CourseDashboardComponent implements OnInit {
     }
   };
 
-  constructor(private http: HttpClient, private fb: FormBuilder) {}
+  constructor(
+    private http: HttpClient, 
+    private fb: FormBuilder, 
+    private location: Location,
+    public themeService: ThemeCustomizerService
+  ) {}
 
   ngOnInit(): void {
     this.topCourses = [...coursesData.slice(0, 12)];
@@ -230,5 +243,24 @@ export class CourseDashboardComponent implements OnInit {
     const themes = ['bg-rose', 'bg-skyblue', 'bg-emerald', 'bg-sunset', 'bg-royalblue', 'bg-coral', 'bg-violet', 'bg-mint', 'bg-gold', 'bg-steel'];
     const index = course.title.length % themes.length;
     return themes[index];
+  }
+
+  // Add the missing methods for the new UI
+  ngAfterViewInit(): void {
+    if (this.sentinel && this.pageSection) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          this.isSticky = !entry.isIntersecting;
+        },
+        { threshold: [0] }
+      );
+      
+      observer.observe(this.sentinel.nativeElement);
+    }
+  }
+
+  goBack(event: Event): void {
+    event.preventDefault();
+    this.location.back();
   }
 }
