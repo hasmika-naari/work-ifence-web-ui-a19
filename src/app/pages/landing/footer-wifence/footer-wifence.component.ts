@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, RouterModule } from '@angular/router';
 import { NgxScrollTopModule } from 'ngx-scrolltop';
@@ -19,6 +19,8 @@ import { NgxScrollTopModule } from 'ngx-scrolltop';
   styleUrls: ['./footer-wifence.component.scss']
 })
 export class FooterWorkifenceComponent implements OnInit {
+  @Input() isToggled: boolean = false;
+  
   newsletterForm: FormGroup;
   submittedForm = false;
   emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";

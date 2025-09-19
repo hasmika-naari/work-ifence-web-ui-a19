@@ -1,0 +1,207 @@
+.faq-list-page {
+  background-color: var(--bodyBgColor);
+  color: var(--textColor);
+}
+
+.faq-area {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+
+  &.dark-mode {
+    background-color: var(--bodyBgColor);
+    color: var(--textColor);
+  }
+
+  .section-title {
+    margin-bottom: 40px;
+
+    .sub-title {
+      display: block;
+      margin-bottom: 15px;
+      color: var(--primaryColor);
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    p {
+      max-width: 600px;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.faq-sections {
+  .faq-section {
+    margin-bottom: 35px;
+
+    h3.section-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--primaryColor);
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-mode & h3.section-title {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Angular Material Accordion Styling
+.mat-accordion {
+  .mat-expansion-panel {
+    background-color: transparent;
+    box-shadow: none;
+    border: 1px solid #eeeeee;
+    border-radius: 5px !important;
+    margin-bottom: 15px;
+
+    .dark-mode & {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    // Active state highlighting
+    &.active, &.mat-expanded {
+      border-color: var(--primaryColor);
+      background-color: rgba(var(--primaryColorRgb), 0.05);
+
+      .mat-expansion-panel-header {
+        .mat-panel-title {
+          color: var(--primaryColor);
+        }
+      }
+    }
+
+    .mat-expansion-panel-header {
+      padding: 0 20px;
+      font-family: var(--headingFontFamily);
+
+      &:hover {
+        background-color: rgba(var(--primaryColorRgb), 0.03);
+      }
+
+      .mat-panel-title {
+        color: var(--headingColor);
+        font-weight: 600;
+        font-size: 17px;
+        line-height: 1.5;
+      }
+
+      .dark-mode & .mat-panel-title {
+        color: var(--textColor);
+      }
+    }
+
+    .mat-expansion-panel-body {
+      padding: 0 20px 20px;
+    }
+
+    .faq-content {
+      p {
+        margin-bottom: 0;
+        font-size: 15px;
+        line-height: 1.8;
+      }
+    }
+  }
+}
+
+// CTA Section styling
+.faq-contact-info {
+  margin-top: 60px;
+  text-align: center;
+
+  .contact-cta {
+    background-color: var(--secondaryColor);
+    color: white;
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+
+    h3 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    p {
+      margin-bottom: 25px;
+      font-size: 16px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      .btn {
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        
+        &.btn-primary {
+          background-color: var(--primaryColor);
+          color: white;
+          border: 2px solid var(--primaryColor);
+
+          &:hover {
+            background-color: transparent;
+            color: white;
+          }
+        }
+
+        &.btn-secondary {
+          background-color: transparent;
+          color: white;
+          border: 2px solid white;
+
+          &:hover {
+            background-color: white;
+            color: var(--secondaryColor);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive styles
+@media only screen and (max-width: 767px) {
+  .faq-area .section-title h2 {
+    font-size: 26px;
+  }
+
+  .mat-accordion .mat-expansion-panel .mat-expansion-panel-header .mat-panel-title {
+    font-size: 15px;
+  }
+
+  .faq-sections .faq-section h3.section-title {
+    font-size: 20px;
+  }
+
+  .faq-contact-info .contact-cta {
+    padding: 30px 20px;
+
+    h3 {
+      font-size: 22px;
+    }
+  }
+}

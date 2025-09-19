@@ -1,0 +1,345 @@
+import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID, inject, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import * as _ from 'lodash';
+import { LanguageSubscribeComponent } from '../../language-subscribe/language-subscribe.component';
+import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
+import { Category } from 'src/app/services/ifence.model';
+import { PCategory } from 'src/app/services/bee-compete.model';
+import { WorkifenceDataService } from 'src/app/services/bee-compete-data.service';
+import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
+import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
+import { IconsModule } from 'src/app/shared/icons.module';
+import { MatExpansionModule } from '@angular/material/expansion';
+
+// FAQ Data Model interfaces
+export interface FAQ {
+  id: number;
+  question: string;
+  answer: string;
+  expanded: boolean;
+}
+
+export interface FAQSection {
+  title: string;
+  faqs: FAQ[];
+}
+
+@Component({
+  selector: 'app-faq-list-page',
+  standalone: true,
+  imports: [CommonModule, RouterLink, LanguageSubscribeComponent,
+      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule, MatExpansionModule],
+  templateUrl: './faq-list-page.component.html',
+  styleUrls: ['./faq-list-page.component.scss']
+})
+export class FAQListPageComponent implements OnInit, AfterViewInit, OnDestroy {
+  isToggled = false;
+  public isSticky: boolean = false;
+  private observer!: IntersectionObserver;
+  @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
+  @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
+
+  categories: Array<Category> = new Array<Category>();
+  pCategories: Array<PCategory> = new Array<PCategory>();
+  private location: Location = inject(Location);
+  private router: Router = inject(Router);
+  
+  private dealsService: WorkifenceDataService= inject(WorkifenceDataService);
+  private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
+  public themeService: ThemeCustomizerService =  inject(ThemeCustomizerService);
+  private platformId: object =  inject(PLATFORM_ID);
+
+  isMobile = false;
+  isTablet = false;
+  isDesktop = true;
+  browser = false;
+  expandedIndices: number[] = [];
+
+  // New structured FAQ data model
+  faqSections: FAQSection[] = [
+    {
+      title: 'General Questions',
+      faqs: [
+        {
+          id: 0,
+          question: 'What is Work iFence?',
+          answer: 'Work iFence is a comprehensive career management platform that helps job seekers manage their resumes, track job applications, and find new career opportunities. Our platform offers tools for resume optimization, job application tracking, and professional development resources.',
+          expanded: false
+        },
+        {
+          id: 1,
+          question: 'How do I create an account?',
+          answer: 'Creating an account is simple. Click on the "Sign Up" button in the top-right corner of the homepage. You can register using your email address or sign up with your Google or LinkedIn account for faster access. After completing the registration form, you\'ll receive a confirmation email to verify your account.',
+          expanded: false
+        },
+        {
+          id: 2,
+          question: 'Is Work iFence free to use?',
+          answer: 'Work iFence offers both free and premium subscription plans. The free plan includes basic resume management and job application tracking. Premium plans offer advanced features like AI resume optimization, unlimited resume versions, priority support, and access to exclusive resources. Visit our pricing page for more details on our subscription options.',
+          expanded: false
+        },
+        {
+          id: 3,
+          question: 'How do I contact customer support?',
+          answer: 'You can contact our customer support team through multiple channels. Visit our Contact Us page, email us at support&#64;workifence.com, use the live chat feature on our website, or call our support line at (555) 123-4567 during business hours (Monday to Friday, 9 AM to 6 PM EST).',
+          expanded: false
+        },
+        {
+          id: 4,
+          question: 'Can I cancel my subscription anytime?',
+          answer: 'Yes, you can cancel your subscription at any time. Go to your Account Settings, select the Subscription tab, and click on "Cancel Subscription." Your premium features will remain active until the end of your current billing cycle. There are no cancellation fees or long-term commitments.',
+          expanded: false
+        }
+      ]
+    },
+    {
+      title: 'Resume Management',
+      faqs: [
+        {
+          id: 5,
+          question: 'How many resumes can I create?',
+          answer: 'Free users can create up to 2 different resume versions. Premium subscribers have unlimited resume creation capabilities, allowing you to tailor different resumes for various job applications and industries.',
+          expanded: false
+        },
+        {
+          id: 6,
+          question: 'What formats can I export my resume in?',
+          answer: 'You can export your resume in multiple formats including PDF, DOCX (Microsoft Word), TXT, and HTML. Premium users also have access to specialized formats optimized for Applicant Tracking Systems (ATS) and can generate direct links to share their online resume portfolio.',
+          expanded: false
+        },
+        {
+          id: 7,
+          question: 'How does the AI Resume Optimization work?',
+          answer: 'Our AI Resume Optimization analyzes your resume against industry standards and job descriptions. It provides suggestions for improvements in formatting, content, keywords, and overall structure. The AI can identify missing skills, recommend stronger action verbs, and help tailor your resume for specific job applications to increase your chances of getting past Applicant Tracking Systems.',
+          expanded: false
+        },
+        {
+          id: 8,
+          question: 'Where are my resumes stored?',
+          answer: 'Your resumes are securely stored in our cloud infrastructure. We use Amazon S3 storage for the PDF versions of your resumes and store the structured data in JSON format in our secure database. All data is encrypted both in transit and at rest to ensure maximum security and privacy.',
+          expanded: false
+        },
+        {
+          id: 9,
+          question: 'Can I import my existing resume?',
+          answer: 'Yes, you can import your existing resume in various formats (PDF, DOCX, etc.). Our smart parser will extract information from your uploaded resume and populate the relevant fields in our system. You can then review and edit the imported information before finalizing your resume in our platform.',
+          expanded: false
+        }
+      ]
+    },
+    {
+      title: 'Job Application Tracking',
+      faqs: [
+        {
+          id: 10,
+          question: 'How do I track my job applications?',
+          answer: 'Our job application tracking system allows you to log and monitor all your job applications in one place. You can add applications manually or use our browser extension to automatically capture application details when you apply on job boards. Track the status of each application, set reminders for follow-ups, and maintain notes about interviews and interactions.',
+          expanded: false
+        },
+        {
+          id: 11,
+          question: 'Can I set reminders for follow-ups?',
+          answer: 'Yes, you can set custom reminders for follow-ups, interview preparations, and other important dates related to your job applications. Reminders can be configured to send notifications via email, SMS, or push notifications to your mobile device. Premium users get access to advanced scheduling features and calendar integrations.',
+          expanded: false
+        },
+        {
+          id: 12,
+          question: 'Does Work iFence integrate with job boards?',
+          answer: 'Yes, Work iFence integrates with major job boards like Indeed, LinkedIn, Glassdoor, and ZipRecruiter. Our browser extension allows you to save job listings directly to your Work iFence account, apply with your stored resumes, and automatically track your applications across these platforms. Premium users get access to additional specialized job board integrations.',
+          expanded: false
+        },
+        {
+          id: 13,
+          question: 'Can I generate reports on my job search activities?',
+          answer: 'Yes, premium users can generate detailed reports and analytics on their job search activities. These reports include insights on application conversion rates, response times, most successful resume versions, and trends in your job search. The data can help you optimize your approach and focus on strategies that yield better results.',
+          expanded: false
+        },
+        {
+          id: 14,
+          question: 'How can I organize different job applications?',
+          answer: 'You can organize your job applications using custom tags, categories, and status labels. Create job search campaigns for different industries or roles, sort applications by date, company, or status, and use the dashboard view to get a comprehensive overview of your entire job search. Premium users can also create custom pipelines to match their unique job search workflow.',
+          expanded: false
+        }
+      ]
+    },
+    {
+      title: 'Learning and Resources',
+      faqs: [
+        {
+          id: 15,
+          question: 'What training resources does Work iFence offer?',
+          answer: 'Work iFence provides a comprehensive library of training resources including video tutorials, webinars, articles, and interactive courses. We offer online and in-person 1:1 or group training sessions led by industry experts. Our curated content includes highly rated training videos from platforms like YouTube, Udemy, and Coursera, covering job search strategies, interview preparation, and career development.',
+          expanded: false
+        },
+        {
+          id: 16,
+          question: 'Are the learning resources included in all plans?',
+          answer: 'Basic learning resources are available to all users, including free accounts. Premium subscribers get access to our complete library of advanced content, exclusive webinars, personalized learning paths, and priority booking for 1:1 coaching sessions. Some specialized courses and certifications may have additional fees, with discounts available for premium subscribers.',
+          expanded: false
+        },
+        {
+          id: 17,
+          question: 'Can I get personalized career advice?',
+          answer: 'Yes, premium subscribers can book 1:1 sessions with career coaches and industry experts through our platform. These personalized sessions can cover resume reviews, interview preparation, career transition strategies, and more. We match you with coaches who have experience in your industry or target field to provide the most relevant guidance.',
+          expanded: false
+        },
+        {
+          id: 18,
+          question: 'How often are new learning resources added?',
+          answer: 'We add new learning resources weekly, including articles, videos, and webinars. Our content team continuously updates materials to reflect the latest industry trends, job search strategies, and career development best practices. Premium users receive notifications about new content relevant to their profile and interests.',
+          expanded: false
+        },
+        {
+          id: 19,
+          question: 'Can I suggest topics for future learning resources?',
+          answer: 'Absolutely! We welcome content suggestions from our users. You can submit topic requests through the "Suggest a Topic" form in the Learning Resources section. Our content team reviews all suggestions and prioritizes content creation based on user demand and relevance. Premium users\' suggestions receive priority consideration.',
+          expanded: false
+        }
+      ]
+    },
+    {
+      title: 'Technical Questions',
+      faqs: [
+        {
+          id: 20,
+          question: 'What browsers are supported?',
+          answer: 'Work iFence supports all major modern browsers including Google Chrome, Mozilla Firefox, Microsoft Edge, Safari, and Opera. For the best experience, we recommend using the latest version of these browsers. Our browser extension is currently available for Chrome, Firefox, and Edge.',
+          expanded: false
+        },
+        {
+          id: 21,
+          question: 'Is there a mobile app available?',
+          answer: 'Yes, we offer mobile apps for both iOS and Android devices. The mobile app allows you to view and edit your resumes, track job applications, receive notifications, and access learning resources on the go. While some advanced editing features are better experienced on desktop, most core functionality is available on mobile devices.',
+          expanded: false
+        },
+        {
+          id: 22,
+          question: 'How secure is my data on Work iFence?',
+          answer: 'We take data security very seriously. All data is encrypted both in transit (using HTTPS) and at rest (using AES-256 encryption). We implement industry-standard security measures including regular security audits, multi-factor authentication, and strict access controls. Our privacy policy details how we handle and protect your personal information.',
+          expanded: false
+        },
+        {
+          id: 23,
+          question: 'What is the AI Support Feature?',
+          answer: 'Our AI Support Feature is powered by integration with ChatGPT\'s API and provides on-demand assistance for resume writing, cover letter creation, and interview preparation. The feature can help with specific sections of your resume, suggest improvements, and provide real-time feedback. The level of AI support access depends on your subscription plan, with premium users getting more comprehensive AI assistance.',
+          expanded: false
+        },
+        {
+          id: 24,
+          question: 'Can I access Work iFence offline?',
+          answer: 'While Work iFence is primarily a cloud-based platform, our mobile apps offer limited offline functionality. You can view previously loaded resumes and job applications when offline, and any changes will sync once you\'re back online. For full functionality, including resume creation, editing, and access to learning resources, an internet connection is required.',
+          expanded: false
+        }
+      ]
+    }
+  ];
+
+  constructor() {
+    this.browser = isPlatformBrowser(this.platformId);
+    this.themeService.isToggled$.subscribe(isToggled => {
+      this.isToggled = isToggled;
+    });
+  }
+
+  ngOnInit(): void {
+    this.fetchData();
+    if(this.browser){
+      if(this.deviceService.isDesktop()){
+        this.isDesktop = true;
+        this.isMobile = false;
+        this.isTablet = false;
+      }else if(this.deviceService.isMobile()){
+        this.isMobile = true;
+        this.isDesktop = false;
+        this.isTablet = false;
+      }else if(this.deviceService.isTablet()){
+        this.isTablet = true;
+        this.isMobile = false;
+        this.isDesktop = false;
+      }
+    } 
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId) && this.sentinel && this.pageSectionRef) {
+      this.observer = new IntersectionObserver(entries => {
+        this.isSticky = !entries[0].isIntersecting;
+      }, { root: this.pageSectionRef.nativeElement });
+      this.observer.observe(this.sentinel.nativeElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  backToHomePage($event: any){
+    this.location.back();
+  }
+
+  goBack($event: any){
+    $event.preventDefault();
+    this.location.back();
+  }
+
+  // Updated to use the structured data model
+  toggleFaq(sectionIndex: number, faqIndex: number): void {
+    this.faqSections[sectionIndex].faqs[faqIndex].expanded = 
+      !this.faqSections[sectionIndex].faqs[faqIndex].expanded;
+    
+    // For backward compatibility with old code
+    const globalId = this.faqSections[sectionIndex].faqs[faqIndex].id;
+    const position = this.expandedIndices.indexOf(globalId);
+    if (position > -1) {
+      this.expandedIndices.splice(position, 1);
+    } else {
+      this.expandedIndices.push(globalId);
+    }
+  }
+
+  // Legacy method - kept for backward compatibility
+  toggleFaqLegacy(index: number): void {
+    const position = this.expandedIndices.indexOf(index);
+    if (position > -1) {
+      this.expandedIndices.splice(position, 1);
+    } else {
+      this.expandedIndices.push(index);
+    }
+    
+    // Update the structured data model to match
+    for (const section of this.faqSections) {
+      for (const faq of section.faqs) {
+        if (faq.id === index) {
+          faq.expanded = position === -1;
+          break;
+        }
+      }
+    }
+  }
+
+  getTitleClass(){
+    let result = 'hide-on-init page-title-with-transparent-area page-title-style-course-details-desktop';
+
+    if(!this.isDesktop){
+      result = 'hide-on-init page-title-with-transparent-area page-title-style-course-details-mobile';
+    }
+
+    return result;
+  }
+
+  fetchData(): void{
+    // This method can be used to fetch FAQs from a backend API if needed
+    // this.dealsService.getCategoriesByCountry('usa', this.platformId).subscribe((categories) => {
+    //   this.categories = [...categories];
+    //   /// divide into parentList
+    //   // Group categories by parent and map them to the desired format
+    //   this.pCategories = [..._.map(
+    //       _.groupBy(categories, 'parent'),
+    //       (categories, parent) => ({ parent, categories }))];
+    // });
+  }
+}

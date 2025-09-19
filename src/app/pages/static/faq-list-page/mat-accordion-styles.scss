@@ -1,0 +1,96 @@
+/* Angular Material Expansion Panel Styling */
+:host ::ng-deep .mat-expansion-panel {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 12px !important;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  margin-bottom: 10px;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+:host ::ng-deep .active-accordion {
+  border-color: var(--primaryColor) !important;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 6px 20px rgba(var(--primaryColorRGB), 0.08) !important;
+  
+  .mat-expansion-panel-header {
+    background: rgba(var(--primaryColorRGB), 0.05) !important;
+  }
+  
+  .mat-panel-title {
+    color: var(--primaryColor) !important;
+  }
+}
+
+:host ::ng-deep .mat-expansion-panel-header {
+  padding: 20px 25px !important;
+  transition: all 0.2s ease;
+  height: auto !important;
+  
+  &:hover {
+    background: rgba(var(--primaryColorRGB), 0.05) !important;
+  }
+}
+
+:host ::ng-deep .mat-expansion-panel-header-title {
+  color: var(--headingColor);
+  font-size: 17px;
+  font-weight: 500;
+  margin: 0;
+}
+
+:host ::ng-deep .mat-expansion-panel-body {
+  padding: 0 25px 20px 25px !important;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--bodyColor);
+}
+
+/* Toggle icon styling */
+.toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  
+  lucide-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  :host ::ng-deep .mat-expansion-panel-header {
+    padding: 15px 20px !important;
+  }
+  
+  :host ::ng-deep .mat-expansion-panel-header-title {
+    font-size: 16px;
+  }
+  
+  :host ::ng-deep .mat-expansion-panel-body {
+    padding: 0 20px 15px 20px !important;
+    font-size: 14px;
+  }
+  
+  .toggle-icon {
+    width: 26px;
+    height: 26px;
+    
+    lucide-icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}

@@ -318,8 +318,8 @@ export const routes: Routes = [
     {
         path: 'faq',
         loadComponent: () => 
-            import('./pages/static/faq-page/faq-page.component')
-                .then(m => m.FaqPageComponent), data: {reuseComponent: true, breadcrumb: 'FAQ' }
+            import('./pages/static/faq-list-page/faq-list-page.component')
+                .then(m => m.FAQListPageComponent), data: {reuseComponent: true, breadcrumb: 'FAQ' }
     },
     {
         path: 'resources',

@@ -51,6 +51,10 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
   @Input('back') back: boolean = false;
   @Input('container') container: boolean = true;
   @Input() isSticky: boolean = false;
+  @Input() isToggled: boolean = false;
+  @Input() hasBanner: boolean = false;
+  @Input() bannerTitle: string = '';
+  @Input() bannerSubtitle: string = '';
 
   isMenuVisible = false;
 
@@ -109,8 +113,6 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
                 }
                 AOS.init();
     }
-
-    isToggled = false;
 
     userAccount: any = this.userStore.getUserAccount();
     menuListStore: any = this.userStore.getMenuList();

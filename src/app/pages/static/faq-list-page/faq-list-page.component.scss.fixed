@@ -1,0 +1,99 @@
+.course-details-area {
+    padding: 50px 0;
+}
+
+.faq-accordion {
+    margin-top: 30px;
+}
+
+.section-title {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: var(--primaryColor);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.faq-section:first-child .section-title {
+    margin-top: 0;
+}
+
+/* Custom styles for Angular Material's expansion panel */
+::ng-deep .mat-expansion-panel {
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    margin-bottom: 15px !important;
+    background-color: #fff !important;
+    overflow: hidden !important;
+}
+
+::ng-deep .mat-expansion-panel-header {
+    padding: 20px 25px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #333 !important;
+    transition: all 0.3s ease !important;
+}
+
+::ng-deep .mat-expansion-panel-header-title {
+    color: #333 !important;
+    font-weight: 600 !important;
+}
+
+::ng-deep .mat-expansion-panel-body {
+    padding: 0 25px 20px !important;
+    color: #666 !important;
+    line-height: 1.7 !important;
+}
+
+/* Hover effect on panel header */
+::ng-deep .mat-expansion-panel:hover .mat-expansion-panel-header {
+    background-color: #f9f9f9 !important;
+}
+
+/* Active/expanded panel highlight effect */
+::ng-deep .active-faq {
+    border-left: 4px solid var(--primaryColor) !important;
+    background-color: rgba(var(--primaryRgb), 0.03) !important;
+}
+
+::ng-deep .active-faq .mat-expansion-panel-header {
+    background-color: rgba(var(--primaryRgb), 0.05) !important;
+}
+
+::ng-deep .active-faq .mat-expansion-panel-header-title {
+    color: var(--primaryColor) !important;
+}
+
+/* Animation for smooth transitions */
+::ng-deep .mat-expansion-panel-body {
+    transition: max-height 0.3s ease-out !important;
+}
+
+.faq-answer {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .course-details-area {
+        padding: 30px 0;
+    }
+    
+    .section-title {
+        font-size: 20px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    
+    ::ng-deep .mat-expansion-panel-header {
+        padding: 15px 20px !important;
+        font-size: 15px !important;
+    }
+    
+    ::ng-deep .mat-expansion-panel-body {
+        padding: 0 20px 15px !important;
+    }
+}

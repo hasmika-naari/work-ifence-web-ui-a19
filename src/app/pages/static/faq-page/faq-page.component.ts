@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID, inject, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import * as _ from 'lodash';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -10,20 +10,27 @@ import { PCategory } from 'src/app/services/bee-compete.model';
 import { WorkifenceDataService } from 'src/app/services/bee-compete-data.service';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
   selector: 'app-faq-page',
   standalone: true,
-  imports: [CommonModule, RouterLink,LanguageSubscribeComponent,
-      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
+  imports: [CommonModule, RouterLink, LanguageSubscribeComponent,
+      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
   templateUrl: './faq-page.component.html',
   styleUrls: ['./faq-page.component.scss']
 })
-export class FaqPageComponent implements OnInit {
+export class FaqPageComponent implements OnInit, AfterViewInit, OnDestroy {
   isToggled = false;
+  public isSticky: boolean = false;
+  private observer!: IntersectionObserver;
+  @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
+  @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
+
   categories: Array<Category> = new Array<Category>();
   pCategories: Array<PCategory> = new Array<PCategory>();
-	private dealsService: WorkifenceDataService= inject(WorkifenceDataService);
+  private location: Location = inject(Location);
+  private dealsService: WorkifenceDataService= inject(WorkifenceDataService);
   private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
   public themeService: ThemeCustomizerService=  inject(ThemeCustomizerService);
   private platformId: object =  inject(PLATFORM_ID);
@@ -32,11 +39,12 @@ export class FaqPageComponent implements OnInit {
   isTablet = false;
   isDesktop = true;
   browser = false;
-  constructor( ) {
+  
+  constructor() {
     this.browser = isPlatformBrowser(this.platformId);
     this.themeService.isToggled$.subscribe(isToggled => {
       this.isToggled = isToggled;
-  });
+    });
   }
 
   ngOnInit(): void {
@@ -55,22 +63,55 @@ export class FaqPageComponent implements OnInit {
         this.isMobile = false;
         this.isDesktop = false;
       }
-    
     } 
-  
   }
 
-  getTitleClass(){
+  ngAfterViewInit(): void {
+    if (this.browser) {
+      this.setupIntersectionObserver();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  private setupIntersectionObserver(): void {
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0
+    };
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        this.isSticky = !entry.isIntersecting;
+      });
+    }, options);
+
+    if (this.sentinel) {
+      this.observer.observe(this.sentinel.nativeElement);
+    }
+  }
+
+  goBack(event: Event): void {
+    event.preventDefault();
+    this.location.back();
+  }
+
+  getTitleClass() {
     let result = 'hide-on-init page-title-with-transparent-area page-title-style-course-details-desktop';
 
-    if(!this.isDesktop){
+    if (!this.isDesktop) {
       result = 'hide-on-init page-title-with-transparent-area page-title-style-course-details-mobile';
     }
 
     return result;
   }
 
-  fetchData(): void{
+  fetchData(): void {
     // this.dealsService.getCategoriesByCountry('usa', this.platformId).subscribe((categories) => {
     //   this.categories = [...categories];
     //   /// divide into parentList
@@ -79,7 +120,5 @@ export class FaqPageComponent implements OnInit {
     //       _.groupBy(categories, 'parent'),
     //       (categories, parent) => ({ parent, categories }))];
     // });
- 
-}
-
+  }
 }

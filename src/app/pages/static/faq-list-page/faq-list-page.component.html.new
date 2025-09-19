@@ -1,0 +1,67 @@
+<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
+    <div #sentinel></div>
+    <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
+    <div
+        class="faq-area"
+        [class.dark-faq-area]="themeService.isDark()"
+    >
+        <div class="container" >
+            <div class="row g-5">
+                <div class="story-content">
+                    <!-- Modern Title Section -->
+                    <div class="modern-title-section">
+                        <div class="title-wrapper">
+                            <div class="navigation-buttons">
+                                <a class="nav-button home-button" [routerLink]="['/']">
+                                    <lucide-icon name="home"></lucide-icon>
+                                    Home
+                                </a>
+                                <a class="nav-button back-button" (click)="goBack($event)">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Back
+                                </a>
+                            </div>
+                            <h1 class="faq-title">Frequently Asked Questions</h1>
+                        </div>
+                    </div>
+                    
+                    <!--Frequently Asked Questions Section-->
+                    <div class="faq-accordion-container">
+                        <div class="faq-intro">
+                            <p class="faq-subtitle">Find answers to the most common questions about our services and platform. If you can't find what you're looking for, please <a [routerLink]="['/contact-us']" class="contact-link">contact our support team</a>.</p>
+                        </div>
+                        
+                        <!-- Dynamic FAQ Sections using Angular Material -->
+                        <div *ngFor="let section of faqSections; let sectionIndex = index" class="faq-category">
+                            <h3 class="category-title">{{ section.title }}</h3>
+                            
+                            <mat-accordion class="accordion-list faq-expansion-panels" multi>
+                                <mat-expansion-panel 
+                                    *ngFor="let faq of section.faqs; let faqIndex = index" 
+                                    class="faq-panel"
+                                    [expanded]="faq.expanded"
+                                    (opened)="faq.expanded = true"
+                                    (closed)="faq.expanded = false">
+                                    
+                                    <mat-expansion-panel-header class="faq-panel-header">
+                                        <mat-panel-title class="question">
+                                            {{ faq.question }}
+                                        </mat-panel-title>
+                                        <div class="toggle-icon">
+                                            <lucide-icon [name]="faq.expanded ? 'chevron-up' : 'chevron-down'"></lucide-icon>
+                                        </div>
+                                    </mat-expansion-panel-header>
+                                    
+                                    <div class="faq-answer">
+                                        <p [innerHTML]="faq.answer"></p>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-footer-wifence></app-footer-wifence>
+    </div>
+</div>

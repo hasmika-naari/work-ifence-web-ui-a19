@@ -1,0 +1,547 @@
+:host {
+  font-family: 'Poppins', sans-serif;
+}
+
+:host .mat-icon {
+  font-family: 'Material Icons' !important;
+}
+
+// Modern Title Section
+.modern-title-section {
+  position: relative;
+  padding: 0 0 30px 0;
+  z-index: 10;
+  margin-bottom: 20px;
+  
+  .title-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .navigation-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  
+  .nav-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--secondaryColor);
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 4px 0;
+    
+    lucide-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -1px;
+    }
+    
+    &:hover {
+      color: var(--mainColor);
+    }
+  }
+  
+  .home-button {
+    &:after {
+      content: '|';
+      margin-left: 16px;
+      color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3);
+      font-weight: 300;
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      line-height: 1;
+      position: relative;
+      top: -1px;
+    }
+  }
+  
+  .back-button {
+    cursor: pointer;
+    &:hover {
+      transform: translateX(-3px);
+    }
+  }
+  
+  .faq-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 15px 0 0 0;
+    color: var(--mainColor, #242d60);
+  }
+  
+  // Add a gradient effect for the title in dark mode
+  .dark-faq-area .faq-title {
+    background: linear-gradient(90deg, var(--mainColor), var(--secondaryColor));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  @media (max-width: 576px) {
+    .dark-faq-area .faq-title {
+      background-size: 100% 100%;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .modern-title-section {
+    padding: 0 0 20px 0;
+    
+    .faq-title {
+      font-size: 2rem;
+    }
+    
+    .navigation-buttons {
+      margin-bottom: 8px;
+    }
+    
+    .nav-button {
+      font-size: 14px;
+      
+      lucide-icon {
+        width: 16px;
+        height: 16px;
+        margin-top: -1px;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .modern-title-section {
+    padding: 0 0 15px 0;
+    
+    .faq-title {
+      font-size: 1.8rem;
+    }
+    
+    .nav-button {
+      font-size: 13px;
+      
+      lucide-icon {
+        width: 15px;
+        height: 15px;
+        margin-top: -1px;
+      }
+    }
+    
+    .home-button {
+      &:after {
+        margin-left: 12px;
+      }
+    }
+  }
+}
+
+#errormask {
+  position: absolute !important;
+  left: 0px !important; 
+  right: 0px !important;
+  margin: auto !important;
+  bottom: 0px !important;
+  top: 0px !important;
+  z-index: 60 !important;
+  background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px);
+}
+
+.faq-area {
+  z-index: 70;
+  position: relative;
+  padding-top: 100px;
+  padding-bottom: 0px;
+  // Add margin for footer
+  margin-bottom: 0px;
+  background-color: #f8fafc;
+  background-image:
+    radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.2), transparent 35%),
+    radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.2), transparent 35%),
+    radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.25), transparent 40%),
+    radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.15), transparent 40%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  
+  .container {
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    padding: 30px;
+  }
+}
+
+.faq-area .story-content {
+  margin-top: -6px;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  box-shadow: 0 4px 16px rgba(31, 38, 135, 0.05);
+  padding: 30px;
+}
+
+.faq-area .story-content p {
+  margin-bottom: 30px;
+  color: var(--paragraphColor);
+  line-height: 1.7;
+}
+
+.faq-area .story-content p:last-child {
+  margin-bottom: 0;
+}
+
+.faq-area .story-content h4.title {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--secondaryColor);
+  position: relative;
+}
+
+.faq-area .story-content .faq-content p {
+  margin-bottom: 15px;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+// FAQ sections styling
+.faq-sections {
+  .faq-section {
+    margin-bottom: 35px;
+
+    h4.title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--secondaryColor);
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: rgba(var(--primaryColorRgb), 0.03);
+      border-radius: 8px;
+      
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        margin-right: 12px;
+        /* Use a lighter version of the secondary color (#242d60) - making it #3f4b8a */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233f4b8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z'%3E%3C/path%3E%3Cpath d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'%3E%3C/path%3E%3Cpath d='M12 17h.01'%3E%3C/path%3E%3C/svg%3E");
+        background-size: contain;
+        background-repeat: no-repeat;
+        flex-shrink: 0;
+      }
+    }
+    
+    .dark-faq-area & h4.title {
+      color: var(--mainColor);
+      
+      &::before {
+        /* Use a lighter version of mainColor (#4353FF) - making it #7a85ff */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%237a85ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z'%3E%3C/path%3E%3Cpath d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'%3E%3C/path%3E%3Cpath d='M12 17h.01'%3E%3C/path%3E%3C/svg%3E");
+      }
+    }
+  }
+}
+
+// Angular Material Accordion Styling
+.mat-accordion {
+  /* Custom styling for expansion indicator */
+  .mat-expansion-indicator {
+    &::after {
+      color: var(--primaryColor);
+      border-width: 0 2px 2px 0;
+      padding: 3px;
+      transform: rotate(45deg);
+      transition: transform 0.3s ease;
+    }
+  }
+  
+  .mat-expanded .mat-expansion-indicator::after {
+    transform: rotate(-135deg);
+  }
+  
+  .mat-expansion-panel {
+    background-color: transparent;
+    box-shadow: none;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px !important;
+    margin-bottom: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 1);
+      background-color: rgba(255, 255, 255, 0.4); // Added white transparent background
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .dark-faq-area & {
+      border-color: rgba(255, 255, 255, 0.1);
+      
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 255, 255, 0.15); // Added dark mode transparent background
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    // Active state highlighting
+    &.active, &.mat-expanded {
+      border-color: rgba(255, 255, 255, 1);
+      background-color: rgba(255, 255, 255, 0.65); // White transparent color
+      box-shadow: 0 4px 12px rgba(var(--primaryColorRgb), 0.1);
+      transform: translateY(-2px);
+
+      .mat-expansion-panel-header {
+        .mat-panel-title {
+          color: var(--primaryColor);
+          font-weight: 700;
+          
+          &::before {
+            /* Use a brighter version of primary color for active/expanded state */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234b6cff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpath d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'%3E%3C/path%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'%3E%3C/line%3E%3C/svg%3E");
+          }
+        }
+      }
+    }
+
+    .mat-expansion-panel-header {
+      padding: 0 20px;
+      font-family: var(--headingFontFamily);
+      height: auto;
+      min-height: 60px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: rgba(var(--primaryColorRgb), 0.08);
+        transform: translateX(3px);
+      }
+      
+      &:focus {
+        background-color: rgba(var(--primaryColorRgb), 0.05);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(var(--primaryColorRgb), 0.2);
+      }
+
+      .mat-panel-title {
+        color: var(--headingColor);
+        font-weight: 600;
+        font-size: 17px;
+        line-height: 1.5;
+        padding: 15px 0;
+        display: flex;
+        align-items: center;
+        
+        &::before {
+          content: "";
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          margin-right: 10px;
+          /* Use a lighter version of the secondary color (#242d60) - making it #3f4b8a */
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233f4b8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpath d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'%3E%3C/path%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'%3E%3C/line%3E%3C/svg%3E");
+          background-size: contain;
+          background-repeat: no-repeat;
+          flex-shrink: 0;
+        }
+      }
+
+      .dark-faq-area & .mat-panel-title {
+        color: var(--textColor);
+        
+        &::before {
+          /* Use a lighter version of mainColor (#4353FF) - making it #7a85ff */
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%237a85ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpath d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'%3E%3C/path%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'%3E%3C/line%3E%3C/svg%3E");
+        }
+      }
+    }
+
+    .mat-expansion-panel-body {
+      padding: 5px 20px 20px 50px; /* Added left padding to align with the question text */
+      color: var(--paragraphColor);
+    }
+    
+    .faq-content {
+      p {
+        margin-bottom: 15px;
+        font-size: 15px;
+        line-height: 1.8;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Contact Section styling
+.contact-section {
+  margin-top: 40px;
+  text-align: center;
+  background-color: var(--secondaryColor);
+  color: white;
+  padding: 40px;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 40px auto 0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+  h4.title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: white;
+  }
+
+  p {
+    margin-bottom: 25px;
+    font-size: 16px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .btn-primary, .btn-secondary {
+      padding: 12px 25px;
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-primary {
+      background-color: var(--primaryColor);
+      color: white;
+      border: 2px solid var(--primaryColor);
+
+      &:hover {
+        background-color: transparent;
+        color: white;
+      }
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+
+      &:hover {
+        background-color: white;
+        color: var(--secondaryColor);
+      }
+    }
+  }
+}
+
+.faq-area.dark-faq-area {
+  background-color: #121212;
+  background-image:
+    radial-gradient(circle at 15% 15%, hsla(10, 80%, 40%, 0.15), transparent 35%),
+    radial-gradient(circle at 85% 25%, hsla(230, 80%, 50%, 0.15), transparent 35%),
+    radial-gradient(circle at 70% 80%, hsla(330, 80%, 50%, 0.2), transparent 40%),
+    radial-gradient(circle at 20% 75%, hsla(45, 100%, 40%, 0.1), transparent 40%);
+}
+
+.faq-area.dark-faq-area .story-content {
+  background-color: rgba(30, 30, 30, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.faq-area.dark-faq-area .story-content p {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.faq-area.dark-faq-area .story-content h4.title {
+  color: var(--mainColor);
+}
+
+/* Responsive styles */
+@media only screen and (max-width: 767px) {
+  .faq-area {
+    overflow: hidden;
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+  
+  .faq-area .story-content {
+    margin-top: 0;
+    padding: 20px;
+  }
+  
+  .faq-area .story-content h4.title {
+    font-size: 18px;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    
+    &::before {
+      width: 22px;
+      height: 22px;
+      margin-right: 10px;
+    }
+  }
+  
+  .faq-area .story-content p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .mat-accordion .mat-expansion-panel .mat-expansion-panel-header .mat-panel-title {
+    font-size: 15px;
+    
+    &::before {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+  }
+
+  .contact-section {
+    padding: 30px 20px;
+
+    h4.title {
+      font-size: 22px;
+    }
+    
+    p {
+      font-size: 14px;
+    }
+    
+    .action-buttons {
+      .btn-primary, .btn-secondary {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
+  }
+}

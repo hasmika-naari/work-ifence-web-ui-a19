@@ -1,64 +1,76 @@
-<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;">
-    <section class="page-full-section">
-
-    <app-header-wifence></app-header-wifence>
-    <div class="page-title-area item-bg1">
-        <div id="errormask" class="errormask"></div> 
-        <div class="container">
-            <div class="page-title-content">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li>FAQs</li>
-                </ul>
-                <h2>Frequently Asked Questions</h2>
-            </div>
-        </div>
-    </div>
-
+<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
+    <div #sentinel></div>
+    <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
     <div
         class="faq-area"
-        [class.dark-faq-area]="themeService.isDark()">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <div class="faq-item">
-                        <h3>Q: What is Work iFence?</h3>
-                        <p><strong>A:</strong> <i><b>Work iFence</b></i> is an online platform that offers services to manage resumes and job applications. It also provides the latest job openings, learning resources, and training materials</p>
+        [class.dark-faq-area]="themeService.isDark()"
+    >
+        <div class="container" >
+            <div class="row g-5">
+                <div class="story-content">
+                    <!-- Modern Title Section -->
+                    <div class="modern-title-section">
+                        <div class="title-wrapper">
+                            <div class="navigation-buttons">
+                                <a class="nav-button home-button" [routerLink]="['/']">
+                                    <lucide-icon name="home"></lucide-icon>
+                                    Home
+                                </a>
+                                <a class="nav-button back-button" (click)="goBack($event)">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Back
+                                </a>
+                            </div>
+                            <h1 class="faq-title">Frequently Asked Questions</h1>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="faq-item">
-                        <h3>Q: What kinds of training resources does Work iFence offer?</h3>
-                        <p><strong>A:</strong><i><b>Work iFence</b></i> provides a list of online and in-person 1:1 or group training sessions from experts across the globe. It also offers highly rated training videos from sources such as YouTube, Udemy, and more. </p>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="faq-item">
-                        <h3>Q: Where does Work iFence Stores Created Resume?</h3>
-                        <p><strong>A:</strong> <i><b>Work iFence</b></i> stores generated resumes in S3 storage in PDF format and stores the actual data in JSON format in the Work iFence database as a TextBlob.</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="faq-item">
-                        <h3>Q: What is Work iFence AI Support Feature?</h3>
-                        <p><strong>A:</strong> Work iFence is integrated with ChatGPT open API, and provides you on demand support for the selected sections of Resume based on your workIfence Subscription level.</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="faq-item">
-                        <h3>Q: Can I post my own deals or deals I find on Work iFence?</h3>
-                        <p><strong>A:</strong> Unfortunately, this is not a feature we provide. Although we hope to incorporate this into our site soon enough!</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="faq-item">
-                        <h3>Q: Can I save deals for later on Work iFence?</h3>
-                        <p><strong>A:</strong> The wishlist feature is one that is under the works right now and will be released in our very next launch.</p>
+                    
+                    <div class="faq-grid">
+                        <div class="faq-item">
+                            <h4 class="title">What is Work iFence?</h4>
+                            <p>
+                                <b>Work iFence</b> is an online platform that offers services to manage resumes and job applications. It also provides the latest job openings, learning resources, and training materials.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h4 class="title">What kinds of training resources does Work iFence offer?</h4>
+                            <p>
+                                <b>Work iFence</b> provides a list of online and in-person 1:1 or group training sessions from experts across the globe. It also offers highly rated training videos from sources such as YouTube, Udemy, and more.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h4 class="title">Where does Work iFence Store Created Resumes?</h4>
+                            <p>
+                                <b>Work iFence</b> stores generated resumes in S3 storage in PDF format and stores the actual data in JSON format in the Work iFence database as a TextBlob.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h4 class="title">What is Work iFence AI Support Feature?</h4>
+                            <p>
+                                Work iFence is integrated with ChatGPT open API, and provides you on-demand support for the selected sections of Resume based on your workIfence Subscription level.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h4 class="title">Can I post my own deals or deals I find on Work iFence?</h4>
+                            <p>
+                                Unfortunately, this is not a feature we provide. Although we hope to incorporate this into our site soon enough!
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h4 class="title">Can I save deals for later on Work iFence?</h4>
+                            <p>
+                                The wishlist feature is one that is under the works right now and will be released in our very next launch.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <app-work-ifence-footer></app-work-ifence-footer>
-    </section>
 </div>

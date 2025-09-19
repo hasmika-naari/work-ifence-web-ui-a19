@@ -1,0 +1,64 @@
+<div class="faq-list-page">
+  <app-header-wifence [hasBanner]="true" [bannerTitle]="'Frequently Asked Questions'" [bannerSubtitle]="'Find answers to common questions about Work iFence'" [isToggled]="isToggled"></app-header-wifence>
+
+  <div class="page-banner-area mb-0" [class.page-banner-area-dark-mode]="isToggled">
+    <div class="container">
+      <div class="page-banner-content">
+        <h2>Frequently Asked Questions</h2>
+        <p>Get answers to the most commonly asked questions about Work iFence</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-area faq-accordion ptb-100" [class.dark-mode]="isToggled">
+    <div class="container">
+      <div class="section-title text-left">
+        <span class="sub-title">Have Questions?</span>
+        <h2>Explore Our Frequently Asked Questions</h2>
+        <p>Find answers to the most common questions about our platform, features, and services.</p>
+      </div>
+
+      <!-- FAQ Sections with Angular Material Accordion -->
+      <div class="faq-sections">
+        <div *ngFor="let section of faqSections; let sectionIndex = index" class="faq-section">
+          <h3 class="section-title">{{ section.title }}</h3>
+          
+          <mat-accordion class="faq-accordion" multi>
+            <mat-expansion-panel 
+              *ngFor="let faq of section.faqs; let faqIndex = index" 
+              [expanded]="faq.expanded"
+              (opened)="toggleFaq(sectionIndex, faqIndex)"
+              class="faq-item"
+              [class.active]="faq.expanded">
+              
+              <mat-expansion-panel-header [collapsedHeight]="'65px'" [expandedHeight]="'65px'">
+                <mat-panel-title>
+                  {{ faq.question }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              
+              <div class="faq-content">
+                <p [innerHTML]="faq.answer"></p>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+
+      <!-- CTA Section -->
+      <div class="faq-contact-info">
+        <div class="contact-cta">
+          <h3>Still have questions?</h3>
+          <p>If you cannot find an answer to your question in our FAQ, you can always contact us. We will answer to you shortly!</p>
+          
+          <div class="cta-buttons">
+            <a routerLink="/contact" class="btn btn-primary">Contact Us</a>
+            <a routerLink="/support" class="btn btn-secondary">Visit Support Center</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-footer-wifence [isToggled]="isToggled"></app-footer-wifence>
+</div>

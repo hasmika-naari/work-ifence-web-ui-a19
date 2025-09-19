@@ -1,0 +1,40 @@
+<div class="course-details-area ptb-100 bg-fbf9f8">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <div class="course-details-header">
+                    <div class="course-details-title">
+                        <h3>Frequently Asked Questions (FAQs)</h3>
+                    </div>
+                </div>
+
+                <div class="faq-accordion">
+                    <!-- Use Angular Material's mat-accordion -->
+                    <mat-accordion multi="false" class="faq-accordion-container">
+                        <!-- Loop through each FAQ section -->
+                        <div *ngFor="let section of faqSections; let sectionIndex = index" class="faq-section">
+                            <h4 class="section-title">{{section.title}}</h4>
+                            
+                            <!-- Loop through questions in each section -->
+                            <mat-expansion-panel 
+                                *ngFor="let faq of section.faqs; let faqIndex = index" 
+                                [expanded]="faq.expanded"
+                                (opened)="toggleFaq(sectionIndex, faqIndex)"
+                                class="faq-item"
+                                [class.active-faq]="faq.expanded">
+                                
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{faq.question}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                
+                                <div class="faq-answer" [innerHTML]="faq.answer"></div>
+                            </mat-expansion-panel>
+                        </div>
+                    </mat-accordion>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
