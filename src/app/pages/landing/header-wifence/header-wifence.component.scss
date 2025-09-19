@@ -124,6 +124,7 @@
             gap: 10px;
             background: transparent;
             transition: background .18s;
+            cursor: pointer !important;
         }
         .nav-link lucide-icon {
             width: 22px;
@@ -161,8 +162,8 @@
     --wf-header-icon-offset-y: 1px; /* fine baseline tweak */
     --wf-header-icon-text-gap: 22px;
     --wf-header-height: 61px;
-    --wf-header-active-color: var(--mainColor, #0A66C2);
-    --wf-header-hover-color: var(--mainColor, #0A66C2);
+    --wf-header-active-color: var(--mainColor, #f05b45);
+    --wf-header-hover-color: var(--mainColor, #f05b45);
     --wf-header-underline-height: 2px;
     --wf-header-underline-radius: 2px;
     --wf-header-utility-gap: 18px; /* Moderate gap between utility icons */
@@ -286,6 +287,7 @@
                     text-decoration: none;
                     padding: 6px 4px 6px 4px; /* vertical padding for hit area */
                     transition: color .22s ease;
+                    cursor: pointer !important;
 
                     lucide-icon {
                         width: var(--wf-header-icon-size);
@@ -319,13 +321,17 @@
 
                     &:hover {
                         color: var(--wf-header-hover-color);
+                        cursor: pointer;
                         lucide-icon {
-                            color: var(--wf-header-hover-color);
+                            color: var(--wf-header-hover-color) !important;
                         }
                     }
                     &:hover::after { transform: scaleX(.85); }
                     &.active, &.router-link-active {
-                        color: var(--wf-header-active-color);
+                        color: var(--wf-header-active-color) !important;
+                        lucide-icon {
+                            color: var(--wf-header-active-color) !important;
+                        }
                     }
                     &.active::after, &.router-link-active::after { transform: scaleX(1); }
 
@@ -353,6 +359,7 @@
 
                     &:hover {
                         color: var(--mainColor, #007bff);
+                        cursor: pointer;
                     }
                 }
                 .dropdown-menu {
@@ -373,6 +380,7 @@
                             padding: 0.5rem 1.5rem;
                             color: #333;
                             gap: 0;
+                            cursor: pointer;
                         }
                     }
                 }
