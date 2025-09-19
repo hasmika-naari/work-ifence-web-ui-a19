@@ -11,7 +11,7 @@
   position: relative;
   padding-top: 100px;
   padding-bottom: 0px;
-  background-color: #f8fafc;
+  background-color: #f8fafccb;
   background-image:
     radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.2), transparent 35%),
     radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.2), transparent 35%),
@@ -49,7 +49,7 @@
 //   }
   
   .story-content {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.625);
     padding: 30px; /* Restored original padding */
     border-radius: 15px;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
