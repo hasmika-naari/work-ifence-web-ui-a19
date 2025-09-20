@@ -312,10 +312,21 @@
         .courses-image {
           .image img {
             transform: scale(1.05);
-          }
+             a{
+               background: var(--whiteColor, #4353ff) !important;
+             }
+           }
+         }
+
+            // Also change title link color on card hover
+        .courses-desc .courses-content h3 a {
+          color: var(--mainColor, #4353ff);
         }
+        //  a {
+        //    color: var(--mainColor, #4353ff) !important;
+        // }
       }
-      
+
       .courses-desc {
         flex: 1;
         padding: 20px;
@@ -1225,6 +1236,11 @@ p {
 .single-courses-list-box:hover {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   transform: translateY(-3px);
+
+  &:hover {
+    // transform: translateY(-5px);
+    a{ color: var(--mainColor);}
+  }
 }
 
 .single-courses-list-box .box-item {
