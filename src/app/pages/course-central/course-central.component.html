@@ -120,17 +120,7 @@
                                 </a>
                             </div>
                               <div class="course-list-header streach-h-100" style="margin-top: 10px; padding-top: 5px; padding-left: 25px; display: flex; flex-direction: row; flex-wrap: wrap; align-items: flex-end;">
-                                <div class="left" style="flex: 1; min-width: 200px;">
-                                <div class="section-title mb-0 mt-0">
-                                    <div class="text-start">
-                                        <span class="sub-title d-block mb-0 pb-0" style="margin-bottom: 8px !important; display: block; font-size: clamp(14px, 3.5vw, 16px);">Discover</span>
-                                        <div style="display: flex; align-items: center; gap: 10px;">
-                                            <h1 class="course-title mt-0" style="margin-top: 5px !important; font-size: clamp(24px, 5vw, 32px); margin-bottom: 0;">Courses</h1>
-                                            <span class="course-count-tag" style="background: var(--mainColor, #4353ff); color: white; padding: 4px 12px; border-radius: 20px; font-size: clamp(12px, 2.5vw, 14px); font-weight: 500;">{{ allCourses.length }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                <!-- Moved Discover Courses section to above carousel -->
                             <div class="right" style="display: flex; align-items: flex-end; gap: 10px; margin-left: auto;">
                                 <!-- Removed All Courses text -->
                             </div>
@@ -140,18 +130,30 @@
 
 <!-- Top Carousel Section using ngx-owl-carousel-o -->
         <div class="top-carousel">
-            <!-- Custom Carousel Navigation - Single rectangular box with both icons -->
-            <div class="custom-carousel-pagination d-flex justify-content-end mb-2" style="padding-right: 25px;">
-                <div class="pagination-box">
-                    <button class="pagination-btn" (click)="carouselPrev()" type="button" aria-label="Previous slide">
-                      <mat-icon aria-hidden="true">chevron_left</mat-icon>
-                    </button>
-                    <button class="pagination-btn" (click)="carouselNext()" type="button" aria-label="Next slide">
-                      <mat-icon aria-hidden="true">chevron_right</mat-icon>
-                    </button>
-                    <button class="pagination-btn" (click)="filterSidenav.toggle()" type="button" aria-label="Toggle Filter">
-                      <mat-icon aria-hidden="true">tune</mat-icon>
-                    </button>
+            <!-- Title and Navigation Row - positioned just above carousel -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; padding: 0 25px; margin-bottom: 10px;">
+                <!-- Left: Title Section -->
+                <div class="title-section">
+                    <span class="sub-title d-block mb-0" style="margin-bottom: 2px; font-size: clamp(14px, 3.5vw, 16px); color: #666;">Discover</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h1 class="course-title" style="margin: 0; font-size: clamp(24px, 5vw, 32px); color: var(--mainColor, #4353ff); font-weight: 600;">Courses</h1>
+                        <span class="course-count-tag" style="background: #ff9800; color: white; padding: 4px 12px; border-radius: 20px; font-size: clamp(12px, 2.5vw, 14px); font-weight: 500;">{{ allCourses.length }}</span>
+                    </div>
+                </div>
+                
+                <!-- Right: Navigation Controls -->
+                <div class="custom-carousel-pagination">
+                    <div class="pagination-box">
+                        <button class="pagination-btn" (click)="carouselPrev()" type="button" aria-label="Previous slide">
+                          <mat-icon aria-hidden="true">chevron_left</mat-icon>
+                        </button>
+                        <button class="pagination-btn" (click)="carouselNext()" type="button" aria-label="Next slide">
+                          <mat-icon aria-hidden="true">chevron_right</mat-icon>
+                        </button>
+                        <button class="pagination-btn" (click)="filterSidenav.toggle()" type="button" aria-label="Toggle Filter">
+                          <mat-icon aria-hidden="true">tune</mat-icon>
+                        </button>
+                    </div>
                 </div>
             </div>
             
