@@ -57,6 +57,8 @@ export interface Course {
   link: string;
   image: string
   mode: string;
+  featured?: boolean;
+  premium?: boolean;
 }
 
 export interface Subject {
@@ -127,7 +129,7 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
   carouselOptions = {
     loop: true,
     autoplay: true,
-    autoplayTimeout: 500000,
+    autoplayTimeout: 50000,
     margin: 20,
     nav: false, // Disabled default navigation
     dots: false, // Disabled default dots
@@ -151,7 +153,12 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.topCourses = [...coursesData.slice(0, 12)];
+    // Get first 12 courses and mark some as featured/premium
+    this.topCourses = [...coursesData.slice(0, 12)].map((course, index) => ({
+      ...course,
+      featured: index % 3 === 0, // Every 3rd course is featured
+      premium: index % 4 === 1   // Every 4th course starting from index 1 is premium
+    }));
     this.allCourses = [...this.getCourses()];
     this.filteredCourses = [...this.allCourses];
     this.totalCourses = this.filteredCourses.length;

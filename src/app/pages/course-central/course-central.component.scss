@@ -219,15 +219,18 @@
   .single-courses-list-box {
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: none; // Remove default box shadow
     margin-bottom: 25px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: white; // Ensure white background
+    background: rgba(255, 255, 255, 0.5); // 50% transparent background
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     cursor: pointer; // Make the entire card feel clickable
     
     &:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08); // Light box shadow on hover
       
       // Change title color on card hover to indicate clickability
       .courses-desc .courses-content h3 {
@@ -334,6 +337,67 @@
         flex-direction: column;
         background: white;
         min-height: 0; // Allow flex item to shrink
+        position: relative; // Add relative positioning for badge positioning
+        
+        .course-badges {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          z-index: 3;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          
+          .featured-badge, .premium-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            
+            mat-icon {
+              font-size: 12px;
+              width: 12px;
+              height: 12px;
+              line-height: 12px;
+            }
+            
+            span {
+              font-size: 9px;
+              font-weight: 700;
+            }
+          }
+          
+          .featured-badge {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.9), rgba(255, 152, 0, 0.9));
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+            
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(255, 193, 7, 0.5);
+            }
+          }
+          
+          .premium-badge {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.9), rgba(233, 30, 99, 0.9));
+            color: white;
+            box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+            
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(156, 39, 176, 0.5);
+            }
+          }
+        }
         
         .courses-content {
           flex: 1;
@@ -438,8 +502,22 @@
               align-items: center;
               
               button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 transition: all 0.3s ease;
                 margin-left: auto; // Push button all the way to the right
+                padding: 8px;
+                min-width: 40px;
+                min-height: 40px;
+                border-radius: 50%;
+                
+                mat-icon {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  margin: 0;
+                }
                 
                 &:hover {
                   background-color: rgba(67, 83, 255, 0.1);

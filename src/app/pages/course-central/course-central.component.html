@@ -92,7 +92,7 @@
             </div>
         </form>
 
-    </mat-sidenav>
+        </mat-sidenav>
 
     <!-- Main Content -->
     <mat-sidenav-content class="main-content" #pageSection>
@@ -140,7 +140,6 @@
 
 <!-- Top Carousel Section using ngx-owl-carousel-o -->
         <div class="top-carousel">
-            <h2>Featured Courses</h2>
             
             <!-- Carousel Component -->
             <owl-carousel-o [options]="carouselOptions" #owlCarousel>
@@ -158,6 +157,17 @@
                             </div>
                         </div>
                         <div class="courses-desc">
+                            <!-- Featured/Premium Tags moved to data section -->
+                            <div class="course-badges">
+                                <div *ngIf="course.featured" class="featured-badge">
+                                    <mat-icon>star</mat-icon>
+                                    <span>Featured</span>
+                                </div>
+                                <div *ngIf="course.premium" class="premium-badge">
+                                    <mat-icon>diamond</mat-icon>
+                                    <span>Premium</span>
+                                </div>
+                            </div>
                             <div class="courses-content">
                                 <h3 class="two-line-ellipsis">
                                     <a [href]="course.link" target="_blank" class="d-inline-block">
