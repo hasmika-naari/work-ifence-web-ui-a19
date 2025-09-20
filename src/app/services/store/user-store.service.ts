@@ -1,4 +1,4 @@
-import { Injectable, Signal, computed, signal } from "@angular/core";
+import { Injectable, Signal, computed, signal, inject, Injector } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { Observable } from "rxjs";
 import { ResumeTemplateDto, SectionDesc, UserResume, UserState } from "./user-store";
@@ -15,6 +15,8 @@ import { Address } from "../contact.model";
     providedIn: 'root',
   })
   export class UserStoreService {
+    private injector = inject(Injector);
+    
     state = signal<UserState>(
       { 
         account: new Account(), 
@@ -1112,7 +1114,7 @@ removeSectionFromMultipleSectionsList(section: string) {
       
       // Observable version of getUserLoginStatus for use with subscribe
       getUserLoginStatus$(): Observable<boolean> {
-        return toObservable(this.getUserLoginStatus());
+        return toObservable(this.getUserLoginStatus(), { injector: this.injector });
       }
 
       getUserRoles(): Signal<Array<WifRole>> {

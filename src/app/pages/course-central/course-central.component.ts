@@ -127,7 +127,7 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
   carouselOptions = {
     loop: true,
     autoplay: true,
-    autoplayTimeout: 5000,
+    autoplayTimeout: 500000,
     margin: 20,
     nav: false, // Disabled default navigation
     dots: false, // Disabled default dots
@@ -136,8 +136,8 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
     navText: ['', ''], // Empty nav text since we're using custom navigation
     responsive: {
       0: { items: 1 },
-      600: { items: 1 },
-      768: { items: 1 },
+      600: { items: 1.5 },
+      768: { items: 1.5 },
       992: { items: 2 },
       1200: { items: 2 }
     }
@@ -283,5 +283,13 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
 
   carouselPrev(): void {
     this.owlCarousel.prev();
+  }
+
+  resetFilters(): void {
+    this.filterForm.reset();
+    this.filteredCourses = [...this.allCourses];
+    this.currentPage = 0;
+    this.totalCourses = this.filteredCourses.length;
+    this.updatePaginatedCourses();
   }
 }

@@ -1,0 +1,114 @@
+<!-- Working backup of the course central template -->
+<div class="course-central-wrapper">
+    <app-header-wifence [isSticky]="isSticky" class="course-header"></app-header-wifence>
+    <div class="course-area" [class.dark-course-area]="themeService.isDark()">
+        <mat-sidenav-container class="dashboard-container">
+            <!-- Right Sidenav for Filters -->
+            <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
+                <h3>Filter Courses</h3>
+                <form [formGroup]="filterForm" (ngSubmit)="filterCourses($event, filterSidenav)">
+                    <!-- Filter form content here -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <button mat-button type="button" (click)="filterSidenav.close()">Cancel</button>
+                        <button mat-flat-button color="primary" type="submit">Apply Filters</button>
+                    </div>
+                </form>
+            </mat-sidenav>
+
+            <!-- Main Content -->
+            <mat-sidenav-content class="main-content" #pageSection>
+                <div #sentinel class="sentinel"></div>
+                <div class="container-fluid">
+                    <!-- Header Section -->
+                    <div class="story-content">
+                        <!-- Navigation and Title -->
+                        <div class="modern-title-section">
+                            <div class="navigation-buttons">
+                                <a class="nav-button home-button" [routerLink]="['/']">
+                                    <lucide-icon name="home"></lucide-icon>
+                                    Home
+                                </a>
+                                <a class="nav-button back-button" (click)="goBack($event)">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Back
+                                </a>
+                                <a class="nav-button course-central-button" [routerLink]="['/course-central']">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Course Central
+                                </a>
+                            </div>
+                            <div class="course-list-header">
+                                <div class="left">
+                                    <div class="section-title">
+                                        <span class="sub-title">Discover</span>
+                                        <h1 class="course-title">Courses</h1>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <h5>({{ allCourses.length }}) All Courses</h5>
+                                    <button mat-icon-button (click)="filterSidenav.toggle()">
+                                        <mat-icon>tune</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carousel Section -->
+                        <div class="top-carousel">
+                            <h2>Featured Courses</h2>
+                            <owl-carousel-o [options]="carouselOptions" #owlCarousel>
+                                <ng-template carouselSlide *ngFor="let course of topCourses; let i = index">
+                                    <div class="single-courses-list-box">
+                                        <div class="box-item">
+                                            <div class="courses-image">
+                                                <img [src]="course.courseImageUrl" [alt]="course.title">
+                                            </div>
+                                            <div class="courses-desc">
+                                                <h3>{{ course.title }}</h3>
+                                                <p>{{ course.shortDescription }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </owl-carousel-o>
+                        </div>
+
+                        <!-- Course Grid Section -->
+                        <div class="course-grid-section">
+                            <ng-container *ngIf="paginatedCourses.length > 0; else noCourses">
+                                <div class="course-grid">
+                                    <div *ngFor="let course of paginatedCourses" class="course-card">
+                                        <h3>{{ course.title }}</h3>
+                                        <p>{{ course.provider }}</p>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <ng-template #noCourses>
+                                <div class="no-courses-message">
+                                    <mat-icon>search_off</mat-icon>
+                                    <p>No courses found matching your filters.</p>
+                                    <button mat-stroked-button (click)="resetFilters()">Reset Filters</button>
+                                </div>
+                            </ng-template>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination-container">
+                            <mat-paginator
+                                class="custom-paginator"
+                                [length]="totalCourses"
+                                [pageSize]="pageSize"
+                                [pageSizeOptions]="[20, 40, 80, 100]"
+                                (page)="onPageChange($event)"
+                                showFirstLastButtons>
+                            </mat-paginator>
+                        </div>
+                    </div>
+                </div>
+                <app-work-ifence-footer></app-work-ifence-footer>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+    </div>
+</div>
+<ngx-scrolltop></ngx-scrolltop>
