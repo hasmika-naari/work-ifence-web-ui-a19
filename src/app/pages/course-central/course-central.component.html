@@ -136,7 +136,7 @@
 
 <!-- Top Carousel Section using ngx-owl-carousel-o -->
         <div class="top-carousel">
-            <owl-carousel-o [options]="carouselOptions">
+            <owl-carousel-o [options]="carouselOptions" #owlCarousel>
             <ng-container *ngFor="let course of topCourses; let i = index">
             <ng-template carouselSlide>
                  <div   class="single-courses-list-box mb-25 animate__animated animate__fadeInUp"
@@ -263,6 +263,15 @@
             </ng-template>
             </ng-container>
           </owl-carousel-o>
+          <!-- Custom Pagination Controls -->
+          <div class="custom-carousel-pagination text-center mt-3">
+            <button class="pagination-btn" (click)="carouselPrev()" type="button" aria-label="Previous slide">
+              <mat-icon aria-hidden="true">chevron_left</mat-icon>
+            </button>
+            <button class="pagination-btn" (click)="carouselNext()" type="button" aria-label="Next slide">
+              <mat-icon aria-hidden="true">chevron_right</mat-icon>
+            </button>
+          </div>
         </div>
 
 

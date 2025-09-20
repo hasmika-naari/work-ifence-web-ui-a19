@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Location } from '@angular/common';
+import { CarouselComponent } from 'ngx-owl-carousel-o';
 
 // Angular Material Modules
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -87,6 +88,7 @@ export interface Subject {
     HeaderWorkIfenceComponent,
     FooterWorkifenceComponent
   ],
+  providers: [ThemeCustomizerService],
   templateUrl: './course-central.component.html',
   styleUrls: ['./course-central.component.scss']
 })
@@ -126,15 +128,18 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
     loop: true,
     autoplay: true,
     autoplayTimeout: 5000,
-    margin: 7,
-    nav: false,
-    dots: true,
+    margin: 20,
+    nav: false, // Disabled default navigation
+    dots: false, // Disabled default dots
+    dotsData: false,
+    dotsEach: false,
+    navText: ['', ''], // Empty nav text since we're using custom navigation
     responsive: {
       0: { items: 1 },
-      600: { items: 1.5 },
-      960: { items: 1.7 },
-      1280: { items: 2.2 },
-      1600: { items: 2.5 }
+      600: { items: 1 },
+      768: { items: 1 },
+      992: { items: 2 },
+      1200: { items: 2 }
     }
   };
 
@@ -262,5 +267,16 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
   goBack(event: Event): void {
     event.preventDefault();
     this.location.back();
+  }
+
+  // Carousel control methods
+  @ViewChild('owlCarousel') owlCarousel!: CarouselComponent;
+
+  carouselNext(): void {
+    this.owlCarousel.next();
+  }
+
+  carouselPrev(): void {
+    this.owlCarousel.prev();
   }
 }
