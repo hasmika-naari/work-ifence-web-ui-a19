@@ -253,11 +253,16 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
   // Add the missing methods for the new UI
   ngAfterViewInit(): void {
     if (this.sentinel && this.pageSection) {
+      // Set up IntersectionObserver for sticky header
       const observer = new IntersectionObserver(
         ([entry]) => {
           this.isSticky = !entry.isIntersecting;
         },
-        { threshold: [0] }
+        { 
+          root: this.pageSection.nativeElement, // Use the scrollable container as the root
+          threshold: [0],
+          rootMargin: '-1px 0px 0px 0px' // Trigger immediately when scrolling starts
+        }
       );
       
       observer.observe(this.sentinel.nativeElement);
