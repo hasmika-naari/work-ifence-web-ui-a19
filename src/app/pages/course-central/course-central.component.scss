@@ -533,25 +533,53 @@
   
   .custom-carousel-pagination {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 25px;
     display: flex;
     justify-content: center;
-    gap: 10px;
+    align-items: center;
+    gap: 15px;
     
     .pagination-btn {
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #f5f5f5;
-      border: none;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
       
       mat-icon {
-        color: #555;
+        color: #666;
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+        transition: all 0.3s ease;
+      }
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.4);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        
+        mat-icon {
+          color: #333;
+        }
+      }
+      
+      &:active {
+        transform: translateY(0);
+        transition: all 0.1s ease;
+      }
+      
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
       }
     }
   }
@@ -1111,52 +1139,81 @@ p {
   background: var(--mainColor, #4353ff);
 }
 
-/* Custom Carousel Pagination */
+/* Custom Carousel Pagination - Clean White Glossy Style */
 .custom-carousel-pagination {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 15px;
-  margin-top: 15px;
+  margin-top: 25px;
 }
 
 .custom-carousel-pagination .pagination-btn {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--mainColor, #4353ff);
-  border: none;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
+  transition: all 0.3s ease;
   padding: 0;
 }
 
 .custom-carousel-pagination .pagination-btn:hover {
-  background: var(--mainColor, #4353ff);
-  color: white;
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.custom-carousel-pagination .pagination-btn:active {
+  transform: translateY(0);
+  transition: all 0.1s ease;
+}
+
+.custom-carousel-pagination .pagination-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
 }
 
 .custom-carousel-pagination .pagination-btn mat-icon {
-  font-size: 24px;
-  line-height: 24px;
-  height: 24px;
-  width: 24px;
+  color: #666;
+  font-size: 22px;
+  line-height: 22px;
+  height: 22px;
+  width: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
 
+.custom-carousel-pagination .pagination-btn:hover mat-icon {
+  color: #333;
+}
+
+/* Dark mode support */
 .dark-mode .custom-carousel-pagination .pagination-btn {
-  background: rgba(50, 50, 50, 0.9);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .dark-mode .custom-carousel-pagination .pagination-btn:hover {
-  background: var(--mainColor, #4353ff);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.dark-mode .custom-carousel-pagination .pagination-btn mat-icon {
+  color: #ccc;
+}
+
+.dark-mode .custom-carousel-pagination .pagination-btn:hover mat-icon {
+  color: #fff;
 }
 
 .top-carousel .carousel-card {
