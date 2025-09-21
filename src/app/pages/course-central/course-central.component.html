@@ -1,5 +1,4 @@
 <div class="course-central-wrapper">
-    <app-header-wifence [isSticky]="isSticky" class="course-header"></app-header-wifence>
     <div class="course-area" [class.dark-course-area]="themeService.isDark()">
         <mat-sidenav-container class="dashboard-container">
 
@@ -93,11 +92,13 @@
         </form>
 
         </mat-sidenav>
-
+                        
     <!-- Main Content -->
     <mat-sidenav-content class="main-content" #pageSection>
+    <app-header-wifence [isSticky]="isSticky" class="course-header"></app-header-wifence>
+
         <div #sentinel class="sentinel"></div>
-        <div class="container-fluid">
+        <div class="container-fluid">           
             <div class="row g-3">
                 <div class="story-content" style="padding: 15px 20px; max-width: 100%;">
                     <!-- Modern Title Section -->

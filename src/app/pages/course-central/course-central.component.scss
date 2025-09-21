@@ -18,6 +18,45 @@
   position: relative;
 }
 
+/* Sidenav container and styling fixes */
+.dashboard-container {
+  height: 100vh;
+  position: relative;
+}
+
+.filter-sidenav {
+  z-index: 10000 !important; /* High but reasonable z-index */
+  border-radius: 0 !important; /* Remove border radius */
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15) !important; /* Add shadow for better visibility */
+}
+
+/* Ensure sidenav backdrop has proper z-index */
+::ng-deep .cdk-overlay-backdrop {
+  z-index: 9999 !important;
+}
+
+/* Ensure sidenav content appears above everything */
+::ng-deep .mat-sidenav-container .mat-sidenav {
+  z-index: 10000 !important;
+  border-radius: 0 !important;
+}
+
+/* Target specific overlay container for sidenav */
+::ng-deep .cdk-overlay-container .cdk-overlay-pane {
+  z-index: 10000 !important;
+}
+
+/* Only target header elements that are interfering */
+::ng-deep .mat-toolbar {
+  z-index: 1000 !important;
+}
+
+::ng-deep .header,
+::ng-deep .navbar,
+::ng-deep .top-header {
+  z-index: 1000 !important;
+}
+
 .sentinel {
   position: absolute;
   top: 0;
@@ -1160,40 +1199,35 @@ p {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  border-radius: 6px; /* Reduced border radius for more square appearance */
   overflow: hidden;
   transition: all 0.3s ease;
-}
-
-.custom-carousel-pagination .pagination-box:hover {
-  background: rgba(255, 255, 255, 0.4);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .custom-carousel-pagination .pagination-btn {
   width: 40px;
   height: 40px;
-  border-radius: 0; // Remove individual border radius
+  border-radius: 0; /* Completely square buttons */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent; // Make buttons transparent within the box
-  border: none; // Remove individual borders
-  border-right: 1px solid rgba(255, 255, 255, 0.3); // Add separator between buttons
+  background: transparent;
+  border: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 0;
-  margin: 0; // Remove margin between buttons
+  margin: 0;
 }
 
 .custom-carousel-pagination .pagination-btn:last-child {
-  border-right: none; // Remove border from last button
+  border-right: none;
 }
 
 .custom-carousel-pagination .pagination-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3); /* Increased opacity for better visibility */
+  transform: translateY(-1px); /* Subtle individual button lift */
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2); /* Subtle inner glow */
 }
 
 .custom-carousel-pagination .pagination-btn:active {
