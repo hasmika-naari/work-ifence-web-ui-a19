@@ -27,7 +27,192 @@
 .filter-sidenav {
   z-index: 10000 !important; /* High but reasonable z-index */
   border-radius: 0 !important; /* Remove border radius */
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15) !important; /* Add shadow for better visibility */
+  box-shadow: -2px 0 20px rgba(0, 0, 0, 0.2) !important; /* Enhanced shadow */
+  width: min(100%, 450px) !important; /* Increased width for better layout */
+  background: rgba(255, 255, 255, 0.75) !important; /* More white-based transparent background */
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.5) !important;
+  overflow: hidden !important; /* Prevent any scrolling on the sidenav itself */
+}
+
+/* Sidenav content styling */
+.filter-sidenav-content {
+  padding: 20px; /* Reduced padding to save space */
+  height: 95vh; /* Full viewport height */
+  overflow: hidden; /* Remove all scrolling */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: relative; /* For positioning close button */
+}
+
+/* Close button styling */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10001;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  .mat-icon {
+    color: var(--mainColor, #4353ff);
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+/* Title styling */
+.filter-title {
+  font-size: clamp(18px, 4vw, 22px); /* Further reduced title size */
+  font-weight: 600;
+  color: var(--mainColor, #4353ff);
+  margin-bottom: 10px; /* Minimal margin */
+  text-align: center;
+  border-bottom: 2px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.2);
+  padding-bottom: 5px; /* Minimal padding */
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
+}
+
+/* Form layout */
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Further reduced gap for very compact layout */
+  flex: 1;
+}
+
+/* Form groups */
+.form-group {
+  margin-bottom: 4px; /* Minimal margin */
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px; /* Reduced gap between form row elements */
+  width: 100%;
+}
+
+.half-width {
+  flex: 1;
+  min-width: 0; /* Prevents flex items from overflowing */
+}
+
+/* Material form field enhancements */
+.filter-form .mat-form-field {
+  width: 100%;
+  font-size: 14px;
+}
+
+.filter-form .mat-form-field .mat-form-field-outline {
+  background: rgba(255, 255, 255, 0.6); /* More white-based transparent */
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.filter-form .mat-form-field-label {
+  font-weight: 500;
+  color: #444;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.filter-form .mat-form-field-outline-thick {
+  color: var(--mainColor, #4353ff);
+}
+
+/* Input field styling */
+.filter-form input {
+  background: transparent;
+  color: #333;
+  font-weight: 500;
+}
+
+.filter-form input::placeholder {
+  color: #777;
+  font-style: italic;
+}
+
+/* Select dropdown styling */
+.filter-form .mat-select {
+  color: #333;
+  font-weight: 500;
+}
+
+.filter-form .mat-select-value-text {
+  color: #333;
+}
+
+/* Action buttons with transparent glassmorphism style */
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px; /* Reduced gap */
+  margin-top: 10px; /* Much smaller margin to move buttons up */
+  padding-top: 10px; /* Minimal padding */
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cancel-btn {
+  flex: 1;
+  font-size: clamp(13px, 3vw, 15px);
+  color: #555;
+  background: rgba(255, 255, 255, 0.6) !important; /* More white-based transparent */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  padding: 12px 20px !important;
+  min-height: 44px;
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.apply-btn {
+  flex: 1;
+  font-size: clamp(13px, 3vw, 15px);
+  background: var(--secondaryColor) !important; /* Using CSS variable for secondary color */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: white !important;
+  border: 1px solid var(--secondaryColor) !important;
+  border-radius: 12px !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  padding: 12px 20px !important;
+  min-height: 44px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.apply-btn:hover {
+  background: color-mix(in srgb, var(--secondaryColor) 90%, black 10%) !important;
+  border-color: var(--secondaryColor) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(58, 103, 115, 0.4); /* Using the actual hex values for shadow */
 }
 
 /* Ensure sidenav backdrop has proper z-index */
@@ -94,7 +279,7 @@
 .filter-sidenav {
   width: min(100%, 350px) !important;
   padding: 15px !important;
-  overflow-y: auto !important;
+  overflow: hidden !important; /* Remove scrollbar completely */
   max-height: 100vh !important;
   
   h3 {
@@ -765,7 +950,7 @@
 
 /* Pagination Responsive Styling */
 .d-flex.justify-content-center {
-  overflow-x: auto;
+  overflow: hidden; /* Remove horizontal scrollbar */
   
   .custom-paginator {
     background: rgba(255, 255, 255, 0.6);

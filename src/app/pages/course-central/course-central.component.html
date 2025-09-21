@@ -3,96 +3,108 @@
         <mat-sidenav-container class="dashboard-container">
 
         <!-- Right Sidenav for Filters -->
-        <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav" style="width: min(100%, 350px); padding: 15px; overflow-y: auto; max-height: 100vh;">
-            <h3 style="font-size: clamp(18px, 4vw, 24px); margin-bottom: 15px;">Filter Courses</h3>
-            <form [formGroup]="filterForm" 
-                class="filter-form" (ngSubmit)="filterCourses($event, filterSidenav)" style="margin-top: 10px;">
-                <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Title</mat-label>
-                        <input matInput formControlName="title">
-                    </mat-form-field>
+        <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
+            <div class="filter-sidenav-content">
+                <!-- Close Button -->
+                <button mat-icon-button class="close-btn" (click)="filterSidenav.close()" aria-label="Close filter">
+                    <mat-icon>close</mat-icon>
+                </button>
+                
+                <h3 class="filter-title">Filter Courses</h3>
+                <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterCourses($event, filterSidenav)">
+                    
+                    <!-- Full Width Fields -->
+                    <div class="form-group full-width">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Title</mat-label>
+                            <input matInput formControlName="title" placeholder="Search by course title...">
+                        </mat-form-field>
                     </div>
 
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Provider</mat-label>
-                        <mat-select formControlName="provider">
-                        <mat-option value="">Any</mat-option>
-                        <mat-option value="Coursera">Coursera</mat-option>
-                        <mat-option value="edX">edX</mat-option>
-                        <mat-option value="FutureLearn">FutureLearn</mat-option>
-                        <mat-option value="Independent">Independent</mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <div class="form-group full-width">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Subject</mat-label>
+                            <mat-select formControlName="subject">
+                                <mat-option value="">Any Subject</mat-option>
+                                <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
 
-                <div class="col-12 col-md-6 mb-3">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Subject</mat-label>
-                    <mat-select formControlName="subject">
-                    <mat-option value="">Any</mat-option>
-                    <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                </div>
+                    <!-- Two Column Layout -->
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Provider</mat-label>
+                                <mat-select formControlName="provider">
+                                    <mat-option value="">Any Provider</mat-option>
+                                    <mat-option value="Coursera">Coursera</mat-option>
+                                    <mat-option value="edX">edX</mat-option>
+                                    <mat-option value="FutureLearn">FutureLearn</mat-option>
+                                    <mat-option value="Independent">Independent</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
 
-                <div class="col-12 col-md-6 mb-3">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Mode</mat-label>
-                    <mat-select formControlName="mode">
-                    <mat-option value="">Any</mat-option>
-                    <mat-option value="Self-paced">Self-paced</mat-option>
-                    <mat-option value="Instructor-led">Instructor-led</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                </div>
+                        <div class="form-group half-width">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Mode</mat-label>
+                                <mat-select formControlName="mode">
+                                    <mat-option value="">Any Mode</mat-option>
+                                    <mat-option value="Self-paced">Self-paced</mat-option>
+                                    <mat-option value="Instructor-led">Instructor-led</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
 
-                <div class="col-12 col-md-6 mb-3">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Cost</mat-label>
-                    <mat-select formControlName="cost">
-                    <mat-option value="">Any</mat-option>
-                    <mat-option value="Free">Free</mat-option>
-                    <mat-option value="Paid">Paid</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                </div>
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Cost</mat-label>
+                                <mat-select formControlName="cost">
+                                    <mat-option value="">Any Cost</mat-option>
+                                    <mat-option value="Free">Free</mat-option>
+                                    <mat-option value="Paid">Paid</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
 
-                <div class="col-12 col-md-6 mb-3">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Certificate</mat-label>
-                    <mat-select formControlName="certificate">
-                    <mat-option value="">Any</mat-option>
-                    <mat-option value="Yes">Yes</mat-option>
-                    <mat-option value="No">No</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                </div>
+                        <div class="form-group half-width">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Certificate</mat-label>
+                                <mat-select formControlName="certificate">
+                                    <mat-option value="">Any Certificate</mat-option>
+                                    <mat-option value="Yes">Available</mat-option>
+                                    <mat-option value="No">Not Available</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
 
-                <div class="col-12 col-md-6 mb-3">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Platform</mat-label>
-                    <mat-select formControlName="platform">
-                    <mat-option value="">Any</mat-option>
-                    <mat-option value="Coursera">Coursera</mat-option>
-                    <mat-option value="edX">edX</mat-option>
-                    <mat-option value="FutureLearn">FutureLearn</mat-option>
-                    <mat-option value="Independent">Independent</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                </div>
+                    <!-- Full Width Field -->
+                    <div class="form-group full-width">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Platform</mat-label>
+                            <mat-select formControlName="platform">
+                                <mat-option value="">Any Platform</mat-option>
+                                <mat-option value="Coursera">Coursera</mat-option>
+                                <mat-option value="edX">edX</mat-option>
+                                <mat-option value="FutureLearn">FutureLearn</mat-option>
+                                <mat-option value="Independent">Independent</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="filter-actions">
+                        <button mat-button type="button" (click)="filterSidenav.close()" class="cancel-btn">Cancel</button>
+                        <button mat-flat-button color="primary" type="submit" class="apply-btn">Apply Filters</button>
+                    </div>
+                </form>
             </div>
-
-            <div class="d-flex justify-content-between mt-3">
-                <button mat-button type="button" (click)="filterSidenav.close()" style="font-size: clamp(12px, 3vw, 14px);">Cancel</button>
-                <button mat-flat-button color="primary" type="submit" style="font-size: clamp(12px, 3vw, 14px);">Apply Filters</button>
-            </div>
-        </form>
-
         </mat-sidenav>
-                        
+
     <!-- Main Content -->
     <mat-sidenav-content class="main-content" #pageSection>
     <app-header-wifence [isSticky]="isSticky" class="course-header"></app-header-wifence>
