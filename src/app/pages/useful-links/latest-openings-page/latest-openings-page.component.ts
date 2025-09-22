@@ -1,4 +1,5 @@
 import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, Signal, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import * as _ from 'lodash';
@@ -28,6 +29,7 @@ import { JobOpeningsComponent } from './job-openings/job-openings.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 export interface Subject {
   title: string;
@@ -39,7 +41,7 @@ export interface Subject {
 @Component({
   selector: 'latest-openings-page',
   standalone: true,
-  imports: [CommonModule, RouterLink,LanguageSubscribeComponent, MatIconModule, MatSidenavModule,
+  imports: [CommonModule, RouterLink,LanguageSubscribeComponent, MatIconModule, MatSidenavModule, IconsModule,
       MatSelectModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule,
       MatButtonModule,JobOpeningsComponent,NgxPaginationModule, MatCardModule, MatProgressBarModule,
       NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
@@ -93,11 +95,12 @@ export class LatestJobOpeningsPageComponent implements OnInit {
         { title: 'Arts & Design', description: '', courseCount: 3 }
       ];
 
-     constructor(
-         @Inject(WINDOW) private window: Window,
-         public themeService: ThemeCustomizerService,
-         private fb: FormBuilder
-     ) {
+   constructor(
+     @Inject(WINDOW) private window: Window,
+     public themeService: ThemeCustomizerService,
+     private fb: FormBuilder,
+     private location: Location
+   ) {
           this.browser = isPlatformBrowser(this.platformId);
           this.themeService.isToggled$.subscribe(isToggled => {
               this.isToggled = isToggled;
@@ -212,6 +215,11 @@ export class LatestJobOpeningsPageComponent implements OnInit {
 
       shareOnWhatsApp($event: any, data: any){
         $event.stopPropagation();
+      }
+
+      goBack(event: Event): void {
+        event.preventDefault();
+        this.location.back();
       }
 
 }

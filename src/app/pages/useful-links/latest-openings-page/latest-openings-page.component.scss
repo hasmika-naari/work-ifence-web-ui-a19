@@ -15,11 +15,29 @@ p {
   font-size: inherit;
 }
 
-.dashboard-container {
-  height: calc(100vh - 87px);
-  background-color: #fafafa;
-  top: 87px;
-}
+/* Inherit course dashboard structural layout */
+.course-central-wrapper { display: flex; flex-direction: column; width: 100%; height: 100vh; overflow: hidden; position: relative; }
+.dashboard-container { height: 100vh; position: relative; background: transparent; }
+
+/* Background styling aligned with CourseDashboardComponent */
+.course-area { z-index: 70; position: fixed; top:0; left:0; right:0; height:100vh; overflow-y:hidden; background-color:#f8fafc; background-image:
+  radial-gradient(circle at 15% 15%, hsla(10,80%,60%,0.2), transparent 35%),
+  radial-gradient(circle at 85% 25%, hsla(230,80%,70%,0.2), transparent 35%),
+  radial-gradient(circle at 70% 80%, hsla(330,80%,70%,0.25), transparent 40%),
+  radial-gradient(circle at 20% 75%, hsla(45,100%,60%,0.15), transparent 40%);
+  background-repeat: no-repeat; background-size:100% 100%; }
+.course-area.dark-course-area { background-color:#121212; background-image:
+  radial-gradient(circle at 15% 15%, hsla(10,80%,40%,0.15), transparent 35%),
+  radial-gradient(circle at 85% 25%, hsla(230,80%,50%,0.15), transparent 35%),
+  radial-gradient(circle at 70% 80%, hsla(330,80%,50%,0.2), transparent 40%),
+  radial-gradient(circle at 20% 75%, hsla(45,100%,40%,0.1), transparent 40%); }
+
+.course-area .container-fluid { backdrop-filter: blur(5px); border-radius:15px; padding:30px; }
+.story-content { background-color: rgba(255,255,255,0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,0.3); border-radius:15px; box-shadow:0 4px 16px rgba(31,38,135,0.05); padding:30px; }
+.dark-course-area .story-content { background-color: rgba(30,30,30,0.7); border:1px solid rgba(255,255,255,0.1); }
+
+/* Align main-content spacing */
+.main-content { height:100%; overflow-y:auto; overflow-x:hidden; position:relative; padding-top:85px; }
 
 
 .fw-semibold {
@@ -27,9 +45,180 @@ p {
 }
 
 .jobs-content-container {
-   background-color: #fff;
-  padding-left: 40px;
-  padding-right: 40px;
+   background-color: transparent;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+/* Navigation bar styles (aligned with course central buttons style philosophy) */
+.navigation-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 25px;
+  flex-wrap: wrap;
+  padding: 10px 10px 20px 10px;
+  border-bottom: 1px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.1);
+  background: transparent;
+}
+
+.nav-buttons-row {
+  padding-bottom: 8px;
+  margin-bottom: 0;
+  border-bottom: none;
+  .navigation-buttons { gap: 10px; }
+}
+
+.second-row {
+  padding-top: 0;
+  margin-top: 0;
+  border-top: 0;
+  padding-left: 25px; /* Align with navigation-buttons left inset */
+  .inline-title { margin-right: auto; }
+  .header-pagination { margin-left: auto; }
+}
+
+/* Nudge title block so its text aligns with the Home label (icon width + gap ~ 18px + 8px) */
+.second-row .inline-title { padding-left: 26px; }
+
+@media (max-width: 768px) {
+  .second-row .inline-title { padding-left: 0; } /* On small screens full-width stacking; no horizontal offset needed */
+}
+
+/* Right aligned pagination + tune icon container */
+.right-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  .header-pagination { margin: 0; }
+  .actions { display: flex; align-items: center; }
+  button[mat-icon-button] { width: 42px; height: 42px; }
+}
+
+@media (max-width: 992px) {
+  .right-controls { width: 100%; justify-content: flex-start; gap: 12px; }
+}
+
+@media (max-width: 992px) {
+  .second-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+  .second-row .header-pagination { margin-left: 0; order: 3; }
+  .second-row .actions { order: 2; }
+  .second-row .inline-title { order: 1; }
+}
+
+/* Inline title & pagination adjustments */
+.title-inline {
+  align-items: center;
+  gap: 30px;
+  .navigation-group { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; }
+  .inline-title { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+  .inline-title .sub-title { margin: 0 0 2px 0; font-size: clamp(13px,3.2vw,15px); color:#666; font-weight:500; letter-spacing:.5px; }
+  .inline-title .page-title { margin: 0; font-size: clamp(22px,5vw,32px); font-weight:600; color: var(--mainColor,#4353ff); line-height:1.15; }
+  .header-pagination { margin-left: auto; display: flex; align-items: center; }
+  .actions { display:flex; align-items:center; }
+}
+
+@media (max-width: 992px) {
+  .title-inline { flex-direction: column; align-items: flex-start; }
+  .title-inline .navigation-group { width: 100%; }
+  .title-inline .header-pagination { margin-left: 0; order: 3; }
+  .title-inline .actions { order:2; }
+  .title-inline .inline-title { order:1; }
+}
+
+.navigation-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 5px 0 10px 0;
+  margin-bottom: 5px;
+  border-bottom: 1px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.1);
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 500;
+  color: var(--secondaryColor);
+  text-decoration: none;
+  padding: 0;
+  background: transparent;
+  border: none;
+  transition: color .25s ease;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  color: var(--mainColor);
+}
+
+.nav-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  font-size: 14px;
+  color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3);
+  user-select: none;
+}
+
+.nav-button.home-button span,
+.nav-button.back-button span {
+  display: inline-block;
+  margin-left: 8px;
+  color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3);
+  font-weight: 300;
+  letter-spacing: .25px;
+  transition: color .25s ease;
+}
+
+.nav-button.home-button:hover span,
+.nav-button.back-button:hover span { color: rgba(var(--mainColor-rgb, 67,83,255),0.65); }
+
+.dark-course-area .nav-separator { color: rgba(var(--mainColor-rgb, 67,83,255),0.4); }
+.dark-course-area .nav-button:hover { background: transparent; }
+
+/* Lucide SVG icon sizing within nav buttons */
+.nav-button svg.lucide { width:18px; height:18px; display:flex; }
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
+}
+
+.title-block h2 {
+  font-size: clamp(24px, 5vw, 32px);
+  font-weight: 600;
+  margin: 0;
+  color: var(--mainColor, #4353ff);
+}
+
+.title-block .sub-title {
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666;
+  margin: 0;
+}
+
+.actions { margin-left: auto; display: flex; align-items: center; }
+
+@media (max-width: 768px) {
+  .navigation-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
+  .actions { margin-left: 0; }
+  .navigation-buttons { order: 2; }
+  .title-block { order: 1; }
 }
 .loading-title{
     font-size: clamp(1.5rem, 2.3vw, 1.85rem);
@@ -45,9 +234,9 @@ p {
   padding: 16px;
   padding-bottom: 0px;
   flex-wrap: wrap;
-  background-color: #fff;
-  padding-left: 40px;
-  padding-right: 40px;
+  background-color: transparent;
+  padding-left: 0px;
+  padding-right: 0px;
 
   h4 {
     margin: 0;
@@ -177,7 +366,9 @@ p {
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
-      -webkit-line-clamp: 1;
+  /* Line clamp with standard and webkit for cross-browser */
+  line-clamp: 1; /* Standard (currently supported in some modern browsers) */
+  -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       position: relative;
       top: 10px !important;

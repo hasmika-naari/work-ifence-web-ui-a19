@@ -15,7 +15,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
 // Owl Carousel
@@ -82,7 +81,6 @@ export interface Subject {
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule,
     MatPaginatorModule,
     CarouselModule,
     NgxScrollTopModule,
@@ -181,28 +179,43 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
   }
 
   filterCourses($event: any, filterSidenav: any): void {
-    const filters = this.filterForm.value;
     if (filterSidenav) filterSidenav.close();
+    this.applyFiltersInternal();
+  }
 
-    const noFilters = Object.values(filters).every(val =>
-      val === null ||
-      val === undefined ||
-      (typeof val === 'string' && val.trim() === '')
-    );
+  private applyFiltersInternal(): void {
+    const raw = this.filterForm.value;
+    const filters = {
+      title: (raw.title || '').toString().trim().toLowerCase(),
+      provider: (raw.provider || '').toString().trim().toLowerCase(),
+      subject: (raw.subject || '').toString().trim().toLowerCase(),
+      mode: (raw.mode || '').toString().trim().toLowerCase(),
+      cost: (raw.cost || '').toString().trim().toLowerCase(),
+      certificate: (raw.certificate || '').toString().trim().toLowerCase(),
+      platform: (raw.platform || '').toString().trim().toLowerCase()
+    };
+
+    const noFilters = Object.values(filters).every(val => val === '');
 
     if (noFilters) {
       this.filteredCourses = [...this.allCourses];
     } else {
       this.filteredCourses = this.allCourses.filter(course => {
-        return (
-          (!filters.title || course.title.toLowerCase().includes(filters.title.toLowerCase())) &&
-          (!filters.provider || course.provider === filters.provider) &&
-          (!filters.subject || course.subject === filters.subject) &&
-          (!filters.mode || course.mode === filters.mode) &&
-          (!filters.cost || course.cost === filters.cost) &&
-          (!filters.certificate || (filters.certificate === 'Yes' ? course.certificate : !course.certificate)) &&
-          (!filters.platform || course.platform === filters.platform)
+        const titleMatch = !filters.title || course.title.toLowerCase().includes(filters.title);
+        const providerMatch = !filters.provider || course.provider.toLowerCase() === filters.provider;
+        const subjectMatch = !filters.subject || (
+          (course.subject && course.subject.toLowerCase() === filters.subject) ||
+          (course.category && course.category.toLowerCase() === filters.subject) ||
+          (course.subject && course.subject.toLowerCase().includes(filters.subject)) ||
+          (course.category && course.category.toLowerCase().includes(filters.subject))
         );
+        const modeMatch = !filters.mode || (course.mode && course.mode.toLowerCase() === filters.mode);
+        const costMatch = !filters.cost || course.cost.toLowerCase() === filters.cost;
+        const certificateMatch = !filters.certificate || (
+          filters.certificate === 'yes' ? !!course.certificate : !course.certificate
+        );
+        const platformMatch = !filters.platform || course.platform.toLowerCase() === filters.platform;
+        return titleMatch && providerMatch && subjectMatch && modeMatch && costMatch && certificateMatch && platformMatch;
       });
     }
 
@@ -226,9 +239,6 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
     document.querySelector('.course-grid')?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  getMenuId(course: Course): string {
-    return 'menu_' + course.title.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20);
-  }
 
   share(course: Course): void {
     const url = course.link;

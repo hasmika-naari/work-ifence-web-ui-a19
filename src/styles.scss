@@ -198,6 +198,53 @@ html, body {
     overflow-x: hidden;
 }
 
+/* --------------------------------------------------
+     Global Z-Index Layering Map
+     100: Base content
+     500: Sticky headers / toolbars
+     1000: Side drawers / modals base
+     1050: Backdrops
+     1200: Menus / Select Panels / Tooltips
+     1300: Dialogs / Overlays priority
+     1400: Toasts / Notifications
+     2000: Highest temporary (spot fixes)
+-------------------------------------------------- */
+
+:root {
+    --z-base: 100;
+    --z-header: 500;
+    --z-drawer: 1000;
+    --z-backdrop: 1050;
+    --z-menu: 1200;
+    --z-dialog: 1300;
+    --z-toast: 1400;
+    --z-max: 2000;
+}
+
+/* Angular CDK overlays */
+/* Overlay container should be fixed to top-level viewport */
+// .cdk-overlay-container { position: fixed; inset: 0; z-index: var(--z-menu); }
+// .cdk-overlay-container .cdk-overlay-pane { z-index: var(--z-menu); }
+
+// /* Elevate dialogs */
+// .cdk-overlay-container .cdk-overlay-pane.mat-mdc-dialog-panel { z-index: var(--z-dialog); }
+
+// /* Backdrops */
+// .cdk-overlay-backdrop { z-index: -1 !important; }
+
+// /* Menus & select panels (ensure above drawers) */
+// .cdk-overlay-pane .mat-mdc-select-panel,
+// .cdk-overlay-pane.mat-mdc-menu-panel { z-index: var(--z-menu); }
+
+// /* Tooltips (Material uses its own container; reinforce) */
+// .cdk-overlay-pane .mdc-tooltip { z-index: calc(var(--z-menu) + 10); }
+
+// /* Toast / snackbar */
+// .cdk-overlay-pane.mat-mdc-snack-bar-container { z-index: var(--z-toast); }
+
+// /* Defensive pointer-events */
+// .cdk-overlay-container, .cdk-overlay-container * { pointer-events: auto; }
+
 body {
     margin: 0;
     padding: 0;
@@ -8309,20 +8356,6 @@ $gutter: 1rem; //for primeflex grid system
 
 .custom-paginator button.mat-icon-button:hover {
   background-color: #f0f0f0;
-}
-
-.mat-mdc-menu-panel .mat-mdc-menu-content .mat-mdc-menu-item{
-
-    &:hover{
-        background-color: var(--mainColor) !important;
-        color: white !important;
-         .mat-icon{
-            color: white !important;
-        }
-        
-
-    }
-   
 }
 
 

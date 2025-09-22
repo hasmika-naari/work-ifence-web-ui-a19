@@ -222,23 +222,11 @@
                                         Free
                                     </li>
                                     <li class="courses-price">
-                                        <button mat-icon-button [matMenuTriggerFor]="menu" [attr.aria-controls]="getMenuId(course)">
-                                            <mat-icon>more_vert</mat-icon>
-                                        </button>
-                                        <mat-menu #menu="matMenu" yPosition="above" xPosition="before" [attr.id]="getMenuId(course)">
-                                            <button mat-menu-item (click)="share(course)">
-                                                <mat-icon>share</mat-icon>
-                                                <span>Share</span>
-                                            </button>
-                                            <button mat-menu-item (click)="viewDetails(course)">
-                                                <mat-icon>info</mat-icon>
-                                                <span>View Details</span>
-                                            </button>
-                                            <button mat-menu-item (click)="goToCourse(course)">
-                                                <mat-icon>open_in_new</mat-icon>
-                                                <span>Go to Course</span>
-                                            </button>
-                                        </mat-menu>
+                                        <div class="inline-actions icon-only">
+                                            <mat-icon class="action-icon" (click)="share(course)" matTooltip="Share" aria-label="Share">share</mat-icon>
+                                            <mat-icon class="action-icon" (click)="viewDetails(course)" matTooltip="View Details" aria-label="View Details">info</mat-icon>
+                                            <mat-icon class="action-icon" (click)="goToCourse(course)" matTooltip="Go to Course" aria-label="Go to Course">open_in_new</mat-icon>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
@@ -263,7 +251,7 @@
                         <div class="provider-info" style="margin-bottom: 12px; font-size: clamp(11px, 2.5vw, 14px); color: #666;">
                             <span>{{course.provider}}</span> • <span>{{course.platform}}</span>
                         </div>
-                        <h3 class="two-line-ellipsis" style="font-size: clamp(14px, 3vw, 18px); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{course.title}}</h3>
+                        <h3 class="two-line-ellipsis" style="font-size: clamp(14px, 3vw, 18px);">{{course.title}}</h3>
                         <div class="rating" style="margin-bottom: 12px; display: flex; align-items: center; gap: 5px;">
                             <div class="stars" style="color: #f49b29; font-size: clamp(12px, 2.5vw, 14px);">
                                 ★★★★★
@@ -273,23 +261,11 @@
                         <p style="font-size: clamp(12px, 2.5vw, 14px); margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #666;">Education encompasses both the teaching and learning of knowledge.</p>
                         <div class="course-footer" style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #eee;">
                             <span class="price" style="font-weight: 600; color: var(--mainColor, #4353ff); font-size: clamp(12px, 3vw, 16px);">{{course.cost}}</span>
-                            <button mat-icon-button [matMenuTriggerFor]="courseMenu" [attr.aria-controls]="'menu_' + course.title">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #courseMenu="matMenu" [attr.id]="'menu_' + course.title">
-                                <button mat-menu-item (click)="share(course)">
-                                    <mat-icon>share</mat-icon>
-                                    <span>Share</span>
-                                </button>
-                                <button mat-menu-item (click)="viewDetails(course)">
-                                    <mat-icon>info</mat-icon>
-                                    <span>View Details</span>
-                                </button>
-                                <button mat-menu-item (click)="goToCourse(course)">
-                                    <mat-icon>open_in_new</mat-icon>
-                                    <span>Go to Course</span>
-                                </button>
-                            </mat-menu>
+                            <div class="inline-actions icon-only">
+                                <mat-icon class="action-icon" (click)="share(course)" matTooltip="Share" aria-label="Share">share</mat-icon>
+                                <mat-icon class="action-icon" (click)="viewDetails(course)" matTooltip="View Details" aria-label="View Details">info</mat-icon>
+                                <mat-icon class="action-icon" (click)="goToCourse(course)" matTooltip="Go to Course" aria-label="Go to Course">open_in_new</mat-icon>
+                            </div>
                         </div>
                     </mat-card-content>
                 </mat-card>

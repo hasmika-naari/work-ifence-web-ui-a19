@@ -24,8 +24,9 @@
   position: relative;
 }
 
+/* Use global z-index scale instead of a hard-coded very high number */
 .filter-sidenav {
-  z-index: 10000 !important; /* High but reasonable z-index */
+  z-index: var(--z-drawer) !important;
   border-radius: 0 !important; /* Remove border radius */
   box-shadow: -2px 0 20px rgba(0, 0, 0, 0.2) !important; /* Enhanced shadow */
   width: min(100%, 450px) !important; /* Increased width for better layout */
@@ -33,18 +34,36 @@
   backdrop-filter: blur(25px) !important;
   -webkit-backdrop-filter: blur(25px) !important;
   border-left: 1px solid rgba(255, 255, 255, 0.5) !important;
-  overflow: hidden !important; /* Prevent any scrolling on the sidenav itself */
+  overflow: visible !important; /* Allow overlay panels (mat-select) to render */
 }
 
 /* Sidenav content styling */
 .filter-sidenav-content {
   padding: 20px; /* Reduced padding to save space */
   height: 95vh; /* Full viewport height */
-  overflow: hidden; /* Remove all scrolling */
+  overflow: hidden; /* We'll manage scroll in inner container to keep glass aesthetics */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   position: relative; /* For positioning close button */
+}
+
+/* Inner scroll area for form elements so select panels can extend beyond */
+.filter-sidenav-content .filter-form {
+  overflow-y: auto;
+  padding-right: 4px; /* Minor space for scrollbar if appears */
+}
+
+/* Custom thin scrollbar (optional) */
+.filter-sidenav-content .filter-form::-webkit-scrollbar {
+  width: 6px;
+}
+.filter-sidenav-content .filter-form::-webkit-scrollbar-track {
+  background: transparent;
+}
+.filter-sidenav-content .filter-form::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 3px;
 }
 
 /* Close button styling */
@@ -159,6 +178,51 @@
   color: #333;
 }
 
+/* Updated Angular Material MDC select value styling */
+.filter-sidenav .mat-mdc-select-value, 
+.filter-sidenav .mat-mdc-select-arrow { 
+  color: #333; 
+}
+
+.filter-sidenav .mat-mdc-select-trigger { 
+  font-weight: 500; 
+}
+
+.filter-sidenav .mat-mdc-select-value-text { 
+  color: #333; 
+  text-shadow: 0 1px 2px rgba(255,255,255,0.5); 
+}
+
+/* Panel options */
+.cdk-overlay-pane .mat-mdc-select-panel { 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); 
+  background: rgba(255,255,255,0.85); 
+}
+
+.cdk-overlay-pane .mat-mdc-option { 
+  font-weight: 500; 
+  color: #333; 
+}
+
+.cdk-overlay-pane .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text,
+.cdk-overlay-pane .mat-mdc-option.mdc-list-item--activated .mdc-list-item__primary-text { 
+  color: var(--mainColor, #4353ff); 
+  font-weight: 600; 
+}
+
+.cdk-overlay-pane .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text::after { 
+  content: '\2713'; /* Checkmark */
+  margin-left: 6px; 
+  font-size: 0.85em; 
+  color: var(--mainColor, #4353ff); 
+}
+
+/* Hover state for options */
+.cdk-overlay-pane .mat-mdc-option:hover:not(.mdc-list-item--disabled) .mdc-list-item__primary-text { 
+  color: var(--mainColor, #4353ff); 
+}
+
 /* Action buttons with transparent glassmorphism style */
 .filter-actions {
   display: flex;
@@ -215,20 +279,11 @@
   box-shadow: 0 8px 25px rgba(58, 103, 115, 0.4); /* Using the actual hex values for shadow */
 }
 
-/* Ensure sidenav backdrop has proper z-index */
-::ng-deep .cdk-overlay-backdrop {
-  z-index: 9999 !important;
-}
-
-/* Ensure sidenav content appears above everything */
+/* Overlay stacking adjustments now centralized in global styles.scss
+   Keeping only minimal drawer z-index relative to global scale. */
 ::ng-deep .mat-sidenav-container .mat-sidenav {
-  z-index: 10000 !important;
+  z-index: var(--z-drawer) !important;
   border-radius: 0 !important;
-}
-
-/* Target specific overlay container for sidenav */
-::ng-deep .cdk-overlay-container .cdk-overlay-pane {
-  z-index: 10000 !important;
 }
 
 /* Only target header elements that are interfering */
@@ -1544,9 +1599,90 @@ p {
   color: #333;
 }
 
-.bg-rose      { background-color: #e91e6221; }
-.bg-skyblue   { background-color: #03a9f421; }
-.bg-emerald   { background-color: #2ecc7121; }
+/* Inline action buttons (replacing context menu) */
+.inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* Inline actions: icon-only version */
+.inline-actions.icon-only {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* clearer separation */
+  padding: 2px 0;
+}
+
+.inline-actions.icon-only .action-icon {
+  cursor: pointer;
+  font-size: 20px; /* slightly smaller for balance */
+  line-height: 1;
+  color: #888; /* neutral default */
+  padding: 4px; /* tighter hit target */
+  border-radius: 6px;
+  transition: background .22s ease, color .22s ease, transform .18s ease;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.inline-actions.icon-only .action-icon:hover {
+  color: #fff;
+  background: var(--mainColor, #4353ff);
+  transform: translateY(-1px);
+}
+
+.inline-actions.icon-only .action-icon:active {
+  transform: translateY(0);
+  filter: brightness(.92);
+}
+
+/* Focus accessibility */
+.inline-actions.icon-only .action-icon:focus-visible {
+  outline: 2px solid var(--mainColor, #4353ff);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------
+   Multi-line Ellipsis Utility (2 lines)
+   Ensures titles occupy exactly two lines worth of vertical space
+   with graceful truncation and consistent card heights.
+-------------------------------------------------- */
+.two-line-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Chrome, Safari */
+  line-clamp: 2; /* Spec / future */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Ensure consistent typography; allow responsive scaling if parent sets font-size */
+  line-height: 1.25; /* Adjust if needed for visual rhythm */
+  /* Lock height to exactly two lines to keep card footers aligned */
+  max-height: calc(1.25em * 2);
+  min-height: calc(1.25em * 2);
+  margin-bottom: 8px;
+}
+
+/* When anchor inside should inherit truncation behavior */
+.two-line-ellipsis > a {
+  color: inherit;
+  text-decoration: none;
+}
+.two-line-ellipsis > a:hover {
+  text-decoration: underline;
+}
+
+/* Dark theme adjustments */
+:host-context(.dark-theme) .inline-actions.icon-only .action-icon {
+  color: #aaa;
+}
+:host-context(.dark-theme) .inline-actions.icon-only .action-icon:hover {
+  background: var(--mainColor, #4353ff);
+  color: #fff;
+}
 .bg-sunset    { background-color: #ff6f6121; }
 .bg-royalblue { background-color: #4169e121; }
 .bg-coral     { background-color: #ff704321; }
@@ -1743,7 +1879,7 @@ p {
 }
 
 .single-courses-list-box .courses-desc .courses-box-footer {
-  padding: 10px 25px 25px;
+  padding: 10px 5px 5px;
 }
 
 .single-courses-list-box .courses-desc .courses-box-footer ul {

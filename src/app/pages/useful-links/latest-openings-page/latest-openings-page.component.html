@@ -1,131 +1,123 @@
-<section class="page-full-section" style="overflow-y: hidden;">
-    <app-header-wifence [container]="hdrContainer"></app-header-wifence>
-    <mat-sidenav-container class="dashboard-container" #scrollContainer >
-        <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
-            <h3>Filter Openings</h3>
-            <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterJobs($event, filterSidenav)">
-                <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Title</mat-label>
-                        <input matInput formControlName="title">
-                    </mat-form-field>
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Provider</mat-label>
-                        <mat-select formControlName="provider">
-                        <mat-option value="">Any</mat-option>
-                        <mat-option value="Coursera">Coursera</mat-option>
-                        <mat-option value="edX">edX</mat-option>
-                        <mat-option value="FutureLearn">FutureLearn</mat-option>
-                        <mat-option value="Independent">Independent</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Subject</mat-label>
-                        <mat-select formControlName="subject">
-                        <mat-option value="">Any</mat-option>
-                        <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Mode</mat-label>
-                        <mat-select formControlName="mode">
-                        <mat-option value="">Any</mat-option>
-                        <mat-option value="Self-paced">Self-paced</mat-option>
-                        <mat-option value="Instructor-led">Instructor-led</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Cost</mat-label>
-                        <mat-select formControlName="cost">
-                        <mat-option value="">Any</mat-option>
-                        <mat-option value="Free">Free</mat-option>
-                        <mat-option value="Paid">Paid</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Certificate</mat-label>
-                        <mat-select formControlName="certificate">
-                        <mat-option value="">Any</mat-option>
-                        <mat-option value="Yes">Yes</mat-option>
-                        <mat-option value="No">No</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-3">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Platform</mat-label>
-                        <mat-select formControlName="platform">
-                        <mat-option value="">Any</mat-option>
-                        <mat-option value="Coursera">Coursera</mat-option>
-                        <mat-option value="edX">edX</mat-option>
-                        <mat-option value="FutureLearn">FutureLearn</mat-option>
-                        <mat-option value="Independent">Independent</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    </div>
-                </div>
-
-                <div class="text-end mt-2">
-                    <button mat-flat-button type="submit">Apply Filters</button>
-                </div>
-            </form>
-
-        </mat-sidenav>
-        <mat-sidenav-content style="position: absolute;top:0px;left: 0px;right: 0px;background-color: var(--whiteColor);">
-            <div class="course-list-header">
-                <div class="page-title-content">
-                    <ul>
-                        <li><a routerLink="/">Home</a></li>
-                        <li>Job Central</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="course-list-header">
-                <div class="left">
-                    <div class="section-title mb-0 mt-0">
-                        <div class="text-start">
-                            <span class="sub-title d-block mb-0">Discover Job Openings</span>
-                            <h2 class="mb-0 mt-0">Job Central</h2>
+<div class="course-central-wrapper">
+    <div class="course-area" [class.dark-course-area]="themeService.isDark()">
+        <mat-sidenav-container class="dashboard-container" #scrollContainer>
+            <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
+                <h3>Filter Openings</h3>
+                <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterJobs($event, filterSidenav)">
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Title</mat-label>
+                                <input matInput formControlName="title" />
+                            </mat-form-field>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Provider</mat-label>
+                                <mat-select formControlName="provider">
+                                    <mat-option value="">Any</mat-option>
+                                    <mat-option value="Coursera">Coursera</mat-option>
+                                    <mat-option value="edX">edX</mat-option>
+                                    <mat-option value="FutureLearn">FutureLearn</mat-option>
+                                    <mat-option value="Independent">Independent</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Subject</mat-label>
+                                <mat-select formControlName="subject">
+                                    <mat-option value="">Any</mat-option>
+                                    <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Mode</mat-label>
+                                <mat-select formControlName="mode">
+                                    <mat-option value="">Any</mat-option>
+                                    <mat-option value="Self-paced">Self-paced</mat-option>
+                                    <mat-option value="Instructor-led">Instructor-led</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Cost</mat-label>
+                                <mat-select formControlName="cost">
+                                    <mat-option value="">Any</mat-option>
+                                    <mat-option value="Free">Free</mat-option>
+                                    <mat-option value="Paid">Paid</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Certificate</mat-label>
+                                <mat-select formControlName="certificate">
+                                    <mat-option value="">Any</mat-option>
+                                    <mat-option value="Yes">Yes</mat-option>
+                                    <mat-option value="No">No</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Platform</mat-label>
+                                <mat-select formControlName="platform">
+                                    <mat-option value="">Any</mat-option>
+                                    <mat-option value="Coursera">Coursera</mat-option>
+                                    <mat-option value="edX">edX</mat-option>
+                                    <mat-option value="FutureLearn">FutureLearn</mat-option>
+                                    <mat-option value="Independent">Independent</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </div>
                     </div>
-                </div>
-                <div class="right">
-                    <!-- <h5>({{ allCourses.length }}) All Courses</h5> -->
-                    <button mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
-                    <mat-icon>tune</mat-icon>
-                    </button>
-                </div>
-            </div>
-            <section  #jobsStart id="jobsStart" class="jobs-content-container mb-50 pb-50">
-               <div class="row align-items-center">
-                    <div class="col-lg-4 col-12 text-start">
-                        <div class="topbar-search">
-                            <!-- Search Bar -->
-                        </div>
-                    </div> 
-                    <div class="col-lg-4 d-none d-lg-block"></div>
-                    <div class="col-lg-4 col-12 text-end" *ngIf="browser && !actionInProgress">
-                        <pagination-controls class="product-pagination" 
-                            [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
-                        </pagination-controls>
+                    <div class="text-end mt-2">
+                        <button mat-flat-button type="submit">Apply Filters</button>
                     </div>
+                </form>
+            </mat-sidenav>
+            <mat-sidenav-content class="main-content">
+                <app-header-wifence [container]="hdrContainer" class="course-header"></app-header-wifence>
+                <div class="container-fluid">
+                    <div class="row g-3">
+                        <div class="story-content w-100">
+                                                                                    <div class="modern-title-section nav-buttons-row" style="padding-left:0; padding-top:0;">
+                                                                                        <div class="navigation-buttons" style="padding:15px 0 15px 25px; margin-bottom:10px; border-bottom:1px solid rgba(var(--mainColor-rgb,67,83,255),0.1); gap:0; display:flex; flex-wrap:wrap;">
+                                                                                            <a class="nav-button home-button" [routerLink]="['/']" style="margin-right:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
+                                                                                                <lucide-icon name="home"></lucide-icon>
+                                                                                                Home
+                                                                                                <span style="display:inline-block; margin-left:8px; color:rgba(var(--mainColor-rgb,67,83,255),0.3); font-weight:300;">|</span>
+                                                                                            </a>
+                                                                                            <a class="nav-button back-button" (click)="goBack($event)" style="margin-left:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
+                                                                                                <lucide-icon name="undo2"></lucide-icon>
+                                                                                                Back
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="course-list-header navigation-bar title-inline second-row">
+                                                                                        <div class="inline-title">
+                                                                                            <span class="sub-title">Discover Job Openings</span>
+                                                                                            <h2 class="page-title">Job Central</h2>
+                                                                                        </div>
+                                                                                        <div class="right-controls">
+                                                                                            <div class="header-pagination" *ngIf="browser && !actionInProgress">
+                                                                                                <pagination-controls class="product-pagination"
+                                                                                                    [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
+                                                                                                </pagination-controls>
+                                                                                            </div>
+                                                                                            <div class="actions">
+                                                                                                <button mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
+                                                                                                    <mat-icon>tune</mat-icon>
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                            <section  #jobsStart id="jobsStart" class="jobs-content-container mb-50 pb-50">
+               <div class="row align-items-center topbar-row">
                     <div class="col-12">
                         <mat-progress-bar *ngIf="actionInProgress" mode="indeterminate" color="primary"  ></mat-progress-bar>
                         <div class="row pb-100 pt-100" *ngIf="actionInProgress">
@@ -193,21 +185,14 @@
                     </div>
                 }
                 </div>
-                 <div class="row align-items-center">
-                    <div class="col-lg-4 col-12 text-start">
-                        <div class="topbar-search">
-                            <!-- Search Bar -->
+                <!-- Footer pagination row removed; pagination now in header -->
+                <!-- <app-job-openings [isMobile]="isMobile" ></app-job-openings> -->
+                            </section>
                         </div>
-                    </div> 
-                    <div class="col-lg-4 d-none d-lg-block"></div>
-                    <div class="col-lg-4 col-12 text-end" *ngIf="browser && !actionInProgress">
-                        <pagination-controls class="product-pagination" 
-                            [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
-                        </pagination-controls>
                     </div>
                 </div>
-                <!-- <app-job-openings [isMobile]="isMobile" ></app-job-openings> -->
-            </section>
-            <app-work-ifence-footer></app-work-ifence-footer>
-        </mat-sidenav-content>
-</mat-sidenav-container>
+                <app-work-ifence-footer></app-work-ifence-footer>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+    </div>
+</div>
