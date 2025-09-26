@@ -1240,7 +1240,7 @@ footer .copyright-text a {
         img {
             filter: none;
             opacity: 0.95;
-            height: 50px; /* Increased from 35px to 50px */
+            height: 60px; /* 20% increase from 50px */
             transition: all 0.3s ease;
             
             &:hover {
@@ -1414,7 +1414,7 @@ footer .copyright-text a {
         background: transparent;
         
         .logo img {
-            height: 40px; /* Slightly smaller on mobile but still larger than original */
+            height: 48px; /* 20% increase from 40px */
         }
     }
 
@@ -1469,7 +1469,7 @@ footer .copyright-text a {
         background: transparent;
         
         .logo img {
-            height: 45px; /* Medium size for tablets */
+            height: 54px; /* 20% increase from 45px */
         }
     }
 }
