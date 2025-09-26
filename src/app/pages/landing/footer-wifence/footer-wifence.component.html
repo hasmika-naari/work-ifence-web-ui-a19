@@ -5,11 +5,51 @@
     <!-- <div class="footer-top-decoration"></div> -->
     <!-- <div class="left-gradient-blob"></div> -->
     <!-- <div class="glossy-streaks"></div> -->
-    <div class="container">
+    <div class="footer-inner-wrap container-fluid">
+        <div class="footer-main flex-layout">
+            <div class="content-cluster"> <!-- advertisement removed; new Resources column added -->
         <div class="decorative-orb"></div>
         <div class="decorative-orb-2"></div>
         <div class="glossy-streaks"></div>
-        <div class="row">
+        <div class="row"><!-- reordered: Support, Useful Links, Resources, Contact Us, Newsletter -->
+            <!-- 1: Support -->
+            <div class="col-lg-2 col-md-6 col-sm-6">
+                <div class="single-footer-widget mb-3">
+                    <h3><i class='bx bx-help-circle'></i> Support</h3>
+                    <ul class="support-link">
+                        <li><a routerLink="/about-us" role="link" tabindex="0"><i class='bx bx-info-circle'></i> About Us</a></li>
+                        <li><a routerLink="/faq" role="link" tabindex="0"><i class='bx bx-question-mark'></i> FAQs</a></li>
+                        <li><a routerLink="/privacy" role="link" tabindex="0"><i class='bx bx-shield-quarter'></i> Privacy Policy</a></li>
+                        <li><a routerLink="/terms" role="link" tabindex="0"><i class='bx bx-file'></i> Terms of Use</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 2: Useful Links -->
+            <div class="col-lg-2 col-md-6 col-sm-6">
+                <div class="single-footer-widget mb-3">
+                    <h3><i class='bx bx-link-alt'></i> Useful Link</h3>
+                    <ul class="useful-link">
+                        <li><a routerLink="/job-openings" role="link" tabindex="0"><i class='bx bx-briefcase'></i> Latest Openings</a></li>
+                        <li><a routerLink="/job-market" role="link" tabindex="0"><i class='bx bx-line-chart'></i> Job Market Blog</a></li>
+                        <li><a routerLink="/training-options" role="link" tabindex="0"><i class='bx bx-book-alt'></i> Training Options</a></li>
+                        <li><a routerLink="/tech-talks" role="link" tabindex="0"><i class='bx bx-conversation'></i> Tech Talks</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 3: Resources -->
+            <div class="col-lg-2 col-md-6 col-sm-6">
+                <div class="single-footer-widget mb-3">
+                    <h3><i class='bx bx-compass'></i> Resources</h3>
+                    <ul class="resource-link">
+                        <li><a routerLink="/resume-tools" role="link" tabindex="0"><i class='bx bx-id-card'></i> Resume Tools</a></li>
+                        <li><a routerLink="/interview-prep" role="link" tabindex="0"><i class='bx bx-brain'></i> Interview Prep</a></li>
+                        <li><a routerLink="/career-paths" role="link" tabindex="0"><i class='bx bx-trending-up'></i> Career Paths</a></li>
+                        <li><a routerLink="/salary-insights" role="link" tabindex="0"><i class='bx bx-line-chart'></i> Salary Insights</a></li>
+                        <li><a routerLink="/community" role="link" tabindex="0"><i class='bx bx-group'></i> Community</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 4: Contact Us (moved, widened to 3 columns) -->
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="single-footer-widget mb-3">
                     <h3><i class='bx bx-support'></i> Contact Us</h3>
@@ -35,34 +75,8 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-6 col-sm-6">
-                <div class="single-footer-widget mb-3">
-                    <h3><i class='bx bx-help-circle'></i> Support</h3>
-                    <ul class="support-link">
-                        <li><a routerLink="/about-us" role="link" tabindex="0"><i class='bx bx-info-circle'></i> About Us</a></li>
-                        <li><a routerLink="/faq" role="link" tabindex="0"><i class='bx bx-question-mark'></i> FAQ's</a></li>
-                        <li><a routerLink="/privacy" role="link" tabindex="0"><i class='bx bx-shield-quarter'></i> Privacy</a></li>
-                        <li><a routerLink="/terms" role="link" tabindex="0"><i class='bx bx-file'></i> Terms</a></li>
-                        <!-- <li><a routerLink="/">Support</a></li> -->
-                        <!-- <li><a routerLink="/">Condition</a></li> -->
-                        <!-- <li><a routerLink="/">Policy</a></li> -->
-                    </ul>
-                </div>
-            </div>
+            <!-- 5: Newsletter -->
             <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-footer-widget mb-3">
-                    <h3><i class='bx bx-link-alt'></i> Useful Link</h3>
-                    <ul class="useful-link">
-                        <li><a routerLink="/job-openings" role="link" tabindex="0"><i class='bx bx-briefcase'></i> Latest Openings</a></li>
-                        <li><a routerLink="/job-market" role="link" tabindex="0"><i class='bx bx-line-chart'></i> Job Market Blog</a></li>
-                        <li><a routerLink="/training-options" role="link" tabindex="0"><i class='bx bx-book-alt'></i> Training Options</a></li>
-                        <li><a routerLink="/tech-talks" role="link" tabindex="0"><i class='bx bx-conversation'></i> Tech Talks</a></li>
-                        <!-- <li><a routerLink="/">Whitepaper</a></li> -->
-                        <!-- <li><a routerLink="/">Web Development</a></li> -->
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="single-footer-widget mb-3">
                     <h3><i class='bx bx-news'></i> News Letter</h3>
                     <div class="newsletter-box">
@@ -85,6 +99,8 @@
             </div>
         </div>
     </div>
+    </div>
+    </div><!-- close .footer-inner-wrap (was missing) -->
     <div class="footer-bottom-area">
         <div class="container">
             <div class="logo">

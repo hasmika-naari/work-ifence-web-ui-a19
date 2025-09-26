@@ -22,9 +22,11 @@ a, [routerLink], .footer-area a, .contact-us-link a, .support-link a, .useful-li
         display: block !important; /* Make links full width of their container */
         width: 100% !important; /* Force full width */
         cursor: pointer !important; /* Standard pointer cursor */
-        white-space: nowrap !important; /* Prevent wrapping to second line */
-        overflow: hidden !important; /* Hide overflow text */
-        text-overflow: ellipsis !important; /* Show ellipsis for overflowing text */
+        white-space: normal !important; /* Allow wrapping to fit within space */
+        overflow: visible !important; /* Show full text */
+        text-overflow: clip !important; /* No ellipsis */
+        word-break: break-word !important; /* Wrap long words if needed */
+        hyphens: auto !important; /* Hyphenate when possible */
     }
 }
 
@@ -73,7 +75,7 @@ footer [role="button"] {
     cursor: hand !important; /* Hand cursor instead of pointer */
     cursor: pointer !important; /* Standard cursor for modern browsers */
     transform: scale(1.03) !important; /* Keep the animation but make it subtle */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Make all columns consistent */
@@ -105,10 +107,25 @@ footer [role="button"] {
     li a {
         font-size: 15px; /* Increased from 0.9em for better readability */
         padding-right: 0; /* Remove right padding to fit better */
-        white-space: normal !important; /* Allow text to wrap to second line */
-        overflow: visible !important; /* Show all text */
-        text-overflow: clip !important; /* Don't use ellipsis */
+        white-space: nowrap !important; /* Keep to single line */
+        overflow: hidden !important; /* Prevent spillover into next column */
+        text-overflow: clip !important; /* No ellipsis, but clipped if too long */
     }
+}
+
+/* First three columns (Support, Useful, Resources): enforce single line and stable hover */
+.footer-area .support-link li a,
+.footer-area .useful-link li a,
+.footer-area .resource-link li a {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important; /* explicit no-ellipsis */
+}
+
+.footer-area .support-link li a:hover,
+.footer-area .useful-link li a:hover,
+.footer-area .resource-link li a:hover {
+    transform: none !important; /* avoid hover scale that could cause clipping */
 }
 
 /* Newsletter column specific styling */
@@ -150,7 +167,7 @@ footer .copyright-text a {
     cursor: hand !important;
     transform: scale(1.03) !important; /* Subtle scale animation */
     z-index: 1 !important; /* Ensure hover state appears above other elements */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow for depth */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Softer shadow for depth */
 }
 
 /* Ensure all links within the footer show a pointer cursor */
@@ -198,19 +215,54 @@ footer .copyright-text a {
     
     /* Adding a container style for the main content area only (not footer bottom) */
     > .container:first-of-type {
-        background-color: rgba(255, 255, 255, 0.12); /* Return to more transparent background */
+        background-color: rgba(255, 255, 255, 0.18); /* Slightly whiter */
         background-image: linear-gradient(
             to bottom,
-            rgba(255, 255, 255, 0.16),
-            rgba(255, 255, 255, 0.08)
+            rgba(255, 255, 255, 0.24),
+            rgba(255, 255, 255, 0.12)
         );
         border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+        padding: 30px 34px; /* balanced horizontal padding */
+    box-shadow: 0 1px 24px rgba(0, 0, 0, 0.04);
         backdrop-filter: blur(5px);
         -webkit-backdrop-filter: blur(5px);
         border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Slightly wider again */
+    max-width: min(97vw, 1680px);
+        margin-left: auto;
+        margin-right: auto;
+
+        /* tighten the internal row gutters specifically for footer columns */
+        .row {
+            --bs-gutter-x: 1.5rem; /* default smaller horizontal gutter */
+            --bs-gutter-y: 1.25rem;
+        }
+
+        /* reduce individual column side padding further for large screens */
+        @media (min-width: 1200px) {
+            .row > [class*='col-'] {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+        }
     };
+
+    /* Constrain the full-width wrapper as well for consistent overall width */
+    .footer-inner-wrap {
+        max-width: min(97vw, 1680px);
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    /* Keep footer bottom within the same width for visual alignment */
+    .footer-bottom-area .container {
+        max-width: min(97vw, 1680px);
+        margin-left: auto;
+        margin-right: auto;
+    }
     
     /* Enhanced decorative elements at the top of footer */
     .footer-top-decoration {
@@ -444,15 +496,98 @@ footer .copyright-text a {
     .container {
         position: relative;
         z-index: 5; /* Increased z-index to appear above all overlays */
-        background: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.16); /* Slightly whiter */
         border-radius: 10px;
         padding: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.16);
     }
 }
+
+/* === Layout (ad slot removed; now pure content columns) === */
+.footer-inner-wrap { width: 100%; padding-left:0; padding-right:0; }
+.flex-layout { 
+    display:block; /* simplified since ad column removed */
+    width:100%;
+    max-width:2100px;
+    margin:0 auto;
+    padding:0 clamp(2rem,3vw,3.5rem);
+}
+.content-cluster { position:relative; min-width:0; }
+
+/* Adapt original styling that targeted > .container:first-of-type to new .content-cluster wrapper */
+.footer-area .content-cluster {
+    background-color: rgba(255, 255, 255, 0.18);
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.24), rgba(255,255,255,0.12));
+    border-radius: 15px;
+    padding: 30px clamp(1.25rem,2.4vw,3rem);
+    box-shadow: 0 1px 24px rgba(0,0,0,0.04);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.2);
+    overflow: hidden;
+}
+
+/* Ensure orbs & streaks still positioned inside new wrapper */
+.content-cluster .decorative-orb,
+.content-cluster .decorative-orb-2,
+.content-cluster .glossy-streaks { z-index:0; }
+.content-cluster .row { position:relative; z-index:1; }
+
+/* Remove old ad styles (intentionally deleted) */
+
+/* Resources list aligns with existing link columns */
+.resource-link {
+    padding-left:0;
+    list-style:none;
+    margin:0;
+    li { margin-bottom:11px; &:last-child { margin-bottom:0; } }
+    a {
+        display:block; /* match Useful/Support */
+        width: 100%;
+        align-items: center;
+        color: var(--secondaryColor);
+        font-size:15px;
+        font-weight:500;
+        transition: all 0.3s ease;
+        padding-left:0;
+        position: relative;
+        cursor: pointer !important;
+    }
+    a i {
+        font-size:18px;
+        margin-right:8px;
+        opacity:.8;
+        color: var(--secondaryColor);
+        transition: all 0.3s ease;
+        cursor: pointer !important;
+    }
+    a::before {
+        content: '';
+        position: absolute;
+        left: -12px;
+        top: 0px;
+        font-size: 18px;
+        opacity: 0;
+        transition: all 0.3s ease;
+        color: rgba(var(--primaryColorRGB), 0.9);
+    }
+    a:hover, a:focus {
+        color: var(--secondaryColor);
+        background-color: rgba(255, 255, 255, 0.45) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 1px 6px rgba(255, 255, 255, 0.18) !important;
+    }
+    a:hover i, a:focus i { opacity: 1; color: var(--secondaryColor); }
+    a:hover::before, a:focus::before { opacity: 1; left: 0; }
+}
+
+/* Simplified responsive behavior for 80/20 layout */
+/* Responsive still handled by existing bootstrap grid */
+@media (max-width: 1120px) { .flex-layout { flex-direction:column; } .footer-ad-slot { order:2; padding-top:2rem; } .ad-box { width:100%; max-width:340px; height:180px; margin:0 auto; } }
+@media (max-width: 767px) { .flex-layout { flex-direction:column; min-width:100%; padding:0 1rem; } .footer-ad-slot { order:2; padding-top:2rem; } .ad-box { width:100%; height:160px; } }
 .single-footer-widget {
     background: transparent;
     padding: 20px;
@@ -610,7 +745,7 @@ footer .copyright-text a {
                     background-color: rgba(255, 255, 255, 0.45) !important;
                     cursor: pointer !important; /* Only use pointer for modern browsers */
                     transform: translateY(-2px) !important;
-                    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.25) !important;
+                    box-shadow: 0 1px 6px rgba(255, 255, 255, 0.18) !important;
                     
                     i {
                         opacity: 1;
@@ -678,7 +813,7 @@ footer .copyright-text a {
                     background-color: rgba(255, 255, 255, 0.45) !important;
                     cursor: pointer !important; /* Only use pointer for modern browsers */
                     transform: translateY(-2px) !important;
-                    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.25) !important;
+                    box-shadow: 0 1px 6px rgba(255, 255, 255, 0.18) !important;
                     
                     i {
                         opacity: 1;
@@ -695,6 +830,60 @@ footer .copyright-text a {
             &:hover {
                 transform: none; /* Remove the transform to prevent inconsistent width */
             }
+        }
+    }
+    /* Mirror the same behavior for Resources column */
+    .resource-link {
+        padding-left: 0;
+        list-style-type: none;
+        margin-bottom: 0;
+        width: 100%;
+        cursor: pointer !important;
+        li {
+            margin-bottom: 13px;
+            position: relative;
+            transition: all 0.3s ease;
+            width: 100%;
+            cursor: pointer !important;
+            &:last-child { margin-bottom: 0; }
+            a {
+                display: block;
+                width: 100%;
+                align-items: center;
+                color: var(--secondaryColor);
+                cursor: pointer !important;
+                transition: all 0.3s ease;
+                position: relative;
+                padding-left: 0;
+                i {
+                    margin-right: 8px;
+                    font-size: 18px;
+                    color: var(--secondaryColor);
+                    opacity: 0.8;
+                    transition: all 0.3s ease;
+                    cursor: pointer !important;
+                }
+                &::before {
+                    content: '';
+                    position: absolute;
+                    left: -12px;
+                    top: 0px;
+                    font-size: 18px;
+                    opacity: 0;
+                    transition: all 0.3s ease;
+                    color: rgba(var(--primaryColorRGB), 0.9);
+                }
+                &:hover, &:focus {
+                    color: var(--secondaryColor);
+                    background-color: rgba(255, 255, 255, 0.45) !important;
+                    cursor: pointer !important;
+                    transform: translateY(-2px) !important;
+                    box-shadow: 0 1px 6px rgba(255, 255, 255, 0.18) !important;
+                    i { opacity: 1; color: var(--secondaryColor); }
+                    &::before { opacity: 1; left: 0; }
+                }
+            }
+            &:hover { transform: none; }
         }
     }
     .social-link {
@@ -731,7 +920,7 @@ footer .copyright-text a {
                 
                 &:hover {
                     background-color: rgba(255, 255, 255, 0.55);
-                    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+                    box-shadow: 0 1px 4px rgba(255, 255, 255, 0.22);
                     transform: translateY(-2px);
                     
                     i {
@@ -802,7 +991,7 @@ footer .copyright-text a {
                 position: relative;
                 display: flex;
                 align-items: center;
-                background-color: rgba(255, 255, 255, 0.12); /* Return to more transparent background */
+                background-color: rgba(255, 255, 255, 0.18); /* Slightly whiter to match container */
                 border: 1px solid rgba(var(--secondaryColorRGB), 0.4);
                 border-radius: 5px;
                 height: 45px;
@@ -1100,7 +1289,7 @@ footer .copyright-text a {
                 text-decoration: none;
                 cursor: hand !important;
                 transform: scale(1.03);
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
             }
         }
     }
