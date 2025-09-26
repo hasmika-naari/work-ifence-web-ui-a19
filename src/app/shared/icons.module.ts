@@ -6,7 +6,8 @@ import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
          Award, Facebook, Instagram, MessageCircle, ArrowRight, LayoutDashboard,
          Linkedin, X, Shield, FileText, HelpCircle, UserPlus, CornerDownRight,
          Settings, LogOut, Undo2, Home, Target, TrendingUp, Users, BookOpenIcon,
-         CheckCircle, Quote, Lightbulb, Heart, MessageSquare , Search} from 'lucide-angular';
+         Share2, ExternalLink,  
+         CheckCircle, Quote, Lightbulb, Heart, MessageSquare, Search} from 'lucide-angular';
 
 @NgModule({
   imports: [
@@ -50,6 +51,8 @@ import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
       Lightbulb,
       Heart,
       MessageSquare
+      , Share2
+      , ExternalLink
     })
   ],
   exports: [LucideAngularModule],

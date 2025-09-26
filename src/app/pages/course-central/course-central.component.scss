@@ -121,7 +121,7 @@
   color: var(--mainColor, #4353ff);
   margin-bottom: 10px; /* Minimal margin */
   text-align: center;
-  border-bottom: 2px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.2);
+  // border-bottom: 2px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.2);
   padding-bottom: 5px; /* Minimal padding */
   text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
 }
@@ -342,11 +342,9 @@
 
 /* Course area with the main content */
 .course-grid {
-  display: flex;
-  /* Keep cards within max width; do not stretch beyond clamp */
-  grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 30vw, 520px), clamp(280px, 30vw, 520px)));
-  height: 100%;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
 }
 
 /* Responsive Design Additions */
@@ -389,7 +387,7 @@
   .navigation-buttons {
     padding: 5px 0 10px 0;
     margin-bottom: 5px;
-    border-bottom: 1px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.1);
+    // border-bottom: 1px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.1);
     gap: 0;
     display: flex;
     flex-wrap: wrap;
@@ -636,7 +634,7 @@
         padding: 20px;
         display: flex;
         flex-direction: column;
-        background: white;
+        background: transparent;
         min-height: 0; // Allow flex item to shrink
         position: relative; // Add relative positioning for badge positioning
         
@@ -843,7 +841,7 @@
     .pagination-btn {
       width: 45px;
       height: 45px;
-      border-radius: 50%;
+      border-radius: 0; /* square buttons */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -889,13 +887,13 @@
 /* Course Grid Responsive Styling */
 .course-grid {
   display: grid;
-  /* Grow cards with viewport: min 280px, prefer ~30vw, cap ~520px per card */
-  grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 30vw, 520px), 1fr));
+  /* Default: allow many columns with smaller min width; left align on wide */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 16px;
   padding: 0 15px;
   margin-bottom: 30px;
-  justify-content: center; /* center remaining columns when not full */
-  
+  justify-content: start; /* left align tracks by default */
+
   .course-card {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.05);
@@ -903,18 +901,15 @@
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 15px;
-    justify-content: center; /* center by default on small screens */
     box-shadow: none;
 
-  /* Left align tracks on larger screens */
-  @media (min-width: 992px) {
-    .course-grid { justify-content: start; }
-  }
+    /* card hover */
     transition: var(--transition);
     
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 20px rgba(31, 38, 135, 0.08);
+      border: 1px solid rgba(255, 255, 255, 1);
     }
     
     .card-image {
@@ -1180,7 +1175,7 @@
 /* Large screen adjustments */
 @media (min-width: 1200px) {
   .course-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 22px;
     padding: 0 20px;
   }
@@ -1393,12 +1388,12 @@
 
 .course-area .story-content {
   // margin-top: -6px;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 15px;
-  box-shadow: 0 4px 16px rgba(31, 38, 135, 0.05);
+  // box-shadow: 0 4px 16px rgba(31, 38, 135, 0.05);
   padding: 30px;
 }
 
@@ -1649,41 +1644,48 @@ p {
 .inline-actions.icon-only {
   display: flex;
   align-items: center;
-  gap: 12px; /* clearer separation */
+  gap: 12px; /* balanced spacing */
   padding: 2px 0;
 }
 
 .inline-actions.icon-only .action-icon {
   cursor: pointer;
-  font-size: 20px; /* slightly smaller for balance */
-  line-height: 1;
-  color: #888; /* neutral default */
-  padding: 4px; /* tighter hit target */
-  border-radius: 6px;
-  transition: background .22s ease, color .22s ease, transform .18s ease;
+  color: rgba(0, 0, 0, 0.54); /* neutral default in light mode */
   user-select: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  min-height: 28px;
+  font-size: clamp(22px, 2.6vw, 26px); /* controls inner svg via 1em */
+  padding: 6px; /* comfortable hit area without crowding */
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+/* Make lucide svg inherit the computed size */
+.inline-actions.icon-only .action-icon svg {
+  width: 1em;
+  height: 1em;
+  display: block;
 }
 
 .inline-actions.icon-only .action-icon:hover {
-  color: #fff;
-  background: var(--mainColor, #4353ff);
-  transform: translateY(-1px);
+  color: var(--mainColor, #4353ff);
+  background: rgba(var(--mainColor-rgb, 67, 83, 255), 0.12);
+  border-color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.22);
 }
 
 .inline-actions.icon-only .action-icon:active {
-  transform: translateY(0);
-  filter: brightness(.92);
+  background: rgba(var(--mainColor-rgb, 67, 83, 255), 0.18);
+  border-color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.28);
 }
 
 /* Focus accessibility */
 .inline-actions.icon-only .action-icon:focus-visible {
-  outline: 2px solid var(--mainColor, #4353ff);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--mainColor-rgb, 67, 83, 255), 0.35);
+  border-color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.35);
 }
 
 /* --------------------------------------------------
@@ -1717,11 +1719,12 @@ p {
 
 /* Dark theme adjustments */
 :host-context(.dark-theme) .inline-actions.icon-only .action-icon {
-  color: #aaa;
+  color: #bbb;
 }
 :host-context(.dark-theme) .inline-actions.icon-only .action-icon:hover {
-  background: var(--mainColor, #4353ff);
   color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 .bg-sunset    { background-color: #ff6f6121; }
 .bg-royalblue { background-color: #4169e121; }
