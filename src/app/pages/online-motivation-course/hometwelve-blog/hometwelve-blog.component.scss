@@ -1,3 +1,39 @@
+/* Layout the section header so the H2 and button share a row */
+.section-title {
+    display: grid;
+    grid-template-columns: 1fr; /* stack by default on small screens */
+    row-gap: 12px;
+    align-items: center;
+
+    .sub-title {
+        grid-column: 1 / -1;
+        margin-bottom: 0; /* avoid extra gap since we control row-gap */
+    }
+
+    h2 {
+        grid-column: 1 / -1;
+        margin: 0; /* align neatly with the button when side-by-side */
+    }
+
+    .default-btn { /* will be placed to the right on larger screens */
+        justify-self: start;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .section-title {
+        grid-template-columns: 1fr auto; /* H2 left, button right */
+        column-gap: 16px;
+
+        h2 { grid-column: 1; }
+        .default-btn {
+            grid-column: 2;
+            justify-self: end;
+            align-self: center;
+            margin: 0; /* ensure it doesn't drop below */
+        }
+    }
+}
 .dark-blog-area {
     .single-blog-post-card {
         background-color: var(--blackColor);
@@ -174,6 +210,85 @@
                 background-color: var(--mainColor);
                 border: 1px solid var(--mainColor);
                 color: var(--whiteColor);
+            }
+        }
+    }
+}
+
+/* Read All CTA: glossy transparent primary button, consistent with Hometwelve About */
+.section-title {
+    .default-btn {
+        position: relative;
+        display: inline-flex;
+        flex-wrap: nowrap; /* keep label + icon on the same row */
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 18px !important; /* lock padding to avoid hover shifts */
+        border-radius: 12px;
+        cursor: pointer !important;
+        pointer-events: auto;
+        background: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.14);
+        color: var(--primaryColor, #ff9800);
+        border: 1px solid rgba(var(--primaryColor-rgb, 255, 152, 0), 0.35);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: none;
+        text-decoration: none;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+        text-indent: 0 !important;
+
+        &::before,
+        &::after { content: none !important; display: none !important; }
+
+        .label {
+                display: inline !important; /* prevent block-level wrapping */
+            color: inherit;
+            transform: none !important;
+            transition: none !important;
+            cursor: pointer !important;
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: inherit;
+            line-height: 1;
+            margin-left: 8px !important;
+                flex: 0 0 auto; /* don't shrink or wrap */
+            cursor: pointer !important;
+        }
+
+            &:hover {
+                /* shadow-only hover */
+                box-shadow: 0 6px 18px rgba(31, 38, 135, 0.12);
+            }
+
+        &:active { box-shadow: 0 4px 12px rgba(31, 38, 135, 0.10); }
+
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(var(--primaryColor-rgb, 255, 152, 0), 0.35);
+        }
+    }
+}
+
+/* Dark theme variant for CTA */
+.dark-blog-area {
+    .section-title {
+        .default-btn {
+            background: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.20);
+            border-color: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.45);
+            color: var(--whiteColor, #fff);
+
+            &:hover {
+                /* shadow-only hover in dark mode */
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
             }
         }
     }

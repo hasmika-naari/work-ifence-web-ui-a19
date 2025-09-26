@@ -1,5 +1,5 @@
 <section
-  class="courses-area pb-75"
+  class="courses-area pb-75 pt-50"
   [class.dark-courses-area]="themeService.isDark()"
 >
   <div class="container">
@@ -54,7 +54,7 @@
         <div class="pane" *ngIf="currentTab === tab">
           <div class="row" animateOnScroll animationClass="animate__fadeIn" animationDelay="0.1s">
             <div
-              class="col-lg-4 col-md-6"
+              class="col-3 col-xs-2 col-lg-3 col-md-2"
               *ngFor="let course of getCoursesForTab(tab)"
             >
              <div class="single-courses-box mb-25">
@@ -86,39 +86,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="courses-box-footer">
-                    <ul>
-                        <li class="students-number">
-                             <button
-                                    mat-icon-button
-                                    [matMenuTriggerFor]="menu"
-                                    [attr.aria-controls]="getMenuId(course)"
-                                >
-                                    <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #menu="matMenu" yPosition="above" xPosition="after" [attr.id]="getMenuId(course)">
-                                <button mat-menu-item (click)="share(course)">
-                                <mat-icon>share</mat-icon>
-                                <span>Share</span>
-                                </button>
-                                <button mat-menu-item (click)="viewDetails(course)">
-                                <mat-icon>info</mat-icon>
-                                <span>View Details</span>
-                                </button>
-                                <button mat-menu-item (click)="goToCourse(course)">
-                                <mat-icon>open_in_new</mat-icon>
-                                <span>Go to Course</span>
-                                </button>
-                            </mat-menu>
-                        </li>
-                        <li class="courses-lesson">
-                            <!-- <i class='bx bx-book-open'></i> 10 lessons -->
-                        </li>
-                        <li class="courses-price">
-                            FREE
-                        </li>
-                    </ul>
-                </div>
+        <div class="courses-box-footer">
+          <ul>
+          <li class="footer-actions">
+            <button mat-icon-button (click)="share(course)" aria-label="Share"><mat-icon>share</mat-icon></button>
+            <button mat-icon-button (click)="viewDetails(course)" aria-label="Details"><mat-icon>info</mat-icon></button>
+            <button mat-icon-button (click)="goToCourse(course)" aria-label="Open"><mat-icon>open_in_new</mat-icon></button>
+          </li>
+          <li class="courses-price">FREE</li>
+          </ul>
+        </div>
             </div>
               <!-- <div
                 class="single-courses-box mb-25"

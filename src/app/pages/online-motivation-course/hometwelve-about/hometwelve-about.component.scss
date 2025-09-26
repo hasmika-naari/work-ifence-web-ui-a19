@@ -96,6 +96,87 @@
     }
     .new-comers-btn {
         margin-top: 30px;
+        /* Transparent glossy theme button */
+        .default-btn {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px; /* consistent spacing like other buttons */
+          padding: 12px 18px !important; /* lock padding to avoid hover shifts from global styles */
+          border-radius: 12px;
+          cursor: pointer !important;
+          pointer-events: auto;
+          /* Transparent primary color (orange tone) */
+          background: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.14);
+          color: var(--primaryColor, #ff9800);
+          border: 1px solid rgba(var(--primaryColor-rgb, 255, 152, 0), 0.35);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          box-shadow: none;
+          text-decoration: none;
+          font-weight: 600;
+          white-space: nowrap;
+          transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+          text-indent: 0 !important; /* guard against global text-indent effects */
+
+          /* Kill theme pseudo-element arrows and any hover animations */
+          &::before,
+          &::after { content: none !important; display: none !important; }
+
+          .label {
+            color: inherit;
+            transform: none !important;
+            transition: none !important;
+            cursor: pointer !important;
+          }
+
+          /* Lucide icon: static, inline */
+          .btn-icon {
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: inherit;
+            line-height: 1;
+            margin-left: 8px !important; /* prevent global hover margin animations */
+            cursor: pointer !important;
+          }
+
+          &:hover {
+            background: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.22);
+            border-color: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.50);
+            /* keep text/icon static on hover */
+            transform: translateY(-2px);
+            padding: 12px 18px !important; /* re-lock padding on hover */
+            box-shadow: 0 6px 18px rgba(31, 38, 135, 0.10);
+          }
+
+          &:active { transform: translateY(0); }
+
+          &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(var(--primaryColor-rgb, 255, 152, 0), 0.35);
+          }
+        }
+    }
+}
+
+/* Dark theme variant */
+.dark-new-comers-area {
+    .new-comers-btn {
+        .default-btn {
+            background: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.20);
+            border-color: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.45);
+            color: var(--whiteColor, #fff);
+
+            &:hover {
+                background: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.28);
+                border-color: rgba(var(--primaryColor-rgb, 255, 152, 0), 0.60);
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.20);
+            }
+        }
     }
 }
 

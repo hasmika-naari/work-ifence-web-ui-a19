@@ -51,10 +51,135 @@
         }
     }
 }
+
+/* Align grid and cards with CourseDashboardComponent */
+.tabs-container {
+    .pane > .row {
+        display: grid;
+        /* Smaller, consistent card max so more fit per row */
+        grid-template-columns: repeat(auto-fit, minmax(clamp(240px, 24vw, 360px), clamp(240px, 24vw, 360px)));
+        gap: 16px; /* tighter card gaps */
+        margin-left: 0;
+        margin-right: 0;
+        justify-content: center; /* center when not full */
+    }
+
+    @media (min-width: 992px) {
+        .pane > .row { justify-content: start; }
+    }
+
+    /* Remove Bootstrap column paddings when using grid */
+    .pane > .row > [class^="col-"],
+    .pane > .row > [class*=" col-"] {
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+    }
+}
+
+/* Card visuals to match dashboard grid style */
+.single-courses-box {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.single-courses-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.single-courses-box .courses-image {
+    position: relative;
+    border-radius: 0;
+    aspect-ratio: 16 / 9;
+}
+
+.single-courses-box .courses-image a img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 0;
+}
+
+.single-courses-box .courses-content {
+    padding: 16px 16px 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+.single-courses-box .courses-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* Two-line title clamp with ellipsis to unify card heights */
+.single-courses-box .courses-content h3 a {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: calc(1.4em * 2);
+}
+
+.single-courses-box .courses-box-footer {
+    margin-top: auto;
+    padding: 10px 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.single-courses-box .courses-box-footer ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+}
+
+.single-courses-box .courses-box-footer .footer-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.single-courses-box .courses-price {
+    margin-left: auto;
+    color: var(--mainColor);
+    font-weight: 600;
+}
+
+/* Responsive adjustments similar to dashboard */
+@media (max-width: 768px) {
+    .tabs-container .pane > .row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .tabs-container .pane > .row {
+        /* Keep the same clamp on large screens to avoid oversized cards */
+        grid-template-columns: repeat(auto-fit, minmax(clamp(240px, 24vw, 360px), clamp(240px, 24vw, 360px)));
+        gap: 20px;
+    }
+}
 .single-courses-box {
     background-color: var(--whiteColor);
     // box-shadow: 0px 8px 16px 0px rgba(146, 184, 255, 0.2);
-    box-shadow: 0px 4px 8px 0px rgba(146, 184, 255, 0.2);
+    // box-shadow: 0px 4px 8px 0px rgba(146, 184, 255, 0.2);
     border-radius: 10px 10px 10px 10px;
     transition: var(--transition);
 

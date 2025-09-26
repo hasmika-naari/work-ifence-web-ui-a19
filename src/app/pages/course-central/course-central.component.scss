@@ -24,11 +24,33 @@
   position: relative;
 }
 
+/* Remove default Material box-shadows within this page */
+:host ::ng-deep {
+  /* Cards and any elevation utility classes */
+  .mat-mdc-card,
+  .mdc-card,
+  [class*="mat-elevation-z"] {
+    box-shadow: none !important;
+  }
+
+  /* Paginator surface */
+  .mat-mdc-paginator,
+  .mat-mdc-paginator-container {
+    box-shadow: none !important;
+  }
+
+  /* Sidenav / Drawer */
+  .mat-drawer,
+  .mat-sidenav {
+    box-shadow: none !important;
+  }
+}
+
 /* Use global z-index scale instead of a hard-coded very high number */
 .filter-sidenav {
   z-index: var(--z-drawer) !important;
   border-radius: 0 !important; /* Remove border radius */
-  box-shadow: -2px 0 20px rgba(0, 0, 0, 0.2) !important; /* Enhanced shadow */
+  box-shadow: none !important; /* Remove default/elevated shadow */
   width: min(100%, 450px) !important; /* Increased width for better layout */
   background: rgba(255, 255, 255, 0.75) !important; /* More white-based transparent background */
   backdrop-filter: blur(25px) !important;
@@ -319,10 +341,10 @@
 }
 
 /* Course area with the main content */
-.course-area {
+.course-grid {
   display: flex;
-  flex-direction: column;
-  flex: 1;
+  /* Keep cards within max width; do not stretch beyond clamp */
+  grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 30vw, 520px), clamp(280px, 30vw, 520px)));
   height: 100%;
   overflow: hidden;
 }
@@ -867,10 +889,12 @@
 /* Course Grid Responsive Styling */
 .course-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
+  /* Grow cards with viewport: min 280px, prefer ~30vw, cap ~520px per card */
+  grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 30vw, 520px), 1fr));
+  gap: 16px;
   padding: 0 15px;
   margin-bottom: 30px;
+  justify-content: center; /* center remaining columns when not full */
   
   .course-card {
     cursor: pointer;
@@ -879,8 +903,13 @@
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 15px;
-    overflow: hidden;
+    justify-content: center; /* center by default on small screens */
     box-shadow: none;
+
+  /* Left align tracks on larger screens */
+  @media (min-width: 992px) {
+    .course-grid { justify-content: start; }
+  }
     transition: var(--transition);
     
     &:hover {
@@ -1045,7 +1074,7 @@
 @media (max-width: 768px) {
   .course-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
     padding: 0 10px;
   }
   
@@ -1081,6 +1110,13 @@
   
   .top-carousel {
     padding: 0 10px;
+    /* Popular Courses cards: remove default shadow, keep subtle hover */
+    .single-courses-list-box {
+      box-shadow: none !important;
+      &:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      }
+    }
     
     .single-courses-list-box {
       .box-item {
@@ -1133,7 +1169,7 @@
 @media (max-width: 1024px) and (min-width: 769px) {
   .course-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    gap: 16px;
   }
   
   .filter-sidenav {
@@ -1145,7 +1181,7 @@
 @media (min-width: 1200px) {
   .course-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
+    gap: 22px;
     padding: 0 20px;
   }
   
@@ -1349,6 +1385,10 @@
   border-radius: 15px;
   padding: 30px;
   // padding-top: 100px;
+  /* Match footer width policy */
+  max-width: min(97vw, 1680px);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .course-area .story-content {
@@ -1733,7 +1773,8 @@ p {
 
 .course-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  /* Responsive auto-fit to show as many cards as space allows */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.25rem;
   // padding: 0 2rem;
 }
@@ -2136,15 +2177,10 @@ p {
 
 
 
-@media (max-width: 1100px) {
-  .course-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 @media (max-width: 768px) {
   .course-grid {
-    grid-template-columns: repeat(2, 1fr);
+    /* Force single column on mid-small screens if minmax still fits two */
+    grid-template-columns: 1fr;
   }
   
   // Carousel responsive adjustments
@@ -2204,9 +2240,7 @@ p {
   }
 }
 @media (max-width: 480px) {
-  .course-grid {
-    grid-template-columns: 1fr;
-  }
+  .course-grid { grid-template-columns: 1fr; }
   
   // Additional mobile optimizations for carousel
   .top-carousel {

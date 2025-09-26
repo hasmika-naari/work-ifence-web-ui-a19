@@ -1,7 +1,7 @@
 // Banner
 .motivation-course-banner-area {
     // padding-top: 60px;
-    border-top: 1px solid #E5E5E5;
+    // border-top: 1px solid #E5E5E5;
 
     .container-fluid {
         padding: {
@@ -48,7 +48,8 @@
     overflow: hidden;
     border-radius: 25px;
     position: relative;
-    height: 50vh !important;
+        /* Use a comfortable responsive height instead of fixed 50vh */
+        height: clamp(260px, 48vh, 520px) !important;
     img {
         border-radius: 25px;
         transition: var(--transition);
@@ -103,6 +104,30 @@
             background-color: var(--mainColor);
         }
     }
+}
+
+/* Add breathing space between the two columns and prevent visual overlap */
+.banner-grid {
+    --bs-gutter-x: 1rem;
+}
+
+@media (min-width: 992px) {
+    .banner-grid {
+        --bs-gutter-x: 1.25rem; /* ~20px on lg+ */
+    }
+}
+
+/* Ensure the sidebar fills column height and can scroll if content is taller */
+.widget-area.h-100 {
+    display: flex;
+    flex-direction: column;
+}
+.widget-area.h-100 > .widget {
+    flex: 1 1 auto;
+    min-height: 0; /* enables proper overflow handling */
+}
+.widget-area.h-100 .courses-list {
+    overflow: auto;
 }
 
 .limited-courses {
