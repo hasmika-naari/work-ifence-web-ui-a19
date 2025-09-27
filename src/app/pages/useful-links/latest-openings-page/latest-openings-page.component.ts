@@ -1,6 +1,6 @@
 import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { Location } from '@angular/common';
-import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, Signal, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, Signal, ViewChild, inject, AfterViewInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import * as _ from 'lodash';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -44,15 +44,19 @@ export interface Subject {
   imports: [CommonModule, RouterLink,LanguageSubscribeComponent, MatIconModule, MatSidenavModule, IconsModule,
       MatSelectModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule,
       MatButtonModule,JobOpeningsComponent,NgxPaginationModule, MatCardModule, MatProgressBarModule,
-      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
+      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
   templateUrl: './latest-openings-page.component.html',
   styleUrls: ['./latest-openings-page.component.scss']
 })
-export class LatestJobOpeningsPageComponent implements OnInit {
-    @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-    @ViewChild('jobsStart') jobsStart!: ElementRef;
+export class LatestJobOpeningsPageComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  @ViewChild('jobsStart') jobsStart!: ElementRef;
+  @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
+  @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
 
     isToggled = false;
+  public isSticky: boolean = false;
+  private observer!: IntersectionObserver;
     public page:any = 0;
     public counts = [100, 200, 300, 400, 500,600, 700, 800, 900, 1000];
 
@@ -146,6 +150,21 @@ export class LatestJobOpeningsPageComponent implements OnInit {
     
     } 
   
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId) && this.sentinel && this.pageSectionRef) {
+      this.observer = new IntersectionObserver(entries => {
+        this.isSticky = !entries[0].isIntersecting;
+      }, { root: this.pageSectionRef.nativeElement });
+      this.observer.observe(this.sentinel.nativeElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 
   getTitleClass(){

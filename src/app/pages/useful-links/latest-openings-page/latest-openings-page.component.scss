@@ -41,6 +41,24 @@ p {
 /* Align main-content spacing */
 .main-content { height:100%; overflow-y:auto; overflow-x:hidden; position:relative; padding-top:85px; }
 
+/* Sticky page header inside the scroll container */
+.main-content .course-header {
+  display: block;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 120; /* above background and cards */
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.dark-course-area .main-content .course-header {
+  background: rgba(18, 18, 18, 0.65);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
 
 .fw-semibold {
   font-weight: 500;
@@ -76,7 +94,8 @@ p {
   border-top: 0;
   padding-left: 25px; /* Align with navigation-buttons left inset */
   .inline-title { margin-right: auto; }
-  .header-pagination { margin-left: auto; }
+  /* Keep pagination grouped with Tune on the right via container flex-end; no auto margin */
+  .header-pagination { margin-left: 0; }
 }
 
 /* Nudge title block so its text aligns with the Home label (icon width + gap ~ 18px + 8px) */
@@ -91,20 +110,26 @@ p {
   margin-left: auto;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 16px;
-  .header-pagination { margin: 0; }
-  .actions { display: flex; align-items: center; }
+  /* Set default order: pagination first, then Tune */
+  .header-pagination { margin: 0; order: 1; flex: 0 0 auto; }
+  .actions { display: flex; align-items: center; order: 2; }
   button[mat-icon-button] { width: 42px; height: 42px; }
 }
 
+/* Ensure pagination container does not stretch on larger screens */
+.right-controls .product-pagination { width: auto; display: inline-flex; }
+
 @media (max-width: 992px) {
-  .right-controls { width: 100%; justify-content: flex-start; gap: 12px; }
+  .right-controls { width: 100%; justify-content: flex-end; gap: 12px; }
 }
 
 @media (max-width: 992px) {
   .second-row { flex-direction: column; align-items: flex-start; gap: 15px; }
-  .second-row .header-pagination { margin-left: 0; order: 3; }
-  .second-row .actions { order: 2; }
+  /* Show pagination before Tune on these widths */
+  .second-row .header-pagination { margin-left: 0; order: 2; }
+  .second-row .actions { order: 3; }
   .second-row .inline-title { order: 1; }
 }
 
@@ -116,16 +141,69 @@ p {
   .inline-title { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
   .inline-title .sub-title { margin: 0 0 2px 0; font-size: clamp(13px,3.2vw,15px); color:#666; font-weight:500; letter-spacing:.5px; }
   .inline-title .page-title { margin: 0; font-size: clamp(22px,5vw,32px); font-weight:600; color: var(--mainColor,#4353ff); line-height:1.15; }
-  .header-pagination { margin-left: auto; display: flex; align-items: center; }
+  .header-pagination { margin-left: 0; display: inline-flex; align-items: center; flex: 0 0 auto; }
   .actions { display:flex; align-items:center; }
 }
 
 @media (max-width: 992px) {
   .title-inline { flex-direction: column; align-items: flex-start; }
   .title-inline .navigation-group { width: 100%; }
-  .title-inline .header-pagination { margin-left: 0; order: 3; }
-  .title-inline .actions { order:2; }
+  /* Ensure pagination comes before Tune on these widths */
+  .title-inline .header-pagination { margin-left: 0; order: 2; }
+  .title-inline .actions { order:3; }
   .title-inline .inline-title { order:1; }
+}
+
+  /* Right align pagination on mobile as well */
+  .second-row .right-controls .header-pagination { justify-self: end; }
+@media (max-width: 576px) {
+  .second-row { width: 100%; gap: 10px; }
+  .second-row .right-controls {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+  /* Add breathing room before the page title on small screens */
+  .second-row .inline-title { margin-top: 8px; }
+  .second-row .right-controls .header-pagination { align-self: center; }
+  .second-row .right-controls .actions { align-self: center; }
+
+  /* Center pagination and simplify items on small screens */
+  :host ::ng-deep .right-controls .product-pagination { width: auto !important; display: inline-flex !important; }
+  :host ::ng-deep .product-pagination .ngx-pagination { 
+    display: flex !important;
+    justify-content: center; /* inner items can be centered within their shrink-wrapped container */
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+  :host ::ng-deep .product-pagination .ngx-pagination .pagination-previous,
+  :host ::ng-deep .product-pagination .ngx-pagination .pagination-next { display: none !important; }
+  :host ::ng-deep .product-pagination .ngx-pagination li { margin: 0 2px; }
+  :host ::ng-deep .product-pagination .ngx-pagination a,
+  :host ::ng-deep .product-pagination .ngx-pagination .current { padding: 4px 8px; min-width: 28px; border-radius: 6px; font-size: 12px; }
+
+  /* Ensure bottom paginator also centers */
+  .bottom-pagination { display: flex; justify-content: center; }
+}
+
+/* Mobile landscape adjustments: keep pagination tight to Tune and show 2-up grid */
+@media (orientation: landscape) and (max-height: 560px) {
+  /* Right-align and shrink pagination next to Tune */
+  .course-list-header .right-controls { justify-content: flex-end; }
+  .course-list-header .right-controls .header-pagination {
+    margin-left: 0 !important;
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+  .course-list-header .right-controls .product-pagination { width: auto; display: inline-flex; }
+
+  /* Force two cards per row in short landscape view */
+  .jobs-content-container .col-lg-3,
+  .jobs-content-container .col-md-4 { flex: 0 0 50% !important; max-width: 50% !important; }
 }
 
 .navigation-buttons {
@@ -203,16 +281,29 @@ p {
 }
 
 /* Adjust Home/Back block spacing and remove its bottom border */
-.nav-buttons-row { margin-top: 8px; }
+.nav-buttons-row { margin-top: 6px; }
 .nav-buttons-row .navigation-buttons {
   border-bottom: none !important;
-  padding-top: 8px;
-  padding-bottom: 0;
+  padding-top: 12px;  /* more comfortable top */
+  padding-bottom: 6px;
+  margin-top: 2px;
   margin-bottom: 0;
-  padding-left: 25px;
+  padding-left: 0;   /* align with story-content padding */
+  display: grid;
+  grid-template-columns: 1fr auto; /* left: Home/Back, right: Tune (mobile) */
+  align-items: center;
 }
+.nav-buttons-row .navigation-buttons .nav-left { display:flex; align-items:center; gap: 8px; flex-wrap: nowrap; min-width: 0; }
+.nav-buttons-row .navigation-buttons .tune-mobile { justify-self: end; }
 @media (max-width: 768px) {
-  .nav-buttons-row .navigation-buttons { padding-left: 12px; }
+  .nav-buttons-row .navigation-buttons { padding-left: 0; }
+}
+
+/* Place tune icon at far right of Home/Back row on mobile only */
+.tune-mobile { display: none; }
+@media (max-width: 576px) {
+  .tune-mobile { display: inline-flex; justify-self: end; }
+  .second-row .actions { display: none; } /* hide original tune button in header row */
 }
 
 /* Match footer's width policy for page content */
@@ -237,6 +328,9 @@ p {
   color: var(--mainColor, #4353ff);
 }
 
+    /* Ensure pagination block doesn't stretch full width */
+    :host ::ng-deep .right-controls .product-pagination { width: auto !important; }
+
 .title-block .sub-title {
   font-size: clamp(14px, 3.5vw, 16px);
   color: #666;
@@ -250,6 +344,26 @@ p {
   .actions { margin-left: 0; }
   .navigation-buttons { order: 2; }
   .title-block { order: 1; }
+}
+
+/* Compact mobile spacing to reduce large gaps on phones */
+@media (max-width: 576px) {
+  /* Soften the glass card padding and radius */
+  .story-content { padding: 12px; border-radius: 12px; }
+
+  /* Tighten the Home/Back bar */
+  .nav-buttons-row { margin-top: 0; }
+  /* Reduce top padding and add left padding to match content inset */
+  .nav-buttons-row .navigation-buttons { padding-top: 6px; padding-bottom: 2px; padding-left: 12px; }
+  .navigation-buttons { padding: 2px 0 6px 0; }
+
+  /* Reduce header internal gaps */
+  .title-inline { gap: 10px; }
+  .second-row { gap: 6px; }
+  .course-list-header { padding: 8px 0 0 0; }
+
+  /* Bring jobs list closer to header */
+  .jobs-content-container { margin-top: 6px; }
 }
 .loading-title{
     font-size: clamp(1.5rem, 2.3vw, 1.85rem);
@@ -305,17 +419,43 @@ p {
 }
 
 .filter-sidenav {
-  width: 500px;
-  padding: 16px;
-  background-color: #fafafa;
-  border-left: 1px solid #ddd;
-  // height: calc(100vh);
-  overflow-y: auto;
-  overflow-x:hidden;
+  /* Desktop/tablet: keep compact header-menu-like width */
+  width: clamp(260px, 80vw, 320px);
+  max-width: 100vw;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  /* Subtle gradient with translucency to match app style */
+  background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(245,248,255,0.92) 100%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-left: 1px solid rgba(0,0,0,0.06);
+  overflow: hidden; /* no horizontal scroll at root */
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
-   border-bottom-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
+
+  .sidenav-header {
+    position: sticky; top: 0; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 0 10px 0; margin: 0 0 6px 0;
+    background: inherit; /* keep gradient under sticky header */
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    width: 98%;
+    padding-left: 10px;
+  }
+  .sidenav-title { margin: 0; font-size: 1.05rem; font-weight: 600; letter-spacing: .2px; }
+  .sidenav-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 56px);
+    padding: 0 8px; /* compensate for .row negative margins */
+  }
+  /* Neutralize Bootstrap row negative margins inside the narrow drawer to avoid horizontal scroll */
+  .sidenav-body .row { margin-left: 0; margin-right: 0; }
+  .sidenav-body .row > [class^="col-"],
+  .sidenav-body .row > [class*=" col-"] { padding-left: 6px; padding-right: 6px; }
 
   h3 {
     font-size: clamp(1rem, 1.5vw, 1.25rem);
@@ -327,15 +467,39 @@ p {
     flex-direction: column;
     gap: 16px;
 
-    mat-form-field {
-      width: 100%;
-    }
+    mat-form-field { width: 100%; }
 
     mat-checkbox {
       margin-top: 4px;
     }
   }
 }
+
+/* Extra compacting for very small screens */
+@media (max-width: 576px) {
+  /* Mobile: use 80% of device width */
+  .filter-sidenav { width: 80vw; padding: 12px; }
+  /* Remove any stray margins around pagination to keep rows tight */
+  :host ::ng-deep .product-pagination .ngx-pagination { margin: 0 !important; }
+  .nav-buttons-row { margin-top: 0; }
+
+  /* Compact Material form-fields on mobile */
+  .filter-sidenav .filter-form mat-form-field.mat-mdc-form-field {
+    --mdc-outlined-text-field-container-shape: 10px;
+    margin-bottom: 8px;
+  }
+  .filter-sidenav .filter-form .mat-mdc-form-field-subscript-wrapper { display: none; }
+  .filter-sidenav .filter-form .mdc-text-field--outlined { padding-left: 10px; padding-right: 10px; }
+  .filter-sidenav .filter-form .mdc-notched-outline__leading,
+  .filter-sidenav .filter-form .mdc-notched-outline__trailing { border-color: rgba(0,0,0,0.12); }
+}
+
+/* Normalize form field font sizes inside sidenav for readability */
+.filter-sidenav .mdc-text-field__input, 
+.filter-sidenav .mat-mdc-select-value { font-size: 0.95rem; }
+.filter-sidenav .mat-mdc-floating-label { font-size: 0.85rem; }
+.filter-sidenav .mat-mdc-select-arrow { transform: scale(0.9); }
+
 
 .page-title-area{
     .page-title-content{

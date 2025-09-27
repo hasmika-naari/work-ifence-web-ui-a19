@@ -1,5 +1,5 @@
 import { CommonModule, Location, NgOptimizedImage, isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -14,6 +14,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { Category, JobFeedItem } from 'src/app/services/ifence.model';
+import { IconsModule } from 'src/app/shared/icons.module';
 import { CompetationDataItem, PCategory } from 'src/app/services/bee-compete.model';
 import { AppUtilService } from 'src/app/services/app.util.service';
 import { WorkifenceDataService } from 'src/app/services/bee-compete-data.service';
@@ -27,13 +28,13 @@ import { WINDOW } from 'src/app/services/window.token';
     selector: 'app-opening-details-page',
     standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage, HeaderWorkIfenceComponent,FooterWorkifenceComponent,
+    NgOptimizedImage, HeaderWorkIfenceComponent,FooterWorkifenceComponent, IconsModule,
     CarouselModule,MatButtonModule, MatChipsModule, MatIconModule, 
     MatMenuModule, MatCardModule, MatProgressBarModule],
     templateUrl: './opening-details-page.component.html',
     styleUrls: ['./opening-details-page.component.scss']
 })
-export class OpeningDetailsPageComponent implements OnInit {
+export class OpeningDetailsPageComponent implements OnInit, OnDestroy {
 
     isToggled = false;
     categories: Array<Category> = new Array<Category>();
@@ -41,7 +42,11 @@ export class OpeningDetailsPageComponent implements OnInit {
     selectedCompetation: CompetationDataItem = new CompetationDataItem();
     relatedCompetation: Array<CompetationDataItem> = new Array<CompetationDataItem>();
 
-    selectedJob: JobFeedItem = new JobFeedItem();
+  selectedJob: JobFeedItem = new JobFeedItem();
+  @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
+  @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
+  public isSticky: boolean = false;
+  private observer!: IntersectionObserver;
 
 
     private appService: AppUtilService =  inject(AppUtilService);
@@ -63,6 +68,7 @@ export class OpeningDetailsPageComponent implements OnInit {
     isDesktop = true;
     browser = false;
     public actionInProgress: boolean = true;
+  hdrContainer = false;
 
 
     constructor(
@@ -108,6 +114,21 @@ export class OpeningDetailsPageComponent implements OnInit {
           this.isMobile = false;
           this.isDesktop = false;
         }
+      }
+    }
+
+    ngAfterViewInit(): void {
+      if (isPlatformBrowser(this.platformId) && this.sentinel && this.pageSectionRef) {
+        this.observer = new IntersectionObserver(entries => {
+          this.isSticky = !entries[0].isIntersecting;
+        }, { root: this.pageSectionRef.nativeElement });
+        this.observer.observe(this.sentinel.nativeElement);
+      }
+    }
+
+    ngOnDestroy(): void {
+      if (this.observer) {
+        this.observer.disconnect();
       }
     }
 
@@ -199,6 +220,11 @@ export class OpeningDetailsPageComponent implements OnInit {
         //       (categories, parent) => ({ parent, categories }))];
         // });
      
+    }
+
+    goBack(event: Event): void {
+      event.preventDefault();
+      this.location.back();
     }
 
 

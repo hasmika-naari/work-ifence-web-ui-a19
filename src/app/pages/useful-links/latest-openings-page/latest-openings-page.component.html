@@ -2,7 +2,13 @@
     <div class="course-area" [class.dark-course-area]="themeService.isDark()">
         <mat-sidenav-container class="dashboard-container" #scrollContainer>
             <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
-                <h3>Filter Openings</h3>
+                <div class="sidenav-header" role="banner">
+                    <h3 class="sidenav-title">Filter Openings</h3>
+                    <button mat-icon-button aria-label="Close filters" (click)="filterSidenav.close()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+                <div class="sidenav-body">
                 <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterJobs($event, filterSidenav)">
                     <div class="row">
                         <div class="col-12 col-md-6 mb-3">
@@ -79,23 +85,31 @@
                         <button mat-flat-button type="submit">Apply Filters</button>
                     </div>
                 </form>
+                </div>
             </mat-sidenav>
-            <mat-sidenav-content class="main-content">
-                <app-header-wifence [container]="hdrContainer" class="course-header"></app-header-wifence>
+            <mat-sidenav-content class="main-content" #pageSection>
+                <div #sentinel style="position: absolute; top: 0; height: 1px; width: 1px;"></div>
+                <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
                 <div class="content-max">
                     <div class="row g-3">
                         <div class="story-content w-100">
                                                                                     <div class="modern-title-section nav-buttons-row">
                                                                                         <div class="navigation-buttons">
-                                                                                            <a class="nav-button home-button" [routerLink]="['/']" style="margin-right:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
-                                                                                                <lucide-icon name="home"></lucide-icon>
-                                                                                                Home
-                                                                                                <span style="display:inline-block; margin-left:8px; color:rgba(var(--mainColor-rgb,67,83,255),0.3); font-weight:300;">|</span>
-                                                                                            </a>
-                                                                                            <a class="nav-button back-button" (click)="goBack($event)" style="margin-left:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
-                                                                                                <lucide-icon name="undo2"></lucide-icon>
-                                                                                                Back
-                                                                                            </a>
+                                                                                            <div class="nav-left">
+                                                                                                <a class="nav-button home-button" [routerLink]="['/']" style="margin-right:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
+                                                                                                    <lucide-icon name="home"></lucide-icon>
+                                                                                                    Home
+                                                                                                    <span style="display:inline-block; margin-left:8px; color:rgba(var(--mainColor-rgb,67,83,255),0.3); font-weight:300;">|</span>
+                                                                                                </a>
+                                                                                                <a class="nav-button back-button" (click)="goBack($event)" style="margin-left:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
+                                                                                                    <lucide-icon name="undo2"></lucide-icon>
+                                                                                                    Back
+                                                                                                </a>
+                                                                                            </div>
+                                                                                            <!-- Mobile-only Tune button on the same row -->
+                                                                                            <button class="nav-button tune-mobile" mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
+                                                                                                <mat-icon>tune</mat-icon>
+                                                                                            </button>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="course-list-header navigation-bar title-inline second-row">
@@ -192,7 +206,7 @@
                 <!-- <app-job-openings [isMobile]="isMobile" ></app-job-openings> -->
                             </section>
                         </div>
-                    </div>
+                        </div>
                 </div>
                 <app-work-ifence-footer></app-work-ifence-footer>
             </mat-sidenav-content>

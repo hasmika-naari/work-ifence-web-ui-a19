@@ -7,6 +7,89 @@
   :host * {
     font-family: 'Poppins', sans-serif;
   }
+
+/* Readability type scale inside the card */
+.story-content {
+    /* Base text sizing for content area */
+    --body-size: clamp(15px, 1.08vw, 17px);
+    --small-size: clamp(13px, 0.95vw, 15px);
+}
+.story-content p,
+.story-content li,
+.story-content td,
+.story-content th {
+    font-size: var(--body-size);
+    line-height: 1.75;
+}
+.story-content small,
+.story-content .label,
+.story-content .eyebrow {
+    font-size: var(--small-size);
+}
+.story-content p { margin: 0.6em 0 1em; }
+.story-content ul, .story-content ol { margin: 0.6em 0 1em 1.25em; }
+
+/* Parity with Latest Openings page */
+.course-central-wrapper { display: flex; flex-direction: column; width: 100%; height: 100vh; overflow: hidden; position: relative; }
+.course-area { z-index: 70; position: fixed; top:0; left:0; right:0; height:100vh; overflow-y:hidden; background-color:#f8fafc; background-image:
+    radial-gradient(circle at 15% 15%, hsla(10,80%,60%,0.2), transparent 35%),
+    radial-gradient(circle at 85% 25%, hsla(230,80%,70%,0.2), transparent 35%),
+    radial-gradient(circle at 70% 80%, hsla(330,80%,70%,0.25), transparent 40%),
+    radial-gradient(circle at 20% 75%, hsla(45,100%,60%,0.15), transparent 40%);
+    background-repeat: no-repeat; background-size:100% 100%; }
+.course-area.dark-course-area { background-color:#121212; background-image:
+    radial-gradient(circle at 15% 15%, hsla(10,80%,40%,0.15), transparent 35%),
+    radial-gradient(circle at 85% 25%, hsla(230,80%,50%,0.15), transparent 35%),
+    radial-gradient(circle at 70% 80%, hsla(330,80%,50%,0.2), transparent 40%),
+    radial-gradient(circle at 20% 75%, hsla(45,100%,40%,0.1), transparent 40%); }
+
+.main-content { height:100vh; overflow-y:auto; overflow-x:hidden; position:relative; padding-top:85px; }
+.course-area .content-max { backdrop-filter: blur(5px); border-radius:15px; padding:0; }
+.story-content { background-color: rgba(255,255,255,0.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border:1px solid rgba(0,0,0,0.06); border-radius:15px;  padding:30px; }
+.dark-course-area .story-content { background-color: rgba(30,30,30,0.7); border:1px solid rgba(255,255,255,0.1); }
+
+/* Match footer's width policy for page content */
+.content-max {
+    max-width: min(97vw, 1680px);
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+}
+
+/* Sticky page header */
+.main-content .course-header {
+    display: block;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 120;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.dark-course-area .main-content .course-header {
+    background: rgba(18, 18, 18, 0.65);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Footer inside the same container */
+.page-footer { display:block; margin-top: 16px; }
+
+/* Navigation buttons */
+.navigation-bar { display:flex; align-items:flex-end; gap:25px; flex-wrap:wrap; padding:10px 10px 20px 10px; background:transparent; }
+.nav-buttons-row { padding-bottom:8px; margin-bottom:0; border-bottom:none; }
+.navigation-buttons { display:flex; align-items:center; flex-wrap:wrap; gap: 10px; padding: 5px 0 10px 0; margin-bottom:5px;  }
+.nav-button { display:flex; align-items:center; gap:6px; font-size:clamp(12px,3vw,14px); font-weight:500; color: var(--secondaryColor); text-decoration:none; padding:0; background:transparent; border:none; transition: color .25s ease; cursor:pointer; }
+.nav-button:hover { color: var(--mainColor); }
+.nav-separator { display:inline-flex; align-items:center; justify-content:center; padding: 0 8px; color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3); font-weight: 300; user-select: none; }
+.title-inline { align-items:center; gap:30px; }
+.title-inline .inline-title { display:flex; flex-direction:column; align-items:flex-start; gap:2px; }
+.title-inline .inline-title .sub-title { margin:0 0 2px 0; font-size:clamp(13px,3.2vw,15px); color:#666; font-weight:500; letter-spacing:.5px; }
+.title-inline .inline-title .page-title { margin:0; font-size:clamp(22px,5vw,32px); font-weight:600; color: var(--mainColor,#4353ff); line-height:1.15; }
   :host{
     .mat-icon{
         font-family: 'Material Icons' !important;
@@ -159,6 +242,38 @@
         }
     }
 }
+
+/* Job header redesign */
+.job-header { margin: 10px 0 6px 0; }
+.job-title-block { display:flex; flex-direction:column; gap:8px; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: rgba(0,0,0,.45); font-weight:600; }
+.dark-course-area .eyebrow { color: rgba(255,255,255,.5); }
+.job-title { margin:0; font-size: clamp(24px, 3.5vw, 34px); font-weight: 600; color: var(--titleColor); letter-spacing:-0.01em; line-height: 1.2; }
+.dark-course-area .job-title { color: var(--whiteColor); }
+.job-submeta { display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start; margin-top: 10px; margin-bottom: 22px; }
+.job-submeta .stat { display:flex; flex-direction:column; gap:4px; min-width: fit-content; }
+.job-submeta .stat .value { font-size: clamp(14px, 2.6vw, 16px); font-weight: 600; color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.85); }
+.dark-course-area .job-submeta .stat .value { color: rgba(255, 255, 255, 0.9); }
+.dark-course-area .job-submeta .stat .value { color: var(--whiteColor); }
+.job-submeta .stat .label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: rgba(0,0,0,.5); font-weight: 700; }
+.dark-course-area .job-submeta .stat .label { color: rgba(255,255,255,.6); }
+.dark-course-area .job-submeta { color: rgba(255,255,255,.7); }
+
+/* Removed meta pills section; using inline submeta chips with icons under the title */
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+    .nav-separator { display: none; }
+    .nav-button { padding: 6px 10px; }
+    .job-title { font-size: clamp(20px, 5.2vw, 28px); font-weight:600; }
+    .courses-meta .meta-pills { gap: 8px; }
+    .courses-meta .meta-pills li { padding: 6px 10px; }
+}
+
+/* Space between title section and body */
+.job-header { margin-bottom: 18px; }
+.job-body { margin-top: 10px; }
+
 .job-details-image {
     border-radius: 5px;
 

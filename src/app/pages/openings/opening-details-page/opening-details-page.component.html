@@ -1,59 +1,63 @@
-<section style="height: 100vh;overflow-y:scroll;">
-    <app-header-wifence></app-header-wifence>
-    <section>
-        <div
-                class="job-details-area pt-100 pb-70 pl-20 pr-20"
-                [class.dark-job-details-area]="themeService.isDark()"  >
-            <div class="container">
-                <div class="course-list-header">
-                    <div class="page-title-content">
-                        <ul>
-                            <li><a (click)="backToHomePage($event)">Home</a></li>
-                            <li><a routerLink="/central/job-central">job-central</a></li>
-                            <li>Job Details</li>
-                        </ul>
+<div class="course-central-wrapper">
+    <div class="course-area" [class.dark-course-area]="themeService.isDark()">
+        <div class="main-content" #pageSection>
+            <div #sentinel style="position: absolute; top: 0; height: 1px; width: 1px;"></div>
+            <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
+
+            <div class="content-max">
+                <div class="story-content">
+                    <div class="modern-title-section nav-buttons-row">
+                        <div class="navigation-buttons">
+                            <a class="nav-button home-button" [routerLink]="['/']">
+                                <lucide-icon name="home"></lucide-icon>
+                                Home
+                            </a>
+                            <span class="nav-separator" aria-hidden="true">|</span>
+                            <a class="nav-button back-button" (click)="goBack($event)">
+                                <lucide-icon name="undo2"></lucide-icon>
+                                Back
+                            </a>
+                            <!-- <span class="nav-separator" aria-hidden="true">|</span>
+                            <a class="nav-button" [routerLink]="['/central/job-central']">
+                                <lucide-icon name="undo2"></lucide-icon>
+                                Job Central
+                            </a> -->
+                        </div>
                     </div>
-                </div>
-                <div class="job-details-header pt-50">
-                    <div class="row align-items-center">
-                        <div class="col-lg-12">
-                            <div class="courses-title">
-                                <h2 [innerHtml]="selectedJob.name"></h2>
-                            </div>
-                            <div class="courses-meta">
-                                <ul>
-                                    <li>
-                                        <i class='bx bx-folder-open'></i>
-                                        <span>Company</span>
-                                        <a >{{selectedJob.company}}</a>
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-group'></i>
-                                        <span>Job Type</span>
-                                        <a >{{selectedJob.region}} - {{selectedJob.jobtype}}</a>
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-calendar'></i>
-                                        <span>Date Posted</span>
-                                        <a >{{convertDateFormat(selectedJob.pubdate)}}</a>
-                                    </li>
-                                    <li class="go-to-job-site" (click)="gotoJobSiteLink($event, selectedJob)">
-                                        <i class='bx bx-link'></i>
-                                        <span>Go To</span>
-                                        <a >Job Site</a>
-                                    </li>
-                                </ul>
+
+                    <div class="job-header">
+                        <div class="job-title-block">
+                            <div class="eyebrow">Job title</div>
+                            <h1 class="job-title" [innerHtml]="selectedJob.name"></h1>
+                            <div class="job-submeta">
+                                <div class="stat company">
+                                    <div class="value">{{selectedJob.company}}</div>
+                                    <div class="label">Company</div>
+                                </div>
+                                <div class="stat region">
+                                    <div class="value">{{selectedJob.region}}</div>
+                                    <div class="label">Location</div>
+                                </div>
+                                <div class="stat jobtype">
+                                    <div class="value">{{selectedJob.jobtype}}</div>
+                                    <div class="label">Job Type</div>
+                                </div>
+                                <div class="stat date">
+                                    <div class="value">{{convertDateFormat(selectedJob.pubdate)}}</div>
+                                    <div class="label">Date Posted</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12" [innerHtml]="selectedJob.description">
-                    
+
+
+                    <div class="row job-body">
+                        <div class="col-lg-12" [innerHtml]="selectedJob.description"></div>
                     </div>
                 </div>
+                <app-work-ifence-footer class="page-footer"></app-work-ifence-footer>
             </div>
+
         </div>
-    </section>
-    <app-work-ifence-footer></app-work-ifence-footer>
-</section>
+    </div>
+</div>
