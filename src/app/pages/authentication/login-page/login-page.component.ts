@@ -36,6 +36,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { WifProgressDisplayComponent } from 'src/app/shared/wif-progress-display/wif-progress-display.component';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
   selector: 'app-login',
@@ -59,6 +60,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
     InputSwitchModule,
     RippleModule,
     RouterModule,
+    IconsModule,
     MatProgressBarModule,
     ReactiveFormsModule,
     HeaderWorkIfenceComponent,
