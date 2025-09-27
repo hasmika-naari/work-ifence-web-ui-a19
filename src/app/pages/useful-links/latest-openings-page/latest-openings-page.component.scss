@@ -369,7 +369,7 @@ p {
   max-height: 210px !important;
   overflow: hidden;
   margin-bottom: 18px;
-  padding: 16px 18px 50px 18px; /* consistent internal padding; bottom leaves space for action row */
+  padding: 14px 20px 58px 16px; /* a bit more right and bottom space */
 
   /* Soft gradient sheen */
   background-image: linear-gradient(145deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.30) 100%);
@@ -388,6 +388,13 @@ p {
     transition: background-position .55s ease;
   }
 }
+/* Keep header/content above watermark and set proper containing block for abs children */
+.search-job-feed-item mat-card-header,
+.search-job-feed-item mat-card-content {
+  position: relative;
+  z-index: 1;
+}
+.search-job-feed-item mat-card-content > div[style*='position: absolute'] { z-index: 2; }
 
 .search-job-feed-item:hover {
   transform: none !important; /* no zoom or lift */
@@ -414,6 +421,42 @@ p {
   box-shadow: 0 4px 10px -2px rgba(0,0,0,0.65), 0 2px 6px rgba(0,0,0,0.45); /* subtler than before */
 }
 
+/* Watermark styling: subtle grayscale SVG fixed within the card */
+.search-job-feed-item .card-watermark {
+  position: absolute;
+  inset: 0; /* fill the card */
+  pointer-events: none; /* do not block interactions */
+  z-index: 0; /* stay behind content */
+  overflow: hidden;
+}
+.search-job-feed-item .card-watermark img {
+  position: absolute;
+  right: 10px; /* keep fully visible */
+  bottom: 4px; /* move 3px further down */
+  width: 48px; /* further reduced size */
+  height: auto;
+  opacity: 0.14; /* subtle but a bit more visible */
+  filter: grayscale(100%);
+}
+
+@media (max-width: 768px) {
+  .search-job-feed-item .card-watermark img { width: 40px; right: 8px; bottom: 5px; }
+}
+.search-job-feed-item .published-date {
+  position: absolute;
+  right: 16px;
+  bottom: 54px; /* above the action icons row */
+  z-index: 2;
+  text-align: right;
+}
+.search-job-feed-item .published-date h6 { margin: 0; }
+.search-job-feed-item .published-date small { opacity: 0.75; }
+
+/* Ensure content layers above watermark */
+.search-job-feed-item > * { position: relative; z-index: 1; }
+
+/* Title adjustments handled in main title block below */
+
 .dark-course-area .search-job-feed-item:hover:before {
   background-position: center, 120% 0;
 }
@@ -435,23 +478,20 @@ p {
             font-weight: 600 !important;
             letter-spacing: 1px !important;
           }
-
-          &:hover{
-            // background-color: #fff !important;
-          }
+          /* removed empty hover block to satisfy linter */
       }
    
- .search-job-feed-item mat-card-title{
+.search-job-feed-item mat-card-title{
       font-size: medium !important;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
-  /* Line clamp with standard and webkit for cross-browser */
-  line-clamp: 1; /* Standard (currently supported in some modern browsers) */
-  -webkit-line-clamp: 1;
+      /* Two-line clamp for better readability */
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       position: relative;
-      top: 10px !important;
+  top: 0px !important; /* move title further up */
       max-width: 100%;
         cursor: pointer;
       &:hover{
@@ -460,6 +500,9 @@ p {
     
       }
     }
+
+/* Slightly tighten header top padding to bring content up */
+.search-job-feed-item mat-card-header { padding-top: 8px !important; }
   
  .search-job-feed-item mat-card-subtitle{
         font-weight: 600;
