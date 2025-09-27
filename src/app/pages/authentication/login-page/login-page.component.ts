@@ -1,3 +1,4 @@
+
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, 
@@ -69,7 +70,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 })
 export class LoginPageComponent implements OnDestroy, AfterViewInit {
   isToggled = false;
-
+  showPassword = false;
   submitted = false;
   isActionInProgress = false;
   resetErrorMessage = '';
