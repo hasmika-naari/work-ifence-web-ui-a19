@@ -18,6 +18,17 @@ import { WINDOW } from './window.token';
 
 @Injectable({providedIn: 'root'})
 export class AppUtilService {
+  /**
+   * Central logout method: clears local storage, resets user store, reloads page
+   */
+  logoutAndReset(): void {
+    this.localStorageService.removeItem('userName');
+    this.localStorageService.removeItem('passWord');
+    this.localStorageService.removeItem('authToken');
+    this.localStorageService.removeItem('authenticated');
+    this.userStore.resetStore();
+    window.location.reload();
+  }
 
   private authService: AuthService = inject(AuthService);
   private snackBarService: YeaSnackBarService  = inject(YeaSnackBarService);
