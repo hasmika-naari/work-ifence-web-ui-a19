@@ -44,8 +44,8 @@
     radial-gradient(circle at 20% 75%, hsla(45,100%,40%,0.1), transparent 40%); }
 
 .main-content { height:100vh; overflow-y:auto; overflow-x:hidden; position:relative; padding-top:85px; }
-.course-area .content-max { backdrop-filter: blur(5px); border-radius:15px; padding:0; }
-.story-content { background-color: rgba(255,255,255,0.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border:1px solid rgba(0,0,0,0.06); border-radius:15px;  padding:30px; }
+.course-area .content-max { backdrop-filter: blur(5px); border-radius:15px; }
+.story-content { background-color: rgba(255,255,255,0.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,1); border-radius:15px;  padding:30px; }
 .dark-course-area .story-content { background-color: rgba(30,30,30,0.7); border:1px solid rgba(255,255,255,0.1); }
 
 /* Match footer's width policy for page content */
@@ -57,6 +57,11 @@
     padding-left: 16px;
     padding-right: 16px;
     box-sizing: border-box;
+
+    @media (min-width: 768px) {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
 }
 
 /* Sticky page header */
@@ -78,6 +83,21 @@
 
 /* Footer inside the same container */
 .page-footer { display:block; margin-top: 16px; }
+
+/* Mobile spacing optimization - reduce excessive padding on small screens */
+@media (max-width: 576px) {
+  .story-content { 
+    padding: 20px; /* Reduce from default 30px */ 
+  }
+  .navigation-buttons { 
+    padding: 5px 0 8px 0; /* Tighten navigation spacing */
+    gap: 8px; 
+  }
+  .navigation-bar { 
+    padding: 8px 8px 16px 8px; /* Reduce overall navigation padding */
+    gap: 15px; 
+  }
+}
 
 /* Navigation buttons */
 .navigation-bar { display:flex; align-items:flex-end; gap:25px; flex-wrap:wrap; padding:10px 10px 20px 10px; background:transparent; }
@@ -1074,8 +1094,175 @@
 
 }
 
+/* Make footer content align with page content width - match LatestJobOpeningsPageComponent */
+:host ::ng-deep app-work-ifence-footer {
+  width: 100% !important;
+}
+
+:host ::ng-deep app-work-ifence-footer > * {
+  max-width: min(97vw, 1680px) !important;
+  margin: 0 auto !important;
+//   padding-left: 16px !important;
+//   padding-right: 16px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+@media (min-width: 768px) {
+  :host ::ng-deep app-work-ifence-footer > * {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
 /* Min width 992px to Max width 1199px */
 @media only screen and (min-width: 992px) and (max-width: 1199px) {}
 
 /* Min width 1200px to Max width 1275px */
 @media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Loading state styles */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  min-height: 300px;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.loading-message {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--mainColor, #4353ff);
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Progress bar styling */
+:host ::ng-deep .mat-mdc-progress-bar {
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .mat-mdc-progress-bar .mdc-linear-progress__bar {
+  border-radius: 2px;
+}
+
+/* Dark theme loading adjustments */
+.dark-course-area {
+  .loading-message {
+    color: #6366f1;
+  }
+}
+
+/* Mobile loading adjustments */
+@media (max-width: 576px) {
+  .loading-container {
+    padding: 40px 15px;
+    min-height: 250px;
+  }
+  
+  .loading-message {
+    font-size: 14px;
+  }
+}
+
+/* Job site buttons - subtle background matching style */
+.job-site-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mainColor, #4353ff);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  box-shadow: none;
+  vertical-align: middle;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 1);
+    color: var(--mainColor, #4353ff);
+    transform: translateY(-1px);
+    box-shadow: none;
+  }
+  
+  mat-icon, lucide-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Button positioning */
+.job-site-button-top {
+  margin: 16px 0;
+  align-self: flex-start;
+}
+
+.job-site-button-bottom {
+  margin: 20px 0 0 0;
+  align-self: flex-end;
+}
+
+/* Dark theme adjustments */
+.dark-course-area {
+  .job-site-button {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #6366f1;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #818cf8;
+    }
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 576px) {
+  .job-site-button {
+    padding: 8px 16px;
+    font-size: 13px;
+    gap: 6px;
+    
+    mat-icon, lucide-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  .job-site-button-top {
+    margin: 12px 0;
+  }
+  
+  .job-site-button-bottom {
+    margin: 16px 0 0 0;
+    align-self: center;
+  }
+}

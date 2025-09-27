@@ -500,6 +500,27 @@ p {
 .filter-sidenav .mat-mdc-floating-label { font-size: 0.85rem; }
 .filter-sidenav .mat-mdc-select-arrow { transform: scale(0.9); }
 
+/* Make footer content align with page content width - override footer component styles */
+:host ::ng-deep app-work-ifence-footer {
+  width: 100% !important;
+}
+
+:host ::ng-deep app-work-ifence-footer > * {
+  max-width: min(97vw, 1680px) !important;
+  margin: 0 auto !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+@media (min-width: 768px) {
+  :host ::ng-deep app-work-ifence-footer > * {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
 
 .page-title-area{
     .page-title-content{

@@ -58,9 +58,9 @@ export class LatestJobOpeningsPageComponent implements OnInit, AfterViewInit, On
   public isSticky: boolean = false;
   private observer!: IntersectionObserver;
     public page:any = 0;
-    public counts = [100, 200, 300, 400, 500,600, 700, 800, 900, 1000];
+  public counts = [25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
 
-    public count:any = 50;
+  public count:any = 50;
     public viewCol: number = 14.25;
     maxSize = 5;
     autoHide= false;
@@ -82,6 +82,15 @@ export class LatestJobOpeningsPageComponent implements OnInit, AfterViewInit, On
     currentUrl = '';
     hdrContainer = false;
     filterForm!: FormGroup;
+    regions: string[] = ['Remote', 'USA', 'Europe', 'UK', 'Canada', 'India', 'APAC'];
+    jobTypes: string[] = ['FULL-TIME', 'PART-TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE'];
+    postedWithinOptions = [
+      { label: 'Any time', value: '' },
+      { label: 'Last 24 hours', value: '1d' },
+      { label: 'Last 7 days', value: '7d' },
+      { label: 'Last 14 days', value: '14d' },
+      { label: 'Last 30 days', value: '30d' },
+    ];
 
      subjects: Subject[] = [
         { title: 'Computer Science', description: '', courseCount: 28 },
@@ -129,13 +138,13 @@ export class LatestJobOpeningsPageComponent implements OnInit, AfterViewInit, On
       }
 
         this.filterForm = this.fb.group({
-          title: [''],
-          provider: [''],
-          subject: [''],
-          mode: [''],
-          cost: [''],
-          certificate: [''],
-          platform: ['']
+          keyword: [''],
+          company: [''],
+          region: [''],
+          jobType: [''],
+          postedWithin: [''],
+          sortBy: ['date-desc'],
+          itemsPerPage: [this.count]
         });
 
         this.actionInProgress = true;
@@ -190,20 +199,96 @@ export class LatestJobOpeningsPageComponent implements OnInit, AfterViewInit, On
   }
 
   filterJobs($event: any, filterSidenav: any){
-    // const filters = this.jobFeedStore.getFilterForm().value;
-    // if (filterSidenav) filterSidenav.close();
+    $event?.preventDefault();
+    const filters = this.filterForm.value;
+    if (filterSidenav) filterSidenav.close();
 
-    // const noFilters = Object.values(filters).every(val =>
-    //   val === null ||
-    //   val === undefined ||
-    //   (typeof val === 'string' && val.trim() === '')
-    // );
+    // items per page
+    if (filters.itemsPerPage && filters.itemsPerPage !== this.count) {
+      this.count = filters.itemsPerPage;
+      this.page = 1;
+    }
 
-    // if (noFilters) {
-    //   this.jobFeedStore.resetJobsFeed();
-    // } else {
-    //   this.jobFeedStore.filterJobs(filters);
-    // }
+    // Apply filtering on the client for now
+    const all = this.jobFeedStore.getSearchPageJobsFeed()();
+    let list = [...all];
+
+    const kw = (filters.keyword || '').toLowerCase().trim();
+    const cmp = (filters.company || '').toLowerCase().trim();
+    const region = (filters.region || '').toLowerCase().trim();
+    const jt = (filters.jobType || '').toLowerCase().trim();
+    const within = (filters.postedWithin || '').trim();
+
+    if (kw) {
+      list = list.filter(j =>
+        (j.name || '').toLowerCase().includes(kw) ||
+        (j.description || '').toLowerCase().includes(kw)
+      );
+    }
+    if (cmp) {
+      list = list.filter(j => (j.company || '').toLowerCase().includes(cmp));
+    }
+    if (region) {
+      list = list.filter(j => (j.region || '').toLowerCase().includes(region));
+    }
+    if (jt) {
+      list = list.filter(j => (j.jobtype || '').toLowerCase().includes(jt));
+    }
+
+    if (within) {
+      const now = new Date();
+      const days = within.endsWith('d') ? parseInt(within.replace('d',''), 10) : 0;
+      if (days > 0) {
+        const cutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+        list = list.filter(j => {
+          try {
+            const [day, month, year] = (j.pubdate || '').split('.');
+            const d = new Date(parseInt(year,10), parseInt(month,10)-1, parseInt(day,10));
+            return d >= cutoff;
+          } catch { return true; }
+        });
+      }
+    }
+
+    // Sorting
+    switch (filters.sortBy) {
+      case 'date-asc':
+        list.sort((a,b) => new Date(this.convertDateFormat(a.pubdate)).getTime() - new Date(this.convertDateFormat(b.pubdate)).getTime());
+        break;
+      case 'company-asc':
+        list.sort((a,b) => (a.company||'').localeCompare(b.company||''));
+        break;
+      case 'title-asc':
+        list.sort((a,b) => (a.name||'').localeCompare(b.name||''));
+        break;
+      default: // date-desc
+        list.sort((a,b) => new Date(this.convertDateFormat(b.pubdate)).getTime() - new Date(this.convertDateFormat(a.pubdate)).getTime());
+    }
+
+    // Push the filtered list to the store (non-destructive: use a dedicated method or temporary override)
+    this.jobFeedStore.updateSearchJobFeed(list as any);
+  }
+
+  resetFilters(filterSidenav?: any) {
+    this.filterForm.reset({
+      keyword: '',
+      company: '',
+      region: '',
+      jobType: '',
+      postedWithin: '',
+      sortBy: 'date-desc',
+      itemsPerPage: this.count
+    });
+    if (filterSidenav) filterSidenav.close();
+    // Reset to original list by reloading or using a store reset if available
+    // For now, re-fetch to restore
+    this.actionInProgress = true;
+    this.subs.push(this.ifenceJobService.getJobsFeeds('Any', 'Any').subscribe((jobsFeed: any) => {
+        let feed = JSON.parse(jobsFeed.response);
+        this.jobFeedStore.updateSearchJobFeed(feed.rss.jobs.job);
+        this.actionInProgress = false;
+        this.page = 1;
+    }, () => this.actionInProgress = false));
   }
 
    public onPageChanged(event: any){

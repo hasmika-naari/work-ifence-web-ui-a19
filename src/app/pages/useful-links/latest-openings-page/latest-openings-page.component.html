@@ -11,78 +11,73 @@
                 <div class="sidenav-body">
                 <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="filterJobs($event, filterSidenav)">
                     <div class="row">
-                        <div class="col-12 col-md-6 mb-3">
+                        <div class="col-12 mb-3">
                             <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>Title</mat-label>
-                                <input matInput formControlName="title" />
+                                <mat-label>Keyword</mat-label>
+                                <input matInput formControlName="keyword" placeholder="Title, skills, …" />
                             </mat-form-field>
                         </div>
+
                         <div class="col-12 col-md-6 mb-3">
                             <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>Provider</mat-label>
-                                <mat-select formControlName="provider">
+                                <mat-label>Company</mat-label>
+                                <input matInput formControlName="company" />
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-12 col-md-6 mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Region</mat-label>
+                                <mat-select formControlName="region">
                                     <mat-option value="">Any</mat-option>
-                                    <mat-option value="Coursera">Coursera</mat-option>
-                                    <mat-option value="edX">edX</mat-option>
-                                    <mat-option value="FutureLearn">FutureLearn</mat-option>
-                                    <mat-option value="Independent">Independent</mat-option>
+                                    <mat-option *ngFor="let r of regions" [value]="r">{{ r }}</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>
+
                         <div class="col-12 col-md-6 mb-3">
                             <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>Subject</mat-label>
-                                <mat-select formControlName="subject">
+                                <mat-label>Job Type</mat-label>
+                                <mat-select formControlName="jobType">
                                     <mat-option value="">Any</mat-option>
-                                    <mat-option *ngFor="let sub of subjects" [value]="sub.title">{{ sub.title }}</mat-option>
+                                    <mat-option *ngFor="let jt of jobTypes" [value]="jt">{{ jt }}</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>
+
                         <div class="col-12 col-md-6 mb-3">
                             <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>Mode</mat-label>
-                                <mat-select formControlName="mode">
-                                    <mat-option value="">Any</mat-option>
-                                    <mat-option value="Self-paced">Self-paced</mat-option>
-                                    <mat-option value="Instructor-led">Instructor-led</mat-option>
+                                <mat-label>Posted Within</mat-label>
+                                <mat-select formControlName="postedWithin">
+                                    <mat-option *ngFor="let p of postedWithinOptions" [value]="p.value">{{ p.label }}</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>
+
                         <div class="col-12 col-md-6 mb-3">
                             <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>Cost</mat-label>
-                                <mat-select formControlName="cost">
-                                    <mat-option value="">Any</mat-option>
-                                    <mat-option value="Free">Free</mat-option>
-                                    <mat-option value="Paid">Paid</mat-option>
+                                <mat-label>Sort By</mat-label>
+                                <mat-select formControlName="sortBy">
+                                    <mat-option value="date-desc">Date (Newest)</mat-option>
+                                    <mat-option value="date-asc">Date (Oldest)</mat-option>
+                                    <mat-option value="company-asc">Company (A–Z)</mat-option>
+                                    <mat-option value="title-asc">Title (A–Z)</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>
+
                         <div class="col-12 col-md-6 mb-3">
                             <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>Certificate</mat-label>
-                                <mat-select formControlName="certificate">
-                                    <mat-option value="">Any</mat-option>
-                                    <mat-option value="Yes">Yes</mat-option>
-                                    <mat-option value="No">No</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-12 col-md-6 mb-3">
-                            <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>Platform</mat-label>
-                                <mat-select formControlName="platform">
-                                    <mat-option value="">Any</mat-option>
-                                    <mat-option value="Coursera">Coursera</mat-option>
-                                    <mat-option value="edX">edX</mat-option>
-                                    <mat-option value="FutureLearn">FutureLearn</mat-option>
-                                    <mat-option value="Independent">Independent</mat-option>
+                                <mat-label>Items Per Page</mat-label>
+                                <mat-select formControlName="itemsPerPage">
+                                    <mat-option *ngFor="let c of counts" [value]="c">{{ c }}</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>
                     </div>
-                    <div class="text-end mt-2">
-                        <button mat-flat-button type="submit">Apply Filters</button>
+                    <div class="d-flex justify-content-end gap-2 mt-2">
+                        <button mat-stroked-button type="button" (click)="resetFilters(filterSidenav)">Reset</button>
+                        <button mat-flat-button color="primary" type="submit">Apply</button>
                     </div>
                 </form>
                 </div>

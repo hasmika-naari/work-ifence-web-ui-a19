@@ -8,6 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import * as _ from 'lodash';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Meta, Title } from '@angular/platform-browser';
@@ -30,7 +31,7 @@ import { WINDOW } from 'src/app/services/window.token';
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
     NgOptimizedImage, HeaderWorkIfenceComponent,FooterWorkifenceComponent, IconsModule,
     CarouselModule,MatButtonModule, MatChipsModule, MatIconModule, 
-    MatMenuModule, MatCardModule, MatProgressBarModule],
+    MatMenuModule, MatCardModule, MatProgressBarModule, MatTooltipModule],
     templateUrl: './opening-details-page.component.html',
     styleUrls: ['./opening-details-page.component.scss']
 })
@@ -196,6 +197,7 @@ export class OpeningDetailsPageComponent implements OnInit, OnDestroy {
             this.selectedJob = jobSelected[0];
           }
           this.updateMetaTags();
+          this.actionInProgress = false; // Data loading complete
           // this.jobFeedStore.updateHomeJobsFeed(feed.rss.jobs.job);
       }))
 
