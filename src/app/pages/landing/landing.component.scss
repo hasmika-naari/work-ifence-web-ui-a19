@@ -1,3 +1,28 @@
+/* Large Desktop Font Size Override */
+@media screen and (min-width: 1440px) {
+  .section-title {
+    h2 {
+      font-size: 5rem !important;
+    }
+    .sub-title {
+      font-size: 4.2rem !important;
+      font-weight: 700 !important;
+      line-height: 1.05 !important;
+      margin-bottom: 12px !important;
+    }
+  }
+}
+  .section-title {
+    h2 {
+      font-size: 5rem;
+    }
+    .sub-title {
+      font-size: 4.2rem;
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+  }
 :host {
     display: block;
     height: 100vh;
@@ -44,7 +69,7 @@
       display: block;
       margin-bottom: 5px;
       font-weight: 500;
-      font-size: 1.1rem;
+        font-size: 1.25rem;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       text-shadow: 0 1px 2px rgba(0,0,0,0.05);
@@ -54,7 +79,7 @@
       margin-top: 0;
       margin-bottom: 15px;
       font-weight: 700;
-      font-size: 2.5rem;
+        font-size: 3.25rem;
       background: linear-gradient(135deg, var(--secondaryColor) 0%, var(--mainColor) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -79,6 +104,24 @@
 
 /* For Desktop View */
 @media screen and (min-width: 1024px) {
+  .section-title {
+    text-align: left;
+    h2 {
+      font-size: 4rem;
+      max-width: 900px;
+      line-height: 1.1;
+      text-align: left;
+    }
+    .sub-title {
+      font-size: clamp(2.5rem, 4vw, 4.5rem);
+      text-align: left;
+      max-width: 900px;
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+  }
   .feature-div-position{
     position: absolute;
     bottom:50px;

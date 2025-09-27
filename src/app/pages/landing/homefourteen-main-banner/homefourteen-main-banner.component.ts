@@ -7,11 +7,12 @@ import { WINDOW } from '../../../services/window.token';
 import { ThemeCustomizerService } from '../../../services/theme-customizer/theme-customizer.service';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { LucideAngularModule, ArrowRight, LayoutDashboard } from 'lucide-angular';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-homefourteen-main-banner',
     standalone: true,
-    imports: [CommonModule, NgOptimizedImage, CarouselModule, RouterLink, IconsModule],
+    imports: [CommonModule, NgOptimizedImage, CarouselModule, RouterLink, IconsModule, MatIconModule],
     templateUrl: './homefourteen-main-banner.component.html',
     styleUrls: ['./homefourteen-main-banner.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

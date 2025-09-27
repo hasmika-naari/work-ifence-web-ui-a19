@@ -1,3 +1,62 @@
+/* Responsive icon sizes for banner accent lines */
+/* Responsive icon sizes for banner accent lines */
+.responsive-banner-icon {
+        width: 2.2rem;
+        height: 2.2rem;
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+        .responsive-banner-icon {
+                width: 2.6rem;
+                height: 2.6rem;
+        }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+        .responsive-banner-icon {
+                width: 2.8rem;
+                height: 2.8rem;
+        }
+}
+
+@media (min-width: 992px) and (max-width: 1399px) {
+        .responsive-banner-icon {
+                width: 3rem;
+                height: 3rem;
+        }
+}
+
+@media (min-width: 1400px) {
+        .responsive-banner-icon {
+                width: 3.4rem;
+                height: 3.4rem;
+        }
+}
+/* Large Desktop Banner Font Sizes */
+@media only screen and (min-width: 1400px) {
+            .main-banner-heading-group .heading-main {
+                font-size: 4.5rem !important;
+                font-weight: 800 !important;
+                margin-bottom: 0.05em;
+            }
+            .main-banner-heading-group .accent-next-line {
+                font-size: 3rem !important;
+                font-weight: 700 !important;
+                margin-top: 0;
+                margin-bottom: 0.1em;
+                letter-spacing: 0.5px;
+                display: flex;
+                align-items: center;
+                gap: 0.5em;
+            }
+            .main-banner-heading-group .accent-next-line mat-icon {
+                font-size: 3rem !important;
+                width: 3rem !important;
+                height: 3rem !important;
+                vertical-align: middle;
+                margin-right: 0.5em;
+            }
+}
 // Banner heading group as two-column layout
 .main-banner-heading-group {
     display: flex;

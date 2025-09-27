@@ -43,7 +43,7 @@ import { CareerResourcesComponent } from './career-resources/career-resources.co
   imports: [CommonModule, RouterLink, RouterOutlet, NgOptimizedImage, HeaderWorkIfenceComponent,
     MainBannerComponent,NgxPaginationModule,HomefourteenMainBannerComponent,
     CategoriesComponent,FooterWorkifenceComponent,OurDashboardDemoComponent,
-    MatButtonModule, MatChipsModule, MatIconModule,
+    MatButtonModule, MatChipsModule, MatIconModule, 
     MatMenuModule,PopularFeaturesComponent, ActiveJobsComponent, ActiveCollegeJobsComponent,
     MatCardModule, MatProgressBarModule, FeedbackStyleTwoComponent,
     TrustIndicatorsComponent, HowItWorksComponent, SpecialOfferComponent,
