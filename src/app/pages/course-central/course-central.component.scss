@@ -51,8 +51,8 @@
   z-index: var(--z-drawer) !important;
   border-radius: 0 !important; /* Remove border radius */
   box-shadow: none !important; /* Remove default/elevated shadow */
-  width: min(100%, 450px) !important; /* Increased width for better layout */
-  background: rgba(255, 255, 255, 0.75) !important; /* More white-based transparent background */
+  width: min(100%, 500px) !important; /* Increased width for better layout */
+  background-color: rgba(255, 255, 255, 0.75) !important; /* Use background-color so background-image from inline styles can layer above */
   backdrop-filter: blur(25px) !important;
   -webkit-backdrop-filter: blur(25px) !important;
   border-left: 1px solid rgba(255, 255, 255, 0.5) !important;
@@ -132,6 +132,7 @@
   flex-direction: column;
   gap: 8px; /* Further reduced gap for very compact layout */
   flex: 1;
+  padding-top: 20px;
 }
 
 /* Form groups */
@@ -176,6 +177,41 @@
 
 .filter-form .mat-form-field-outline-thick {
   color: var(--mainColor, #4353ff);
+}
+
+/* Fix MDC outlined floating label being clipped by rounded outline */
+.filter-sidenav {
+  .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper { overflow: visible; }
+    .mdc-notched-outline__notch { overflow: visible; }
+  .mdc-notched-outline__notch { padding-left: 4px; padding-right: 4px; }
+    .mdc-notched-outline { border-radius: 12px; overflow: visible; }
+
+    /* Ensure label renders above the outline stroke */
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing { z-index: 0; }
+
+    /* Subtle overlay under the label area to hide outline behind label */
+    .mdc-notched-outline__notch::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 6px;
+      z-index: 0;
+    }
+
+    /* Give the floating label a small background so it doesn't look cut */
+    .mdc-floating-label {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 0 6px;
+      border-radius: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .mdc-floating-label--float-above { z-index: 2; }
+  }
 }
 
 /* Input field styling */
@@ -352,7 +388,7 @@
 
 /* Filter Sidenav Responsive Styling */
 .filter-sidenav {
-  width: min(100%, 350px) !important;
+  width: min(100%, 500px) !important;
   padding: 15px !important;
   overflow: hidden !important; /* Remove scrollbar completely */
   max-height: 100vh !important;
@@ -644,8 +680,10 @@
           right: 15px;
           z-index: 3;
           display: flex;
-          flex-direction: column;
-          gap: 6px;
+          flex-direction: row;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
           
           .featured-badge, .premium-badge {
             display: flex;
@@ -661,6 +699,7 @@
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
+            white-space: nowrap;
             
             mat-icon {
               font-size: 12px;
@@ -1168,7 +1207,7 @@
   }
   
   .filter-sidenav {
-    width: min(90%, 320px) !important;
+    width: min(90%, 420px) !important;
   }
 }
 
@@ -1193,9 +1232,12 @@
 }
 /* Sidenav specific styles */
 .filter-sidenav {
-  width: min(100%, 350px);
+  width: min(100%, 500px);
   padding: 20px;
-  background-color: var(--backgroundColor, #fff);
+  background-color: transparent; /* let gradient layers show */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-left: 1px solid rgba(0,0,0,0.06);
   z-index: 1100; /* Higher than header to appear above it */
   position: fixed;
   top: 0;
@@ -1205,8 +1247,9 @@
 }
 
 .dark-mode .filter-sidenav {
-  background-color: var(--darkBackgroundColor, #1a1a1a);
+  background-color: transparent;
   color: #fff;
+  border-left-color: rgba(255,255,255,0.08);
 }
 
 .filter-sidenav h3 {

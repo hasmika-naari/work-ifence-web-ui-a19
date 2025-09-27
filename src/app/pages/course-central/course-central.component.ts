@@ -107,6 +107,8 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
   currentPage = 0;
   totalCourses = 0;
   hdrContainer = false;
+  // Randomized translucent theme background for filter sidenav
+  filterSidenavBg: string = '';
 
   subjects: Subject[] = [
     { title: 'Computer Science', description: '', courseCount: 28 },
@@ -172,6 +174,9 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
     });
 
     this.updatePaginatedCourses();
+
+    // Generate initial background for the filter sidenav
+    this.refreshSidenavBg();
   }
 
   getCourses(): Course[] {
@@ -237,6 +242,45 @@ export class CourseDashboardComponent implements OnInit, AfterViewInit {
      // ✅ Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.querySelector('.course-grid')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  /**
+   * Regenerate a random, translucent theme background for the sidenav
+   * using layered radial-gradients positioned at random spots.
+   */
+  refreshSidenavBg(): void {
+    const layers: string[] = [];
+
+    // 1) Smooth top shade (no circles at the top)
+    // Fades from themed shade at the very top to transparent by ~40%
+    const mainRgb = 'var(--mainColor-rgb, 67, 83, 255)';
+    const topShade = `linear-gradient(to bottom, 
+      rgba(${mainRgb}, 0.12) 0%,
+      rgba(${mainRgb}, 0.08) 12%,
+      rgba(${mainRgb}, 0.04) 24%,
+      rgba(${mainRgb}, 0.00) 42%
+    )`;
+    layers.push(topShade);
+
+    // 2) Subtle color spots pushed lower (avoid top area)
+    const layerCount = 3; // fewer, subtler colored spots
+    for (let i = 0; i < layerCount; i++) {
+      const x = Math.floor(Math.random() * 100); // 0-100%
+      // Push circles toward lower section (start ~50%)
+      const y = Math.floor(50 + Math.random() * 50); // 50-100%
+      const radius = Math.floor(100 + Math.random() * 120); // 100-220px
+      const usePrimary = Math.random() > 0.5;
+      const colorVar = usePrimary
+        ? 'var(--primaryColor-rgb, 255, 152, 0)'
+        : 'var(--mainColor-rgb, 67, 83, 255)';
+      const alpha = (4 + Math.floor(Math.random() * 3)) / 100; // 0.04 - 0.06
+      layers.push(
+        `radial-gradient(circle at ${x}% ${y}%, rgba(${colorVar}, ${alpha}) 0px, rgba(${colorVar}, ${alpha}) ${radius}px, transparent ${radius + 1}px)`
+      );
+    }
+
+    // Compose layers; base remains transparent to keep glass look
+    this.filterSidenavBg = layers.join(', ');
   }
 
 

@@ -3,7 +3,7 @@
         <mat-sidenav-container class="dashboard-container">
 
         <!-- Right Sidenav for Filters -->
-        <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
+        <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav" [ngStyle]="{ 'backgroundImage': filterSidenavBg }">
             <div class="filter-sidenav-content">
                 <!-- Close Button -->
                 <button mat-icon-button class="close-btn" (click)="filterSidenav.close()" aria-label="Close filter">
