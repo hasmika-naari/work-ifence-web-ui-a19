@@ -1,3 +1,101 @@
+// Banner heading group as two-column layout
+.main-banner-heading-group {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    margin-bottom: 24px;
+}
+
+.main-banner-heading-group .icon-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.6em;
+    width: 3.6em;
+    max-width: 4em;
+}
+
+.main-banner-heading-group .title-icon,
+.main-banner-heading-group .title-icon svg,
+.main-banner-heading-group svg.title-icon {
+    width: 100% !important;
+    height: 100% !important;
+    color: var(--mainColor) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+// .main-banner-heading-group .title-icon svg {
+//     width: 3.2em !important;
+//     height: 3.2em !important;
+//     min-width: 0;
+//     min-height: 0;
+//     max-width: 100%;
+//     max-height: 100%;
+//     display: block;
+// }
+
+.main-banner-heading-group .text-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    gap: 0.05em; // Make text lines very close
+}
+
+.main-banner-heading-group .heading-main {
+    color: var(--secondaryColor) !important;
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 0.05em; // Reduce space below first text
+}
+
+.main-banner-heading-group .accent-next-line {
+    color: var(--mainColor) !important;
+    font-weight: bold;
+    font-size: 2em;
+    margin-top: 0; // Remove space above second text
+    margin-bottom: 0;
+    letter-spacing: 0.5px;
+    text-align: left;
+}
+
+.accent-next-line {
+    color: var(--mainColor) !important;
+    font-weight: bold;
+    font-size: 2em;
+    margin-left: 0;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+}
+// Inline heading layout for banner
+.main-banner-heading {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    text-align: left !important;
+}
+
+.main-banner-heading .title-icon {
+    margin-right: 12px;
+    min-width: 2em;
+    width: 2.2em !important;
+    height: 2.2em !important;
+    align-self: flex-start;
+}
+
+.main-banner-heading .heading-main {
+    color: var(--secondaryColor) !important;
+    font-weight: bold;
+}
+
+.main-banner-heading .heading-accent {
+    color: var(--mainColor) !important;
+    font-weight: bold;
+    margin-left: 8px;
+}
 .gradient-overlay {
     transition: all 0.5s ease-in-out;
 }
@@ -131,22 +229,49 @@
         color: var(--secondaryColor);
         transition: all 0.3s ease-in-out;
         text-align: left !important;
+        position: relative;
         
-        span {
+        span, .highlight-text {
             color: var(--mainColor) !important;
-            font-size: 4.2rem !important;
+            font-size: 3.4rem !important;
             position: relative;
             top: 0px !important;
-            display: block;
-            transition: all 0.3s ease-in-out;
+            display: inline;
+            font-weight: bold !important;
+            margin-left: 0 !important;
+            text-align: left !important;
+        }
+        .title-icon {
+            width: clamp(20px, 0.9vw, 28px);
+            height: clamp(20px, 0.9vw, 28px);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-right: 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .icon-primary {
+            color: var(--secondaryColor);
+        }
+        .icon-secondary {
+            color: var(--secondaryColor);
         }
         
         @media (max-width: 1199px) {
             font-size: 3.8rem;
             line-height: 4rem;
             
-            span {
-                font-size: 3.4rem !important;
+            span, .highlight-text {
+                font-size: 2.9rem !important;
+                gap: 6px;
+                margin-left: 0px; // Remove excessive indentation
+                
+                .title-icon {
+                    width: clamp(18px, 0.8vw, 24px);
+                    height: clamp(18px, 0.8vw, 24px);
+                    margin-right: 6px; // Better spacing
+                }
             }
         }
         
@@ -154,8 +279,16 @@
             font-size: 3.2rem;
             line-height: 3.4rem;
             
-            span {
-                font-size: 2.8rem !important;
+            span, .highlight-text {
+                font-size: 2.5rem !important;
+                gap: 5px;
+                margin-left: 0px; // Remove excessive indentation
+                
+                .title-icon {
+                    width: clamp(16px, 0.7vw, 22px);
+                    height: clamp(16px, 0.7vw, 22px);
+                    margin-right: 5px; // Better spacing
+                }
             }
         }
     }
@@ -204,35 +337,82 @@
     }
 }
 
-// Mobile-specific styling
+// Mobile-specific styling with better visual hierarchy
 .training-course-banner-content-mobile {
-    text-align: left;
-    padding: 0 15px;
+    text-align: center;
+    padding: 0 10px;
     
     h1 {
-        font-size: 32px;
+        font-size: clamp(30px, 8vw, 38px);
         letter-spacing: -1px !important;
-        margin-bottom: 15px;
+        margin-bottom: 18px;
         font-weight: bold;
-        line-height: 36px;
+        line-height: 1.1;
         color: var(--secondaryColor);
+        width: 100%;
+        position: relative;
+        
+        // Add subtle background accent
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--mainColor), transparent);
+            opacity: 0.3;
+        }
         
         span {
             color: var(--mainColor) !important;
-            font-size: 28px !important;
-            display: block;
+            font-size: clamp(22px, 6vw, 28px) !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-weight: bold !important; // Keep same boldness
+            opacity: 1;
+            letter-spacing: 0.5px;
+            
+            .title-icon {
+                width: clamp(16px, 4vw, 22px);
+                height: clamp(16px, 4vw, 22px);
+                opacity: 0.9;
+                transition: all 0.3s ease;
+                flex-shrink: 0;
+                margin-right: 2px; // Small gap between icon and text
+                
+                &.icon-primary {
+                    color: var(--secondaryColor); // Match first line color
+                }
+                
+                &.icon-secondary {
+                    color: var(--secondaryColor); // Match first line color
+                }
+                
+                @media (max-width: 400px) {
+                    width: 18px;
+                    height: 18px;
+                    opacity: 0.8;
+                }
+            }
         }
     }
     
     p {
-        margin: 15px auto;
+        margin: 25px auto;
         max-width: 100%;
         color: var(--paragraphColor);
-        font-size: medium;
+        font-size: clamp(14px, 4vw, 16px);
+        text-align: center;
+        line-height: 1.6;
     }
     
     .btn-box {
-        margin-top: 20px;
+        margin-top: 25px;
     }
     
     .trusted-by-content {
@@ -245,6 +425,31 @@
         
         .single-partner-item a img {
             max-width: 70px;
+        }
+    }
+    
+    // Add some breathing room and better button styling
+    .option-buttons {
+        width: 100%;
+        padding: 0 10px;
+        
+        .get-started {
+            font-size: clamp(14px, 4vw, 16px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--mainColor) 0%, #3a6773 100%);
+            box-shadow: 0 4px 15px rgba(67, 83, 255, 0.15);
+            color: #fff !important;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            
+            &:hover {
+                background: linear-gradient(135deg, #3a6773 0%, var(--mainColor) 100%);
+                box-shadow: 0 6px 20px rgba(67, 83, 255, 0.25);
+                transform: scale(1.04);
+            }
         }
     }
 }
@@ -500,4 +705,32 @@
             font-size: 4.2rem !important;
         }
     }
+}
+
+.gradient-bg-btn {
+    background: linear-gradient(135deg, #f05b45 0%, #3a6773 100%);
+    color: #fff !important;
+    border: none;
+    box-shadow: 0 4px 15px rgba(67, 83, 255, 0.15);
+    font-weight: 600;
+    padding: 12px 32px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+.gradient-bg-btn:hover, .gradient-bg-btn:focus {
+    background: linear-gradient(135deg, #3a6773 0%, #f05b45 100%);
+    color: #fff !important;
+    box-shadow: 0 6px 20px rgba(67, 83, 255, 0.25);
+    transform: scale(1.04);
+}
+.gradient-bg-btn .btn-icon-right {
+    margin-left: 8px;
+    margin-right: 0;
+    display: inline-flex;
+    align-items: center;
 }

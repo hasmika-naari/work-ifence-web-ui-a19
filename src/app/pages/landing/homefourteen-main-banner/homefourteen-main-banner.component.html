@@ -28,15 +28,39 @@
             <!-- Content Column -->
             <div [class]="isMobile ? 'col-12' : (isTablet ? 'col-md-10 col-lg-8 mx-auto' : 'col-lg-6 col-md-12')">
                 <div [ngClass]="{'training-course-banner-content': !isMobile, 'training-course-banner-content-mobile': isMobile}" class="text-left">
-                    <h1 [ngStyle]="{'font-size': headingFontSize, 'line-height': headingLineHeight}" class="mt-2 fade-in">
-                        Resumes <span>Enhanced.</span>
-                    </h1>
-                    <h1 [ngStyle]="{'font-size': headingFontSize, 'line-height': headingLineHeight}" class="mt-2 fade-in" style="animation-delay:0.1s">
-                        Applications <span>Managed.</span>
-                    </h1>
-                    <h1 [ngStyle]="{'font-size': headingFontSize, 'line-height': headingLineHeight}" class="mt-2 fade-in" style="animation-delay:0.2s">
-                        Careers <span>Reimagined.</span>
-                    </h1>
+                    <div class="main-banner-heading-group">
+                        <!-- <div class="icon-col">
+                            <lucide-icon name="file-text" class="title-icon" [style.width]="'3.6em'" [style.height]="'3.6em'"></lucide-icon>
+                        </div> -->
+                        <div class="text-col">
+                            <div class="heading-main" [ngStyle]="{'font-size': headingFontSize, 'line-height': headingLineHeight}">Resumes</div>
+                            <div class="accent-next-line">
+                                <lucide-icon name="file-text" ></lucide-icon>
+                                Enhanced.</div>
+                        </div>
+                    </div>
+                    <div class="main-banner-heading-group">
+                        <!-- <div class="icon-col">
+                            <lucide-icon name="clipboard-check" class="title-icon"></lucide-icon>
+                        </div> -->
+                        <div class="text-col">
+                            <div class="heading-main" [ngStyle]="{'font-size': headingFontSize, 'line-height': headingLineHeight}" style="animation-delay:0.1s">Applications</div>
+                            <div class="accent-next-line">
+                                 <lucide-icon name="clipboard-check"></lucide-icon>
+                                Managed.</div>
+                        </div>
+                    </div>
+                    <div class="main-banner-heading-group">
+                        <!-- <div class="icon-col">
+                            <lucide-icon name="trending-up" class="title-icon"></lucide-icon>
+                        </div> -->
+                        <div class="text-col">
+                            <div class="heading-main" [ngStyle]="{'font-size': headingFontSize, 'line-height': headingLineHeight}" style="animation-delay:0.2s">Careers</div>
+                            <div class="accent-next-line">
+                            <lucide-icon name="trending-up" ></lucide-icon>
+                                Reimagined.</div>
+                        </div>
+                    </div>
                     <p class="fade-in" [ngClass]="{'mt-4': isMobile, 'mt-2': isTablet, 'mt-5': isDesktop}" style="animation-delay:0.3s">
                         Crafting Careers, One Step at a Time! whether you are crafting a standout resume or tracking 
                         job applications, our platform is <span style="font-style:italic;text-decoration: underline">one-stop destination.</span>
@@ -46,7 +70,7 @@
                     <div class="option-buttons d-block fade-in" 
                          [ngClass]="{'mt-3': isMobile, 'mt-4': isTablet, 'text-center': isMobile}" 
                          style="animation-delay:0.4s">
-                        <button type="button" class="get-started link-button-wifence fade-in btn-icon" 
+                        <button type="button" class="get-started link-button-wifence fade-in btn-icon gradient-bg-btn"
                             [ngClass]="{'w-100': isMobile, 'mx-2': !isMobile}"
                             style="animation-delay:0.5s"
                             [routerLink]="['/sign-in']" >
