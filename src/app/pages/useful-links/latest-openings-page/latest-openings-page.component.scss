@@ -33,7 +33,9 @@ p {
   radial-gradient(circle at 20% 75%, hsla(45,100%,40%,0.1), transparent 40%); }
 
 .course-area .container-fluid { backdrop-filter: blur(5px); border-radius:15px; padding:30px; }
-.story-content { background-color: rgba(255,255,255,0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,0.3); border-radius:15px; box-shadow:0 4px 16px rgba(31,38,135,0.05); padding:30px; }
+/* New wrapper matching footer width should keep same chrome */
+.course-area .content-max { backdrop-filter: blur(5px); border-radius:15px; padding:30px; }
+.story-content { background-color: rgba(255,255,255,0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,1); border-radius:15px;  padding:30px; }
 .dark-course-area .story-content { background-color: rgba(30,30,30,0.7); border:1px solid rgba(255,255,255,0.1); }
 
 /* Align main-content spacing */
@@ -57,7 +59,7 @@ p {
   gap: 25px;
   flex-wrap: wrap;
   padding: 10px 10px 20px 10px;
-  border-bottom: 1px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.1);
+  // border-bottom: 1px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.1);
   background: transparent;
 }
 
@@ -129,6 +131,7 @@ p {
 .navigation-buttons {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0;
   padding: 5px 0 10px 0;
   margin-bottom: 5px;
@@ -197,6 +200,34 @@ p {
   flex-direction: column;
   gap: 4px;
   min-width: 200px;
+}
+
+/* Adjust Home/Back block spacing and remove its bottom border */
+.nav-buttons-row { margin-top: 8px; }
+.nav-buttons-row .navigation-buttons {
+  border-bottom: none !important;
+  padding-top: 8px;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  padding-left: 25px;
+}
+@media (max-width: 768px) {
+  .nav-buttons-row .navigation-buttons { padding-left: 12px; }
+}
+
+/* Match footer's width policy for page content */
+.content-max {
+  max-width: min(97vw, 1680px);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  @media (min-width: 768px) {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
 
 .title-block h2 {
@@ -326,13 +357,13 @@ p {
 
 .search-job-feed-item {
   position: relative;
-  background: rgba(255,255,255,0.55) !important; /* translucent to reveal parent subtle radial */
+  // background: rgba(255,255,255,0.22) !important; /* lighter, very transparent white by default */
   backdrop-filter: blur(8px); 
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.55) !important;
+  border: 1px solid rgba(255,255,255,1) !important;
   border-radius: 12px !important;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
-  transition: transform .22s cubic-bezier(.4,.12,.2,1), box-shadow .25s ease, background .25s ease, border-color .25s ease;
+  box-shadow: none; // 0 2px 6px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+  transition: background .25s ease, border-color .25s ease, box-shadow .25s ease; /* no transform transition */
   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif, Arial, Helvetica, sans-serif, Geneva, Tahoma, sans-serif !important;
   min-height: 210px !important; /* slightly taller to accommodate added padding */
   max-height: 210px !important;
@@ -359,10 +390,10 @@ p {
 }
 
 .search-job-feed-item:hover {
-  transform: translateY(-5px) scale(1.012);
-  box-shadow: 0 8px 22px -2px rgba(0,0,0,0.16), 0 4px 10px rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.72) !important;
-  border-color: rgba(var(--mainColor-rgb,67,83,255),0.42) !important;
+  transform: none !important; /* no zoom or lift */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.08); /* minimal change */
+  background: rgba(255,255,255,0.88) !important; /* more solid white on hover */
+  border-color: rgba(255,255,255,0.8) !important;
 }
 
 .search-job-feed-item:hover:before {
@@ -370,16 +401,17 @@ p {
 }
 
 .dark-course-area .search-job-feed-item {
-  background: rgba(30,30,30,0.55) !important;
+  background: rgba(30,30,30,0.45) !important; /* slightly lighter in dark mode default */
   border-color: rgba(255,255,255,0.08) !important;
   box-shadow: 0 2px 6px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.4);
   background-image: linear-gradient(145deg, rgba(45,45,45,0.65) 0%, rgba(35,35,35,0.55) 60%, rgba(25,25,25,0.45) 100%);
 }
 
 .dark-course-area .search-job-feed-item:hover {
-  background: rgba(50,50,50,0.78) !important;
+  transform: none !important; /* no zoom or lift in dark mode as well */
+  background: rgba(50,50,50,0.78) !important; /* more solid on hover */
   border-color: rgba(var(--mainColor-rgb,67,83,255),0.5) !important;
-  box-shadow: 0 14px 30px -6px rgba(0,0,0,0.85), 0 6px 14px rgba(0,0,0,0.55);
+  box-shadow: 0 4px 10px -2px rgba(0,0,0,0.65), 0 2px 6px rgba(0,0,0,0.45); /* subtler than before */
 }
 
 .dark-course-area .search-job-feed-item:hover:before {
@@ -405,7 +437,7 @@ p {
           }
 
           &:hover{
-            background-color: #fff !important;
+            // background-color: #fff !important;
           }
       }
    
@@ -455,3 +487,26 @@ p {
    padding-right: 20px !important;
    padding-left: 20px !important;
  }
+
+/* Bottom-right pagination alignment */
+.bottom-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 0 8px 0;
+}
+
+@media (max-width: 768px) {
+  .bottom-pagination {
+    justify-content: center;
+  }
+}
+
+/* Ensure scroll lands below sticky header with some space */
+#jobsStart {
+  scroll-margin-top: 110px; /* header height (~85px) + comfortable gap */
+}
+
+@media (max-width: 768px) {
+  #jobsStart { scroll-margin-top: 90px; }
+}

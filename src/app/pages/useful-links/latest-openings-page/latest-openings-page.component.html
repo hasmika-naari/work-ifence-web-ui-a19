@@ -82,11 +82,11 @@
             </mat-sidenav>
             <mat-sidenav-content class="main-content">
                 <app-header-wifence [container]="hdrContainer" class="course-header"></app-header-wifence>
-                <div class="container-fluid">
+                <div class="content-max">
                     <div class="row g-3">
                         <div class="story-content w-100">
-                                                                                    <div class="modern-title-section nav-buttons-row" style="padding-left:0; padding-top:0;">
-                                                                                        <div class="navigation-buttons" style="padding:15px 0 15px 25px; margin-bottom:10px; border-bottom:1px solid rgba(var(--mainColor-rgb,67,83,255),0.1); gap:0; display:flex; flex-wrap:wrap;">
+                                                                                    <div class="modern-title-section nav-buttons-row">
+                                                                                        <div class="navigation-buttons">
                                                                                             <a class="nav-button home-button" [routerLink]="['/']" style="margin-right:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
                                                                                                 <lucide-icon name="home"></lucide-icon>
                                                                                                 Home
@@ -185,6 +185,11 @@
                     </div>
                 }
                 </div>
+                                <div *ngIf="!actionInProgress" class="bottom-pagination">
+                                    <pagination-controls class="product-pagination"
+                                        [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
+                                    </pagination-controls>
+                                </div>
                 <!-- Footer pagination row removed; pagination now in header -->
                 <!-- <app-job-openings [isMobile]="isMobile" ></app-job-openings> -->
                             </section>

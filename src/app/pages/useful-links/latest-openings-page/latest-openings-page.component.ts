@@ -189,11 +189,24 @@ export class LatestJobOpeningsPageComponent implements OnInit {
 
    public onPageChanged(event: any){
         this.page = event;
-         window.scrollTo(0, document.documentElement.clientHeight - 150);
-          const element = document.getElementById('jobsStart');
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+        // Smoothly scroll to the top of the jobs list container, leaving space below the header
+        const element = document.getElementById('jobsStart');
+        if (element) {
+          // Prefer CSS scroll-margin-top; fallback to manual offset
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Fallback adjustment for browsers/positions not honoring scroll-margin-top
+          setTimeout(() => {
+            const rect = element.getBoundingClientRect();
+            const currentY = window.scrollY || window.pageYOffset;
+            const headerGap = 110; // header (~85px) + comfortable gap
+            // If the element top is still near the very top, nudge down by headerGap
+            if (rect.top < headerGap && rect.top > 0) {
+              window.scrollTo({ top: currentY - (headerGap - rect.top), behavior: 'smooth' });
+            }
+          }, 200);
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
    }
 
     convertDateFormat(dateString: string): string {
