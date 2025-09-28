@@ -1,222 +1,203 @@
 <div
   class="motivation-course-banner-area animate__animated animate__fadeIn animate__slow"
-  [class.dark-motivation-course-banner-area]="themeService.isDark()"
+  [class.dark-motivation-course-banner-area]="themeService.isDark()" 
 >
   <div
     class="courses-area pb-100 animate__animated animate__fadeIn animate__slow"
     [class.dark-courses-area]="themeService.isDark()"
   >
-    <div>
-        <!-- Course List Header + Filter Icon -->
-        <!-- <div class="course-list-header">
-            <div class="left">
-                <div class="section-title mb-0 mt-0">
-                    <div class="text-start">
-                        <span class="sub-title d-block mb-0">Skill Building</span>
-                        <h2 class="mb-0 mt-0">Course Central</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="right">
-               
-            </div>
-        </div> -->
-      <div class="row">
-        <div class="col-lg-12 col-md-12">
-          <div class="row">
-            <div class="col-lg-12 col-md-12">
-              <div class="row banner-grid g-3 g-lg-4 align-items-stretch">
-                <div class="col-lg-8 col-md-12">
-                  <div
-                    class="single-courses-list-box animate__animated animate__fadeInUp h-100"
-                    style="box-shadow: none;"
-                  >
-                    <owl-carousel-o [options]="homeSlides">
-                      <ng-template carouselSlide>
-                        <div class="motivation-course-banner-image">
-                          <img
-                            src="images/main-banner5.png"
-                            style="width: 100%; height: 100%;"
-                            alt="image"
-                          />
-                          <button
-                            type="button"
-                            class="video-btn popup-youtube border-0"
-                            (click)="openPopup()"
-                          >
-                            <i class="bx bx-play"></i>
-                          </button>
-                        </div>
-                      </ng-template>
-                      <ng-template carouselSlide>
-                        <div class="motivation-course-banner-image">
-                          <img
-                            src="images/main-banner4.png"
-                            style="width: 100%; height: 100%;"
-                            alt="image"
-                          />
-                          <button
-                            type="button"
-                            class="video-btn popup-youtube border-0"
-                            (click)="openPopup()"
-                          >
-                            <i class="bx bx-play"></i>
-                          </button>
-                        </div>
-                      </ng-template>
-                      <ng-template carouselSlide>
-                        <div class="motivation-course-banner-image">
-                          <img
-                            src="images/main-banner3.jpeg"
-                            style="width: 100%; height: 100%;"
-                            alt="image"
-                          />
-                          <button
-                            type="button"
-                            class="video-btn popup-youtube border-0"
-                            (click)="openPopup()"
-                          >
-                            <i class="bx bx-play"></i>
-                          </button>
-                        </div>
-                      </ng-template>
-                    </owl-carousel-o>
-                  </div>
-                </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+        <div class="row banner-grid g-3 g-lg-4 align-items-stretch">
+          <div class="col-lg-8 col-md-12">
+            <div 
 
-                <div class="col-lg-4 col-md-12">
-                  <aside class="widget-area animate__animated animate__fadeInUp animate__delay-1s h-100">
-                    <div class="widget widget_ednuv_posts_thumb limited-courses">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="widget-title mb-0">Trending Courses</h3>
-                        <span
-                          class="all-courses"
-                          routerLink="/central/course-central/courses"
-                          role="button"
-                        >
-                          All Courses
-                        </span>
-                      </div>
-
-                      <div class="courses-list">
-                        <article
-                          class="item animate__animated animate__fadeInUp"
-                        >
-                          <a routerLink="/single-course" class="thumb">
-                            <span
-                              class="fullimage cover"
-                              role="img"
-                              style="background-image: url(images/blog/blog7.jpg);"
-                            ></span>
-                          </a>
-                          <div class="info">
-                            <div class="price">FREE</div>
-                            <h4 class="title usmall">
-                              <a routerLink="/single-course">
-                                Making Peace With The Feast Or Famine Of
-                                Freelancing
-                              </a>
-                            </h4>
-                          </div>
-                        </article>
-
-                        <article
-                          class="item animate__animated animate__fadeInUp animate__delay-1s"
-                        >
-                          <a routerLink="/single-course" class="thumb">
-                            <span
-                              class="fullimage cover"
-                              role="img"
-                              style="background-image: url(images/blog/blog8.jpg);"
-                            ></span>
-                          </a>
-                          <div class="info">
-                            <div class="price">FREE</div>
-                            <h4 class="title usmall">
-                              <a routerLink="/single-course">
-                                Making Peace With The Feast Or Famine Of
-                                Freelancing
-                              </a>
-                            </h4>
-                          </div>
-                        </article>
-
-                        <article
-                          class="item animate__animated animate__fadeInUp animate__delay-1s"
-                        >
-                          <a routerLink="/single-course" class="thumb">
-                            <span
-                              class="fullimage cover"
-                              role="img"
-                              style="background-image: url(images/blog/blog9.jpg);"
-                            ></span>
-                          </a>
-                          <div class="info">
-                            <div class="price">$300</div>
-                            <h4 class="title usmall">
-                              <a routerLink="/single-course">
-                                Making Peace With The Feast Or Famine Of
-                                Freelancing
-                              </a>
-                            </h4>
-                          </div>
-                        </article>
-
-                        <article
-                          class="item animate__animated animate__fadeInUp"
-                        >
-                          <a routerLink="/single-course" class="thumb">
-                            <span
-                              class="fullimage cover"
-                              role="img"
-                              style="background-image: url(images/blog/blog7.jpg);"
-                            ></span>
-                          </a>
-                          <div class="info">
-                            <div class="price">FREE</div>
-                            <h4 class="title usmall">
-                              <a routerLink="/single-course">
-                                Making Peace With The Feast Or Famine Of
-                                Freelancing
-                              </a>
-                            </h4>
-                          </div>
-                        </article>
-
-                        <article
-                          class="item animate__animated animate__fadeInUp"
-                        >
-                          <a routerLink="/single-course" class="thumb">
-                            <span
-                              class="fullimage cover"
-                              role="img"
-                              style="background-image: url(images/blog/blog7.jpg);"
-                            ></span>
-                          </a>
-                          <div class="info">
-                            <div class="price">FREE</div>
-                            <h4 class="title usmall">
-                              <a routerLink="/single-course">
-                                Making Peace With The Feast Or Famine Of
-                                Freelancing
-                              </a>
-                            </h4>
-                          </div>
-                        </article>
-                      </div>
-                    </div>
-                  </aside>
-                </div>
-              </div>
-            </div>
-
-            <div
-              class="col-lg-12 col-md-12 animate__animated animate__fadeInUp animate__delay-1s"
+              class="single-courses-list-box animate__animated animate__fadeInUp h-100"
+              style="box-shadow: none;"
             >
-              <app-hometwo-courses></app-hometwo-courses>
+              <owl-carousel-o [options]="homeSlides" >
+                <ng-template carouselSlide >
+                  <div class="motivation-course-banner-image" >
+                    <img
+                      src="images/main-banner5.png"
+                      style="width: 100%; height: 100%;"
+                      alt="image"
+                    />
+                    <button
+                      type="button"
+                      class="video-btn popup-youtube border-0"
+                      (click)="openPopup()"
+                    >
+                      <i class="bx bx-play"></i>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template carouselSlide>
+                  <div class="motivation-course-banner-image">
+                    <img
+                      src="images/main-banner4.png"
+                      style="width: 100%; height: 100%;"
+                      alt="image"
+                    />
+                    <button
+                      type="button"
+                      class="video-btn popup-youtube border-0"
+                      (click)="openPopup()"
+                    >
+                      <i class="bx bx-play"></i>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template carouselSlide>
+                  <div class="motivation-course-banner-image">
+                    <img
+                      src="images/main-banner3.jpeg"
+                      style="width: 100%; height: 100%;"
+                      alt="image"
+                    />
+                    <button
+                      type="button"
+                      class="video-btn popup-youtube border-0"
+                      (click)="openPopup()"
+                    >
+                      <i class="bx bx-play"></i>
+                    </button>
+                  </div>
+                </ng-template>
+              </owl-carousel-o>
             </div>
           </div>
+
+          <div class="col-lg-4 col-md-12">
+            <aside class="widget-area animate__animated animate__fadeInUp animate__delay-1s h-100">
+              <div class="widget widget_ednuv_posts_thumb limited-courses">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h3 class="widget-title mb-0">Trending Courses</h3>
+                  <span
+                    class="all-courses"
+                    routerLink="/central/course-central/courses"
+                    role="button"
+                  >
+                    All Courses
+                  </span>
+                </div>
+
+                <div class="courses-list">
+                  <article
+                    class="item animate__animated animate__fadeInUp"
+                  >
+                    <a routerLink="/single-course" class="thumb">
+                      <span
+                        class="fullimage cover"
+                        role="img"
+                        style="background-image: url(images/blog/blog7.jpg);"
+                      ></span>
+                    </a>
+                    <div class="info">
+                      <div class="price">FREE</div>
+                      <h4 class="title usmall">
+                        <a routerLink="/single-course">
+                          Making Peace With The Feast Or Famine Of
+                          Freelancing
+                        </a>
+                      </h4>
+                    </div>
+                  </article>
+
+                  <article
+                    class="item animate__animated animate__fadeInUp animate__delay-1s"
+                  >
+                    <a routerLink="/single-course" class="thumb">
+                      <span
+                        class="fullimage cover"
+                        role="img"
+                        style="background-image: url(images/blog/blog8.jpg);"
+                      ></span>
+                    </a>
+                    <div class="info">
+                      <div class="price">FREE</div>
+                      <h4 class="title usmall">
+                        <a routerLink="/single-course">
+                          Making Peace With The Feast Or Famine Of
+                          Freelancing
+                        </a>
+                      </h4>
+                    </div>
+                  </article>
+
+                  <article
+                    class="item animate__animated animate__fadeInUp animate__delay-1s"
+                  >
+                    <a routerLink="/single-course" class="thumb">
+                      <span
+                        class="fullimage cover"
+                        role="img"
+                        style="background-image: url(images/blog/blog9.jpg);"
+                      ></span>
+                    </a>
+                    <div class="info">
+                      <div class="price">$300</div>
+                      <h4 class="title usmall">
+                        <a routerLink="/single-course">
+                          Making Peace With The Feast Or Famine Of
+                          Freelancing
+                        </a>
+                      </h4>
+                    </div>
+                  </article>
+
+                  <article
+                    class="item animate__animated animate__fadeInUp"
+                  >
+                    <a routerLink="/single-course" class="thumb">
+                      <span
+                        class="fullimage cover"
+                        role="img"
+                        style="background-image: url(images/blog/blog7.jpg);"
+                      ></span>
+                    </a>
+                    <div class="info">
+                      <div class="price">FREE</div>
+                      <h4 class="title usmall">
+                        <a routerLink="/single-course">
+                          Making Peace With The Feast Or Famine Of
+                          Freelancing
+                        </a>
+                      </h4>
+                    </div>
+                  </article>
+
+                  <article
+                    class="item animate__animated animate__fadeInUp"
+                  >
+                    <a routerLink="/single-course" class="thumb">
+                      <span
+                        class="fullimage cover"
+                        role="img"
+                        style="background-image: url(images/blog/blog7.jpg);"
+                      ></span>
+                    </a>
+                    <div class="info">
+                      <div class="price">FREE</div>
+                      <h4 class="title usmall">
+                        <a routerLink="/single-course">
+                          Making Peace With The Feast Or Famine Of
+                          Freelancing
+                        </a>
+                      </h4>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
+      </div>
+
+      <div  
+        class="col-lg-12 col-md-12 animate__animated animate__fadeInUp animate__delay-1s"
+      >
+        <app-hometwo-courses></app-hometwo-courses>
       </div>
     </div>
   </div>
