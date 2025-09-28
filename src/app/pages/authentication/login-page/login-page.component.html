@@ -10,10 +10,14 @@
         <div class="col-12 d-flex align-items-center">
           <div class="login-main-container">
             <!-- Info Panel (Left) -->
-            <div class="login-info-panel" style="position: relative;">
+            <div class="login-info-panel" *ngIf="!isMobile" style="position: relative;">
               <a class="nav-button home-button" [routerLink]="['/']" style="position: absolute; top: 18px; left: 18px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
                 <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
                 <span style="margin-left: 8px;">Home</span>
+              </a>
+              <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="position: absolute; top: 18px; left: 110px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                <span style="margin-left: 8px;">Sign Up</span>
               </a>
               <div class="logo">
                 <img src="assets/img/black-logo.png" alt="Work Ifence" >
@@ -30,6 +34,23 @@
             </div>
             <!-- Login Form Panel (Right) -->
             <div class="login-form-panel">
+              <div class="mobile-header" *ngIf="isMobile" >
+                <div style="display: flex; flex-direction: row; align-items: center;">
+                  <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
+                    <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                    <span style="margin-left: 8px;">Home</span>
+                  </a>
+                  <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="margin-left: 6px; white-space: nowrap;">
+                    <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                    <span style="margin-left: 8px;">Sign Up</span>
+                  </a>
+                  <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
+                </div>
+                <div class="mobile-header-separator"></div>
+              </div>
+              <div class="logo" *ngIf="isMobile" style="margin: 12px 0 8px 0; text-align: left;">
+                <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
+              </div>
               <div class="form-title">Welcome to <b>Work Ifence</b></div>
               <div class="social-btn-row" style="display:flex;gap:12px;width:100%;margin-bottom:18px;">
                 <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">

@@ -151,7 +151,7 @@
 
 .login-form-panel {
   flex: 1;
-  background: rgba(255,255,255,0.35);
+  // background: rgba(255,255,255,0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
@@ -506,6 +506,137 @@ mat-form-field {
 }
 .home-button:hover lucide-icon {
   color: var(--mainColor, #4353ff) !important;
+}
+
+@media (max-width: 768px) {
+  .login-main-container {
+    flex-direction: column !important;
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    padding: 0 8px !important;
+    box-sizing: border-box;
+  }
+  .login-info-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    padding: 24px 8px 16px 8px !important;
+    position: static !important;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .login-info-panel .logo img {
+    max-width: 120px;
+    height: auto;
+    margin-bottom: 12px;
+  }
+  .login-info-panel h1 {
+    font-size: 1.2rem !important;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .login-info-panel .features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 0.98rem;
+    margin-bottom: 8px;
+  }
+  .login-form-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    padding: 16px 8px 24px 8px !important;
+    box-sizing: border-box;
+    border-radius: 16px;
+    margin-bottom: 0;
+  }
+  .social-btn-row {
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+  }
+  .or-divider {
+    margin: 12px 0 !important;
+    font-size: 1rem !important;
+  }
+  .login-btn {
+    width: 100% !important;
+    margin-top: 12px !important;
+    font-size: 1rem !important;
+    padding: 10px 0 !important;
+  }
+  .nav-button.home-button {
+    position: static !important;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    left: unset !important;
+    top: unset !important;
+    font-size: 1rem !important;
+    padding: 8px 0 !important;
+  }
+  .login-form-panel .mobile-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    margin-bottom: 0;
+    width: 100%;
+    padding-left: 12px;
+    padding-top: 0px;
+  }
+  .login-form-panel .mobile-header > div:first-child {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+  .login-form-panel .home-button,
+  .login-form-panel .signup-button {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: var(--secondaryColor, #f05b45);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    min-width: 70px;
+    justify-content: flex-start;
+    margin-bottom: 0;
+    margin-right: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .login-form-panel .signup-button {
+    margin-left: 6px;
+  }
+  .login-form-panel .mobile-header-separator {
+    width: 2px;
+    height: 28px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin-left: 12px;
+  }
+  .login-form-panel .logo img {
+    max-width: 144px;
+    height: auto;
+    margin-bottom: 0;
+  }
+  .social-btn-row {
+    flex-direction: row !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+    justify-content: flex-start;
+  }
 }
 
 
