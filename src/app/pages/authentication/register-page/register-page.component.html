@@ -69,60 +69,66 @@
               </div>
               <div class="or-divider">OR</div>
               <form [formGroup]="registerForm3" (ngSubmit)="onSecondFormSubmit()" style="width:100%;">
-                <mat-form-field appearance="outline" style="width:100%;">
-                  <mat-label>First Name</mat-label>
-                  <mat-icon matPrefix>person</mat-icon>
-                  <input matInput placeholder="First Name" formControlName="firstName">
-                  <mat-error *ngIf="registerForm3.get('firstName')?.hasError('required')">First Name is required</mat-error>
-                  <mat-error *ngIf="registerForm3.get('firstName')?.hasError('pattern')">Only letters, spaces, hyphens, and apostrophes allowed</mat-error>
-                  <mat-error *ngIf="registerForm3.get('firstName')?.hasError('maxLength')">Max 32 characters</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" style="width:100%;">
-                  <mat-label>Last Name</mat-label>
-                  <mat-icon matPrefix>person</mat-icon>
-                  <input matInput placeholder="Last Name" formControlName="lastName">
-                  <mat-error *ngIf="registerForm3.get('lastName')?.hasError('required')">Last Name is required</mat-error>
-                  <mat-error *ngIf="registerForm3.get('lastName')?.hasError('pattern')">Only letters, spaces, hyphens, and apostrophes allowed</mat-error>
-                  <mat-error *ngIf="registerForm3.get('lastName')?.hasError('maxLength')">Max 32 characters</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" style="width:100%;">
-                  <mat-label>User Name</mat-label>
-                  <mat-icon matPrefix>account_circle</mat-icon>
-                  <input matInput placeholder="User Name" formControlName="userName">
-                  <mat-error *ngIf="registerForm3.get('userName')?.hasError('required')">User Name is required</mat-error>
-                  <mat-error *ngIf="registerForm3.get('userName')?.hasError('minLength')">Min 4 characters</mat-error>
-                  <mat-error *ngIf="registerForm3.get('userName')?.hasError('maxLength')">Max 32 characters</mat-error>
-                  <mat-error *ngIf="registerForm3.get('userName')?.hasError('pattern')">Only letters, numbers, dots, underscores, and hyphens allowed</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" style="width:100%;">
-                  <mat-label>Email</mat-label>
-                  <mat-icon matPrefix>mail_outline</mat-icon>
-                  <input matInput placeholder="Email" formControlName="email">
-                  <mat-error *ngIf="registerForm3.get('email')?.hasError('required')">Email is required</mat-error>
-                  <mat-error *ngIf="registerForm3.get('email')?.hasError('email')">Invalid email address</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" style="width:100%;">
-                  <mat-label>Password</mat-label>
-                  <mat-icon matPrefix>lock_outline</mat-icon>
-                  <input matInput [type]="hidePassword ? 'password' : 'text'" placeholder="Password" formControlName="password">
-                  <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" tabindex="-1">
-                    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                  </button>
-                  <mat-error *ngIf="registerForm3.get('password')?.hasError('required')">Password is required</mat-error>
-                  <mat-error *ngIf="registerForm3.get('password')?.hasError('minLength')">Min 8 characters</mat-error>
-                  <mat-error *ngIf="registerForm3.get('password')?.hasError('maxLength')">Max 30 characters</mat-error>
-                  <mat-error *ngIf="registerForm3.get('password')?.hasError('pattern')">Password must contain uppercase, lowercase, number, and special character</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" style="width:100%;">
-                  <mat-label>Confirm Password</mat-label>
-                  <mat-icon matPrefix>lock_outline</mat-icon>
-                  <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" placeholder="Confirm Password" formControlName="confirmPassword">
-                  <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword" tabindex="-1">
-                    <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                  </button>
-                  <mat-error *ngIf="registerForm3.get('confirmPassword')?.hasError('required')">Confirm Password is required</mat-error>
-                  <mat-error *ngIf="registerForm3.hasError('match')">Passwords do not match</mat-error>
-                </mat-form-field>
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="form-col">
+                    <mat-label>First Name</mat-label>
+                    <mat-icon matPrefix>person</mat-icon>
+                    <input matInput placeholder="First Name" formControlName="firstName">
+                    <mat-error *ngIf="registerForm3.get('firstName')?.hasError('required')">First Name is required</mat-error>
+                    <mat-error *ngIf="registerForm3.get('firstName')?.hasError('pattern')">Only letters, spaces, hyphens, and apostrophes allowed</mat-error>
+                    <mat-error *ngIf="registerForm3.get('firstName')?.hasError('maxLength')">Max 32 characters</mat-error>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="form-col">
+                    <mat-label>Last Name</mat-label>
+                    <mat-icon matPrefix>person</mat-icon>
+                    <input matInput placeholder="Last Name" formControlName="lastName">
+                    <mat-error *ngIf="registerForm3.get('lastName')?.hasError('required')">Last Name is required</mat-error>
+                    <mat-error *ngIf="registerForm3.get('lastName')?.hasError('pattern')">Only letters, spaces, hyphens, and apostrophes allowed</mat-error>
+                    <mat-error *ngIf="registerForm3.get('lastName')?.hasError('maxLength')">Max 32 characters</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="form-col">
+                    <mat-label>User Name</mat-label>
+                    <mat-icon matPrefix>account_circle</mat-icon>
+                    <input matInput placeholder="User Name" formControlName="userName">
+                    <mat-error *ngIf="registerForm3.get('userName')?.hasError('required')">User Name is required</mat-error>
+                    <mat-error *ngIf="registerForm3.get('userName')?.hasError('minLength')">Min 4 characters</mat-error>
+                    <mat-error *ngIf="registerForm3.get('userName')?.hasError('maxLength')">Max 32 characters</mat-error>
+                    <mat-error *ngIf="registerForm3.get('userName')?.hasError('pattern')">Only letters, numbers, dots, underscores, and hyphens allowed</mat-error>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="form-col">
+                    <mat-label>Email</mat-label>
+                    <mat-icon matPrefix>mail_outline</mat-icon>
+                    <input matInput placeholder="Email" formControlName="email">
+                    <mat-error *ngIf="registerForm3.get('email')?.hasError('required')">Email is required</mat-error>
+                    <mat-error *ngIf="registerForm3.get('email')?.hasError('email')">Invalid email address</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="form-col">
+                    <mat-label>Password</mat-label>
+                    <mat-icon matPrefix>lock_outline</mat-icon>
+                    <input matInput [type]="hidePassword ? 'password' : 'text'" placeholder="Password" formControlName="password">
+                    <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" tabindex="-1">
+                      <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="registerForm3.get('password')?.hasError('required')">Password is required</mat-error>
+                    <mat-error *ngIf="registerForm3.get('password')?.hasError('minLength')">Min 8 characters</mat-error>
+                    <mat-error *ngIf="registerForm3.get('password')?.hasError('maxLength')">Max 30 characters</mat-error>
+                    <mat-error *ngIf="registerForm3.get('password')?.hasError('pattern')">Password must contain uppercase, lowercase, number, and special character</mat-error>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="form-col">
+                    <mat-label>Confirm Password</mat-label>
+                    <mat-icon matPrefix>lock_outline</mat-icon>
+                    <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" placeholder="Confirm Password" formControlName="confirmPassword">
+                    <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword" tabindex="-1">
+                      <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="registerForm3.get('confirmPassword')?.hasError('required')">Confirm Password is required</mat-error>
+                    <mat-error *ngIf="registerForm3.hasError('match')">Passwords do not match</mat-error>
+                  </mat-form-field>
+                </div>
                 <mat-checkbox formControlName="agreeTerms" color="primary">I agree to the Terms of Service and Privacy Policy</mat-checkbox>
                 <button class="register-btn enabled-button" type="submit" [disabled]="registerForm3.invalid" style="width:100%;">
                   SIGN UP

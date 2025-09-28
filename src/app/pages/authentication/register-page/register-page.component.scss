@@ -144,11 +144,11 @@
 }
 
 .register-main-container {
-  display: flex;
-  flex-direction: row;
-  width: 900px;
+  width: 1100px;
   max-width: 98vw;
   min-height: 540px;
+  display: flex;
+  flex-direction: row;
   background: transparent !important;
   border-radius: 32px;
   border: 2px solid #fff;
@@ -226,7 +226,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 48px 40px;
+  padding: 32px 32px;
   border-radius: 0 32px 32px 0;
   min-width: 340px;
   box-shadow: none;
@@ -451,6 +451,37 @@
   color: #f05b45  !important;
 }
 
+.form-row {
+  display: flex;
+  gap: 32px; /* Increased horizontal gap for clarity */
+  margin-bottom: 24px; /* Increased vertical gap for error messages */
+}
+.form-col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.mat-form-field {
+  margin-bottom: 4px; /* Small gap below field for error message */
+}
+.mat-error {
+  margin-top: 2px;
+  font-size: 0.85em;
+  min-height: 18px; /* Reserve space for error message */
+  line-height: 1.2;
+}
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 20px;
+  }
+  .form-col {
+    width: 100%;
+  }
+}
+
 @media (max-width: 900px) {
   .register-main-container {
     flex-direction: column;
@@ -461,11 +492,15 @@
   .register-info-panel, .register-form-panel {
     width: 100%;
     min-width: unset;
-    padding: 32px 16px;
+    padding: 24px 8px;
     border-radius: 0;
     border-left: none;
   }
   .register-info-panel {
     border-bottom: 1px solid #f0f0f0;
+  }
+  .social-btn-row {
+    flex-direction: column;
+    gap: 10px;
   }
 }
