@@ -100,7 +100,7 @@ export class OnlineMotivationCourseComponent implements OnInit, AfterViewInit, O
         if (this.browser) {
             if (this.deviceService.isDesktop()) {
                 this.isDesktop = true;
-                this.isMobile = false;
+                this.isMobile = true;
                 this.isTablet = false;
             } else if (this.deviceService.isMobile()) {
                 this.isMobile = true;
@@ -108,7 +108,7 @@ export class OnlineMotivationCourseComponent implements OnInit, AfterViewInit, O
                 this.isTablet = false;
             } else if (this.deviceService.isTablet()) {
                 this.isTablet = true;
-                this.isMobile = false;
+                this.isMobile = true;
                 this.isDesktop = false;
             }
         }

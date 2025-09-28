@@ -1,3 +1,69 @@
+.mobile-device app-hometwelve-main-banner,
+.mobile-device .hometwelve-main-banner,
+.mobile-device .motivation-course-banner-area,
+.mobile-device .motivation-course-banner-image {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    position: relative;
+    border-radius: 0 !important;
+}
+.mobile-device {
+    .full-width-banner,
+    app-hometwelve-main-banner,
+    .hometwelve-main-banner,
+    .motivation-course-banner-area,
+    .motivation-course-banner-image {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw !important;
+        margin-right: -50vw !important;
+        position: relative;
+        border-radius: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .tight-banner-spacing {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+            .motivation-course-banner-area {
+                .container-fluid {
+                    padding-left: 0 !important;
+                    padding-right: 0 !important;
+                    width: 100vw !important;
+                    max-width: 100vw !important;
+                }
+                .motivation-course-banner-content h1 {
+                    font-size: 2rem !important;
+                    margin-bottom: 2px !important;
+                }
+                .motivation-course-banner-image {
+                    height: 100px !important;
+                    margin-top: 0 !important;
+                    width: 100vw !important;
+                    max-width: 100vw !important;
+                    border-radius: 0 !important;
+                    margin-bottom: 0 !important;
+                    padding-left: 0 !important;
+                    padding-right: 0 !important;
+                }
+                .motivation-course-banner-text {
+                    padding-left: 0 !important;
+                    padding-right: 0 !important;
+                }
+            }
+        .banner-grid {
+            --bs-gutter-x: 0rem;
+        }
+}
 // Banner
 .motivation-course-banner-area {
     // padding-top: 60px;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
@@ -6,6 +6,7 @@ import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { HometwoCoursesComponent } from '../hometwo-courses/hometwo-courses.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
     selector: 'app-hometwelve-main-banner',
@@ -14,9 +15,10 @@ import { HometwoCoursesComponent } from '../hometwo-courses/hometwo-courses.comp
     templateUrl: './hometwelve-main-banner.component.html',
     styleUrls: ['./hometwelve-main-banner.component.scss']
 })
-export class HometwelveMainBannerComponent {
+export class HometwelveMainBannerComponent implements OnInit {
 
     isToggled = false;
+    isMobile = false;
       homeSlides: OwlOptions = {
             items: 1,
             nav: false,
@@ -33,11 +35,16 @@ export class HometwelveMainBannerComponent {
         }
 	
     constructor(
-        public themeService: ThemeCustomizerService
+        public themeService: ThemeCustomizerService,
+        private deviceService: DeviceDetectorService
     ) {
         this.themeService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
         });
+    }
+
+    ngOnInit() {
+        this.isMobile = this.deviceService.isMobile();
     }
 
     toggleTheme() {

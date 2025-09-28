@@ -1,8 +1,8 @@
-<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
+<div [class.mobile-device]="isMobile" style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
     <div #sentinel style="position: absolute; top: 0;"></div>
     <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
     <div class="course-area" [class.dark-course-area]="themeService.isDark()">
-        <div class="container">
+        <div >
             <div class="row g-0">
                 <div class="story-content col-12">
                     <!-- Modern Title Section -->
@@ -21,7 +21,7 @@
                             <h1 class="course-title">Course Central</h1>
                         </div>
                     </div>
-                    <section class="mb-5">
+                    <section class="mb-5 full-width-banner tight-banner-spacing">
                         <app-hometwelve-main-banner />
                     </section>
                     <app-hometwelve-about />
