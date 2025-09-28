@@ -62,10 +62,10 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    background: linear-gradient(135deg, #f3f4f8 60%, #e9eaf3 100%);
+    background: transparent ; // linear-gradient(135deg, #f3f4f8 60%, #e9eaf3 100%);
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    // box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: box-shadow 0.3s ease;
 }
 
@@ -79,7 +79,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    box-shadow: inset 0 0 6px rgba(0, 102, 194, 0.2);
+    // box-shadow: inset 0 0 6px rgba(0, 102, 194, 0.2);
     animation: pulse 1.5s infinite alternate;
 }
 
@@ -344,6 +344,11 @@
                 }
                 .avatar-bg {
                     background: linear-gradient(135deg, #f3f4f8 60%, #e9eaf3 100%);
+                }
+
+/* Progressbar-only background for avatar */
+.avatar-bg.progressbar-active {
+    background: transparent !important;
                     border-radius: 50%;
                     padding: 2px;
                     display: inline-flex;

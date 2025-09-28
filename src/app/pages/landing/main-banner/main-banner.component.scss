@@ -320,3 +320,11 @@
 
 /* Min width 1200px to Max width 1275px */
 @media only screen and (min-width: 1200px) and (max-width: 1275px) {}
+
+/* Mobile styles for .main-banner-area */
+@media (max-width: 768px) {
+  .main-banner-area {
+    padding-top: 32px !important;
+    padding-left: 16px !important;
+  }
+}

@@ -453,3 +453,17 @@
     }
 }
 
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding-top: 50px !important;
+  }
+  .banner-content {
+    padding-top: 32px !important;
+    padding-left: 56px !important;
+  }
+  .main-banner-area {
+    padding-top: 32px !important;
+    padding-left: 16px !important;
+  }
+}
+

@@ -7,35 +7,46 @@
         <div class="col-12 d-flex align-items-center">
           <div class="register-main-container">
             <!-- Info Panel (Left) -->
-            <div class="register-info-panel" style="position: relative;">
-              <div style="display: flex; align-items: center; gap: 8px; position: absolute; top: 18px; left: 18px; z-index: 2;">
-                <a class="nav-button home-button" [routerLink]="['/']" 
-                  style="display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; border-radius: 8px; padding: 6px 16px; transition: color 0.2s; background: transparent;">
-                  <lucide-icon name="home"></lucide-icon>
-                  <span style="margin-left: 8px;">Home</span>
-                </a>
-                <div style="width:2px; height:32px; background:#ffffff93; border-radius:2px;"></div>
-                <a class="nav-button add-sign-button" [routerLink]="['/sign-in']" 
-                  style="display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; border-radius: 8px; padding: 6px 16px; transition: color 0.2s; background: transparent;">
-                  <lucide-icon name="log-in"></lucide-icon>
-                  <span style="margin-left: 8px;">Sign In</span>
-                </a>
-              </div>
+            <div class="register-info-panel" *ngIf="!isMobile" style="position: relative;">
+              <a class="nav-button home-button" [routerLink]="['/']" style="position: absolute; top: 18px; left: 18px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                <span style="margin-left: 8px;">Home</span>
+              </a>
+              <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="position: absolute; top: 18px; left: 110px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                <span style="margin-left: 8px;">Sign Up</span>
+              </a>
               <div class="logo">
                 <img src="assets/img/black-logo.png" alt="Work Ifence" >
               </div>
-              <h1>Join the Community <span style="font-weight:400; white-space:nowrap;">and Grow with Us</span></h1>
+              <h1>Join Work Ifence <span style="font-weight:400; white-space:nowrap;">and unlock your career</span></h1>
               <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
               <div class="features">
-                <span><mat-icon>description</mat-icon> Build resumes tailored to job requirements</span>
-                <span><mat-icon>work</mat-icon> Discover jobs that match your profile</span>
-                <span><mat-icon>school</mat-icon> Find resources to grow your skills</span>
-                <span><mat-icon>assignment</mat-icon> Manage all your job applications in one place</span>
-                <span><mat-icon>group</mat-icon> Connect closely with recruiters</span>
+                <span><i class="material-icons">description</i> Build resumes tailored to job requirements</span>
+                <span><i class="material-icons">work</i> Discover jobs that match your profile</span>
+                <span><i class="material-icons">school</i> Find resources to grow your skills</span>
+                <span><i class="material-icons">assignment</i> Manage all your job applications in one place</span>
+                <span><i class="material-icons">group</i> Connect closely with recruiters</span>
               </div>
             </div>
             <!-- Register Form Panel (Right) -->
             <div class="register-form-panel">
+              <div class="mobile-header" *ngIf="isMobile" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 6px; margin-bottom: 0; width: 100%; padding-left: 12px; padding-top: 16px;">
+                <div style="display: flex; flex-direction: row; align-items: center;">
+                  <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
+                    <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                    <span style="margin-left: 8px;">Home</span>
+                  </a>
+                  <a class="nav-button signin-button" [routerLink]="['/sign-in']" style="margin-left: 6px; white-space: nowrap;">
+                    <lucide-icon name="log-in" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                    <span style="margin-left: 8px;">Sign In</span>
+                  </a>
+                </div>
+                <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
+              </div>
+              <div class="logo" *ngIf="isMobile" style="margin: 12px 0 8px 0; text-align: left;">
+                <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
+              </div>
               <div class="form-title">Create your <b>Work Ifence</b> account</div>
               <div class="social-btn-row" style="display:flex;gap:12px;width:100%;margin-bottom:18px;">
                 <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">

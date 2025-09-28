@@ -27,7 +27,7 @@ export class AuthGuardService implements CanActivate {
    
     // let isAuthenticated = this._localStorageService.getItem('authenticated');
     if(!this.userAccount().activated){
-      this.router.navigateByUrl('/sign-in');
+      this.router.navigateByUrl('/sign-up');
       return of(false);
     }else{
       return of(true);

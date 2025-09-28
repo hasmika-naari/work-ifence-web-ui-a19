@@ -400,7 +400,9 @@
 .training-course-banner-content-mobile {
     text-align: center;
     padding: 0 10px;
-    
+    .main-banner-heading-group{
+        padding-left: 20px;
+    }
     h1 {
         font-size: clamp(30px, 8vw, 38px);
         letter-spacing: -1px !important;
