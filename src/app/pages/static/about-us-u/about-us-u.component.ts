@@ -54,7 +54,7 @@ export class AboutUsUPageComponent implements OnInit, AfterViewInit, OnDestroy {
     if(this.browser){
       if(this.deviceService.isDesktop()){
         this.isDesktop = true;
-        this.isMobile = false;
+        this.isMobile = true;
         this.isTablet = false;
       }else if(this.deviceService.isMobile()){
         this.isMobile = true;
@@ -62,7 +62,7 @@ export class AboutUsUPageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isTablet = false;
       }else if(this.deviceService.isTablet()){
         this.isTablet = true;
-        this.isMobile = false;
+        this.isMobile = true;
         this.isDesktop = false;
       }
      
@@ -134,7 +134,5 @@ export class AboutUsUPageComponent implements OnInit, AfterViewInit, OnDestroy {
     //       _.groupBy(categories, 'parent'),
     //       (categories, parent) => ({ parent, categories }))];
     // });
- 
-}
-
+  }
 }

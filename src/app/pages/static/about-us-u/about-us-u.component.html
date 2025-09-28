@@ -1,11 +1,11 @@
 <div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
     <div #sentinel></div>
     <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
-    <div
+    <div  [class.mobile-device]="isMobile"
         class="about-us--area"
         [class.dark-about-us--area]="themeService.isDark()"
     >
-        <div class="container" >
+        <!-- <div class="container" > -->
             <div class="row g-5">
                 <div class="story-content">
                     <!-- Modern Title Section -->
@@ -28,7 +28,11 @@
                     <div class="about-us-content">
                         <div class="company-intro">
                             <p class="lead-text">
-                                At <strong>Work iFence</strong>, we're revolutionizing how professionals navigate their career journeys through AI-powered guidance, personalized coaching, and cutting-edge tools that unlock your full potential.
+                                At <strong>Work iFence</strong>, we're revolutionizing how professionals navigate their career journeys through AI-powered guidance, personalized coaching, and cutting-edge tools that unlock your full potential.<br>
+                                Our platform is designed to help you discover new opportunities, connect with mentors, and gain insights tailored to your unique goals.<br>
+                                Whether you're just starting out or looking to advance, Work iFence provides resources, workshops, and a supportive community to help you succeed.<br>
+                                We believe in continuous learning and growth, empowering you to adapt and thrive in a dynamic workplace.<br>
+                                Join us and experience a smarter, more connected way to build your career.
                             </p>
                             
                             <div class="mission-vision-section">
@@ -49,10 +53,10 @@
                             <div class="feature-cards">
                                 <div class="feature-card">
                                     <div class="feature-icon-container">
-                                        <lucide-icon name="target" class="feature-icon"></lucide-icon>
+                                        <lucide-icon name="file-text" class="feature-icon"></lucide-icon>
                                     </div>
-                                    <h3 class="feature-title">Personalized Career Pathways</h3>
-                                    <p>Our AI analyzes your skills, experience, and goals to create customized career roadmaps that guide your professional journey with precision.</p>
+                                    <h3 class="feature-title">AI-Powered Resume Building</h3>
+                                    <p>Leverage advanced AI to craft professional, tailored resumes that highlight your strengths and achievements, helping you stand out to employers and recruiters.</p>
                                 </div>
                                 
                                 <div class="feature-card">
@@ -70,6 +74,14 @@
                                     <h3 class="feature-title">Expert Mentorship</h3>
                                     <p>Connect with industry leaders and career coaches who provide actionable guidance based on real-world experience in your field.</p>
                                 </div>
+
+                                <div class="feature-card">
+                                    <div class="feature-icon-container">
+                                        <lucide-icon name="search" class="feature-icon"></lucide-icon>
+                                    </div>
+                                    <h3 class="feature-title">Smart Job Matching</h3>
+                                    <p>Our intelligent algorithms match you with job opportunities that fit your skills, preferences, and career goals, saving you time and helping you land the right role faster.</p>
+                                </div>
                             </div>
                         </div>
 
@@ -84,30 +96,35 @@
                             </div>
                             
                             <div class="approach-content">
-                                <div class="approach-image">
-                                    <img src="assets/img/about/employee-pointing-arrow-upskill-reskill-upskill-personal-development-concept-kill-training-education-learning-ability-knowledge-competency-digital-transformation.jpg" alt="Career Development and Upskilling">
-                                </div>
-                                <div class="approach-text">
-                                    <ul class="approach-list">
-                                        <li>
-                                            <span class="bullet-dot"></span>
-                                            Analyzes market trends to identify emerging opportunities
-                                        </li>
-                                        <li>
-                                            <span class="bullet-dot"></span>
-                                            Provides honest assessments of your professional strengths and growth areas
-                                        </li>
-                                        <li>
-                                            <span class="bullet-dot"></span>
-                                            Builds personalized development plans with actionable milestones
-                                        </li>
-                                        <li>
-                                            <span class="bullet-dot"></span>
-                                            Connects you with opportunities that align with your unique career goals
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+    <div class="approach-image" style="max-width: 340px; width: 100%; margin-right: 32px;">
+        <img src="assets/img/about/employee-pointing-arrow-upskill-reskill-upskill-personal-development-concept-kill-training-education-learning-ability-knowledge-competency-digital-transformation.jpg" alt="Career Development and Upskilling" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+    </div>
+    <div class="approach-text" style="flex: 1; min-width: 260px;">
+        <ul class="approach-list">
+            <li>
+                <span class="bullet-dot"></span>
+                Analyzes market trends to identify emerging opportunities
+            </li>
+            <li>
+                <span class="bullet-dot"></span>
+                Provides honest assessments of your professional strengths and growth areas
+            </li>
+            <li>
+                <span class="bullet-dot"></span>
+                Builds personalized development plans with actionable milestones
+            </li>
+            <li>
+                <span class="bullet-dot"></span>
+                Connects you with opportunities that align with your unique career goals
+            </li>
+        </ul>
+        <div class="approach-extra">
+            <h4>How We Support You</h4>
+            <p>Our platform offers interactive workshops, AI-driven resume reviews, and ongoing mentorship to help you stay ahead in your career. We continuously update our resources to reflect the latest industry trends and best practices, ensuring you have the knowledge and support you need to succeed.</p>
+            <p>Whether you're seeking your first job, planning a career change, or aiming for leadership roles, Work iFence is your partner in every step of your professional journey.</p>
+        </div>
+    </div>
+</div>
                         </div>
 
                         <div class="testimonial-section">
@@ -197,7 +214,7 @@
                     </div>
             </div>
             </div>
-        </div>
+        <!-- </div> -->
         <app-work-ifence-footer></app-work-ifence-footer>
     </div>
     <!-- <section>
