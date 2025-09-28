@@ -1,38 +1,64 @@
-<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;">
-
-<section class="page-full-section">
-
-<app-header-wifence ></app-header-wifence>
-<div class="page-title-area item-bg1">
-    <div id="errormask" class="errormask"></div> 
-    <div class="container">
-        <div class="page-title-content">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li>Contact</li>
-            </ul>
-            <h2>Contact Us</h2>
+<div style="position: fixed;top:0px;bottom:0px;left:0px;right:0px;overflow-y:auto;overflow-x:hidden;" #pageSection>
+    <div #sentinel></div>
+    <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
+    <div [class.mobile-device]="isMobile" class="contact-us--area" [class.dark-contact-us--area]="themeService.isDark()">
+        <div class="row g-5">
+            <div class="content-max">
+                <div class="story-content">
+                    <div class="modern-title-section">
+                        <div class="title-wrapper">
+                            <div class="navigation-buttons">
+                                <a class="nav-button home-button" [routerLink]="['/']">
+                                    <lucide-icon name="home"></lucide-icon>
+                                    Home
+                                </a>
+                                <a class="nav-button back-button" (click)="goBack($event)">
+                                    <lucide-icon name="undo2"></lucide-icon>
+                                    Back
+                                </a>
+                            </div>
+                            <!-- <h1 class="contact-us--title">Contact Work iFence</h1> -->
+                        </div>
+                    </div>
+                    <div class="contact-us-content">
+                        <div class="row g-5 contact-title-row">
+                            <div class="section-title">
+                                <span class="sub-title">Contact Us</span>
+                                <h2>Drop us a Message for any Query</h2>
+                            </div>
+                        </div>
+                        <div class="row g-5 contact-columns">
+                            <div class="contact-col contact-form-col">
+                                <app-contact-form [action]="action"></app-contact-form>
+                            </div>
+                            <div class="contact-col contact-info-col">
+                                <div class="contact-info-message">
+                                    <h3>We're here to help!</h3>
+                                    <div class="contact-details">
+                                        <strong>Email:</strong> <a href="mailto:support&#64;workifence.com">support&#64;workifence.com</a><br>
+                                        <strong>Phone:</strong> <a href="tel:+1234567890">+1 234 567 890</a>
+                                    </div>
+                                    <div class="address">
+                                        <lucide-icon name="map-pin"></lucide-icon>
+                                        1234 Work iFence Ave, Suite 100, Tech City, Country
+                                    </div>
+                                    <div class="social-links">
+                                        <a class="social-link" href="#" target="_blank"><lucide-icon name="linkedin"></lucide-icon> LinkedIn</a>
+                                        <a class="social-link" href="#" target="_blank"><lucide-icon name="facebook"></lucide-icon> Facebook</a>
+                                        <a class="social-link" href="#" target="_blank"><lucide-icon name="x"></lucide-icon> X</a>
+                                    </div>
+                                    <p>
+                                        Our team is dedicated to providing prompt and helpful responses to all your inquiries.<br>
+                                        Whether you need technical assistance, want to learn more about our platform, or are interested in collaborating, we're just a message away.<br>
+                                        Fill out the form or use the contact details provided to get in touch. We look forward to connecting with you!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <app-work-ifence-footer></app-work-ifence-footer>
     </div>
-</div>
-<div>
-  <mat-progress-bar *ngIf="loading()" color="primary" mode="indeterminate"></mat-progress-bar>
-  <div
-      class="contact-area pt-100 pb-100"
-      [class.dark-contact-area]="themeService.isDark()"
-  >
-      <div class="container">
-          <div class="section-title">
-              <span class="sub-title">Contact Us</span>
-              <h2>Drop us Message for any Query</h2>
-          </div>
-          <app-contact-form [action] = "action"></app-contact-form>
-      </div>
-      <div class="contact-bg-image">
-          <img src="assets/img/map.png" alt="image">
-      </div>
-  </div>
-</div>
-<app-work-ifence-footer></app-work-ifence-footer>
-</section>
 </div>

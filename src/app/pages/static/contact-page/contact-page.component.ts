@@ -21,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ContactFormComponent } from '../../dashboard-requests/contact-form/contact-form.component';
 import { AppStoreService } from 'src/app/services/store/app-store.service';
 import { MatDialogModule } from '@angular/material/dialog';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
   selector: 'app-contact',
@@ -29,7 +30,7 @@ import { MatDialogModule } from '@angular/material/dialog';
             CommonModule, RouterLink,LanguageSubscribeComponent, MatFormFieldModule,
             ReactiveFormsModule, NgOptimizedImage, HeaderWorkIfenceComponent,
             MatSelectModule, MatProgressBarModule, MatCardModule, FormsModule,
-            FooterComponent, FooterWorkifenceComponent, MatSnackBarModule,
+            FooterComponent, FooterWorkifenceComponent, MatSnackBarModule, IconsModule,
             MatInputModule, MatButtonModule, ContactFormComponent, MatDialogModule
           ],
   templateUrl: './contact-page.component.html',
@@ -50,6 +51,7 @@ export class ContactComponent implements OnInit {
   browser = false;
   action = "create";
   loading: Signal<boolean> = this.appStore.getActionInProgress();
+  isSticky = false;
 
   constructor() {
       this.browser = isPlatformBrowser(this.platformId);
@@ -63,7 +65,7 @@ export class ContactComponent implements OnInit {
     if(this.browser){
       if(this.deviceService.isDesktop()){
         this.isDesktop = true;
-        this.isMobile = false;
+        this.isMobile = true;
         this.isTablet = false;
       }else if(this.deviceService.isMobile()){
         this.isMobile = true;
@@ -71,10 +73,15 @@ export class ContactComponent implements OnInit {
         this.isTablet = false;
       }else if(this.deviceService.isTablet()){
         this.isTablet = true;
-        this.isMobile = false;
+        this.isMobile = true;
         this.isDesktop = false;
       }
     } 
+  }
+
+  goBack($event: any) {
+    $event.preventDefault();
+    window.history.back();
   }
 
 }

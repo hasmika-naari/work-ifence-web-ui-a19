@@ -6,6 +6,21 @@
   font-family: 'Material Icons' !important;
 }
 
+/* Match footer's width policy for page content */
+.content-max {
+  max-width: min(97vw, 1680px);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  @media (min-width: 768px) {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
 .about-us--area {
   background-color: #f8f9fc;
   background-image: 

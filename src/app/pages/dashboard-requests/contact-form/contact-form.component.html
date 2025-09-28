@@ -1,7 +1,7 @@
-
 <div class="contact-form">
   <div class="container">
     <div class="form-card">
+      <mat-progress-bar *ngIf="progressBarVisible" mode="indeterminate" color="primary" style="margin-bottom:16px;"></mat-progress-bar>
       <form [formGroup]="serviceRequestForm">
         <div class="row">
           <div class="col-md-6 mt-2">

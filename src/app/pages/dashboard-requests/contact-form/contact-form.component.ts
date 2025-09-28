@@ -8,12 +8,13 @@ import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-w
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { IfenceService } from 'src/app/services/ifence.service';
 import { ServiceRequestItem } from 'src/app/services/store/app-store.model';
 import { AppStoreService } from 'src/app/services/store/app-store.service';
@@ -28,7 +29,7 @@ import { Account } from 'src/app/services/profile.model';
             ReactiveFormsModule, NgOptimizedImage, HeaderWorkIfenceComponent,
             MatSelectModule, MatProgressBarModule, MatCardModule, FormsModule,
             FooterComponent, FooterWorkifenceComponent, MatSnackBarModule,
-            MatInputModule, MatButtonModule
+            MatInputModule, MatButtonModule, MatOptionModule
           ],
   templateUrl: './contact-form.component.html',
   styleUrls: ['./contact-form.component.scss']
@@ -69,6 +70,8 @@ export class ContactFormComponent implements OnInit {
     status: ['']
   });
 
+  progressBarVisible = false;
+
   constructor(
     private snackBar: MatSnackBar,
     private ifenceService: IfenceService,
@@ -104,6 +107,7 @@ export class ContactFormComponent implements OnInit {
 
   onSubmit() {
     if (this.serviceRequestForm.valid) {
+      this.progressBarVisible = true;
       this.appStore.updateActionInProgress(true); // Show progress bar
       let serviceRequest = new ServiceRequestItem();
       let dateTime = new Date();
@@ -117,22 +121,30 @@ export class ContactFormComponent implements OnInit {
       serviceRequest.lastModifiedBy = serviceRequest.email;
       serviceRequest.lastModifiedDate = serviceRequest.createdDate;
       serviceRequest.status = this.serviceRequestForm.controls.status.value ? this.serviceRequestForm.controls.status.value : "New";
-
-      this.ifenceService.saveServiceRequest(serviceRequest).subscribe(e => {
-        setTimeout(() => {
+      this.ifenceService.saveServiceRequest(serviceRequest).subscribe({
+        next: e => {
+          setTimeout(() => {
+            this.progressBarVisible = false;
+            this.appStore.updateActionInProgress(false);
+            this.snackBar.open('Service Request Saved Successfully!', 'Close', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
+            this.serviceRequestForm.reset();
+            Object.keys(this.serviceRequestForm.controls).forEach(key => {
+              this.serviceRequestForm.get(key)?.setErrors(null);
+            });
+          }, 2000);
+        },
+        error: err => {
+          this.progressBarVisible = false;
           this.appStore.updateActionInProgress(false);
-          this.snackBar.open('Service Request Saved Successfully!', 'Close', {
-            duration: 3000
+          this.snackBar.open('Failed to save service request!', 'Close', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
           });
-          this.serviceRequestForm.reset();
-          Object.keys(this.serviceRequestForm.controls).forEach(key => {
-            this.serviceRequestForm.get(key)?.setErrors(null);
-          });
-        }, 2000);
-      })
-
-      // Simulate API request
-      
+        }
+      });
     }
   }
 
