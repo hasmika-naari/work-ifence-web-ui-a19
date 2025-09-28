@@ -31,20 +31,34 @@
             <!-- Login Form Panel (Right) -->
             <div class="login-form-panel">
               <div class="form-title">Welcome to <b>Work Ifence</b></div>
-              <button class="social-btn">
-                <span class="google-icon" style="display:inline-block;vertical-align:middle;margin-right:8px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
-                    <g>
-                      <path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.23 9.19 3.25l6.85-6.85C36.62 2.7 30.7 0 24 0 14.64 0 6.27 5.7 1.98 14.1l8.06 6.27C12.36 13.13 17.73 9.5 24 9.5z"/>
-                      <path fill="#34A853" d="M46.1 24.5c0-1.64-.15-3.22-.43-4.75H24v9.02h12.44c-.54 2.9-2.18 5.36-4.64 7.02l7.18 5.59C43.73 37.13 46.1 31.27 46.1 24.5z"/>
-                      <path fill="#FBBC05" d="M10.04 28.37c-1.13-3.36-1.13-6.98 0-10.34l-8.06-6.27C.36 16.7 0 20.27 0 24c0 3.73.36 7.3 1.98 10.24l8.06-6.27z"/>
-                      <path fill="#EA4335" d="M24 48c6.7 0 12.62-2.2 16.98-6.01l-7.18-5.59c-2.01 1.35-4.59 2.15-7.8 2.15-6.27 0-11.64-3.63-14.02-8.87l-8.06 6.27C6.27 42.3 14.64 48 24 48z"/>
-                      <path fill="none" d="M0 0h48v48H0z"/>
-                    </g>
-                  </svg>
-                </span>
-                <span class="google-btn-text">Sign in with Google</span>
-              </button>
+              <div class="social-btn-row" style="display:flex;gap:12px;width:100%;margin-bottom:18px;">
+                <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
+                  <span class="google-icon" style="display:inline-block;vertical-align:middle;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
+                      <g>
+                        <path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.23 9.19 3.25l6.85-6.85C36.62 2.7 30.7 0 24 0 14.64 0 6.27 5.7 1.98 14.1l8.06 6.27C12.36 13.13 17.73 9.5 24 9.5z"/>
+                        <path fill="#34A853" d="M46.1 24.5c0-1.64-.15-3.22-.43-4.75H24v9.02h12.44c-.54 2.9-2.18 5.36-4.64 7.02l7.18 5.59C43.73 37.13 46.1 31.27 46.1 24.5z"/>
+                        <path fill="#FBBC05" d="M10.04 28.37c-1.13-3.36-1.13-6.98 0-10.34l-8.06-6.27C.36 16.7 0 20.27 0 24c0 3.73.36 7.3 1.98 10.24l8.06-6.27z"/>
+                        <path fill="#EA4335" d="M24 48c6.7 0 12.62-2.2 16.98-6.01l-7.18-5.59c-2.01 1.35-4.59 2.15-7.8 2.15-6.27 0-11.64-3.63-14.02-8.87l-8.06 6.27C6.27 42.3 14.64 48 24 48z"/>
+                        <path fill="none" d="M0 0h48v48H0z"/>
+                      </g>
+                    </svg>
+                  </span>
+                  <span style="margin-left:8px;">Sign In With</span>
+                </button>
+                <div style="width:2px;background:#e0e0e0;border-radius:2px;margin:0 2px;"></div>
+                <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
+                  <span class="linkedin-icon" style="display:inline-block;vertical-align:middle;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
+                      <g>
+                        <rect width="32" height="32" rx="6" fill="#0077B5"/>
+                        <path d="M10.5 13.5h2.5v8h-2.5v-8zm1.25-3a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm3.25 3h2.4v1.1h.03c.33-.63 1.13-1.3 2.33-1.3 2.5 0 2.97 1.65 2.97 3.8v4.4h-2.5v-3.9c0-.93-.02-2.13-1.3-2.13-1.3 0-1.5 1.02-1.5 2.07v3.96h-2.5v-8z" fill="#fff"/>
+                      </g>
+                    </svg>
+                  </span>
+                  <span style="margin-left:8px;">Sign In With</span>
+                </button>
+              </div>
               <div class="or-divider">OR</div>
               <form>
                 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">

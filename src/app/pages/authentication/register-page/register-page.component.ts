@@ -34,6 +34,7 @@ import { CheckUserNameRequest } from 'src/app/services/signup.model';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { passwordValidator, usernameValidator } from 'src/app/services/validators/username.validator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 
 
@@ -67,6 +68,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     InputSwitchModule,
     RippleModule,
     RouterModule,
+    IconsModule,
   MatProgressBarModule],
   templateUrl: './register-page.component.html',
   styleUrls: ['./register-page.component.scss']
