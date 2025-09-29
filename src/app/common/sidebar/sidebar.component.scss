@@ -1,5 +1,13 @@
 @use '../../../styles/variables';
 
+::ng-deep .sidebar-area ng-scrollbar {
+    overflow-x: hidden !important;
+}
+
+::ng-deep .sidebar-area ng-scrollbar .ng-scrollbar-content {
+    overflow-x: hidden !important;
+}
+
 :host{
     .mat-icon{
         font-family: 'Material Icons' !important;
@@ -33,7 +41,7 @@
         position: fixed;
         height: 100vh;
         width: 260px;
-        z-index: 222;
+    z-index: 1201;
         left: 0;
         top: 0;
         box-shadow: 1px 0 4px rgba(0, 0, 0, 0.1);
@@ -678,6 +686,16 @@
     }
 }
 
+.sidebar-area {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border-right: 1px solid rgba(200,200,200,0.18);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+  transition: background 0.3s, box-shadow 0.3s;
+  overflow-x: hidden;
+}
+
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
@@ -914,9 +932,7 @@
                             font: var(--font-caption);
                             }
                         
-                            .sidenav-user-icons a {
-                            // color: $sidenav-color;
-                            }
+
                         
                             .sidenav-user-name,
                             .sidenav-user-email,

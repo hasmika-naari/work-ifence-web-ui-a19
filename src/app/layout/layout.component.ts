@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject, AfterViewInit } from '@angular/core';
 import { SidebarDirective } from '../../@navan/shared/sidebar/sidebar.directive';
 import { filter, map, startWith } from 'rxjs/operators';
 import { ThemeService } from '../../@navan/services/theme.service';
@@ -11,6 +11,7 @@ import { HeaderComponent } from '../common/header/header.component';
 import { FooterComponent } from '../common/footer/footer.component';
 import { ToggleService } from '../common/header/toggle.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { stubFalse } from 'lodash';
 
 @Component({
   selector: 'wif-layout',
@@ -26,36 +27,36 @@ import { DeviceDetectorService } from 'ngx-device-detector';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
-export class LayoutComponent implements OnInit, OnDestroy {
-
+export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('headerSentinel', { static: false }) headerSentinel!: ElementRef;
+  public isSticky: boolean = false;
+  private observer!: IntersectionObserver;
   @ViewChild('configPanel', { static: false })
   configPanel: SidebarDirective | undefined;
 
   private platformId: object =  inject(PLATFORM_ID);
   public toggleService: ToggleService = inject(ToggleService);
   private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
-  
   isBrowser = false;
   isMobile = false;
   isTablet = false;
   isDesktop = true;
-   // Toggle Service
-   isToggled = false;
-
-   title = 'workifence -  Angular 19 Material Design Admin Dashboard Template';
-   routerSubscription: any;
-   public locationService: Location =  inject(Location);
-   public location: any;
-
+  // Toggle Service
+  isToggled = false;
+  title = 'workifence -  Angular 19 Material Design Admin Dashboard Template';
+  routerSubscription: any;
+  public locationService: Location =  inject(Location);
+  public location: any;
 
   constructor(
-              private themeService: ThemeService,
-              public route: ActivatedRoute,
-              public router: Router) {
-                this.toggleService.isToggled$.subscribe(isToggled => {
-                  this.isToggled = isToggled;
-              });
-              }
+    private themeService: ThemeService,
+    public route: ActivatedRoute,
+    public router: Router
+  ) {
+    this.toggleService.isToggled$.subscribe(isToggled => {
+      this.isToggled = isToggled;
+    });
+  }
 
   ngOnInit() {
     if(isPlatformBrowser(this.platformId)){
@@ -87,6 +88,25 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isSticky = false;
+      const contentWrapper = document.querySelector('.content-wrapper');
+      this.observer = new IntersectionObserver(entries => {
+        this.isSticky = !entries[0].isIntersecting;
+      }, { root: contentWrapper });
+      if (this.headerSentinel?.nativeElement) {
+        this.observer.observe(this.headerSentinel.nativeElement);
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
   openConfigPanel() {
     this.configPanel?.open();
   }
@@ -109,7 +129,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     // this.sidenavService.setMouseOver(false); // Allow collapse
   }
-  ngOnDestroy(): void {}
 
      // recallJsFuntions
       recallJsFuntions() {

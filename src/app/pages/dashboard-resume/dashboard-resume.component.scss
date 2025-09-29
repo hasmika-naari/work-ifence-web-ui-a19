@@ -62,7 +62,8 @@ h1 {
 .sections {
     display: flex;
     gap: 20px;
-    overflow: hidden;
+    overflow-y: auto;
+    height: 80vh;
 }
 
 /* Individual Section */
@@ -101,30 +102,27 @@ h1 {
 }
 
 /* Card Styling */
+
 .outer-container {
-  // height: 100vh; /* Example height; adjust based on your layout */
-  overflow: hidden; /* Prevent unnecessary scrolling for the entire page */
+  /* height: 100vh; Example height; adjust based on your layout */
   display: flex;
   justify-content: center; /* Centering example */
   align-items: center;     /* Centering example */
 }
 
 .interview-outer-container{
-  overflow: hidden; /* Prevent unnecessary scrolling for the entire page */
   display: flex;
   justify-content: center; /* Centering example */
   align-items: center;     /* Centering example */
 }
 
 .offer-outer-container{
-  overflow: hidden; /* Prevent unnecessary scrolling for the entire page */
   display: flex;
   justify-content: center; /* Centering example */
   align-items: center;     /* Centering example */
 }
 
 .not-choosen-outer-container{
-  overflow: hidden; /* Prevent unnecessary scrolling for the entire page */
   display: flex;
   justify-content: center; /* Centering example */
   align-items: center;     /* Centering example */
@@ -154,12 +152,13 @@ h1 {
   width: 100%;
 }
 
-.resume-container{
+  .resume-container{
     height: 100%;
-    overflow-y: auto;
+    overflow-y: hidden !important;
     position: absolute;
     left: 0px;
     right: 0px;
+    padding-top:60px;
 }
 
 .resume-container::-webkit-scrollbar{

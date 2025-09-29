@@ -1,8 +1,8 @@
 <div
-    class="sidebar-area bg-white transition"
+    class="sidebar-area  transition"
     [ngClass]="{'active': isToggled}"
 >
-    <div class="logo bg-white align-items-center" [ngClass]="{'active': isToggled}" >
+    <div class="logo  align-items-center" [ngClass]="{'active': isToggled}" >
         <!-- <a routerLink="/" class="d-flex align-items-center "> -->
             <img class="small-icon transition" src="images/logo.png" style="height: 35px;width:35px;" alt="logo-icon">
             <img class="big-icon transition" src="images/black-logo.png"  alt="logo-icon">
@@ -31,7 +31,7 @@
                     <mat-icon>exit_to_app</mat-icon>
                 </a>
             </div>
-            <div class="sidenav-user-options">
+            <!-- <div class="sidenav-user-options">
                 <button
                 mat-button
                 (click)="toggleTheme()"
@@ -39,7 +39,7 @@
                 [class.active]="toggleService.isDark()" >
                 <i-feather name="moon"></i-feather>
             </button>
-            </div>
+            </div> -->
         </div>
         <div class="sidebar-inner">
             <div class="sidebar-menu">

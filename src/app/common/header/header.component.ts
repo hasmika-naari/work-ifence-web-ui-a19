@@ -1,5 +1,7 @@
-import { Component, inject, Signal } from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
+import { Component, inject, Signal, Input } from '@angular/core';
+import { fromEvent, Subject } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
+import { DatePipe, isPlatformBrowser, NgClass } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
@@ -21,20 +23,17 @@ import { MatDividerModule } from '@angular/material/divider';
     ]
 })
 export class HeaderComponent {
+    @Input() isSticky = false;
     private userStore: UserStoreService = inject(UserStoreService);
     public userAccount: Signal<Account> = this.userStore.getUserAccount();
     public userRoles: Signal<Array<WifRole>> = this.userStore.getUserRoles();
     public userActiveRole: Signal<WifRole> = this.userStore.getUserActiveRole();
     bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
-  
     private storageService: LocalStorageService = inject(LocalStorageService);
     private router:Router =  inject(Router);
-
-
-    // Current Date
     currentDate: Date = new Date();
     formattedDate: any;
-    
+
     constructor(
         public toggleService: ToggleService,
         private datePipe: DatePipe

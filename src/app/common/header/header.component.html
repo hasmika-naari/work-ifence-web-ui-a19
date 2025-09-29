@@ -1,7 +1,11 @@
 <div
-    class="header-area bg-white transition"
-    [ngClass]="{'active': isToggled}"
+    class="sticky-header"
+    [ngClass]="{'header-glossy': isSticky}"
 >
+    <div
+        class="header-area transition"
+        [ngClass]="{'active': isToggled}"
+    >
     <div class="d-md-flex align-items-center justify-content-between">
         <div class="header-left-side d-flex align-items-center" >
             <!-- <div 
@@ -235,4 +239,5 @@
             </li>
         </ul>
     </div>
+</div>
 </div>
