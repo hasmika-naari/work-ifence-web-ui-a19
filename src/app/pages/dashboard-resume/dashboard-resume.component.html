@@ -1,6 +1,6 @@
 <div class="job-tracker" style="height: 100vh; overflow: hidden;">
     <div class="resume-container">
-      <h1 class="title">Resume Tracker</h1>
+  <h1 class="title" style="padding-left: 20px;">Resume Tracker</h1>
         <div class="toolbar" style="position: absloute; top: 0; background: transparent; z-index: 100;">
             <!-- Header: Applications Tracker -->
             <!-- <mat-progress-bar *ngIf="isActionInProgress" style="margin-bottom: 16px;" mode="indeterminate"></mat-progress-bar> -->
@@ -8,7 +8,7 @@
             <!-- Below Header: Menus, Search Bar, and Add Button -->
             <div class="content-row">
               <!-- Menus Section -->
-               <div class="dropdown-container">
+               <div class="dropdown-container" style="padding: 0 16px 0 8px;">
                   <div class="flex justify-content-center">
                     <!-- <mat-form-field appearance="outline" class="custom-select-dp">
                       <mat-label>Resume Category</mat-label>
@@ -72,25 +72,21 @@
               </div> -->
           
               <!-- Right Section: Search + Add Job -->
-              <div class="right-section">
-                <!-- Search Bar -->
-                <div class="search-container">
+              <div class="right-section" style="display: flex; justify-content: flex-end; align-items: center; gap: 16px; width: 100%; padding: 0 32px;">
+                <div class="search-container" style="position: relative; width: 320px;">
+                  <i class="pi pi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1.2em; color: #818093;"></i>
                   <input
                     type="text"
                     class="search-input"
+                    style="padding-left: 36px; width: 100%;"
                     [disabled]="isActionInProgress"
                     placeholder="Search resume by title"
                     [formControl]="searchQuery"
                   />
-                  <!-- <button class="search-btn" (click)="onSearch()">
-                    <span class="pi pi-search"></span>
-                  </button> -->
                 </div>
-          
-                <!-- Add Job Button -->
-                <button class="add-job-btn" (click)="onAddResume()">
+                <button class="add-job-btn" (click)="onAddResume()" style="min-width: 140px; height: 40px; padding: 0 18px; white-space: nowrap; display: flex; align-items: center; gap: 8px;">
                   <p-icon class="pi pi-plus"></p-icon>
-                  <span>Add Resume</span>
+                  <span style="white-space: nowrap;">Add Resume</span>
                 </button>
               </div>
             </div>
