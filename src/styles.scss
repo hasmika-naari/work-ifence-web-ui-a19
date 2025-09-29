@@ -1215,15 +1215,56 @@ img {
 
 
 .single-resume-box {
-    background-color: #f5f7fc ; // rgba(204, 204, 204, 0.3803921569) !important;
-    // box-shadow: 0px 8px 16px 0px rgba(146, 184, 255, 0.2);
-    box-shadow: 0 0 2px #53535380;
-    border-radius: 10px;
-    // border: 1px solid var(--secondaryColorLight);
-    transition: var(--transition);
-    margin-bottom: 25px !important;
-    position: relative;
-    min-height: 420px !important;
+    &:hover, &:focus {
+        background-color: #f8fafc !important;
+        background-image:
+            radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.12), transparent 35%),
+            radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.12), transparent 35%),
+            radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.18), transparent 40%),
+            radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.10), transparent 40%);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        // border-color: var(--mainColor);
+        backdrop-filter: blur(8px);
+    }
+   // background: linear-gradient(
+        //     135deg,
+        //     rgba(255,255,255,0.65) 60%,
+        //     var(--mainColor) 90%,
+        //     rgba(55,97,238,0.18) 100%
+        // );
+        background: #3a67730e; //#f381702f; // rgba(255, 255, 255, 0.65);
+        border-radius: 16px;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 1);
+        // box-shadow: 0 2px 3px 0 rgba(255, 255, 255, 0.38), 0 2px 6px 0 rgba(0,0,0,0.10);
+        transition: box-shadow 0.3s, transform 0.3s, background 0.3s;
+        margin-bottom: 25px !important;
+        position: relative;
+        min-height: 420px !important;
+        overflow: hidden;
+        /* Random gradient corners using pseudo-elements */
+        &::before {
+            content: "";
+            position: absolute;
+            top: -40px; left: -40px;
+            width: 120px; height: 120px;
+            // background: radial-gradient(circle, var(--mainColor) 0%, transparent 80%);
+            opacity: 0.18;
+            z-index: 1;
+            pointer-events: none;
+        }
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: -40px; right: -40px;
+            width: 120px; height: 120px;
+            // background: radial-gradient(circle, var(--optionalColor) 0%, transparent 80%);
+            opacity: 0.18;
+            z-index: 1;
+            pointer-events: none;
+        }
+
     .courses-tag {
         position: absolute;
         right: 10px;
@@ -1735,23 +1776,10 @@ img {
             padding: 18px 0 0;
         }
     }
-    &:hover, &:focus {
-        transform: translateY(-10px);
-        background-color: #e3e9f5 !important;
-        border-color: var(--mainColor);
-        // border: none;
-        .courses-image {
-            .courses-tag {
-                // background-color: var(--optionalColor);
-                // border-color: var(--mainColor);
-
-                a {
-                    color: var(--whiteColor);
-                }
-            }
-        }
-    }
+   
 }
+
+
 
 .single-application-box {
     background-color: #f5f7fc !important;
