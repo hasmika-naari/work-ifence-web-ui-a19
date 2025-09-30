@@ -1,0 +1,88 @@
+
+<div class="row pl-4 pr-4" style="height: 80% !important;">
+    <div class="col-12"  >
+        <form [formGroup]="bioForm" style="height: 65vh;margin-top:30px;" >
+            <div class="row wrap">
+                <div class="col-12 p-b-1">
+                    <div class="detail-item profile-overview">
+                        <img class="profile-avatar" [src]="getImageBase64()" alt="Avatar">
+                        <div class="upload-section">
+                          <input
+                            type="file"
+                            class="upload-input"
+                            (change)="onFileSelected($event)"
+                            #imageUpload
+                            placeholder="Upload Image"
+                            accept="image/*"
+                          />
+                          <button class="upload-btn" (click)="imageUpload.click()">Change Picture</button>
+                        </div>
+                        <!-- <h3>{{bioProfile().firstName}} {{bioProfile().lastName}}</h3> -->
+                      </div>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>First Name</mat-label>
+                        <input matInput placeholder="First Name" formControlName="first_name">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="bioForm.get('first_name')?.hasError('required') && (bioForm.get('first_name')?.dirty || bioForm.get('first_name')?.touched)">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 p-b-1 p-t-2">
+                    <mat-form-field appearance="outline" class="w-100" >
+                        <mat-label>Last Name</mat-label>
+                        <input matInput placeholder="Last Name" formControlName="last_name">
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="bioForm.get('last_name')?.hasError('required') && (bioForm.get('last_name')?.dirty || bioForm.get('last_name')?.touched)">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 p-b-1 p-t-2 ">
+                    <mat-form-field class="streach-h-100" appearance="outline">
+                        <mat-label>Date of Birth</mat-label>
+                        <input matInput [matDatepicker]="edp" formControlName="dob" [max]="max_Date">
+                        <mat-datepicker-toggle matIconSuffix [for]="edp"></mat-datepicker-toggle>
+                        <mat-datepicker #edp
+                                        panelClass="example-month-picker">
+                        </mat-datepicker>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="bioForm.get('dob')?.hasError('required') && (bioForm.get('dob')?.dirty || bioForm.get('dob')?.touched)">
+                            Required.
+                        </mat-error>
+                      </mat-form-field>
+                
+                </div>
+                <div class="col-6 p-b-1 p-t-2">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Gender</mat-label>
+                        <mat-select placeholder="Gender" formControlName="gender">
+                            <mat-option *ngFor="let type of genders" [value]="type">
+                                {{type}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error class="ng-dirty ng-invalid" *ngIf="bioForm.get('gender')?.hasError('required') && (bioForm.get('gender')?.dirty || bioForm.get('gender')?.touched)">
+                            Required.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+               
+                <div class="col-12 m-t-2"  >
+                    <div class="col-12 m-t-2 p- text-right text-end"  >
+                        <p-button label="Primary"  [raised]="true" severity="danger" size="small"
+                            (click)="saveBioForm()"  [disabled]="bioForm.invalid"  
+                            [tooltip]="'Save profile'"
+                            tooltipPosition="top"
+                            tooltipStyleClass="custom-tooltip">
+                                <ng-template pTemplate="content" >
+                                    <p-icon class="pi pi-check" ></p-icon>
+                                    Save Profile
+                                </ng-template>
+                        </p-button>
+                    </div>
+                </div>
+                
+            </div>
+        </form>
+       
+    </div>
+</div>

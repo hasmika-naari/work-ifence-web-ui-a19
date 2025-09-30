@@ -1,0 +1,177 @@
+<section class="bio-profile-section">
+        <div class="header">
+          <h2>Login Profile</h2>
+          <div style="display: flex;gap: 10px;float: right;">
+            <button class="action-btn edit-btn" title="Edit" (click)="editLoginProfile($event)">
+              <span class="pi pi-pencil"></span>
+            </button>
+            <!-- <button class="action-btn delete-btn" title="Remove">
+              <span class="pi pi-trash"></span>
+            </button> -->
+          </div>
+        </div>
+        <div class="profile-details">
+        <div class="detail-item">
+        <strong>{{ loginProfile().userName || 'Not Updated' }}</strong>
+        <span class="value-label">User Name</span>
+        </div>
+        <div class="detail-item">
+        <strong>********</strong>
+        <span class="value-label">Password</span>
+        </div>
+        <div class="detail-item">
+        <strong>{{ loginProfile().phoneNumber || 'Not Updated' }}</strong>
+        <span class="value-label">Phone Number</span>
+        </div>
+        <div class="detail-item">
+        <strong>{{ loginProfile().emailId || 'Not Updated' }}</strong>
+        <span class="value-label">Email ID</span>
+        </div>
+        </div>
+      </section>
+      
+
+
+<!-- 
+ <mat-card  style="max-width:1500px;">
+        <mat-card-header>
+                <mat-card-title>
+                        Login Profile
+                </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="mt-20 mb-3">
+                <div class="row wrap streach-h-100 m-0 p-0">
+                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" *ngIf="!offEdit">
+                                 <div class="row wrap streach-h-100 m-0 p-0">
+                                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" >
+                                                <div>
+                                                        <div>
+                                                              <span class="data-data">{{loginProfile().userName}}</span>
+                                                        </div>
+                                                        <div>
+                                                                <small class="data-label">User Name </small> 
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0" >
+                                                <div>
+                                                        <div>
+                                                              <span class="data-data">***************</span>
+                                                        </div>
+                                                        <div>
+                                                                <small class="data-label">Password </small> 
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0 mt-2" >
+                                                <div>
+                                                        <div>
+                                                              <span class="data-data">{{loginProfile().phoneNumber?loginProfile().phoneNumber : 'NOT SET'}}</span>
+                                                        </div>
+                                                        <div>
+                                                                <small class="data-label">Phone Number </small> 
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-2 col-sm-3 col-xs-12 text-left  m-0 p-0 mt-2" >
+                                                <div>
+                                                        <div>
+                                                              <span class="data-data">{{loginProfile().emailId}}</span>
+                                                        </div>
+                                                        <div>
+                                                                <small class="data-label">Email ID </small> 
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="row wrap streach-h-100 m-0 p-0" >
+                        <div class="col-lg-12 col-md-10 col-sm-9 col-xs-12  m-0 p-0"  *ngIf="offEdit">
+                                <form [formGroup]="loginProfileForm"  autocomplete="off">
+                                        <div class="row wrap">
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field  class="streach-h-100">
+                                                                <mat-label>User Name</mat-label>
+                                                                <input  matInput formControlName="userName">
+                                                                <span matPrefix><mat-icon class="show-silver">person</mat-icon></span>
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!loginProfileForm.controls['userName'].valid"
+                                                                [class.show-primary]="loginProfileForm.controls['userName'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="loginProfileForm.controls['userName'].errors || loginProfileForm.controls['userName'].pristine">
+                                                                Missing or Error
+                                                                </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                                
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field  class="streach-h-100">
+                                                                <mat-label>Mobile Number</mat-label>
+                                                                <input  matInput required formControlName="phoneNumber">
+                                                                <span matPrefix><mat-icon class="show-silver">short_text</mat-icon></span>
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!loginProfileForm.controls['phoneNumber'].valid"
+                                                                [class.show-primary]="loginProfileForm.controls['phoneNumber'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="loginProfileForm.get('phoneNumber')?.hasError('required')">
+                                                                Missing or Error
+                                                                </mat-error>
+                                                                <mat-error align="end" class="ng-dirty ng-invalid" *ngIf="loginProfileForm.get('phoneNumber')?.hasError('pattern')">
+                                                                        Please enter a valid Phone number
+                                                                    </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <mat-form-field  class="streach-h-100">
+                                                                <mat-label>Email</mat-label>
+                                                                <input  matInput required formControlName="email">
+                                                                <span matPrefix><mat-icon class="show-silver">short_text</mat-icon></span>
+                                                                <span matSuffix ><mat-icon
+                                                                [class.show-silver]="!loginProfileForm.controls['email'].valid"
+                                                                [class.show-primary]="loginProfileForm.controls['email'].valid">edit</mat-icon></span>
+                                                                <mat-error align="end" *ngIf="loginProfileForm.get('email')?.hasError('required')">
+                                                                Missing or Error
+                                                                </mat-error>
+                                                                <mat-error align="end" class="ng-dirty ng-invalid" *ngIf="loginProfileForm.get('email')?.hasError('pattern')">
+                                                                        Please enter a valid email address
+                                                                    </mat-error>
+                                                        </mat-form-field>
+                                                </div>
+                                        </div>
+                        
+                                </form>
+                        </div>
+                        <div class="row wrap streach-h-100 m-0 p-0">
+                                <div align="end" class="col-12" *ngIf="offEdit">
+                                        <button mat-raised-button color="warn" 
+                                                (click)="cancelChanges($event)">
+                                                <span class="show-white">Cancel</span>
+                                                <mat-icon >
+                                                        close
+                                                </mat-icon>
+                                        </button>
+                                        <button mat-raised-button color="primary" class="ml-4" (click)="saveLoginProfile($event)"
+                                                        [disabled]="(actionInProgress$ | async) || loginProfileForm.invalid">
+                                                <span >Save</span>
+                                                <mat-icon >
+                                                save
+                                                </mat-icon>
+                                        </button>
+                                </div>
+                                <div align="end" class="col-12" *ngIf="!offEdit">
+
+                                        <button mat-raised-button color="warn" 
+                                                (click)="editLoginProfile($event)">
+                                                <span class="show-white">Modify</span>
+                                                <mat-icon >
+                                                        edit
+                                                </mat-icon>
+                                        </button>
+                                </div>
+                        </div>
+                </div>
+        </mat-card-content>
+        <mat-card-footer>
+                <mat-progress-bar *ngIf="actionInProgress" mode="indeterminate" color="primary" value="71"></mat-progress-bar>
+        </mat-card-footer>
+ </mat-card>      
+      -->

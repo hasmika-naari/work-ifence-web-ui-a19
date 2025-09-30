@@ -1,0 +1,151 @@
+.bio-profile-section {
+  max-width: 1000px;
+  margin: 10px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  //font-family: Arial, sans-serif;
+}
+
+.bio-profile-section .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.bio-profile-section h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.bio-profile-section .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: none;
+  background: #f1f1f1;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.action-btn:hover {
+  background: #e0e0e0;
+  transform: scale(1.1);
+}
+
+p-icon {
+  font-size: 16px;
+  color: #555;
+}
+
+/* Icon Colors */
+.pi-pencil {
+  color: #4caf50; /* Green for Edit */
+}
+
+.pi-plus {
+  color: #2196f3; /* Blue for Add */
+}
+
+.pi-trash {
+  color: #f44336; /* Red for Remove */
+}
+
+.bio-profile-section .profile-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.detail-item {
+  flex: 1 calc(50% - 15px); /* Three columns */
+  background: #fbfbfb;
+  padding: 10px;
+  border: 1px solid #eeeeee26;
+  border-radius: 4px;
+  min-width: 250px; /* Ensures proper width for smaller fields */
+  // align-items: start !important;
+}
+
+.detail-item strong {
+  display: block;
+  font-weight: 500;
+  color: var(--secondaryColor) !important;
+  margin-bottom: 4px;
+  font-size:medium; 
+}
+
+.detail-item .value-label {
+  color: #666;
+  font-size: small !important;
+}
+
+.bio-profile-section .profile-overview {
+  flex: 1 1 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.bio-profile-section .profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.bio-profile-section .upload-section {
+  margin: 10px 0;
+}
+
+.bio-profile-section .upload-input {
+  display: none;
+}
+
+.bio-profile-section .upload-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.bio-profile-section .upload-btn:hover {
+  background-color: #0056b3;
+}
+
+.bio-profile-section h3 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: #444;
+}
+
+// .bio-profile-section strong {
+//   font-size: 1rem;
+//   color: #333;
+// }
+
+// .bio-profile-section .value-label {
+//   display: block;
+//   margin-top: 5px;
+//   font-size: 0.9rem;
+//   color: #888;
+// }

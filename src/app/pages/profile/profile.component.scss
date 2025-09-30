@@ -1,3 +1,240 @@
+/* Sidenav and overlay must be above header (header z-index: 1100) */
+.mat-sidenav, .cdk-overlay-pane {
+  position: fixed !important;
+  z-index: 2002 !important;
+  top: 0 !important;
+}
+.cdk-overlay-backdrop, .mat-drawer-backdrop {
+  z-index: 2001 !important;
+}
+.mat-tab-group {
+    background: transparent !important;
+    width: 100vw;
+    min-width: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+/* Container background below header */
+.profile-sidenav-container {
+  width: 100vw;
+  min-width: 0;
+  background-color: #f8fafc;
+  background-image:
+    radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
+    radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
+    radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
+    radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  z-index: 1;
+}
+
+/* Header above background, below sidenav */
+.app-header, header, .main-header, .sticky-header {
+  z-index: 1000 !important;
+  position: relative;
+}
+
+/* Remove duplicate/old z-index rules for sidenav/overlay */
+// Sidenav layout styles
+.profile-sidenav-layout {
+  display: flex;
+  width: 100vw;
+  min-height: calc(100vh - 64px); /* Adjust header height as needed */
+  position: relative;
+    // background-color: #f8fafc;
+    // background-image:
+    //   radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
+    //   radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
+    //   radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
+    //   radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+    // background-repeat: no-repeat;
+    // background-size: 100% 100%;
+}
+
+.profile-sidenav {
+  width: 220px;
+  // background-color: #f8fafc;
+  //   background-image:
+  //     radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
+  //     radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
+  //     radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
+  //     radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+  //   background-repeat: no-repeat;
+  //   background-size: 100% 100%;
+  backdrop-filter: blur(8px);
+  border-right: 1px solid #ececec;
+  min-height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  position: sticky;
+  top: 64px;
+  z-index: 2;
+}
+.sidenav-content {
+  padding: 2rem 1rem;
+}
+.sidenav-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: var(--mainColor);
+}
+.sidenav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidenav-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.18s;
+}
+.sidenav-list li:hover {
+  background: rgba(255,255,255,0.32);
+}
+
+.profile-main-content {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-tabs-container {
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 40px;
+    // background-color: #f8fafc;
+    // background-image:
+    //   radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
+    //   radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
+    //   radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
+    //   radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+    // background-repeat: no-repeat;
+    // background-size: 100% 100%;
+}
+
+.profile-edit-nav {
+  width: 340px;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  border-left: 1px solid #ececec;
+  min-height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  position: sticky;
+  top: 64px;
+  z-index: 2;
+  padding: 2rem 1rem;
+}
+.edit-nav-content {
+  height: 100%;
+}
+// Tab-based layout styles
+.profile-tabs-container {
+  margin: 2rem auto;
+  // max-width: 1200px;
+  width: calc(100% - 150px);
+  padding-top: 0px;
+  margin-top: 65px;
+  overflow: visible !important; 
+  border: 1px solid white;
+  margin-left: 100px;
+  margin-right: 50px;
+}
+
+.mat-tab-list {
+  overflow-x: visible !important;
+  scrollbar-width: none;
+}
+.mat-tab-list::-webkit-scrollbar {
+  display: none;
+}
+
+
+.mat-tab-group {
+  background: transparent;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+  overflow: visible;
+  justify-content: flex-start;
+}
+
+.mat-tab-list {
+  display: inline-flex !important;
+  justify-content: flex-start !important;
+  align-items: flex-end;
+  gap: 0;
+  width: auto !important;
+  min-width: unset !important;
+  max-width: unset !important;
+}
+
+.mat-tab-label {
+  min-width: 180px;
+  max-width: 180px;
+  width: 180px;
+  flex: 0 0 180px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px 12px 0 0;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  color: var(--mainColor);
+  transition: background 0.2s;
+}
+
+.mat-tab-label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px 12px 0 0;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  color: var(--mainColor);
+  transition: background 0.2s;
+}
+.mat-tab-label-active {
+  background: rgba(255,255,255,0.32);
+  color: var(--mainColor);
+}
+.tab-label mat-icon {
+  font-size: 1.3em;
+  margin-right: 0.3em;
+  vertical-align: middle;
+}
+.tab-content.glass-bg {
+  background: rgba(255,255,255,0.22);
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  backdrop-filter: blur(12px);
+  padding: 2rem 1.5rem;
+  min-height: 350px;
+}
+.academic-profile-placeholder,
+.job-profile-placeholder {
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  padding: 3rem 0;
+  opacity: 0.8;
+}
 .resume-data-label{
     font-size: small;
     color: gray;
@@ -1401,7 +1638,14 @@
     overflow: hidden; /* Prevent overflow during animations */
     margin: 0px;
     padding: 0px;
-    background-color: #fafafa;
+    background-color: #f8fafc;
+    background-image:
+      radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
+      radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
+      radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
+      radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
   
   /* Left Column */

@@ -17,14 +17,16 @@ import { LoginFormEditorComponent } from './login-form-editor/login-form-editor.
 import { BioFormEditorComponent } from './bio-form-editor/bio-form-editor.component';
 import { AddressFormEditorComponent } from './address-form-editor/address-form-editor.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule,
-    MatIconModule,PanelModule,ButtonModule,
+    MatIconModule,PanelModule,ButtonModule, MatTabsModule, MatSidenavModule,
           FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
           AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, AddressFormEditorComponent,
         MatProgressBarModule],
@@ -80,11 +82,13 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
   closePanelWindow($event: any){
     this.hidePanelWindow = true;
-    this.showAddressFormEditor = false;
-    this.showBioFormEditor = false;
-    this.showLoginFormEditor = false;
-    this.formClosed = !this.formClosed;
-    this.userStore.setSelectedAddress(new Address());
+    setTimeout(() => {
+      this.showAddressFormEditor = false;
+      this.showBioFormEditor = false;
+      this.showLoginFormEditor = false;
+      this.formClosed = !this.formClosed;
+      this.userStore.setSelectedAddress(new Address());
+    }, 300);
   }
 
   showLoginFormEditorWindow(){

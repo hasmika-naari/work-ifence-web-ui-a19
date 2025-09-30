@@ -463,8 +463,14 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/dashboard-app-admin/dashboard-app-admin.component').then(m => m.DashboardAppAdminComponent), 
                 data: { breadcrumb: 'Employee Dashboard' } 
             },
+            {
+                path: 'profile',
+                loadComponent: () => 
+                    import('./pages/dashboard-profile/dashboard-profile.component').then(m => m.DashboardProfileComponent),
+                data: { breadcrumb: 'Profile' } 
+            },
             {   
-                path: 'profile', 
+                path: 'profile2', 
                 loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent), 
                 data: { breadcrumb: 'Account Settings' } 
             }
