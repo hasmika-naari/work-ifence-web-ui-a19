@@ -30,11 +30,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { FooterComponent } from 'src/app/pages/home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from 'src/app/pages/landing/header-wifence/header-wifence.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
 import moment from 'moment';
 import { Account, BioProfile, LoginProfile } from 'src/app/services/profile.model';
 import { ResumeService } from 'src/app/services/resume.service';
 import { AuthService } from 'src/app/services/auth.service';
-
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -57,7 +61,9 @@ export interface DialogData {
     MatCheckboxModule, MatAutocompleteModule,
     MatInputModule,ButtonModule,OverlayPanelModule,
     MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule, MatSelectModule, MatDatepickerModule],
+  MatIconModule,MatExpansionModule, MatSelectModule, MatDatepickerModule,
+  CalendarModule, DropdownModule, FloatLabelModule,InputIconModule,IconFieldModule
+  ],
   templateUrl: './bio-form-editor.component.html',
   styleUrls: ['./bio-form-editor.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -81,7 +87,11 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Output() formSaved = new EventEmitter();
   @Input() formClosed! : boolean
 
-  genders : string[] = ['Male', 'Female']
+  // PrimeNG dropdown expects array of objects with label and value
+  genders = [
+    { label: 'Male', value: 'Male' },
+    { label: 'Female', value: 'Female' }
+  ];
   max_Date : Date;
 
 
@@ -133,17 +143,19 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
 
 
   setBioForm(){
-    console.log(this.bioProfile());
-    this.bioForm.controls['first_name'].setValue(this.bioProfile().firstName);
-    this.bioForm.controls['last_name'].setValue(this.bioProfile().lastName);
-    const dob = this.bioProfile().dob ? new Date(this.bioProfile().dob) : null;
-    this.bioForm.controls['dob'].setValue(dob);
-    if(this.bioProfile().gender == '1'){
-        this.bioForm.controls['gender'].setValue('Male');
-    }
-    else if(this.bioProfile().gender == '0'){
-        this.bioForm.controls['gender'].setValue('Female');
-    }
+  console.log(this.bioProfile());
+  this.bioForm.controls['first_name'].setValue(this.bioProfile().firstName);
+  this.bioForm.controls['last_name'].setValue(this.bioProfile().lastName);
+  // Ensure dob is a Date object for p-calendar
+  const dob = this.bioProfile().dob ? new Date(this.bioProfile().dob) : null;
+  this.bioForm.controls['dob'].setValue(dob);
+  // Set gender as value for PrimeNG dropdown
+  if(this.bioProfile().gender == '1'){
+    this.bioForm.controls['gender'].setValue('Male');
+  }
+  else if(this.bioProfile().gender == '0'){
+    this.bioForm.controls['gender'].setValue('Female');
+  }
   }
 
   formatDateUsingLocale(date: Date): string {

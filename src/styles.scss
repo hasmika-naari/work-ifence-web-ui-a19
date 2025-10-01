@@ -1,6 +1,4 @@
 
-
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
@@ -60,6 +58,13 @@
     box-shadow: 0 2px 8px 0 rgba(240,91,69,0.12);
 }
 
+/* Remove double border from PrimeNG calendar input (Date of Birth field) */
+.p-calendar .p-inputtext {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+
 /* Glassmorphism effect for PrimeNG p-tabs */
 /* Only apply glassmorphism to the main container, not nav or ink bar */
 .p-tabs,
@@ -77,6 +82,8 @@
     box-shadow: none !important;
 }
 
+
+
 /* Glassmorphism effect for PrimeNG tab containers only */
 .p-tabs,
 .p-tabview {
@@ -91,6 +98,15 @@
     border: none !important;
     border-style: none !important;
 }
+
+/* Custom PrimeNG Drawer width for right side */
+.p-drawer-right {
+    top: 0;
+    right: 0;
+    width: 31rem !important;
+    height: 100%;
+}
+
 
 /* Ensure tab panels stretch to fill the tab container */
 /* Remove forced height from .p-tabpanel to avoid hiding the indicator */
