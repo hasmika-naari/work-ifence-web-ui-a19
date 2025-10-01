@@ -1,3 +1,6 @@
+import { ViewChild, AfterViewInit } from '@angular/core';
+
+// (removed misplaced method)
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -39,6 +42,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
+import { AutoComplete, AutoCompleteModule } from 'primeng/autocomplete';
 
 export interface Country {
   name : string
@@ -59,7 +63,7 @@ export interface Country {
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
-    MatCheckboxModule, MatAutocompleteModule,
+    MatCheckboxModule, MatAutocompleteModule, AutoCompleteModule,
     MatInputModule,ButtonModule,OverlayPanelModule,
     MatButtonModule,AccordionModule,TextareaModule,InputIconModule,
     IconFieldModule,FloatLabelModule,DropdownModule,
@@ -68,7 +72,14 @@ export interface Country {
   styleUrls: ['./address-form-editor.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
-export class AddressFormEditorComponent implements OnInit, OnDestroy {
+export class AddressFormEditorComponent implements OnInit, OnDestroy, AfterViewInit {
+  ngAfterViewInit() {
+    // Ensure ViewChild is available and triggers change detection if needed
+    // This is required for showPanel to work reliably
+  }
+
+  @ViewChild('countryAuto') countryAuto: any;
+  @ViewChild('stateAuto') stateAuto: any;
 
   imageBase64: String | null = null; // Define a class property to store the image bytes
   cPage : number = 0
@@ -89,7 +100,7 @@ export class AddressFormEditorComponent implements OnInit, OnDestroy {
   @Output() formSaved = new EventEmitter();
 
   // List of states in the USA
-usaStates: string[] = [
+usaStates: { label: string, value: string }[] = [
     "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
     "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
     "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
@@ -100,27 +111,33 @@ usaStates: string[] = [
     "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
     "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
     "West Virginia", "Wisconsin", "Wyoming"
-  ];
+  ].map(s => ({ label: s, value: s }));
   
   // List of states in India
-  indiaStates: string[] = [
+  indiaStates: { label: string, value: string }[] = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
     "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
     "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
     "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan",
     "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
     "Uttarakhand", "West Bengal"
-  ];
+  ].map(s => ({ label: s, value: s }));
   
   // Union Territories in India
-  indiaUTs: string[] = [
+  indiaUTs: { label: string, value: string }[] = [
     "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
     "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+  ].map(s => ({ label: s, value: s }));
+
+  states : { label: string, value: string }[] = [];
+
+  countries : { label: string, value: string }[] = [
+    { label: 'India', value: 'INDIA' },
+    { label: 'United States', value: 'USA' }
   ];
 
-  states : string[] = []
-
-  countries : Country[] = [{name : 'India', code : 'INDIA'}, {name : 'United States', code : 'USA'}]
+  filteredCountries: { label: string, value: string }[] = [...this.countries];
+  filteredStates: { label: string, value: string }[] = [];
 
 
   constructor(
@@ -146,10 +163,88 @@ usaStates: string[] = [
     address_line1: ['', Validators.required],
     address_line2 : [''],
     city : ['', Validators.required],
-    state : ['', Validators.required],
-    country : ['', Validators.required],
+    state : [null as {label: string, value: string} | null, Validators.required],
+    country : [null as {label: string, value: string} | null, Validators.required],
     zipcode : ['', Validators.required]
   })
+
+  filterCountry(event: any) {
+    const query = event.query?.toLowerCase() || '';
+    if (query) {
+      this.filteredCountries = this.countries.filter(c => c.label.toLowerCase().includes(query));
+    } else {
+      this.filteredCountries = [...this.countries];
+    }
+  }
+
+  onCountryFocus() {
+    // Show initial list if input is empty
+    if (!this.addressForm.controls['country'].value) {
+      this.filterCountry({ query: '' });
+    }
+    if (this.countryAuto && typeof this.countryAuto.show === 'function') {
+      this.countryAuto.show();
+    }
+  }
+
+  onCountrySelect() {
+    // Always set the selected country as the full object
+    const selectedCountry = this.addressForm.controls['country'].value;
+    const selectedValue = typeof selectedCountry === 'string' ? selectedCountry : selectedCountry?.value;
+    const selected = this.countries.find(c => c.value === selectedValue) || null;
+    this.addressForm.controls['country'].setValue(selected);
+    this.addressForm.controls['state'].setValue(null);
+    if (selected?.value === 'INDIA') {
+      this.states = [...this.indiaStates];
+      this.filteredStates = [...this.indiaStates];
+    } else if (selected?.value === 'USA') {
+      this.states = [...this.usaStates];
+      this.filteredStates = [...this.usaStates];
+    } else {
+      this.states = [];
+      this.filteredStates = [];
+    }
+    setTimeout(() => {
+      this.countryAuto?.hide?.();
+    }, 50);
+  }
+
+  filterState(event: any) {
+    const query = event.query?.toLowerCase() || '';
+    if (query) {
+      this.filteredStates = this.states.filter(s => s.label.toLowerCase().includes(query));
+    } else {
+      this.filteredStates = [...this.states];
+    }
+  }
+
+  onStateFocus() {
+    // Always show all states for the selected country on focus
+    this.filterState({ query: '' });
+    // Blur country input to prevent its panel from opening
+    if (this.countryAuto && this.countryAuto.el && this.countryAuto.el.nativeElement) {
+      const input = this.countryAuto.el.nativeElement.querySelector('input');
+      if (input) input.blur();
+    }
+    if (this.stateAuto && typeof this.stateAuto.show === 'function') {
+      this.stateAuto.show();
+    }
+  }
+
+  onStateSelect() {
+    // Always set the selected state as the full object
+    const stateValue = this.addressForm.controls['state'].value;
+    let selected = null;
+    if (typeof stateValue === 'string') {
+      selected = this.states.find(s => s.value === stateValue) || null;
+    } else {
+      selected = this.states.find(s => s.value === stateValue?.value) || null;
+    }
+    this.addressForm.controls['state'].setValue(selected);
+    setTimeout(() => {
+      this.stateAuto?.hide?.();
+    }, 50);
+  }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
@@ -162,12 +257,14 @@ usaStates: string[] = [
   ngOnInit() {
     // this.setAddressForm();
     this.addressForm.controls['country'].valueChanges.subscribe(val => {
-        this.addressForm.controls['state'].setValue('');
-        if(val == 'INDIA'){
-            this.states = [...this.indiaStates];
-        }else if(val == 'USA'){
-            this.states = [...this.usaStates];
-        }
+      this.addressForm.controls['state'].setValue(null);
+      if(val?.value === 'INDIA'){
+        this.states = [...this.indiaStates];
+      } else if(val?.value === 'USA'){
+        this.states = [...this.usaStates];
+      } else {
+        this.states = [];
+      }
     });
   }
 
@@ -177,16 +274,20 @@ usaStates: string[] = [
     this.addressForm.controls['address_name'].setValue(this.address().locationName);
     this.addressForm.controls['address_line1'].setValue(this.address().line1);
     this.addressForm.controls['address_line2'].setValue(this.address().line2);
-    this.addressForm.controls['country'].setValue(this.address().country);
+  // Set country as object
+  const countryObj = this.countries.find(c => c.value === this.address().country) || null;
+  this.addressForm.controls['country'].setValue(countryObj);
     this.addressForm.controls['city'].setValue(this.address().city);
     this.addressForm.controls['zipcode'].setValue(this.address().zipcode);
     if(this.address().country == 'INDIA'){
-        this.states = [...this.indiaStates];
+      this.states = [...this.indiaStates];
     }
     else if(this.address().country == 'USA'){
-        this.states = [...this.usaStates];
+      this.states = [...this.usaStates];
     }
-    this.addressForm.controls['state'].setValue(this.address().state);
+    // Set state as object
+    const stateObj = this.states.find(s => s.value === this.address().state) || null;
+    this.addressForm.controls['state'].setValue(stateObj);
   }
 
   saveAddressForm(){
@@ -196,8 +297,8 @@ usaStates: string[] = [
     form.line1 = this.addressForm.controls['address_line1'].value?this.addressForm.controls['address_line1'].value : '';
     form.line2 = this.addressForm.controls['address_line2'].value?this.addressForm.controls['address_line2'].value : '';
     form.city = this.addressForm.controls['city'].value?this.addressForm.controls['city'].value : '';
-    form.state = this.addressForm.controls['state'].value?this.addressForm.controls['state'].value : '';
-    form.country = this.addressForm.controls['country'].value?this.addressForm.controls['country'].value : '';
+  form.state = this.addressForm.controls['state'].value?.value || '';
+  form.country = this.addressForm.controls['country'].value?.value || '';
     form.zipcode = this.addressForm.controls['zipcode'].value?this.addressForm.controls['zipcode'].value : '';
     form.ownerId = this.userAccount().id;
     form.userName = this.userAccount().login;
