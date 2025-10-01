@@ -237,8 +237,8 @@ mat-sidenav-container, .mat-sidenav-container {
   flex-grow: 1 !important;
   padding: 0px !important; /* Ensures some spacing */
   overflow-y: auto !important; /* Enable vertical scrolling */
-  height: calc(100vh - 70px) !important;
-  margin-top: 65px;
+  height: calc(100vh - 50px) !important;
+  margin-top: 55px;
 }
 
 /* Ensure Header & Footer stay fixed in layout */
@@ -269,4 +269,8 @@ app-footer {
 /* Remove border radius from sidenav for sharp edges */
 .mat-sidenav, .cdk-overlay-pane {
   border-radius: 0 !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-left: 1px solid rgba(255, 255, 255, 1);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
