@@ -44,6 +44,7 @@ import { LoginProfileFormPage } from './login/login-form.page';
 import { LoginFormEditorComponent } from './login-form-editor/login-form-editor.component';
 import { BioFormEditorComponent } from './bio-form-editor/bio-form-editor.component';
 import { AddressFormEditorComponent } from './address-form-editor/address-form-editor.component';
+import { DrawerModule } from 'primeng/drawer';
 
 interface Option {
   name : string;
@@ -65,6 +66,7 @@ interface Option {
         MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule,
         AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, 
         AddressFormEditorComponent,
+        DrawerModule
         ],
     templateUrl: './dashboard-profile.component.html',
     styleUrl : './dashboard-profile.component.scss',
@@ -95,6 +97,15 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   roleCategories : Array<Option> = []
   resumeCategories : Array<Option> = []
   tempResumes : ResumeListDataItem[] = []
+
+   visible1: boolean = false;
+
+    visible2: boolean = false;
+
+    visible3: boolean = false;
+
+    visible4: boolean = false;
+    
 
   template1_sections  : Array<SectionDesc> = [
       {
