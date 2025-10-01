@@ -1,0 +1,38 @@
+<!-- <p-card class="profile-card">
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center justify-content-between">
+      <span>Resume Summary</span>
+      <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text" (click)="editSummary.emit()"></button>
+    </div>
+  </ng-template>
+  <div [innerHTML]="summary" class="summary-content"></div>
+</p-card> -->
+
+<section class="summary-profile-section">
+        <div class="header">
+          <h2>Resume Summary</h2>
+          <div style="display: flex;gap: 10px;float: right;">
+            <button class="action-btn edit-btn" title="Edit" (click)="editSummary.emit()">
+              <span class="pi pi-pencil"></span>
+            </button>
+          </div>
+        </div>
+        <div class="profile-details">
+         <div [innerHTML]="summary || dummySummary" class="summary-content"></div>
+         <!-- Dummy summary for Angular Developer -->
+         <ng-container *ngIf="!summary">
+           <div class="summary-content">
+             <p><strong>Experienced Angular Developer</strong> with 5+ years of expertise in building scalable, performant web applications using Angular, TypeScript, and PrimeNG.</p>
+             <ul>
+               <li>Developed and maintained enterprise-grade Angular applications for finance and healthcare domains.</li>
+               <li>Expert in RxJS, state management (NgRx), and RESTful API integration.</li>
+               <li>Skilled in component-driven architecture, lazy loading, and performance optimization.</li>
+               <li>Led a team of 4 developers, mentoring on best practices and code reviews.</li>
+               <li>Implemented CI/CD pipelines and unit/e2e testing with Jasmine, Karma, and Cypress.</li>
+               <li>Strong communicator and agile team player.</li>
+             </ul>
+           </div>
+         </ng-container>
+        </div>
+      </section>
+      

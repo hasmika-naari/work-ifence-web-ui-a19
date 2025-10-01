@@ -1,3 +1,4 @@
+import { Input } from '@angular/core';
 import { ViewChild, AfterViewInit } from '@angular/core';
 
 // (removed misplaced method)
@@ -73,6 +74,8 @@ export interface Country {
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class AddressFormEditorComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @Input() isActionInProgress: boolean = false;
   ngAfterViewInit() {
     // Ensure ViewChild is available and triggers change detection if needed
     // This is required for showPanel to work reliably
@@ -98,6 +101,7 @@ export class AddressFormEditorComponent implements OnInit, OnDestroy, AfterViewI
 
   @Output() actionInProgress = new EventEmitter();
   @Output() formSaved = new EventEmitter();
+  @Output() formClosed = new EventEmitter();
 
   // List of states in the USA
 usaStates: { label: string, value: string }[] = [
@@ -309,6 +313,7 @@ usaStates: { label: string, value: string }[] = [
             this.userStore.editAddress(e, index);
             this.userStore.setSelectedAddress(new Address());
             this.formSaved.emit()
+            this.formClosed.emit();
         })
     }
     else{
@@ -316,8 +321,14 @@ usaStates: { label: string, value: string }[] = [
             this.userStore.addAddress(e);
             this.userStore.setSelectedAddress(new Address());
             this.formSaved.emit()
+            this.formClosed.emit();
         })
         }    
+  }
+
+  // Optional: method to close/cancel the form (e.g. on a cancel button or overlay close)
+  closeEditor() {
+    this.formClosed.emit();
   }
 
 

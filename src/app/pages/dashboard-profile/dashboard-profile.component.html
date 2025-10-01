@@ -18,7 +18,19 @@
                     <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" (formClosed)="closeFormEditor()"></app-login-form-editor>
                 </ng-container>
                 <ng-container *ngIf="showAddressFormEditor">
-                    <app-address-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" (formClosed)="closeFormEditor()"></app-address-form-editor>
+                    <app-address-form-editor 
+                        [isActionInProgress]="isActionInProgress"
+                        (actionInProgress)="actionInProgressStarts()" 
+                        (formSaved)="saveForm()" 
+                        (formClosed)="closeFormEditor()">
+                    </app-address-form-editor>
+                </ng-container>
+                <ng-container *ngIf="showSummaryFormEditor">
+                    <summary-profile-edit
+                        [summary]="summary"
+                        (saveSummary)="onSummarySaved($event)"
+                        (close)="closeFormEditor()">
+                    </summary-profile-edit>
                 </ng-container>
             </p-drawer>
 
@@ -85,7 +97,7 @@
                       </div>
                   </p-tabpanel>
                   <p-tabpanel value="1" style="height: 100%; overflow-y: auto;">
-                      <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
+                       <summary-profile-display [summary]="summary" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
                   </p-tabpanel>
                   <p-tabpanel value="2" style="height: 100%; overflow-y: auto;">
                       <!-- Academic Profile form goes here if available -->

@@ -48,6 +48,9 @@ import { DrawerModule } from 'primeng/drawer';
 import { TabsModule } from 'primeng/tabs';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
+import { SummaryProfileFormPage } from './job-profile/summary/summary-form.page';
+import { SummaryProfileDisplayComponent } from './job-profile/summary/summary-display.component';
+import { SummaryProfileEditComponent } from './job-profile/summary/summary-edit.component';
 
 interface Option {
   name : string;
@@ -63,12 +66,12 @@ interface Option {
         ChartModule, ReactiveFormsModule,
         MenuModule,DividerModule, MatFormFieldModule, MatInputModule,
         TableModule,DialogModule,InputTextModule, MatProgressBarModule,
-        StyleClassModule,ResumeList2Component,
+        StyleClassModule,ResumeList2Component,SummaryProfileDisplayComponent,
         PanelMenuModule,ResumeFormTabbedComponent,ResumeForm2Component,
         ButtonModule,TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, 
         MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule,
         AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, 
-        AddressFormEditorComponent,
+        AddressFormEditorComponent, SummaryProfileFormPage, SummaryProfileEditComponent,
         DrawerModule,TabsModule, BadgeModule, AvatarModule
         ],
     templateUrl: './dashboard-profile.component.html',
@@ -77,15 +80,34 @@ interface Option {
 })
 export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   actionInProgressStarts() {
-    this.isActionInProgress = true;
+  this.isActionInProgress = true;
   }
   saveForm() {
-    // TODO: Implement save logic if needed
-    console.log('Form saved');
+  this.isActionInProgress = false;
+  console.log('Form saved');
   }
   showBioFormEditor = false;
   showLoginFormEditor = false;
   showAddressFormEditor = false;
+
+  // Controls visibility of the summary edit form in the drawer
+  showSummaryFormEditor = false;
+
+  // Holds the summary text (dummy data for Angular Full Stack Developer, formatted as HTML)
+  summary: string = `
+    <ul style="margin-left: 1.2em;">
+      <li>7+ years of experience in designing and developing scalable web applications</li>
+      <li>Expert in Angular, TypeScript, and RxJS for building dynamic SPAs</li>
+      <li>Proficient in Node.js, Express, and RESTful API development</li>
+      <li>Strong experience with MongoDB, PostgreSQL, and MySQL databases</li>
+      <li>Skilled in implementing authentication and authorization (JWT, OAuth)</li>
+      <li>Hands-on with CI/CD pipelines and Docker containerization</li>
+      <li>Adept at writing unit and integration tests using Jasmine, Karma, Jest</li>
+      <li>Familiar with cloud platforms: AWS, Azure, and Firebase</li>
+      <li>Excellent problem-solving and debugging skills</li>
+      <li>Strong communicator and effective collaborator in agile teams</li>
+    </ul>
+  `;
 
   isActionInProgress: boolean = true;
 
@@ -118,6 +140,23 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     visible3: boolean = false;
 
     visible4: boolean = false;
+
+    // Handler for when the summary is saved from the edit form
+    onSummarySaved(newSummary: string) {
+      this.summary = newSummary;
+      this.showSummaryFormEditor = false;
+      this.visible2 = false; // Hide the drawer if using visible2 for summary
+    }
+
+    // Handler to open the summary edit form in the drawer
+    showSummaryFormEditorWindow() {
+      this.showSummaryFormEditor = true;
+      this.visible2 = true; // Show the drawer for summary
+      // Optionally close other editors if needed
+      this.showBioFormEditor = false;
+      this.showLoginFormEditor = false;
+      this.showAddressFormEditor = false;
+    }
 
 
   template1_sections  : Array<SectionDesc> = [
@@ -332,11 +371,13 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     this.visible2 = true;
   }
 
+  // (removed duplicate empty showSummaryFormEditorWindow)
   closeFormEditor() {
-    this.showBioFormEditor = false;
-    this.showLoginFormEditor = false;
-    this.showAddressFormEditor = false;
-    this.visible2 = false;
+  this.showBioFormEditor = false;
+  this.showLoginFormEditor = false;
+  this.showAddressFormEditor = false;
+  this.visible2 = false;
+  this.isActionInProgress = false;
   }
 
   getResumes(){

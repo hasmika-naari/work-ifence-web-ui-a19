@@ -1,7 +1,10 @@
 
 <div class="row pl-4 pr-4" style="height: 80% !important;">
+        <ng-container *ngIf="isActionInProgress">
+            <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+        </ng-container>
     <div class="col-12"  >
-        <form [formGroup]="addressForm" style="height: 65vh;margin-top:30px;" >
+    <form [formGroup]="addressForm" style="height: 65vh;margin-top:30px;" >
             <div class="row wrap">
                 <div class="col-12 p-b-3 p-t-3">
                     <p-floatlabel variant="on" class="w-100">
