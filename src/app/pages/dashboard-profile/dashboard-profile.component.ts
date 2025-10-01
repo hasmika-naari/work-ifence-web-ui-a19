@@ -45,6 +45,9 @@ import { LoginFormEditorComponent } from './login-form-editor/login-form-editor.
 import { BioFormEditorComponent } from './bio-form-editor/bio-form-editor.component';
 import { AddressFormEditorComponent } from './address-form-editor/address-form-editor.component';
 import { DrawerModule } from 'primeng/drawer';
+import { TabsModule } from 'primeng/tabs';
+import { BadgeModule } from 'primeng/badge';
+import { AvatarModule } from 'primeng/avatar';
 
 interface Option {
   name : string;
@@ -66,13 +69,20 @@ interface Option {
         MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule,
         AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, 
         AddressFormEditorComponent,
-        DrawerModule
+        DrawerModule,TabsModule, BadgeModule, AvatarModule
         ],
     templateUrl: './dashboard-profile.component.html',
     styleUrl : './dashboard-profile.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewInit {
+  saveForm() {
+    // TODO: Implement save logic if needed
+    console.log('Form saved');
+  }
+  showBioFormEditor = false;
+  showLoginFormEditor = false;
+  showAddressFormEditor = false;
 
   isActionInProgress: boolean = true;
 
@@ -105,7 +115,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     visible3: boolean = false;
 
     visible4: boolean = false;
-    
+
 
   template1_sections  : Array<SectionDesc> = [
       {
@@ -295,8 +305,35 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
            this.getResumes();
          }, 50);
       }
+  }
 
-       
+  // Handler for address-profile-form edit event
+  showAddressFormEditorWindow() {
+    this.showBioFormEditor = false;
+    this.showLoginFormEditor = false;
+    this.showAddressFormEditor = true;
+    this.visible2 = true;
+  }
+
+  // Handler for login-profile-form edit event
+  showLoginFormEditorWindow() {
+    this.showBioFormEditor = false;
+    this.showLoginFormEditor = true;
+    this.showAddressFormEditor = false;
+    this.visible2 = true;
+  }
+  showBioFormEditorWindow() {
+    this.showBioFormEditor = true;
+    this.showLoginFormEditor = false;
+    this.showAddressFormEditor = false;
+    this.visible2 = true;
+  }
+
+  closeFormEditor() {
+    this.showBioFormEditor = false;
+    this.showLoginFormEditor = false;
+    this.showAddressFormEditor = false;
+    this.visible2 = false;
   }
 
   getResumes(){
