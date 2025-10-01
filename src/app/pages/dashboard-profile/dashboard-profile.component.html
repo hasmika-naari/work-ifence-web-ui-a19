@@ -37,53 +37,68 @@
               aliquip ex ea commodo consequat.
           </p>
       </p-drawer>
-      <div class="flex gap-2 justify-center">
-          <p-button type="button" (click)="visible1 = true" icon="pi pi-arrow-right" />
-          <p-button type="button" (click)="visible2 = true" icon="pi pi-arrow-left" />
-          <p-button type="button" (click)="visible3 = true" icon="pi pi-arrow-down" />
-          <p-button type="button" (click)="visible4 = true" icon="pi pi-arrow-up" />
+    <div class="flex gap-2 justify-center" style="padding-left: 20px; padding-right: 20px;margin-top: 10px; margin-bottom: 10px; height: calc(92vh - 60px);">
+      <div style="height: 100%; width: 100%; display: flex; flex-direction: column;">
+        <div style="flex: 1 1 0; min-height: 0; display: flex; flex-direction: column;">
+          <div style="flex: 1 1 0; min-height: 0; overflow: auto;">
+            <p-tabs value="0" style="height: 100%; display: flex; flex-direction: column;">
+              <p-tablist>
+                  <ng-template #previcon>
+                      <i class="pi pi-minus"></i>
+                  </ng-template>
+                  <p-tab value="0" class="flex items-center !gap-2">
+                      <i class="pi pi-user-edit"></i>
+                      <span class="font-bold whitespace-nowrap">Account Info</span>
+                  </p-tab>
+                  <p-tab value="1" class="flex items-center !gap-2">
+                      <i class="pi pi-briefcase"></i>
+                      <span class="font-bold whitespace-nowrap">Job Profile</span>
+                  </p-tab>
+                  <p-tab value="2" class="flex items-center !gap-2">
+                      <i class="pi pi-book"></i>
+                      <span class="font-bold whitespace-nowrap">Status info</span>
+                  </p-tab>
+                  <!-- <p-tab value="3" class="flex items-center !gap-2">
+                      <i class="pi pi-briefcase"></i>
+                      <span class="font-bold whitespace-nowrap">Job Profile</span>
+                  </p-tab> -->
+                  <ng-template #nexticon>
+                      <i class="pi pi-plus"></i>
+                  </ng-template>
+              </p-tablist>
+              <p-tabpanels style="height: 100%;">
+                  <p-tabpanel value="0" style="height: 100%; overflow-y: auto;">
+                      <div style="text-align: left;
+                          overflow-y: scroll;
+                          height: 75vh;
+                          padding-bottom: 100px;">
+                          <section class="mb-4">
+                          <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
+                          </section>
+                          <section class="mb-4" style="margin-top: 20px;"> 
+                          <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
+                          </section>
+                          <section class="mb-4" style="margin-top: 20px;">
+                          <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
+                          </section>
 
-          <p-tabs value="0" scrollable>
-            <p-tablist>
-                <ng-template #previcon>
-                    <i class="pi pi-minus"></i>
-                </ng-template>
-                <p-tab value="0" class="flex items-center !gap-2">
-                    <i class="pi pi-user-edit"></i>
-                    <span class="font-bold whitespace-nowrap">Bio Profile</span>
-                </p-tab>
-                <p-tab value="1" class="flex items-center !gap-2">
-                    <i class="pi pi-lock"></i>
-                    <span class="font-bold whitespace-nowrap">Login Profile</span>
-                </p-tab>
-                <p-tab value="2" class="flex items-center !gap-2">
-                    <i class="pi pi-book"></i>
-                    <span class="font-bold whitespace-nowrap">Academic Profile</span>
-                </p-tab>
-                <p-tab value="3" class="flex items-center !gap-2">
-                    <i class="pi pi-briefcase"></i>
-                    <span class="font-bold whitespace-nowrap">Job Profile</span>
-                </p-tab>
-                <ng-template #nexticon>
-                    <i class="pi pi-plus"></i>
-                </ng-template>
-            </p-tablist>
-            <p-tabpanels>
-                <p-tabpanel value="0">
-                    <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
-                </p-tabpanel>
-                <p-tabpanel value="1">
-                    <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
-                </p-tabpanel>
-                <p-tabpanel value="2">
-                    <!-- Academic Profile form goes here if available -->
-                    <p class="m-0">Academic Profile content goes here.</p>
-                </p-tabpanel>
-                <p-tabpanel value="3">
-                    <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
-                </p-tabpanel>
-            </p-tabpanels>
-        </p-tabs>
+                      </div>
+                  </p-tabpanel>
+                  <p-tabpanel value="1" style="height: 100%; overflow-y: auto;">
+                      <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
+                  </p-tabpanel>
+                  <p-tabpanel value="2" style="height: 100%; overflow-y: auto;">
+                      <!-- Academic Profile form goes here if available -->
+                      <p class="m-0">Academic Profile content goes here.</p>
+                  </p-tabpanel>
+                  <!-- <p-tabpanel value="3" style="height: 100%; overflow-y: auto;">
+                      <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
+                  </p-tabpanel> -->
+              </p-tabpanels>
+            </p-tabs>
+          </div>
+        </div>
       </div>
+    </div>
     </div>
 </div>

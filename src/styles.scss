@@ -1,4 +1,6 @@
 
+
+
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
@@ -17,6 +19,82 @@
 @use "./dark";
 
 @use "./styles/_theme-colors.scss" as theme-colors;
+
+/* PrimeNG Tabs: Force active/ink bar color to match --mainColor */
+.p-tabs .p-tab.p-tab-active .p-tab-label,
+.p-tabs .p-tablist .p-tab.p-tab-active .p-tab-label,
+.p-tabs .p-tablist .p-tab.p-tab-active,
+.p-tabs .p-tablist .p-tab-active,
+.p-tabview .p-tabview-nav .p-tabview-nav-link.p-tabview-nav-link-active {
+    color: var(--mainColor) !important;
+    // background-color: var(--mainColor5) !important;
+    // border-bottom-right-radius: 10px;
+    // border-bottom-left-radius: 10px;
+}
+.p-tabs .p-tablist .p-tab.p-tab-active {
+    border-bottom: 2px solid var(--mainColor) !important;
+}
+.p-tabview .p-tabview-nav .p-tabview-nav-link.p-tabview-nav-link-active {
+    border-color: var(--mainColor) !important;
+}
+/* PrimeNG Tabview: Force ink bar (active tab indicator) to use --mainColor */
+.p-tabview .p-tabview-nav .p-tabview-ink-bar {
+    background-color: var(--mainColor) !important;
+    height: 3px !important;
+    position: absolute !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    box-shadow: 0 2px 8px 0 rgba(240,91,69,0.12);
+}
+/* Force PrimeNG .p-tablist-active-bar to use --mainColor for the active tab indicator */
+.p-tablist-active-bar {
+    background: var(--mainColor) !important;
+    height: 3px !important;
+    position: absolute !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    box-shadow: 0 2px 8px 0 rgba(240,91,69,0.12);
+}
+
+/* Glassmorphism effect for PrimeNG p-tabs */
+/* Only apply glassmorphism to the main container, not nav or ink bar */
+.p-tabs,
+.p-tabview {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid #fff;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+.p-tabview-nav,
+.p-tabview-ink-bar,
+.p-tablist-active-bar {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Glassmorphism effect for PrimeNG tab containers only */
+.p-tabs,
+.p-tabview {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid #fff;
+    // border-radius: 16px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.p-tablist-tab-list {
+    border: none !important;
+    border-style: none !important;
+}
+
+/* Ensure tab panels stretch to fill the tab container */
+/* Remove forced height from .p-tabpanel to avoid hiding the indicator */
+
 
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
@@ -172,9 +250,9 @@ $workifence-theme: mat.define-theme((
 
 
   // primeNg Colors    
-  --primary-color: #f05b45;  /* Custom primary color */
-  --primary-color-text: #ffffff;
-  --primary-button-border-color: #f05b45; /* Custom border color */
+    --primary-color: var(--mainColor);  /* Custom primary color */
+    --primary-color-text: #ffffff;
+    --primary-button-border-color: var(--mainColor); /* Custom border color */
   --secondary-color: #3a6773; /* Custom secondary color */
   --secondary-color-text: #ffffff;
 

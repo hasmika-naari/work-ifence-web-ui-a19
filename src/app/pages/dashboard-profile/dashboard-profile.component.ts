@@ -76,6 +76,9 @@ interface Option {
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewInit {
+  actionInProgressStarts() {
+    this.isActionInProgress = true;
+  }
   saveForm() {
     // TODO: Implement save logic if needed
     console.log('Form saved');
