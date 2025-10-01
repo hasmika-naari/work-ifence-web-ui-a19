@@ -500,7 +500,6 @@
                 transition: width 0.3s ease-in-out;
                 width: 260px;
                 height: 250px;
-                transition: width 0.3s ease-in-out;
                 // border-bottom: 1px dotted gray;
                 /* Increase Profile Image Size */
                 .sidenav-user-image {
@@ -509,31 +508,25 @@
                     opacity: 1;
                 }
 
-                /* Profile Details: Visible Only When Expanded */
+                /* Profile Details: Always visible, no animation */
                 .sidenav-user-name{
                     font-size: medium;
                     padding: 0px !important;
-                   // opacity: 1;
-                   opacity: 0; /* Initially hidden */
-                   will-change: opacity; /* Optimizes rendering */
-                    animation: fadeIn 1.5s ease-in-out 0.5s forwards; /* 1.5s duration, starts after 0.5s delay */
-
+                    opacity: 1;
+                    animation: none !important;
+                    will-change: auto;
                 }
                 .sidenav-user-email{
                     font-size: small;
                     padding: 0px !important;
-                    opacity: 0; /* Initially hidden */
-                    will-change: opacity; /* Optimizes rendering */
-    animation: fadeIn 1.5s ease-in-out 0.5s forwards; /* 1.5s duration, starts after 0.5s delay */
-
-                    //opacity: 1;//
+                    opacity: 1;
+                    animation: none !important;
+                    will-change: auto;
                 }
                 .sidenav-user-icons {
-                  //  opacity: 1;
-                  opacity: 0; /* Initially hidden */
-                  will-change: opacity; /* Optimizes rendering */
-    animation: fadeIn 1.5s ease-in-out 0.5s forwards; /* 1.5s duration, starts after 0.5s delay */
-    //opacity: 0; /* Initially hidden */
+                    opacity: 1;
+                    animation: none !important;
+                    will-change: auto;
                 }
             }
 
@@ -580,6 +573,7 @@
     }
     
 
+
     .sidenav-user {
         position: relative;
         top: 95px;
@@ -588,67 +582,57 @@
         align-items: center;
         text-align: center;
         height: 250px;
-        transition: width 0.3s ease-in-out;
-        // border-bottom: 1px dotted gray;
-        /* Profile Image: Always Visible */
+        /* No transition or animation */
         .sidenav-user-image {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            transition: width 0.3s, height 0.3s;
+            transition: none !important;
         }
-
-        /* Profile Details: Visible Only When Expanded */
         .sidenav-user-name{
             font-size: medium;
             padding: 0px !important;
+            transition: none !important;
         }
         .sidenav-user-email{
             font-size: small;
             padding: 0px !important;
+            transition: none !important;
         }
         .sidenav-user-icons {
             opacity: 1;
-            transition: opacity 0.3s ease-in-out;
+            transition: none !important;
         }
-
-        /* Collapsed State */
         &.collapsed {
             width: 75px;
-
-            /* Profile Image Always Visible */
             .sidenav-user-image {
                 width: 60px;
                 height: 60px;
                 opacity: 1;
+                transition: none !important;
             }
-
-            /* Hide Name, Email, and Icons */
             .sidenav-user-name,
             .sidenav-user-email,
             .sidenav-user-icons {
                 opacity: 0;
-                pointer-events: none; /* Prevent interaction in collapsed mode */
+                pointer-events: none;
+                transition: none !important;
             }
-
-            /* Expand on Hover */
             &:hover {
                 width: 260px;
-                transition: width 0.3s ease-in-out;
-
-                /* Increase Profile Image Size */
+                transition: none !important;
                 .sidenav-user-image {
                     width: 72px;
                     height: 72px;
                     opacity: 1;
+                    transition: none !important;
                 }
-
-                /* Show Name, Email, and Icons */
                 .sidenav-user-name,
                 .sidenav-user-email,
                 .sidenav-user-icons {
                     opacity: 1;
-                    pointer-events: auto; /* Enable interaction when expanded */
+                    pointer-events: auto;
+                    transition: none !important;
                 }
             }
         }
