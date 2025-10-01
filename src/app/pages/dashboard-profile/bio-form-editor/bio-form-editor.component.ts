@@ -1,4 +1,7 @@
+
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { ViewChild } from '@angular/core';
+import { AutoComplete, AutoCompleteModule } from 'primeng/autocomplete';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Signal, SimpleChanges, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -39,7 +42,6 @@ import { AuthService } from 'src/app/services/auth.service';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { FloatLabelModule } from 'primeng/floatlabel';
-
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
 }
@@ -58,7 +60,7 @@ export interface DialogData {
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
-    MatCheckboxModule, MatAutocompleteModule,
+    MatCheckboxModule, MatAutocompleteModule,AutoCompleteModule,
     MatInputModule,ButtonModule,OverlayPanelModule,
     MatButtonModule,AccordionModule,TextareaModule,
   MatIconModule,MatExpansionModule, MatSelectModule, MatDatepickerModule,
@@ -70,6 +72,9 @@ export interface DialogData {
 })
 export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
 
+  @ViewChild('genderAuto') genderAuto!: AutoComplete;
+
+ 
   imageBase64: String | null = null; // Define a class property to store the image bytes
   cPage : number = 0
   panelOpenState = true;
@@ -112,6 +117,18 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
         })
       }
 
+  // // Helper to get gender object by value
+  // getGenderObj(value: string) {
+  //   return this.genders.find(g => g.value === value) || null;
+  // }
+
+  onGenderSelect() {
+    setTimeout(() => {
+      this.genderAuto?.hide?.();
+    }, 50);
+  }
+
+
  
   subs: Array<Subscription> = [];
 
@@ -119,7 +136,7 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
     first_name: ['', Validators.required],
     last_name: ['', Validators.required],
     dob: [null as Date | null, Validators.required],
-    gender: ['', Validators.required],
+    gender: [null as {label: string, value: string} | null, Validators.required],
   })
 
   ngOnDestroy(): void {
@@ -132,7 +149,28 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     this.setBioForm();
   }
+  onGenderFocus() {
+    // Show initial list if input is empty
+    if (!this.bioForm.controls['gender'].value) {
+      this.filterGender({ query: '' });
+    }
+    if (this.genderAuto && typeof this.genderAuto.show === 'function') {
+      this.genderAuto.show();
+    }
+  }
+ 
+  // Helper to get gender object by value
+  getGenderObj(value: string) {
+    return this.genders.find(g => g.value === value) || null;
+  }
 
+    filterGender(event: any) {
+    const query = event.query?.toLowerCase() || '';
+    this.genders = [
+      { label: 'Male', value: 'Male' },
+      { label: 'Female', value: 'Female' }
+    ].filter(g => g.label.toLowerCase().includes(query));
+  }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['formClosed'] && changes['formClosed'].currentValue) {
       this.imageBase64 = null
@@ -143,19 +181,26 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
 
 
   setBioForm(){
-  console.log(this.bioProfile());
-  this.bioForm.controls['first_name'].setValue(this.bioProfile().firstName);
-  this.bioForm.controls['last_name'].setValue(this.bioProfile().lastName);
-  // Ensure dob is a Date object for p-calendar
-  const dob = this.bioProfile().dob ? new Date(this.bioProfile().dob) : null;
-  this.bioForm.controls['dob'].setValue(dob);
-  // Set gender as value for PrimeNG dropdown
-  if(this.bioProfile().gender == '1'){
-    this.bioForm.controls['gender'].setValue('Male');
-  }
-  else if(this.bioProfile().gender == '0'){
-    this.bioForm.controls['gender'].setValue('Female');
-  }
+    console.log(this.bioProfile());
+    this.bioForm.controls['first_name'].setValue(this.bioProfile().firstName);
+    this.bioForm.controls['last_name'].setValue(this.bioProfile().lastName);
+    // Ensure dob is a Date object for p-calendar
+    const dob = this.bioProfile().dob ? new Date(this.bioProfile().dob) : null;
+    this.bioForm.controls['dob'].setValue(dob);
+    // Set gender as value for PrimeNG dropdown, ensure it matches the genders array
+    let genderValue = '';
+    if(this.bioProfile().gender == '1') {
+      genderValue = 'Male';
+    } else if(this.bioProfile().gender == '0') {
+      genderValue = 'Female';
+    }
+    // Set gender as the full object for PrimeNG autocomplete
+    const genderObj = this.genders.find(g => g.value === genderValue) || null;
+    if (genderObj) {
+      this.bioForm.controls['gender'].setValue(genderObj);
+    } else {
+      this.bioForm.controls['gender'].setValue(null);
+    }
   }
 
   formatDateUsingLocale(date: Date): string {
@@ -175,12 +220,14 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
     form.firstName = this.bioForm.controls['first_name'].value?this.bioForm.controls['first_name'].value : '';
     form.lastName = this.bioForm.controls['last_name'].value?this.bioForm.controls['last_name'].value : '';
     form.dob = this.bioForm.controls['dob'].value?this.formatDateUsingLocale(new Date(this.bioForm.controls['dob'].value)) : '';
-    if(this.bioForm.controls['gender'].value == 'Male'){
-        form.gender = 1;
-    }
-    else{
-        form.gender = 0;
-    }
+  // Save gender as 1 or 0 based on selected value
+  // Save gender as 1 or 0 based on selected object
+  if(this.bioForm.controls['gender'].value?.value === 'Male'){
+    form.gender = 1;
+  }
+  else{
+    form.gender = 0;
+  }
     form.imageUrl = this.imageUrl?this.imageUrl : this.bioProfile().imageUrl;
 
     this.authService.updateBioProfile(form).subscribe((e)=>{

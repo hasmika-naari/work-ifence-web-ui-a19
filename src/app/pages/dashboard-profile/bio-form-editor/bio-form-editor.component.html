@@ -49,8 +49,19 @@
                 </div>
                 <div class="col-6 p-b-3 p-t-3">
                     <p-floatlabel variant="on" class="w-100">
-                        <p-dropdown id="gender" formControlName="gender" [options]="genders" optionLabel="label" class="w-100"></p-dropdown>
-                        <label for="gender">Gender</label>
+                        <p-autoComplete 
+                            formControlName="gender"
+                            [suggestions]="genders"
+                            (completeMethod)="filterGender($event)"
+                            field="label"
+                            [forceSelection]="true"
+                            inputId="gender-input"
+                            (onFocus)="onGenderFocus()"
+                            (onSelect)="onGenderSelect()"
+                            #genderAuto
+                            class="w-100"
+                        ></p-autoComplete>
+                        <label for="gender-input">Gender</label>
                     </p-floatlabel>
                     <div class="p-error ng-dirty ng-invalid" *ngIf="bioForm.get('gender')?.hasError('required') && (bioForm.get('gender')?.dirty || bioForm.get('gender')?.touched)">
                         Required.
