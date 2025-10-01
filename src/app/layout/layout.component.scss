@@ -1,12 +1,102 @@
-///////////////
+/* Sidenav bottom content styling */
+.sidenav-bottom-content {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding-bottom: 1.2rem;
+  z-index: 2;
+}
+.sidenav-bottom-card {
+  margin: 0 1.1rem;
+  padding: 1.1rem 1rem 0.7rem 1rem;
+  border-radius: 1rem;
+  background: rgba(var(--mainColorRgb),0.08);
+  box-shadow: 0 2px 8px 0 rgba(var(--mainColorRgb),0.07);
+  color: #23272f;
+  text-align: left;
+  font-size: 1.01rem;
+}
+.sbc-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  color: var(--mainColor);
+  font-size: 1.08rem;
+}
+.sbc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sbc-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.97rem;
+  margin-bottom: 0.32rem;
+  color: #444;
+}
+.sbc-list li:last-child {
+  margin-bottom: 0;
+}
+/* Modern Sidenav Menu Item Styling */
+.menu-body {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.menu-body li {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 1.2rem;
+  margin-bottom: 0.18rem;
+  border-radius: 0.7rem;
+  font-size: 1.08rem;
+  font-weight: 500;
+  color: #23272f;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+.menu-body li:last-child {
+  margin-bottom: 0;
+}
+.menu-body li:hover, .menu-body li.active-role {
+  background: rgba(var(--mainColorRgb),0.08);
+  color: var(--mainColor);
+  box-shadow: 0 2px 8px 0 rgba(var(--mainColorRgb),0.06);
+}
+.menu-body li .lucide-icon {
+  min-width: 22px;
+  min-height: 22px;
+  color: inherit;
+  opacity: 0.85;
+  transition: color 0.18s, opacity 0.18s;
+}
+.menu-body li:hover .lucide-icon, .menu-body li.active-role .lucide-icon {
+  color: var(--mainColor);
+  opacity: 1;
+}
+.menu-body li.show-silver {
+  color: #888;
+}
+.menu-body li.show-silver:hover {
+  color: var(--mainColor);
+}
 :host {
     font-family: 'Poppins', sans-serif;
     background-color: #f8fafc;
     background-image:
-      radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
-      radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
-      radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
-      radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+    //   radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
+    //   radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
+    //   radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
+    //   radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+    radial-gradient(circle at 20% 30%, rgba(78, 84, 200, 0.08), transparent 30%),
+    radial-gradient(circle at 80% 40%, rgba(78, 200, 176, 0.07), transparent 35%),
+    radial-gradient(circle at 50% 70%, rgba(200, 84, 78, 0.05), transparent 40%);
     background-repeat: no-repeat;
     background-size: 100% 100%;
     min-height: 100vh;
@@ -20,26 +110,24 @@
   }
   
   
-// Main Content
+
+// Apply background to mat-sidenav-container for full layout effect
+mat-sidenav-container, .mat-sidenav-container {
+  background-color: #f8f9fc !important;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(78, 84, 200, 0.08), transparent 30%),
+    radial-gradient(circle at 80% 40%, rgba(78, 200, 176, 0.07), transparent 35%),
+    radial-gradient(circle at 50% 70%, rgba(200, 84, 78, 0.05), transparent 40%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+// Remove background from .main-content so it inherits from mat-sidenav-container
 .main-content {
   min-height: 100vh;
-//   background-color: rgb(250, 251, 253); // #f5f7fa;
-    background-color: #f8fafc;
-    background-image:
-      radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
-      radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
-      radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
-      radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  // padding: {
-  //     top: 105px;
-  //     left: 282px;
-  //     right: 25px;
-  // };
-  // &.active, &.hide-sidebar {
-  //     padding-left: 85px;
-  // }
+  background: none !important;
+
+  overflow: hidden;
 }
 
 // Blank Page
@@ -143,11 +231,11 @@
 
 /* Content Wrapper (Ensures router-outlet stays within main content) */
 .content-wrapper {
-    flex-grow: 1 !important;
-    padding: 0px !important; /* Ensures some spacing */
-    overflow-y: auto !important; /* Enable vertical scrolling */
-    height: 100vh !important;
-    padding-top: 0px;
+  flex-grow: 1 !important;
+  padding: 0px !important; /* Ensures some spacing */
+  overflow-y: auto !important; /* Enable vertical scrolling */
+  height: calc(100vh - 70px) !important;
+  margin-top: 65px;
 }
 
 /* Ensure Header & Footer stay fixed in layout */
@@ -173,4 +261,9 @@ app-footer {
 
 .main-content.active {
     margin-left: 75px; /* Adjust main content when sidebar is collapsed */
+}
+
+/* Remove border radius from sidenav for sharp edges */
+.mat-sidenav, .cdk-overlay-pane {
+  border-radius: 0 !important;
 }

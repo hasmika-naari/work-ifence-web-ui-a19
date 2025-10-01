@@ -10,14 +10,61 @@
         [class.sidebar]="!isMobile"  [ngClass]="{'collapsed': isToggled}" />
 
     <!-- Main Content -->
-    <div class="main-content transition d-flex flex-column flex-grow-1">
-    <app-header [isSticky]="isSticky" />
-        <!-- Routed Content Section -->
-        <div class="content-wrapper flex-grow-1 p-3">
-            <div #headerSentinel style="height: 1px; width: 100%;"></div>
-            <router-outlet />
-        </div>
+        <div class="main-content transition d-flex flex-column flex-grow-1">
+            <mat-sidenav-container autosize style="height: 100vh;overflow: hidden;">
+                <mat-sidenav #menuSidenav position="end" mode="over" style="width: 260px;">
+                    <div class="sidenav-header" style="display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem 1rem 1.5rem; border-bottom: 1px solid #eee;">
+                        <img src="assets/img/logo.png" alt="Logo" style="height: 48px; width: auto; display: block;" />
+                        <span style="cursor:pointer;display:inline-flex;align-items:center;justify-content:center; margin-left: auto;" (click)="closeMenuSidenav(menuSidenav)" aria-label="Close menu sidenav">
+                            <lucide-icon name="X" size="24"></lucide-icon>
+                        </span>
+                    </div>
+                    <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
+                        <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
+                            <li class="position-relative transition fw-medium cursor-pointer" *ngFor="let role of userRoles()" [class.active-role]="userActiveRole()?.title && role?.title && userActiveRole()?.title === role.title" (click)="switchDashboard($event, role)">
+                                <lucide-icon name="LayoutDashboard" size="24"></lucide-icon> {{role?.title}}
+                            </li>
+                        </ul>
+                        <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
+                            <li class="position-relative transition fw-medium" routerLink="/user/profile" routerLinkActive="active-route">
+                                <lucide-icon name="User" size="24"></lucide-icon> My Profile
+                            </li>
+                            <li class="position-relative transition fw-medium show-silver" routerLink="/settings" routerLinkActive="active-route">
+                                <lucide-icon name="Settings" size="24"></lucide-icon> Settings
+                            </li>
+                            <li class="position-relative transition fw-medium show-silver" routerLink="/support" routerLinkActive="active-route">
+                                <lucide-icon name="Info" size="24"></lucide-icon> Support
+                            </li>
+                            <li class="position-relative transition fw-medium" (click)="logoutHandler($event)">
+                                <lucide-icon name="LogOut" size="24"></lucide-icon> Logout
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="sidenav-bottom-content">
+                        <div class="sidenav-bottom-card">
+                            <div class="sbc-title">
+                                <lucide-icon name="Sparkles" size="20" style="margin-right: 0.5rem;"></lucide-icon>
+                                Tips & Shortcuts
+                            </div>
+                            <ul class="sbc-list">
+                                <li><lucide-icon name="MousePointerClick" size="17"></lucide-icon> Click your role to switch dashboards instantly.</li>
+                                <li><lucide-icon name="Palette" size="17"></lucide-icon> Try dark mode for a new look.</li>
+                                <li><lucide-icon name="Settings" size="17"></lucide-icon> Personalize your experience in Settings.</li>
+                                <li><lucide-icon name="HelpCircle" size="17"></lucide-icon> Need help? Visit Support anytime.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </mat-sidenav>
+                <mat-sidenav-content style="height: 100vh; overflow-y: hidden;">
+                    <!-- Routed Content Section -->
+                    <app-header [isSticky]="isSticky" (openMenuSidenav)="openMenuSidenav(menuSidenav)" />
 
-        <!-- <app-footer /> -->
-    </div>
+                    <div class="content-wrapper flex-grow-1 p-3">
+                        <div #headerSentinel style="height: 1px; width: 100%;"></div>
+                        <router-outlet />
+                    </div>
+                </mat-sidenav-content>
+            </mat-sidenav-container>
+            <!-- <app-footer /> -->
+        </div>
 </div>

@@ -1,4 +1,7 @@
+
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject, AfterViewInit } from '@angular/core';
+
+interface LayoutRole { title: string; [key: string]: any; }
 import { SidebarDirective } from '../../@navan/shared/sidebar/sidebar.directive';
 import { filter, map, startWith } from 'rxjs/operators';
 import { ThemeService } from '../../@navan/services/theme.service';
@@ -12,11 +15,15 @@ import { FooterComponent } from '../common/footer/footer.component';
 import { ToggleService } from '../common/header/toggle.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { stubFalse } from 'lodash';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { IconsModule } from '../shared/icons.module';
 
 @Component({
   selector: 'wif-layout',
   standalone: true,
-   imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent],
+   imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, MatSidenavModule,
+     MatIconModule, MatDividerModule, IconsModule],
    providers: [
     Location, 
     {
@@ -28,6 +35,28 @@ import { stubFalse } from 'lodash';
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
+  menuSidenavOpened = false;
+  userRoles = (): LayoutRole[] => (this.headerComponent?.userRoles?.() || []);
+  userActiveRole = (): LayoutRole | null => {
+    const role = this.headerComponent?.userActiveRole?.();
+    return role && typeof role.title === 'string' ? role : null;
+  };
+  @ViewChild(HeaderComponent) headerComponent?: HeaderComponent;
+  // Proxy for dashboard switching
+  switchDashboard($event: any, role: any) {
+    if (this.headerComponent && this.headerComponent.switchDashboard) {
+      this.headerComponent.switchDashboard($event, role);
+      this.menuSidenavOpened = false;
+    }
+  }
+
+  // Proxy for logout
+  logoutHandler($event: any) {
+    if (this.headerComponent && this.headerComponent.logoutHandler) {
+      this.headerComponent.logoutHandler($event);
+      this.menuSidenavOpened = false;
+    }
+  }
   @ViewChild('headerSentinel', { static: false }) headerSentinel!: ElementRef;
   public isSticky: boolean = false;
   private observer!: IntersectionObserver;
@@ -86,6 +115,14 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
     }else{
       console.log('ITS Server Running');
     }
+  }
+
+  openMenuSidenav(menuSidenav: { open: () => void; }) {
+    menuSidenav.open();
+  }
+  
+  closeMenuSidenav(menuSidenav: { close: () => void; }) {
+    menuSidenav.close();
   }
 
   ngAfterViewInit(): void {

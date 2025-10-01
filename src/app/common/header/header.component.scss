@@ -1,3 +1,29 @@
+.header-right-side button[mat-icon-button] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.18s;
+}
+.header-right-side button[mat-icon-button]:hover,
+.header-right-side button[mat-icon-button]:focus {
+    background: rgba(55, 97, 238, 0.08);
+}
+.header-right-side .mat-icon {
+    font-size: 26px;
+    line-height: 1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header-right-side {
+    position: relative;
+    z-index: 1201;
+}
 ///////////////
 .sticky-header {
     font-family: 'Poppins', sans-serif;
@@ -13,11 +39,11 @@
 }
 
 .sticky-header.header-glossy {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px) saturate(180%);
-    -webkit-backdrop-filter: blur(10px) saturate(180%);
-    border-bottom: 1px solid rgba(200, 200, 200, 0.3);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    // background: rgba(255, 255, 255, 0.85);
+    // backdrop-filter: blur(10px) saturate(180%);
+    // -webkit-backdrop-filter: blur(10px) saturate(180%);
+    // border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+    // box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
     animation: headerGlassyFadeIn 0.3s ease-out;
 }
 

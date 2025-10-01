@@ -1,4 +1,4 @@
-import { Component, inject, Signal, Input } from '@angular/core';
+import { Component, inject, Signal, Input, Output, EventEmitter } from '@angular/core';
 import { fromEvent, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { DatePipe, isPlatformBrowser, NgClass } from '@angular/common';
@@ -11,11 +11,12 @@ import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Account, BioProfile, WifRole } from 'src/app/services/profile.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, RouterLink, NgClass, MatDividerModule],
+    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, RouterLink, NgClass, MatDividerModule, MatIconModule],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss',
     providers: [
@@ -23,6 +24,7 @@ import { MatDividerModule } from '@angular/material/divider';
     ]
 })
 export class HeaderComponent {
+    @Output() openMenuSidenav = new EventEmitter<void>();
     @Input() isSticky = false;
     private userStore: UserStoreService = inject(UserStoreService);
     public userAccount: Signal<Account> = this.userStore.getUserAccount();
