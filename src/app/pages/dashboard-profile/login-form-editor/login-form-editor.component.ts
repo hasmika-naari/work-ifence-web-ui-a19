@@ -36,7 +36,9 @@ import moment from 'moment';
 import { Account, LoginProfile } from 'src/app/services/profile.model';
 import { ResumeService } from 'src/app/services/resume.service';
 import { AuthService } from 'src/app/services/auth.service';
-
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -52,7 +54,7 @@ export interface DialogData {
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
+     NgOptimizedImage,FooterComponent,InputIconModule,IconFieldModule,FloatLabelModule,
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,

@@ -35,7 +35,10 @@ import { Account, LoginProfile } from 'src/app/services/profile.model';
 import { ResumeService } from 'src/app/services/resume.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Address } from 'src/app/services/contact.model';
-
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { DropdownModule } from 'primeng/dropdown';
 
 export interface Country {
   name : string
@@ -58,7 +61,8 @@ export interface Country {
     MatFormFieldModule,InputTextModule,TableModule,
     MatCheckboxModule, MatAutocompleteModule,
     MatInputModule,ButtonModule,OverlayPanelModule,
-    MatButtonModule,AccordionModule,TextareaModule,
+    MatButtonModule,AccordionModule,TextareaModule,InputIconModule,
+    IconFieldModule,FloatLabelModule,DropdownModule,
     MatIconModule,MatExpansionModule, MatSelectModule, MatDatepickerModule],
   templateUrl: './address-form-editor.component.html',
   styleUrls: ['./address-form-editor.component.scss'],

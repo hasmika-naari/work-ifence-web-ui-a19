@@ -3,19 +3,25 @@
     <div class="col-12"  >
         <form [formGroup]="loginForm" style="height: 65vh;margin-top:30px;" >
             <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Username</mat-label>
-                        <input matInput formControlName="username">
-                    </mat-form-field>
+                <div class="col-12 p-b-1 p-t-2" style="margin-bottom: 1.2rem;">
+                    <p-floatlabel variant="on" class="w-100">
+                        <input pInputText id="username" formControlName="username" class="w-100" />
+                        <label for="username">Username</label>
+                    </p-floatlabel>
+                    <div class="p-error ng-dirty ng-invalid" *ngIf="loginForm.get('username')?.hasError('required') && (loginForm.get('username')?.dirty || loginForm.get('username')?.touched)">
+                        Required.
+                    </div>
                 </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Password</mat-label>
-                        <input matInput formControlName="password">
-                    </mat-form-field>
+                <div class="col-12 p-b-1 p-t-2" style="margin-bottom: 1.2rem;">
+                    <p-floatlabel variant="on" class="w-100">
+                        <input pInputText id="password" type="password" formControlName="password" class="w-100" />
+                        <label for="password">Password</label>
+                    </p-floatlabel>
+                    <div class="p-error ng-dirty ng-invalid" *ngIf="loginForm.get('password')?.hasError('required') && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)">
+                        Required.
+                    </div>
                 </div>
-                <div class="col-12 p-b-1 p-t-2">
+                <div class="col-12  p-t-2" style="margin-bottom: 1rem;">
                     <mat-form-field appearance="outline" class="w-100" >
                         <mat-label>Phone Number</mat-label>
                         <input matInput placeholder="Phone Number" formControlName="phone_number">
@@ -39,7 +45,7 @@
                     </mat-form-field>
 
                 </div>
-                <div class="col-12 p-b-0 p-t-2">
+                <div class="col-12 p-b-0 p-t-2" style="margin-bottom: 1.2rem;">
                     <mat-form-field appearance="outline" class="w-100" >
                         <mat-label>Email</mat-label>
                         <input matInput placeholder="Email" formControlName="email">
@@ -69,7 +75,7 @@
 
                     </mat-form-field>
                 </div>
-                <div class="col-12 p-b-0 p-t-0" *ngIf="emailValidationCodeSubmiRequired">
+                <div class="col-12 p-b-0 p-t-0" *ngIf="emailValidationCodeSubmiRequired" style="margin-bottom: 1.2rem;">
                     <mat-form-field appearance="outline" class="w-100" *ngIf="emailValidationRequired" >
                         <mat-label>Validation code</mat-label>
                         <input matInput placeholder="Validation code" #acCode formControlName="validate_code">
