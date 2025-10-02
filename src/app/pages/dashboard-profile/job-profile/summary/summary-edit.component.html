@@ -1,14 +1,14 @@
 <p-card class="profile-card">
-  <ng-template pTemplate="header">
-    <div class="flex align-items-center justify-content-between">
-      <span>Edit Resume Summary</span>
-      <button pButton icon="pi pi-times" class="p-button-rounded p-button-text" (click)="close.emit()"></button>
-    </div>
-  </ng-template>
+  <!-- <ng-template pTemplate="header"> -->
+    <!-- <div class="flex align-items-center justify-content-between"> -->
+      <!-- <span>Edit Resume Summary</span> -->
+      <!-- <button pButton icon="pi pi-times" class="p-button-rounded p-button-text" (click)="close.emit()"></button> -->
+    <!-- </div> -->
+  <!-- </ng-template> -->
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="p-field">
       <label for="summary">Summary</label>
-      <p-editor formControlName="summary" [style]="{height:'180px'}"></p-editor>
+      <p-editor formControlName="summary" [style]="{height:'50vh'}"></p-editor>
     </div>
     <div class="flex justify-content-end gap-2 mt-3">
       <button pButton type="button" label="Cancel" class="p-button-text" (click)="close.emit()"></button>

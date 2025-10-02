@@ -112,6 +112,18 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
 
   isActionInProgress: boolean = true;
 
+  get summaryDrawerWidth(): string {
+    return this.showSummaryFormEditor ? 'fit-content' : '31rem';
+  }
+  
+  get summaryDrawerMinWidth(): string {
+    return '31rem';
+  }
+  
+  get summaryDrawerMaxWidth(): string {
+    return this.showSummaryFormEditor ? '85vw' : '31rem';
+  }
+
   items!: MenuItem[];
 
   chartData: any;
@@ -378,6 +390,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     this.showBioFormEditor = false;
     this.showLoginFormEditor = false;
     this.showAddressFormEditor = true;
+    this.showSummaryFormEditor = false;
     this.visible2 = true;
   }
 
@@ -386,12 +399,14 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     this.showBioFormEditor = false;
     this.showLoginFormEditor = true;
     this.showAddressFormEditor = false;
+    this.showSummaryFormEditor = false;
     this.visible2 = true;
   }
   showBioFormEditorWindow() {
     this.showBioFormEditor = true;
     this.showLoginFormEditor = false;
     this.showAddressFormEditor = false;
+    this.showSummaryFormEditor = false;
     this.visible2 = true;
   }
 
@@ -400,6 +415,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   this.showBioFormEditor = false;
   this.showLoginFormEditor = false;
   this.showAddressFormEditor = false;
+  this.showSummaryFormEditor = false;
   this.visible2 = false;
   this.isActionInProgress = false;
   }

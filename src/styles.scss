@@ -103,7 +103,9 @@
 .p-drawer-right {
     top: 0;
     right: 0;
-    width: 31rem !important;
+    min-width: 31rem;
+    width: auto !important;
+    max-width: min(85vw, 72rem);
     height: 100%;
 }
 

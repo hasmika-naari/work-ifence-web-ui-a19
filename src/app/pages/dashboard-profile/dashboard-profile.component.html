@@ -10,7 +10,7 @@
       </p-drawer>
 
 
-            <p-drawer header="Edit Profile" [(visible)]="visible2" position="right" (onHide)="closeFormEditor()">
+            <p-drawer header="Edit Profile" [(visible)]="visible2" position="right" (onHide)="closeFormEditor()" [style]="{ width: summaryDrawerWidth, 'min-width': summaryDrawerMinWidth, 'max-width': summaryDrawerMaxWidth }">
                 <ng-container *ngIf="showBioFormEditor">
                     <app-bio-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" (formClosed)="closeFormEditor()"></app-bio-form-editor>
                 </ng-container>
