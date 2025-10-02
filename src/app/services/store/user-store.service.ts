@@ -4,49 +4,91 @@ import { Observable } from "rxjs";
 import { ResumeTemplateDto, SectionDesc, UserResume, UserState } from "./user-store";
 import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
-import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, AchievementBulletPoints, IsSectionPresent, SkillV2, Accomplishment, Skill, CertificationBulletPoints} from "../resume.model";
+import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, AchievementBulletPoints, IsSectionPresent, SkillV2, Accomplishment, Skill, CertificationBulletPoints } from "../resume.model";
 import { ApplicationListDataItem, ClientContact, JobApplicationFeedback, JobApplicationRequest, JobInterviewRounds, ResumeListDataItem, VendorContact } from "../work-ifence-data.model";
 import { Address } from "../contact.model";
 
-
-
-
 @Injectable({
-    providedIn: 'root',
-  })
-  export class UserStoreService {
-    private injector = inject(Injector);
-    
-    state = signal<UserState>(
-      { 
-        account: new Account(), 
+  providedIn: 'root',
+})
+export class UserStoreService {
+  private injector = inject(Injector);
+
+      // --- Job Profile State ---
+      private jobProfile = signal<any | null>(null); // TODO: replace `any` with JobProfile model when available
+
+      getJobProfileSignal(): Signal<any | null> {
+        return this.jobProfile;
+      }
+
+      setJobProfile(profile: any) {
+        this.jobProfile.set(profile);
+      }
+
+      updateJobProfileSection(section: string, data: any) {
+        const current = this.jobProfile();
+        if (!current) {
+          return;
+        }
+        this.jobProfile.set({ ...current, [section]: data });
+      }
+
+      state = signal<UserState>({
+        account: new Account(),
         roles: new Array<WifRole>(),
         activeRole: new WifRole(),
         bioProfile: new BioProfile(), 
         loginProfile: new LoginProfile(),
         addresses: new Array<Address>(),
         selectedAddress: new Address(),
-        jobApplicationsCompleteDetails : new Array<JobApplicationRequest>,
+        jobApplicationsCompleteDetails : new Array<JobApplicationRequest>(),
         jobApplications: new Array<JobApplication>(),
         jobApplicationFlag : false,
         selectedJobApplication: new JobApplication(),
-        filteredJobApplications : new Array<JobApplication>,
+        filteredJobApplications : new Array<JobApplication>(),
         selectedRoundDetails : new RoundDetails(),
         jobDescriptionAIResponse : new JobDescriptionAIResponse(),
         token: '', 
-        menuList: new Array<MenuListItem>,
+        menuList: new Array<MenuListItem>(),
         sidebarIconOnly: false,
         currentTab : '',
         selectedResume: new UserResume(),
         selectedResumeListItem: new ResumeListDataItem(),
-        resumeListItems : new Array<ResumeListDataItem>,
-        filteredResumes : new Array<ResumeListDataItem>,
-        currentResumeSections : new Array<SectionDesc>,
+        resumeListItems : new Array<ResumeListDataItem>(),
+        filteredResumes : new Array<ResumeListDataItem>(),
+        currentResumeSections : new Array<SectionDesc>(),
         isChangeInNewResume : false,
         isUserLoggedIn : false,
         isMultipleColumnTemplateSelected : false,
-        multipleSectionsList : new Array<Array<SectionDesc>>
-       });
+        multipleSectionsList : new Array<Array<SectionDesc>>()
+      });
+
+    // Ensures profile summary is initialized with a default if missing
+    public ensureProfileSummaryInitialized() {
+      const resumeForm = this.state().selectedResume?.resumeForm;
+      if (!resumeForm) return;
+      if (!resumeForm.profileSummary || !resumeForm.profileSummary.original_summary_html) {
+        const summary = new ProfileSummary();
+        summary.original_summary_html = `
+          <ul style="margin-left: 1.2em;">
+            <li>7+ years of experience in designing and developing scalable web applications</li>
+            <li>Expert in Angular, TypeScript, and RxJS for building dynamic SPAs</li>
+            <li>Proficient in Node.js, Express, and RESTful API development</li>
+            <li>Strong experience with MongoDB, PostgreSQL, and MySQL databases</li>
+            <li>Skilled in implementing authentication and authorization (JWT, OAuth)</li>
+            <li>Hands-on with CI/CD pipelines and Docker containerization</li>
+            <li>Adept at writing unit and integration tests using Jasmine, Karma, Jest</li>
+            <li>Familiar with cloud platforms: AWS, Azure, and Firebase</li>
+            <li>Excellent problem-solving and debugging skills</li>
+            <li>Strong communicator and effective collaborator in agile teams</li>
+          </ul>
+        `;
+        summary.profile_summary = '7+ years of experience in designing and developing scalable web applications...';
+        if (typeof this.addSummary === 'function') {
+          this.addSummary(summary);
+        }
+      }
+    }
 
        resetStore() {
         this.state.update((state) => ({
@@ -263,24 +305,20 @@ import { Address } from "../contact.model";
         }))
 }
 
-    setEducationList(eduList : Education[]){
-      this.state.update((state)=>({
+    setEducationList(eduList: Education[]) {
+      this.state.update((state) => ({
         ...state,
-        currentTab : 'EDUCATION',
-        isEdit : false,
-        isChangeInNewResume : true,
-        selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , education : [...eduList]} }
-        }))
-    }
-
-    addCourseWork(work : Array<string>){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : 'COURSEWORK',
-            isEdit : false,
-            isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , courseWork : [...work]} }
-            }))
+        currentTab: 'EDUCATION',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            education: [...eduList]
+          }
+        }
+      }));
     }
 
     addSkill(skills : Array<Skill>){
@@ -552,6 +590,24 @@ removeSectionFromMultipleSectionsList(section: string) {
           }))
       }
 
+      addCourseWork(courseWork : string[]){
+        this.state.update((state)=>(
+          {
+            ...state,
+            currentTab : 'COURSEWORK',
+            selectedResume : {
+              ...state.selectedResume,
+              resumeForm : {
+                ...state.selectedResume.resumeForm,
+                courseWork : [...courseWork]
+              }
+            },
+            isEdit : false,
+            isChangeInNewResume : true
+          }
+        ))
+      }
+
       deleteSkill(){
         this.state.update((state)=>({
             ...state,
@@ -602,70 +658,11 @@ removeSectionFromMultipleSectionsList(section: string) {
           }))
       }
 
-      deleteAchievement(){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : '',
-            selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, achievement : {ach : '', original_html_achievement : '', isDefault : true}} },
-            isEdit : false,
-            isChangeInNewResume : true
-          }))
-      }
-
-      deleteEducationList(){
-        this.state.update((state)=>({
-          ...state,
-          currentTab : '',
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm, education : []} },
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      deleteExperienceList(){
-        this.state.update((state)=>({
-          ...state,
-          currentTab : '',
-          selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, experience : []} },
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      deleteProjectList(){
-        this.state.update((state)=>({
-          ...state,
-          currentTab : '',
-          selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, project : []} },
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      deleteCertificationList(){
-        this.state.update((state)=>({
-          ...state,
-          currentTab : '',
-          selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, certification : []}},
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      setCertification(cer : Certification){
-        this.state.update((state)=>({
-          ...state,
-          currentTab : 'CERTIFICATION',
-          selectedResume : {...state.selectedResume , selectedCertification :cer },
-          isEdit : false
-        }))
-      }
-
-      setEducation(cer : Education){
+      setEducation(edu : Education){
         this.state.update((state)=>({
           ...state,
           currentTab : 'EDUCATION',
-          selectedResume : {...state.selectedResume , selectedEducation :cer },
+          selectedResume : {...state.selectedResume , selectedEducation : edu},
           isEdit : false
         }))
       }
@@ -675,6 +672,15 @@ removeSectionFromMultipleSectionsList(section: string) {
           ...state,
           currentTab : 'EXPERIENCE',
           selectedResume : {...state.selectedResume , selectedExperience :cer },
+          isEdit : false
+        }))
+      }
+
+      setCertification(cer : Certification){
+        this.state.update((state)=>({
+          ...state,
+          currentTab : 'CERTIFICATION',
+          selectedResume : {...state.selectedResume , selectedCertification : cer},
           isEdit : false
         }))
       }

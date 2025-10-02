@@ -30,28 +30,18 @@ export class SummaryProfileEditComponent implements OnInit, OnChanges {
 
   constructor(private fb: FormBuilder) {}
 
-
-  // Helper to convert HTML summary to plain text for the editor
-  private htmlToEditorText(html: string): string {
-    // If summary is already plain text, return as is
-    if (!html || !/<[a-z][\s\S]*>/i.test(html)) return html;
-    // Replace <li> with bullet points and newlines
-    let text = html.replace(/<li>(.*?)<\/li>/g, '• $1\n');
-    // Remove all other HTML tags
-    text = text.replace(/<[^>]+>/g, '');
-    // Trim and return
-    return text.trim();
-  }
-
   ngOnInit() {
     this.form = this.fb.group({
-      summary: [this.htmlToEditorText(this.summary), Validators.required]
+      summary: [this.summary || '', Validators.required]
     });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['summary'] && this.form) {
-      this.form.patchValue({ summary: this.htmlToEditorText(this.summary) });
+      const incoming = this.summary || '';
+      if (this.form.value.summary !== incoming) {
+        this.form.patchValue({ summary: incoming });
+      }
     }
   }
 

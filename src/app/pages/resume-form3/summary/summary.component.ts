@@ -394,12 +394,25 @@ openPanelWindow(){
 }
 
   setSummaryValues(){
-    console.log(this.resumeSignalForm().profileSummary.original_summary_html);
-    if(this.editor?.clipboard){
-      this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().profileSummary.original_summary_html);
+    const resume = this.resumeSignalForm();
+    const summary = resume?.profileSummary ?? new ProfileSummary();
+    const editorHtml = summary.original_summary_html?.length ? summary.original_summary_html : (summary.profile_summary ?? '');
+
+    if (this.summaryForm) {
+      this.summaryForm.patchValue({
+        profile_summary: editorHtml,
+        position_highlight: summary.position_highlight ?? '',
+        skills_highlight: summary.skills_highlight ?? ''
+      }, { emitEvent: false });
     }
+
+    if(this.editor?.clipboard){
+      this.editor.clipboard.dangerouslyPasteHTML(editorHtml);
+      this.handleTextChange();
+    }
+
     let section_title;
-    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+    if(resume?.template_details.template_name == 'TEMPLATE_9'){
       this.multipleSections().map((e : SectionDesc[])=>{
         e.map((section : SectionDesc)=>{
           if(section.section == 'PROFILE_SUMMARY'){
@@ -415,7 +428,7 @@ openPanelWindow(){
           }
         })
     }
-    this.summaryForm.controls['section_title'].setValue(section_title??'Profile Summary')
+    this.summaryForm.controls['section_title'].setValue(section_title??'Profile Summary', { emitEvent: false })
   }
 
   addEducationField() {

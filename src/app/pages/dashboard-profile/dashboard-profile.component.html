@@ -27,7 +27,7 @@
                 </ng-container>
                 <ng-container *ngIf="showSummaryFormEditor">
                     <summary-profile-edit
-                        [summary]="summary"
+                        [summary]="profileSummaryHtml"
                         (saveSummary)="onSummarySaved($event)"
                         (close)="closeFormEditor()">
                     </summary-profile-edit>
@@ -97,7 +97,7 @@
                       </div>
                   </p-tabpanel>
                   <p-tabpanel value="1" style="height: 100%; overflow-y: auto;">
-                       <summary-profile-display [summary]="summary" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
+                       <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
                   </p-tabpanel>
                   <p-tabpanel value="2" style="height: 100%; overflow-y: auto;">
                       <!-- Academic Profile form goes here if available -->

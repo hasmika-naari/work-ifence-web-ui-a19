@@ -79,6 +79,21 @@ interface Option {
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewInit {
+  userStore = inject(UserStoreService);
+  // Use a single jobProfile signal from the store
+  jobProfileSignal: Signal<any | null> = this.userStore.getJobProfileSignal();
+  resumeFormSignal: Signal<Resume> = this.userStore.getResumeForm();
+
+  get profileSummaryHtml(): string {
+    const jobProfile = this.jobProfileSignal();
+    const resumeSummary = this.resumeFormSignal()?.profileSummary;
+    const summary = jobProfile?.summary ?? resumeSummary;
+    if (!summary) {
+      return '';
+    }
+    const html = summary.original_summary_html?.trim();
+    return html?.length ? html : (summary.profile_summary ?? '');
+  }
   actionInProgressStarts() {
   this.isActionInProgress = true;
   }
@@ -93,21 +108,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   // Controls visibility of the summary edit form in the drawer
   showSummaryFormEditor = false;
 
-  // Holds the summary text (dummy data for Angular Full Stack Developer, formatted as HTML)
-  summary: string = `
-    <ul style="margin-left: 1.2em;">
-      <li>7+ years of experience in designing and developing scalable web applications</li>
-      <li>Expert in Angular, TypeScript, and RxJS for building dynamic SPAs</li>
-      <li>Proficient in Node.js, Express, and RESTful API development</li>
-      <li>Strong experience with MongoDB, PostgreSQL, and MySQL databases</li>
-      <li>Skilled in implementing authentication and authorization (JWT, OAuth)</li>
-      <li>Hands-on with CI/CD pipelines and Docker containerization</li>
-      <li>Adept at writing unit and integration tests using Jasmine, Karma, Jest</li>
-      <li>Familiar with cloud platforms: AWS, Azure, and Firebase</li>
-      <li>Excellent problem-solving and debugging skills</li>
-      <li>Strong communicator and effective collaborator in agile teams</li>
-    </ul>
-  `;
+  // No local summary; always use store
 
   isActionInProgress: boolean = true;
 
@@ -142,14 +143,37 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     visible4: boolean = false;
 
     // Handler for when the summary is saved from the edit form
+
     onSummarySaved(newSummary: string) {
-      this.summary = newSummary;
+      const plainText = newSummary.replace(/<[^>]+>/g, '');
+      const updatedSummary = {
+        ...(this.jobProfileSignal()?.summary ?? {}),
+        original_summary_html: newSummary,
+        profile_summary: plainText
+      };
+
+      const currentProfile = this.jobProfileSignal();
+      if (!currentProfile) {
+        this.userStore.setJobProfile({ summary: updatedSummary });
+      } else {
+        this.userStore.updateJobProfileSection('summary', updatedSummary);
+      }
       this.showSummaryFormEditor = false;
-      this.visible2 = false; // Hide the drawer if using visible2 for summary
+      this.visible2 = false;
     }
 
     // Handler to open the summary edit form in the drawer
     showSummaryFormEditorWindow() {
+      this.userStore.ensureProfileSummaryInitialized();
+      const resumeSummary = this.resumeFormSignal()?.profileSummary;
+      if (resumeSummary) {
+        const currentProfile = this.jobProfileSignal();
+        const mergedProfile = {
+          ...(currentProfile ?? {}),
+          summary: { ...resumeSummary }
+        };
+        this.userStore.setJobProfile(mergedProfile);
+      }
       this.showSummaryFormEditor = true;
       this.visible2 = true; // Show the drawer for summary
       // Optionally close other editors if needed
@@ -284,7 +308,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
 
   private resumeService: ResumeService = inject(ResumeService);
   private pdfToImageService: PdfToImageService = inject(PdfToImageService);
-  private userStore: UserStoreService = inject(UserStoreService);
+  // (removed duplicate userStore declaration)
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   private platformId: object =  inject(PLATFORM_ID);
   userAccount: Signal<Account> = this.userStore.getUserAccount();
