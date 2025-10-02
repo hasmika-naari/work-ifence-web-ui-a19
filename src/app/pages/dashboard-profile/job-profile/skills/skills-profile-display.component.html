@@ -1,0 +1,22 @@
+<section class="skills-profile-section">
+  <div class="header">
+    <h2>Skills</h2>
+    <div class="actions">
+      <button class="action-btn edit-btn" type="button" title="Edit" (click)="onEdit()">
+        <span class="pi pi-pencil"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="profile-details" *ngIf="hasSkills; else emptyState">
+    <div class="chip-wrap">
+      <p-chip *ngFor="let skill of skillNames" [label]="skill"></p-chip>
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="profile-details empty">
+      <p>No skills added yet. Use the edit button to start building your list.</p>
+    </div>
+  </ng-template>
+</section>

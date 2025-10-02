@@ -1,0 +1,52 @@
+<p-card class="skills-editor">
+  <div class="header">
+    <h3>Edit Skills</h3>
+    <button pButton type="button" icon="pi pi-times" class="p-button-rounded p-button-text" (click)="cancel()"></button>
+  </div>
+
+  <form [formGroup]="form" class="input-row" (ngSubmit)="addSkill()">
+    <div class="input-wrapper flex-1">
+      <i class="pi pi-star input-icon"></i>
+      <input
+        pInputText
+        class="skill-input"
+        type="text"
+        placeholder="Add a skill"
+        formControlName="skill"
+        autocomplete="off"
+      />
+      <button
+        pButton
+        type="submit"
+        label="Add"
+        icon="pi pi-plus"
+        class="p-button-outlined input-add-btn"
+        [disabled]="form.controls['skill'].invalid"
+      ></button>
+    </div>
+  </form>
+
+  <div
+    cdkDropList
+    class="skill-list"
+    [cdkDropListData]="skillList"
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div class="skill-item" *ngFor="let skill of skillList; let i = index" cdkDrag>
+      <span class="drag-handle" cdkDragHandle>
+        <i class="pi pi-bars"></i>
+      </span>
+      <span class="skill-name">{{ skill.name }}</span>
+      <button pButton type="button" icon="pi pi-times" class="p-button-rounded p-button-text" (click)="removeSkill(i)"></button>
+    </div>
+    <div class="empty" *ngIf="!skillList.length">
+      <p>No skills added yet. Use the field above to start your list.</p>
+    </div>
+  </div>
+
+  <div class="footer-actions">
+    <button pButton type="button" label="Cancel" class="p-button-text" (click)="cancel()"></button>
+    <button pButton type="button" label="Save" [disabled]="!skillList.length" (click)="save()"></button>
+  </div>
+</p-card>

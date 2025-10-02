@@ -32,6 +32,13 @@
                         (close)="closeFormEditor()">
                     </summary-profile-edit>
                 </ng-container>
+                <ng-container *ngIf="showSkillsFormEditor">
+                    <skills-profile-edit
+                        [skills]="profileSkills"
+                        (saveSkills)="onSkillsSaved($event)"
+                        (close)="closeFormEditor()">
+                    </skills-profile-edit>
+                </ng-container>
             </p-drawer>
 
     <p-drawer header="Top Drawer" [(visible)]="visible3" position="top" [style]="{ height: 'auto' }">
@@ -96,8 +103,9 @@
 
                       </div>
                   </p-tabpanel>
-                  <p-tabpanel value="1" style="height: 100%; overflow-y: auto;">
-                       <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
+               <p-tabpanel value="1" style="height: 100%; overflow-y: auto;">
+                   <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
+                   <skills-profile-display [skills]="profileSkills" (editSkills)="showSkillsFormEditorWindow()"></skills-profile-display>
                   </p-tabpanel>
                   <p-tabpanel value="2" style="height: 100%; overflow-y: auto;">
                       <!-- Academic Profile form goes here if available -->

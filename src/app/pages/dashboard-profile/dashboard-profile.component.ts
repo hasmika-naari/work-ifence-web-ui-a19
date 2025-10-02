@@ -23,7 +23,7 @@ import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { JobApplication, Resume, RoundDetails } from 'src/app/services/resume.model';
+import { JobApplication, Resume, RoundDetails, Skill } from 'src/app/services/resume.model';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { ResumeService } from 'src/app/services/resume.service';
@@ -51,6 +51,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { SummaryProfileFormPage } from './job-profile/summary/summary-form.page';
 import { SummaryProfileDisplayComponent } from './job-profile/summary/summary-display.component';
 import { SummaryProfileEditComponent } from './job-profile/summary/summary-edit.component';
+import { SkillsProfileDisplayComponent } from './job-profile/skills/skills-profile-display.component';
+import { SkillsProfileEditComponent } from './job-profile/skills/skills-profile-edit.component';
 
 interface Option {
   name : string;
@@ -71,7 +73,8 @@ interface Option {
         ButtonModule,TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, 
         MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule,
         AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, 
-        AddressFormEditorComponent, SummaryProfileFormPage, SummaryProfileEditComponent,
+  AddressFormEditorComponent, SummaryProfileFormPage, SummaryProfileEditComponent,
+  SkillsProfileDisplayComponent, SkillsProfileEditComponent,
         DrawerModule,TabsModule, BadgeModule, AvatarModule
         ],
     templateUrl: './dashboard-profile.component.html',
@@ -107,21 +110,57 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
 
   // Controls visibility of the summary edit form in the drawer
   showSummaryFormEditor = false;
+  showSkillsFormEditor = false;
+
+  private cachedSkills: Skill[] = [];
+  private cachedSkillsKey = '';
 
   // No local summary; always use store
 
   isActionInProgress: boolean = true;
 
   get summaryDrawerWidth(): string {
-    return this.showSummaryFormEditor ? 'fit-content' : '31rem';
+    if (this.showSkillsFormEditor) {
+      return '48rem';
+    }
+    if (this.showSummaryFormEditor) {
+      return 'fit-content';
+    }
+    return '31rem';
   }
   
   get summaryDrawerMinWidth(): string {
+    if (this.showSkillsFormEditor) {
+      return '48rem';
+    }
     return '31rem';
   }
   
   get summaryDrawerMaxWidth(): string {
-    return this.showSummaryFormEditor ? '85vw' : '31rem';
+    if (this.showSkillsFormEditor) {
+      return '48rem';
+    }
+    if (this.showSummaryFormEditor) {
+      return '85vw';
+    }
+    return '31rem';
+  }
+
+  get profileSkills(): Skill[] {
+    const jobProfile = this.jobProfileSignal();
+    const resumeSkills = this.resumeFormSignal()?.skill ?? [];
+    const normalized = (jobProfile?.skills ?? resumeSkills ?? []).map((skill: any) => ({
+      name: typeof skill === 'string' ? skill : skill?.name ?? '',
+      selected: typeof skill === 'object' && 'selected' in skill ? skill.selected : false
+    })).filter((skill: Skill) => !!skill.name?.trim());
+
+  const key = normalized.map((skill: Skill) => `${skill.name}::${skill.selected ? '1' : '0'}`).join('|');
+    if (key !== this.cachedSkillsKey) {
+      this.cachedSkillsKey = key;
+      this.cachedSkills = normalized;
+    }
+
+    return this.cachedSkills;
   }
 
   items!: MenuItem[];
@@ -189,6 +228,47 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       this.showSummaryFormEditor = true;
       this.visible2 = true; // Show the drawer for summary
       // Optionally close other editors if needed
+      this.showBioFormEditor = false;
+      this.showLoginFormEditor = false;
+      this.showAddressFormEditor = false;
+      this.showSkillsFormEditor = false;
+    }
+
+    onSkillsSaved(updatedSkills: Skill[]) {
+      const normalizedSkills = updatedSkills.map((skill) => ({
+        name: skill.name?.trim() ?? '',
+        selected: skill.selected ?? false
+      })).filter((skill) => !!skill.name);
+
+      this.userStore.addSkill(normalizedSkills);
+
+      const currentProfile = this.jobProfileSignal();
+      if (!currentProfile) {
+        this.userStore.setJobProfile({ skills: normalizedSkills });
+      } else {
+        this.userStore.updateJobProfileSection('skills', normalizedSkills);
+      }
+
+      this.showSkillsFormEditor = false;
+      this.visible2 = false;
+    }
+
+    showSkillsFormEditorWindow() {
+      const resumeSkills = [...(this.resumeFormSignal()?.skill ?? [])].map((skill: any) => ({
+        name: typeof skill === 'string' ? skill : skill?.name ?? '',
+        selected: typeof skill === 'object' && 'selected' in skill ? skill.selected : false
+      })).filter((skill) => !!skill.name);
+
+      const currentProfile = this.jobProfileSignal();
+      const mergedProfile = {
+        ...(currentProfile ?? {}),
+        skills: resumeSkills
+      };
+      this.userStore.setJobProfile(mergedProfile);
+
+      this.showSkillsFormEditor = true;
+      this.visible2 = true;
+      this.showSummaryFormEditor = false;
       this.showBioFormEditor = false;
       this.showLoginFormEditor = false;
       this.showAddressFormEditor = false;
@@ -416,6 +496,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   this.showLoginFormEditor = false;
   this.showAddressFormEditor = false;
   this.showSummaryFormEditor = false;
+  this.showSkillsFormEditor = false;
   this.visible2 = false;
   this.isActionInProgress = false;
   }

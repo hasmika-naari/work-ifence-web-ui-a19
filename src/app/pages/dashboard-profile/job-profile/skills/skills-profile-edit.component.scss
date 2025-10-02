@@ -1,0 +1,114 @@
+
+.skills-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 28rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.skill-input {
+  width: 100%;
+  padding-left: 2.4rem;
+  padding-right: 5.4rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.skill-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.15);
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--surface-500, #6c757d);
+  pointer-events: none;
+}
+
+.input-add-btn {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  transform: translateY(-50%);
+  height: 2.4rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+}
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-height: 18rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--surface-400, #adb5bd);
+  border-radius: 0.75rem;
+  background: var(--surface-50, #f8f9fa);
+  align-content: flex-start;
+  width: 100%;
+}
+
+.skill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  max-width: 100%;
+  flex: 0 0 auto;
+}
+
+.drag-handle {
+  color: var(--surface-500, #6c757d);
+  cursor: move;
+  font-size: 0.85rem;
+}
+
+.skill-name {
+  flex: 0 1 auto;
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.empty {
+  flex-basis: 100%;
+  text-align: center;
+  color: var(--surface-500, #6c757d);
+  font-style: italic;
+  padding: 1.5rem 0.5rem;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+:host ::ng-deep .skill-item .p-button {
+  width: 1.75rem;
+  height: 1.75rem;
+  min-width: 1.75rem;
+}
