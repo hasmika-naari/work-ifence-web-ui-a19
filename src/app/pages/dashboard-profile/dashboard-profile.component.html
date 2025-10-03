@@ -39,6 +39,16 @@
                         (close)="closeFormEditor()">
                     </skills-profile-edit>
                 </ng-container>
+                <ng-container *ngIf="showExperienceFormEditor">
+                    <experience-profile-edit
+                        [experience]="experienceDraft"
+                        [isEditing]="experienceEditingIndex !== null"
+                        [editingIndex]="experienceEditingIndex"
+                        (saveExperience)="onExperienceSaved($event)"
+                        (createNewExperience)="startExperienceCreation()"
+                        (close)="closeFormEditor()"
+                    ></experience-profile-edit>
+                </ng-container>
             </p-drawer>
 
     <p-drawer header="Top Drawer" [(visible)]="visible3" position="top" [style]="{ height: 'auto' }">
@@ -106,6 +116,11 @@
                <p-tabpanel value="1" style="height: 100%; overflow-y: auto;">
                    <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
                    <skills-profile-display [skills]="profileSkills" (editSkills)="showSkillsFormEditorWindow()"></skills-profile-display>
+                                     <experience-profile-display
+                                         [experiences]="profileExperiences"
+                                         (addExperience)="startExperienceCreation()"
+                                         (editExperience)="startExperienceEdit($event)"
+                                     ></experience-profile-display>
                   </p-tabpanel>
                   <p-tabpanel value="2" style="height: 100%; overflow-y: auto;">
                       <!-- Academic Profile form goes here if available -->

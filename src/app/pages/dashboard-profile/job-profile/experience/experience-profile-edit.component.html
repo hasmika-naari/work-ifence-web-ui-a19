@@ -1,0 +1,190 @@
+<p-card class="experience-editor">
+  <div class="header">
+    <div class="title-group">
+      <h3>{{ isEditing ? 'Edit Experience' : 'Add Experience' }}</h3>
+      <span class="subtitle" *ngIf="isEditing">Updating entry {{ (editingIndex ?? 0) + 1 }}</span>
+    </div>
+    <div class="header-actions">
+      <button
+        *ngIf="isEditing"
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        class="p-button-rounded p-button-text"
+        title="Add another experience"
+        (click)="newExperience()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-text"
+        (click)="cancel()"
+      ></button>
+    </div>
+  </div>
+
+  <form [formGroup]="form" class="experience-form" (ngSubmit)="submitExperience()">
+    <div class="form-row form-row--single">
+      <div class="field">
+        <label for="title">Title *</label>
+        <input id="title" pInputText formControlName="title" placeholder="Senior Software Engineer" />
+        <small class="error" *ngIf="form.controls['title'].invalid && form.controls['title'].touched">
+          Title is required.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-row form-row--double">
+      <div class="field">
+        <label for="company">Company</label>
+        <input id="company" pInputText formControlName="companyName" placeholder="Acme Corp" />
+      </div>
+
+      <div class="field">
+        <label for="location">Location</label>
+        <input id="location" pInputText formControlName="location" placeholder="Hyderabad, India" />
+      </div>
+    </div>
+
+    <div class="form-row form-row--quad">
+      <div class="field">
+        <label>Start Month *</label>
+        <p-dropdown formControlName="startMonth" [options]="months" placeholder="Select month"></p-dropdown>
+        <small class="error" *ngIf="form.controls['startMonth'].invalid && form.controls['startMonth'].touched">
+          Start month is required.
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="startYear">Start Year *</label>
+        <input
+          id="startYear"
+          pInputText
+          formControlName="startYear"
+          placeholder="2020"
+          maxlength="4"
+        />
+        <small class="error" *ngIf="form.controls['startYear'].invalid && form.controls['startYear'].touched">
+          Enter a valid year.
+        </small>
+      </div>
+
+      <div class="field">
+        <label>End Month</label>
+        <p-dropdown formControlName="endMonth" [options]="months" placeholder="Select month"></p-dropdown>
+      </div>
+
+      <div class="field">
+        <label for="endYear">End Year</label>
+        <input id="endYear" pInputText formControlName="endYear" placeholder="2024" maxlength="4" />
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <p-checkbox formControlName="isCurrent" binary inputId="isCurrent"></p-checkbox>
+      <label for="isCurrent">I currently work here</label>
+    </div>
+
+    <div class="field field--responsibilities">
+      <div class="field-heading">
+        <label for="responsibilities">Roles &amp; Responsibilities *</label>
+        <button
+          pButton
+          type="button"
+          class="p-button-text ai-button"
+          icon="pi pi-bolt"
+          label="AI Assist"
+          (click)="openAiAssist()"
+        ></button>
+      </div>
+      <textarea
+        id="responsibilities"
+        rows="8"
+        formControlName="responsibilities"
+        placeholder="List responsibilities separated by new lines"
+      ></textarea>
+      <small
+        class="error"
+        *ngIf="form.controls['responsibilities'].invalid && form.controls['responsibilities'].touched"
+      >
+        Roles and responsibilities are required.
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="keySkills">Key Skills (comma separated)</label>
+      <input id="keySkills" pInputText formControlName="keySkills" placeholder="Angular, AWS, Leadership" />
+    </div>
+
+    <div class="form-actions">
+      <button
+        pButton
+        type="button"
+        label="Reset"
+        class="p-button-secondary"
+        (click)="resetForm()"
+        [disabled]="form.pristine"
+      ></button>
+      <span class="spacer"></span>
+      <button pButton type="button" label="Cancel" class="p-button-text" (click)="cancel()"></button>
+      <button
+        pButton
+        type="submit"
+        [label]="isEditing ? 'Update Experience' : 'Save Experience'"
+        [disabled]="form.invalid"
+      ></button>
+    </div>
+  </form>
+
+  <p-drawer
+    header="AI Assistance"
+    [(visible)]="aiDrawerVisible"
+    position="right"
+    [modal]="true"
+    [style]="{ width: '28rem', 'max-width': '85vw' }"
+  [dismissible]="false"
+  [closeOnEscape]="!isGenerating"
+  [closable]="!isGenerating"
+    (onHide)="closeAiAssist()"
+  >
+    <div class="ai-drawer-content">
+      <p class="ai-description">
+        Share a quick prompt about the role and we'll draft responsibilities you can refine inside the editor.
+      </p>
+
+      <div class="ai-field">
+        <label for="aiPrompt">Prompt</label>
+        <textarea
+          id="aiPrompt"
+          rows="6"
+          [formControl]="aiPromptControl"
+          placeholder="e.g. Senior frontend engineer leading Angular initiatives"
+          [disabled]="isGenerating"
+        ></textarea>
+        <small class="error" *ngIf="aiPromptControl.invalid && aiPromptControl.touched">
+          Please share a short description so we can craft suggestions.
+        </small>
+      </div>
+
+      <div class="ai-actions">
+        <button pButton type="button" label="Close" class="p-button-text" (click)="closeAiAssist()" [disabled]="isGenerating"></button>
+        <button
+          pButton
+          type="button"
+          label="Generate"
+          icon="pi pi-play"
+          (click)="generateResponsibilitiesFromAi()"
+          [disabled]="isGenerating"
+        ></button>
+      </div>
+
+      <div class="ai-progress" *ngIf="isGenerating">
+        <p-progressBar mode="indeterminate"></p-progressBar>
+        <span>Gathering ideas...</span>
+      </div>
+
+      <div class="ai-error" *ngIf="aiError">{{ aiError }}</div>
+    </div>
+  </p-drawer>
+</p-card>

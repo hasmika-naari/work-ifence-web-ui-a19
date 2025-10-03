@@ -1,0 +1,179 @@
+.experience-profile-section {
+  max-width: 1000px;
+  padding: 20px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  background: #3a67730e;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(78, 84, 200, 0.08), transparent 30%),
+    radial-gradient(circle at 80% 40%, rgba(78, 200, 176, 0.07), transparent 35%),
+    radial-gradient(circle at 50% 70%, rgba(200, 84, 78, 0.05), transparent 40%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.experience-profile-section .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.experience-profile-section h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.experience-profile-section .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: none;
+  background: #f1f1f1;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+
+  .pi {
+    font-size: 0.9rem;
+  }
+}
+
+.action-btn:hover {
+  background: #e0e0e0;
+  transform: scale(1.1);
+}
+
+.action-btn.add-btn {
+  background: #4caf50;
+  color: #fff;
+}
+
+.action-btn.add-btn:hover {
+  background: #43a047;
+}
+
+.action-btn.edit-btn {
+  background: #f5f5f5;
+  color: #1f2937;
+}
+
+.action-btn.edit-btn:hover {
+  background: #e5e7eb;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-details.empty {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+}
+
+.experience-item {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 18px rgba(33, 61, 78, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.experience-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.experience-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #1f2a37;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.company {
+  margin: 0.2rem 0 0;
+  color: #4c5866;
+  font-weight: 500;
+}
+
+.period {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #4c5866;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #4c5866;
+  font-size: 0.95rem;
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.skill-pill {
+  background: rgba(76, 175, 80, 0.12);
+  color: #2f855a;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+.responsibilities {
+  margin-top: 1rem;
+}
+
+.responsibilities h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #1f2a37;
+}
+
+.responsibilities ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.responsibilities li {
+  line-height: 1.45;
+  color: #424c5d;
+}

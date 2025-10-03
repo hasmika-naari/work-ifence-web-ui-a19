@@ -1,0 +1,59 @@
+<section class="experience-profile-section">
+  <div class="header">
+    <h2>Experience</h2>
+    <div class="actions">
+      <button class="action-btn add-btn" type="button" title="Add experience" (click)="triggerAdd()">
+        <span class="pi pi-plus"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="profile-details" *ngIf="hasExperiences; else emptyState">
+    <article class="experience-item" *ngFor="let exp of experiences; index as index">
+      <div class="experience-header">
+        <div class="titles">
+          <h3>{{ exp.title }}</h3>
+          <p class="company" *ngIf="exp.companyName">{{ exp.companyName }}</p>
+        </div>
+        <div class="header-actions">
+          <div class="period" *ngIf="buildDateRange(exp)">
+            <i class="pi pi-calendar"></i>
+            <span>{{ buildDateRange(exp) }}</span>
+          </div>
+          <button
+            class="action-btn edit-btn"
+            type="button"
+            title="Edit experience"
+            (click)="triggerEdit(index)"
+          >
+            <span class="pi pi-pencil"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span class="meta-item" *ngIf="exp.location">
+          <i class="pi pi-map-marker"></i>
+          {{ exp.location }}
+        </span>
+        <span class="meta-item" *ngIf="splitKeySkills(exp.keySkills).length">
+          <i class="pi pi-star"></i>
+          <span class="skills">
+            <span class="skill-pill" *ngFor="let skill of splitKeySkills(exp.keySkills)">{{ skill }}</span>
+          </span>
+        </span>
+      </div>
+
+      <div class="responsibilities" *ngIf="exp.responsibilities">
+        <h4>Roles &amp; Responsibilities</h4>
+        <ul [innerHTML]="formatResponsibilities(exp.responsibilities)"></ul>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="profile-details empty">
+      <p>No experience added yet. Use the plus button to capture your work history.</p>
+    </div>
+  </ng-template>
+</section>

@@ -53,6 +53,8 @@ import { SummaryProfileDisplayComponent } from './job-profile/summary/summary-di
 import { SummaryProfileEditComponent } from './job-profile/summary/summary-edit.component';
 import { SkillsProfileDisplayComponent } from './job-profile/skills/skills-profile-display.component';
 import { SkillsProfileEditComponent } from './job-profile/skills/skills-profile-edit.component';
+import { ExperienceProfileDisplayComponent, ExperienceProfileItem } from './job-profile/experience/experience-profile-display.component';
+import { ExperienceProfileEditComponent } from './job-profile/experience/experience-profile-edit.component';
 
 interface Option {
   name : string;
@@ -75,6 +77,7 @@ interface Option {
         AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, 
   AddressFormEditorComponent, SummaryProfileFormPage, SummaryProfileEditComponent,
   SkillsProfileDisplayComponent, SkillsProfileEditComponent,
+  ExperienceProfileDisplayComponent, ExperienceProfileEditComponent,
         DrawerModule,TabsModule, BadgeModule, AvatarModule
         ],
     templateUrl: './dashboard-profile.component.html',
@@ -111,16 +114,21 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   // Controls visibility of the summary edit form in the drawer
   showSummaryFormEditor = false;
   showSkillsFormEditor = false;
+  showExperienceFormEditor = false;
 
   private cachedSkills: Skill[] = [];
   private cachedSkillsKey = '';
+  private cachedExperiences: ExperienceProfileItem[] = [];
+  private cachedExperiencesKey = '';
+  experienceEditingIndex: number | null = null;
+  experienceDraft: ExperienceProfileItem | null = null;
 
   // No local summary; always use store
 
   isActionInProgress: boolean = true;
 
   get summaryDrawerWidth(): string {
-    if (this.showSkillsFormEditor) {
+    if (this.showSkillsFormEditor || this.showExperienceFormEditor) {
       return '48rem';
     }
     if (this.showSummaryFormEditor) {
@@ -130,14 +138,14 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   }
   
   get summaryDrawerMinWidth(): string {
-    if (this.showSkillsFormEditor) {
+    if (this.showSkillsFormEditor || this.showExperienceFormEditor) {
       return '48rem';
     }
     return '31rem';
   }
   
   get summaryDrawerMaxWidth(): string {
-    if (this.showSkillsFormEditor) {
+    if (this.showSkillsFormEditor || this.showExperienceFormEditor) {
       return '48rem';
     }
     if (this.showSummaryFormEditor) {
@@ -209,8 +217,9 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       } else {
         this.userStore.updateJobProfileSection('summary', updatedSummary);
       }
-      this.showSummaryFormEditor = false;
-      this.visible2 = false;
+  this.showSummaryFormEditor = false;
+  this.showExperienceFormEditor = false;
+  this.visible2 = false;
     }
 
     // Handler to open the summary edit form in the drawer
@@ -232,6 +241,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       this.showLoginFormEditor = false;
       this.showAddressFormEditor = false;
       this.showSkillsFormEditor = false;
+  this.showExperienceFormEditor = false;
     }
 
     onSkillsSaved(updatedSkills: Skill[]) {
@@ -249,8 +259,9 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
         this.userStore.updateJobProfileSection('skills', normalizedSkills);
       }
 
-      this.showSkillsFormEditor = false;
-      this.visible2 = false;
+  this.showSkillsFormEditor = false;
+  this.showExperienceFormEditor = false;
+  this.visible2 = false;
     }
 
     showSkillsFormEditorWindow() {
@@ -272,6 +283,226 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       this.showBioFormEditor = false;
       this.showLoginFormEditor = false;
       this.showAddressFormEditor = false;
+      this.showExperienceFormEditor = false;
+    }
+
+    get profileExperiences(): ExperienceProfileItem[] {
+      const jobProfile = this.jobProfileSignal();
+      const resumeExperiences = this.resumeFormSignal()?.experience ?? [];
+      const source = (jobProfile?.experience ?? resumeExperiences ?? []) as any[];
+
+      const normalized = source
+        .map((exp) => this.mapExperienceToDisplay(exp))
+        .filter((exp) => !!exp.title && !!exp.responsibilities);
+
+      const key = JSON.stringify(normalized);
+      if (key !== this.cachedExperiencesKey) {
+        this.cachedExperiencesKey = key;
+        this.cachedExperiences = normalized;
+      }
+
+      return this.cachedExperiences;
+    }
+
+    onExperienceSaved(event: { experience: ExperienceProfileItem; index: number | null }) {
+      const normalized = this.mapExperienceToDisplay(event.experience);
+      const collection = [...this.profileExperiences];
+
+      if (event.index !== null && event.index >= 0 && event.index < collection.length) {
+        collection[event.index] = normalized;
+      } else {
+        collection.push(normalized);
+      }
+
+      this.persistExperiences(collection);
+
+      this.experienceEditingIndex = null;
+      this.experienceDraft = null;
+      this.showExperienceFormEditor = false;
+      this.visible2 = false;
+    }
+
+    startExperienceCreation() {
+      this.experienceEditingIndex = null;
+      this.experienceDraft = null;
+      this.prepareExperienceEditor();
+    }
+
+    startExperienceEdit(index: number) {
+      const experiences = this.profileExperiences;
+      this.experienceEditingIndex = index;
+      const target = experiences[index] ?? null;
+      if (target) {
+        this.experienceDraft = typeof structuredClone === 'function'
+          ? structuredClone(target)
+          : JSON.parse(JSON.stringify(target));
+      } else {
+        this.experienceDraft = null;
+      }
+      this.prepareExperienceEditor();
+    }
+
+    private prepareExperienceEditor() {
+      this.ensureExperienceProfileSeeded();
+      this.showExperienceFormEditor = true;
+      this.visible2 = true;
+      this.showSummaryFormEditor = false;
+      this.showSkillsFormEditor = false;
+      this.showBioFormEditor = false;
+      this.showLoginFormEditor = false;
+      this.showAddressFormEditor = false;
+    }
+
+    private ensureExperienceProfileSeeded() {
+      const jobProfile = this.jobProfileSignal();
+      if (!jobProfile?.experience) {
+        const resumeExperiences = [...(this.resumeFormSignal()?.experience ?? [])];
+        const mergedProfile = {
+          ...(jobProfile ?? {}),
+          experience: resumeExperiences
+        };
+        this.userStore.setJobProfile(mergedProfile);
+      }
+    }
+
+    private mapExperienceToDisplay(exp: any): ExperienceProfileItem {
+      if (!exp) {
+        return { title: '', responsibilities: '' };
+      }
+
+      const title = this.coerceString(exp.title ?? exp.position_title ?? exp.positionTitle);
+      const companyName = this.coerceOptionalString(exp.companyName ?? exp.company_name ?? exp.company);
+      const location = this.coerceOptionalString(exp.location ?? exp.city ?? exp.place_of_work);
+
+      const isCurrent = Boolean(exp.isCurrent ?? exp.isCurrentlyWorkHere ?? exp.current ?? exp.is_current);
+
+      const { month: startMonth, year: startYear } = this.extractMonthYear(
+        exp.startMonth,
+        exp.startYear,
+        exp.start_date ?? exp.startDate ?? exp.period_start
+      );
+
+      const { month: endMonth, year: endYear } = this.extractMonthYear(
+        exp.endMonth,
+        exp.endYear,
+        exp.end_date ?? exp.endDate ?? exp.period_end
+      );
+
+      const responsibilitiesSource =
+        exp.responsibilities ??
+        exp.description ??
+        exp.original_description_html ??
+        exp.duties ??
+        '';
+
+      const responsibilities = Array.isArray(responsibilitiesSource)
+        ? responsibilitiesSource.map((item: any) => this.coerceString(item)).filter(Boolean).join('\n')
+        : this.coerceString(responsibilitiesSource);
+
+      const keySkillsSource = exp.keySkills ?? exp.key_skills ?? exp.skills ?? exp.skillSummary;
+      const keySkills = Array.isArray(keySkillsSource)
+        ? keySkillsSource.map((item: any) => this.coerceString(item)).filter(Boolean).join(', ')
+        : this.coerceOptionalString(keySkillsSource);
+
+      return {
+        title,
+        companyName,
+        location,
+        startMonth: startMonth || undefined,
+        startYear: startYear || undefined,
+        endMonth: isCurrent ? undefined : endMonth || undefined,
+        endYear: isCurrent ? undefined : endYear || undefined,
+        isCurrent,
+        responsibilities,
+        keySkills
+      };
+    }
+
+    private persistExperiences(experiences: ExperienceProfileItem[]) {
+      const normalized = experiences
+        .map((exp) => this.mapExperienceToDisplay(exp))
+        .filter((exp) => !!exp.title && !!exp.responsibilities);
+
+      this.cachedExperiencesKey = JSON.stringify(normalized);
+      this.cachedExperiences = normalized;
+
+      const currentProfile = this.jobProfileSignal();
+      if (!currentProfile) {
+        this.userStore.setJobProfile({ experience: normalized });
+      } else {
+        this.userStore.updateJobProfileSection('experience', normalized);
+      }
+    }
+
+    private extractMonthYear(
+      monthInput?: unknown,
+      yearInput?: unknown,
+      combined?: unknown
+    ): { month: string; year: string } {
+      let month = this.coerceString(monthInput);
+      let year = this.coerceString(yearInput);
+
+      const combinedValue = this.coerceString(combined);
+
+      if ((!month || !year) && combinedValue) {
+        const tokens = combinedValue.split(/\s|\u2013|\-|\//).filter(Boolean);
+        if (!month && tokens.length > 0) {
+          month = this.normalizeMonthToken(tokens[0]);
+        }
+        if (!year && tokens.length > 0) {
+          const last = tokens[tokens.length - 1];
+          year = /\d{4}/.test(last) ? last : year;
+        }
+      }
+
+      return { month, year };
+    }
+
+    private normalizeMonthToken(token: string): string {
+      if (!token) {
+        return '';
+      }
+      const lower = token.toLowerCase();
+      const monthMap: Record<string, string> = {
+        jan: 'January',
+        january: 'January',
+        feb: 'February',
+        february: 'February',
+        mar: 'March',
+        march: 'March',
+        apr: 'April',
+        april: 'April',
+        may: 'May',
+        jun: 'June',
+        june: 'June',
+        jul: 'July',
+        july: 'July',
+        aug: 'August',
+        august: 'August',
+        sep: 'September',
+        sept: 'September',
+        september: 'September',
+        oct: 'October',
+        october: 'October',
+        nov: 'November',
+        november: 'November',
+        dec: 'December',
+        december: 'December'
+      };
+
+      return monthMap[lower] ?? token.charAt(0).toUpperCase() + token.slice(1);
+    }
+
+    private coerceString(value: unknown): string {
+      if (value === null || value === undefined) {
+        return '';
+      }
+      return String(value).trim();
+    }
+
+    private coerceOptionalString(value: unknown): string | undefined {
+      const text = this.coerceString(value);
+      return text || undefined;
     }
 
 
@@ -316,7 +547,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
         title : 'Achievements with bullet points',
         editable_section_title : 'Achievements'
       }
-    ]
+    ];
 
   template9right_sections  : Array<SectionDesc> = [
       {
@@ -334,7 +565,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       title : 'Project',
       editable_section_title : 'Project'
     }
-    ]
+    ];
 
     template9left_sections : Array<SectionDesc> = [
    
@@ -363,7 +594,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       title : 'Achievements with bullet points',
       editable_section_title : 'Achievements'
     }
-  ]
+  ];
 
   template10_sections : Array<SectionDesc> = [
     {
@@ -396,7 +627,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       title : 'Accomplishments',
       editable_section_title : 'Accomplishments'
     }
-  ]
+  ];
 
   private resumeService: ResumeService = inject(ResumeService);
   private pdfToImageService: PdfToImageService = inject(PdfToImageService);
@@ -497,6 +728,9 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   this.showAddressFormEditor = false;
   this.showSummaryFormEditor = false;
   this.showSkillsFormEditor = false;
+  this.showExperienceFormEditor = false;
+  this.experienceEditingIndex = null;
+  this.experienceDraft = null;
   this.visible2 = false;
   this.isActionInProgress = false;
   }
