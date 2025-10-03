@@ -46,7 +46,7 @@
 
       <div class="responsibilities" *ngIf="exp.responsibilities">
         <h4>Roles &amp; Responsibilities</h4>
-        <ul [innerHTML]="formatResponsibilities(exp.responsibilities)"></ul>
+        <div class="responsibilities-content" [innerHTML]="formatResponsibilities(exp.responsibilities)"></div>
       </div>
     </article>
   </div>

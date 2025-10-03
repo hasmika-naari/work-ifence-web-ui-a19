@@ -166,14 +166,20 @@
   color: #1f2a37;
 }
 
-.responsibilities ul {
+.responsibilities-content ul {
   margin: 0;
   padding-left: 1.25rem;
   display: grid;
   gap: 0.4rem;
 }
 
-.responsibilities li {
+.responsibilities-content li {
   line-height: 1.45;
+  color: #424c5d;
+}
+
+.responsibilities-content p {
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
   color: #424c5d;
 }

@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { DrawerModule } from 'primeng/drawer';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { EditorModule } from 'primeng/editor';
 import { finalize } from 'rxjs/operators';
 import { ExperienceProfileItem } from './experience-profile-display.component';
 import { ExperienceAiService } from './experience-ai.service';
@@ -33,13 +33,13 @@ const MONTH_OPTIONS = [
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    CardModule,
     ButtonModule,
     InputTextModule,
     CheckboxModule,
-    DropdownModule,
-    DrawerModule,
-    ProgressBarModule
+  DropdownModule,
+  DrawerModule,
+  ProgressBarModule,
+  EditorModule
   ],
   templateUrl: './experience-profile-edit.component.html',
   styleUrls: ['./experience-profile-edit.component.scss']
@@ -59,7 +59,6 @@ export class ExperienceProfileEditComponent implements OnChanges {
   aiPromptControl: FormControl<string>;
   isGenerating = false;
   aiError: string | null = null;
-
   constructor(private fb: FormBuilder, private aiService: ExperienceAiService) {
     this.form = this.fb.group({
       title: ['', Validators.required],
@@ -69,9 +68,8 @@ export class ExperienceProfileEditComponent implements OnChanges {
       startYear: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
       endMonth: [''],
       endYear: [''],
-      isCurrent: [false],
-      responsibilities: ['', Validators.required],
-      keySkills: ['']
+  isCurrent: [false],
+  responsibilities: ['', Validators.required]
     });
 
     this.aiPromptControl = this.fb.nonNullable.control('', Validators.required);
@@ -143,8 +141,7 @@ export class ExperienceProfileEditComponent implements OnChanges {
         endMonth: '',
         endYear: '',
         isCurrent: false,
-        responsibilities: '',
-        keySkills: ''
+  responsibilities: ''
       });
       this.form.get('endMonth')?.enable({ emitEvent: false });
       this.form.get('endYear')?.enable({ emitEvent: false });
@@ -202,7 +199,7 @@ export class ExperienceProfileEditComponent implements OnChanges {
           }
 
           const responsibilitiesControl = this.form.get('responsibilities');
-          responsibilitiesControl?.setValue(text);
+          responsibilitiesControl?.setValue(this.normalizeResponsibilities(text));
           responsibilitiesControl?.markAsDirty();
           responsibilitiesControl?.markAsTouched();
 
@@ -219,6 +216,9 @@ export class ExperienceProfileEditComponent implements OnChanges {
 
   private getFormValue(): ExperienceProfileItem {
     const raw = this.form.getRawValue();
+    const responsibilities = (raw.responsibilities ?? '').trim();
+    const keySkills = this.isEditing ? this.experience?.keySkills : undefined;
+
     return {
       title: raw.title?.trim(),
       companyName: raw.companyName?.trim() || undefined,
@@ -228,8 +228,8 @@ export class ExperienceProfileEditComponent implements OnChanges {
       endMonth: raw.isCurrent ? undefined : raw.endMonth,
       endYear: raw.isCurrent ? undefined : raw.endYear,
       isCurrent: !!raw.isCurrent,
-      responsibilities: raw.responsibilities?.trim(),
-      keySkills: raw.keySkills?.trim() || undefined
+      responsibilities,
+      keySkills
     };
   }
 
@@ -243,8 +243,7 @@ export class ExperienceProfileEditComponent implements OnChanges {
       endMonth: item.endMonth ?? '',
       endYear: item.endYear ?? '',
       isCurrent: !!item.isCurrent,
-      responsibilities: item.responsibilities ?? '',
-      keySkills: item.keySkills ?? ''
+      responsibilities: this.normalizeResponsibilities(item.responsibilities ?? '')
     });
 
     if (item.isCurrent) {
@@ -257,5 +256,43 @@ export class ExperienceProfileEditComponent implements OnChanges {
 
     this.form.markAsPristine();
     this.form.markAsUntouched();
+  }
+
+  private normalizeResponsibilities(value: string): string {
+    if (!value) {
+      return '';
+    }
+
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return '';
+    }
+
+    if (/[<][a-z\s/"'=]+>/i.test(trimmed)) {
+      return trimmed;
+    }
+
+    const bulletLines = trimmed
+      .split(/\r?\n/)
+      .map((line) => line.replace(/^[-•\s]+/, '').trim())
+      .filter((line) => line.length > 0);
+
+    if (!bulletLines.length) {
+      return trimmed;
+    }
+
+    const items = bulletLines.map((line) => `<li>${this.escapeHtml(line)}</li>`).join('');
+    return `<ul>${items}</ul>`;
+  }
+
+  private escapeHtml(value: string): string {
+    const map: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+    return value.replace(/[&<>"']/g, (char) => map[char]);
   }
 }

@@ -1,4 +1,4 @@
-<div class="job-tracker" style="height: 92vh; overflow: hidden;">
+<div class="job-tracker" style="height: 92vh;">
     <div class="resume-container">
   <h1 class="title" style="padding-left: 20px;">Profile Tracker</h1>
        <p-drawer header="Left Drawer" [(visible)]="visible1" position="left">
@@ -10,7 +10,13 @@
       </p-drawer>
 
 
-            <p-drawer header="Edit Profile" [(visible)]="visible2" position="right" (onHide)="closeFormEditor()" [style]="{ width: summaryDrawerWidth, 'min-width': summaryDrawerMinWidth, 'max-width': summaryDrawerMaxWidth }">
+            <p-drawer
+                [(visible)]="visible2"
+                position="right"
+                (onHide)="closeFormEditor()"
+                [style]="{ width: summaryDrawerWidth, 'min-width': summaryDrawerMinWidth, 'max-width': summaryDrawerMaxWidth }"
+                [header]="drawerTitle || undefined"
+            >
                 <ng-container *ngIf="showBioFormEditor">
                     <app-bio-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" (formClosed)="closeFormEditor()"></app-bio-form-editor>
                 </ng-container>
@@ -66,10 +72,10 @@
               aliquip ex ea commodo consequat.
           </p>
       </p-drawer>
-    <div class="flex gap-2 justify-center" style="padding-left: 20px; padding-right: 20px;margin-top: 10px; margin-bottom: 10px; height: calc(92vh - 60px);">
-      <div style="height: 100%; width: 100%; display: flex; flex-direction: column;">
-        <div style="flex: 1 1 0; min-height: 0; display: flex; flex-direction: column;">
-          <div style="flex: 1 1 0; min-height: 0; overflow: auto;">
+        <div class="flex gap-2 justify-center" style="padding-left: 20px; padding-right: 20px;margin-top: 10px; margin-bottom: 10px; height: calc(92vh - 60px);">
+            <div style="height: 100%; width: 100%; display: flex; flex-direction: column;">
+                <div style="flex: 1 1 0; min-height: 0; display: flex; flex-direction: column;">
+                    <div style="flex: 1 1 0; min-height: 0;">
             <p-tabs value="0" style="height: 100%; display: flex; flex-direction: column;">
               <p-tablist>
                   <ng-template #previcon>
@@ -96,11 +102,8 @@
                   </ng-template>
               </p-tablist>
               <p-tabpanels style="height: 100%;">
-                  <p-tabpanel value="0" style="height: 100%; overflow-y: auto;">
-                      <div style="text-align: left;
-                          overflow-y: scroll;
-                          height: 75vh;
-                          padding-bottom: 100px;">
+                  <p-tabpanel value="0">
+                      <div class="tab-panel-content account-info-content">
                           <section class="mb-4">
                           <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
                           </section>
@@ -113,16 +116,18 @@
 
                       </div>
                   </p-tabpanel>
-               <p-tabpanel value="1" style="height: 100%; overflow-y: auto;">
-                   <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
-                   <skills-profile-display [skills]="profileSkills" (editSkills)="showSkillsFormEditorWindow()"></skills-profile-display>
-                                     <experience-profile-display
-                                         [experiences]="profileExperiences"
-                                         (addExperience)="startExperienceCreation()"
-                                         (editExperience)="startExperienceEdit($event)"
-                                     ></experience-profile-display>
+               <p-tabpanel value="1">
+                   <div class="tab-panel-content job-profile-content">
+                       <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
+                       <skills-profile-display [skills]="profileSkills" (editSkills)="showSkillsFormEditorWindow()"></skills-profile-display>
+                                         <experience-profile-display
+                                             [experiences]="profileExperiences"
+                                             (addExperience)="startExperienceCreation()"
+                                             (editExperience)="startExperienceEdit($event)"
+                                         ></experience-profile-display>
+                   </div>
                   </p-tabpanel>
-                  <p-tabpanel value="2" style="height: 100%; overflow-y: auto;">
+                  <p-tabpanel value="2">
                       <!-- Academic Profile form goes here if available -->
                       <p class="m-0">Academic Profile content goes here.</p>
                   </p-tabpanel>

@@ -63,12 +63,37 @@ export class ExperienceProfileDisplayComponent {
   }
 
   formatResponsibilities(responsibilities: string): string {
-    return (responsibilities || '')
+    const value = (responsibilities || '').trim();
+    if (!value) {
+      return '';
+    }
+
+    if (/<[a-z][\s\S]*>/i.test(value)) {
+      return value;
+    }
+
+    const bulletLines = value
       .split(/\r?\n|<br\s*\/?\s*>/)
       .map((line) => line.trim())
-      .filter((line) => !!line)
-      .map((line) => `<li>${line}</li>`)
-      .join('');
+      .filter((line) => !!line);
+
+    if (!bulletLines.length) {
+      return value;
+    }
+
+    const items = bulletLines.map((line) => `<li>${this.escapeHtml(line)}</li>`).join('');
+    return `<ul>${items}</ul>`;
+  }
+
+  private escapeHtml(value: string): string {
+    const map: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+    return value.replace(/[&<>"']/g, (char) => map[char]);
   }
 
   splitKeySkills(keySkills?: string): string[] {

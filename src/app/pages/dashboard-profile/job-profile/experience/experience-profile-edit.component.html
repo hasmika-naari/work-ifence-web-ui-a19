@@ -1,27 +1,14 @@
-<p-card class="experience-editor">
-  <div class="header">
-    <div class="title-group">
-      <h3>{{ isEditing ? 'Edit Experience' : 'Add Experience' }}</h3>
-      <span class="subtitle" *ngIf="isEditing">Updating entry {{ (editingIndex ?? 0) + 1 }}</span>
-    </div>
-    <div class="header-actions">
-      <button
-        *ngIf="isEditing"
-        pButton
-        type="button"
-        icon="pi pi-plus"
-        class="p-button-rounded p-button-text"
-        title="Add another experience"
-        (click)="newExperience()"
-      ></button>
-      <button
-        pButton
-        type="button"
-        icon="pi pi-times"
-        class="p-button-rounded p-button-text"
-        (click)="cancel()"
-      ></button>
-    </div>
+<div class="experience-editor">
+  <div class="editor-context" *ngIf="isEditing">
+    <span class="subtitle">Updating entry {{ (editingIndex ?? 0) + 1 }}</span>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-plus"
+      class="p-button-rounded p-button-text"
+      title="Add another experience"
+      (click)="newExperience()"
+    ></button>
   </div>
 
   <form [formGroup]="form" class="experience-form" (ngSubmit)="submitExperience()">
@@ -98,23 +85,18 @@
           (click)="openAiAssist()"
         ></button>
       </div>
-      <textarea
-        id="responsibilities"
-        rows="8"
+      <p-editor
         formControlName="responsibilities"
-        placeholder="List responsibilities separated by new lines"
-      ></textarea>
+        [style]="{ height: '24rem' }"
+        styleClass="responsibilities-editor"
+        placeholder="Describe the role impact, key wins, and notable projects"
+      ></p-editor>
       <small
         class="error"
         *ngIf="form.controls['responsibilities'].invalid && form.controls['responsibilities'].touched"
       >
         Roles and responsibilities are required.
       </small>
-    </div>
-
-    <div class="field">
-      <label for="keySkills">Key Skills (comma separated)</label>
-      <input id="keySkills" pInputText formControlName="keySkills" placeholder="Angular, AWS, Leadership" />
     </div>
 
     <div class="form-actions">
@@ -143,48 +125,50 @@
     position="right"
     [modal]="true"
     [style]="{ width: '28rem', 'max-width': '85vw' }"
-  [dismissible]="false"
-  [closeOnEscape]="!isGenerating"
-  [closable]="!isGenerating"
+    [dismissible]="false"
+    [closeOnEscape]="!isGenerating"
+    [closable]="!isGenerating"
     (onHide)="closeAiAssist()"
   >
-    <div class="ai-drawer-content">
-      <p class="ai-description">
-        Share a quick prompt about the role and we'll draft responsibilities you can refine inside the editor.
-      </p>
+    <div class="ai-drawer">
+      <div class="ai-drawer-content">
+        <p class="ai-description">
+          Share a quick prompt about the role and we'll draft responsibilities you can refine inside the editor.
+        </p>
 
-      <div class="ai-field">
-        <label for="aiPrompt">Prompt</label>
-        <textarea
-          id="aiPrompt"
-          rows="6"
-          [formControl]="aiPromptControl"
-          placeholder="e.g. Senior frontend engineer leading Angular initiatives"
-          [disabled]="isGenerating"
-        ></textarea>
-        <small class="error" *ngIf="aiPromptControl.invalid && aiPromptControl.touched">
-          Please share a short description so we can craft suggestions.
-        </small>
+        <div class="ai-field">
+          <label for="aiPrompt">Prompt</label>
+          <textarea
+            id="aiPrompt"
+            rows="6"
+            [formControl]="aiPromptControl"
+            placeholder="e.g. Senior frontend engineer leading Angular initiatives"
+            [disabled]="isGenerating"
+          ></textarea>
+          <small class="error" *ngIf="aiPromptControl.invalid && aiPromptControl.touched">
+            Please share a short description so we can craft suggestions.
+          </small>
+        </div>
+
+        <div class="ai-actions">
+          <button pButton type="button" label="Close" class="p-button-text" (click)="closeAiAssist()" [disabled]="isGenerating"></button>
+          <button
+            pButton
+            type="button"
+            label="Generate"
+            icon="pi pi-play"
+            (click)="generateResponsibilitiesFromAi()"
+            [disabled]="isGenerating"
+          ></button>
+        </div>
+
+        <div class="ai-progress" *ngIf="isGenerating">
+          <p-progressBar mode="indeterminate"></p-progressBar>
+          <span>Gathering ideas...</span>
+        </div>
+
+        <div class="ai-error" *ngIf="aiError">{{ aiError }}</div>
       </div>
-
-      <div class="ai-actions">
-        <button pButton type="button" label="Close" class="p-button-text" (click)="closeAiAssist()" [disabled]="isGenerating"></button>
-        <button
-          pButton
-          type="button"
-          label="Generate"
-          icon="pi pi-play"
-          (click)="generateResponsibilitiesFromAi()"
-          [disabled]="isGenerating"
-        ></button>
-      </div>
-
-      <div class="ai-progress" *ngIf="isGenerating">
-        <p-progressBar mode="indeterminate"></p-progressBar>
-        <span>Gathering ideas...</span>
-      </div>
-
-      <div class="ai-error" *ngIf="aiError">{{ aiError }}</div>
     </div>
   </p-drawer>
-</p-card>
+</div>

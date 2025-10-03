@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({name: 'bytes'})
+@Pipe({ name: 'bytes', standalone: true })
 export class BytesPipe implements PipeTransform {
   public transform(bytes: number): string {
     if (isNaN(parseFloat('' + bytes)) || !isFinite(bytes)) return '-';

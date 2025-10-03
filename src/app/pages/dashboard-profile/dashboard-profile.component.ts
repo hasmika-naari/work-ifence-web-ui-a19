@@ -154,6 +154,31 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     return '31rem';
   }
 
+  get drawerTitle(): string | null {
+    if (!this.visible2) {
+      return null;
+    }
+    if (this.showBioFormEditor) {
+      return 'Edit Bio';
+    }
+    if (this.showLoginFormEditor) {
+      return 'Update Login Details';
+    }
+    if (this.showAddressFormEditor) {
+      return 'Edit Address';
+    }
+    if (this.showSummaryFormEditor) {
+      return 'Edit Summary';
+    }
+    if (this.showSkillsFormEditor) {
+      return 'Edit Skills';
+    }
+    if (this.showExperienceFormEditor) {
+      return this.experienceEditingIndex !== null ? 'Edit Experience' : 'Add Experience';
+    }
+    return null;
+  }
+
   get profileSkills(): Skill[] {
     const jobProfile = this.jobProfileSignal();
     const resumeSkills = this.resumeFormSignal()?.skill ?? [];

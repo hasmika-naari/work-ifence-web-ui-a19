@@ -3,23 +3,9 @@
   flex-direction: column;
   gap: 1.5rem;
   min-height: 32rem;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.title-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.title-group h3 {
-  margin: 0;
+  height: 100%;
+  padding: 1rem 1.5rem 1.5rem;
+  box-sizing: border-box;
 }
 
 .subtitle {
@@ -27,16 +13,11 @@
   font-size: 0.85rem;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .experience-form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  flex: 1 1 auto;
 }
 
 .form-row {
@@ -53,7 +34,20 @@
 }
 
 .form-row--quad {
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 1024px) {
+  .form-row--quad {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .form-row--quad {
+    grid-template-columns: 1fr;
+  }
 }
 
 .field {
@@ -81,6 +75,29 @@
   border: 1px solid rgba(33, 61, 78, 0.18);
   background: #fff;
   transition: box-shadow 0.2s ease;
+}
+
+:host ::ng-deep .responsibilities-editor {
+  width: 100%;
+}
+
+:host ::ng-deep .responsibilities-editor .p-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 24rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(33, 61, 78, 0.18);
+  overflow: hidden;
+}
+
+:host ::ng-deep .responsibilities-editor .p-editor-toolbar {
+  border-bottom: 1px solid rgba(33, 61, 78, 0.18);
+}
+
+:host ::ng-deep .responsibilities-editor .p-editor-content {
+  flex: 1 1 auto;
+  padding: 0.75rem;
+  background: #fff;
 }
 
 .field--responsibilities .field-heading {
@@ -121,10 +138,19 @@
   flex: 1 1 auto;
 }
 
+.ai-drawer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+}
+
 .ai-drawer-content {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 .ai-description {
