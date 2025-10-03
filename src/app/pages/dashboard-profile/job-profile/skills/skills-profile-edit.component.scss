@@ -1,15 +1,9 @@
-
 .skills-editor {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  min-height: 28rem;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 1.25rem;
+  min-height: 32rem;
+  padding: 0.75rem 0 1.75rem;
 }
 
 .input-row {
@@ -20,18 +14,32 @@
 .input-wrapper {
   position: relative;
   width: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
 }
 
-.skill-input {
+.p-autocomplete {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+:host ::ng-deep .skills-editor .p-autocomplete {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+:host ::ng-deep .skills-editor .p-autocomplete .p-inputtext.skill-input {
   width: 100%;
   padding-left: 2.4rem;
-  padding-right: 5.4rem;
-  height: 3rem;
+  padding-right: 1.75rem;
+  height: 3.5rem;
   border-radius: 0.75rem;
   transition: box-shadow 0.2s ease;
+  font-size: 1rem;
 }
 
-.skill-input:focus {
+:host ::ng-deep .skills-editor .p-autocomplete .p-inputtext.skill-input:focus {
   box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.15);
 }
 
@@ -42,24 +50,27 @@
   transform: translateY(-50%);
   color: var(--surface-500, #6c757d);
   pointer-events: none;
+  font-size: 1.1rem;
 }
 
 .input-add-btn {
-  position: absolute;
-  top: 50%;
-  right: 0.35rem;
-  transform: translateY(-50%);
-  height: 2.4rem;
-  padding: 0 1.1rem;
-  border-radius: 999px;
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 5.25rem;
+  height: 3.5rem;
+  padding: 0 1.3rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
 }
 
 .skill-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  min-height: 18rem;
-  padding: 0.75rem;
+  min-height: 20rem;
+  padding: 1rem;
   border: 1px dashed var(--surface-400, #adb5bd);
   border-radius: 0.75rem;
   background: var(--surface-50, #f8f9fa);
@@ -105,10 +116,16 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
+  padding-right: 0.25rem;
 }
 
 :host ::ng-deep .skill-item .p-button {
   width: 1.75rem;
   height: 1.75rem;
   min-width: 1.75rem;
+}
+
+:host ::ng-deep .p-autocomplete-panel {
+  max-height: 16rem;
+  overflow-y: auto;
 }

@@ -24,11 +24,15 @@ import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "mat-file-upload-queue",
-   standalone: true,
-        imports: [
-            CommonModule, BytesPipe, MatProgressBarModule,
-            MatIconModule, MatCardModule, MatButtonModule
-        ],
+  standalone: true,
+  imports: [
+    CommonModule,
+    BytesPipe,
+    MatProgressBarModule,
+    MatIconModule,
+    MatCardModule,
+    MatButtonModule,
+  ],
   templateUrl: "./mat-file-upload-queue.component.html",
   styleUrls: ["./mat-file-upload-queue.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,

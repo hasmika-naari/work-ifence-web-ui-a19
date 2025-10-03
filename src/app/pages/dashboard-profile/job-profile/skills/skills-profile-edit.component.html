@@ -1,20 +1,21 @@
-<p-card class="skills-editor">
-  <div class="header">
-    <h3>Edit Skills</h3>
-    <button pButton type="button" icon="pi pi-times" class="p-button-rounded p-button-text" (click)="cancel()"></button>
-  </div>
-
+<div class="skills-editor">
   <form [formGroup]="form" class="input-row" (ngSubmit)="addSkill()">
     <div class="input-wrapper flex-1">
       <i class="pi pi-star input-icon"></i>
-      <input
-        pInputText
-        class="skill-input"
-        type="text"
-        placeholder="Add a skill"
+      <p-autoComplete
+        inputId="skillInput"
         formControlName="skill"
-        autocomplete="off"
-      />
+        [suggestions]="filteredSuggestions"
+        (completeMethod)="filterSkills($event)"
+        (onSelect)="suggestionSelected($event)"
+        (onFocus)="handleFocus()"
+  (keyup.enter)="handleEnter($event)"
+        [forceSelection]="false"
+        [minLength]="0"
+        inputClass="skill-input"
+        placeholder="Add a skill"
+        appendTo="body"
+      ></p-autoComplete>
       <button
         pButton
         type="submit"
@@ -49,4 +50,4 @@
     <button pButton type="button" label="Cancel" class="p-button-text" (click)="cancel()"></button>
     <button pButton type="button" label="Save" [disabled]="!skillList.length" (click)="save()"></button>
   </div>
-</p-card>
+</div>
