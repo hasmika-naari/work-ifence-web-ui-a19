@@ -91,6 +91,11 @@
 }
 
 :host ::ng-deep .responsibilities-editor .p-editor-toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.5rem;
   border-bottom: 1px solid rgba(33, 61, 78, 0.18);
 }
 
@@ -98,6 +103,34 @@
   flex: 1 1 auto;
   padding: 0.75rem;
   background: #fff;
+}
+
+:host ::ng-deep .responsibilities-editor .p-editor-toolbar .ql-formats {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0;
+}
+
+:host ::ng-deep .responsibilities-editor .p-editor-toolbar .ql-formats:last-child {
+  margin-right: 0;
+}
+
+:host ::ng-deep .responsibilities-editor .p-editor-toolbar .ql-picker {
+  font-size: 0.85rem;
+}
+
+:host ::ng-deep .responsibilities-editor .p-editor-toolbar .ql-picker-label,
+:host ::ng-deep .responsibilities-editor .p-editor-toolbar .ql-picker-item {
+  padding: 0.25rem 0.35rem;
+}
+
+:host ::ng-deep .responsibilities-editor .p-editor-toolbar button {
+  width: 1.65rem;
+  height: 1.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .field--responsibilities .field-heading {
