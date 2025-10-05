@@ -13,11 +13,17 @@
 .skills-section {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
   background: rgba(248, 250, 252, 0.82);
   border: 1px solid rgba(148, 163, 184, 0.25);
   border-radius: 1.1rem;
   padding: 1.2rem 1.4rem 1.6rem;
+}
+
+.section-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
 .section-title-label {
@@ -46,10 +52,11 @@
 
 .skills-surface {
   display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
+  align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 0;
+  padding-top: 0.9rem;
+  margin-top: 0.35rem;
+  border-top: 1px dashed rgba(148, 163, 184, 0.35);
 }
 
 .skills-input-group {
@@ -63,18 +70,20 @@
 
 :host ::ng-deep .skills-input-group .p-autocomplete .p-inputtext.skill-input {
   width: 100%;
-  padding-left: 2.6rem;
-  padding-right: 1.75rem;
-  height: 3.1rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(148, 163, 184, 0.5);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  padding-left: 2.4rem;
+  padding-right: 2.65rem;
+  height: 3.05rem;
+  border-radius: 0.85rem 0.85rem 0 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.11);
+  transition: box-shadow 0.2s ease, background 0.2s ease;
   font-size: 0.98rem;
 }
 
 :host ::ng-deep .skills-input-group .p-autocomplete .p-inputtext.skill-input:focus {
-  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
-  border-color: rgba(59, 130, 246, 0.65);
+  background: rgba(240, 249, 255, 0.95);
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.24), 0 6px 14px rgba(15, 118, 110, 0.06);
 }
 
 .input-icon {
@@ -90,22 +99,46 @@
 .add-btn {
   align-self: flex-start;
   min-width: 5rem;
-  height: 2.9rem;
-  border-radius: 0.75rem;
+  height: auto;
+  border-radius: 0.9rem;
   font-weight: 600;
 }
 
+:host ::ng-deep .skills-input-group .p-autocomplete .p-autocomplete-dropdown {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  border-radius: 0.65rem;
+  background: transparent;
+  color: #94a3b8;
+  width: 2.25rem;
+  height: 2.25rem;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+:host ::ng-deep .skills-input-group .p-autocomplete .p-autocomplete-dropdown:hover {
+  background: rgba(148, 163, 184, 0.12);
+  color: #64748b;
+}
+
 :host ::ng-deep .add-btn.p-button {
-  background: rgba(14, 165, 233, 0.12);
-  border: 1px solid rgba(14, 165, 233, 0.32);
+  background: transparent;
+  border: none;
   color: #0f172a;
+  border-radius: 0.75rem;
+  padding: 0.65rem 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   box-shadow: none;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
 :host ::ng-deep .add-btn.p-button:not(:disabled):hover {
-  background: rgba(14, 165, 233, 0.22);
-  border-color: rgba(14, 165, 233, 0.45);
+  background: rgba(59, 130, 246, 0.1);
+  color: #0f172a;
 }
 
 :host ::ng-deep .add-btn.p-button:disabled {
@@ -117,13 +150,19 @@
 .skill-list {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  min-height: 12rem;
+  gap: 0.75rem;
   padding: 1.1rem;
-  border: 1px dashed rgba(148, 163, 184, 0.45);
+  border: 1px dashed rgba(148, 163, 184, 0.4);
   border-radius: 1rem;
-  background: rgba(248, 250, 252, 0.8);
+  background: rgba(248, 250, 252, 0.88);
   transition: border-color 0.2s ease;
+}
+
+.skill-dropzone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 10rem;
 }
 
 .skill-items {
@@ -176,19 +215,29 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
-  padding-right: 0.25rem;
+  padding: 0 1.2rem 0.65rem;
 }
 
-.footer-actions button:last-child {
-  background: rgba(79, 70, 229, 0.18);
-  border: 1px solid rgba(79, 70, 229, 0.32);
-  color: #312e81;
+:host ::ng-deep .footer-actions .save-btn.p-button {
+  background: transparent;
+  border: none;
+  color: #0f172a;
+  border-radius: 0.75rem;
+  padding: 0.65rem 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   box-shadow: none;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
-.footer-actions button:last-child:disabled {
-  background: rgba(148, 163, 184, 0.25);
-  border-color: rgba(148, 163, 184, 0.35);
+:host ::ng-deep .footer-actions .save-btn.p-button:not(:disabled):hover {
+  background: rgba(59, 130, 246, 0.12);
+  color: #0f172a;
+}
+
+:host ::ng-deep .footer-actions .save-btn.p-button:disabled {
+  background: transparent;
+  color: rgba(71, 85, 105, 0.65);
 }
 
 :host ::ng-deep .p-autocomplete-panel {
@@ -197,29 +246,36 @@
 }
 
 :host ::ng-deep .skills-autocomplete-panel.p-autocomplete-panel {
-  padding: 0.35rem 0;
-  border-radius: 0.9rem;
+  padding: 0.25rem 0.1rem 0.35rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+  background: var(--p-autocomplete-overlay-background, rgba(255, 255, 255, 0.98));
+  color: var(--p-autocomplete-overlay-color, #0f172a);
+  border: 1px solid var(--p-autocomplete-overlay-border-color, silver);
+  border-top: none;
   box-shadow: none;
-  border: 1px solid rgba(148, 163, 184, 0.45);
-  backdrop-filter: blur(6px);
+  position: relative;
+  top: 1px;
+  backdrop-filter: blur(5px);
+  margin-top: 0;
 }
 
 :host ::ng-deep .skills-autocomplete-panel .p-autocomplete-items .p-autocomplete-list-item {
   padding: 0.1rem 0.25rem;
 }
 
+
 .suggestion-item {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.65rem 1.1rem;
-  border-radius: 0.75rem;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.6rem;
   transition: background 0.2s ease;
 }
 
 .suggestion-item .pi {
-  color: #10b981;
-  font-size: 0.95rem;
+  color: #22c55e;
+  font-size: 0.9rem;
 }
 
 .suggestion-copy {
@@ -231,11 +287,12 @@
 .suggestion-copy .label {
   font-weight: 600;
   color: #0f172a;
+  font-size: 0.92rem;
 }
 
 .suggestion-copy small {
   color: #64748b;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
 }
 
 .suggestion-empty {

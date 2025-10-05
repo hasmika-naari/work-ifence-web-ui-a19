@@ -9,8 +9,8 @@
   </div>
 
   <div class="profile-details" *ngIf="hasExperiences; else emptyState">
-    <div class="experience-item-wrapper" *ngFor="let exp of experiences; index as index">
-      <article class="experience-item">
+    <div class="experience-item" *ngFor="let exp of experiences; index as index">
+      <article class="experience-card">
         <div class="experience-header">
           <div class="experience-heading">
             <h3>{{ exp.title }}</h3>
@@ -44,9 +44,7 @@
           </div>
           <div class="responsibilities-content" [innerHTML]="formatResponsibilities(exp.responsibilities)"></div>
         </div>
-      </article>
-      <div class="experience-edit">
-        <div class="experience-actions">
+        <footer class="experience-actions">
           <button
             class="card-action-btn move-btn"
             type="button"
@@ -86,8 +84,8 @@
           >
             <span class="pi pi-trash"></span>
           </button>
-        </div>
-      </div>
+        </footer>
+      </article>
     </div>
   </div>
 

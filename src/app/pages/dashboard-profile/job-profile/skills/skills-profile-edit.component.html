@@ -1,76 +1,85 @@
 <div class="skills-editor">
   <div class="skills-section">
-    <label class="section-title-label" for="section-title">Section title</label>
-    <input
-      id="section-title"
-      type="text"
-      class="section-title-input"
-      [formControl]="subTitleControl"
-      placeholder="e.g. Cloud Platforms, Programming Languages"
-    />
-
-    <div class="skills-surface">
-      <div class="skills-input-group">
-        <i class="pi pi-hashtag input-icon"></i>
-        <p-autoComplete
-          [formControl]="skillInputControl"
-          [suggestions]="filteredSuggestions"
-          (completeMethod)="filterSkills($event)"
-          (onSelect)="suggestionSelected($event)"
-          (keyup.enter)="handleEnter($event)"
-          [forceSelection]="false"
-          [dropdown]="true"
-          [autoHighlight]="true"
-          [minLength]="0"
-          inputClass="skill-input"
-          placeholder="Add a skill to this section"
-          panelStyleClass="skills-autocomplete-panel"
-          appendTo="body"
-        >
-          <ng-template pTemplate="item" let-skill>
-            <div class="suggestion-item">
-              <span class="pi pi-plus-circle"></span>
-              <div class="suggestion-copy">
-                <span class="label">{{ skill }}</span>
-                <small>Tap or press Enter to add</small>
-              </div>
-            </div>
-          </ng-template>
-          <ng-template pTemplate="empty">
-            <div class="suggestion-empty">
-              <span class="pi pi-search"></span>
-              <span>No matching skill found. Keep typing to create your own.</span>
-            </div>
-          </ng-template>
-        </p-autoComplete>
-      </div>
-      <button
-        pButton
-        type="button"
-        icon="pi pi-plus"
-        label="Add"
-        class="add-btn"
-        (click)="addSkill()"
-        [disabled]="!skillInputControl.value?.trim()"
-      ></button>
+    <div class="section-title-group">
+      <label class="section-title-label" for="section-title">Section title</label>
+      <input
+        id="section-title"
+        type="text"
+        class="section-title-input"
+        [formControl]="subTitleControl"
+        placeholder="e.g. Cloud Platforms, Programming Languages"
+      />
     </div>
 
-    <div class="skill-list" cdkDropList [cdkDropListData]="skills" (cdkDropListDropped)="dropSkill($event)">
-      <div class="skill-items" *ngIf="skills.length; else emptySkillList">
-        <div class="skill-item" *ngFor="let skill of skills; let i = index" cdkDrag>
-          <span class="drag-handle" cdkDragHandle><i class="pi pi-bars"></i></span>
-          <span class="skill-name">{{ skill }}</span>
-          <button pButton type="button" icon="pi pi-times" class="p-button-rounded p-button-text" (click)="removeSkill(i)"></button>
+    <div class="skill-list">
+      <div
+        class="skill-dropzone"
+        cdkDropList
+        [cdkDropListData]="skills"
+        (cdkDropListDropped)="dropSkill($event)"
+      >
+        <div class="skill-items" *ngIf="skills.length; else emptySkillList">
+          <div class="skill-item" *ngFor="let skill of skills; let i = index" cdkDrag>
+            <span class="drag-handle" cdkDragHandle><i class="pi pi-bars"></i></span>
+            <span class="skill-name">{{ skill }}</span>
+            <button pButton type="button" icon="pi pi-times" class="p-button-rounded p-button-text" (click)="removeSkill(i)"></button>
+          </div>
         </div>
+        <ng-template #emptySkillList>
+          <div class="empty">No skills in this section yet.</div>
+        </ng-template>
       </div>
-      <ng-template #emptySkillList>
-        <div class="empty">No skills in this section yet.</div>
-      </ng-template>
+
+      <div class="skills-surface">
+        <div class="skills-input-group">
+          <i class="pi pi-hashtag input-icon"></i>
+          <p-autoComplete
+            [formControl]="skillInputControl"
+            [suggestions]="filteredSuggestions"
+            (completeMethod)="filterSkills($event)"
+            (onSelect)="suggestionSelected($event)"
+            (keyup.enter)="handleEnter($event)"
+            [forceSelection]="false"
+            [dropdown]="true"
+            [autoHighlight]="true"
+            [minLength]="0"
+            inputClass="skill-input"
+            placeholder="Add a skill to this section"
+            panelStyleClass="skills-autocomplete-panel"
+            appendTo="body"
+          >
+            <ng-template pTemplate="item" let-skill>
+              <div class="suggestion-item">
+                <span class="pi pi-plus-circle"></span>
+                <div class="suggestion-copy">
+                  <span class="label">{{ skill }}</span>
+                  <small>Tap or press Enter to add</small>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="empty">
+              <div class="suggestion-empty">
+                <span class="pi pi-search"></span>
+                <span>No matching skill found. Keep typing to create your own.</span>
+              </div>
+            </ng-template>
+          </p-autoComplete>
+        </div>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-plus"
+          label="Add"
+          class="add-btn"
+          (click)="addSkill()"
+          [disabled]="!skillInputControl.value?.trim()"
+        ></button>
+      </div>
     </div>
   </div>
 
   <div class="footer-actions">
     <button pButton type="button" label="Cancel" class="p-button-text" (click)="cancel()"></button>
-    <button pButton type="button" label="Save" [disabled]="!hasValidSection" (click)="save()"></button>
+    <button pButton type="button" label="Save" class="save-btn" [disabled]="!hasValidSection" (click)="save()"></button>
   </div>
 </div>
