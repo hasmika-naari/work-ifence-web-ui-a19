@@ -23,7 +23,7 @@ import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { JobApplication, Resume, RoundDetails, Skill } from 'src/app/services/resume.model';
+import { JobApplication, Resume, RoundDetails, Skill, SkillV2 } from 'src/app/services/resume.model';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { ResumeService } from 'src/app/services/resume.service';
@@ -60,6 +60,23 @@ interface Option {
   name : string;
   code : string;
 }
+
+interface SkillDisplaySection extends SkillV2 {
+  placeholder?: boolean;
+}
+
+const DEFAULT_SKILL_SECTIONS: SkillDisplaySection[] = [
+  {
+    sub_title: 'Cloud & DevOps',
+    skills: ['AWS', 'Azure DevOps', 'Kubernetes', 'Docker', 'CI/CD Pipelines'],
+    placeholder: true
+  },
+  {
+    sub_title: 'Programming Languages',
+    skills: ['TypeScript', 'JavaScript', 'Python', 'Java', 'SQL'],
+    placeholder: true
+  }
+];
 
 @Component({
     selector: 'app-profile-dashboard',
@@ -116,13 +133,17 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   showSkillsFormEditor = false;
   showExperienceFormEditor = false;
 
-  private cachedSkills: Skill[] = [];
   private cachedSkillsKey = '';
   private cachedExperiences: ExperienceProfileItem[] = [];
   private cachedExperiencesKey = '';
   private placeholderDismissed = false;
   experienceEditingIndex: number | null = null;
   experienceDraft: ExperienceProfileItem | null = null;
+  skillEditingIndex: number | null = null;
+  skillDraft: SkillDisplaySection | null = null;
+  private cachedSkillSections: SkillDisplaySection[] = [];
+  private cachedSkillSectionsKey = '';
+  private skillsPlaceholderDismissed = false;
   private readonly placeholderExperiences: ExperienceProfileItem[] = [
     {
       title: 'Senior DevOps Engineer',
@@ -214,21 +235,21 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     return null;
   }
 
-  get profileSkills(): Skill[] {
+  get profileSkills(): SkillDisplaySection[] {
     const jobProfile = this.jobProfileSignal();
-    const resumeSkills = this.resumeFormSignal()?.skill ?? [];
-    const normalized = (jobProfile?.skills ?? resumeSkills ?? []).map((skill: any) => ({
-      name: typeof skill === 'string' ? skill : skill?.name ?? '',
-      selected: typeof skill === 'object' && 'selected' in skill ? skill.selected : false
-    })).filter((skill: Skill) => !!skill.name?.trim());
+    const resumeForm = this.resumeFormSignal();
+    const normalized = this.normalizeSkillSections(jobProfile?.skills, resumeForm?.skill_v2, resumeForm?.skill);
 
-  const key = normalized.map((skill: Skill) => `${skill.name}::${skill.selected ? '1' : '0'}`).join('|');
-    if (key !== this.cachedSkillsKey) {
-      this.cachedSkillsKey = key;
-      this.cachedSkills = normalized;
+    if (normalized.length > 0) {
+      this.skillsPlaceholderDismissed = true;
+      return this.setCachedSkillSections(normalized);
     }
 
-    return this.cachedSkills;
+    if (!this.skillsPlaceholderDismissed && this.cachedSkillSections.length === 0) {
+      this.setCachedSkillSections(this.getPlaceholderSkillSections());
+    }
+
+    return this.cachedSkillSections;
   }
 
   items!: MenuItem[];
@@ -304,39 +325,101 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   this.showExperienceFormEditor = false;
     }
 
-    onSkillsSaved(updatedSkills: Skill[]) {
-      const normalizedSkills = updatedSkills.map((skill) => ({
-        name: skill.name?.trim() ?? '',
-        selected: skill.selected ?? false
-      })).filter((skill) => !!skill.name);
 
-      this.userStore.addSkill(normalizedSkills);
-
-      const currentProfile = this.jobProfileSignal();
-      if (!currentProfile) {
-        this.userStore.setJobProfile({ skills: normalizedSkills });
-      } else {
-        this.userStore.updateJobProfileSection('skills', normalizedSkills);
-      }
-
-  this.showSkillsFormEditor = false;
-  this.showExperienceFormEditor = false;
-  this.visible2 = false;
+    startSkillSectionCreation() {
+      this.ensureSkillsProfileSeeded();
+      this.skillEditingIndex = null;
+      this.skillDraft = null;
+      this.prepareSkillsEditor();
     }
 
-    showSkillsFormEditorWindow() {
-      const resumeSkills = [...(this.resumeFormSignal()?.skill ?? [])].map((skill: any) => ({
-        name: typeof skill === 'string' ? skill : skill?.name ?? '',
-        selected: typeof skill === 'object' && 'selected' in skill ? skill.selected : false
-      })).filter((skill) => !!skill.name);
+    startSkillSectionEdit(index: number) {
+      const sections = this.profileSkills;
+      const target = sections[index] ?? null;
 
-      const currentProfile = this.jobProfileSignal();
-      const mergedProfile = {
-        ...(currentProfile ?? {}),
-        skills: resumeSkills
-      };
-      this.userStore.setJobProfile(mergedProfile);
+      this.skillEditingIndex = index;
+      if (target) {
+        this.skillDraft = {
+          sub_title: target.sub_title,
+          skills: [...(target.skills ?? [])]
+        };
+      } else {
+        this.skillDraft = null;
+      }
 
+      this.prepareSkillsEditor();
+    }
+
+    onSkillSectionSaved(section: SkillV2) {
+      const normalized = this.normalizeSavedSkillSection(section);
+
+      if (!normalized) {
+        this.resetSkillEditorState();
+        this.showSkillsFormEditor = false;
+        this.visible2 = false;
+        return;
+      }
+
+      const sections = this.profileSkills.map((item) => ({
+        sub_title: item.sub_title,
+        skills: [...(item.skills ?? [])]
+      }));
+
+      if (this.skillEditingIndex !== null && this.skillEditingIndex >= 0 && this.skillEditingIndex < sections.length) {
+        sections.splice(this.skillEditingIndex, 1, normalized);
+      } else {
+        sections.push(normalized);
+      }
+
+      this.persistSkillSections(sections);
+      this.resetSkillEditorState();
+      this.showSkillsFormEditor = false;
+      this.visible2 = false;
+    }
+
+    onSkillSectionRemoved(index: number) {
+      const sections = this.profileSkills.map((item) => ({
+        sub_title: item.sub_title,
+        skills: [...(item.skills ?? [])],
+        placeholder: item.placeholder
+      }));
+
+      if (!sections.length || index < 0 || index >= sections.length) {
+        return;
+      }
+
+      const [removed] = sections.splice(index, 1);
+      if (removed?.placeholder) {
+        this.skillsPlaceholderDismissed = true;
+      }
+
+      this.persistSkillSections(sections);
+    }
+
+    onSkillSectionMoved(event: { index: number; direction: 'up' | 'down' }) {
+      const sections = this.profileSkills.map((item) => ({
+        sub_title: item.sub_title,
+        skills: [...(item.skills ?? [])]
+      }));
+      const { index, direction } = event;
+
+      if (!sections.length || index < 0 || index >= sections.length) {
+        return;
+      }
+
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+      if (targetIndex < 0 || targetIndex >= sections.length) {
+        return;
+      }
+
+      const [moved] = sections.splice(index, 1);
+      sections.splice(targetIndex, 0, moved);
+
+      this.persistSkillSections(sections);
+    }
+
+    private prepareSkillsEditor() {
       this.showSkillsFormEditor = true;
       this.visible2 = true;
       this.showSummaryFormEditor = false;
@@ -344,6 +427,88 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       this.showLoginFormEditor = false;
       this.showAddressFormEditor = false;
       this.showExperienceFormEditor = false;
+    }
+
+    private normalizeSkillSections(primary: any, secondary: any, legacy: any): SkillDisplaySection[] {
+      const primarySections = this.mapSkillSections(primary);
+      if (primarySections.length) {
+        return primarySections;
+      }
+
+      const secondarySections = this.mapSkillSections(secondary);
+      if (secondarySections.length) {
+        return secondarySections;
+      }
+
+      const legacyFromPrimary = this.mapLegacySkills(primary);
+      if (legacyFromPrimary.length) {
+        return legacyFromPrimary;
+      }
+
+      return this.mapLegacySkills(legacy);
+    }
+
+    private mapSkillSections(sections: any): SkillDisplaySection[] {
+      if (!Array.isArray(sections)) {
+        return [];
+      }
+
+      return sections
+        .map((section) => {
+          const title = typeof section?.sub_title === 'string' ? section.sub_title.trim() :
+            typeof section?.title === 'string' ? section.title.trim() : '';
+
+          const skillsSource = Array.isArray(section?.skills) ? section.skills : [];
+          const skills = skillsSource
+            .map((skill: any) => (typeof skill === 'string' ? skill : skill?.name ?? ''))
+            .map((skill: string) => skill.trim())
+            .filter((skill: string) => !!skill);
+
+          return {
+            sub_title: title,
+            skills
+          };
+        })
+        .filter((section: SkillDisplaySection) => section.sub_title && section.skills.length);
+    }
+
+    private mapLegacySkills(skills: any): SkillDisplaySection[] {
+      if (!Array.isArray(skills)) {
+        return [];
+      }
+
+      const names = skills
+        .map((skill: any) => (typeof skill === 'string' ? skill : skill?.name ?? ''))
+        .map((skill: string) => skill.trim())
+        .filter((skill: string) => !!skill);
+
+      if (!names.length) {
+        return [];
+      }
+
+      return [{ sub_title: 'Key Skills', skills: names }];
+    }
+
+    private getPlaceholderSkillSections(): SkillDisplaySection[] {
+      return DEFAULT_SKILL_SECTIONS.map((section) => ({
+        sub_title: section.sub_title,
+        skills: [...section.skills],
+        placeholder: true
+      }));
+    }
+
+    private setCachedSkillSections(sections: SkillDisplaySection[]): SkillDisplaySection[] {
+      const cloned = sections.map((section) => ({
+        sub_title: section.sub_title,
+        skills: [...(section.skills ?? [])],
+        placeholder: section.placeholder
+      }));
+      const key = JSON.stringify(cloned);
+      if (key !== this.cachedSkillSectionsKey) {
+        this.cachedSkillSectionsKey = key;
+        this.cachedSkillSections = cloned;
+      }
+      return this.cachedSkillSections;
     }
 
     get profileExperiences(): ExperienceProfileItem[] {
@@ -471,6 +636,104 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       this.showBioFormEditor = false;
       this.showLoginFormEditor = false;
       this.showAddressFormEditor = false;
+    }
+
+    private resetSkillEditorState() {
+      this.skillEditingIndex = null;
+      this.skillDraft = null;
+    }
+
+    private ensureSkillsProfileSeeded() {
+      const jobProfile = this.jobProfileSignal();
+      if (jobProfile?.skills) {
+        return;
+      }
+
+      const resumeForm = this.resumeFormSignal();
+      const normalized = this.normalizeSkillSections(jobProfile?.skills, resumeForm?.skill_v2, resumeForm?.skill);
+
+      if (normalized.length) {
+        this.skillsPlaceholderDismissed = true;
+        this.setCachedSkillSections(normalized);
+
+        const mergedProfile = {
+          ...(jobProfile ?? {}),
+          skills: normalized.map((section) => ({
+            sub_title: section.sub_title,
+            skills: [...section.skills]
+          }))
+        };
+
+        this.userStore.setJobProfile(mergedProfile);
+      } else if (!this.skillsPlaceholderDismissed && this.cachedSkillSections.length === 0) {
+        this.setCachedSkillSections(this.getPlaceholderSkillSections());
+      }
+    }
+
+    private normalizeSavedSkillSection(section: SkillV2 | SkillDisplaySection | null | undefined): SkillDisplaySection | null {
+      if (!section) {
+        return null;
+      }
+
+      const titleCandidate = (section as any).sub_title ?? (section as any).title;
+      const subTitle = typeof titleCandidate === 'string' ? titleCandidate.trim() : '';
+      if (!subTitle) {
+        return null;
+      }
+
+      const skillsSource = Array.isArray(section.skills) ? section.skills : [];
+      const skills = skillsSource
+        .map((skill: any) => (typeof skill === 'string' ? skill : skill?.name ?? ''))
+        .map((skill: string) => skill.trim())
+        .filter((skill: string) => !!skill);
+
+      if (!skills.length) {
+        return null;
+      }
+
+      return {
+        sub_title: subTitle,
+        skills
+      };
+    }
+
+    private persistSkillSections(sections: SkillDisplaySection[]) {
+      const sanitized = sections
+        .map((section) => this.normalizeSavedSkillSection(section))
+        .filter((section): section is SkillDisplaySection => !!section);
+
+      if (sanitized.length > 0) {
+        this.skillsPlaceholderDismissed = true;
+        this.setCachedSkillSections(sanitized);
+      } else {
+        if (this.skillsPlaceholderDismissed) {
+          this.setCachedSkillSections([]);
+        } else {
+          this.setCachedSkillSections(this.getPlaceholderSkillSections());
+        }
+      }
+
+      const normalizedForStore = sanitized.map((section) => ({
+        sub_title: section.sub_title,
+        skills: [...section.skills]
+      }));
+
+      const flattenedSkills: Skill[] = normalizedForStore
+        .flatMap((section) => section.skills)
+        .map((name) => ({ name, selected: false }));
+
+      this.userStore.addSkill(flattenedSkills);
+      this.userStore.addSkillV2(normalizedForStore);
+
+      const currentProfile = this.jobProfileSignal();
+      if (!currentProfile) {
+        if (normalizedForStore.length) {
+          this.userStore.setJobProfile({ skills: normalizedForStore });
+        }
+        return;
+      }
+
+      this.userStore.updateJobProfileSection('skills', normalizedForStore.length ? normalizedForStore : undefined);
     }
 
     private ensureExperienceProfileSeeded() {
@@ -906,6 +1169,8 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   this.showExperienceFormEditor = false;
   this.experienceEditingIndex = null;
   this.experienceDraft = null;
+  this.skillEditingIndex = null;
+  this.skillDraft = null;
   this.visible2 = false;
   this.isActionInProgress = false;
   }

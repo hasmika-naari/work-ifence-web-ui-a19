@@ -40,8 +40,8 @@
                 </ng-container>
                 <ng-container *ngIf="showSkillsFormEditor">
                     <skills-profile-edit
-                        [skills]="profileSkills"
-                        (saveSkills)="onSkillsSaved($event)"
+                        [skillSection]="skillDraft"
+                        (saveSkill)="onSkillSectionSaved($event)"
                         (close)="closeFormEditor()">
                     </skills-profile-edit>
                 </ng-container>
@@ -119,7 +119,13 @@
                <p-tabpanel value="1">
                    <div class="tab-panel-content job-profile-content">
                        <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
-                       <skills-profile-display [skills]="profileSkills" (editSkills)="showSkillsFormEditorWindow()"></skills-profile-display>
+                       <skills-profile-display
+                           [skills]="profileSkills"
+                           (addSkillSection)="startSkillSectionCreation()"
+                           (editSkillSection)="startSkillSectionEdit($event)"
+                           (removeSkillSection)="onSkillSectionRemoved($event)"
+                           (moveSkillSection)="onSkillSectionMoved($event)"
+                       ></skills-profile-display>
                                          <experience-profile-display
                                              [experiences]="profileExperiences"
                                              (addExperience)="startExperienceCreation()"

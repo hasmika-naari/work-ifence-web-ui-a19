@@ -2,12 +2,13 @@
 import { NgModule } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
-         LayoutGrid, Menu, ChevronDown, User, BookOpenCheck, BookMarked,
+         LayoutGrid, Menu, ChevronDown, ChevronUp, User, BookOpenCheck, BookMarked,
          Award, Facebook, Instagram, MessageCircle, ArrowRight, LayoutDashboard,
          Linkedin, X, Shield, FileText, HelpCircle, UserPlus, CornerDownRight,
          Settings, LogOut, Undo2, Home, Target, TrendingUp, Users, BookOpenIcon,
          Share2, ExternalLink,  ClipboardCheck,
-         CheckCircle, Quote, Lightbulb, Heart, MessageSquare, Search} from 'lucide-angular';
+         CheckCircle, Quote, Lightbulb, Heart, MessageSquare, Search,
+         Sparkles, MousePointerClick, Palette} from 'lucide-angular';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
       LayoutGrid,
       Menu,
       ChevronDown,
+  ChevronUp,
       BookOpenCheck,
       BookMarked,
       Award,
@@ -51,9 +53,12 @@ import { BookOpen, Briefcase, GraduationCap, Info, LogIn, Bell,
       Quote,
       Lightbulb,
       Heart,
-      MessageSquare
-      , Share2
-      , ExternalLink
+      MessageSquare,
+      Share2,
+      ExternalLink,
+      Sparkles,
+      MousePointerClick,
+      Palette
     })
   ],
   exports: [LucideAngularModule],

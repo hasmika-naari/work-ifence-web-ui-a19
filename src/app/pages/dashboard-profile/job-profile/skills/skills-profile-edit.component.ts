@@ -1,10 +1,10 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AutoCompleteCompleteEvent, AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplete';
-import { Skill } from 'src/app/services/resume.model';
+import { SkillV2 } from 'src/app/services/resume.model';
 import { SkillsSuggestionService } from './skills-suggestion.service';
 
 @Component({
@@ -15,18 +15,22 @@ import { SkillsSuggestionService } from './skills-suggestion.service';
   styleUrls: ['./skills-profile-edit.component.scss']
 })
 export class SkillsProfileEditComponent implements OnInit, OnChanges {
-  @Input() skills: Skill[] | null = null;
-  @Output() saveSkills = new EventEmitter<Skill[]>();
+  @Input() skillSection: SkillV2 | null = null;
+  @Output() saveSkill = new EventEmitter<SkillV2>();
   @Output() close = new EventEmitter<void>();
 
   form: FormGroup;
-  skillList: Skill[] = [];
+  skills: string[] = [];
   filteredSuggestions: string[] = [];
-  private allSuggestions: string[] = [];
+  allSuggestions: string[] = [];
 
-  constructor(private fb: FormBuilder, private readonly suggestionService: SkillsSuggestionService) {
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly suggestionService: SkillsSuggestionService
+  ) {
     this.form = this.fb.group({
-      skill: ['', Validators.required]
+      sub_title: ['', Validators.required],
+      skillInput: ['']
     });
   }
 
@@ -34,76 +38,61 @@ export class SkillsProfileEditComponent implements OnInit, OnChanges {
     this.suggestionService.getSkillSuggestions().subscribe({
       next: (skills) => {
         this.allSuggestions = (skills ?? []).map((skill) => skill.trim()).filter((skill) => !!skill);
-        this.primeInitialSuggestions();
+        this.initializeForm();
       }
     });
+    this.initializeForm();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['skills']) {
-      this.skillList = (this.skills ?? []).map((skill) => ({
-        name: skill.name,
-        selected: skill.selected ?? false
-      }));
-      this.primeInitialSuggestions();
+    if (changes['skillSection'] && !changes['skillSection'].firstChange) {
+      this.initializeForm();
     }
   }
 
+  private initializeForm(): void {
+    const title = this.skillSection?.sub_title ?? '';
+    const skills = [...(this.skillSection?.skills ?? [])];
+
+    this.form.patchValue({
+      sub_title: title,
+      skillInput: ''
+    }, { emitEvent: false });
+
+    this.skills = skills;
+    this.updateFilteredSuggestions();
+  }
+
   addSkill(): void {
-    const value = (this.form.controls['skill'].value ?? '').trim();
+    const value = (this.form.controls['skillInput'].value ?? '').toString().trim();
     if (!value) {
       return;
     }
 
-    this.addSkillFromValue(value);
+    if (!this.skills.includes(value)) {
+      this.skills.push(value);
+    }
+
+    this.form.controls['skillInput'].setValue('');
+    this.updateFilteredSuggestions();
   }
 
   removeSkill(index: number): void {
-    this.skillList = this.skillList.filter((_, i) => i !== index);
-    this.primeInitialSuggestions();
+    this.skills.splice(index, 1);
+    this.updateFilteredSuggestions();
   }
 
-  drop(event: CdkDragDrop<Skill[]>): void {
-    moveItemInArray(this.skillList, event.previousIndex, event.currentIndex);
-  }
-
-  save(): void {
-    const sanitized = this.skillList.map((skill) => ({
-      name: skill.name.trim(),
-      selected: skill.selected ?? false
-    }));
-    this.saveSkills.emit(sanitized);
-  }
-
-  cancel(): void {
-    this.close.emit();
+  dropSkill(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.skills, event.previousIndex, event.currentIndex);
   }
 
   filterSkills(event: AutoCompleteCompleteEvent): void {
     const query = (event.query ?? '').toString().toLowerCase();
-    const existing = new Set(this.skillList.map((skill) => skill.name.toLowerCase()));
-
+    const existing = new Set(this.skills.map((skill) => skill.toLowerCase()));
     this.filteredSuggestions = this.allSuggestions
       .filter((skill) => !existing.has(skill.toLowerCase()))
       .filter((skill) => !query || skill.toLowerCase().includes(query))
       .slice(0, 15);
-  }
-
-  handleFocus(): void {
-    if (!this.filteredSuggestions.length) {
-      this.primeInitialSuggestions();
-    }
-  }
-
-  handleEnter(event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (this.form.invalid) {
-      return;
-    }
-
-    this.addSkill();
   }
 
   suggestionSelected(event: AutoCompleteSelectEvent): void {
@@ -112,39 +101,56 @@ export class SkillsProfileEditComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.addSkillFromValue(value);
+    if (!this.skills.includes(value)) {
+      this.skills.push(value);
+    }
+
+    this.form.controls['skillInput'].setValue('');
+    this.updateFilteredSuggestions();
   }
 
-  private addSkillFromValue(value: string): void {
-    const normalized = value.trim();
-    if (!normalized) {
-      return;
-    }
-
-    const exists = this.skillList.some((skill) => skill.name.toLowerCase() === normalized.toLowerCase());
-    if (exists) {
-      this.form.reset({ skill: '' });
-      this.form.markAsPristine();
-      this.form.markAsUntouched();
-      this.filteredSuggestions = [];
-      return;
-    }
-
-    this.skillList = [...this.skillList, { name: normalized, selected: false }];
-    this.form.reset({ skill: '' });
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
-    this.filteredSuggestions = [];
-    this.primeInitialSuggestions();
+  handleEnter(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.addSkill();
   }
 
-  private primeInitialSuggestions(): void {
-    if (!this.allSuggestions.length) {
-      return;
-    }
-    const existing = new Set(this.skillList.map((skill) => skill.name.toLowerCase()));
+  private updateFilteredSuggestions(): void {
+    const existing = new Set(this.skills.map((skill) => skill.toLowerCase()));
     this.filteredSuggestions = this.allSuggestions
       .filter((skill) => !existing.has(skill.toLowerCase()))
       .slice(0, 10);
+  }
+
+  save(): void {
+    const subTitle = this.form.controls['sub_title'].value?.toString().trim() ?? '';
+    const sanitizedSkills = this.skills
+      .map((skill) => (skill ?? '').toString().trim())
+      .filter((skill) => !!skill);
+
+    if (!subTitle || !sanitizedSkills.length) {
+      return;
+    }
+
+    this.saveSkill.emit({
+      sub_title: subTitle,
+      skills: sanitizedSkills
+    });
+  }
+
+  cancel(): void {
+    this.close.emit();
+  }
+
+  get subTitleControl(): FormControl {
+    return this.form.controls['sub_title'] as FormControl;
+  }
+
+  get skillInputControl(): FormControl {
+    return this.form.controls['skillInput'] as FormControl;
+  }
+
+  get hasValidSection(): boolean {
+    return this.subTitleControl.valid && this.skills.length > 0;
   }
 }

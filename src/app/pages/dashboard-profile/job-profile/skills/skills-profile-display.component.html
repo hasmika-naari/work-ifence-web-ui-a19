@@ -2,21 +2,74 @@
   <div class="header">
     <h2>Skills</h2>
     <div class="actions">
-      <button class="action-btn edit-btn" type="button" title="Edit" (click)="onEdit()">
-        <span class="pi pi-pencil"></span>
+      <button class="action-btn add-btn" type="button" title="Add skill section" (click)="triggerAdd()">
+        <span class="pi pi-plus"></span>
       </button>
     </div>
   </div>
 
-  <div class="profile-details" *ngIf="hasSkills; else emptyState">
-    <div class="chip-wrap">
-      <p-chip *ngFor="let skill of skillNames" [label]="skill"></p-chip>
+  <div class="profile-details" *ngIf="hasSections; else emptyState">
+    <div class="skills-section-list">
+      <div class="skills-section" *ngFor="let section of skills; index as index">
+        <div class="skills-card">
+          <div class="skills-card-header">
+            <h3>{{ section.sub_title }}</h3>
+          </div>
+          <div class="skills-card-body">
+            <div class="chip-wrap" *ngIf="section.skills?.length; else emptySection">
+              <p-chip *ngFor="let skill of section.skills" [label]="skill"></p-chip>
+            </div>
+            <ng-template #emptySection>
+              <p class="empty">
+                No skills listed yet. Edit to add skills under this section.
+              </p>
+            </ng-template>
+          </div>
+          <div class="skills-card-actions">
+            <button
+              class="card-action-btn move-btn"
+              type="button"
+              title="Move section up"
+              [disabled]="!canMoveUp(index)"
+              (click)="triggerMove(index, 'up')"
+            >
+              <span class="pi pi-arrow-up"></span>
+            </button>
+            <button
+              class="card-action-btn move-btn"
+              type="button"
+              title="Move section down"
+              [disabled]="!canMoveDown(index)"
+              (click)="triggerMove(index, 'down')"
+            >
+              <span class="pi pi-arrow-down"></span>
+            </button>
+            <button
+              class="card-action-btn edit-btn"
+              type="button"
+              title="Edit section"
+              (click)="triggerEdit(index)"
+            >
+              <span class="pi pi-pencil"></span>
+            </button>
+            <button
+              class="card-action-btn remove-btn"
+              type="button"
+              title="Remove section"
+              [disabled]="!canRemove(index)"
+              (click)="triggerRemove(index)"
+            >
+              <span class="pi pi-trash"></span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <ng-template #emptyState>
     <div class="profile-details empty">
-      <p>No skills added yet. Use the edit button to start building your list.</p>
+      <p>No skill sections yet. Use the plus button to add your first one.</p>
     </div>
   </ng-template>
 </section>

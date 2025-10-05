@@ -1,17 +1,19 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'summary-profile-display',
   standalone: true,
-  imports: [CardModule, ButtonModule],
+  imports: [NgClass, CardModule, ButtonModule],
   templateUrl: './summary-display.component.html',
   styleUrls: ['./summary-display.component.scss']
 })
 export class SummaryProfileDisplayComponent {
   @Input() summary: string = '';
   @Output() editSummary = new EventEmitter<void>();
+  @Output() addSummary = new EventEmitter<void>();
   dummySummary: string = `
     <p><strong>Versatile Full Stack Developer</strong> with 8+ years of experience designing, developing, and deploying robust web applications using modern front-end and back-end technologies.</p>
     <ul>

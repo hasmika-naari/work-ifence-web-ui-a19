@@ -11,28 +11,22 @@
 <section class="summary-profile-section">
         <div class="header">
           <h2>Resume Summary</h2>
-          <div style="display: flex;gap: 10px;float: right;">
-            <button class="action-btn edit-btn" title="Edit" (click)="editSummary.emit()">
-              <span class="pi pi-pencil"></span>
+          <div class="actions">
+            <button
+              class="action-btn"
+              [ngClass]="summary ? 'edit-btn' : 'add-btn'"
+              [title]="summary ? 'Edit summary' : 'Add summary'"
+              type="button"
+              (click)="summary ? editSummary.emit() : addSummary.emit()"
+            >
+              <span class="pi" [ngClass]="(summary || dummySummary) ? 'pi-pencil' : 'pi-plus'"></span>
             </button>
           </div>
         </div>
         <div class="profile-details">
-         <div [innerHTML]="summary || dummySummary" class="summary-content"></div>
-         <!-- Dummy summary for Angular Developer -->
-         <ng-container *ngIf="!summary">
-           <div class="summary-content">
-             <p><strong>Experienced Angular Developer</strong> with 5+ years of expertise in building scalable, performant web applications using Angular, TypeScript, and PrimeNG.</p>
-             <ul>
-               <li>Developed and maintained enterprise-grade Angular applications for finance and healthcare domains.</li>
-               <li>Expert in RxJS, state management (NgRx), and RESTful API integration.</li>
-               <li>Skilled in component-driven architecture, lazy loading, and performance optimization.</li>
-               <li>Led a team of 4 developers, mentoring on best practices and code reviews.</li>
-               <li>Implemented CI/CD pipelines and unit/e2e testing with Jasmine, Karma, and Cypress.</li>
-               <li>Strong communicator and agile team player.</li>
-             </ul>
-           </div>
-         </ng-container>
+         <article class="summary-card">
+           <div class="summary-content" [innerHTML]="summary || dummySummary"></div>
+         </article>
         </div>
       </section>
       

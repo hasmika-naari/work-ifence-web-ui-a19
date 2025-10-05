@@ -1,3 +1,32 @@
+.skills-section-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skills-section {
+  background: rgba(248, 250, 252, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 1.1rem;
+  // padding: 1.1rem 1.2rem 1.2rem 1.2rem;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.skills-section-title {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.3rem;
+}
+
+.chip-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
 .skills-profile-section {
   max-width: 1000px;
   padding: 20px;
@@ -33,26 +62,39 @@
 }
 
 .action-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  border: none;
-  background: #f1f1f1;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f1f1;
+    color: #1f2937;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
 
-  .pi {
-    font-size: 1.15rem;
+    .pi {
+      font-size: 1.15rem;
+    }
+
+    &:hover {
+      background: #e0e0e0;
+      transform: scale(1.08);
+    }
+
+    &.add-btn {
+      color: #4caf50;
+
+      &:hover {
+        color: #2f855a;
+      }
+    }
+
+    &.edit-btn {
+      color: #1f2937;
+    }
   }
-}
-
-.action-btn:hover {
-  background: #e0e0e0;
-  transform: scale(1.1);
-}
 
 .pi-pencil {
   color: #4caf50;
@@ -60,8 +102,87 @@
 
 .skills-profile-section .profile-details {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-direction: column;
+  gap: 1.5rem;
+
+}
+
+.skills-card {
+  background: rgba(255, 255, 255, 0.92);
+    // border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 16px;
+  padding: 1.4rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skills-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+}
+
+.skills-card-body {
+  .chip-wrap {
+    gap: 0.5rem;
+  }
+
+  .empty {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #64748b;
+    font-style: italic;
+  }
+}
+
+.skills-card-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+.card-action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: #f8fafc;
+  color: #0f172a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.move-btn {
+    color: #0ea5e9;
+  }
+
+  &.edit-btn {
+    color: #f59e0b;
+  }
+
+  &.remove-btn {
+    color: #ef4444;
+  }
 }
 
 .chip-wrap {
@@ -71,9 +192,10 @@
 }
 
 .chip-wrap ::ng-deep .p-chip {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.75);
   border-radius: 999px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: none;
   font-weight: 500;
   padding: 0.28rem 1.1rem;
   font-size: 0.85rem;
@@ -81,14 +203,16 @@
   height: auto;
 }
 
-.empty {
+.profile-details.empty {
   color: #666;
   font-style: italic;
   width: 100%;
-  text-align: center;
   font-size: 0.95rem;
-  display: flex;
-  justify-content: center;
+}
+
+.profile-details.empty .skills-card {
   align-items: center;
+  text-align: center;
+  justify-content: center;
   min-height: 6rem;
 }

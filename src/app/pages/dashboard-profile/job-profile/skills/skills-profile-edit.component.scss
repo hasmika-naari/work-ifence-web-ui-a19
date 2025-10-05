@@ -1,91 +1,145 @@
 .skills-editor {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.75rem;
   min-height: 32rem;
-  padding: 0.75rem 0 1.75rem;
+  padding: 1rem 0 2rem;
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(circle at top left, rgba(148, 163, 184, 0.18), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.15), transparent 45%);
 }
 
-.input-row {
+.skills-section {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: rgba(248, 250, 252, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 1.1rem;
+  padding: 1.2rem 1.4rem 1.6rem;
 }
 
-.input-wrapper {
-  position: relative;
+.section-title-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.section-title-input {
   width: 100%;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding: 0.35rem 0.4rem;
+  border-radius: 0.4rem 0.4rem 0 0;
+  outline: none;
+  color: #0f172a;
+  transition: border-color 0.2s ease;
+}
+
+.section-title-input:focus {
+  border-color: #3b82f6;
+}
+
+.skills-surface {
   display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   gap: 0.75rem;
+  padding: 0.5rem 0;
 }
 
-.p-autocomplete {
-  width: 100%;
+.skills-input-group {
+  position: relative;
   flex: 1 1 auto;
 }
 
-:host ::ng-deep .skills-editor .p-autocomplete {
+:host ::ng-deep .skills-input-group .p-autocomplete {
   width: 100%;
-  flex: 1 1 auto;
 }
 
-:host ::ng-deep .skills-editor .p-autocomplete .p-inputtext.skill-input {
+:host ::ng-deep .skills-input-group .p-autocomplete .p-inputtext.skill-input {
   width: 100%;
-  padding-left: 2.4rem;
+  padding-left: 2.6rem;
   padding-right: 1.75rem;
-  height: 3.5rem;
+  height: 3.1rem;
   border-radius: 0.75rem;
-  transition: box-shadow 0.2s ease;
-  font-size: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-size: 0.98rem;
 }
 
-:host ::ng-deep .skills-editor .p-autocomplete .p-inputtext.skill-input:focus {
-  box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.15);
+:host ::ng-deep .skills-input-group .p-autocomplete .p-inputtext.skill-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
+  border-color: rgba(59, 130, 246, 0.65);
 }
 
 .input-icon {
   position: absolute;
-  left: 0.85rem;
+  left: 0.95rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--surface-500, #6c757d);
+  color: #3b82f6;
   pointer-events: none;
   font-size: 1.1rem;
 }
 
-.input-add-btn {
-  align-self: stretch;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 5.25rem;
-  height: 3.5rem;
-  padding: 0 1.3rem;
+.add-btn {
+  align-self: flex-start;
+  min-width: 5rem;
+  height: 2.9rem;
   border-radius: 0.75rem;
   font-weight: 600;
 }
 
+:host ::ng-deep .add-btn.p-button {
+  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.32);
+  color: #0f172a;
+  box-shadow: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+:host ::ng-deep .add-btn.p-button:not(:disabled):hover {
+  background: rgba(14, 165, 233, 0.22);
+  border-color: rgba(14, 165, 233, 0.45);
+}
+
+:host ::ng-deep .add-btn.p-button:disabled {
+  background: rgba(148, 163, 184, 0.18);
+  border-color: rgba(148, 163, 184, 0.35);
+  color: rgba(71, 85, 105, 0.7);
+}
+
 .skill-list {
   display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-height: 12rem;
+  padding: 1.1rem;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  border-radius: 1rem;
+  background: rgba(248, 250, 252, 0.8);
+  transition: border-color 0.2s ease;
+}
+
+.skill-items {
+  display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  min-height: 20rem;
-  padding: 1rem;
-  border: 1px dashed var(--surface-400, #adb5bd);
-  border-radius: 0.75rem;
-  background: var(--surface-50, #f8f9fa);
-  align-content: flex-start;
-  width: 100%;
+  gap: 0.6rem;
 }
 
 .skill-item {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.3rem 0.75rem;
+  padding: 0.38rem 0.85rem;
   border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: none;
   max-width: 100%;
   flex: 0 0 auto;
 }
@@ -99,9 +153,15 @@
 .skill-name {
   flex: 0 1 auto;
   font-weight: 500;
-  font-size: 0.9rem;
-  line-height: 1.1;
+  font-size: 0.92rem;
+  line-height: 1.2;
   white-space: nowrap;
+}
+
+:host ::ng-deep .skill-item .p-button {
+  width: 1.75rem;
+  height: 1.75rem;
+  min-width: 1.75rem;
 }
 
 .empty {
@@ -109,7 +169,7 @@
   text-align: center;
   color: var(--surface-500, #6c757d);
   font-style: italic;
-  padding: 1.5rem 0.5rem;
+  padding: 1.8rem 0.5rem;
 }
 
 .footer-actions {
@@ -119,13 +179,91 @@
   padding-right: 0.25rem;
 }
 
-:host ::ng-deep .skill-item .p-button {
-  width: 1.75rem;
-  height: 1.75rem;
-  min-width: 1.75rem;
+.footer-actions button:last-child {
+  background: rgba(79, 70, 229, 0.18);
+  border: 1px solid rgba(79, 70, 229, 0.32);
+  color: #312e81;
+  box-shadow: none;
+}
+
+.footer-actions button:last-child:disabled {
+  background: rgba(148, 163, 184, 0.25);
+  border-color: rgba(148, 163, 184, 0.35);
 }
 
 :host ::ng-deep .p-autocomplete-panel {
   max-height: 16rem;
   overflow-y: auto;
 }
+
+:host ::ng-deep .skills-autocomplete-panel.p-autocomplete-panel {
+  padding: 0.35rem 0;
+  border-radius: 0.9rem;
+  box-shadow: none;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+:host ::ng-deep .skills-autocomplete-panel .p-autocomplete-items .p-autocomplete-list-item {
+  padding: 0.1rem 0.25rem;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 0.75rem;
+  transition: background 0.2s ease;
+}
+
+.suggestion-item .pi {
+  color: #10b981;
+  font-size: 0.95rem;
+}
+
+.suggestion-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.suggestion-copy .label {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.suggestion-copy small {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.suggestion-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+  :host ::ng-deep .skills-autocomplete-panel .p-autocomplete-items .suggestion-item:hover {
+    background: rgba(59, 130, 246, 0.12);
+  }
+
+  .suggestion-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
+    gap: 0.5rem;
+    color: #64748b;
+
+    .pi {
+      font-size: 1.2rem;
+      color: #c084fc;
+    }
+  }
+
