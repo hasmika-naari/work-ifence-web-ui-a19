@@ -9,46 +9,86 @@
   </div>
 
   <div class="profile-details" *ngIf="hasExperiences; else emptyState">
-    <article class="experience-item" *ngFor="let exp of experiences; index as index">
-      <div class="experience-header">
-        <div class="titles">
-          <h3>{{ exp.title }}</h3>
-          <p class="company" *ngIf="exp.companyName">{{ exp.companyName }}</p>
-        </div>
-        <div class="header-actions">
-          <div class="period" *ngIf="buildDateRange(exp)">
-            <i class="pi pi-calendar"></i>
-            <span>{{ buildDateRange(exp) }}</span>
+    <div class="experience-item-wrapper" *ngFor="let exp of experiences; index as index">
+      <article class="experience-item">
+        <div class="experience-header">
+          <div class="experience-heading">
+            <h3>{{ exp.title }}</h3>
+            <p class="company" *ngIf="exp.companyName">&#64; {{ exp.companyName }}</p>
           </div>
+          <div class="header-meta">
+            <div class="period" *ngIf="buildDateRange(exp)">
+              <i class="pi pi-calendar"></i>
+              <span>{{ buildDateRange(exp) }}</span>
+            </div>
+            <p class="location" *ngIf="exp.location">
+              <i class="pi pi-map-marker"></i>
+              <span>{{ exp.location }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="meta" *ngIf="splitKeySkills(exp.keySkills).length">
+          <span class="meta-item">
+            <i class="pi pi-star"></i>
+            <span class="skills">
+              <span class="skill-pill" *ngFor="let skill of splitKeySkills(exp.keySkills)">{{ skill }}</span>
+            </span>
+          </span>
+        </div>
+
+        <div class="responsibilities" *ngIf="exp.responsibilities">
+          <div class="responsibilities-header">
+            <span class="label">Roles &amp; Responsibilities</span>
+            <span class="divider"></span>
+          </div>
+          <div class="responsibilities-content" [innerHTML]="formatResponsibilities(exp.responsibilities)"></div>
+        </div>
+      </article>
+      <div class="experience-edit">
+        <div class="experience-actions">
           <button
-            class="action-btn edit-btn"
+            class="card-action-btn move-btn"
+            type="button"
+            title="Move experience up"
+            [attr.aria-label]="'Move ' + (exp.title || 'experience') + ' up'"
+            [disabled]="!canMoveUp(index)"
+            (click)="triggerMove(index, 'up')"
+          >
+            <span class="pi pi-arrow-up"></span>
+          </button>
+          <button
+            class="card-action-btn move-btn"
+            type="button"
+            title="Move experience down"
+            [attr.aria-label]="'Move ' + (exp.title || 'experience') + ' down'"
+            [disabled]="!canMoveDown(index)"
+            (click)="triggerMove(index, 'down')"
+          >
+            <span class="pi pi-arrow-down"></span>
+          </button>
+          <button
+            class="card-action-btn edit-btn"
             type="button"
             title="Edit experience"
+            [attr.aria-label]="'Edit ' + (exp.title || 'experience')"
             (click)="triggerEdit(index)"
           >
             <span class="pi pi-pencil"></span>
           </button>
+          <button
+            class="card-action-btn remove-btn"
+            type="button"
+            title="Remove experience"
+            [attr.aria-label]="'Remove ' + (exp.title || 'experience')"
+            [disabled]="!canRemove(index)"
+            (click)="triggerRemove(index)"
+          >
+            <span class="pi pi-trash"></span>
+          </button>
         </div>
       </div>
-
-      <div class="meta">
-        <span class="meta-item" *ngIf="exp.location">
-          <i class="pi pi-map-marker"></i>
-          {{ exp.location }}
-        </span>
-        <span class="meta-item" *ngIf="splitKeySkills(exp.keySkills).length">
-          <i class="pi pi-star"></i>
-          <span class="skills">
-            <span class="skill-pill" *ngFor="let skill of splitKeySkills(exp.keySkills)">{{ skill }}</span>
-          </span>
-        </span>
-      </div>
-
-      <div class="responsibilities" *ngIf="exp.responsibilities">
-        <h4>Roles &amp; Responsibilities</h4>
-        <div class="responsibilities-content" [innerHTML]="formatResponsibilities(exp.responsibilities)"></div>
-      </div>
-    </article>
+    </div>
   </div>
 
   <ng-template #emptyState>

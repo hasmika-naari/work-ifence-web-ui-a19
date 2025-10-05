@@ -1,19 +1,85 @@
-<p-card class="profile-card">
-  <!-- <ng-template pTemplate="header"> -->
-    <!-- <div class="flex align-items-center justify-content-between"> -->
-      <!-- <span>Edit Resume Summary</span> -->
-      <!-- <button pButton icon="pi pi-times" class="p-button-rounded p-button-text" (click)="close.emit()"></button> -->
-    <!-- </div> -->
-  <!-- </ng-template> -->
-  <form [formGroup]="form" (ngSubmit)="save()">
-    <div class="p-field">
-      <label for="summary">Summary</label>
-      <p-editor formControlName="summary" [style]="{height:'50vh'}"></p-editor>
+<div class="summary-editor">
+  <header class="editor-header">
+    <div class="header-titles">
+      <h2>Resume Summary</h2>
+      <p class="header-subtitle">Craft a concise snapshot of your experience and impact.</p>
     </div>
-    <div class="flex justify-content-end gap-2 mt-3">
+    <div class="header-actions">
+      <button
+        pButton
+        type="button"
+        class="p-button-outlined use-ai-btn"
+        icon="pi pi-sparkles"
+        label="Use AI"
+        (click)="openAiDrawer()"
+      ></button>
+    </div>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="editor-form">
+    <div class="editor-field">
+      <label for="summary">Summary</label>
+      <p-editor formControlName="summary" [style]="{ height: '50vh' }"></p-editor>
+    </div>
+
+    <div class="footer-actions">
       <button pButton type="button" label="Cancel" class="p-button-text" (click)="close.emit()"></button>
       <button pButton type="submit" label="Save" [disabled]="form.invalid || saving"></button>
     </div>
+
     <p-progressBar *ngIf="saving" mode="indeterminate" styleClass="mt-2"></p-progressBar>
   </form>
-</p-card>
+
+  <p-sidebar
+    [(visible)]="aiDrawerVisible"
+    position="right"
+    [modal]="true"
+    [blockScroll]="true"
+    [baseZIndex]="1100"
+    styleClass="ai-sidebar"
+  >
+    <div class="ai-drawer">
+      <div class="ai-header">
+        <h3>AI Summary Assistant</h3>
+        <p>Describe what you'd like highlighted and let the assistant draft a summary for you.</p>
+      </div>
+
+      <form [formGroup]="aiForm" (ngSubmit)="generateWithAi()" class="ai-form">
+        <label for="aiPrompt">Prompt</label>
+        <textarea
+          pInputTextarea
+          id="aiPrompt"
+          formControlName="prompt"
+          [autoResize]="true"
+          rows="5"
+          placeholder="E.g. Senior frontend developer with 8+ years in Angular, team leadership, and SaaS delivery"
+        ></textarea>
+        <div class="ai-actions">
+          <button pButton type="button" label="Close" class="p-button-text" (click)="closeAiDrawer()" [disabled]="aiGenerating"></button>
+          <button pButton type="submit" label="Generate" icon="pi pi-sparkles" [disabled]="aiForm.controls['prompt'].invalid || aiGenerating"></button>
+        </div>
+      </form>
+
+      <p-progressBar *ngIf="aiGenerating" mode="indeterminate" styleClass="mt-3"></p-progressBar>
+      <p class="ai-error" *ngIf="aiError">{{ aiError }}</p>
+
+      <div class="ai-result" *ngIf="aiForm.controls['generated'].value">
+        <div class="result-header">
+          <label for="aiGenerated">Preview &amp; edit</label>
+          <button pButton type="button" class="p-button-text" icon="pi pi-refresh" (click)="resetGenerated()" [disabled]="aiGenerating"></button>
+        </div>
+        <p-editor formControlName="generated" [style]="{ height: '26rem' }"></p-editor>
+        <div class="ai-result-actions">
+          <button
+            pButton
+            type="button"
+            label="Add to Summary"
+            icon="pi pi-download"
+            class="p-button-success"
+            (click)="applyGeneratedSummary()"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </p-sidebar>
+</div>

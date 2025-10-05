@@ -124,6 +124,8 @@
                                              [experiences]="profileExperiences"
                                              (addExperience)="startExperienceCreation()"
                                              (editExperience)="startExperienceEdit($event)"
+                                             (removeExperience)="onExperienceRemoved($event)"
+                                             (moveExperience)="onExperienceMoved($event)"
                                          ></experience-profile-display>
                    </div>
                   </p-tabpanel>

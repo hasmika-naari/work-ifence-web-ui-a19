@@ -14,6 +14,7 @@ export interface ExperienceProfileItem {
   isCurrent?: boolean;
   responsibilities: string;
   keySkills?: string;
+  placeholder?: boolean;
 }
 
 @Component({
@@ -27,6 +28,8 @@ export class ExperienceProfileDisplayComponent {
   @Input() experiences: ExperienceProfileItem[] | null = [];
   @Output() addExperience = new EventEmitter<void>();
   @Output() editExperience = new EventEmitter<number>();
+  @Output() removeExperience = new EventEmitter<number>();
+  @Output() moveExperience = new EventEmitter<{ index: number; direction: 'up' | 'down' }>();
 
   get hasExperiences(): boolean {
     return !!this.experiences && this.experiences.length > 0;
@@ -38,6 +41,20 @@ export class ExperienceProfileDisplayComponent {
 
   triggerEdit(index: number): void {
     this.editExperience.emit(index);
+  }
+
+  triggerRemove(index: number): void {
+    if (!this.canRemove(index)) {
+      return;
+    }
+    this.removeExperience.emit(index);
+  }
+
+  triggerMove(index: number, direction: 'up' | 'down'): void {
+    if (!this.canMove(index, direction)) {
+      return;
+    }
+    this.moveExperience.emit({ index, direction });
   }
 
   buildDateRange(item: ExperienceProfileItem): string {
@@ -52,6 +69,10 @@ export class ExperienceProfileDisplayComponent {
 
     if (!end) {
       return start;
+    }
+
+    if (!start) {
+      return end;
     }
 
     return `${start} - ${end}`.trim();
@@ -96,13 +117,40 @@ export class ExperienceProfileDisplayComponent {
     return value.replace(/[&<>"']/g, (char) => map[char]);
   }
 
-  splitKeySkills(keySkills?: string): string[] {
+  splitKeySkills(keySkills?: string | string[]): string[] {
     if (!keySkills) {
       return [];
     }
-    return keySkills
-      .split(',')
-      .map((skill) => skill.trim())
+    const entries = Array.isArray(keySkills) ? keySkills : keySkills.split(',');
+    return entries
+      .map((skill) => (skill ?? '').trim())
       .filter((skill) => !!skill);
+  }
+
+  canMoveUp(index: number): boolean {
+    return this.canMove(index, 'up');
+  }
+
+  canMoveDown(index: number): boolean {
+    return this.canMove(index, 'down');
+  }
+
+  canRemove(index: number): boolean {
+    if (!this.experiences || !this.experiences[index]) {
+      return false;
+    }
+    return true;
+  }
+
+  private canMove(index: number, direction: 'up' | 'down'): boolean {
+    if (!this.experiences || !this.experiences[index]) {
+      return false;
+    }
+
+    if (direction === 'up') {
+      return index > 0;
+    }
+
+    return index < this.experiences.length - 1;
   }
 }

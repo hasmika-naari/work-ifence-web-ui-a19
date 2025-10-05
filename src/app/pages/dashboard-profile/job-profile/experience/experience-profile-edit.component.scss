@@ -18,6 +18,7 @@
   flex-direction: column;
   gap: 1.25rem;
   flex: 1 1 auto;
+  padding-bottom: 100px;
 }
 
 .form-row {
@@ -149,8 +150,36 @@
   border-color: rgba(76, 175, 80, 0.8);
 }
 
+.skills-chip-field {
+  width: 100%;
+}
+
+:host ::ng-deep .skills-chip-field .mat-mdc-chip-row {
+  background: rgba(15, 118, 110, 0.12);
+  color: #0f172a;
+  font-weight: 600;
+  margin: 0.1rem;
+}
+
+:host ::ng-deep .skills-chip-field .mat-mdc-chip-row mat-icon {
+  font-size: 1rem;
+}
+
+:host ::ng-deep .skills-chip-field .mat-mdc-chip-grid {
+  gap: 0.25rem;
+}
+
+:host ::ng-deep .skills-chip-field .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 0;
+}
+
 .error {
   color: #e53935;
+  font-size: 0.8rem;
+}
+
+.hint {
+  color: #64748b;
   font-size: 0.8rem;
 }
 
@@ -171,61 +200,341 @@
   flex: 1 1 auto;
 }
 
-.ai-drawer {
+:host ::ng-deep .ai-assist-drawer {
+  background: rgba(15, 23, 42, 0.32);
+  backdrop-filter: blur(12px);
+  padding: clamp(1rem, 1.2vw + 0.75rem, 1.5rem);
+}
+
+.ai-assist-shell {
   display: flex;
   flex-direction: column;
+  gap: 1.1rem;
   height: 100%;
-  max-height: 100%;
+  background: rgba(248, 250, 252, 0.88);
+  border-radius: 1.2rem;
+  padding: clamp(1.25rem, 1.2vw + 1rem, 1.6rem);
+  box-shadow: none;
+  overflow: hidden;
+  position: relative;
 }
 
-.ai-drawer-content {
+.ai-assist-shell::before,
+.ai-assist-shell::after {
+  content: "";
+  position: absolute;
+  width: clamp(9rem, 24vw, 14rem);
+  height: clamp(9rem, 24vw, 14rem);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.55;
+  filter: blur(0.5px);
+}
+
+.ai-assist-shell::before {
+  top: -5rem;
+  left: -3rem;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.32), rgba(59, 130, 246, 0));
+}
+
+.ai-assist-shell::after {
+  bottom: -6rem;
+  right: -4rem;
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.28), rgba(16, 185, 129, 0));
+}
+
+.ai-header {
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  overflow-y: auto;
-  padding-right: 0.25rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
-.ai-description {
+.ai-title-group h2 {
   margin: 0;
-  color: var(--surface-600, #4c5866);
-  line-height: 1.5;
+  font-size: clamp(1.35rem, 1.4vw + 1rem, 1.75rem);
+  color: #0f172a;
 }
 
-.ai-field {
+.ai-title-group p {
+  margin: 0.3rem 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.ai-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.ai-field textarea {
-  resize: vertical;
-  min-height: 8rem;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(33, 61, 78, 0.18);
-  background: #fff;
-}
-
-.ai-actions {
-  display: flex;
-  justify-content: flex-end;
   gap: 0.75rem;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding-bottom: 0.25rem;
+}
+
+.ai-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ai-prompt label {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.prompt-surface {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  padding: 0.7rem 0.75rem 3rem 0.7rem;
+  position: relative;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.prompt-surface:hover {
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: none;
+  background: rgba(240, 247, 255, 0.6);
+}
+
+.prompt-surface:focus-within {
+  border-color: rgba(37, 99, 235, 0.65);
+  background: rgba(240, 247, 255, 0.85);
+  box-shadow: none;
+}
+
+.prompt-surface:focus-within:hover {
+  box-shadow: none;
+}
+
+
+
+.prompt-body {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.prompt-icon {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.9rem;
+  background: rgba(14, 165, 233, 0.16);
+  color: #0284c7;
+  font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
-.ai-error {
-  color: #e53935;
-  font-size: 0.85rem;
+.prompt-body textarea {
+  flex: 1 1 auto;
+  border: none;
+  resize: vertical;
+  min-height: 4rem;
+  background: transparent;
+  padding: 0.35rem;
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-family: inherit;
+  padding-right: 3.5rem;
 }
 
-.ai-progress {
+.prompt-body textarea:focus {
+  outline: none;
+}
+
+.prompt-submit {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 0.7rem;
+  border: none;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #fff;
+  border-radius: 0.95rem;
+  width: 2.85rem;
+  height: 2.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
+}
+
+.prompt-submit:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.prompt-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.prompt-submit .pi {
+  font-size: 1.05rem;
+}
+
+.prompt-submit .progress-track {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+  animation: progressSweep 1.1s linear infinite;
+  opacity: 0.85;
+  transform-origin: center;
+}
+
+.prompt-submit.loading {
+  cursor: wait;
+}
+
+@keyframes progressSweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.ai-feedback {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  color: var(--surface-600, #4c5866);
+  min-height: 1.5rem;
 }
 
 .ai-progress span {
+  font-size: 0.88rem;
+  color: #475569;
+}
+
+:host ::ng-deep .ai-progress .p-progressbar {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.3);
+}
+
+:host ::ng-deep .ai-progress .p-progressbar-value {
+  border-radius: 999px;
+  background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+}
+
+.ai-error {
+  color: #b91c1c;
   font-size: 0.85rem;
+  background: linear-gradient(135deg, rgba(254, 226, 226, 0.85), rgba(254, 215, 170, 0.65));
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 0.65rem;
+  padding: 0.6rem 0.75rem;
+}
+
+.ai-prompt .error {
+  display: inline-block;
+  margin-top: 0.65rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.6rem;
+  background: rgba(254, 215, 170, 0.45);
+  border: 1px solid rgba(251, 146, 60, 0.45);
+  color: #b45309;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.ai-response {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.58);
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  padding: 1rem;
+}
+
+.ai-response--empty .response-editor-wrapper {
+  position: relative;
+}
+
+.response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.response-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.response-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+:host ::ng-deep .ai-response .p-editor-container {
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+:host ::ng-deep .ai-response .p-editor-toolbar {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+:host ::ng-deep .ai-response .p-editor-content {
+  min-height: 18rem;
+}
+
+.response-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: #636f83;
+  font-size: 0.95rem;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .ai-assist-shell {
+    padding: 1.1rem;
+  }
+
+  .prompt-surface {
+    padding: 0.75rem 0.75rem 3.4rem 0.75rem;
+  }
+
+  .prompt-submit {
+    position: static;
+    width: 100%;
+    height: 3rem;
+    margin-top: 0.75rem;
+    box-shadow: none;
+    align-self: stretch;
+    justify-content: center;
+    bottom: auto;
+    right: auto;
+  }
+
+  .prompt-body textarea {
+    min-height: 6rem;
+    width: 100%;
+    padding-right: 1rem;
+  }
 }

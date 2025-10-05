@@ -1,7 +1,172 @@
-.profile-card {
-  margin-bottom: 1.5rem;
+.summary-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 100%;
+  padding: 0.5rem 0 1.75rem;
 }
 
-.p-field {
-  margin-bottom: 1.5rem;
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.header-titles h2 {
+  margin: 0;
+  font-size: 1.55rem;
+  color: #1f2937;
+}
+
+.header-subtitle {
+  margin: 0;
+  color: #4c5866;
+  font-size: 0.95rem;
+  max-width: 36rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.use-ai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+}
+
+.editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.editor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.editor-field label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.ai-error {
+  margin-top: 1rem;
+  color: #d14343;
+  font-size: 0.9rem;
+}
+
+.ai-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.ai-result {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ai-result-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+:host ::ng-deep .summary-editor .p-editor-container {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+:host ::ng-deep .summary-editor .p-editor-toolbar {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+:host ::ng-deep .summary-editor .p-editor-content {
+  min-height: 50vh;
+}
+
+:host ::ng-deep .summary-editor .p-button.use-ai-btn {
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+:host ::ng-deep .ai-sidebar .p-sidebar {
+  width: min(28rem, 92vw);
+  padding: 1.5rem;
+  background: #f8fafc;
+}
+
+.ai-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  height: 100%;
+}
+
+.ai-header h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #1f2937;
+}
+
+.ai-header p {
+  margin: 0.35rem 0 0;
+  color: #4c5866;
+  font-size: 0.95rem;
+}
+
+.ai-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ai-form label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+:host ::ng-deep .ai-sidebar .p-inputtextarea {
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  min-height: 8rem;
+}
+
+:host ::ng-deep .ai-sidebar .p-editor-container {
+  border-radius: 0.75rem;
+  border-color: rgba(148, 163, 184, 0.3);
+  background: #ffffff;
+}
+
+:host ::ng-deep .ai-sidebar .p-editor-content {
+  min-height: 22rem;
 }

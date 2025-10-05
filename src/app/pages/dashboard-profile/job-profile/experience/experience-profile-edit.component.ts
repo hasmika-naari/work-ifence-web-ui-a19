@@ -11,6 +11,11 @@ import { EditorModule } from 'primeng/editor';
 import { finalize } from 'rxjs/operators';
 import { ExperienceProfileItem } from './experience-profile-display.component';
 import { ExperienceAiService } from './experience-ai.service';
+import { MatChipsModule, MatChipInputEvent } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 const MONTH_OPTIONS = [
   'January',
@@ -36,10 +41,14 @@ const MONTH_OPTIONS = [
     ButtonModule,
     InputTextModule,
     CheckboxModule,
-  DropdownModule,
-  DrawerModule,
-  ProgressBarModule,
-  EditorModule
+    DropdownModule,
+    DrawerModule,
+    ProgressBarModule,
+    EditorModule,
+    MatChipsModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   templateUrl: './experience-profile-edit.component.html',
   styleUrls: ['./experience-profile-edit.component.scss']
@@ -57,8 +66,10 @@ export class ExperienceProfileEditComponent implements OnChanges {
   form: FormGroup;
   aiDrawerVisible = false;
   aiPromptControl: FormControl<string>;
+  aiResponseControl: FormControl<string>;
   isGenerating = false;
   aiError: string | null = null;
+  readonly separatorKeys = [ENTER, COMMA] as const;
   constructor(private fb: FormBuilder, private aiService: ExperienceAiService) {
     this.form = this.fb.group({
       title: ['', Validators.required],
@@ -68,11 +79,13 @@ export class ExperienceProfileEditComponent implements OnChanges {
       startYear: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
       endMonth: [''],
       endYear: [''],
-  isCurrent: [false],
-  responsibilities: ['', Validators.required]
+      isCurrent: [false],
+      keySkills: this.fb.nonNullable.control<string[]>([]),
+      responsibilities: ['', Validators.required]
     });
 
-    this.aiPromptControl = this.fb.nonNullable.control('', Validators.required);
+  this.aiPromptControl = this.fb.nonNullable.control('');
+  this.aiResponseControl = this.fb.nonNullable.control('');
 
     this.form.get('isCurrent')?.valueChanges.subscribe((isCurrent) => {
       if (isCurrent) {
@@ -96,7 +109,12 @@ export class ExperienceProfileEditComponent implements OnChanges {
       }
     }
 
-    if (changes['isEditing'] && !this.isEditing) {
+    if (
+      changes['isEditing'] &&
+      !this.isEditing &&
+      !changes['isEditing'].firstChange &&
+      changes['isEditing'].previousValue === true
+    ) {
       this.resetForm();
     }
   }
@@ -141,7 +159,8 @@ export class ExperienceProfileEditComponent implements OnChanges {
         endMonth: '',
         endYear: '',
         isCurrent: false,
-  responsibilities: ''
+        keySkills: [],
+        responsibilities: ''
       });
       this.form.get('endMonth')?.enable({ emitEvent: false });
       this.form.get('endYear')?.enable({ emitEvent: false });
@@ -156,6 +175,9 @@ export class ExperienceProfileEditComponent implements OnChanges {
     this.aiPromptControl.reset('');
     this.aiPromptControl.markAsPristine();
     this.aiPromptControl.markAsUntouched();
+    this.aiResponseControl.setValue('');
+    this.aiResponseControl.markAsPristine();
+    this.aiResponseControl.markAsUntouched();
     this.aiDrawerVisible = true;
   }
 
@@ -168,24 +190,24 @@ export class ExperienceProfileEditComponent implements OnChanges {
     this.aiPromptControl.reset('');
     this.aiPromptControl.markAsPristine();
     this.aiPromptControl.markAsUntouched();
+    this.aiResponseControl.setValue('');
+    this.aiResponseControl.markAsPristine();
+    this.aiResponseControl.markAsUntouched();
     this.aiError = null;
   }
 
   generateResponsibilitiesFromAi(): void {
-    if (this.aiPromptControl.invalid) {
-      this.aiPromptControl.markAsTouched();
-      return;
-    }
-
     const prompt = this.aiPromptControl.value.trim();
     if (!prompt) {
       this.aiPromptControl.setValue('');
-      this.aiPromptControl.markAsTouched();
       return;
     }
 
     this.isGenerating = true;
     this.aiError = null;
+    this.aiResponseControl.setValue('');
+    this.aiResponseControl.markAsPristine();
+    this.aiResponseControl.markAsUntouched();
 
     this.aiService
       .generateResponsibilities(prompt)
@@ -198,15 +220,9 @@ export class ExperienceProfileEditComponent implements OnChanges {
             return;
           }
 
-          const responsibilitiesControl = this.form.get('responsibilities');
-          responsibilitiesControl?.setValue(this.normalizeResponsibilities(text));
-          responsibilitiesControl?.markAsDirty();
-          responsibilitiesControl?.markAsTouched();
-
-          this.aiDrawerVisible = false;
-          this.aiPromptControl.reset('');
-          this.aiPromptControl.markAsPristine();
-          this.aiPromptControl.markAsUntouched();
+          this.aiResponseControl.setValue(this.normalizeResponsibilities(text));
+          this.aiResponseControl.markAsDirty();
+          this.aiResponseControl.markAsTouched();
         },
         error: () => {
           this.aiError = 'Something went wrong while contacting the assistant. Please try again in a bit.';
@@ -214,10 +230,55 @@ export class ExperienceProfileEditComponent implements OnChanges {
       });
   }
 
+  resetAiResponse(): void {
+    if (this.isGenerating) {
+      return;
+    }
+    this.aiResponseControl.setValue('');
+    this.aiResponseControl.markAsPristine();
+    this.aiResponseControl.markAsUntouched();
+  }
+
+  applyAiResponse(mode: 'append' | 'replace' = 'append'): void {
+    const generated = (this.aiResponseControl.value ?? '').trim();
+    if (!generated) {
+      return;
+    }
+
+    const responsibilitiesControl = this.form.get('responsibilities');
+    if (!responsibilitiesControl) {
+      return;
+    }
+
+    const current = (responsibilitiesControl.value ?? '').toString().trim();
+    const nextValue =
+      mode === 'replace'
+        ? generated
+        : current
+          ? `${current}${this.mergeSeparator(current)}${generated}`
+          : generated;
+
+    responsibilitiesControl.setValue(nextValue);
+    responsibilitiesControl.markAsDirty();
+    responsibilitiesControl.markAsTouched();
+
+    this.closeAiAssist();
+  }
+
+  private mergeSeparator(existing: string): string {
+    return existing.endsWith('</p>') || existing.endsWith('</li>') || existing.endsWith('</ul>')
+      ? ''
+      : '<p><br></p>';
+  }
+
   private getFormValue(): ExperienceProfileItem {
     const raw = this.form.getRawValue();
     const responsibilities = (raw.responsibilities ?? '').trim();
-    const keySkills = this.isEditing ? this.experience?.keySkills : undefined;
+    const keySkillsArray = this.keySkillsControl.value ?? [];
+    const keySkills = keySkillsArray
+      .map((skill) => skill.trim())
+      .filter((skill) => skill.length > 0)
+      .join(', ');
 
     return {
       title: raw.title?.trim(),
@@ -229,7 +290,7 @@ export class ExperienceProfileEditComponent implements OnChanges {
       endYear: raw.isCurrent ? undefined : raw.endYear,
       isCurrent: !!raw.isCurrent,
       responsibilities,
-      keySkills
+      keySkills: keySkills || undefined
     };
   }
 
@@ -243,6 +304,7 @@ export class ExperienceProfileEditComponent implements OnChanges {
       endMonth: item.endMonth ?? '',
       endYear: item.endYear ?? '',
       isCurrent: !!item.isCurrent,
+      keySkills: this.parseKeySkillsArray(item.keySkills),
       responsibilities: this.normalizeResponsibilities(item.responsibilities ?? '')
     });
 
@@ -256,6 +318,55 @@ export class ExperienceProfileEditComponent implements OnChanges {
 
     this.form.markAsPristine();
     this.form.markAsUntouched();
+  }
+
+  get keySkillsControl(): FormControl<string[]> {
+    return this.form.get('keySkills') as FormControl<string[]>;
+  }
+
+  addSkill(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (!value) {
+      event.chipInput?.clear();
+      return;
+    }
+
+    const control = this.keySkillsControl;
+    const current = control.value ?? [];
+    const exists = current.some((skill) => skill.toLowerCase() === value.toLowerCase());
+    if (exists) {
+      event.chipInput?.clear();
+      return;
+    }
+
+    control.setValue([...current, value]);
+    control.markAsDirty();
+    control.markAsTouched();
+    event.chipInput?.clear();
+  }
+
+  removeSkill(index: number): void {
+    const control = this.keySkillsControl;
+    const current = control.value ?? [];
+    if (index < 0 || index >= current.length) {
+      return;
+    }
+
+    const next = current.filter((_, i) => i !== index);
+    control.setValue(next);
+    control.markAsDirty();
+    control.markAsTouched();
+  }
+
+  private parseKeySkillsArray(value?: string): string[] {
+    if (!value) {
+      return [];
+    }
+
+    return value
+      .split(',')
+      .map((skill) => skill.trim())
+      .filter((skill) => skill.length > 0);
   }
 
   private normalizeResponsibilities(value: string): string {

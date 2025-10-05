@@ -120,8 +120,43 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   private cachedSkillsKey = '';
   private cachedExperiences: ExperienceProfileItem[] = [];
   private cachedExperiencesKey = '';
+  private placeholderDismissed = false;
   experienceEditingIndex: number | null = null;
   experienceDraft: ExperienceProfileItem | null = null;
+  private readonly placeholderExperiences: ExperienceProfileItem[] = [
+    {
+      title: 'Senior DevOps Engineer',
+      companyName: 'Placeholder Corp.',
+      location: 'Remote',
+      startMonth: 'January',
+      startYear: '2019',
+      endMonth: 'December',
+      endYear: '2022',
+      responsibilities: [
+        'Designed and maintained cloud infrastructure observability using Azure Monitor and Grafana.',
+        'Implemented GitHub Actions and Azure DevOps pipelines to cut deployment time by 40%.',
+        'Partnered with security and product teams to harden CI/CD workflows and enforce compliance.'
+      ].join('\n'),
+      keySkills: 'Azure,Kubernetes,CI/CD,Monitoring',
+      placeholder: true
+    },
+    {
+      title: 'Lead Cloud Engineer',
+      companyName: 'Fictitious Systems',
+      location: 'Austin, TX',
+      startMonth: 'January',
+      startYear: '2015',
+      endMonth: 'December',
+      endYear: '2018',
+      responsibilities: [
+        'Led the migration of on-premise workloads to Azure, ensuring high availability and cost optimization.',
+        'Automated infrastructure provisioning with Terraform and Azure DevOps release pipelines.',
+        'Mentored a cross-functional engineering team to deliver resilient cloud-native services.'
+      ].join('\n'),
+      keySkills: 'Terraform,Azure DevOps,Cloud Architecture,Automation',
+      placeholder: true
+    }
+  ];
 
   // No local summary; always use store
 
@@ -320,31 +355,80 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
         .map((exp) => this.mapExperienceToDisplay(exp))
         .filter((exp) => !!exp.title && !!exp.responsibilities);
 
-      const key = JSON.stringify(normalized);
-      if (key !== this.cachedExperiencesKey) {
-        this.cachedExperiencesKey = key;
-        this.cachedExperiences = normalized;
+      if (normalized.length > 0) {
+        this.placeholderDismissed = true;
+        return this.updateCachedExperiences(normalized);
       }
 
-      return this.cachedExperiences;
+      const hasExplicitExperienceSection = Array.isArray(jobProfile?.experience);
+      if (hasExplicitExperienceSection) {
+        this.placeholderDismissed = true;
+      }
+
+      const fallback = this.placeholderDismissed ? [] : this.getPlaceholderExperiences();
+      return this.updateCachedExperiences(fallback);
     }
 
     onExperienceSaved(event: { experience: ExperienceProfileItem; index: number | null }) {
-      const normalized = this.mapExperienceToDisplay(event.experience);
-      const collection = [...this.profileExperiences];
+  const normalized = this.mapExperienceToDisplay(event.experience);
+  const currentExperiences = this.profileExperiences;
+  const filtered = currentExperiences.filter((item) => !item.placeholder);
 
-      if (event.index !== null && event.index >= 0 && event.index < collection.length) {
-        collection[event.index] = normalized;
+      const canUpdateExisting =
+        event.index !== null &&
+        event.index >= 0 &&
+        !currentExperiences[event.index]?.placeholder &&
+        event.index < filtered.length;
+
+      if (canUpdateExisting && event.index !== null) {
+        filtered[event.index] = normalized;
       } else {
-        collection.push(normalized);
+        filtered.push(normalized);
       }
 
-      this.persistExperiences(collection);
+      this.persistExperiences(filtered);
 
       this.experienceEditingIndex = null;
       this.experienceDraft = null;
       this.showExperienceFormEditor = false;
       this.visible2 = false;
+    }
+
+    onExperienceRemoved(index: number) {
+      const experiences = [...this.profileExperiences];
+
+      if (!experiences.length || index < 0 || index >= experiences.length) {
+        return;
+      }
+
+      const target = experiences[index];
+      const remaining = experiences.filter((_, itemIndex) => itemIndex !== index);
+
+      if (target?.placeholder) {
+        this.placeholderDismissed = true;
+      }
+
+      this.persistExperiences(remaining);
+    }
+
+    onExperienceMoved(event: { index: number; direction: 'up' | 'down' }) {
+      const experiences = [...this.profileExperiences];
+      const { index, direction } = event;
+
+      if (!experiences.length || index < 0 || index >= experiences.length) {
+        return;
+      }
+
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+      if (targetIndex < 0 || targetIndex >= experiences.length) {
+        return;
+      }
+
+      const [moved] = experiences.splice(index, 1);
+      experiences.splice(targetIndex, 0, moved);
+
+      this.persistExperiences(experiences);
     }
 
     startExperienceCreation() {
@@ -355,14 +439,20 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
 
     startExperienceEdit(index: number) {
       const experiences = this.profileExperiences;
-      this.experienceEditingIndex = index;
       const target = experiences[index] ?? null;
-      if (target) {
-        this.experienceDraft = typeof structuredClone === 'function'
-          ? structuredClone(target)
-          : JSON.parse(JSON.stringify(target));
+
+      if (target?.placeholder) {
+        this.experienceEditingIndex = null;
+        this.experienceDraft = { ...target, placeholder: undefined } as ExperienceProfileItem;
       } else {
-        this.experienceDraft = null;
+        this.experienceEditingIndex = index;
+        if (target) {
+          this.experienceDraft = typeof structuredClone === 'function'
+            ? structuredClone(target)
+            : JSON.parse(JSON.stringify(target));
+        } else {
+          this.experienceDraft = null;
+        }
       }
       this.prepareExperienceEditor();
     }
@@ -444,19 +534,51 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     private persistExperiences(experiences: ExperienceProfileItem[]) {
-      const normalized = experiences
+      const sanitized = experiences.filter((exp) => !exp.placeholder);
+      const normalized = sanitized
         .map((exp) => this.mapExperienceToDisplay(exp))
         .filter((exp) => !!exp.title && !!exp.responsibilities);
 
-      this.cachedExperiencesKey = JSON.stringify(normalized);
-      this.cachedExperiences = normalized;
-
       const currentProfile = this.jobProfileSignal();
+
+      if (normalized.length === 0 && !this.placeholderDismissed) {
+        this.updateCachedExperiences(experiences);
+
+        if (!currentProfile?.experience || currentProfile.experience.length === 0) {
+          return;
+        }
+
+        this.userStore.updateJobProfileSection('experience', undefined);
+        return;
+      }
+
+      if (normalized.length > 0) {
+        this.placeholderDismissed = true;
+        this.updateCachedExperiences(normalized);
+      } else {
+        const fallback = this.placeholderDismissed ? [] : this.getPlaceholderExperiences();
+        this.updateCachedExperiences(fallback);
+      }
+
       if (!currentProfile) {
         this.userStore.setJobProfile({ experience: normalized });
       } else {
         this.userStore.updateJobProfileSection('experience', normalized);
       }
+    }
+
+    private getPlaceholderExperiences(): ExperienceProfileItem[] {
+      return this.placeholderExperiences.map((exp) => ({ ...exp }));
+    }
+
+    private updateCachedExperiences(experiences: ExperienceProfileItem[]): ExperienceProfileItem[] {
+      const key = JSON.stringify(experiences);
+      if (key !== this.cachedExperiencesKey) {
+        this.cachedExperiencesKey = key;
+        this.cachedExperiences = experiences;
+      }
+
+      return this.cachedExperiences;
     }
 
     private extractMonthYear(
