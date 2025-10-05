@@ -357,7 +357,8 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
 
       if (normalized.length > 0) {
         this.placeholderDismissed = true;
-        return this.updateCachedExperiences(normalized);
+        const merged = this.mergeWithCachedPlaceholders(normalized);
+        return this.setCachedExperiences(merged);
       }
 
       const hasExplicitExperienceSection = Array.isArray(jobProfile?.experience);
@@ -365,28 +366,34 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
         this.placeholderDismissed = true;
       }
 
-      const fallback = this.placeholderDismissed ? [] : this.getPlaceholderExperiences();
-      return this.updateCachedExperiences(fallback);
+      if (!this.placeholderDismissed && this.cachedExperiences.length === 0) {
+        this.setCachedExperiences(this.getPlaceholderExperiences());
+      }
+
+      if (this.placeholderDismissed && this.cachedExperiences.length === 0) {
+        return this.cachedExperiences;
+      }
+
+      return this.cachedExperiences;
     }
 
     onExperienceSaved(event: { experience: ExperienceProfileItem; index: number | null }) {
-  const normalized = this.mapExperienceToDisplay(event.experience);
-  const currentExperiences = this.profileExperiences;
-  const filtered = currentExperiences.filter((item) => !item.placeholder);
+      const normalized = this.mapExperienceToDisplay(event.experience);
+      const existing = [...this.profileExperiences];
 
-      const canUpdateExisting =
+      const canReplaceExisting =
         event.index !== null &&
+        event.index !== undefined &&
         event.index >= 0 &&
-        !currentExperiences[event.index]?.placeholder &&
-        event.index < filtered.length;
+        event.index < existing.length;
 
-      if (canUpdateExisting && event.index !== null) {
-        filtered[event.index] = normalized;
+      if (canReplaceExisting && event.index !== null) {
+        existing.splice(event.index, 1, normalized);
       } else {
-        filtered.push(normalized);
+        existing.push(normalized);
       }
 
-      this.persistExperiences(filtered);
+      this.persistExperiences(existing);
 
       this.experienceEditingIndex = null;
       this.experienceDraft = null;
@@ -441,18 +448,16 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       const experiences = this.profileExperiences;
       const target = experiences[index] ?? null;
 
-      if (target?.placeholder) {
-        this.experienceEditingIndex = null;
-        this.experienceDraft = { ...target, placeholder: undefined } as ExperienceProfileItem;
+      this.experienceEditingIndex = index;
+
+      if (target) {
+        const draftSource = { ...target };
+        delete (draftSource as Partial<ExperienceProfileItem>).placeholder;
+        this.experienceDraft = typeof structuredClone === 'function'
+          ? structuredClone(draftSource)
+          : JSON.parse(JSON.stringify(draftSource));
       } else {
-        this.experienceEditingIndex = index;
-        if (target) {
-          this.experienceDraft = typeof structuredClone === 'function'
-            ? structuredClone(target)
-            : JSON.parse(JSON.stringify(target));
-        } else {
-          this.experienceDraft = null;
-        }
+        this.experienceDraft = null;
       }
       this.prepareExperienceEditor();
     }
@@ -534,6 +539,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     private persistExperiences(experiences: ExperienceProfileItem[]) {
+      const displayList = experiences.map((exp) => ({ ...exp }));
       const sanitized = experiences.filter((exp) => !exp.placeholder);
       const normalized = sanitized
         .map((exp) => this.mapExperienceToDisplay(exp))
@@ -542,7 +548,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       const currentProfile = this.jobProfileSignal();
 
       if (normalized.length === 0 && !this.placeholderDismissed) {
-        this.updateCachedExperiences(experiences);
+        this.setCachedExperiences(displayList);
 
         if (!currentProfile?.experience || currentProfile.experience.length === 0) {
           return;
@@ -554,10 +560,14 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
 
       if (normalized.length > 0) {
         this.placeholderDismissed = true;
-        this.updateCachedExperiences(normalized);
+        this.setCachedExperiences(displayList);
       } else {
-        const fallback = this.placeholderDismissed ? [] : this.getPlaceholderExperiences();
-        this.updateCachedExperiences(fallback);
+        if (this.placeholderDismissed) {
+          this.cachedExperiences = [];
+          this.cachedExperiencesKey = JSON.stringify([]);
+        } else {
+          this.setCachedExperiences(displayList.length ? displayList : this.getPlaceholderExperiences());
+        }
       }
 
       if (!currentProfile) {
@@ -571,14 +581,32 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       return this.placeholderExperiences.map((exp) => ({ ...exp }));
     }
 
-    private updateCachedExperiences(experiences: ExperienceProfileItem[]): ExperienceProfileItem[] {
-      const key = JSON.stringify(experiences);
+    private setCachedExperiences(experiences: ExperienceProfileItem[]): ExperienceProfileItem[] {
+      const cloned = experiences.map((exp) => ({ ...exp }));
+      const key = JSON.stringify(cloned);
       if (key !== this.cachedExperiencesKey) {
         this.cachedExperiencesKey = key;
-        this.cachedExperiences = experiences;
+        this.cachedExperiences = cloned;
       }
 
       return this.cachedExperiences;
+    }
+
+    private mergeWithCachedPlaceholders(base: ExperienceProfileItem[]): ExperienceProfileItem[] {
+      const placeholders = this.cachedExperiences.filter((exp) => exp.placeholder);
+      if (!placeholders.length) {
+        return base;
+      }
+
+      const merged = [...base];
+      placeholders.forEach((placeholder) => {
+        const alreadyPresent = merged.some((item) => item.placeholder && item.title === placeholder.title && item.companyName === placeholder.companyName);
+        if (!alreadyPresent) {
+          merged.push({ ...placeholder });
+        }
+      });
+
+      return merged;
     }
 
     private extractMonthYear(
