@@ -741,3 +741,140 @@
     font-family: 'Material Icons';
     font-style: normal;
   }
+
+  /* Address form stacked layout */
+
+  .address-form {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 1.1vw + 1rem, 2rem);
+    height: 65vh;
+    margin-top: 30px;
+  }
+
+  .address-form .form-row {
+    display: grid;
+    gap: clamp(1rem, 1vw, 1.4rem);
+  }
+
+  .address-form .form-row--double {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .address-form .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .address-form .field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgba(15, 23, 42, 0.72);
+    text-transform: uppercase;
+  }
+
+  .address-form .field input[pInputText] {
+    background: #fff;
+    border: 2px solid rgba(15, 23, 42, 0.08);
+    border-radius: 10px;
+    padding: 0.85rem 0.9rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .address-form .field input[pInputText]:focus {
+    border-color: var(--mainColor4);
+    box-shadow: 0 0 0 3px rgba(240, 91, 69, 0.12);
+    outline: none;
+  }
+
+  :host ::ng-deep .address-form .field--autocomplete .p-inputtext {
+    width: 100%;
+    border-radius: 10px;
+    padding: 0.85rem 0.9rem;
+    border: 2px solid rgba(15, 23, 42, 0.08);
+  }
+
+  :host ::ng-deep .address-form .field--autocomplete .p-inputtext:focus {
+    border-color: var(--mainColor4);
+    box-shadow: 0 0 0 3px rgba(240, 91, 69, 0.12);
+  }
+
+  .address-form .field .error {
+    font-size: 0.75rem;
+    color: #dc2626;
+  }
+
+  .address-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 1rem;
+  }
+
+  .address-form .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    background: transparent;
+    color: var(--mainColor);
+    box-shadow: none;
+    transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .address-form .action-btn--ghost {
+    color: rgba(15, 23, 42, 0.72);
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+  }
+
+  .address-form .action-btn--ghost:hover {
+    color: rgba(15, 23, 42, 0.88);
+    background: rgba(15, 23, 42, 0.1);
+    border-color: rgba(15, 23, 42, 0.16);
+  }
+
+  .address-form .action-btn--primary {
+    color: var(--mainColor);
+    background: rgba(240, 91, 69, 0.14);
+    border-color: rgba(240, 91, 69, 0.32);
+    box-shadow: 0 10px 20px rgba(240, 91, 69, 0.12);
+  }
+
+  .address-form .action-btn--primary:hover:not(:disabled) {
+    background: rgba(240, 91, 69, 0.22);
+    border-color: rgba(240, 91, 69, 0.42);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(240, 91, 69, 0.18);
+  }
+
+  .address-form .action-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .address-form .action-btn i {
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 640px) {
+    .address-form .form-row--double {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .address-form {
+      height: auto;
+    }
+  }

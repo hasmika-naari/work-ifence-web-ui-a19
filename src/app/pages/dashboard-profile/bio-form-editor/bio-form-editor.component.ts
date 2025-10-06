@@ -1,6 +1,6 @@
 
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ViewChild } from '@angular/core';
+import { ElementRef, ViewChild } from '@angular/core';
 import { AutoComplete, AutoCompleteModule } from 'primeng/autocomplete';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Signal, SimpleChanges, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -73,6 +73,7 @@ export interface DialogData {
 export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   @ViewChild('genderAuto') genderAuto!: AutoComplete;
+  @ViewChild('imageUpload') imageUploadRef!: ElementRef<HTMLInputElement>;
 
  
   imageBase64: String | null = null; // Define a class property to store the image bytes
@@ -90,7 +91,8 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
   bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   @Output() actionInProgress = new EventEmitter();
   @Output() formSaved = new EventEmitter();
-  @Input() formClosed! : boolean
+  @Output('formClosed') formClosedEmitter = new EventEmitter<void>();
+  @Input() formClosed!: boolean;
 
   // PrimeNG dropdown expects array of objects with label and value
   genders = [
@@ -234,8 +236,24 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
         this.userStore.setBioProfile(e);
         this.change_in_profile = false
         this.formSaved.emit()
+    this.formClosedEmitter.emit();
     })
     
+  }
+
+  cancelEdit(): void {
+    this.setBioForm();
+    this.bioForm.markAsPristine();
+    this.bioForm.markAsUntouched();
+    this.imageBase64 = null;
+    this.change_in_profile = false;
+    this.showProfileImage = false;
+    this.uploadImageUrl = '';
+    this.imageUrl = this.bioProfile().imageUrl ?? '';
+    if (this.imageUploadRef) {
+      this.imageUploadRef.nativeElement.value = '';
+    }
+    this.formClosedEmitter.emit();
   }
 
   markFormGroupTouched(formGroup: FormGroup) {

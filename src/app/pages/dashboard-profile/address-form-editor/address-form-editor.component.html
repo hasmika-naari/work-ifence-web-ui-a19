@@ -1,114 +1,135 @@
-
 <div class="row pl-4 pr-4" style="height: 80% !important;">
-        <ng-container *ngIf="isActionInProgress">
-            <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
-        </ng-container>
-    <div class="col-12"  >
-    <form [formGroup]="addressForm" style="height: 65vh;margin-top:30px;" >
-            <div class="row wrap">
-                <div class="col-12 p-b-3 p-t-3">
-                    <p-floatlabel variant="on" class="w-100">
-                        <input pInputText id="address_name" formControlName="address_name" class="w-100" />
-                        <label for="address_name">Address Name</label>
-                    </p-floatlabel>
-                    <div class="p-error ng-dirty ng-invalid" *ngIf="addressForm.get('address_name')?.hasError('required') && (addressForm.get('address_name')?.dirty || addressForm.get('address_name')?.touched)">
+    <ng-container *ngIf="isActionInProgress">
+        <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+    </ng-container>
+    <div class="col-12">
+        <form [formGroup]="addressForm" class="address-form" novalidate>
+            <div class="form-row">
+                <div class="field">
+                    <label for="address_name">Address Name *</label>
+                    <input
+                        id="address_name"
+                        pInputText
+                        formControlName="address_name"
+                        placeholder="Home, Office, etc."
+                    />
+                    <small class="error" *ngIf="addressForm.get('address_name')?.hasError('required') && (addressForm.get('address_name')?.dirty || addressForm.get('address_name')?.touched)">
                         Required.
-                    </div>
+                    </small>
                 </div>
-                <div class="col-12 p-b-3 p-t-3">
-                    <p-floatlabel variant="on" class="w-100">
-                        <input pInputText id="address_line1" formControlName="address_line1" class="w-100" />
-                        <label for="address_line1">Address Line 1</label>
-                    </p-floatlabel>
-                    <div class="p-error ng-dirty ng-invalid" *ngIf="addressForm.get('address_line1')?.hasError('required') && (addressForm.get('address_line1')?.dirty || addressForm.get('address_line1')?.touched)">
-                        Required.
-                    </div>
-                </div>
-                <div class="col-12 p-b-3 p-t-3">
-                    <p-floatlabel variant="on" class="w-100">
-                        <input pInputText id="address_line2" formControlName="address_line2" class="w-100" />
-                        <label for="address_line2">Address Line 2</label>
-                    </p-floatlabel>
-                </div>
-                <div class="col-12 p-b-3 p-t-3">
-                    <p-floatlabel variant="on" class="w-100">
-                        <input pInputText id="city" formControlName="city" class="w-100" />
-                        <label for="city">City</label>
-                    </p-floatlabel>
-                    <div class="p-error ng-dirty ng-invalid" *ngIf="addressForm.get('city')?.hasError('required') && (addressForm.get('city')?.dirty || addressForm.get('city')?.touched)">
-                        Required.
-                    </div>
-                </div>
-                <div class="col-6 p-b-3 p-t-3">
+            </div>
 
-                   
+            <div class="form-row form-row--double">
+                <div class="field">
+                    <label for="address_line1">Address Line 1 *</label>
+                    <input
+                        id="address_line1"
+                        pInputText
+                        formControlName="address_line1"
+                        placeholder="Street, building number"
+                    />
+                    <small class="error" *ngIf="addressForm.get('address_line1')?.hasError('required') && (addressForm.get('address_line1')?.dirty || addressForm.get('address_line1')?.touched)">
+                        Required.
+                    </small>
+                </div>
 
+                <div class="field">
+                    <label for="address_line2">Address Line 2</label>
+                    <input
+                        id="address_line2"
+                        pInputText
+                        formControlName="address_line2"
+                        placeholder="Apartment, suite, etc."
+                    />
+                </div>
+            </div>
 
-                    <p-floatlabel variant="on" class="w-100">
-                        <p-autoComplete 
-                            formControlName="country"
-                            [suggestions]="filteredCountries"
-                            (completeMethod)="filterCountry($event)"
-                            (onFocus)="onCountryFocus()"
-                            (onSelect)="onCountrySelect()"
-                            field="label"
-                            [forceSelection]="true"
-                            inputId="country-input"
-                            #countryAuto
-                            class="w-100"
-                            autocomplete="off"
-                        ></p-autoComplete>
-                        <label for="country-input">Country</label>
-                    </p-floatlabel>
-                    <div class="p-error ng-dirty ng-invalid" *ngIf="addressForm.get('country')?.hasError('required') && (addressForm.get('country')?.dirty || addressForm.get('country')?.touched)">
+            <div class="form-row form-row--double">
+                <div class="field">
+                    <label for="city">City *</label>
+                    <input
+                        id="city"
+                        pInputText
+                        formControlName="city"
+                        placeholder="City"
+                    />
+                    <small class="error" *ngIf="addressForm.get('city')?.hasError('required') && (addressForm.get('city')?.dirty || addressForm.get('city')?.touched)">
                         Required.
-                    </div>
+                    </small>
                 </div>
-                <div class="col-6 p-b-3 p-t-3">
-                    <p-floatlabel variant="on" class="w-100">
-                        <p-autoComplete 
-                            formControlName="state"
-                            [suggestions]="filteredStates"
-                            (completeMethod)="filterState($event)"
-                            (onFocus)="onStateFocus()"
-                            (onSelect)="onStateSelect()"
-                            field="label"
-                            [forceSelection]="true"
-                            inputId="state-input"
-                            #stateAuto
-                            class="w-100"
-                            autocomplete="off"
-                        ></p-autoComplete>
-                        <label for="state-input">State</label>
-                    </p-floatlabel>
-                    <div class="p-error ng-dirty ng-invalid" *ngIf="addressForm.get('state')?.hasError('required') && (addressForm.get('state')?.dirty || addressForm.get('state')?.touched)">
+
+                <div class="field">
+                    <label for="zipcode">Zipcode *</label>
+                    <input
+                        id="zipcode"
+                        pInputText
+                        formControlName="zipcode"
+                        placeholder="Postal code"
+                    />
+                    <small class="error" *ngIf="addressForm.get('zipcode')?.hasError('required') && (addressForm.get('zipcode')?.dirty || addressForm.get('zipcode')?.touched)">
                         Required.
-                    </div>
+                    </small>
                 </div>
-                <div class="col-12 p-b-3 p-t-3 mb-4">
-                    <p-floatlabel variant="on" class="w-100">
-                        <input pInputText id="zipcode" formControlName="zipcode" class="w-100" />
-                        <label for="zipcode">Zipcode</label>
-                    </p-floatlabel>
-                    <div class="p-error ng-dirty ng-invalid" *ngIf="addressForm.get('zipcode')?.hasError('required') && (addressForm.get('zipcode')?.dirty || addressForm.get('zipcode')?.touched)">
+            </div>
+
+            <div class="form-row form-row--double">
+                <div class="field field--autocomplete">
+                    <label for="country-input">Country *</label>
+                    <p-autoComplete
+                        formControlName="country"
+                        [suggestions]="filteredCountries"
+                        (completeMethod)="filterCountry($event)"
+                        (onFocus)="onCountryFocus()"
+                        (onSelect)="onCountrySelect()"
+                        field="label"
+                        [forceSelection]="true"
+                        inputId="country-input"
+                        #countryAuto
+                        class="w-100"
+                        autocomplete="off"
+                        placeholder="Select country"
+                    ></p-autoComplete>
+                    <small class="error" *ngIf="addressForm.get('country')?.hasError('required') && (addressForm.get('country')?.dirty || addressForm.get('country')?.touched)">
                         Required.
-                    </div>
+                    </small>
                 </div>
-                <div class="col-12 m-t-4 text-end text-right"  >
-                    <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                        (click)="saveAddressForm()"  [disabled]="addressForm.invalid"  
-                        [tooltip]="'Save Address'"
-                        tooltipPosition="top"
-                        tooltipStyleClass="custom-tooltip">
-                            <ng-template pTemplate="content" >
-                                <p-icon class="pi pi-check" ></p-icon>
-                                Save Address
-                            </ng-template>
-                    </p-button>
+
+                <div class="field field--autocomplete">
+                    <label for="state-input">State *</label>
+                    <p-autoComplete
+                        formControlName="state"
+                        [suggestions]="filteredStates"
+                        (completeMethod)="filterState($event)"
+                        (onFocus)="onStateFocus()"
+                        (onSelect)="onStateSelect()"
+                        field="label"
+                        [forceSelection]="true"
+                        inputId="state-input"
+                        #stateAuto
+                        class="w-100"
+                        autocomplete="off"
+                        placeholder="Select state"
+                    ></p-autoComplete>
+                    <small class="error" *ngIf="addressForm.get('state')?.hasError('required') && (addressForm.get('state')?.dirty || addressForm.get('state')?.touched)">
+                        Required.
+                    </small>
                 </div>
-                
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="action-btn action-btn--ghost" (click)="closeEditor()">
+                    Cancel
+                </button>
+                <button
+                    type="button"
+                    class="action-btn action-btn--primary"
+                    (click)="saveAddressForm()"
+                    [disabled]="addressForm.invalid"
+                >
+                    <i class="pi pi-check"></i>
+                    Save address
+                </button>
             </div>
         </form>
-       
     </div>
 </div>
