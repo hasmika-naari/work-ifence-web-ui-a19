@@ -1,64 +1,38 @@
-<div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
+<div class="resume-form-container" style="overflow-y:auto;padding-bottom:50px;">
     <div class="col-12"  >
         <form [formGroup]="projectForm" >
-            <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="projectForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
+            <div class="form-row form-row--single">
+                <div class="field">
+                    <label for="section_title">Section title <span class="required">*</span></label>
+                    <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
+                    <small class="error" *ngIf="projectForm.get('section_title')?.hasError('required') && projectForm.get('section_title')?.touched">
+                        Required.
+                    </small>
                 </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Project title</mat-label>
-                        <input matInput placeholder="Project Title" #title formControlName="project_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="projectForm.get('project_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                    <!-- <span class="p-float-label">
-                        <label for="project_title">Project Title</label>
-                        <input id="project_title" type="text" class="w-100 p-inputtext" pInputText formControlName="project_title">
-                        </span> -->
+                <div class="field">
+                    <label for="project_title">Project title <span class="required">*</span></label>
+                    <input id="project_title" type="text" pInputText #title formControlName="project_title" placeholder="Project Title">
+                    <small class="error" *ngIf="projectForm.get('project_title')?.hasError('required') && projectForm.get('project_title')?.touched">
+                        Required.
+                    </small>
                 </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Project Link</mat-label>
-                        <input matInput placeholder="Project Link" formControlName="project_link">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="projectForm.get('project_link')?.hasError('pattern')">
-                            Please enter a valid link.
-                        </mat-error>
-                    </mat-form-field>
-                    <!-- <span class="p-float-label">
-                        <label for="project_link">Project Link</label>
-                        <input id="project_link" type="text" class="w-100 p-inputtext" pInputText formControlName="project_link">
-                        </span> -->
+                <div class="field">
+                    <label for="project_link">Project Link</label>
+                    <input id="project_link" type="text" pInputText formControlName="project_link" placeholder="Project Link">
+                    <small class="error" *ngIf="projectForm.get('project_link')?.hasError('pattern') && projectForm.get('project_link')?.touched">
+                        Please enter a valid link.
+                    </small>
                 </div>
                 @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Technologies Used</mat-label>
-                        <input matInput placeholder="Technologies Used" formControlName="technologies_used">
-                    </mat-form-field>
-                    <!-- <span class="p-float-label">
-                        <label for="technologies_used">Technologies Used</label>
-                        <input id="technologies_used" type="text" class="w-100 p-inputtext" pInputText formControlName="technologies_used">
-                        </span> -->
+                <div class="field">
+                    <label for="technologies_used">Technologies Used</label>
+                    <input id="technologies_used" type="text" pInputText formControlName="technologies_used" placeholder="Technologies Used">
                 </div>
                 }
                 @else{
-                    <div class="col-12 p-b-1 p-t-2">
-                        <mat-form-field appearance="outline" class="w-100" >
-                            <mat-label>Period</mat-label>
-                            <input matInput placeholder="Period" formControlName="period">
-                        </mat-form-field>
-                        <!-- <span class="p-float-label">
-                            <label for="technologies_used">Technologies Used</label>
-                            <input id="technologies_used" type="text" class="w-100 p-inputtext" pInputText formControlName="technologies_used">
-                            </span> -->
+                    <div class="field">
+                        <label for="period">Period</label>
+                        <input id="period" type="text" pInputText formControlName="period" placeholder="Period">
                     </div>
                 }
                 <!-- <div class="col-12 p-b-1 p-t-2">
@@ -105,62 +79,48 @@
                     }
                 </div> -->
 
-                <div class="col-12 m-0" >
-                    @if(!is_projects_loading){
-                        <button  matTooltip="Use BOTbro AI & Optimize" style="z-index: 100; position: relative; top: 18px;right: 10px;"
-                            class="d-flex ai-btn" (click)="optimizeProject()" >
-                                <p-icon class="pi pi-sparkles" 
-                                    style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
-                        </button>
-                    }
-                    @if(is_projects_loading){
-                        <button  matTooltip="Use BOTbro AI & Optimize"
-                            class="d-flex ai-btn"  style="z-index: 100; position: relative; top: 18px;right: 10px;">
-                                <span class="use-ai-btn d-flex">
-                                    <div class="progress-container">
-                                      <div class="progress-bar"></div>
-                                      <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
-                                    </div>
-                                </span>
-                                <span>
-                                    USE BOTBRO
-                                </span>
-                                <!-- <p-icon class="pi pi-sparkles" 
-                                    style="font-size: medium;margin-right: 5px;"></p-icon>  BOT<small style="position: relative;top:1px;font-size:x-small;font-weight:normal;margin-right:4px;">BRO</small> AI -->
-                        </button>
-                        
-                    }
+                <div class="field">
+                    <label>Project Description</label>
+                    <div class="editor-wrapper" style="position: relative;">
+                        <div #editorContainer id="editorContainer" style="height: 250px;color: black;"></div>
+                        <div style="position: absolute; top: 5px; right: 10px; z-index: 100;">
+                            @if(!is_projects_loading){
+                                <button matTooltip="Use BOTbro AI & Optimize"
+                                    class="d-flex ai-btn" (click)="optimizeProject()" >
+                                        <p-icon class="pi pi-sparkles" 
+                                            style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
+                                </button>
+                            }
+                            @if(is_projects_loading){
+                                <button matTooltip="Use BOTbro AI & Optimize"
+                                    class="d-flex ai-btn">
+                                        <span class="use-ai-btn d-flex">
+                                            <div class="progress-container">
+                                              <div class="progress-bar"></div>
+                                              <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
+                                            </div>
+                                        </span>
+                                        <span>USE BOTBRO</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
                 </div>
-
-
-                <!-- <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field class="w-100">
-                        <textarea matInput placeholder="Project Summary" #descri formControlName="description" rows="5"></textarea>
-                        <mat-hint>Hint : Provide Project title and Description to use AI</mat-hint>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="projectForm.get('description')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                      </mat-form-field>
-                </div> -->
-                <div class="col-12 p-b-1 quill-editor-div"  style="margin-bottom: 20px;position:relative;top:-20px;">
-                    <div #editorContainer style="height: 250px;color: black;"></div>
-                </div>
-                
             </div>
-          
+
+            <div class="form-actions">
+                <p-button label="Primary" [raised]="true" severity="danger" size="small"
+                    (click)="saveAndContinue()" [disabled]="projectForm.invalid"  
+                    [tooltip]="'Add to Resume Summary'"
+                    tooltipPosition="top"
+                    tooltipStyleClass="custom-tooltip">
+                        <ng-template pTemplate="content">
+                            <p-icon class="pi pi-check"></p-icon>
+                            Add to resume
+                        </ng-template>
+                </p-button>
+            </div>
         </form>
-        <div class="col-12 m-t-2 p- text-right text-end"  >
-            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                (click)="saveAndContinue()"  [disabled]="projectForm.invalid"  
-                [tooltip]="'Add to Resume Summary'"
-                tooltipPosition="top"
-                tooltipStyleClass="custom-tooltip">
-                    <ng-template pTemplate="content" >
-                        <p-icon class="pi pi-check" ></p-icon>
-                        Add to resume
-                    </ng-template>
-            </p-button>
-        </div>
     </div>
 </div>
 <div class="project-ai-animated-panel" 

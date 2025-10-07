@@ -1,12 +1,9 @@
+// Import shared form field styling
+@import '../shared-form-styles';
 
 :host {
   font-family: 'Poppins', sans-serif;
 }
-
-/* Force font on all elements within this component */
-// :host * {
-//   font-family: 'Poppins', sans-serif;
-// }
 
 :host{
   .mat-icon{
@@ -14,33 +11,42 @@
   }
 }
 
-
 :host {
-  --mat-mdc-typescale-body2-font-size: 14px; /* Font size */
-  --mat-mdc-input-container-padding-vertical: 7px; /* Vertical padding */
-  --mat-mdc-input-container-height: 36px; /* Height */
+  --mat-mdc-typescale-body2-font-size: 14px;
+  --mat-mdc-input-container-padding-vertical: 7px;
+  --mat-mdc-input-container-height: 36px;
+}
+
+// Form container with proper padding
+.resume-form-container {
+  padding: 1.5rem 1rem;
+  max-width: 100%;
 }
 
 .current-work-custom-checkbox{
     display: flex;
-    flex-direction: row-reverse; /* Moves the checkbox to the right side */
-    align-items: center; /* Align label and checkbox vertically */
+    flex-direction: row-reverse;
+    align-items: center;
   
     .mat-checkbox-layout {
-      margin: 0; /* Remove default padding/margin */
+      margin: 0;
     }
   
     .mat-checkbox-label {
-      padding: 0; /* Remove padding around the label */
+      padding: 0;
     }
 }
 
-
 #editorContainer {
-  border: 1px solid #ccc;
+  border: 1px solid rgba(148, 163, 184, 0.28);
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 0.75rem;
   background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+#editorContainer:focus-within {
+  border-color: rgba(59, 130, 246, 0.55);
 }
 
 .container{

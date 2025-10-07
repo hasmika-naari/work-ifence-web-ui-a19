@@ -1,47 +1,69 @@
-<div class="row h-100 pl-4 pr-4">
-    <div class="col-12"  >
-        <form [formGroup]="accomplishmentForm" >
-            <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="accomplishmentForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Accomplishment</mat-label>
-                        <input matInput placeholder="Accomplishment" formControlName="acplsmnt">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="accomplishmentForm.get('acplsmnt')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-3 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Date</mat-label>
-                        <input matInput placeholder="Date" formControlName="date">
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 quill-editor-div"  style="position:relative;top:-20px;">
-                    <div #editorContainer style="height: 250px;color: black;"></div>
-                </div>
+<div class="resume-form-container">
+    <form [formGroup]="accomplishmentForm">
+        
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="section_title">Section Title *</label>
+                <input 
+                    id="section_title" 
+                    type="text" 
+                    pInputText 
+                    #role 
+                    formControlName="section_title" 
+                    placeholder="e.g., Accomplishments"
+                />
+                <small class="error" *ngIf="accomplishmentForm.get('section_title')?.hasError('required') && (accomplishmentForm.get('section_title')?.dirty || accomplishmentForm.get('section_title')?.touched)">
+                    Required.
+                </small>
             </div>
-        </form>
-        <div class="col-12 mt-1 text-right text-end"  >
-            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                (click)="saveAndContinue()"   
-                [tooltip]="'Add to Resume Summary'"
-                tooltipPosition="top"
-                tooltipStyleClass="custom-tooltip">
-                    <ng-template pTemplate="content" >
-                        <p-icon class="pi pi-check" ></p-icon>
-                        Add to resume
-                    </ng-template>
-            </p-button>
         </div>
-    </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="acplsmnt">Accomplishment *</label>
+                <input 
+                    id="acplsmnt" 
+                    type="text" 
+                    pInputText 
+                    formControlName="acplsmnt" 
+                    placeholder="Enter accomplishment title"
+                />
+                <small class="error" *ngIf="accomplishmentForm.get('acplsmnt')?.hasError('required') && (accomplishmentForm.get('acplsmnt')?.dirty || accomplishmentForm.get('acplsmnt')?.touched)">
+                    Required.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="date">Date</label>
+                <input 
+                    id="date" 
+                    type="text" 
+                    pInputText 
+                    formControlName="date" 
+                    placeholder="e.g., January 2024"
+                />
+            </div>
+        </div>
+
+        <div class="form-row form-row--single quill-editor-div">
+            <div class="field">
+                <label>Description</label>
+                <div #editorContainer style="height: 250px; color: black;"></div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button 
+                type="button" 
+                class="action-btn action-btn--primary" 
+                (click)="saveAndContinue()"
+                matTooltip="Add to Resume"
+                tooltipPosition="top">
+                <i class="pi pi-check"></i>
+                Add to Resume
+            </button>
+        </div>
+    </form>
 </div>

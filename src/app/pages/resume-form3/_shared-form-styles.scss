@@ -1,0 +1,179 @@
+// Shared form field styling for resume editor forms
+// Based on bio-form-editor component styling pattern
+// Import this file into component SCSS: @import './_shared-form-styles';
+
+.form-row {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-row--single {
+  grid-template-columns: 1fr;
+}
+
+.form-row--double {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.field label {
+  font-weight: 600;
+  color: #1f2a37;
+  font-size: 0.9rem;
+}
+
+.field input,
+.field textarea,
+.field select,
+.field ::ng-deep .p-inputtext,
+.field ::ng-deep .p-calendar,
+.field ::ng-deep .p-autocomplete,
+.field ::ng-deep .p-autocomplete input,
+.field ::ng-deep .p-dropdown,
+.field ::ng-deep .p-inputtextarea {
+  width: 100%;
+}
+
+:host ::ng-deep .field .p-inputtext,
+:host ::ng-deep .field .p-calendar .p-inputtext,
+:host ::ng-deep .field .p-autocomplete .p-inputtext,
+:host ::ng-deep .field .p-autocomplete input,
+:host ::ng-deep .field .p-dropdown,
+:host ::ng-deep .field .p-inputtextarea,
+:host ::ng-deep .field input,
+:host ::ng-deep .field textarea {
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(255, 255, 255, 0.92);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  font-family: inherit;
+}
+
+:host ::ng-deep .field .p-inputtext:focus,
+:host ::ng-deep .field .p-autocomplete .p-inputtext:focus,
+:host ::ng-deep .field .p-calendar .p-inputtext:focus,
+:host ::ng-deep .field .p-dropdown:focus,
+:host ::ng-deep .field .p-inputtextarea:focus,
+:host ::ng-deep .field input:focus,
+:host ::ng-deep .field textarea:focus {
+  box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.55);
+  outline: none;
+}
+
+:host ::ng-deep .field .p-autocomplete .p-autocomplete-panel {
+  border-radius: 0.75rem;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+}
+
+:host ::ng-deep .field .p-dropdown-panel {
+  border-radius: 0.75rem;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+}
+
+// Form actions (buttons at bottom)
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.form-actions .action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: transparent;
+  color: var(--mainColor, #f05b45);
+  box-shadow: none;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-actions .action-btn--ghost {
+  color: rgba(15, 23, 42, 0.72);
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+.form-actions .action-btn--ghost:hover {
+  color: rgba(15, 23, 42, 0.88);
+  background: rgba(15, 23, 42, 0.1);
+  border-color: rgba(15, 23, 42, 0.16);
+}
+
+.form-actions .action-btn--primary {
+  color: var(--mainColor, #f05b45);
+  background: rgba(240, 91, 69, 0.14);
+  border-color: rgba(240, 91, 69, 0.32);
+  box-shadow: 0 10px 20px rgba(240, 91, 69, 0.12);
+}
+
+.form-actions .action-btn--primary:hover {
+  background: rgba(240, 91, 69, 0.22);
+  border-color: rgba(240, 91, 69, 0.42);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(240, 91, 69, 0.18);
+}
+
+.form-actions .action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+  box-shadow: none;
+}
+
+.form-actions .action-btn i {
+  font-size: 0.95rem;
+}
+
+// Error messages
+.error,
+small.error {
+  color: #e53935;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+// Responsive
+@media (max-width: 640px) {
+  .form-row--double {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+// Legacy button compatibility (for components using old .form-action-buttons class)
+.form-action-buttons {
+  @extend .form-actions;
+
+  button {
+    @extend .action-btn;
+  }
+
+  .back-btn {
+    @extend .action-btn--ghost;
+  }
+
+  .next-btn,
+  .save-btn,
+  .loader-btn {
+    @extend .action-btn--primary;
+  }
+}

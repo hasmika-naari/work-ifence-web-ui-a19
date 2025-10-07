@@ -1,30 +1,23 @@
 
 @if(sectionName == "SKILLS_BULLET_POINTS"){
-<div class="row h-100 pl-5 pr-5" style="overflow-y:auto;padding-bottom:50px;overflow-x: hidden;">
-    <div class="col-12"  >
-        <form [formGroup]="skillsForm" >
-            <div class="row wrap pl-1 pr-1">
-              <div class="col-12 p-0 m-t-3">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="skillsForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
+<div class="resume-form-container" style="overflow-y:auto;padding-bottom:50px;overflow-x: hidden;">
+    <div class="col-12">
+        <form [formGroup]="skillsForm">
+            <div class="form-row form-row--single">
+              <div class="field">
+                    <label for="section_title">Section title <span class="required">*</span></label>
+                    <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
+                    <small class="error" *ngIf="skillsForm.get('section_title')?.hasError('required') && skillsForm.get('section_title')?.touched">
+                        Required.
+                    </small>
                 </div>
-                <div class="col-12 p-0 m-t-1">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Skill</mat-label>
-                        <input matInput placeholder="Skill" formControlName="skills">
-                        <span matSuffix (click)="addSkill()" *ngIf="isVisible()" style="color: black;">
-                            <!-- <p-icon class="pi pi-plus" style="cursor: pointer;"></p-icon> -->
-                            <p style="font-size: 14px;
-                            line-height: 17px;
-                            font-weight: 700;
-                            cursor: pointer;">ADD</p>
-                        </span>
-                    </mat-form-field>
+                <div class="field" style="position: relative;">
+                    <label for="skills">Skill</label>
+                    <input id="skills" type="text" pInputText formControlName="skills" placeholder="Skill">
+                    <span (click)="addSkill()" *ngIf="isVisible()" 
+                          style="position: absolute; right: 12px; top: 38px; color: black; cursor: pointer; font-size: 14px; line-height: 17px; font-weight: 700;">
+                        ADD
+                    </span>
                 </div>
                 <!-- <div class="col-12 p-b-1 p-t-2"  *ngIf="fruits && fruits.length"
                             style="border: dashed 1px silver; border-radius: 10px; ">

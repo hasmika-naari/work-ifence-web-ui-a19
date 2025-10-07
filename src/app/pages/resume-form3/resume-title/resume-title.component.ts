@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, ViewChild, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
@@ -29,6 +29,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ResumeAccess, ResumeCategory, ResumeRoleLevel } from 'src/app/services/store/resume.model';
 import { MatSelectModule } from '@angular/material/select';
+import { AutoComplete, AutoCompleteModule } from 'primeng/autocomplete';
+import { Dropdown, DropdownModule } from 'primeng/dropdown';
 
 
 export interface DialogData {
@@ -49,10 +51,10 @@ export interface DialogData {
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
-    MatCheckboxModule, MatAutocompleteModule,
+    MatCheckboxModule, AutoCompleteModule, DropdownModule,
     MatInputModule,ButtonModule,OverlayPanelModule,
     MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule, MatSelectModule],
+    MatIconModule,MatExpansionModule],
   templateUrl: './resume-title.component.html',
   styleUrls: ['./resume-title.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -82,6 +84,9 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
 
   filteredCategories: Array<any> = [];
   filteredRoles : Array<any> = [];
+  @ViewChild('roleAuto') roleAuto?: AutoComplete;
+  @ViewChild('categoryAuto') categoryAuto?: AutoComplete;
+  @ViewChild('accessDropdown') accessDropdown?: Dropdown;
   
   categories: Array<ResumeCategory> = [
     {
@@ -966,16 +971,32 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
   categoryValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const value = control.value;
-      const isValid = this.filteredCategories.some(cat => cat.sub_category === value);
-      return isValid ? null : { 'invalidCategory': { value } };
+      const normalized = typeof value === 'string'
+        ? value
+        : value && typeof value === 'object' && 'sub_category' in value
+          ? (value as ResumeCategory).sub_category
+          : '';
+      if (!normalized) {
+        return { invalidCategory: { value } };
+      }
+      const isValid = this.categories.some(cat => cat.sub_category === normalized);
+      return isValid ? null : { invalidCategory: { value } };
     };
   }
 
   roleValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const value = control.value;
-      const isValid = this.filteredRoles.some(cat => cat.role_level_desc === value);
-      return isValid ? null : { 'invalidRole': { value } };
+      const normalized = typeof value === 'string'
+        ? value
+        : value && typeof value === 'object' && 'role_level_desc' in value
+          ? (value as ResumeRoleLevel).role_level_desc
+          : '';
+      if (!normalized) {
+        return { invalidRole: { value } };
+      }
+      const isValid = this.roleCategories.some(role => role.role_level_desc === normalized);
+      return isValid ? null : { invalidRole: { value } };
     };
   }
 
@@ -1003,17 +1024,17 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
     }));
 
     this.resumeTitleForm.controls['category'].valueChanges.subscribe(val => {
-      if(val){
+      if (typeof val === 'string') {
         this.filteredCategories = [...this._filterCategory(val)];
-      }else{
+      } else {
         this.filteredCategories = [...this.categories];
       }
     });
 
     this.resumeTitleForm.controls['roleLevel'].valueChanges.subscribe(val =>{
-      if(val){
+      if (typeof val === 'string') {
         this.filteredRoles = [...this._filterRole(val)];
-      }else{
+      } else {
         this.filteredRoles = [...this.roleCategories];
       }
     })
@@ -1024,12 +1045,65 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
     return category && category.sub_category ? category.sub_category : '';
   }
 
-  private _filterCategory(title: string): any[] {
-    return this.categories.filter(cat => cat.sub_category.toLowerCase().indexOf(title.toLowerCase()) === 0);
+  // PrimeNG AutoComplete filter methods
+  filterCategory(event: any) {
+    const query = event.query ? event.query.toLowerCase().trim() : '';
+    this.filteredCategories = this.categories.filter(cat => 
+      cat.sub_category.toLowerCase().includes(query)
+    );
   }
 
-  private _filterRole(title : string): any[]{
-    return this.roleCategories.filter(cat => cat.role_level_desc.toLowerCase().indexOf(title.toLowerCase()) === 0);
+  filterRole(event: any) {
+    const query = event.query ? event.query.toLowerCase().trim() : '';
+    this.filteredRoles = this.roleCategories.filter(role => 
+      role.role_level_desc.toLowerCase().includes(query)
+    );
+  }
+
+  openRoleSuggestions(): void {
+    this.filteredRoles = [...this.roleCategories];
+    const roleControl = this.resumeTitleForm.get('roleLevel');
+    const hasValue = roleControl?.value && (typeof roleControl.value === 'object' || `${roleControl.value}`.length > 0);
+    if (!hasValue) {
+      setTimeout(() => {
+        if (!this.roleAuto?.overlayVisible) {
+          this.roleAuto?.show();
+        }
+      }, 0);
+    }
+  }
+
+  openCategorySuggestions(): void {
+    this.filteredCategories = [...this.categories];
+    const categoryControl = this.resumeTitleForm.get('category');
+    const hasValue = categoryControl?.value && (typeof categoryControl.value === 'object' || `${categoryControl.value}`.length > 0);
+    if (!hasValue) {
+      setTimeout(() => {
+        if (!this.categoryAuto?.overlayVisible) {
+          this.categoryAuto?.show();
+        }
+      }, 0);
+    }
+  }
+
+  private _filterCategory(title: string | ResumeCategory): ResumeCategory[] {
+    const term = typeof title === 'string'
+      ? title.trim().toLowerCase()
+      : title?.sub_category?.toLowerCase() ?? '';
+    if (!term) {
+      return this.categories;
+    }
+    return this.categories.filter(cat => cat.sub_category.toLowerCase().includes(term));
+  }
+
+  private _filterRole(title : string | ResumeRoleLevel): ResumeRoleLevel[]{
+    const term = typeof title === 'string'
+      ? title.trim().toLowerCase()
+      : title?.role_level_desc?.toLowerCase() ?? '';
+    if (!term) {
+      return this.roleCategories;
+    }
+    return this.roleCategories.filter(cat => cat.role_level_desc.toLowerCase().includes(term));
   }
 
   setContactValues(){
@@ -1045,10 +1119,20 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
     this.markFormGroupTouched(this.resumeTitleForm);
     let resume_form = this.resumeSignalForm();
     resume_form.title = this.resumeTitleForm.controls['title'].value?.toString() || '';
-    resume_form.resume_category = this.resumeTitleForm.controls['category'].value?.toString() || '';
+    
+    // Handle PrimeNG AutoComplete object values
+    const categoryValue = this.resumeTitleForm.controls['category'].value;
+    resume_form.resume_category = typeof categoryValue === 'object' && categoryValue && 'sub_category' in categoryValue 
+      ? (categoryValue as any).sub_category 
+      : categoryValue?.toString() || '';
+    
+    const roleLevelValue = this.resumeTitleForm.controls['roleLevel'].value;
+    resume_form.role_category = typeof roleLevelValue === 'object' && roleLevelValue && 'role_level_desc' in roleLevelValue 
+      ? (roleLevelValue as any).role_level_desc 
+      : roleLevelValue?.toString() || '';
+    
     resume_form.isPrimary = this.resumeTitleForm.controls['isPrimary'].value || false;
     resume_form.isActive = this.resumeTitleForm.controls['isActive'].value || false;
-    resume_form.role_category = this.resumeTitleForm.controls['roleLevel'].value?.toString() || '';
     resume_form.access_level = this.resumeTitleForm.controls['access'].value?.toString() || '';
     this.userStore.updateResumeForm(resume_form);
     this.contact.emit();

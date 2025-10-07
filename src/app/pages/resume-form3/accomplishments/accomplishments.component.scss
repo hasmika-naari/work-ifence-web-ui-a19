@@ -1,4 +1,19 @@
+@import '../shared-form-styles';
 
+.resume-form-container {
+  padding: 1.5rem 1rem;
+}
+
+#editorContainer {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 0.75rem;
+  min-height: 250px;
+
+  &:focus-within {
+    border-color: var(--mainColor);
+    outline: 2px solid rgba(240, 91, 69, 0.1);
+  }
+}
 
 .container{
     min-height: 100vh;

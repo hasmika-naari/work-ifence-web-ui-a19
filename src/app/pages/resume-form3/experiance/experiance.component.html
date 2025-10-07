@@ -1,191 +1,168 @@
 
 
-<div class="row h-100 pl-4 pr-4" style="overflow-y: auto;padding-bottom: 60px;">
-    <div class="col-12"  >
-        <form [formGroup]="experienceForm" >
-            <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Position title</mat-label>
-                        <input matInput placeholder="Position Title" #role formControlName="position_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('position_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('position_title')?.hasError('pattern')">
-                            Please enter a valid Position title
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Company name</mat-label>
-                        <input matInput placeholder="Company name" formControlName="company_name">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('company_name')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('company_name')?.hasError('pattern')">
-                            Please enter a valid Company name
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12  p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Company location</mat-label>
-                        <input matInput placeholder="Company location" formControlName="location">
-                      
-                    </mat-form-field>
-                  
-                </div>
-                <div class="col-6">
-                  
-                </div>
-                <div class="col-6 text-end">
-                    <mat-checkbox 
-                        class="current-work-custom-checkbox"
-                         [labelPosition]="'before'"
-                        formControlName="isCurrentlyWorkHere">
-                        I currently work here.
-                    </mat-checkbox>
-                </div>
-                <div class="col-6 p-b-1">
-                    <mat-form-field class="streach-h-100" appearance="outline">
-                        <mat-label>Start Date</mat-label>
-                        <input matInput [matDatepicker]="sdp" formControlName="start_date" [max]="today">
-                        <mat-hint><span style="color: gray;">MM/YYYY</span></mat-hint>
-                        <mat-datepicker-toggle matIconSuffix [for]="sdp"></mat-datepicker-toggle>
-                        <mat-datepicker #sdp
-                                        startView="multi-year"
-                                        panelClass="example-month-picker">
-                        </mat-datepicker>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('start_date')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('start_date')?.hasError('matDatepickerMax')">
-                            End date cannot be in the future.
-                            </mat-error>
-                        </mat-form-field>
-                </div>
-                <div class="col-6 p-b-1">
-                    <mat-form-field class="streach-h-100" appearance="outline">
-                        <mat-label>End Date</mat-label>
-                        <input matInput [matDatepicker]="edp" formControlName="end_date" [max]="today">
-                        <mat-hint><span style="color: gray;">MM/YYYY</span></mat-hint>
-                        <mat-datepicker-toggle matIconSuffix [for]="edp"></mat-datepicker-toggle>
-                        <mat-datepicker #edp
-                                        startView="multi-year"
-                                        panelClass="example-month-picker">
-                        </mat-datepicker>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('end_date')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('end_date')?.hasError('matDatepickerMax')">
-                            End date cannot be in the future.
-                            </mat-error>
-                        </mat-form-field>
-                </div>
-                <div class="col-12 m-0" >
-                    @if(!is_work_history_loading){
-                        <button  matTooltip="Use BOTbro AI & Optimize" style="z-index: 100; position: relative; top: 18px;right: 10px;"
-                            class="d-flex ai-btn" (click)="optimizeWorkHistory()" >
-                                <p-icon class="pi pi-sparkles" 
-                                    style="font-size: medium;margin-right: 5px;color: white;"></p-icon>  USE BOTBRO
-                        </button>
-                    }
-                    @if(is_work_history_loading){
-                        <button  matTooltip="Use BOTbro AI & Optimize"
-                            class="d-flex ai-btn"  style="z-index: 100; position: relative; top: 18px;right: 10px;">
-                                <span class="use-ai-btn d-flex">
-                                    <div class="progress-container">
-                                      <div class="progress-bar"></div>
-                                        <i class="pi pi-sparkles pi-sparkles-pos" ></i>
-                                        </div>
-                                </span>
-                                <span>
-                                    USE BOTBRO
-                                </span>
-                        </button>
-                        
-                    }
-                </div>
-                <div class="col-12 p-b-1 experiance-description"  style="margin-bottom: 20px;position:relative;top:-20px;">
-                    <div #editorContainer style="height: 250px;color: black;"></div>
-                </div>
-                
+<div class="resume-form-container">
+    <form [formGroup]="experienceForm">
+        
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="section_title">Section Title *</label>
+                <input 
+                    id="section_title" 
+                    type="text" 
+                    pInputText 
+                    #role 
+                    formControlName="section_title" 
+                    placeholder="e.g., Work Experience"
+                />
+                <small class="error" *ngIf="experienceForm.get('section_title')?.hasError('required') && (experienceForm.get('section_title')?.dirty || experienceForm.get('section_title')?.touched)">
+                    Required.
+                </small>
             </div>
-    
-
-            <!-- @if(isWorkExpAIRes()){
-                <div class="col-12 p-b-1 p-t-2">
-                    <h3 style="margin-top: 0;
-                    color: #333;
-                    font-size: 1rem;">AI Response</h3>
-                    @for(experience of workExperienceAIResponses; track experience){
-                    <div class="ai-card w-100">
-                        <ul>
-                            @for(point of experience.bulletPoints; track point){
-                                <li>{{ point }}</li>
-                            }
-                        </ul>
-                        <div class="fab-buttons" >
-                            <div class="fab" title="Show ATS Score" *ngIf="experience.ats_score.length > 0">
-                                <b style="font-size: 14px;">{{experience.ats_score}}</b>
-                            </div>
-                            <div class="fab" title="Add to Resume" (click)="setAIResponse(experience)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                                    </svg>
-                                    
-                            </div>
-                        </div>
-                    </div>
-                }
-                </div>
-            }
-
-            @if(isJobDescAISuggestionsPresent()){
-                <div class="col-12 p-b-1 p-t-2">
-                    <h3 style="margin-top: 0;
-                    color: #333;
-                    font-size: 1rem;">Expecting experience in, by Employer</h3>
-                    <div class="ai-card w-100">
-                        <ul>
-                            @for(responsibility of getSuggestionsRes(); track responsibility){
-                                <li>{{ responsibility }}</li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            } -->
-        </form>
-        <div class="col-12 m-t-2 p- text-right text-end"  >
-            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                (click)="saveAndContinue()"  [disabled]="experienceForm.invalid"  
-                [tooltip]="'Add to Resume Summary'"
-                tooltipPosition="top"
-                tooltipStyleClass="custom-tooltip">
-                    <ng-template pTemplate="content" >
-                        <p-icon class="pi pi-check" ></p-icon>
-                        Add to resume
-                    </ng-template>
-            </p-button>
-            <!-- <div class="row form-action-buttons text-right p-0">
-                <div style="justify-content: end;">
-                    <button (click)="saveAndContinue()"  id="saveButton" 
-                        [ngClass]="experienceForm.invalid ? 'disabled-button' : 'enabled-button'">Add to resume</button>
-                </div>
-            </div>
-            <button (click)="toggleAnimation()">Toggle Animation</button> -->
         </div>
-    </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="position_title">Position Title *</label>
+                <input 
+                    id="position_title" 
+                    type="text" 
+                    pInputText 
+                    formControlName="position_title" 
+                    placeholder="e.g., Senior Software Engineer"
+                />
+                <small class="error" *ngIf="experienceForm.get('position_title')?.hasError('required') && (experienceForm.get('position_title')?.dirty || experienceForm.get('position_title')?.touched)">
+                    Required.
+                </small>
+                <small class="error" *ngIf="experienceForm.get('position_title')?.hasError('pattern') && (experienceForm.get('position_title')?.dirty || experienceForm.get('position_title')?.touched)">
+                    Please enter a valid position title.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="company_name">Company Name *</label>
+                <input 
+                    id="company_name" 
+                    type="text" 
+                    pInputText 
+                    formControlName="company_name" 
+                    placeholder="e.g., Tech Corp Inc."
+                />
+                <small class="error" *ngIf="experienceForm.get('company_name')?.hasError('required') && (experienceForm.get('company_name')?.dirty || experienceForm.get('company_name')?.touched)">
+                    Required.
+                </small>
+                <small class="error" *ngIf="experienceForm.get('company_name')?.hasError('pattern') && (experienceForm.get('company_name')?.dirty || experienceForm.get('company_name')?.touched)">
+                    Please enter a valid company name.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="location">Company Location</label>
+                <input 
+                    id="location" 
+                    type="text" 
+                    pInputText 
+                    formControlName="location" 
+                    placeholder="e.g., San Francisco, CA"
+                />
+            </div>
+        </div>
+
+        <div class="form-row form-row--single" style="margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <mat-checkbox 
+                    class="current-work-custom-checkbox"
+                    [labelPosition]="'before'"
+                    formControlName="isCurrentlyWorkHere">
+                    I currently work here
+                </mat-checkbox>
+            </div>
+        </div>
+
+        <div class="form-row form-row--double">
+            <div class="field">
+                <label for="start_date">Start Date *</label>
+                <mat-form-field class="w-100" appearance="outline">
+                    <input matInput [matDatepicker]="sdp" formControlName="start_date" [max]="today">
+                    <mat-hint><span style="color: gray;">MM/YYYY</span></mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="sdp"></mat-datepicker-toggle>
+                    <mat-datepicker #sdp startView="multi-year" panelClass="example-month-picker"></mat-datepicker>
+                    <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('start_date')?.hasError('required')">
+                        Required.
+                    </mat-error>
+                    <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('start_date')?.hasError('matDatepickerMax')">
+                        Date cannot be in the future.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="field">
+                <label for="end_date">End Date *</label>
+                <mat-form-field class="w-100" appearance="outline">
+                    <input matInput [matDatepicker]="edp" formControlName="end_date" [max]="today">
+                    <mat-hint><span style="color: gray;">MM/YYYY</span></mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="edp"></mat-datepicker-toggle>
+                    <mat-datepicker #edp startView="multi-year" panelClass="example-month-picker"></mat-datepicker>
+                    <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('end_date')?.hasError('required')">
+                        Required.
+                    </mat-error>
+                    <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('end_date')?.hasError('matDatepickerMax')">
+                        Date cannot be in the future.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single" style="position: relative;">
+            @if(!is_work_history_loading){
+                <button matTooltip="Use BOTbro AI & Optimize" 
+                    class="d-flex ai-btn" 
+                    type="button"
+                    (click)="optimizeWorkHistory()" 
+                    style="position: absolute; top: -5px; right: 10px; z-index: 100;">
+                    <p-icon class="pi pi-sparkles" style="font-size: medium; margin-right: 5px; color: white;"></p-icon>
+                    USE BOTBRO
+                </button>
+            }
+            @if(is_work_history_loading){
+                <button matTooltip="Use BOTbro AI & Optimize"
+                    class="d-flex ai-btn"
+                    type="button"
+                    style="position: absolute; top: -5px; right: 10px; z-index: 100;">
+                    <span class="use-ai-btn d-flex">
+                        <div class="progress-container">
+                            <div class="progress-bar"></div>
+                            <i class="pi pi-sparkles pi-sparkles-pos"></i>
+                        </div>
+                    </span>
+                    <span>USE BOTBRO</span>
+                </button>
+            }
+        </div>
+
+        <div class="form-row form-row--single experiance-description" style="margin-bottom: 20px; margin-top: 10px;">
+            <div class="field">
+                <label>Description / Responsibilities</label>
+                <div #editorContainer style="height: 250px; color: black;"></div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button 
+                type="button" 
+                class="action-btn action-btn--primary" 
+                (click)="saveAndContinue()" 
+                [disabled]="experienceForm.invalid"
+                matTooltip="Add to Resume"
+                tooltipPosition="top">
+                <i class="pi pi-check"></i>
+                Add to Resume
+            </button>
+        </div>
+    </form>
 </div>
 <div class="experience-ai-animated-panel" 
             [style.width]="width + 'px'" [style.border-width]="borderWidth + 'px'">

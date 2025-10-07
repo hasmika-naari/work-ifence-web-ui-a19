@@ -1,11 +1,9 @@
+// Import shared form field styling
+@import '../shared-form-styles';
+
 :host {
   font-family: 'Poppins', sans-serif;
 }
-
-/* Force font on all elements within this component */
-// :host * {
-//   font-family: 'Poppins', sans-serif;
-// }
 
 :host{
   .mat-icon{
@@ -13,7 +11,11 @@
   }
 }
 
-.container{
+// Form container with proper padding
+.resume-form-container {
+  padding: 1.5rem 1rem;
+  max-width: 100%;
+}.container{
   min-height: 100vh;
   margin: 0;
   min-width: 100%;

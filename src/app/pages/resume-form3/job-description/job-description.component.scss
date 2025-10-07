@@ -1,4 +1,26 @@
+@import '../shared-form-styles';
 
+.resume-form-container {
+  padding: 1.5rem 1rem;
+}
+
+// Keep Material field appearance for select
+.field {
+  .mat-mdc-form-field {
+    width: 100%;
+    
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      padding: 0;
+    }
+  }
+}
+
+.hint-text {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: rgba(94, 108, 132, 0.6);
+}
 
 .container{
     min-height: 100vh;

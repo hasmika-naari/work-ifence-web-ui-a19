@@ -1,54 +1,72 @@
-<div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
-    <div class="col-12"  >
-        <form [formGroup]="courseWorkForm" >
-            <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="courseWorkForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-4">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Course work</mat-label>
-                        <input matInput placeholder="Course work" formControlName="coursework">
-                        <span matSuffix (click)="addSkill()" *ngIf="isVisible()" style="color: black;">
-                             <p style="font-size: 14px;
-                             line-height: 17px;
-                             font-weight: 700;
-                             cursor: pointer;">ADD</p>
-                        </span>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-chip-list #chipList>
-                        <mat-chip
-                          *ngFor="let fruit of fruits"
-                          [selectable]="selectable"
-                          [removable]="removable"
-                          (removed)="remove(fruit)">
-                          {{fruit}}
-                          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                        </mat-chip>
-                      </mat-chip-list>
-                </div>
-                
+<div class="resume-form-container">
+    <form [formGroup]="courseWorkForm">
+        
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="section_title">Section Title *</label>
+                <input 
+                    id="section_title" 
+                    type="text" 
+                    pInputText 
+                    #role 
+                    formControlName="section_title" 
+                    placeholder="e.g., Relevant Coursework"
+                />
+                <small class="error" *ngIf="courseWorkForm.get('section_title')?.hasError('required') && (courseWorkForm.get('section_title')?.dirty || courseWorkForm.get('section_title')?.touched)">
+                    Required.
+                </small>
             </div>
-        </form>
-        <div class="col-12 mt-3 text-right text-end"  >
-            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                (click)="saveAndContinue()"   
-                [tooltip]="'Add to Resume Summary'"
-                tooltipPosition="top"
-                tooltipStyleClass="custom-tooltip">
-                    <ng-template pTemplate="content" >
-                        <p-icon class="pi pi-check" ></p-icon>
-                        Add to resume
-                    </ng-template>
-            </p-button>
         </div>
-    </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="coursework">Course Work</label>
+                <div style="position: relative;">
+                    <input 
+                        id="coursework" 
+                        type="text" 
+                        pInputText 
+                        formControlName="coursework" 
+                        placeholder="Enter course name"
+                        style="padding-right: 60px;"
+                    />
+                    <button 
+                        type="button"
+                        *ngIf="isVisible()" 
+                        (click)="addSkill()"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: var(--mainColor, #f05b45); color: white; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 700;">
+                        ADD
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single" *ngIf="fruits && fruits.length > 0">
+            <div class="field">
+                <label>Added Courses</label>
+                <mat-chip-list #chipList>
+                    <mat-chip
+                      *ngFor="let fruit of fruits"
+                      [selectable]="selectable"
+                      [removable]="removable"
+                      (removed)="remove(fruit)">
+                      {{fruit}}
+                      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button 
+                type="button" 
+                class="action-btn action-btn--primary" 
+                (click)="saveAndContinue()"
+                matTooltip="Add to Resume"
+                tooltipPosition="top">
+                <i class="pi pi-check"></i>
+                Add to Resume
+            </button>
+        </div>
+    </form>
 </div>

@@ -45,6 +45,9 @@
         left: 0;
         top: 0;
         box-shadow: 1px 0 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, rgba(240, 91, 69, 0.06), rgba(240, 91, 69, 0));
+    background-repeat: no-repeat;
+    background-size: cover;
         .logo {
             padding: 20px;
             position: absolute;

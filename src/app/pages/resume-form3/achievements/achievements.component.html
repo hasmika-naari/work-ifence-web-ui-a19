@@ -1,32 +1,40 @@
-<div class="row h-100 pl-4 pr-4">
-    <div class="col-12"  >
-        <form [formGroup]="achievementsForm" >
-            <div class="row wrap mt-4">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="achievementsForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 quill-editor-div"  style="margin-bottom: 20px;position:relative;top:-20px;">
-                    <div #editorContainer style="height: 250px;color: black;"></div>
-                </div>
+<div class="resume-form-container">
+    <form [formGroup]="achievementsForm">
+        
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="section_title">Section Title *</label>
+                <input 
+                    id="section_title" 
+                    type="text" 
+                    pInputText 
+                    #role 
+                    formControlName="section_title" 
+                    placeholder="e.g., Achievements"
+                />
+                <small class="error" *ngIf="achievementsForm.get('section_title')?.hasError('required') && (achievementsForm.get('section_title')?.dirty || achievementsForm.get('section_title')?.touched)">
+                    Required.
+                </small>
             </div>
-        </form>
-        <div class="col-12 mt-3 text-right text-end"  >
-            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                (click)="saveAndContinue()"   
-                [tooltip]="'Add to Resume Summary'"
-                tooltipPosition="top"
-                tooltipStyleClass="custom-tooltip">
-                    <ng-template pTemplate="content" >
-                        <p-icon class="pi pi-check" ></p-icon>
-                        Add to resume
-                    </ng-template>
-            </p-button>
         </div>
-    </div>
+
+        <div class="form-row form-row--single quill-editor-div">
+            <div class="field">
+                <label>Achievements</label>
+                <div #editorContainer style="height: 250px; color: black;"></div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button 
+                type="button" 
+                class="action-btn action-btn--primary" 
+                (click)="saveAndContinue()"
+                matTooltip="Add to Resume"
+                tooltipPosition="top">
+                <i class="pi pi-check"></i>
+                Add to Resume
+            </button>
+        </div>
+    </form>
 </div>

@@ -1,4 +1,33 @@
+// Import shared form field styling
+@import '../shared-form-styles';
 
+:host {
+  font-family: 'Poppins', sans-serif;
+}
+
+:host{
+  .mat-icon{
+      font-family: 'Material Icons' !important;
+  }
+}
+
+// Form container with proper padding
+.resume-form-container {
+  padding: 1.5rem 1rem;
+  max-width: 100%;
+}
+
+#editorContainer {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  padding: 10px;
+  border-radius: 0.75rem;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+#editorContainer:focus-within {
+  border-color: rgba(59, 130, 246, 0.55);
+}
 
 .container{
     min-height: 100vh;

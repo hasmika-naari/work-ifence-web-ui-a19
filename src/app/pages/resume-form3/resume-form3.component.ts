@@ -67,6 +67,7 @@ import { PanelModule } from 'primeng/panel';
 import { ChipModule } from 'primeng/chip';
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
+import { DrawerModule } from 'primeng/drawer';
 import { ResumeTemplate9Component } from './template9/template9.component';
 import { ResumeTemplate10Component } from './template10/template10.component';
 import { AccomplishmentsComponent } from './accomplishments/accomplishments.component';
@@ -87,7 +88,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule, PanelModule,ChipModule,
+  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule, PanelModule,ChipModule,DrawerModule,
      NgOptimizedImage,FooterComponent, MatDialogModule, MatProgressBarModule,MessageModule,MessagesModule,
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  
     MatStepperModule, MatFormFieldModule,InputTextModule,TableModule, MenuModule,Resume1TemplateComponent,
@@ -775,7 +776,7 @@ hideMenu() {
 
   closePanelWindow($event: any){
     this.isFormPanleClosed = true;
-    this.hidePanelWindow = true;
+    this.showPanelWindow = false;
     this.userStore.setProject(new Project());
     this.userStore.setCertification(new Certification());
     this.userStore.setEducation(new Education());
@@ -1034,7 +1035,7 @@ hideMenu() {
 
   showResumeTemplates(){
     this.formLabel = 'Pick a Template';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTemplateList = true;
     this.showJobDescriptionWindow = false;
     this.showResumeTitleWindow = false;
@@ -1053,7 +1054,7 @@ hideMenu() {
 
   showJobDescription(){
     this.formLabel = 'Job Description';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = true;
     this.showResumeTitleWindow = false;
@@ -1072,7 +1073,7 @@ hideMenu() {
 
   showResumeTitle(){
     this.formLabel = 'Meta Data';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
     this.showResumeTitleWindow = true;
@@ -1091,7 +1092,7 @@ hideMenu() {
 
   showWorkExperianceDetails(){
     this.formLabel = 'Experiance';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showJobDescriptionWindow = false;
     this.showResumeTemplateList = false;
@@ -1112,7 +1113,7 @@ hideMenu() {
 
   showContact(){
     this.formLabel = 'Contact';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1131,7 +1132,7 @@ hideMenu() {
 
   showProjectWorkDetails(){
     this.formLabel = 'Project';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1150,7 +1151,7 @@ hideMenu() {
   }
   showEducationDetails(){
     this.formLabel = 'Education';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1168,7 +1169,7 @@ hideMenu() {
   }
   showCertificationsDetails(){
     this.formLabel = 'Certification';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1187,7 +1188,7 @@ hideMenu() {
 
   showAchievementsDetails(){
     this.formLabel = 'Achievements';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1207,7 +1208,7 @@ hideMenu() {
 
   showCertificationBulletpointsDetails(){
     this.formLabel = 'Certification';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1227,7 +1228,7 @@ hideMenu() {
 
   showAccomplishmentsDetails(){
     this.formLabel = 'Accomplishments';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1247,7 +1248,7 @@ hideMenu() {
   // showSectionDetails(section : string){
   //   if(section == 'SKILLS_CATEGORY'){
   //     this.formLabel = 'Skills Category';
-  //     this.hidePanelWindow = false;
+  //     this.showPanelWindow = true;
   //     this.showResumeTitleWindow = false;
   //     this.showResumeTemplateList = false;
   //     this.showJobDescriptionWindow = false;
@@ -1267,7 +1268,7 @@ hideMenu() {
   
   showCourseWorkDetails(){
     this.formLabel = 'Course Work';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1287,7 +1288,7 @@ hideMenu() {
   }
   showSkillsDetails(section :string){
     this.formLabel = 'Skill Details';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;
@@ -1307,7 +1308,7 @@ hideMenu() {
 
   showSummaryDetails(){
     this.formLabel = 'Summary';
-    this.hidePanelWindow = false;
+    this.showPanelWindow = true;
     this.showResumeTitleWindow = false;
     this.showResumeTemplateList = false;
     this.showJobDescriptionWindow = false;

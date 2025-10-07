@@ -1,99 +1,123 @@
-<div class="row h-100 pl-4 pr-4">
-    <div class="col-12"  >
-        <form [formGroup]="certifyForm" >
-            <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="certifyForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Certification Name</mat-label>
-                        <input matInput placeholder="Certification Name" formControlName="certification_name">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="certifyForm.get('certification_name')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-
-                    <!-- <span class="p-float-label">
-                        <label for="certification_name">Certification Name</label>
-                        <input id="certification_name" type="text" class="w-100 p-inputtext" pInputText formControlName="certification_name">
-                        </span> -->
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Issued Organisation</mat-label>
-                        <input matInput placeholder="Issued Organisation" formControlName="issued_organisation">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="certifyForm.get('issued_organisation')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Certification Link</mat-label>
-                        <input matInput placeholder="Certification Link" formControlName="certification_link">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="certifyForm.get('certification_link')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="certifyForm.get('certification_link')?.hasError('pattern')">
-                            Please enter a valid link.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-6 p-b-1 p-t-2">
-                    <mat-form-field class="w-100" appearance="outline">
-                        <mat-label>Issued Month</mat-label>
-                        <mat-select placeholder="Issued Month" formControlName="issued_month">
-                            <mat-option *ngFor="let month of months" [value]="month.title">
-                                {{month.title}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div class="col-6 p-b-1 p-t-2">
-                    <mat-form-field  class="streach-h-100" appearance="outline">
-                        <mat-label>Year</mat-label>
-                        <input type="text"
-                               placeholder="Pick Year"
-                               aria-label="IssuedYear" matInput
-                                id="issued_year" #selctedYear formControlName="issued_year"
-                               [matAutocomplete]="auto">
-                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                @for (syear of yearsAllowedFiltered; track syear) {
-                                        <mat-option [value]="syear">{{syear}}</mat-option>
-                                }
-                        </mat-autocomplete>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="certifyForm.get('issued_year')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="certifyForm.get('issued_year')?.hasError('pattern') && !certifyForm.get('issued_year')?.hasError('required')">
-                            Enter a valid year (e.g., 2024).
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="certifyForm.get('issued_year')?.hasError('invalidYear') && !certifyForm.get('issued_year')?.hasError('required')">
-                            Select Valid Year
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                
+<div class="resume-form-container">
+    <form [formGroup]="certifyForm">
+        
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="section_title">Section Title *</label>
+                <input 
+                    id="section_title" 
+                    type="text" 
+                    pInputText 
+                    #role 
+                    formControlName="section_title" 
+                    placeholder="e.g., Certifications"
+                />
+                <small class="error" *ngIf="certifyForm.get('section_title')?.hasError('required') && (certifyForm.get('section_title')?.dirty || certifyForm.get('section_title')?.touched)">
+                    Required.
+                </small>
             </div>
-        </form>
-        <div class="col-12 mt-3 text-right text-end"  >
-            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                (click)="saveAndContinue()"  [disabled]="certifyForm.invalid"  
-                [tooltip]="'Add to Resume Summary'"
-                tooltipPosition="top"
-                tooltipStyleClass="custom-tooltip">
-                    <ng-template pTemplate="content" >
-                        <p-icon class="pi pi-check" ></p-icon>
-                        Add to resume
-                    </ng-template>
-            </p-button>
         </div>
-    </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="certification_name">Certification Name *</label>
+                <input 
+                    id="certification_name" 
+                    type="text" 
+                    pInputText 
+                    formControlName="certification_name" 
+                    placeholder="e.g., AWS Certified Solutions Architect"
+                />
+                <small class="error" *ngIf="certifyForm.get('certification_name')?.hasError('required') && (certifyForm.get('certification_name')?.dirty || certifyForm.get('certification_name')?.touched)">
+                    Required.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="issued_organisation">Issued Organisation *</label>
+                <input 
+                    id="issued_organisation" 
+                    type="text" 
+                    pInputText 
+                    formControlName="issued_organisation" 
+                    placeholder="e.g., Amazon Web Services"
+                />
+                <small class="error" *ngIf="certifyForm.get('issued_organisation')?.hasError('required') && (certifyForm.get('issued_organisation')?.dirty || certifyForm.get('issued_organisation')?.touched)">
+                    Required.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="certification_link">Certification Link</label>
+                <input 
+                    id="certification_link" 
+                    type="url" 
+                    pInputText 
+                    formControlName="certification_link" 
+                    placeholder="https://..."
+                />
+                <small class="error" *ngIf="certifyForm.get('certification_link')?.hasError('required') && (certifyForm.get('certification_link')?.dirty || certifyForm.get('certification_link')?.touched)">
+                    Required.
+                </small>
+                <small class="error" *ngIf="certifyForm.get('certification_link')?.hasError('pattern') && (certifyForm.get('certification_link')?.dirty || certifyForm.get('certification_link')?.touched)">
+                    Please enter a valid link.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--double">
+            <div class="field">
+                <label for="issued_month">Issued Month</label>
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-select placeholder="Month" formControlName="issued_month">
+                        <mat-option *ngFor="let month of months" [value]="month.title">
+                            {{month.title}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="field">
+                <label for="issued_year">Year *</label>
+                <mat-form-field class="w-100" appearance="outline">
+                    <input type="text"
+                           placeholder="Pick Year"
+                           aria-label="IssuedYear" matInput
+                            id="issued_year" #selctedYear formControlName="issued_year"
+                           [matAutocomplete]="auto">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                            @for (syear of yearsAllowedFiltered; track syear) {
+                                    <mat-option [value]="syear">{{syear}}</mat-option>
+                            }
+                    </mat-autocomplete>
+                    <mat-error *ngIf="certifyForm.get('issued_year')?.hasError('required')">
+                        Required.
+                    </mat-error>
+                    <mat-error *ngIf="certifyForm.get('issued_year')?.hasError('pattern') && !certifyForm.get('issued_year')?.hasError('required')">
+                        Enter a valid year (e.g., 2024).
+                    </mat-error>
+                    <mat-error *ngIf="certifyForm.get('issued_year')?.hasError('invalidYear') && !certifyForm.get('issued_year')?.hasError('required')">
+                        Select Valid Year
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button 
+                type="button" 
+                class="action-btn action-btn--primary" 
+                (click)="saveAndContinue()" 
+                [disabled]="certifyForm.invalid"
+                matTooltip="Add to Resume"
+                tooltipPosition="top">
+                <i class="pi pi-check"></i>
+                Add to Resume
+            </button>
+        </div>
+    </form>
 </div>

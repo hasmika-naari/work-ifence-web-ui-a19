@@ -1,86 +1,52 @@
-<div class="row h-100 p-0 mt-3">
-    <div class="col-12"  >
+<div class="resume-form-container">
+    <div class="col-12">
         <form [formGroup]="summaryForm">
-            <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="summaryForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
+            <div class="form-row form-row--single">
+                <div class="field">
+                    <label for="section_title">Section title <span class="required">*</span></label>
+                    <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
+                    <small class="error" *ngIf="summaryForm.get('section_title')?.hasError('required') && summaryForm.get('section_title')?.touched">
+                        Required.
+                    </small>
                 </div>
-                <div class="col-12 p-b-1 summary-editor-div"  style="margin-bottom: 20px;position:relative;top:-20px;">
-                        <div #editorContainer style="height: 60vh;color: black;font-size:15px;"></div>
-
-                         <div style="flex: 0 1 auto; text-align: left;position:absolute;top:5px;right:20px;z-index:100;">
+                <div class="field">
+                    <label>Summary</label>
+                    <div class="editor-wrapper" style="position: relative;">
+                        <div #editorContainer id="editorContainer" style="height: 60vh;color: black;font-size:15px;"></div>
+                        <div style="position: absolute; top: 5px; right: 20px; z-index: 100;">
                             @if(!is_summary_loading){
-                                <!-- <p-button label="Primary" [outlined]="true" severity="secondary" size="small"
-                                (click)="optimizeText()"  [disabled]="isButtonDisabled"  [rounded]="'false'" styleClass="p-button-sm"
-                                [tooltip]="'Use BOTbro AI & Optimize'"
-                                tooltipPosition="top"
-                                tooltipStyleClass="custom-tooltip">
-                                    <ng-template pTemplate="content" >
-                                        <p-icon class="pi pi-sparkles" ></p-icon>
-                                        BOTbro AI
-                                    </ng-template>
-                                </p-button> -->
-                                <button
-                                    class="d-flex ai-btn" (click)="optimizeText()" >
+                                <button class="d-flex ai-btn" (click)="optimizeText()">
                                    <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
-                             </button>
+                                </button>
                             } 
                             @if(is_summary_loading){
-                                 <!-- <p-button label="Primary" [outlined]="true" severity="secondary"
-                                     [disabled]="isButtonDisabled"  rounded="false" size="small" styleClass="p-button-sm-progress">
-                                    <ng-template pTemplate="content">
-                                        <div class="progress-container">
-                                            <div class="progress-bar"></div>
-                                                <p-icon class="pi pi-reddit pi-reddit-pos" style="font-size: large; margin-right: 5px;"></p-icon>
-                                        </div>
-                                        USE BOTBRO
-                                    </ng-template>
-                                </p-button> -->
-                                <button
-                                    class="d-flex ai-btn"  >
-                                    <!-- <ng-template pTemplate="content"> -->
-                                        <div class="progress-container">
-                                            <div class="progress-bar"></div>
-
-                                                <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
-                                        </div>
-                                        USE BOTBRO
-                                    <!-- </ng-template> -->
-                                   <!-- <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO -->
-                             </button>
+                                <button class="d-flex ai-btn">
+                                    <div class="progress-container">
+                                        <div class="progress-bar"></div>
+                                        <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
+                                    </div>
+                                    USE BOTBRO
+                                </button>
                             }
                         </div>
-                            <div class="form-action-buttons p-0" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-
-                                <div style="flex: 0 1 auto; text-align: left;">
-                                </div>
-                              
-                                <div style="flex: 0 1 auto; text-align: right;">
-                                    <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                                    (click)="saveAndContinue()"  [disabled]="isButtonDisabled || is_summary_loading"  
-                                        [tooltip]="'Add to Resume Summary'"
-                                        tooltipPosition="top"
-                                        tooltipStyleClass="custom-tooltip">
-                                            <ng-template pTemplate="content" >
-                                                <p-icon class="pi pi-check" ></p-icon>
-                                                Add to resume
-                                            </ng-template>
-                                        </p-button>
-                                </div>
-                              </div>
+                    </div>
                 </div>
-                
             </div>
-           
+
+            <div class="form-actions">
+                <p-button label="Primary" [raised]="true" severity="danger" size="small"
+                    (click)="saveAndContinue()" [disabled]="isButtonDisabled || is_summary_loading"  
+                    [tooltip]="'Add to Resume Summary'"
+                    tooltipPosition="top"
+                    tooltipStyleClass="custom-tooltip">
+                        <ng-template pTemplate="content">
+                            <p-icon class="pi pi-check"></p-icon>
+                            Add to resume
+                        </ng-template>
+                </p-button>
+            </div>
         </form>
     </div>
-  
 </div>
 <div class="summary-ai-animated-panel" 
             [style.width]="width + 'px'" [style.border-width]="borderWidth + 'px'">

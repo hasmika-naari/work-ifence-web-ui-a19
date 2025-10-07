@@ -1,137 +1,111 @@
 
-<div class="row pl-4 pr-4" style="overflow-y: auto;">
-    <div class="col-12"  >
-        <form [formGroup]="resumeTitleForm"  class="mb-5" >
-            <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Title</mat-label>
-                        <input matInput placeholder="Resume Title" formControlName="title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="resumeTitleForm.get('title')?.hasError('required') && (resumeTitleForm.get('title')?.dirty || resumeTitleForm.get('title')?.touched)">
-                            Required.
-                          </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="resumeTitleForm.get('title')?.errors?.['maxlength']">
-                            Title cannot be more than 64 characters long.
-                        </mat-error>
-                    </mat-form-field>
-
-                    <!-- <span class="p-float-label">
-                        <label for="title">Resume Title</label>
-                        <input id="title" type="text" class="w-100 p-inputtext" pInputText formControlName="title">
-                        </span> -->
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field class="w-100" appearance="outline">
-                        <mat-label>Role</mat-label>
-                        <input type="text" matInput formControlName="roleLevel" [matAutocomplete]="autoRole">
-                        <mat-autocomplete #autoRole="matAutocomplete" >
-                          @for (role of filteredRoles; track role) {
-                            <mat-option [value]="role.role_level_desc">{{role.role_level_desc}}</mat-option>
-                          }
-                        </mat-autocomplete>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="resumeTitleForm.get('roleLevel')?.hasError('required') && (resumeTitleForm.get('roleLevel')?.dirty || resumeTitleForm.get('roleLevel')?.touched)">
-                            Required.
-                          </mat-error>
-                        <mat-error *ngIf="resumeTitleForm.get('roleLevel')?.hasError('invalidRole') && !resumeTitleForm.get('roleLevel')?.hasError('required')">
-                            Invalid role. Please select from the list.
-                        </mat-error>
-                      </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field class="w-100" appearance="outline">
-                        <mat-label>Resume Category</mat-label>
-                        <input type="text" matInput formControlName="category" [matAutocomplete]="autoCategory">
-                        <mat-autocomplete #autoCategory="matAutocomplete" >
-                          @for (cat of filteredCategories; track cat) {
-                            <mat-option [value]="cat.sub_category">{{cat.sub_category}}</mat-option>
-                          }
-                        </mat-autocomplete>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="resumeTitleForm.get('category')?.hasError('required') && (resumeTitleForm.get('category')?.dirty || resumeTitleForm.get('category')?.touched)">
-                            Required.
-                          </mat-error>
-                          <mat-error *ngIf="resumeTitleForm.get('category')?.hasError('invalidCategory') && !resumeTitleForm.get('category')?.hasError('required')">
-                            Invalid category. Please select from the list.
-                          </mat-error>
-                      </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field class="w-100" appearance="outline">
-                        <mat-label>Access</mat-label>
-                        <mat-select placeholder="Access" formControlName="access">
-                            <mat-option *ngFor="let cat of accessCategories" [value]="cat.access_description">
-                                {{cat.access_description}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="resumeTitleForm.get('access')?.hasError('required') && (resumeTitleForm.get('access')?.dirty || resumeTitleForm.get('access')?.touched)">
-                            Required.
-                          </mat-error>
-                    </mat-form-field>
-                    <!-- <mat-form-field class="w-100">
-                        <mat-label>Access</mat-label>
-                        <input type="text" matInput formControlName="access" [matAutocomplete]="autoAccess">
-                        <mat-autocomplete #autoAccess="matAutocomplete" >
-                          @for (cat of accessCategories; track cat) {
-                            <mat-option [value]="cat.access_description">{{cat.access_description}}</mat-option>
-                          }
-                        </mat-autocomplete>
-                      </mat-form-field> -->
-                </div>
-                <!-- <div class="col-6 p-b-1 p-t-2">
-                    <mat-checkbox 
-                        formControlName="visibleToPublic" >
-                        Visible to Public
-                    </mat-checkbox>
-                </div> -->
-                <div class="col-6 p-b-1 p-t-2">
-                    <mat-checkbox 
-                        formControlName="isPrimary" >
-                        Make it Primary
-                    </mat-checkbox>
-                </div>
-                <div class="col-6 p-b-1 p-t-2">
-                    <mat-checkbox 
-                        formControlName="isActive" >
-                        Make it Active
-                    </mat-checkbox>
-                </div>
-                
+<div class="metadata-form">
+    <form [formGroup]="resumeTitleForm" class="metadata-simple">
+        <header class="metadata-simple__header">
+            <div>
+                <h2>Resume Information</h2>
+                <p>Configure your resume basics and visibility settings</p>
             </div>
-        </form>
-       
-    </div>
-    <!-- <div class="col-12 m-t-2"  >
-        <div class="row title-form-action-buttons text-right p-0">
-            <div style="justify-content: end;">
-                <button (click)="saveAndContinue(null)"  
-                [disabled]="resumeTitleForm.invalid" id="saveButton" 
-                [ngClass]="resumeTitleForm.invalid ? 'disabled-button' : 'enabled-button'">Add to resume</button>
+            <p-button
+                label="Save Changes"
+                [text]="true"
+                size="small"
+                (click)="saveAndContinue(null)"
+                [disabled]="resumeTitleForm.invalid"
+                styleClass="save-button">
+            </p-button>
+        </header>
+
+        <div class="form-content">
+            <div class="form-grid">
+                <div class="field-group field-group--full">
+                    <label for="title">Resume Title <span class="required">*</span></label>
+                    <input
+                        id="title"
+                        type="text"
+                        pInputText
+                        formControlName="title"
+                        placeholder="Enter a descriptive title for this resume" />
+                    <small class="error" *ngIf="resumeTitleForm.get('title')?.hasError('required') && resumeTitleForm.get('title')?.touched">
+                        Title is required
+                    </small>
+                    <small class="error" *ngIf="resumeTitleForm.get('title')?.errors?.['maxlength']">
+                        Title cannot exceed 64 characters
+                    </small>
+                </div>
+
+                <div class="field-group">
+                    <label for="roleLevel">Role Focus <span class="required">*</span></label>
+                    <p-autoComplete
+                        #roleLevelAutoComplete
+                        id="roleLevel"
+                        formControlName="roleLevel"
+                        [suggestions]="filteredRoles"
+                        (completeMethod)="filterRole($event)"
+                        field="role_level_desc"
+                        [dropdown]="true"
+                        [forceSelection]="true"
+                        [minLength]="0"
+                        placeholder="Select your role"
+                        styleClass="field-control"
+                        panelStyleClass="dropdown-panel">
+                    </p-autoComplete>
+                    <small class="error" *ngIf="resumeTitleForm.get('roleLevel')?.hasError('required') && resumeTitleForm.get('roleLevel')?.touched">
+                        Role focus is required
+                    </small>
+                </div>
+
+                <div class="field-group">
+                    <label for="category">Category <span class="required">*</span></label>
+                    <p-autoComplete
+                        #categoryAutoComplete
+                        id="category"
+                        formControlName="category"
+                        [suggestions]="filteredCategories"
+                        (completeMethod)="filterCategory($event)"
+                        field="sub_category"
+                        [dropdown]="true"
+                        [forceSelection]="true"
+                        [minLength]="0"
+                        placeholder="Select category"
+                        styleClass="field-control"
+                        panelStyleClass="dropdown-panel">
+                    </p-autoComplete>
+                    <small class="error" *ngIf="resumeTitleForm.get('category')?.hasError('required') && resumeTitleForm.get('category')?.touched">
+                        Category is required
+                    </small>
+                </div>
+
+                <div class="field-group">
+                    <label for="access">Access Level <span class="required">*</span></label>
+                    <p-dropdown
+                        id="access"
+                        formControlName="access"
+                        [options]="accessCategories"
+                        optionLabel="access_description"
+                        optionValue="access_description"
+                        placeholder="Select access level"
+                        styleClass="field-control"
+                        panelStyleClass="dropdown-panel">
+                    </p-dropdown>
+                    <small class="error" *ngIf="resumeTitleForm.get('access')?.hasError('required') && resumeTitleForm.get('access')?.touched">
+                        Access level is required
+                    </small>
+                </div>
+            </div>
+
+            <div class="checkbox-section">
+                <div class="checkbox-group">
+                    <mat-checkbox formControlName="isPrimary">
+                        Set as primary resume
+                    </mat-checkbox>
+                </div>
+                <div class="checkbox-group">
+                    <mat-checkbox formControlName="isActive">
+                        Make visible to recruiters
+                    </mat-checkbox>
+                </div>
             </div>
         </div>
-    </div> -->
-    <div class="col-12 m-t-2 p-0 pr-3 text-right text-end"  >
-        <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-            (click)="saveAndContinue(null)"  [disabled]="resumeTitleForm.invalid"  
-            [tooltip]="'Add to Resume Summary'"
-            tooltipPosition="top"
-            tooltipStyleClass="custom-tooltip">
-                <ng-template pTemplate="content" >
-                    <p-icon class="pi pi-check" ></p-icon>
-                    Add to resume
-                </ng-template>
-            </p-button>
-        <!-- <div class="row form-action-buttons text-right p-0">
-            <div style="justify-content: end;">
-                <p-button label="Primary"  severity="secondary" size="small"
-                    (click)="saveAndContinue(null)"  [disabled]="resumeTitleForm.invalid"  [rounded]="'false'" styleClass="p-button-sm"
-                        [tooltip]="'Add to Resume Summary'"
-                        tooltipPosition="top"
-                        tooltipStyleClass="custom-tooltip">
-                            <ng-template pTemplate="content" >
-                                <p-icon class="pi pi-check" ></p-icon>
-                                Add to resume
-                            </ng-template>
-                </p-button>
-            </div>
-        </div> -->
-    </div>
+    </form>
 </div>

@@ -1,111 +1,136 @@
-<div class="row h-100 pl-4 pr-4">
-    <div class="col-12"  >
-        <form [formGroup]="educationForm" >
-            <div class="row wrap">
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>University Name</mat-label>
-                        <input matInput placeholder="University Name" formControlName="school_name">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('school_name')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-
-                    <!-- <span class="p-float-label">
-                        <label for="school_name">University Name</label>
-                        <input id="school_name" type="text" class="w-100 p-inputtext" pInputText formControlName="school_name">
-                        </span> -->
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>University Location</mat-label>
-                        <input matInput placeholder="University Location" formControlName="school_location">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('school_location')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                    <!-- <span class="p-float-label">
-                        <label for="school_location">University Location</label>
-                        <input id="school_location" type="text" class="w-100 p-inputtext" pInputText formControlName="school_location">
-                        </span> -->
-                </div>
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Degree</mat-label>
-                        <input matInput placeholder="Degree" formControlName="degree">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('degree')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                    <!-- <span class="p-float-label">
-                        <label for="degree">Degree</label>
-                        <input id="degree" type="text" class="w-100 p-inputtext" pInputText formControlName="degree">
-                        </span> -->
-                </div>
-                @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Branch</mat-label>
-                        <input matInput placeholder="Branch" formControlName="field_of_study">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('field_of_study')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                        <!-- <span class="p-float-label">
-                            <label for="field_of_study">Field Of Study</label>
-                            <input id="field_of_study" type="text" class="w-100 p-inputtext" pInputText formControlName="field_of_study">
-                        </span> -->
-                </div>
-                }
-                <div class="col-6 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>GPA/Percentage</mat-label>
-                        <input matInput placeholder="GPA/Percentage" formControlName="gpa">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('gpa')?.hasError('pattern')">
-                            Please enter a valid GPA
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('gpa')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-6 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Graduation Date</mat-label>
-                        <input matInput placeholder="Period" formControlName="graduation_year">
-                        <mat-hint style="color: black;">MM/YYYY</mat-hint>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('graduation_year')?.hasError('pattern')">
-                            Please enter a valid Year of period
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="educationForm.get('graduation_year')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-
-                </div>
-                
+<div class="resume-form-container">
+    <form [formGroup]="educationForm">
+        
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="section_title">Section Title *</label>
+                <input 
+                    id="section_title" 
+                    type="text" 
+                    pInputText 
+                    #role 
+                    formControlName="section_title" 
+                    placeholder="e.g., Education"
+                />
+                <small class="error" *ngIf="educationForm.get('section_title')?.hasError('required') && (educationForm.get('section_title')?.dirty || educationForm.get('section_title')?.touched)">
+                    Required.
+                </small>
             </div>
-        </form>
-        <div class="col-12 mt-3 text-right text-end"  >
-            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                (click)="saveAndContinue()"  [disabled]="educationForm.invalid"  
-                [tooltip]="'Add to Resume Summary'"
-                tooltipPosition="top"
-                tooltipStyleClass="custom-tooltip">
-                    <ng-template pTemplate="content" >
-                        <p-icon class="pi pi-check" ></p-icon>
-                        Add to resume
-                    </ng-template>
-            </p-button>
         </div>
-    </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="school_name">University Name *</label>
+                <input 
+                    id="school_name" 
+                    type="text" 
+                    pInputText 
+                    formControlName="school_name" 
+                    placeholder="e.g., Stanford University"
+                />
+                <small class="error" *ngIf="educationForm.get('school_name')?.hasError('required') && (educationForm.get('school_name')?.dirty || educationForm.get('school_name')?.touched)">
+                    Required.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="school_location">University Location *</label>
+                <input 
+                    id="school_location" 
+                    type="text" 
+                    pInputText 
+                    formControlName="school_location" 
+                    placeholder="e.g., Stanford, CA"
+                />
+                <small class="error" *ngIf="educationForm.get('school_location')?.hasError('required') && (educationForm.get('school_location')?.dirty || educationForm.get('school_location')?.touched)">
+                    Required.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="degree">Degree *</label>
+                <input 
+                    id="degree" 
+                    type="text" 
+                    pInputText 
+                    formControlName="degree" 
+                    placeholder="e.g., Bachelor of Science"
+                />
+                <small class="error" *ngIf="educationForm.get('degree')?.hasError('required') && (educationForm.get('degree')?.dirty || educationForm.get('degree')?.touched)">
+                    Required.
+                </small>
+            </div>
+        </div>
+
+        @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="field_of_study">Branch / Field of Study *</label>
+                <input 
+                    id="field_of_study" 
+                    type="text" 
+                    pInputText 
+                    formControlName="field_of_study" 
+                    placeholder="e.g., Computer Science"
+                />
+                <small class="error" *ngIf="educationForm.get('field_of_study')?.hasError('required') && (educationForm.get('field_of_study')?.dirty || educationForm.get('field_of_study')?.touched)">
+                    Required.
+                </small>
+            </div>
+        </div>
+        }
+
+        <div class="form-row form-row--double">
+            <div class="field">
+                <label for="gpa">GPA / Percentage *</label>
+                <input 
+                    id="gpa" 
+                    type="text" 
+                    pInputText 
+                    formControlName="gpa" 
+                    placeholder="e.g., 3.8 or 85%"
+                />
+                <small class="error" *ngIf="educationForm.get('gpa')?.hasError('pattern') && (educationForm.get('gpa')?.dirty || educationForm.get('gpa')?.touched)">
+                    Please enter a valid GPA.
+                </small>
+                <small class="error" *ngIf="educationForm.get('gpa')?.hasError('required') && (educationForm.get('gpa')?.dirty || educationForm.get('gpa')?.touched)">
+                    Required.
+                </small>
+            </div>
+
+            <div class="field">
+                <label for="graduation_year">Graduation Date *</label>
+                <input 
+                    id="graduation_year" 
+                    type="text" 
+                    pInputText 
+                    formControlName="graduation_year" 
+                    placeholder="MM/YYYY"
+                />
+                <small class="error" *ngIf="educationForm.get('graduation_year')?.hasError('pattern') && (educationForm.get('graduation_year')?.dirty || educationForm.get('graduation_year')?.touched)">
+                    Please enter a valid date (MM/YYYY).
+                </small>
+                <small class="error" *ngIf="educationForm.get('graduation_year')?.hasError('required') && (educationForm.get('graduation_year')?.dirty || educationForm.get('graduation_year')?.touched)">
+                    Required.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button 
+                type="button" 
+                class="action-btn action-btn--primary" 
+                (click)="saveAndContinue()" 
+                [disabled]="educationForm.invalid"
+                matTooltip="Add to Resume"
+                tooltipPosition="top">
+                <i class="pi pi-check"></i>
+                Add to Resume
+            </button>
+        </div>
+    </form>
 </div>
