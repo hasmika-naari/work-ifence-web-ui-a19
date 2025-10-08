@@ -1009,36 +1009,17 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.filteredCategories = [...this.categories];
-    this.filteredRoles = [...this.roleCategories]
+    this.filteredRoles = [...this.roleCategories];
+    
     this.subs.push(this.router.events.subscribe(() => {
       const currentUrl = this.router.url;
       if (currentUrl.includes('/resumes/resume')) {
-        // The current active route matches the desired route
-        // console.log('Current route matches the desired route');
         this.userStore.updateSidebar(true);
       } else if(currentUrl.includes('/user/resumes')){
         this.userStore.updateSidebar(false);
-        // The current active route does not match the desired route
         console.log('Current route does not match the desired route');
       }
     }));
-
-    this.resumeTitleForm.controls['category'].valueChanges.subscribe(val => {
-      if (typeof val === 'string') {
-        this.filteredCategories = [...this._filterCategory(val)];
-      } else {
-        this.filteredCategories = [...this.categories];
-      }
-    });
-
-    this.resumeTitleForm.controls['roleLevel'].valueChanges.subscribe(val =>{
-      if (typeof val === 'string') {
-        this.filteredRoles = [...this._filterRole(val)];
-      } else {
-        this.filteredRoles = [...this.roleCategories];
-      }
-    })
-    // this.userStore.updateSidebar(true);
   }
 
   displayFn(category: any): string {
@@ -1048,62 +1029,52 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
   // PrimeNG AutoComplete filter methods
   filterCategory(event: any) {
     const query = event.query ? event.query.toLowerCase().trim() : '';
-    this.filteredCategories = this.categories.filter(cat => 
-      cat.sub_category.toLowerCase().includes(query)
-    );
+    if (!query) {
+      this.filteredCategories = [...this.categories];
+    } else {
+      this.filteredCategories = this.categories.filter(cat => 
+        cat.sub_category.toLowerCase().includes(query)
+      );
+    }
   }
 
   filterRole(event: any) {
     const query = event.query ? event.query.toLowerCase().trim() : '';
-    this.filteredRoles = this.roleCategories.filter(role => 
-      role.role_level_desc.toLowerCase().includes(query)
-    );
-  }
-
-  openRoleSuggestions(): void {
-    this.filteredRoles = [...this.roleCategories];
-    const roleControl = this.resumeTitleForm.get('roleLevel');
-    const hasValue = roleControl?.value && (typeof roleControl.value === 'object' || `${roleControl.value}`.length > 0);
-    if (!hasValue) {
-      setTimeout(() => {
-        if (!this.roleAuto?.overlayVisible) {
-          this.roleAuto?.show();
-        }
-      }, 0);
+    if (!query) {
+      this.filteredRoles = [...this.roleCategories];
+    } else {
+      this.filteredRoles = this.roleCategories.filter(role => 
+        role.role_level_desc.toLowerCase().includes(query)
+      );
     }
   }
 
-  openCategorySuggestions(): void {
-    this.filteredCategories = [...this.categories];
-    const categoryControl = this.resumeTitleForm.get('category');
-    const hasValue = categoryControl?.value && (typeof categoryControl.value === 'object' || `${categoryControl.value}`.length > 0);
-    if (!hasValue) {
-      setTimeout(() => {
-        if (!this.categoryAuto?.overlayVisible) {
-          this.categoryAuto?.show();
-        }
-      }, 0);
+  onRoleSelect(event: any) {
+    // Hide role panel immediately
+    if (this.roleAuto?.overlayVisible) { 
+      this.roleAuto.hide(); 
     }
+    // Prevent any blur/focus cascade
+    setTimeout(() => {
+      const inputEl = (this.roleAuto as any)?.inputEL?.nativeElement;
+      if (inputEl) {
+        inputEl.blur();
+      }
+    }, 0);
   }
 
-  private _filterCategory(title: string | ResumeCategory): ResumeCategory[] {
-    const term = typeof title === 'string'
-      ? title.trim().toLowerCase()
-      : title?.sub_category?.toLowerCase() ?? '';
-    if (!term) {
-      return this.categories;
+  onCategorySelect(event: any) {
+    // Hide category panel immediately
+    if (this.categoryAuto?.overlayVisible) { 
+      this.categoryAuto.hide(); 
     }
-    return this.categories.filter(cat => cat.sub_category.toLowerCase().includes(term));
-  }
-
-  private _filterRole(title : string | ResumeRoleLevel): ResumeRoleLevel[]{
-    const term = typeof title === 'string'
-      ? title.trim().toLowerCase()
-      : title?.role_level_desc?.toLowerCase() ?? '';
-    if (!term) {
-      return this.roleCategories;
-    }
-    return this.roleCategories.filter(cat => cat.role_level_desc.toLowerCase().includes(term));
+    // Prevent any blur/focus cascade
+    setTimeout(() => {
+      const inputEl = (this.categoryAuto as any)?.inputEL?.nativeElement;
+      if (inputEl) {
+        inputEl.blur();
+      }
+    }, 0);
   }
 
   setContactValues(){
@@ -1117,6 +1088,11 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
 
   saveAndContinue(display : String | null){
     this.markFormGroupTouched(this.resumeTitleForm);
+    
+    if (this.resumeTitleForm.invalid) {
+      return;
+    }
+    
     let resume_form = this.resumeSignalForm();
     resume_form.title = this.resumeTitleForm.controls['title'].value?.toString() || '';
     
@@ -1135,6 +1111,10 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
     resume_form.isActive = this.resumeTitleForm.controls['isActive'].value || false;
     resume_form.access_level = this.resumeTitleForm.controls['access'].value?.toString() || '';
     this.userStore.updateResumeForm(resume_form);
+    
+    // Close the sidenav after saving
+    this.userStore.updateSidebar(false);
+    
     this.contact.emit();
   }
 

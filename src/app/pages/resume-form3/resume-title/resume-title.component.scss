@@ -4,19 +4,21 @@
 .metadata-form {
   padding: 2rem;
   background: transparent;
-  min-height: 100vh;
+  min-height: 85vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  padding-top: 0px !important;
 }
 
 /* Card container */
 .form-content {
   width: min(100%, 900px);
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.46);
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 4px 10px -2px rgba(0,0,0,0.08);
+  // box-shadow: 0 4px 10px -2px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255, 255, 255, 1);
   backdrop-filter: blur(10px);
 }
 
@@ -52,34 +54,266 @@
 }
 .field-group { display:flex; flex-direction:column; gap:.5rem; }
 .field-group label { font-size:.875rem; font-weight:600; color:#374151; }
-.field-group .error { font-size:.7rem; color:var(--mainColor,#f05b45); }
+.field-group label .required { color: var(--mainColor, #f05b45); margin-left: 0.125rem; }
+.field-group .error { font-size:.7rem; color:var(--mainColor,#f05b45); margin-top: 0.25rem; }
 .field-group--full { grid-column:1 / -1; }
 
 /* Checkboxes */
-.checkbox-section { display:flex; gap:2rem; padding-top:1.5rem; border-top:1px solid rgba(226,232,240,.5); }
+.checkbox-section { display:flex; gap:2rem; padding-top:1.5rem; border-top:1px solid rgba(226,232,240,.5); margin-bottom:1.5rem; }
 .checkbox-group { display:flex; align-items:center; }
 
-/* PrimeNG field controls (scoped with ::ng-deep for library components) */
-::ng-deep .field-control.p-autocomplete { position:relative; display:flex; }
-::ng-deep .field-control.p-autocomplete .p-inputtext {
-  height:2.5rem; padding:.75rem 3rem .75rem 1rem; border:1px solid #d1d5db;
-  border-radius:6px; font-size:.875rem; background:#fff; width:100%; transition:border-color .15s;
+/* Form Footer */
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 1rem;
 }
-::ng-deep .field-control.p-autocomplete .p-inputtext:focus { border-color:var(--mainColor,#f05b45); outline:none; }
-::ng-deep .field-control.p-autocomplete .p-autocomplete-dropdown {
-  position:absolute; right:0; top:0; height:2.5rem; width:2.5rem; background:transparent; border:none;
-  border-left:1px solid #e5e7eb; color:#6b7280; border-radius:0 6px 6px 0; display:flex; align-items:center; justify-content:center; cursor:pointer;
-}
-::ng-deep .field-control.p-autocomplete.p-focus .p-inputtext,
-::ng-deep .field-control.p-autocomplete.p-autocomplete-panel-visible .p-inputtext { border-color:var(--mainColor,#f05b45); }
 
-::ng-deep .field-control.p-dropdown { position:relative; }
-::ng-deep .field-control.p-dropdown .p-dropdown-label {
-  height:2.5rem; padding:.75rem 3rem .75rem 1rem; border:1px solid #d1d5db; border-radius:6px; font-size:.875rem; background:#fff; transition:border-color .15s;
+::ng-deep .form-footer .save-button-primary {
+  background: transparent !important;
+  border: none !important;
+  color: var(--mainColor, #f05b45) !important;
+  font-weight: 600 !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease !important;
+  text-decoration: underline !important;
+  text-underline-offset: 4px !important;
 }
-::ng-deep .field-control.p-dropdown .p-dropdown-trigger { position:absolute; right:0; top:0; height:2.5rem; width:2.5rem; background:transparent; border:none; border-left:1px solid #e5e7eb; color:#6b7280; border-radius:0 6px 6px 0; }
+
+::ng-deep .form-footer .save-button-primary:hover:not(:disabled) {
+  background: transparent !important;
+  color: #d64c39 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 6px !important;
+  transform: translateY(-1px) !important;
+}
+
+::ng-deep .form-footer .save-button-primary:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  color: #9ca3af !important;
+  text-decoration: none !important;
+}
+
+::ng-deep .form-footer .save-button-primary .p-button-label {
+  font-size: 0.95rem !important;
+}
+
+::ng-deep .form-footer .save-button-primary .p-button-icon {
+  color: inherit !important;
+  font-size: 0.875rem !important;
+}
+
+::ng-deep .form-footer .save-button-primary .p-button-icon {
+  color: inherit !important;
+}
+
+/* PrimeNG AutoComplete Styling */
+::ng-deep .field-control.p-autocomplete {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+::ng-deep .field-control.p-autocomplete input.p-inputtext,
+::ng-deep .field-control.p-autocomplete .p-autocomplete-input {
+  width: 100% !important;
+  height: 3.25rem !important;
+  padding: 1rem 3.5rem 1rem 1rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  font-size: 0.95rem !important;
+  background: #fff !important;
+  transition: all 0.15s ease !important;
+  box-sizing: border-box !important;
+}
+
+::ng-deep .field-control.p-autocomplete input.p-inputtext:hover,
+::ng-deep .field-control.p-autocomplete .p-autocomplete-input:hover {
+  border-color: #9ca3af !important;
+}
+
+::ng-deep .field-control.p-autocomplete input.p-inputtext:focus,
+::ng-deep .field-control.p-autocomplete .p-autocomplete-input:focus {
+  border-color: var(--mainColor, #f05b45) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px var(--mainColor, #f05b45) !important;
+}
+
+::ng-deep .field-control.p-autocomplete .p-autocomplete-dropdown {
+  position: absolute !important;
+  right: 0 !important;
+  top: 0 !important;
+  height: 3.25rem !important;
+  width: 3.25rem !important;
+  background: #fff !important;
+  border: 1px solid #d1d5db !important;
+  border-left: none !important;
+  border-radius: 0 6px 6px 0 !important;
+  color: #6b7280 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+::ng-deep .field-control.p-autocomplete .p-autocomplete-dropdown:hover {
+  background: #f9fafb !important;
+  border-color: #9ca3af !important;
+}
+
+::ng-deep .field-control.p-autocomplete.p-autocomplete-open input.p-inputtext,
+::ng-deep .field-control.p-autocomplete.p-autocomplete-open .p-autocomplete-input,
+::ng-deep .field-control.p-autocomplete.p-focus input.p-inputtext,
+::ng-deep .field-control.p-autocomplete.p-focus .p-autocomplete-input {
+  border-color: var(--mainColor, #f05b45) !important;
+  box-shadow: 0 0 0 1px var(--mainColor, #f05b45) !important;
+}
+
+::ng-deep .field-control.p-autocomplete.p-autocomplete-open .p-autocomplete-dropdown {
+  border-color: var(--mainColor, #f05b45) !important;
+}
+
+/* PrimeNG Dropdown Styling - Complete Fix */
+::ng-deep .field-group .p-dropdown,
+::ng-deep p-dropdown.field-control,
+::ng-deep .field-control.p-dropdown {
+  position: relative !important;
+  display: inline-flex !important;
+  width: 100% !important;
+  height: 3.25rem !important;
+  border-radius: 6px !important;
+}
+
+/* Dropdown container - the wrapper that holds label and trigger */
+::ng-deep .field-group .p-dropdown .p-dropdown-trigger-icon,
+::ng-deep .field-group .p-dropdown .p-dropdown-clear-icon {
+  font-size: 0.875rem !important;
+}
+
+/* Main label area */
+::ng-deep .field-group .p-dropdown .p-dropdown-label,
+::ng-deep p-dropdown.field-control .p-dropdown-label,
+::ng-deep .field-control.p-dropdown .p-dropdown-label {
+  flex: 1 1 auto !important;
+  height: 3.25rem !important;
+  padding: 1rem !important;
+  padding-right: 0.5rem !important;
+  border: 1px solid #d1d5db !important;
+  border-right: none !important;
+  border-radius: 6px 0 0 6px !important;
+  font-size: 0.95rem !important;
+  background: #fff !important;
+  transition: all 0.15s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Trigger button */
+::ng-deep .field-group .p-dropdown .p-dropdown-trigger,
+::ng-deep p-dropdown.field-control .p-dropdown-trigger,
+::ng-deep .field-control.p-dropdown .p-dropdown-trigger {
+  flex: 0 0 3.25rem !important;
+  width: 3.25rem !important;
+  height: 3.25rem !important;
+  background: #fff !important;
+  border: 1px solid #d1d5db !important;
+  border-left: none !important;
+  border-radius: 0 6px 6px 0 !important;
+  color: #6b7280 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+/* Hover states */
+::ng-deep .field-group .p-dropdown:hover .p-dropdown-label,
+::ng-deep p-dropdown.field-control:hover .p-dropdown-label,
+::ng-deep .field-control.p-dropdown:hover .p-dropdown-label {
+  border-color: #9ca3af !important;
+}
+
+::ng-deep .field-group .p-dropdown:hover .p-dropdown-trigger,
+::ng-deep p-dropdown.field-control:hover .p-dropdown-trigger,
+::ng-deep .field-control.p-dropdown:hover .p-dropdown-trigger {
+  background: #f9fafb !important;
+  border-color: #9ca3af !important;
+}
+
+/* Focus and open states */
+::ng-deep .field-group .p-dropdown.p-focus .p-dropdown-label,
+::ng-deep .field-group .p-dropdown.p-dropdown-open .p-dropdown-label,
+::ng-deep p-dropdown.field-control.p-focus .p-dropdown-label,
+::ng-deep p-dropdown.field-control.p-dropdown-open .p-dropdown-label,
 ::ng-deep .field-control.p-dropdown.p-focus .p-dropdown-label,
-::ng-deep .field-control.p-dropdown.p-dropdown-open .p-dropdown-label { border-color:var(--mainColor,#f05b45); }
+::ng-deep .field-control.p-dropdown.p-dropdown-open .p-dropdown-label {
+  border-color: var(--mainColor, #f05b45) !important;
+  box-shadow: 0 0 0 1px var(--mainColor, #f05b45) !important;
+}
+
+::ng-deep .field-group .p-dropdown.p-dropdown-open .p-dropdown-trigger,
+::ng-deep .field-group .p-dropdown.p-focus .p-dropdown-trigger,
+::ng-deep p-dropdown.field-control.p-dropdown-open .p-dropdown-trigger,
+::ng-deep p-dropdown.field-control.p-focus .p-dropdown-trigger,
+::ng-deep .field-control.p-dropdown.p-dropdown-open .p-dropdown-trigger,
+::ng-deep .field-control.p-dropdown.p-focus .p-dropdown-trigger {
+  border-color: var(--mainColor, #f05b45) !important;
+}
+
+/* Regular Input Text */
+::ng-deep .field-group input.p-inputtext {
+  width: 100% !important;
+  height: 3.25rem !important;
+  padding: 1rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  font-size: 0.95rem !important;
+  background: #fff !important;
+  transition: all 0.15s ease !important;
+  color: #111827 !important;
+}
+
+::ng-deep .field-group input.p-inputtext::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+  font-style: italic !important;
+}
+
+::ng-deep .field-group input.p-inputtext:hover {
+  border-color: #9ca3af !important;
+}
+
+::ng-deep .field-group input.p-inputtext:focus {
+  border-color: var(--mainColor, #f05b45) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px var(--mainColor, #f05b45) !important;
+}
+
+/* AutoComplete placeholder styling */
+::ng-deep .field-control.p-autocomplete input.p-inputtext::placeholder,
+::ng-deep .field-control.p-autocomplete .p-autocomplete-input::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+  font-style: italic !important;
+}
+
+/* Dropdown placeholder styling */
+::ng-deep .field-group .p-dropdown .p-dropdown-label.p-placeholder,
+::ng-deep p-dropdown.field-control .p-dropdown-label.p-placeholder,
+::ng-deep .field-control.p-dropdown .p-dropdown-label.p-placeholder {
+  color: #9ca3af !important;
+  font-style: italic !important;
+}
 
 /* Suggestion panels */
 ::ng-deep .dropdown-panel { border:1px solid var(--mainColor,#f05b45); border-radius:6px; background:#fff; box-shadow:0 4px 12px -2px rgba(0,0,0,.12); }
