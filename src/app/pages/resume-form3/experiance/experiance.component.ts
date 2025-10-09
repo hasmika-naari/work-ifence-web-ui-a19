@@ -544,7 +544,7 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
 
   addWorkField() {
     const workField = this._formBuilder.group({
-      exp_title: 'Experiance ' + this.workFields.length.toString(),
+      exp_title: 'Experience ' + this.workFields.length.toString(),
       position_title: [''],
       company_name: [''],
       location : [''],
