@@ -37,6 +37,8 @@ import {provideMomentDateAdapter} from '@angular/material-moment-adapter';
 import { ResumeService } from 'src/app/services/resume.service';
 import { PanelModule } from 'primeng/panel';
 import { ProgressSpinner, ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 
 
@@ -77,6 +79,7 @@ export interface WorkData{
       useValue: {displayDefaultIndicatorType: false},
     },
     provideMomentDateAdapter(MY_FORMATS),
+    MessageService
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
@@ -86,7 +89,7 @@ export interface WorkData{
     MatFormFieldModule,InputTextModule,TableModule,CalendarModule,
     MatInputModule,ButtonModule,OverlayPanelModule,PanelModule,
     MatButtonModule,AccordionModule,TextareaModule,TooltipModule,
-    MatIconModule,MatExpansionModule, MatCheckboxModule, MatCardModule, ProgressSpinnerModule, MatProgressSpinnerModule],
+    MatIconModule,MatExpansionModule, MatCheckboxModule, MatCardModule, ProgressSpinnerModule, MatProgressSpinnerModule, ToastModule],
   templateUrl: './experiance.component.html',
   styleUrls: ['./experiance.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -172,6 +175,7 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
       public templateService : TemplatesService, 
       public dialog: MatDialog,
       public resumeService : ResumeService,
+      private messageService: MessageService,
       @Inject(PLATFORM_ID) private platformId: Object) {
         effect(()=>{
           if(this.selectedExperience().id){
@@ -1258,30 +1262,60 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       this.is_work_history_loading = true;
       const experience_prompt = this.promptService.testing_work_exp_prompt(this.getEditorRawData());
       console.log(experience_prompt);
-      this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe((res : any)=>{
-        console.log(res['choices'][0]['message']['content']);
-        
-        //store OpenAI response in our Backend. Need a table to store
-        let content = res['choices'][0]['message']['content'];
-        // let description = content.split("&&&");
-        // description[1] has suggestions to improve. need to show it to the user.
-        // this.workHistoryList = content?.split("###").filter((item : any)=>{return (item != "" && !/^\s*$/.test(item))});
-        // console.log(this.workHistoryList);
-        this.workHistoryList = this.handleStringInput(content); //JSON.parse(content)
-        
+      this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe({
+        next: (res : any) => {
+          console.log(res['choices'][0]['message']['content']);
+          
+          //store OpenAI response in our Backend. Need a table to store
+          let content = res['choices'][0]['message']['content'];
+          // let description = content.split("&&&");
+          // description[1] has suggestions to improve. need to show it to the user.
+          // this.workHistoryList = content?.split("###").filter((item : any)=>{return (item != "" && !/^\s*$/.test(item))});
+          // console.log(this.workHistoryList);
+          this.workHistoryList = this.handleStringInput(content); //JSON.parse(content)
+          
 
-        // if(this.isJobDescAISuggestionsPresent()){
-        //   let response : WorkData = {bulletPoints : this.workHistoryList.slice(0,this.workHistoryList.length-1), ats_score : this.workHistoryList[this.workHistoryList.length - 1]}
-        //   this.workExperienceAIResponses.push(response);
-        // }
-        // else{
-        //   let response : WorkData = {bulletPoints : this.workHistoryList, ats_score : ""}
-        //   this.workExperienceAIResponses.push(response);
-        // }
+          // if(this.isJobDescAISuggestionsPresent()){
+          //   let response : WorkData = {bulletPoints : this.workHistoryList.slice(0,this.workHistoryList.length-1), ats_score : this.workHistoryList[this.workHistoryList.length - 1]}
+          //   this.workExperienceAIResponses.push(response);
+          // }
+          // else{
+          //   let response : WorkData = {bulletPoints : this.workHistoryList, ats_score : ""}
+          //   this.workExperienceAIResponses.push(response);
+          // }
 
-        // this.experienceForm.controls['description'].setValue(this.workHistoryList.join("\n"))
-        this.is_work_history_loading = false;
-        this.openPanelWindow()
+          // this.experienceForm.controls['description'].setValue(this.workHistoryList.join("\n"))
+          this.is_work_history_loading = false;
+          this.openPanelWindow();
+          
+          // Show success message
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Success', 
+            detail: 'AI suggestions generated successfully!',
+            life: 3000
+          });
+        },
+        error: (error) => {
+          console.error('Error optimizing work history:', error);
+          this.is_work_history_loading = false;
+          
+          // Show error message
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'Failed to generate AI suggestions. Please try again.',
+            life: 5000
+          });
+        }
+      });
+    } else {
+      // Show warning if no content to optimize
+      this.messageService.add({ 
+        severity: 'warn', 
+        summary: 'Warning', 
+        detail: 'Please add some job description content before using BotBro.',
+        life: 4000
       });
     }
   }
@@ -1310,14 +1344,37 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     this.optimize_index = index;
     const experience_prompt = this.promptService.optimize_the_point(this.workHistoryList[index]);
       console.log(experience_prompt);
-      this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe((res : any)=>{
-        console.log(res['choices'][0]['message']['content']);
-        
-        //store OpenAI response in our Backend. Need a table to store
-        let content = res['choices'][0]['message']['content'];
-        this.workHistoryList[index] = content
-        this.optimize_index = -1;
-        this.action_taken = ''
+      this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe({
+        next: (res : any) => {
+          console.log(res['choices'][0]['message']['content']);
+          
+          //store OpenAI response in our Backend. Need a table to store
+          let content = res['choices'][0]['message']['content'];
+          this.workHistoryList[index] = content
+          this.optimize_index = -1;
+          this.action_taken = ''
+          
+          // Show success message
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Optimized', 
+            detail: 'Suggestion optimized successfully!',
+            life: 3000
+          });
+        },
+        error: (error) => {
+          console.error('Error optimizing response:', error);
+          this.optimize_index = -1;
+          this.action_taken = ''
+          
+          // Show error message
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'Failed to optimize suggestion. Please try again.',
+            life: 5000
+          });
+        }
       });
   }
 
