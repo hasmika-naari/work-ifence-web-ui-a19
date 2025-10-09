@@ -71,48 +71,52 @@
             </div>
         </div>
 
-        <div class="form-row form-row--single" style="margin-bottom: 0.5rem;">
-            <div style="display: flex; justify-content: flex-end; align-items: center;">
-                <mat-checkbox 
-                    class="current-work-custom-checkbox"
-                    [labelPosition]="'before'"
-                    formControlName="isCurrentlyWorkHere">
-                    I currently work here
-                </mat-checkbox>
-            </div>
-        </div>
-
         <div class="form-row form-row--double">
             <div class="field">
                 <label for="start_date">Start Date *</label>
-                <mat-form-field class="w-100" appearance="outline">
-                    <input matInput [matDatepicker]="sdp" formControlName="start_date" [max]="today">
-                    <mat-hint><span style="color: gray;">MM/YYYY</span></mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="sdp"></mat-datepicker-toggle>
-                    <mat-datepicker #sdp startView="multi-year" panelClass="example-month-picker"></mat-datepicker>
-                    <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('start_date')?.hasError('required')">
-                        Required.
-                    </mat-error>
-                    <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('start_date')?.hasError('matDatepickerMax')">
-                        Date cannot be in the future.
-                    </mat-error>
-                </mat-form-field>
+                <p-calendar 
+                    inputId="start_date"
+                    formControlName="start_date"
+                    view="month" 
+                    dateFormat="mm/yy"
+                    [maxDate]="today"
+                    [showIcon]="true"
+                    iconDisplay="input"
+                    placeholder="MM/YYYY"
+                    [readonlyInput]="true">
+                </p-calendar>
+                <small class="error" *ngIf="experienceForm.get('start_date')?.hasError('required') && (experienceForm.get('start_date')?.dirty || experienceForm.get('start_date')?.touched)">
+                    Required.
+                </small>
             </div>
 
             <div class="field">
                 <label for="end_date">End Date *</label>
-                <mat-form-field class="w-100" appearance="outline">
-                    <input matInput [matDatepicker]="edp" formControlName="end_date" [max]="today">
-                    <mat-hint><span style="color: gray;">MM/YYYY</span></mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="edp"></mat-datepicker-toggle>
-                    <mat-datepicker #edp startView="multi-year" panelClass="example-month-picker"></mat-datepicker>
-                    <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('end_date')?.hasError('required')">
-                        Required.
-                    </mat-error>
-                    <mat-error class="ng-dirty ng-invalid" *ngIf="experienceForm.get('end_date')?.hasError('matDatepickerMax')">
-                        Date cannot be in the future.
-                    </mat-error>
-                </mat-form-field>
+                <p-calendar 
+                    inputId="end_date"
+                    formControlName="end_date"
+                    view="month" 
+                    dateFormat="mm/yy"
+                    [maxDate]="today"
+                    [showIcon]="true"
+                    iconDisplay="input"
+                    placeholder="MM/YYYY"
+                    [readonlyInput]="true"
+                    [disabled]="!!experienceForm.get('isCurrentlyWorkHere')?.value">
+                </p-calendar>
+                <small class="error" *ngIf="experienceForm.get('end_date')?.hasError('required') && (experienceForm.get('end_date')?.dirty || experienceForm.get('end_date')?.touched)">
+                    Required.
+                </small>
+                
+                <!-- Checkbox aligned exactly under the date input field -->
+                <div style="margin-top: 0.5rem;">
+                    <mat-checkbox 
+                        class="current-work-custom-checkbox"
+                        [labelPosition]="'after'"
+                        formControlName="isCurrentlyWorkHere">
+                        I currently work here
+                    </mat-checkbox>
+                </div>
             </div>
         </div>
 
@@ -143,10 +147,10 @@
             }
         </div>
 
-        <div class="form-row form-row--single experiance-description" style="margin-bottom: 20px; margin-top: 10px;">
+        <div class="form-row form-row--single experiance-description">
             <div class="field">
-                <label>Description / Responsibilities</label>
-                <div #editorContainer style="height: 250px; color: black;"></div>
+                <label for="description">Description / Responsibilities</label>
+                <div id="editorContainer" #editorContainer></div>
             </div>
         </div>
 

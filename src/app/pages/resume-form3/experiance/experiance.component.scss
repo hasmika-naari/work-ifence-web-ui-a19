@@ -1,6 +1,9 @@
 // Import shared form field styling
 @import '../shared-form-styles';
 
+// Import Quill styles
+@import 'quill/dist/quill.snow.css';
+
 :host {
   font-family: 'Poppins', sans-serif;
 }
@@ -24,29 +27,206 @@
 }
 
 .current-work-custom-checkbox{
-    display: flex;
-    flex-direction: row-reverse;
+    display: inline-flex;
     align-items: center;
   
-    .mat-checkbox-layout {
-      margin: 0;
-    }
-  
-    .mat-checkbox-label {
-      padding: 0;
+    ::ng-deep .mat-mdc-checkbox-label {
+      padding-left: 8px;
     }
 }
 
 #editorContainer {
   border: 1px solid rgba(148, 163, 184, 0.28);
-  padding: 10px;
+  padding: 0;
   border-radius: 0.75rem;
   background-color: #fff;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 300px;
+  overflow: visible;
+}
+
+// Quill editor styling
+:host ::ng-deep #editorContainer {
+  .ql-container.ql-snow {
+    border: none !important;
+    font-family: inherit;
+    font-size: 1rem;
+  }
+  
+  .ql-editor {
+    min-height: 220px;
+    padding: 20px !important;
+    color: #1f2a37;
+    line-height: 1.6;
+    
+    &.ql-blank::before {
+      color: #9ca3af;
+      font-style: italic;
+      left: 20px !important;
+      right: 20px !important;
+      top: 20px !important;
+    }
+    
+    p {
+      margin-bottom: 0.5em;
+      line-height: 1.6;
+    }
+    
+    ul, ol {
+      margin-bottom: 0.5em;
+      padding-left: 1.5em;
+      
+      li {
+        line-height: 1.6;
+        margin-bottom: 0.25em;
+      }
+    }
+    
+    h1, h2, h3 {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      font-weight: 600;
+    }
+    
+    a {
+      color: #3b82f6;
+      text-decoration: underline;
+    }
+  }
+  
+  .ql-toolbar.ql-snow {
+    border: none !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2) !important;
+    padding: 10px 12px !important;
+    background-color: rgba(248, 250, 252, 0.8);
+    
+    // Ensure toolbar buttons are visible
+    button {
+      width: 30px !important;
+      height: 30px !important;
+      padding: 4px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      
+      svg {
+        width: 18px !important;
+        height: 18px !important;
+        display: block !important;
+      }
+    }
+    
+    .ql-stroke {
+      stroke: #64748b !important;
+      transition: stroke 0.2s ease;
+    }
+    
+    .ql-fill {
+      fill: #64748b !important;
+      transition: fill 0.2s ease;
+    }
+    
+    .ql-picker {
+      color: #64748b;
+      height: 30px;
+      
+      .ql-picker-label {
+        padding: 4px 8px !important;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: rgba(59, 130, 246, 0.1);
+        }
+      }
+      
+      &.ql-expanded .ql-picker-label {
+        border-color: rgba(59, 130, 246, 0.55);
+        background-color: rgba(59, 130, 246, 0.05);
+      }
+    }
+    
+    button:hover,
+    button.ql-active {
+      .ql-stroke {
+        stroke: #3b82f6 !important;
+      }
+      
+      .ql-fill {
+        fill: #3b82f6 !important;
+      }
+      
+      background-color: rgba(59, 130, 246, 0.15) !important;
+    }
+    
+    // Format groups
+    .ql-formats {
+      margin-right: 12px !important;
+    }
+  }
 }
 
 #editorContainer:focus-within {
   border-color: rgba(59, 130, 246, 0.55);
+  box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.18);
+}
+
+// PrimeNG Calendar styling for consistency
+:host ::ng-deep .p-calendar {
+  width: 100%;
+  
+  .p-inputtext {
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    background: rgba(255, 255, 255, 0.92) !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #1f2a37;
+  }
+  
+  .p-inputtext:enabled:focus {
+    box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.55);
+    outline: none;
+  }
+  
+  // Remove autofill yellow background
+  .p-inputtext:-webkit-autofill,
+  .p-inputtext:-webkit-autofill:hover,
+  .p-inputtext:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.92) inset !important;
+    -webkit-text-fill-color: #1f2a37 !important;
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+  
+  .p-datepicker {
+    border-radius: 0.75rem;
+    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+  }
+  
+  // Calendar icon button styling
+  .p-datepicker-trigger {
+    color: rgba(15, 23, 42, 0.6);
+    
+    &:hover {
+      color: rgba(15, 23, 42, 0.8);
+    }
+  }
+}
+
+// Disabled calendar styling
+:host ::ng-deep .p-calendar.p-disabled .p-inputtext,
+:host ::ng-deep .p-calendar .p-inputtext:disabled {
+  background-color: #f2f2f2 !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+  color: #6b7280;
 }
 
 .container{
@@ -104,7 +284,7 @@
 }
 
 .ai-btn:hover{
-  // transform: scale(1.05); /* Slight zoom effect on hover */
+  transform: scale(1.02); /* Slight zoom effect on hover */
 }
 
 .column{
@@ -356,9 +536,38 @@ i{
 //   border-color: black; 
 // }
 
-/* Style for placeholder text */
-textarea::placeholder {
-  color: #999; /* Placeholder text color */
+/* Style for placeholder text - make it clearly distinguishable from content */
+input::placeholder,
+textarea::placeholder,
+:host ::ng-deep .p-calendar input::placeholder {
+  color: #9ca3af; /* Light gray color */
+  font-style: italic; /* Italic style to differentiate from actual content */
+  opacity: 1; /* Ensure consistent opacity across browsers */
+}
+
+/* Vendor-specific placeholder styles for better browser compatibility */
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder,
+:host ::ng-deep .p-calendar input::-webkit-input-placeholder {
+  color: #9ca3af;
+  font-style: italic;
+  opacity: 1;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder,
+:host ::ng-deep .p-calendar input::-moz-placeholder {
+  color: #9ca3af;
+  font-style: italic;
+  opacity: 1;
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder,
+:host ::ng-deep .p-calendar input:-ms-input-placeholder {
+  color: #9ca3af;
+  font-style: italic;
+  opacity: 1;
 }
 
 /* Style for disabled textarea */

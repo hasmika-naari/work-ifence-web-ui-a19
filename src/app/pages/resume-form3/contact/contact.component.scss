@@ -294,9 +294,34 @@ textarea:focus {
   border-color: black; /* Change border color when focused */
 }
 
-/* Style for placeholder text */
+/* Style for placeholder text - make it clearly distinguishable from content */
+input::placeholder,
 textarea::placeholder {
-  color: #999; /* Placeholder text color */
+  color: #9ca3af; /* Light gray color */
+  font-style: italic; /* Italic style to differentiate from actual content */
+  opacity: 1; /* Ensure consistent opacity across browsers */
+}
+
+/* Vendor-specific placeholder styles for better browser compatibility */
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #9ca3af;
+  font-style: italic;
+  opacity: 1;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: #9ca3af;
+  font-style: italic;
+  opacity: 1;
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: #9ca3af;
+  font-style: italic;
+  opacity: 1;
 }
 
 /* Style for disabled textarea */

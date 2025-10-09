@@ -670,6 +670,9 @@ hideMenu() {
     this.getTemplate();
     this.hidePanelWindow = true;
     
+    // Close the p-drawer panel
+    this.showPanelWindow = false;
+    
 
        // Find the element by its ID
       //  const phoneElement = document.getElementById('resumePhoneNumber');

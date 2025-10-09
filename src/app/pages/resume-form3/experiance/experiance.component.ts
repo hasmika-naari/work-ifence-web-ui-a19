@@ -1741,11 +1741,15 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
 
       this.editor = new Quill(this.editorContainer.nativeElement, {
         theme: 'snow',
-        placeholder: 'Job Description', // Set placeholder text
+        placeholder: 'Describe your responsibilities and achievements...', // Set placeholder text
         modules: {
           toolbar: [
-            ['bold', 'italic', 'underline'], // Text formatting
-            [{ list: 'ordered' }, { list: 'bullet' }] // Ordered and unordered lists
+            ['bold', 'italic', 'underline', 'strike'], // Text formatting
+            [{ 'header': [1, 2, 3, false] }], // Headers
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Lists
+            [{ 'indent': '-1' }, { 'indent': '+1' }], // Indentation
+            ['link'], // Links
+            ['clean'] // Remove formatting
           ],
         },
       });

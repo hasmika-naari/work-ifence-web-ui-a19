@@ -675,9 +675,9 @@ Subscribe CSS
 }
 
 .error{
-    background-color: rgba(255, 68, 0, 0.966) !important;
-    color: white !important;
-
+    // background-color: rgba(255, 68, 0, 0.966) !important;
+    color: rgba(255, 68, 0, 0.966) !important;
+ background-color: transparent;
     .mat-simple-snackbar-action{
         span{
             color: white !important;
@@ -718,7 +718,9 @@ Subscribe CSS
     }
 
     .error {
-        background: #E53935 !important;
+        color: #E53935 !important;
+        background: transparent !important;
+
     }
 }
 
