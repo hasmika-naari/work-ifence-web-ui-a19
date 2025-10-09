@@ -20,6 +20,7 @@ import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { InputNumberModule } from 'primeng/inputnumber';
+import {CalendarModule} from 'primeng/calendar';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
@@ -46,7 +47,7 @@ export interface DialogData {
      NgOptimizedImage,FooterComponent,
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule,
-    MatFormFieldModule,InputTextModule,TableModule,
+    MatFormFieldModule,InputTextModule,TableModule,CalendarModule,
     MatInputModule,ButtonModule,OverlayPanelModule,InputNumberModule,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule],
@@ -88,6 +89,8 @@ export class EducationComponent implements OnInit, OnDestroy {
   skills_list : {id : number, skills : String | null}[] = []
 
   selectedSkillItem! : {id : number | null, skills : String | null}
+
+  today: Date = new Date();
 
   private _formBuilder: FormBuilder = inject(FormBuilder);
   private userStore: UserStoreService = inject(UserStoreService);

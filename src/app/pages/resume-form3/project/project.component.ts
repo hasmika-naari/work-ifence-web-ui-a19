@@ -31,6 +31,9 @@ import { ResumeService } from 'src/app/services/resume.service';
 import Quill from 'quill';
 import { MatCardModule } from '@angular/material/card';
 import { SectionDesc } from 'src/app/services/store/user-store';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { TooltipModule } from 'primeng/tooltip';
 
 
 export interface DialogData {
@@ -49,6 +52,7 @@ export interface ProjectData{
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: {displayDefaultIndicatorType: false},
     },
+    MessageService
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
@@ -58,7 +62,7 @@ export interface ProjectData{
    MatFormFieldModule,InputTextModule,TableModule,
    MatInputModule,ButtonModule,OverlayPanelModule,
    MatButtonModule,AccordionModule,TextareaModule,
-   MatIconModule,MatExpansionModule, MatCardModule],
+   MatIconModule,MatExpansionModule, MatCardModule, ToastModule, TooltipModule],
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -139,6 +143,7 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       public templateService : TemplatesService, 
       public dialog: MatDialog,
       public resumeService : ResumeService,
+      private messageService: MessageService,
       @Inject(PLATFORM_ID) private platformId: Object) {
         effect(()=>{
           if(this.selectedProject().id){
@@ -1091,27 +1096,57 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     if(this.getEditorRawData().length > 0){
       this.is_projects_loading = true;
       const project_prompt = this.promptService.testing_project_desc_prompt(this.getEditorRawData());
-      this.resumeService.requestOpenAI({ "prompt" : project_prompt}).subscribe((res : any)=>{
-        console.log(res['choices'][0]['message']['content']);
-        
-        //store OpenAI response in our Backend. Need a table to store
-        let content = res['choices'][0]['message']['content'];
-        // let description = content.split("&&&");
-        // description[1] has suggestions to improve. need to show it to the user.
-        this.projectListPoints = this.handleStringInput(content); // JSON.parse(content)
-        // this.projectForm.controls['description'].setValue(this.projectListPoints.join("\n"))
-        // if(this.isJobDescAISuggestionsPresent()){
-        //   let response : ProjectData = {bulletPoints : this.projectListPoints.slice(0,this.projectListPoints.length-1), ats_score : this.projectListPoints[this.projectListPoints.length - 1]}
-        //   this.projectAIResponses.push(response);
-        // }
-        // else{
-        //   let response : ProjectData = {bulletPoints : this.projectListPoints, ats_score : ""}
-        //   this.projectAIResponses.push(response);
-        // }
-        this.is_projects_loading = false;
-        this.openPanelWindow();
+      this.resumeService.requestOpenAI({ "prompt" : project_prompt}).subscribe({
+        next: (res : any) => {
+          console.log(res['choices'][0]['message']['content']);
+          
+          //store OpenAI response in our Backend. Need a table to store
+          let content = res['choices'][0]['message']['content'];
+          // let description = content.split("&&&");
+          // description[1] has suggestions to improve. need to show it to the user.
+          this.projectListPoints = this.handleStringInput(content); // JSON.parse(content)
+          // this.projectForm.controls['description'].setValue(this.projectListPoints.join("\n"))
+          // if(this.isJobDescAISuggestionsPresent()){
+          //   let response : ProjectData = {bulletPoints : this.projectListPoints.slice(0,this.projectListPoints.length-1), ats_score : this.projectListPoints[this.projectListPoints.length - 1]}
+          //   this.projectAIResponses.push(response);
+          // }
+          // else{
+          //   let response : ProjectData = {bulletPoints : this.projectListPoints, ats_score : ""}
+          //   this.projectAIResponses.push(response);
+          // }
+          this.is_projects_loading = false;
+          this.openPanelWindow();
+          
+          // Show success message
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Success', 
+            detail: 'AI suggestions generated successfully!',
+            life: 3000
+          });
+        },
+        error: (error) => {
+          console.error('Error optimizing project:', error);
+          this.is_projects_loading = false;
+          
+          // Show error message
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'Failed to generate AI suggestions. Please try again.',
+            life: 5000
+          });
+        }
       });
       
+    } else {
+      // Show warning if no content to optimize
+      this.messageService.add({ 
+        severity: 'warn', 
+        summary: 'Warning', 
+        detail: 'Please add some project description content before using BotBro.',
+        life: 4000
+      });
     }
   }
 
@@ -1141,14 +1176,37 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     this.optimize_index = index;
     const experience_prompt = this.promptService.optimize_project_point(this.projectListPoints[index]);
       console.log(experience_prompt);
-      this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe((res : any)=>{
-        console.log(res['choices'][0]['message']['content']);
-        
-        //store OpenAI response in our Backend. Need a table to store
-        let content = res['choices'][0]['message']['content'];
-        this.projectListPoints[index] = content
-        this.optimize_index = -1;
-        this.action_taken = ''
+      this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe({
+        next: (res : any) => {
+          console.log(res['choices'][0]['message']['content']);
+          
+          //store OpenAI response in our Backend. Need a table to store
+          let content = res['choices'][0]['message']['content'];
+          this.projectListPoints[index] = content
+          this.optimize_index = -1;
+          this.action_taken = ''
+          
+          // Show success message
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Optimized', 
+            detail: 'Suggestion optimized successfully!',
+            life: 3000
+          });
+        },
+        error: (error) => {
+          console.error('Error optimizing response:', error);
+          this.optimize_index = -1;
+          this.action_taken = ''
+          
+          // Show error message
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'Failed to optimize suggestion. Please try again.',
+            life: 5000
+          });
+        }
       });
   }
 
@@ -1418,13 +1476,18 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   async ngAfterViewInit(): Promise<void> {
     if (isPlatformBrowser(this.platformId)) {
       const Quill = (await import('quill')).default; // Dynamically import Quill
+
       this.editor = new Quill(this.editorContainer.nativeElement, {
         theme: 'snow',
-        placeholder: 'Project Description', // Set placeholder text
+        placeholder: 'Describe your project details and achievements...', // Set placeholder text
         modules: {
           toolbar: [
-            ['bold', 'italic', 'underline'],
-            [{ list: 'ordered' }, { list: 'bullet' }]
+            ['bold', 'italic', 'underline', 'strike'], // Text formatting
+            [{ 'header': [1, 2, 3, false] }], // Headers
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Lists
+            [{ 'indent': '-1' }, { 'indent': '+1' }], // Indentation
+            ['link'], // Links
+            ['clean'] // Remove formatting
           ],
         },
       });
@@ -1443,7 +1506,6 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     this.editor.clipboard.dangerouslyPasteHTML(this.selectedProject().original_description_html);
-
   }
 
   getEditorRawData(): string {

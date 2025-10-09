@@ -1,4 +1,6 @@
 <div class="resume-form-container" style="overflow-y:auto;padding-bottom:50px;">
+    <p-toast position="top-center" [preventOpenDuplicates]="true" [preventDuplicates]="true"></p-toast>
+    
     <div class="col-12"  >
         <form [formGroup]="projectForm" >
             <div class="form-row form-row--single">
@@ -79,46 +81,49 @@
                     }
                 </div> -->
 
-                <div class="field">
-                    <label>Project Description</label>
-                    <div class="editor-wrapper" style="position: relative;">
-                        <div #editorContainer id="editorContainer" style="height: 250px;color: black;"></div>
-                        <div style="position: absolute; top: 5px; right: 10px; z-index: 100;">
-                            @if(!is_projects_loading){
-                                <button matTooltip="Use BOTbro AI & Optimize"
-                                    class="d-flex ai-btn" (click)="optimizeProject()" >
-                                        <p-icon class="pi pi-sparkles" 
-                                            style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
-                                </button>
-                            }
-                            @if(is_projects_loading){
-                                <button matTooltip="Use BOTbro AI & Optimize"
-                                    class="d-flex ai-btn">
-                                        <span class="use-ai-btn d-flex">
-                                            <div class="progress-container">
-                                              <div class="progress-bar"></div>
-                                              <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
-                                            </div>
-                                        </span>
-                                        <span>USE BOTBRO</span>
-                                </button>
-                            }
-                        </div>
+                <div class="form-row form-row--single project-description" style="position: relative;">
+                    @if(!is_projects_loading){
+                        <button matTooltip="Use BOTbro AI & Optimize" 
+                            class="d-flex ai-btn" 
+                            type="button"
+                            (click)="optimizeProject()" 
+                            style="position: absolute; top: -15px; right: 0px; z-index: 100;">
+                            <p-icon class="pi pi-sparkles" style="font-size: medium; margin-right: 5px; color: white;"></p-icon>
+                            USE BOTBRO
+                        </button>
+                    }
+                    @if(is_projects_loading){
+                        <button matTooltip="Use BOTbro AI & Optimize"
+                            class="d-flex ai-btn"
+                            type="button"
+                            style="position: absolute; top: -15px; right: 0px; z-index: 100;">
+                            <span class="use-ai-btn d-flex">
+                                <div class="progress-container">
+                                    <div class="progress-bar"></div>
+                                    <i class="pi pi-sparkles pi-sparkles-pos"></i>
+                                </div>
+                            </span>
+                            <span>USE BOTBRO</span>
+                        </button>
+                    }
+                    <div class="field">
+                        <label>Project Description</label>
+                        <div #editorContainer id="editorContainer"></div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-actions">
-                <p-button label="Primary" [raised]="true" severity="danger" size="small"
-                    (click)="saveAndContinue()" [disabled]="projectForm.invalid"  
-                    [tooltip]="'Add to Resume Summary'"
-                    tooltipPosition="top"
-                    tooltipStyleClass="custom-tooltip">
-                        <ng-template pTemplate="content">
-                            <p-icon class="pi pi-check"></p-icon>
-                            Add to resume
-                        </ng-template>
-                </p-button>
+                <div class="form-actions">
+                    <button 
+                        type="button" 
+                        class="action-btn action-btn--primary" 
+                        (click)="saveAndContinue()" 
+                        [disabled]="projectForm.invalid"
+                        matTooltip="Add to Resume"
+                        tooltipPosition="top">
+                        <i class="pi pi-check"></i>
+                        Add to Resume
+                    </button>
+                </div>
             </div>
         </form>
     </div>

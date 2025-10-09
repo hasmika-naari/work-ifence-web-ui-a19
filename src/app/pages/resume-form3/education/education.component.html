@@ -104,16 +104,17 @@
 
             <div class="field">
                 <label for="graduation_year">Graduation Date *</label>
-                <input 
-                    id="graduation_year" 
-                    type="text" 
-                    pInputText 
-                    formControlName="graduation_year" 
+                <p-calendar 
+                    inputId="graduation_year"
+                    formControlName="graduation_year"
+                    view="month" 
+                    dateFormat="mm/yy"
+                    [maxDate]="today"
+                    [showIcon]="true"
+                    iconDisplay="input"
                     placeholder="MM/YYYY"
-                />
-                <small class="error" *ngIf="educationForm.get('graduation_year')?.hasError('pattern') && (educationForm.get('graduation_year')?.dirty || educationForm.get('graduation_year')?.touched)">
-                    Please enter a valid date (MM/YYYY).
-                </small>
+                    [readonlyInput]="true">
+                </p-calendar>
                 <small class="error" *ngIf="educationForm.get('graduation_year')?.hasError('required') && (educationForm.get('graduation_year')?.dirty || educationForm.get('graduation_year')?.touched)">
                     Required.
                 </small>

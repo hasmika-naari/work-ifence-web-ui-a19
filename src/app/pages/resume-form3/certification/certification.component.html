@@ -72,38 +72,29 @@
         <div class="form-row form-row--double">
             <div class="field">
                 <label for="issued_month">Issued Month</label>
-                <mat-form-field class="w-100" appearance="outline">
-                    <mat-select placeholder="Month" formControlName="issued_month">
-                        <mat-option *ngFor="let month of months" [value]="month.title">
-                            {{month.title}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <p-dropdown 
+                    id="issued_month"
+                    formControlName="issued_month"
+                    [options]="months"
+                    optionLabel="title"
+                    optionValue="title"
+                    placeholder="Select Month">
+                </p-dropdown>
             </div>
 
             <div class="field">
                 <label for="issued_year">Year *</label>
-                <mat-form-field class="w-100" appearance="outline">
-                    <input type="text"
-                           placeholder="Pick Year"
-                           aria-label="IssuedYear" matInput
-                            id="issued_year" #selctedYear formControlName="issued_year"
-                           [matAutocomplete]="auto">
-                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                            @for (syear of yearsAllowedFiltered; track syear) {
-                                    <mat-option [value]="syear">{{syear}}</mat-option>
-                            }
-                    </mat-autocomplete>
-                    <mat-error *ngIf="certifyForm.get('issued_year')?.hasError('required')">
-                        Required.
-                    </mat-error>
-                    <mat-error *ngIf="certifyForm.get('issued_year')?.hasError('pattern') && !certifyForm.get('issued_year')?.hasError('required')">
-                        Enter a valid year (e.g., 2024).
-                    </mat-error>
-                    <mat-error *ngIf="certifyForm.get('issued_year')?.hasError('invalidYear') && !certifyForm.get('issued_year')?.hasError('required')">
-                        Select Valid Year
-                    </mat-error>
-                </mat-form-field>
+                <p-dropdown 
+                    id="issued_year"
+                    formControlName="issued_year"
+                    [options]="yearOptions"
+                    placeholder="Select Year"
+                    [filter]="true"
+                    filterBy="label">
+                </p-dropdown>
+                <small class="error" *ngIf="certifyForm.get('issued_year')?.hasError('required') && (certifyForm.get('issued_year')?.dirty || certifyForm.get('issued_year')?.touched)">
+                    Required.
+                </small>
             </div>
         </div>
 

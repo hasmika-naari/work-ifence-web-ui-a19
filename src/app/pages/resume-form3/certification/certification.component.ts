@@ -21,6 +21,7 @@ import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { DropdownModule } from 'primeng/dropdown';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
@@ -51,7 +52,7 @@ export interface DialogData {
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule, MatAutocompleteModule,
     MatFormFieldModule,InputTextModule,TableModule,InputNumberModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,AutoCompleteModule,
+    MatInputModule,ButtonModule,OverlayPanelModule,AutoCompleteModule,DropdownModule,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule, MatSelectModule],
   templateUrl: './certification.component.html',
@@ -127,6 +128,7 @@ export class CertificationComponent implements OnInit, OnDestroy {
 
   yearsAllowed: any = [];
   yearsAllowedFiltered: any = [];
+  yearOptions: {label: string, value: number}[] = [];
 
   constructor(
       private router : Router, 
@@ -144,8 +146,9 @@ export class CertificationComponent implements OnInit, OnDestroy {
 
         let currentYear: number = new Date().getFullYear() + 1;
         for(let i = 1; i < 101; i++){
-          
-          this.yearsAllowed.push(+currentYear - i);
+          const year = +currentYear - i;
+          this.yearsAllowed.push(year);
+          this.yearOptions.push({label: year.toString(), value: year});
           this.yearsAllowedFiltered = [...this.yearsAllowed];
         }
       }
