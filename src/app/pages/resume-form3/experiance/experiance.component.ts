@@ -22,6 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import {CalendarModule} from 'primeng/calendar';
+import {DropdownModule} from 'primeng/dropdown';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
@@ -86,7 +87,7 @@ export interface WorkData{
      NgOptimizedImage,FooterComponent, MatTooltipModule,
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule,MatDatepickerModule,
-    MatFormFieldModule,InputTextModule,TableModule,CalendarModule,
+    MatFormFieldModule,InputTextModule,TableModule,CalendarModule,DropdownModule,
     MatInputModule,ButtonModule,OverlayPanelModule,PanelModule,
     MatButtonModule,AccordionModule,TextareaModule,TooltipModule,
     MatIconModule,MatExpansionModule, MatCheckboxModule, MatCardModule, ProgressSpinnerModule, MatProgressSpinnerModule, ToastModule],

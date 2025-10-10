@@ -15,11 +15,171 @@
   }
 }
 
+// PrimeNG Editor Styles
+.editor-wrapper {
+  position: relative;
+  
+  .editor-container {
+    width: 100%;
+    
+    ::ng-deep .p-editor {
+      .p-editor-toolbar {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        min-height: 60px; // Increased minimum height to accommodate larger button
+        
+        // Group standard Quill formats on the left
+        .ql-formats:not(.ai-button-container) {
+          margin-right: 0.5rem;
+        }
+        
+        .ai-button-container {
+          margin-left: auto;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          min-width: 150px; // Increased to accommodate larger button
+          flex-shrink: 0; // Prevent shrinking
+          padding-left: 1rem; // Add left padding to separate from other tools
+          
+          .ai-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem; // Increased top/bottom padding significantly
+            margin: 0.25rem; // Add margin for proper spacing
+            border-radius: 0.5rem; // Slightly larger border radius
+            font-size: 0.875rem;
+            font-weight: 600; // Slightly bolder text
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap; // Prevent text wrapping
+            min-width: 140px; // Increased minimum width
+            min-height: 44px; // Ensure minimum height for better touch target
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1); // Subtle shadow
+            
+            &:hover {
+              transform: translateY(-2px); // Slightly more hover effect
+              box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+              background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%); // Darker gradient on hover
+            }
+            
+            &:active {
+              transform: translateY(-1px);
+              box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+            }
+            
+            i {
+              font-size: 1rem; // Slightly larger icon
+            }
+          }
+          
+          .use-ai-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem; // Match the ai-btn padding for consistency
+            margin: 0.25rem; // Match the ai-btn margin
+            border-radius: 0.5rem; // Match the ai-btn border radius
+            cursor: not-allowed;
+            white-space: nowrap;
+            min-width: 140px; // Match the ai-btn width
+            min-height: 44px; // Match the ai-btn height
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(108, 117, 125, 0.1); // Subtle shadow to match
+            animation: pulse 2s ease-in-out infinite; // Add pulse animation
+            
+            .progress-container {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              
+              .progress-bar {
+                width: 16px;
+                height: 16px;
+                border: 2px solid #ffffff;
+                border-top: 2px solid transparent;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+              }
+            }
+          }
+        }
+      }
+      
+      .p-editor-content {
+        .ql-editor {
+          min-height: 250px;
+          font-size: 0.95rem;
+          line-height: 1.5;
+          
+          &::before {
+            font-style: italic;
+            color: #6c757d;
+          }
+        }
+      }
+    }
+  }
+}
+
+// PrimeNG Dropdown Styles
+::ng-deep .p-dropdown {
+  width: 100%;
+  
+  .p-dropdown-label {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+  
+  &.p-focus {
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+  }
+}
+
 .hint-text {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.875rem;
   color: rgba(94, 108, 132, 0.6);
+}
+
+// Responsive design for editor toolbar
+@media (max-width: 768px) {
+  ::ng-deep .p-editor .p-editor-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem; // Increased gap for better spacing
+    padding: 1rem; // Increased padding on mobile
+    
+    .ai-button-container {
+      width: 100%;
+      margin-left: 0;
+      justify-content: flex-end;
+      padding-left: 0;
+      
+      .ai-btn, .use-ai-btn {
+        width: auto;
+        min-width: 140px;
+        padding: 1rem 1.5rem; // Maintain consistent generous padding on mobile
+        min-height: 44px; // Maintain minimum height on mobile
+      }
+    }
+  }
 }
 
 .container{
@@ -674,3 +834,16 @@
   .ai-btn:hover{
     transform: scale(1.05); /* Slight zoom effect on hover */
   }
+
+// Loading spinner animation
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Pulse animation for loading button
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}

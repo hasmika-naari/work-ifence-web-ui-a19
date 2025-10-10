@@ -4,36 +4,71 @@
             <div class="form-row form-row--single">
                 <div class="field">
                     <label for="experience">Experience in years</label>
-                    <mat-form-field class="w-100" appearance="outline" style="width: 100%;">
-                        <mat-select id="experience" placeholder="Experience">
-                            <mat-option *ngFor="let cat of experienceCategory" [value]="cat">
-                                {{cat}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <p-dropdown 
+                        id="experience" 
+                        formControlName="experience_level"
+                        [options]="experienceOptions" 
+                        placeholder="Select Experience Level"
+                        optionLabel="label"
+                        optionValue="value"
+                        [style]="{'width': '100%'}"
+                        [showClear]="false">
+                    </p-dropdown>
                 </div>
-                <div class="field" style="position: relative;">
+                <div class="field editor-wrapper">
                     <label for="profile_summary">Job Description</label>
-                    <textarea id="profile_summary" pInputTextarea #profileSummary formControlName="profile_summary" 
-                              rows="12" placeholder="Job Description" style="width: 100%;"></textarea>
-                    <small class="hint-text">Note: Use Job description to find skills and ATS keywords.</small>
-                    <div style="position: absolute; top: 5px; right: 10px; z-index: 10;">
-                        @if(!is_summary_loading){
-                            <button class="d-flex ai-btn" (click)="optimizeText()">
-                               <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
-                            </button>
-                        }
-                        @if(is_summary_loading){
-                            <button class="use-ai-btn d-flex">
-                                <div class="progress-container">
-                                    <div class="progress-bar"></div>
-                                    <i class="pi pi-reddit pi-reddit-pos"></i>
-                                </div>
-                            </button>
-                        }
+                    <div class="editor-container">
+                        <p-editor 
+                            id="profile_summary" 
+                            formControlName="profile_summary" 
+                            [style]="{'height':'320px'}"
+                            placeholder="Enter job description here...">
+                            <ng-template pTemplate="header">
+                                <span class="ql-formats">
+                                    <button type="button" class="ql-bold" aria-label="Bold"></button>
+                                    <button type="button" class="ql-italic" aria-label="Italic"></button>
+                                    <button type="button" class="ql-underline" aria-label="Underline"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <select class="ql-header">
+                                        <option selected></option>
+                                        <option value="1"></option>
+                                        <option value="2"></option>
+                                        <option value="3"></option>
+                                        <option value="4"></option>
+                                        <option value="5"></option>
+                                        <option value="6"></option>
+                                    </select>
+                                </span>
+                                <span class="ql-formats">
+                                    <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
+                                    <button type="button" class="ql-list" value="bullet" aria-label="Unordered List"></button>
+                                </span>
+                                <span class="ql-formats ai-button-container">
+                                    @if(!is_summary_loading){
+                                        <button type="button" class="d-flex ai-btn" (click)="optimizeText()">
+                                           <i class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></i>  
+                                           USE BOTBRO
+                                        </button>
+                                    }
+                                    @if(is_summary_loading){
+                                        <button type="button" class="use-ai-btn d-flex">
+                                            <div class="progress-container">
+                                                <div class="progress-bar"></div>
+                                                <i class="pi pi-reddit pi-reddit-pos"></i>
+                                            </div>
+                                        </button>
+                                    }
+                                </span>
+                            </ng-template>
+                        </p-editor>
                     </div>
+                    <small class="hint-text">Note: Use Job description to find skills and ATS keywords.</small>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Toast component for error/success messages -->
+<p-toast></p-toast>
