@@ -10,7 +10,7 @@
                     pInputText 
                     #role 
                     formControlName="section_title" 
-                    placeholder="e.g., Relevant Coursework"
+                    placeholder="Enter section title"
                 />
                 <small class="error" *ngIf="courseWorkForm.get('section_title')?.hasError('required') && (courseWorkForm.get('section_title')?.dirty || courseWorkForm.get('section_title')?.touched)">
                     Required.
@@ -20,7 +20,7 @@
 
         <div class="form-row form-row--single">
             <div class="field">
-                <label for="coursework">Course Work</label>
+                <label for="coursework">Course Name</label>
                 <div style="position: relative;">
                     <input 
                         id="coursework" 

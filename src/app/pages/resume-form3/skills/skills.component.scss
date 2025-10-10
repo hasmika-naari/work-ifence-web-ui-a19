@@ -1,4 +1,58 @@
-@import '../shared-form-styles';
+// Import shared form field styling
+@import '../_shared-form-styles';
+
+// Placeholder styling for input fields
+input[pInputText]::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+  font-style: italic;
+}
+
+input[pInputText]::-webkit-input-placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+  font-style: italic;
+}
+
+input[pInputText]::-moz-placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+  font-style: italic;
+}
+
+input[pInputText]:-ms-input-placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+  font-style: italic;
+}
+
+// Section title autocomplete styling
+:host ::ng-deep .section-autocomplete {
+  .mat-mdc-autocomplete-panel {
+    border-radius: 0.75rem;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    margin-top: 0.25rem;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .mat-mdc-option {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: #1f2a37;
+    
+    &:hover {
+      background-color: rgba(240, 91, 69, 0.08);
+      color: var(--mainColor, #f05b45);
+    }
+    
+    &.mdc-list-item--selected {
+      background-color: rgba(240, 91, 69, 0.14);
+      color: var(--mainColor, #f05b45);
+    }
+  }
+}
 
 .resume-form-container {
   padding: 1.5rem 1rem;

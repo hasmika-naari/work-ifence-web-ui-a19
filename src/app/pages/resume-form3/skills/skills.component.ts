@@ -9,6 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
@@ -55,7 +56,7 @@ export interface Skill {
      NgOptimizedImage,FooterComponent,
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule, DragDropModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,
+    MatInputModule,ButtonModule,OverlayPanelModule,MatTooltipModule,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule, MatAutocompleteModule],
   templateUrl: './skills.component.html',
@@ -63,6 +64,8 @@ export interface Skill {
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
+
+  @ViewChild('sectionAuto') sectionAutocomplete!: MatAutocomplete;
 
   
 
@@ -152,6 +155,32 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     section_title : ['Skills', Validators.required]
   });
 
+  // Skill section suggestions
+  sectionOptions: string[] = [
+    'Programming Languages',
+    'Frameworks & Libraries', 
+    'DevOps & Cloud',
+    'Databases',
+    'Web Technologies',
+    'Mobile Development',
+    'Design & UI/UX',
+    'Data Science & Analytics',
+    'Machine Learning & AI',
+    'Software Testing',
+    'Operating Systems',
+    'Version Control',
+    'Project Management',
+    'Cybersecurity',
+    'Network & Infrastructure',
+    'Business Intelligence',
+    'APIs & Integration',
+    'Technical Writing',
+    'Languages',
+    'Certifications'
+  ];
+
+  filteredSectionOptions!: Observable<string[]>;
+
   subs: Array<Subscription> = [];
   overlayVisible = true;
 
@@ -209,6 +238,13 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     this.getAISkills();
     console.log(this.sectionName);
     this.skillsForm.controls['skillsv2'].disable();
+    
+    // Initialize section title autocomplete
+    this.filteredSectionOptions = this.skillsForm.controls['section_title'].valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterSectionOptions(value || ''))
+    );
+    
     this.subs.push(this.router.events.subscribe(() => {
       const currentUrl = this.router.url;
       if (currentUrl.includes('/resumes/resume')) {
@@ -238,6 +274,26 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     const filterValue = value.toLowerCase();
 
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
+  private _filterSectionOptions(value: string): string[] {
+    if (!value || value.trim() === '') {
+      return this.sectionOptions.slice(); // Return all options for empty input
+    }
+    
+    const filterValue = value.toLowerCase();
+    return this.sectionOptions.filter(option => 
+      option.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onSectionTitleFocus(): void {
+    // Simple approach: just clear the field to show all suggestions
+    this.skillsForm.controls['section_title'].setValue('');
+  }
+
+  displayFn(value: string): string {
+    return value || '';
   }
 
   setSkillsValues(): void {

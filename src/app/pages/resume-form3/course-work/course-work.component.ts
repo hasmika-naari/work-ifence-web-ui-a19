@@ -92,7 +92,7 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   courseWorkForm = this._formBuilder.group({
     coursework: [''],
-    section_title : ['Coursework', Validators.required] 
+    section_title : ['', Validators.required] 
   });
 
   subs: Array<Subscription> = [];
@@ -137,7 +137,7 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
         }
       })
   }
-  this.courseWorkForm.controls['section_title'].setValue(section_title??'Coursework')
+  this.courseWorkForm.controls['section_title'].setValue(section_title??'')
 }
 
 
@@ -156,7 +156,7 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
       this.multipleSections().map((e : SectionDesc[])=>{
         e.map((section : SectionDesc)=>{
           if(section.section == 'RELEVANT_COURSEWORK'){
-            section.editable_section_title = this.courseWorkForm.controls['section_title'].value?? 'Coursework'
+            section.editable_section_title = this.courseWorkForm.controls['section_title'].value?? ''
           }
         })
       })
@@ -165,7 +165,7 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
     else{
       this.sections().map((section : SectionDesc)=>{
           if(section.section == 'RELEVANT_COURSEWORK'){
-            section.editable_section_title = this.courseWorkForm.controls['section_title'].value?? 'Coursework'
+            section.editable_section_title = this.courseWorkForm.controls['section_title'].value?? ''
           }
         })
         this.userStore.setResumeSections(this.sections())

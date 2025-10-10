@@ -6,7 +6,25 @@
             <div class="form-row form-row--single">
               <div class="field">
                     <label for="section_title">Section title <span class="required">*</span></label>
-                    <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
+                    <input 
+                        id="section_title" 
+                        type="text" 
+                        pInputText 
+                        formControlName="section_title" 
+                        placeholder="Section Title"
+                        [matAutocomplete]="sectionAuto"
+                        (focus)="onSectionTitleFocus()"
+                        (click)="onSectionTitleFocus()"
+                        #sectionInput>
+                    <mat-autocomplete 
+                        #sectionAuto="matAutocomplete" 
+                        class="section-autocomplete"
+                        [autoActiveFirstOption]="false"
+                        [displayWith]="displayFn">
+                        <mat-option *ngFor="let option of filteredSectionOptions | async" [value]="option">
+                            {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
                     <small class="error" *ngIf="skillsForm.get('section_title')?.hasError('required') && skillsForm.get('section_title')?.touched">
                         Required.
                     </small>
@@ -94,17 +112,17 @@
                 
             </div>
         </form>
-        <div class="col-12 mt-3 text-right text-end"  >
-            <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                (click)="saveAndContinue()"   
-                [tooltip]="'Add to Resume Summary'"
-                tooltipPosition="top" [disabled]="fruits && fruits.length == 0"
-                tooltipStyleClass="custom-tooltip">
-                    <ng-template pTemplate="content" >
-                        <p-icon class="pi pi-check" ></p-icon>
-                        Add to resume
-                    </ng-template>
-            </p-button>
+        <div class="form-actions">
+            <button 
+                type="button" 
+                class="action-btn action-btn--primary" 
+                (click)="saveAndContinue()" 
+                [disabled]="fruits && fruits.length == 0"
+                matTooltip="Add to Resume"
+                tooltipPosition="top">
+                <i class="pi pi-check"></i>
+                Add to Resume
+            </button>
         </div>
     </div>
    
