@@ -1,6 +1,9 @@
 // Import shared form field styling
 @import '../shared-form-styles';
 
+// Import Quill styles
+@import 'quill/dist/quill.snow.css';
+
 :host {
   font-family: 'Poppins', sans-serif;
 }
@@ -11,6 +14,12 @@
   }
 }
 
+:host {
+  --mat-mdc-typescale-body2-font-size: 14px;
+  --mat-mdc-input-container-padding-vertical: 7px;
+  --mat-mdc-input-container-height: 36px;
+}
+
 // Form container with proper padding
 .resume-form-container {
   padding: 1.5rem 1rem;
@@ -19,14 +28,94 @@
 
 #editorContainer {
   border: 1px solid rgba(148, 163, 184, 0.28);
-  padding: 10px;
+  padding: 0;
   border-radius: 0.75rem;
   background-color: #fff;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 300px;
+  overflow: visible;
 }
 
-#editorContainer:focus-within {
-  border-color: rgba(59, 130, 246, 0.55);
+// Quill editor styling
+:host ::ng-deep #editorContainer {
+  .ql-container.ql-snow {
+    border: none !important;
+    font-family: inherit;
+    font-size: 1rem;
+  }
+  
+  .ql-editor {
+    min-height: 220px;
+    padding: 20px !important;
+    color: #1f2a37;
+    line-height: 1.6;
+    
+    &.ql-blank::before {
+      color: #9ca3af;
+      font-style: italic;
+      left: 20px !important;
+      right: 20px !important;
+      top: 20px !important;
+    }
+    
+    p {
+      margin-bottom: 0.5em;
+      line-height: 1.6;
+    }
+    
+    ul, ol {
+      margin-bottom: 0.5em;
+      padding-left: 1.5em;
+      
+      li {
+        line-height: 1.6;
+        margin-bottom: 0.25em;
+      }
+    }
+    
+    h1, h2, h3 {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      font-weight: 600;
+    }
+    
+    a {
+      color: #3b82f6;
+      text-decoration: underline;
+    }
+  }
+  
+  .ql-toolbar.ql-snow {
+    border: none !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2) !important;
+    padding: 10px 12px !important;
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    background-color: #f8fafc;
+    
+    .ql-formats {
+      margin-right: 8px;
+    }
+    
+    button {
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: rgba(148, 163, 184, 0.1);
+      }
+      
+      &.ql-active {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+      }
+    }
+  }
+  
+  &:focus-within {
+    border-color: var(--mainColor, #f05b45);
+    box-shadow: 0 0 0 2px rgba(240, 91, 69, 0.08);
+  }
 }
 
 .container{

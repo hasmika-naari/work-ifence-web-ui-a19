@@ -34,16 +34,16 @@
             </div>
 
             <div class="form-actions">
-                <p-button label="Primary" [raised]="true" severity="danger" size="small"
-                    (click)="saveAndContinue()" [disabled]="isButtonDisabled || is_summary_loading"  
-                    [tooltip]="'Add to Resume Summary'"
-                    tooltipPosition="top"
-                    tooltipStyleClass="custom-tooltip">
-                        <ng-template pTemplate="content">
-                            <p-icon class="pi pi-check"></p-icon>
-                            Add to resume
-                        </ng-template>
-                </p-button>
+                <button 
+                    type="button" 
+                    class="action-btn action-btn--primary" 
+                    (click)="saveAndContinue()" 
+                    [disabled]="isButtonDisabled || is_summary_loading"
+                    matTooltip="Add to Resume"
+                    tooltipPosition="top">
+                    <i class="pi pi-check"></i>
+                    Add to Resume
+                </button>
             </div>
         </form>
     </div>
@@ -100,3 +100,6 @@
         </div>
     </div>
 </div>
+
+<!-- Toast component for error/success messages -->
+<p-toast></p-toast>

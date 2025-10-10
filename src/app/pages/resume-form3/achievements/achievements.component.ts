@@ -9,6 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
@@ -51,7 +52,7 @@ export interface DialogData {
      NgOptimizedImage,FooterComponent,
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,
+    MatInputModule,ButtonModule,OverlayPanelModule,MatTooltipModule,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule],
   templateUrl: './achievements.component.html',
@@ -267,17 +268,21 @@ setCertification(){
   async ngAfterViewInit(): Promise<void> {
     if (isPlatformBrowser(this.platformId)) {
       const Quill = (await import('quill')).default; // Dynamically import Quill
+
       this.editor = new Quill(this.editorContainer.nativeElement, {
         theme: 'snow',
-        placeholder: this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'?'Achievements' : 'Certifications', // Set placeholder text
+        placeholder: this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'? 'Describe your achievements and accomplishments...' : 'Describe your certifications and qualifications...', // Set placeholder text
         modules: {
           toolbar: [
-            ['bold', 'italic', 'underline'], // Text formatting
-            [{ list: 'ordered' }, { list: 'bullet' }] // Ordered and unordered lists
+            ['bold', 'italic', 'underline', 'strike'], // Text formatting
+            [{ 'header': [1, 2, 3, false] }], // Headers
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Lists
+            [{ 'indent': '-1' }, { 'indent': '+1' }], // Indentation
+            ['link'], // Links
+            ['clean'] // Remove formatting
           ],
         },
       });
-
 
       // Sync editor achievements with FormControl
       this.editor.on('text-change', () => {

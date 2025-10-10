@@ -15,12 +15,12 @@
                         [matAutocomplete]="sectionAuto"
                         (focus)="onSectionTitleFocus()"
                         (click)="onSectionTitleFocus()"
+                        (input)="onSectionTitleInput($event)"
                         #sectionInput>
                     <mat-autocomplete 
                         #sectionAuto="matAutocomplete" 
                         class="section-autocomplete"
-                        [autoActiveFirstOption]="false"
-                        [displayWith]="displayFn">
+                        [autoActiveFirstOption]="false">
                         <mat-option *ngFor="let option of filteredSectionOptions | async" [value]="option">
                             {{option}}
                         </mat-option>
@@ -31,7 +31,7 @@
                 </div>
                 <div class="field" style="position: relative;">
                     <label for="skills">Skill</label>
-                    <input id="skills" type="text" pInputText formControlName="skills" placeholder="Skill">
+                    <input id="skills" type="text" pInputText formControlName="skills" placeholder="Skill" (keydown.enter)="addSkill()">
                     <span (click)="addSkill()" *ngIf="isVisible()" 
                           style="position: absolute; right: 12px; top: 38px; color: black; cursor: pointer; font-size: 14px; line-height: 17px; font-weight: 700;">
                         ADD

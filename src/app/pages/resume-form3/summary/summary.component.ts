@@ -9,6 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
@@ -30,6 +31,9 @@ import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { ResumeService } from 'src/app/services/resume.service';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import Quill from 'quill';
 import { MatCardModule } from '@angular/material/card';
 import { SectionDesc } from 'src/app/services/store/user-store';
@@ -51,6 +55,7 @@ export interface SummaryData{
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: {displayDefaultIndicatorType: false},
     },
+    MessageService
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
@@ -58,7 +63,7 @@ export interface SummaryData{
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,TooltipModule,MatCardModule,
     MatInputModule,ButtonModule,OverlayPanelModule,PanelModule,RippleModule,
-    MatButtonModule,AccordionModule,TextareaModule,
+    MatButtonModule,AccordionModule,TextareaModule,ToastModule,MatTooltipModule,ProgressSpinnerModule,
     MatIconModule,MatExpansionModule],
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
@@ -138,6 +143,7 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
       public templateService : TemplatesService, 
       public dialog: MatDialog,
       public resumeService : ResumeService,
+      private messageService: MessageService,
       @Inject(PLATFORM_ID) private platformId: Object) {
         effect(()=>{
           this.setSummaryValues()
@@ -794,22 +800,52 @@ openPanelWindow(){
      if(this.getEditorRawData().length > 0){
       this.is_summary_loading = true;
       const objective_prompt = this.promptService.final_optimized_profile_summary_prompt(this.getEditorRawData());
-      this.resumeService.requestOpenAI({ "prompt" : objective_prompt}).subscribe((res : any)=>{
-        console.log(res['choices'][0]['message']['content']);
-        //store OpenAI response in our Backend. Need a table to store
-        let content = res['choices'][0]['message']['content'];
-        this.profile_summary_genai = content;
-        // this.summaryForm.controls['profile_summary'].setValue(this.profile_summary_genai)
-        if(this.isJobDescAISuggestionsPresent()){
-          this.summaryAIResponses = content.split("###")[0]
-        }
-        else{
-          this.summaryAIResponses = content
-        }
+      this.resumeService.requestOpenAI({ "prompt" : objective_prompt}).subscribe({
+        next: (res : any) => {
+          console.log(res['choices'][0]['message']['content']);
+          //store OpenAI response in our Backend. Need a table to store
+          let content = res['choices'][0]['message']['content'];
+          this.profile_summary_genai = content;
+          // this.summaryForm.controls['profile_summary'].setValue(this.profile_summary_genai)
+          if(this.isJobDescAISuggestionsPresent()){
+            this.summaryAIResponses = content.split("###")[0]
+          }
+          else{
+            this.summaryAIResponses = content
+          }
 
-        this.is_summary_loading = false;
-        this.openPanelWindow()
+          this.is_summary_loading = false;
+          this.openPanelWindow();
+          
+          // Show success message
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'AI suggestions generated successfully!',
+            life: 3000
+          });
+        },
+        error: (error) => {
+          console.error('Error optimizing summary:', error);
+          this.is_summary_loading = false;
+          
+          // Show error message
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to generate AI suggestions. Please try again.',
+            life: 5000
+          });
+        }
       });
+     } else {
+       // Show warning if no content to optimize
+       this.messageService.add({
+         severity: 'warn',
+         summary: 'Warning',
+         detail: 'Please enter some content in the summary field before using AI optimization.',
+         life: 4000
+       });
      }
   }
 
@@ -832,14 +868,36 @@ openPanelWindow(){
   reoptimizeSummary(){
     this.action_taken = 'OPTIMIZE';
     const objective_prompt = this.promptService.final_optimized_profile_summary_prompt(this.summaryAIResponses);
-      this.resumeService.requestOpenAI({ "prompt" : objective_prompt}).subscribe((res : any)=>{
+    this.resumeService.requestOpenAI({ "prompt" : objective_prompt}).subscribe({
+      next: (res : any) => {
         console.log(res['choices'][0]['message']['content']);
         //store OpenAI response in our Backend. Need a table to store
         let content = res['choices'][0]['message']['content'];
         this.profile_summary_genai = content;
         this.summaryAIResponses = content;
-        this.action_taken = ''
-      });
+        this.action_taken = '';
+        
+        // Show success message
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Summary re-optimized successfully!',
+          life: 3000
+        });
+      },
+      error: (error) => {
+        console.error('Error re-optimizing summary:', error);
+        this.action_taken = '';
+        
+        // Show error message
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to re-optimize summary. Please try again.',
+          life: 5000
+        });
+      }
+    });
   }
 
   isJobDescAISuggestionsPresent() : boolean{

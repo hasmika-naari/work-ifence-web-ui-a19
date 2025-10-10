@@ -277,23 +277,37 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   }
 
   private _filterSectionOptions(value: string): string[] {
+    console.log('Filtering section options for value:', value);
+    // If value is null, undefined, or empty string, show all options
     if (!value || value.trim() === '') {
-      return this.sectionOptions.slice(); // Return all options for empty input
+      console.log('Returning all options:', this.sectionOptions);
+      return [...this.sectionOptions]; // Return a copy of all options
     }
     
-    const filterValue = value.toLowerCase();
-    return this.sectionOptions.filter(option => 
+    const filterValue = value.toLowerCase().trim();
+    const filtered = this.sectionOptions.filter(option => 
       option.toLowerCase().includes(filterValue)
     );
+    console.log('Filtered options:', filtered);
+    return filtered;
   }
 
   onSectionTitleFocus(): void {
-    // Simple approach: just clear the field to show all suggestions
-    this.skillsForm.controls['section_title'].setValue('');
+    console.log('Section title input focused');
+    // Trigger autocomplete by programmatically setting empty value
+    const control = this.skillsForm.controls['section_title'];
+    console.log('Current value before clearing:', control.value);
+    // Set to empty to trigger the filter with all options
+    control.setValue('');
+    console.log('Value after clearing:', control.value);
+    // Force change detection
+    this.cdr.detectChanges();
   }
 
-  displayFn(value: string): string {
-    return value || '';
+  onSectionTitleInput(event: any): void {
+    // This ensures the autocomplete works when typing
+    const value = event.target.value;
+    this.skillsForm.controls['section_title'].setValue(value);
   }
 
   setSkillsValues(): void {
