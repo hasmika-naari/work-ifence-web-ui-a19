@@ -9,12 +9,27 @@
 //     background-color: #fafafa;
 // }
 
-.job-tracker {
-    margin: 0 auto;
-    // padding: 20px;
-    // background-color: #fafafa !important;
-    position: relative;
+.job-tracker-wrapper {
+  height: 100vh;
+  width: 100%;
+  background-color: #f8fafc;
+  background-image:
+    radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
+    radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
+    radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
+    radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding-top: 65px; /* This should match your header's height */
+  box-sizing: border-box;
+}
 
+.job-tracker {
+    height: 100%;
+    overflow-y: hidden;
+    padding: 24px;
+    box-sizing: border-box;
+    padding-top: 0px !important;
 }
 
 h1 {
@@ -49,6 +64,11 @@ h1 {
     flex: 1;
     // background-color: #fafafa;
     padding: 10px;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 8px;
 }
 
 /* Section Header */
@@ -119,13 +139,29 @@ h1 {
   overflow-y: auto;
 }
 
-.cards {
-    height: 75vh !important;
+.cards,
+.interview-cards,
+.offer-cards,
+.not-choosen-cards {
+    height: 100%;
+    overflow-y: auto;
     padding: 5px !important;
     width: 100%;
-    // background-color: #fafafa;
     margin-top: 0px;
     padding-bottom: 100px;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+    }
 
     .job-app-details{
       h4{
@@ -136,84 +172,43 @@ h1 {
         opacity: 0.5 !important;
       }
     }
-
-    .footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between; /* Ensures left and right sections are aligned properly */
-      padding: 10px 16px; /* Adjust spacing as needed */
-    }
-    
-    .menu-button {
-      display: flex;
-      align-items: center;
-      gap: 5px; /* Adds spacing between text and icons */
-    }
-    
-    .job-url {
-      margin-left: 8px; /* Ensures proper spacing from the button */
-      text-decoration: none;
-      font-weight: 500;
-    }
 }
 
-.interview-cards {
-  padding: 10px 0;
-  height: 75vh !important;
-  padding: 5px !important;
-  width: 100%;
-
-  .job-app-details{
-    h4{
-      font-size: 1.1rem !important;
-    }
-    h5{
-      font-size: 1.1rem !important;
-      opacity: 0.5 !important;
-    }
-  }
+.job-tracker {
+    height: 100%;
+    overflow: hidden; /* Changed from auto to hidden */
+    padding: 24px;
+    box-sizing: border-box;
+    padding-top: 0px !important;
 }
 
-.offer-cards {
-  padding: 10px 0;
-  height: 75vh !important;
-  padding: 5px !important;
-  width: 100%;
-
-  .job-app-details{
-    h4{
-      font-size: 1.1rem !important;
-    }
-    h5{
-      font-size: 1.1rem !important;
-      opacity: 0.5 !important;
-    }
-  }
+.sections {
+    display: flex;
+    gap: 20px;
+    height: calc(100% - 70px); /* Adjust based on toolbar height */
 }
 
-.not-choosen-cards {
-  padding: 10px 0;
-  height: 75vh !important;
-  padding: 5px !important;
-  width: 100%;
-
-  .job-app-details{
-    h4{
-      font-size: 1.1rem !important;
-    }
-    h5{
-      font-size: 1.1rem !important;
-      opacity: 0.5 !important;
-    }
-  }
+.section {
+    flex: 1;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Added to contain children */
 }
 
-.cards::-webkit-scrollbar{
-  display: none;
-}
-
-.interview-cards::-webkit-scrollbar{
-  display: none;
+.outer-container,
+.interview-outer-container,
+.offer-outer-container,
+.not-choosen-outer-container {
+    flex-grow: 1;
+    overflow-y: hidden; /* Changed from auto to hidden */
+    display: flex;
+    flex-direction: column;
 }
 
 // .card {
@@ -927,4 +922,4 @@ h1 {
 }
 
 
-/// Drag Drop Styles END 
+/// Drag Drop Styles END
