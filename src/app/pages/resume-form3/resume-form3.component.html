@@ -1,8 +1,7 @@
 <div class="container-fluid">
     <!-- Left Column -->
-    <div
+        <div
       class="left-column"
-      [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow }"
     >
         <div  class="sticky-left-toolbox">
             <div class="ToolboxDesktop-module_toolboxContainer shadow-hover bg-surface fade-in">
@@ -120,57 +119,17 @@
                                         }</li>
                                 </ul>
                             </div>
+                                <div  class="ToolboxDesktop-module_separator"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             </div>
         </div>
-
-        <p-drawer 
-            [(visible)]="showPanelWindow" 
-            [position]="'left'" 
-            [style]="{'width': '35vw', 'min-width': '450px', 'max-width': '600px'}"
-            [showCloseIcon]="false"
-            [blockScroll]="true"
-        >
-            <ng-template pTemplate="header">
-                <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                    <h3 style="margin: 0;">{{ formLabel }}</h3>
-                    <p-button 
-                        icon="pi pi-times" 
-                        [rounded]="true" 
-                        [text]="true" 
-                        severity="danger"
-                        (onClick)="closePanelWindow($event)" 
-                    />
-                </div>
-            </ng-template>
-            
-            <ng-template pTemplate="content">
-                <div style="position: relative; height: calc(100vh - 120px); overflow-y: auto; overflow-x: hidden;">
-                    <app-resume-job-description (contact)="saveContact()" *ngIf="showJobDescriptionWindow"></app-resume-job-description>
-                    <app-resume-template-list (contact)="saveContact()" *ngIf="showResumeTemplateList"></app-resume-template-list>
-                    <app-resume-title (contact)="saveContact()" *ngIf="showResumeTitleWindow"></app-resume-title>
-                    <app-resume-experience (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngIf="showWorkExperianceDetailsWindow"></app-resume-experience>
-                    <app-resume-contact (contact)="saveContact()" *ngIf="showContactDetailsWindow"></app-resume-contact>
-                    <app-resume-project (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngIf="showProjectWorkDetailsWindow"></app-resume-project>
-                    <app-resume-education (contact)="saveContact()" *ngIf="showEducationDetailsWindow"></app-resume-education>
-                    <app-resume-certificate (contact)="saveContact()" *ngIf="showCertificationsDetailsWindow"></app-resume-certificate>
-                    <app-resume-course-work [courseValue]="courseWorkCount" (contact)="saveContact()" *ngIf="showCourseWorkDetailsWindow"></app-resume-course-work>
-                    <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" [sectionName]="sectionName" *ngIf="showSkillsDetailsWindow"></app-resume-skills>
-                    <app-resume-achievements (contact)="saveContact()" [sectionName]="sectionName" *ngIf="showAchievementsDetailsWindow"></app-resume-achievements>
-                    <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngIf="showSummaryDetailsWindow"></app-resume-summary>
-                    <app-resume-accomplishments (contact)="saveContact()" *ngIf="showAccomplishmentsWindow"></app-resume-accomplishments>
-                </div>
-            </ng-template>
-        </p-drawer>
-    </div>
-  
     <!-- Right Column -->
     <div
       class="right-column"
-      [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow, 'disabled': isDisabled } "
     >
         <!-- <div class="centered-content"> -->
         <div class="resume-editor-content-box center-block" style="margin-top: 16px;">
@@ -270,3 +229,49 @@
         </div>
         <!-- </div> -->
   </div>
+    </div>
+  
+  <!-- Global drawer: moved out of left-column so it overlays main content from right -->
+  <p-drawer 
+      [(visible)]="showPanelWindow"
+      [position]="'left'"
+      [style]="{'width': '35vw', 'min-width': '450px', 'max-width': '600px'}"
+      [showCloseIcon]="false"
+      [blockScroll]="true"
+  >
+      <ng-template pTemplate="header">
+          <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+              <h3 style="margin: 0;">{{ formLabel }}</h3>
+              <p-button 
+                  icon="pi pi-times" 
+                  [rounded]="true" 
+                  [text]="true" 
+                  severity="danger"
+                  (onClick)="closePanelWindow($event)" 
+              />
+          </div>
+      </ng-template>
+      
+      <ng-template pTemplate="content">
+          <div [ngSwitch]="activePanel" style="position: relative; height: calc(100vh - 120px); overflow-y: auto; overflow-x: hidden;">
+              <app-resume-job-description (contact)="saveContact()" *ngSwitchCase="'jobDescription'"></app-resume-job-description>
+              <app-resume-template-list (contact)="saveContact()" *ngSwitchCase="'resumeTemplateList'"></app-resume-template-list>
+              <app-resume-title (contact)="saveContact()" *ngSwitchCase="'resumeTitle'"></app-resume-title>
+              <app-resume-experience (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngSwitchCase="'workExperianceDetails'"></app-resume-experience>
+              <app-resume-contact (contact)="saveContact()" *ngSwitchCase="'contactDetails'"></app-resume-contact>
+              <app-resume-project (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngSwitchCase="'projectWorkDetails'"></app-resume-project>
+              <app-resume-education (contact)="saveContact()" *ngSwitchCase="'educationDetails'"></app-resume-education>
+              <app-resume-certificate (contact)="saveContact()" *ngSwitchCase="'certificationsDetails'"></app-resume-certificate>
+              <app-resume-course-work [courseValue]="courseWorkCount" (contact)="saveContact()" *ngSwitchCase="'courseWorkDetails'"></app-resume-course-work>
+              <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" [sectionName]="sectionName" *ngSwitchCase="'skillsDetails'"></app-resume-skills>
+              <app-resume-achievements (contact)="saveContact()" [sectionName]="sectionName" *ngSwitchCase="'achievementsDetails'"></app-resume-achievements>
+              <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngSwitchCase="'summaryDetails'"></app-resume-summary>
+              <app-resume-accomplishments (contact)="saveContact()" *ngSwitchCase="'accomplishments'"></app-resume-accomplishments>
+              <app-add-section 
+                  (sectionAdded)="onSectionAdded()" 
+                  (sectionSelected)="handleSectionSelected($event)"
+                  *ngSwitchCase="'addSection'">
+              </app-add-section>
+          </div>
+      </ng-template>
+  </p-drawer>

@@ -97,7 +97,7 @@ export interface DialogData {
     EducationComponent,ProjectComponent,SkillsComponent,SummaryComponent,ProgressBarModule, MatTooltipModule,
     MatIconModule,MatExpansionModule, ExperianceComponent, ResumeTitleComponent, ResumeTemplateListComponent, ResumeTemplate2Component,ResumeTemplate3Component
   , ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, DiscardDialogComponent, AchievementsComponent,
-  JobDescriptionComponent, MatExpansionModule, ResumeTemplate9Component, ResumeTemplate10Component, AccomplishmentsComponent],
+  JobDescriptionComponent, MatExpansionModule, ResumeTemplate9Component, ResumeTemplate10Component, AccomplishmentsComponent, AddSectionComponent],
   templateUrl: './resume-form3.component.html',
   styleUrls: ['./resume-form3.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -267,21 +267,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   currentProjectIndex : number = 0;
   courseWorkCount : number = 0;
 
-
-  showContactDetailsWindow = false;
-  showWorkExperianceDetailsWindow = false;
-  showJobDescriptionWindow = false;
-  showResumeTitleWindow = false;
-  showResumeTemplateList = false;
-  showProjectWorkDetailsWindow = false;
-  showEducationDetailsWindow = false;
-  showCertificationsDetailsWindow =  false;
-  showAchievementsDetailsWindow = false;
-  showSkillsCategoryDetailsWindow = false;
-  showCourseWorkDetailsWindow = false;
-  showSkillsDetailsWindow =  false;
-  showSummaryDetailsWindow = false;
-  showAccomplishmentsWindow = false;
+  activePanel: string | null = null;
   isMenuVisible: boolean = false;
   selectedTemplateName : String = "TEMPLATE_2"
   isDisabled : boolean = false
@@ -778,23 +764,52 @@ hideMenu() {
   }
 
   closePanelWindow($event: any){
-    this.isFormPanleClosed = true;
     this.showPanelWindow = false;
+    this.activePanel = null;
     this.userStore.setProject(new Project());
     this.userStore.setCertification(new Certification());
     this.userStore.setEducation(new Education());
     this.userStore.setExperience(new Experience());
   }
 
-  addSection(){
-     const dialogRef = this.dialog.open(AddSectionComponent, {
-      data: {name: this.resumeSignalForm().template_details.template_name},
-      panelClass: 'preview-resume-model-dialog'
-    });
+  openPanel(panelName: string, formLabel: string) {
+    this.formLabel = formLabel;
+    this.activePanel = panelName;
+    this.showPanelWindow = true;
+  }
 
-    dialogRef.afterClosed().subscribe(result => {    
-      
-    });
+  addSection(){
+    this.openPanel('addSection', 'Add Section');
+  }
+
+  closeAddSectionPanel() {
+    this.showPanelWindow = false;
+    this.activePanel = null;
+  }
+
+  onSectionAdded() {
+    this.showPanelWindow = false;
+    this.activePanel = null;
+    // Optionally add any success message or refresh logic here
+  }
+
+  // New handler: parent handles store updates to avoid store access from child component
+  handleSectionSelected(section: any) {
+    try {
+      console.log('[ResumeForm3] handleSectionSelected called for:', section?.section);
+      if (!section) return;
+      const currentSectionsSignal = this.userStore.getCurrentSections();
+      const currentSections = currentSectionsSignal ? currentSectionsSignal() : [];
+      const updated = [...(currentSections || []), section];
+      this.userStore.setResumeSections(updated);
+      // Close the panel after adding
+      this.showPanelWindow = false;
+      this.activePanel = null;
+    } catch (error) {
+      console.error('[ResumeForm3] Error in handleSectionSelected:', error);
+      this.showPanelWindow = false;
+      this.activePanel = null;
+    }
   }
 
   saveAndContinue(display : String | null){
@@ -1037,295 +1052,62 @@ hideMenu() {
   }
 
   showResumeTemplates(){
-    this.formLabel = 'Pick a Template';
-    this.showPanelWindow = true;
-    this.showResumeTemplateList = true;
-    this.showJobDescriptionWindow = false;
-    this.showResumeTitleWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('resumeTemplateList', 'Pick a Template');
   }
 
   showJobDescription(){
-    this.formLabel = 'Job Description';
-    this.showPanelWindow = true;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('jobDescription', 'Job Description');
   }
 
   showResumeTitle(){
-    this.formLabel = 'Meta Data';
-    this.showPanelWindow = true;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showResumeTitleWindow = true;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('resumeTitle', 'Meta Data');
   }
 
   showWorkExperianceDetails(){
-    this.formLabel = 'Experience';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showJobDescriptionWindow = false;
-    this.showResumeTemplateList = false;
-    this.showWorkExperianceDetailsWindow = true;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.isFormPanleClosed = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('workExperianceDetails', 'Experience');
   }
   
 
   showContact(){
-    this.formLabel = 'Contact';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = true;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('contactDetails', 'Contact');
   }
 
   showProjectWorkDetails(){
-    this.formLabel = 'Project';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = true;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.isFormPanleClosed = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('projectWorkDetails', 'Project');
   }
   showEducationDetails(){
-    this.formLabel = 'Education';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = true;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('educationDetails', 'Education');
   }
   showCertificationsDetails(){
-    this.formLabel = 'Certification';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  true;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('certificationsDetails', 'Certification');
   }
 
   showAchievementsDetails(){
-    this.formLabel = 'Achievements';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= true;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('achievementsDetails', 'Achievements');
     this.sectionName = 'ACHIEVEMENTS_BULLET_POINTS'
   }
 
   showCertificationBulletpointsDetails(){
-    this.formLabel = 'Certification';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= true;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('achievementsDetails', 'Certification');
     this.sectionName = 'CERTIFICATIONS_BULLET_POINTS'
   }
 
   showAccomplishmentsDetails(){
-    this.formLabel = 'Accomplishments';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showSkillsCategoryDetailsWindow = false;
-    this.showAccomplishmentsWindow = true;
+    this.openPanel('accomplishments', 'Accomplishments');
   }
-
-  // showSectionDetails(section : string){
-  //   if(section == 'SKILLS_CATEGORY'){
-  //     this.formLabel = 'Skills Category';
-  //     this.showPanelWindow = true;
-  //     this.showResumeTitleWindow = false;
-  //     this.showResumeTemplateList = false;
-  //     this.showJobDescriptionWindow = false;
-  //     this.showWorkExperianceDetailsWindow = false;
-  //     this.showContactDetailsWindow = false;
-  //     this.showProjectWorkDetailsWindow = false;
-  //     this.showEducationDetailsWindow = false;
-  //     this.showCertificationsDetailsWindow =  false;
-  //     this.showCourseWorkDetailsWindow = false;
-  //     this.showSkillsDetailsWindow =  false;
-  //     this.showSummaryDetailsWindow = false;
-  //     this.showAchievementsDetailsWindow= false;
-  //     this.showSkillsCategoryDetailsWindow = true;
-  //     this.showAccomplishmentsWindow = false;
-  //   }
-  // }
   
   showCourseWorkDetails(){
-    this.formLabel = 'Course Work';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = true;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('courseWorkDetails', 'Course Work');
     this.courseWorkCount = this.courseWorkCount + 1;
-
-
   }
   showSkillsDetails(section :string){
-    this.formLabel = 'Skill Details';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  true;
-    this.showSummaryDetailsWindow = false;
-    this.showAchievementsDetailsWindow= false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('skillsDetails', 'Skill Details');
     this.skillCount = this.skillCount + 1;
     this.sectionName=section
   }
 
   showSummaryDetails(){
-    this.formLabel = 'Summary';
-    this.showPanelWindow = true;
-    this.showResumeTitleWindow = false;
-    this.showResumeTemplateList = false;
-    this.showJobDescriptionWindow = false;
-    this.showWorkExperianceDetailsWindow = false;
-    this.showContactDetailsWindow = false;
-    this.showProjectWorkDetailsWindow = false;
-    this.showEducationDetailsWindow = false;
-    this.showCertificationsDetailsWindow =  false;
-    this.showCourseWorkDetailsWindow = false;
-    this.showSkillsDetailsWindow =  false;
-    this.showSummaryDetailsWindow = true;
-    this.showAchievementsDetailsWindow= false;
-    this.isFormPanleClosed = false;
-    this.showAccomplishmentsWindow = false;
+    this.openPanel('summaryDetails', 'Summary');
   }
 
   isSectionActive(section : string){

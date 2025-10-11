@@ -1,118 +1,260 @@
-.preview-resume-renderer-page {
-    background-color: #fff;
-    max-height: 100vh !important;
-    width: 840px
-  }
 
-  .preview-browser-resume-page {
-    /* box-shadow:0 0 2px 0 rgba(83,83,83,.5); */
-    margin-bottom: 40px !important;
-  }
-  
-  .preview-browser-resume-page:after,.preview-browser-resume-page:before {
-    background: transparent !important;
-    content: "" !important;
-    height: 10px !important;
-    width: 60% !important;
-    z-index: -1 !important;
-  }
-
-  .preview-browser-resume-page:before {
-    bottom: 30px !important;
-    box-shadow: 0 31px 10px rgba(0,0,0,.6) !important;
-    left: 20px !important;
-    transform: rotate(-1deg) !important;
-  }
-  
-  .preview-browser-resume-page:after {
-    bottom: 50px !important;
-    box-shadow: 0 47px 14px rgba(0,0,0,.5) !important;
-    right: -1px !important;
-    transform: skew(2deg) rotate(3deg) !important;
-  }
-
- .card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+// Form container with proper padding
+.add-section-form-container {
+  padding: 1.5rem 1rem;
+  max-width: 100%;
 }
 
-.custom-card {
-  width: 250px;
+
+.add-section-panel {
+  /* Let the drawer control overall sizing; the panel should fill available drawer content */
+  width: 100%;
+  min-height: 100%;
   position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  transition: transform 0.2s ease-in-out;
+  background: transparent; /* transparent so drawer background shows through */
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+
+  &.panel-visible {
+    display: block;
+  }
+
+  &:not(.panel-visible) {
+    display: none;
+  }
+}
+
+.panel-header {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  text-align: center;
+
+  .panel-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+}
+
+.panel-content {
+  padding: 24px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.panel-title {
+  margin: 0 0 20px 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  padding: 20px 20px 0 20px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 0;
 }
 
 .custom-card {
-  width: 250px;
   position: relative;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
   overflow: hidden;
-  border-radius: 12px;
-  transition: transform 0.2s ease-in-out;
-}
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 0.85);
+    
+    .image-container {
+      .svg-background {
+        transform: scale(1.05);
+      }
 
-// .custom-card:hover {
-//   transform: translateY(-4px);
-//   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-// }
+      .icon-fallback {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      
+      .overlay {
+        opacity: 1;
+        backdrop-filter: blur(12px);
+      }
+    }
+  }
+}
 
 .image-container {
   position: relative;
+  height: 160px;
+  overflow: hidden;
 }
 
-.hover-button {
+.svg-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+  z-index: 1;
+
+  ::ng-deep svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.icon-fallback {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  opacity: 0;
-  pointer-events: none;
+  font-size: 3rem;
+  z-index: 0;
+  opacity: 0.3;
   transition: opacity 0.3s ease;
-}
 
-.custom-card:hover .hover-button {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.card-title {
-  text-align: center;
-  margin-top: 8px;
-  font-size: 1rem;
-  font-weight: 500;
+  i {
+    display: block;
+  }
 }
 
 .overlay {
   position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
   display: flex;
-  justify-content: center;
   align-items: center;
-  transition-duration:100ms;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  
+  &:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: -2px;
+  }
 }
 
-.custom-card:hover .overlay {
+.custom-card:hover .overlay,
+.overlay:focus {
   opacity: 1;
 }
 
 .overlay-button {
-  background-color: var(--primaryColor); /* Blue color */
-  color: white;
+  background: rgba(255, 255, 255, 0.95);
+  color: #2c3e50;
+  border: 2px solid rgba(255, 255, 255, 1);
   padding: 12px 24px;
-  font-size: 1rem;
-  border-radius: 4px;
+  border-radius: 25px;
   font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+mat-card-content {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
   text-align: center;
-  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+// Dark mode support
+:host-context(.dark) {
+  .add-section-panel {
+    background: rgba(30, 30, 30, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .panel-header {
+    background: rgba(45, 45, 45, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    
+    .panel-title {
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+  }
+  
+  .panel-title {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+  
+  .custom-card {
+    background: rgba(45, 45, 45, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    
+    &:hover {
+      background: rgba(45, 45, 45, 0.85);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+  
+  mat-card-content {
+    background: rgba(30, 30, 30, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .card-title {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+  
+  .overlay-button {
+    background: rgba(255, 255, 255, 0.9);
+    color: #2c3e50;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+  }
 }
