@@ -34,7 +34,6 @@ import { Resume1TemplateComponent } from './template/template.component';
 import { PreviewResumeComponent } from './preview-resume/preview-resume.component';
 import { FooterComponent } from '../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../landing/header-wifence/header-wifence.component';
-import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Certification, Education, Experience, JobDescriptionAIResponse, JobResume, JobResumeRequest, Project, Resume, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
@@ -74,6 +73,7 @@ import { AccomplishmentsComponent } from './accomplishments/accomplishments.comp
 import { AddSectionComponent } from './add-section/add-section.component';
 import * as _ from 'lodash'
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
+import { UserStoreService } from 'src/app/services/store/user-store.service';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';

@@ -6,33 +6,31 @@
      -->
     <div class="add-section-form-container">
       <div class="card-grid" role="list">
-        <mat-card class="custom-card" *ngFor="let item of add_sections; trackBy: trackBySection" role="listitem">
-          <div class="image-container">
-            <div class="svg-background" [innerHTML]="getSectionSvgIllustration(item.section)"></div>
-            
-            <!-- Fallback Icon -->
-            <div class="icon-fallback">
-              <i [class]="'pi ' + getSectionIcon(item.section)" 
-                [style.color]="getSectionColor(item.section)"></i>
-            </div>
-            
-            <!-- Centered Button -->
-            <div class="overlay" (click)="addSection(item)" 
-                (keydown)="onOverlayKeydown($event, item)"
-                tabindex="0"
-                role="button"
-                [attr.aria-label]="'Add ' + item.title + ' section to resume'">
-              <div class="overlay-button">
-                <i class="pi pi-plus"></i>
-                Add to resume
-              </div>
-            </div>
-          </div>
+        <mat-card 
+          class="custom-card" 
+          *ngFor="let item of sections; trackBy: trackBySection" 
+          role="listitem"
+          (click)="addSection(item)"
+          (keydown)="onOverlayKeydown($event, item)"
+          tabindex="0"
+          [attr.aria-label]="'Add ' + item.label + ' section'">
           
-          <mat-card-content>
-            <h3 class="card-title">{{ item.title }}</h3>
-          </mat-card-content>
-        </mat-card>
+<div class="image-container">
+        <div class="card-background"></div>
+        
+        <div class="icon-corner">
+          <i [class]="'pi ' + getSectionIcon(item.section)"></i>
+        </div>
+
+        <div class="add-icon-overlay">
+          <i class="pi pi-plus"></i>
+        </div>
+        
+        <div class="info-overlay">
+          <h3 class="card-title">{{ item.label }}</h3>
+          <p class="card-description">{{ item.description }}</p>
+        </div>
+      </div>        </mat-card>
       </div>
     </div>
   <!-- </div>

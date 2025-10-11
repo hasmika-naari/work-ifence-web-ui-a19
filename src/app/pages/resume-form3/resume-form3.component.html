@@ -233,7 +233,7 @@
   
   <!-- Global drawer: moved out of left-column so it overlays main content from right -->
   <p-drawer 
-      [(visible)]="showPanelWindow"
+      [visible]="activePanel !== null"
       [position]="'left'"
       [style]="{'width': '35vw', 'min-width': '450px', 'max-width': '600px'}"
       [showCloseIcon]="false"
