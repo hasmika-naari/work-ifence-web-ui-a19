@@ -14,24 +14,30 @@
           (keydown)="onOverlayKeydown($event, item)"
           tabindex="0"
           [class.is-added]="isSectionAdded(item)"
-          [attr.aria-label]="'Add ' + item.label + ' section'">
+          [class.is-added]="isSectionAdded(item)"
+          [attr.aria-label]="isSectionAdded(item) ? item.label + ' section is already added' : 'Add ' + item.label + ' section'">
           
-<div class="image-container">
-        <div class="card-background"></div>
-        
-        <div class="icon-corner">
-          <i [class]="'pi ' + getSectionIcon(item.section)"></i>
-        </div>
-
-        <div class="add-icon-overlay">
-          <i class="pi pi-plus"></i>
-        </div>
-        
-        <div class="info-overlay">
-          <h3 class="card-title">{{ item.label }}</h3>
-          <p class="card-description">{{ item.description }}</p>
-        </div>
-      </div>        </mat-card>
+          <div class="image-container">
+            <div class="card-background"></div>
+            
+            <div class="icon-corner">
+              <i [class]="'pi ' + getSectionIcon(item.section)"></i>
+            </div>
+    
+            <div class="status-corner" *ngIf="isSectionAdded(item)">
+              <i class="pi pi-check-circle"></i>
+            </div>
+    
+            <div class="add-icon-overlay" *ngIf="!isSectionAdded(item)">
+              <i class="pi pi-plus"></i>
+            </div>
+            
+            <div class="info-overlay">
+              <h3 class="card-title">{{ item.label }}</h3>
+              <p class="card-description">{{ item.description }}</p>
+            </div>
+          </div>
+        </mat-card>
       </div>
     </div>
   <!-- </div>

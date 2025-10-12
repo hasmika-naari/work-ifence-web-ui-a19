@@ -66,6 +66,33 @@
   padding: 8px;
 }
 
+.custom-card.is-added {
+  .card-background {
+    background-color: rgba(200, 255, 200, 0.5); // Light green tint
+  }
+
+  .add-icon-overlay i {
+    color: #28a745; // Green checkmark
+  }
+
+  .added-text-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: rgba(40, 167, 69, 0.8);
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+  }
+}
+
+
 .custom-card {
   position: relative;
   background-color: #f8f9fa; // Light background color
@@ -98,6 +125,10 @@
     radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.603), transparent 40%);
   background-repeat: no-repeat;
   background-size: 100% 100%;
+}
+
+.added-text-overlay {
+  display: none;
 }
 
 .card-background {
@@ -177,6 +208,16 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.status-corner{
+  position: relative;
+  top: 15px;
+  left: 15px;
+  i{
+    font-size: x-large;
+    color: #177a2e;
+  }
 }
 
 .add-icon-overlay {
