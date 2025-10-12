@@ -13,6 +13,7 @@
           (click)="addSection(item)"
           (keydown)="onOverlayKeydown($event, item)"
           tabindex="0"
+          [class.is-added]="isSectionAdded(item)"
           [attr.aria-label]="'Add ' + item.label + ' section'">
           
 <div class="image-container">

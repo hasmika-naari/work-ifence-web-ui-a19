@@ -268,6 +268,7 @@
               <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngSwitchCase="'summaryDetails'"></app-resume-summary>
               <app-resume-accomplishments (contact)="saveContact()" *ngSwitchCase="'accomplishments'"></app-resume-accomplishments>
               <app-add-section 
+                  [addedSections]="currentSections()"
                   (sectionAdded)="onSectionAdded()" 
                   (sectionSelected)="handleSectionSelected($event)"
                   *ngSwitchCase="'addSection'">

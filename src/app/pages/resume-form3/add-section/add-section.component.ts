@@ -12,111 +12,12 @@ import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-
 import { Subscription } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { MatCardModule } from '@angular/material/card';
-// import { SectionDesc, sections } from 'src/app/services/store/user-store';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Resume } from 'src/app/services/resume.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeHtmlCachePipe } from './safe-html-cache.pipe';
+import { SectionDesc, sections } from 'src/app/services/store/user-store';
 
-export interface SectionDesc {
-    section: string;
-    description: string;
-    isAdded: boolean;
-    isPremium: boolean;
-    tags: string;
-    label: string;
-}
-
-export const sections: Array<SectionDesc> = [
-    {
-        section: 'PROFILE_SUMMARY',
-        description: 'A brief summary of your skills and experience.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'summary, profile, objective',
-        label: 'Summary'
-    },
-    {
-        section: 'EDUCATION',
-        description: 'Details about your educational background.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'education, school, degree',
-        label: 'Education'
-    },
-    {
-        section: 'RELEVANT_COURSEWORK',
-        description: 'Relevant coursework you have completed.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'coursework, classes, subjects',
-        label: 'Coursework'
-    },
-    {
-        section: 'SKILLS_BULLET_POINTS',
-        description: 'A list of your skills in bullet points.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'skills, abilities, competencies',
-        label: 'Skills (B.P.)'
-    },
-    {
-        section: 'SKILLS_CATEGORY',
-        description: 'Categorized list of your skills.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'skills, categorized, grouped',
-        label: 'Skills (Category)'
-    },
-    {
-        section: 'WORK_EXPERIENCE',
-        description: 'Your professional work experience.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'experience, work, job',
-        label: 'Experience'
-    },
-    {
-        section: 'PROJECT',
-        description: 'Projects you have worked on.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'projects, portfolio, work',
-        label: 'Projects'
-    },
-    {
-        section: 'CERTIFICATIONS',
-        description: 'Certifications you have earned.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'certifications, licenses, credentials',
-        label: 'Certifications'
-    },
-    {
-        section: 'CERTIFICATIONS_BULLET_POINTS',
-        description: 'A list of your certifications in bullet points.',
-        isAdded: false,
-        isPremium: true,
-        tags: 'certifications, bullet points, list',
-        label: 'Certs (B.P.)'
-    },
-    {
-        section: 'ACHIEVEMENTS_BULLET_POINTS',
-        description: 'Your achievements in bullet points.',
-        isAdded: false,
-        isPremium: false,
-        tags: 'achievements, accomplishments, awards',
-        label: 'Achievements'
-    },
-    {
-        section: 'ACHIEVEMENT_WITH_DESC',
-        description: 'Detailed description of your achievements.',
-        isAdded: false,
-        isPremium: true,
-        tags: 'achievements, description, details',
-        label: 'Accomplishments'
-    }
-];
 
 
 @Component({
@@ -128,6 +29,7 @@ export const sections: Array<SectionDesc> = [
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class AddSectionComponent implements OnInit, OnDestroy {
+  @Input() addedSections: SectionDesc[] = [];
   sections: SectionDesc[] = [];
     // @Input() isVisible: boolean = false;
     // @Output() closePanel = new EventEmitter<void>();
@@ -183,6 +85,13 @@ export class AddSectionComponent implements OnInit, OnDestroy {
       console.error('[AddSectionComponent] Error in addSection:', error);
       this.sectionAdded.emit();
     }
+  }
+
+  isSectionAdded(section: SectionDesc): boolean {
+    if (!this.addedSections || this.addedSections.length === 0) {
+      return false;
+    }
+    return this.addedSections.some(s => s.section === section.section);
   }
 
   // Moved from template to component to be passed to the pipe

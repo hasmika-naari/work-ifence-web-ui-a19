@@ -211,6 +211,42 @@
   }
 }
 
+.custom-card.is-added {
+  cursor: not-allowed;
+  opacity: 0.7;
+
+  .add-icon-overlay {
+    opacity: 1;
+    background-color: rgba(20, 143, 119, 0.7); // A green tint to indicate "added"
+
+    .pi-plus {
+      transform: rotate(45deg) scale(1.2); // Transform to a checkmark-like 'x'
+      content: '\\e909'; // PrimeIcons check icon
+      font-family: 'primeicons';
+      
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+
+  .info-overlay {
+    background: rgba(20, 143, 119, 0.5);
+  }
+
+  &:hover {
+    transform: none; // Disable hover transform
+    .add-icon-overlay {
+      background-color: rgba(20, 143, 119, 0.8);
+    }
+  }
+}
+
 // Removed the rule that was hiding the info-overlay on hover
 
 

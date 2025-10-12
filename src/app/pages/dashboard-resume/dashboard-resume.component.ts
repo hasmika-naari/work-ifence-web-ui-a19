@@ -89,125 +89,264 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   tempResumes : ResumeListDataItem[] = []
 
   template1_sections  : Array<SectionDesc> = [
-      {
-        section : 'PROFILE_SUMMARY',
+     {
+        section: 'PROFILE_SUMMARY',
+        description: 'A brief summary of your skills and experience.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'summary, profile, objective',
+        label: 'Summary',
         title : 'Profile summary',
         editable_section_title : 'Profile Summary'
-      },
-      {
-        section : 'EDUCATION',
+    },
+    {
+        section: 'EDUCATION',
+        description: 'Details about your educational background.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'education, school, degree',
+        label: 'Education',
         title : 'Education',
         editable_section_title : "Education"
-      },
-      {
-        section : 'RELEVANT_COURSEWORK',
+    },
+    {
+        section: 'RELEVANT_COURSEWORK',
+        description: 'Relevant coursework you have completed.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'coursework, classes, subjects',
+        label: 'Coursework',
         title : 'Relevant coursework',
         editable_section_title :'Relevant Coursework'
-      },
-      {
-        section : 'SKILLS_BULLET_POINTS',
+    },
+    {
+        section: 'SKILLS_BULLET_POINTS',
+        description: 'A list of your skills in bullet points.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'skills, abilities, competencies',
+        label: 'Skills (B.P.)',
         title : 'Skills with bullet points',
         editable_section_title : 'Skills'
-      },
-      {
-        section : 'WORK_EXPERIENCE',
+    },
+    {
+        section: 'SKILLS_CATEGORY',
+        description: 'Categorized list of your skills.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'skills, categorized, grouped',
+        label: 'Skills (Category)',
+        title : 'Skills category',
+        editable_section_title : 'Skills'
+    },
+    {
+        section: 'WORK_EXPERIENCE',
+        description: 'Your professional work experience.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'experience, work, job',
+        label: 'Experience',
         title : 'Work experience',
         editable_section_title : 'Experience'
-      },
-      {
-        section : 'PROJECT',
+    },
+    {
+        section: 'PROJECT',
+        description: 'Projects you have worked on.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'projects, portfolio, work',
+        label: 'Projects',
         title : 'Project',
-         editable_section_title : 'Project'
-      },
-      {
-        section : 'CERTIFICATIONS',
+        editable_section_title : 'Project'
+    },
+    {
+        section: 'CERTIFICATIONS',
+        description: 'Certifications you have earned.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'certifications, licenses, credentials',
+        label: 'Certifications',
         title : 'Certification',
         editable_section_title : 'Certifications'
-      },
-      {
-        section : 'ACHIEVEMENTS_BULLET_POINTS',
+    },
+    {
+        section: 'CERTIFICATIONS_BULLET_POINTS',
+        description: 'A list of your certifications in bullet points.',
+        isAdded: false,
+        isPremium: true,
+        tags: 'certifications, bullet points, list',
+        label: 'Certs (B.P.)',
+        title : 'Certification with bullet points',
+        editable_section_title : 'Certifications'
+    },
+    {
+        section: 'ACHIEVEMENTS_BULLET_POINTS',
+        description: 'Your achievements in bullet points.',
+        isAdded: false,
+        isPremium: false,
+        tags: 'achievements, accomplishments, awards',
+        label: 'Achievements',
         title : 'Achievements with bullet points',
         editable_section_title : 'Achievements'
-      }
-    ]
-
-  template9right_sections  : Array<SectionDesc> = [
-      {
-      section : 'PROFILE_SUMMARY',
-      title : 'Profile summary',
-      editable_section_title : 'Profile Summary'
     },
     {
-      section : 'WORK_EXPERIENCE',
-      title : 'Work experience',
-      editable_section_title : 'Experience'
-    },
-    {
-      section : 'PROJECT',
-      title : 'Project',
-      editable_section_title : 'Project'
+        section: 'ACHIEVEMENT_WITH_DESC',
+        description: 'Detailed description of your achievements.',
+        isAdded: false,
+        isPremium: true,
+        tags: 'achievements, description, details',
+        label: 'Accomplishments',
+        title : 'Accomplishments',
+        editable_section_title : 'Accomplishments'
     }
-    ]
+  ];
 
-    template9left_sections : Array<SectionDesc> = [
-   
+  template9right_sections: Array<SectionDesc> = [
     {
-      section : 'RELEVANT_COURSEWORK',
-      title : 'Relevant coursework',
-      editable_section_title :'Relevant Coursework'
+      section: 'PROFILE_SUMMARY',
+      title: 'Profile summary',
+      editable_section_title: 'Profile Summary',
+      description: 'A brief summary of your skills and experience.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'summary, profile, objective',
+      label: 'Summary'
     },
     {
-      section : 'SKILLS_BULLET_POINTS',
-      title : 'Skills with bullet points',
-      editable_section_title : 'Skills'
+      section: 'WORK_EXPERIENCE',
+      title: 'Work experience',
+      editable_section_title: 'Experience',
+      description: 'Your professional work experience.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'experience, work, job',
+      label: 'Experience'
     },
     {
-      section : 'EDUCATION',
-      title : 'Education',
-      editable_section_title : "Education"
-    },
-    {
-      section : 'CERTIFICATIONS_BULLET_POINTS',
-      title : 'Certification with bullet points',
-      editable_section_title : 'Certifications'
-    },
-    {
-      section : 'ACHIEVEMENTS_BULLET_POINTS',
-      title : 'Achievements with bullet points',
-      editable_section_title : 'Achievements'
+      section: 'PROJECT',
+      title: 'Project',
+      editable_section_title: 'Project',
+      description: 'Projects you have worked on.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'projects, portfolio, work',
+      label: 'Projects'
     }
   ]
 
-  template10_sections : Array<SectionDesc> = [
+    template9left_sections: Array<SectionDesc> = [
+      {
+        section: 'RELEVANT_COURSEWORK',
+        title: 'Relevant coursework',
+        editable_section_title: 'Relevant Coursework',
+        description: 'Relevant coursework you have completed.',
+        isAdded: true,
+        isPremium: false,
+        tags: 'coursework, classes, subjects',
+        label: 'Coursework'
+      },
+      {
+        section: 'SKILLS_BULLET_POINTS',
+        title: 'Skills with bullet points',
+        editable_section_title: 'Skills',
+        description: 'A list of your skills in bullet points.',
+        isAdded: true,
+        isPremium: false,
+        tags: 'skills, abilities, competencies',
+        label: 'Skills (B.P.)'
+      },
+      {
+        section: 'EDUCATION',
+        title: 'Education',
+        editable_section_title: 'Education',
+        description: 'Details about your educational background.',
+        isAdded: true,
+        isPremium: false,
+        tags: 'education, school, degree',
+        label: 'Education'
+      },
+      {
+        section: 'CERTIFICATIONS_BULLET_POINTS',
+        title: 'Certification with bullet points',
+        editable_section_title: 'Certifications',
+        description: 'A list of your certifications in bullet points.',
+        isAdded: true,
+        isPremium: true,
+        tags: 'certifications, bullet points, list',
+        label: 'Certs (B.P.)'
+      },
+      {
+        section: 'ACHIEVEMENTS_BULLET_POINTS',
+        title: 'Achievements with bullet points',
+        editable_section_title: 'Achievements',
+        description: 'Your achievements in bullet points.',
+        isAdded: true,
+        isPremium: false,
+        tags: 'achievements, accomplishments, awards',
+        label: 'Achievements'
+      }
+    ]
+
+  template10_sections: Array<SectionDesc> = [
     {
-      section : 'PROFILE_SUMMARY',
-      title : 'Profile summary',
-      editable_section_title : 'Profile Summary'
-    },
-   {
-      section : 'EDUCATION',
-      title : 'Education',
-      editable_section_title : "Education"
-    },
-   {
-      section : 'SKILLS_CATEGORY',
-      title : 'Skills category',
-      editable_section_title : 'Skills'
-    },
-     {
-      section : 'WORK_EXPERIENCE',
-      title : 'Work experience',
-      editable_section_title : 'Experience'
+      section: 'PROFILE_SUMMARY',
+      title: 'Profile summary',
+      editable_section_title: 'Profile Summary',
+      description: 'A brief summary of your skills and experience.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'summary, profile, objective',
+      label: 'Summary'
     },
     {
-      section : 'PROJECT',
-      title : 'Project',
-      editable_section_title : 'Project'
+      section: 'EDUCATION',
+      title: 'Education',
+      editable_section_title: 'Education',
+      description: 'Details about your educational background.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'education, school, degree',
+      label: 'Education'
     },
-{
-      section : 'ACHIEVEMENT_WITH_DESC',
-      title : 'Accomplishments',
-      editable_section_title : 'Accomplishments'
+    {
+      section: 'SKILLS_CATEGORY',
+      title: 'Skills category',
+      editable_section_title: 'Skills',
+      description: 'A list of your skills by category.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'skills, abilities, competencies',
+      label: 'Skills'
+    },
+    {
+      section: 'WORK_EXPERIENCE',
+      title: 'Work experience',
+      editable_section_title: 'Experience',
+      description: 'Your professional work experience.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'experience, work, job',
+      label: 'Experience'
+    },
+    {
+      section: 'PROJECT',
+      title: 'Project',
+      editable_section_title: 'Project',
+      description: 'Projects you have worked on.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'projects, portfolio, work',
+      label: 'Projects'
+    },
+    {
+      section: 'ACHIEVEMENT_WITH_DESC',
+      title: 'Accomplishments',
+      editable_section_title: 'Accomplishments',
+      description: 'Your accomplishments with descriptions.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'achievements, accomplishments, awards',
+      label: 'Accomplishments'
     }
   ]
 

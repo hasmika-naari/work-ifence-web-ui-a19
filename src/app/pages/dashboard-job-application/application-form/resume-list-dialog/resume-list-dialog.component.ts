@@ -63,125 +63,235 @@ export class ResumeListDialogComponent {
 
     template1_sections  : Array<SectionDesc> = [
       {
-        section : 'PROFILE_SUMMARY',
-        title : 'Profile summary',
-        editable_section_title : 'Profile Summary'
+        section: 'PROFILE_SUMMARY',
+        title: 'Profile summary',
+        editable_section_title: 'Profile Summary',
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
       },
       {
-        section : 'EDUCATION',
-        title : 'Education',
-        editable_section_title : "Education"
+        section: 'EDUCATION',
+        title: 'Education',
+        editable_section_title: "Education",
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
       },
       {
-        section : 'RELEVANT_COURSEWORK',
-        title : 'Relevant coursework',
-        editable_section_title :'Relevant Coursework'
+        section: 'RELEVANT_COURSEWORK',
+        title: 'Relevant coursework',
+        editable_section_title: 'Relevant Coursework',
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
       },
       {
-        section : 'SKILLS_BULLET_POINTS',
-        title : 'Skills with bullet points',
-        editable_section_title : 'Skills'
+        section: 'SKILLS_BULLET_POINTS',
+        title: 'Skills with bullet points',
+        editable_section_title: 'Skills',
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
       },
       {
-        section : 'WORK_EXPERIENCE',
-        title : 'Work experience',
-        editable_section_title : 'Experience'
+        section: 'WORK_EXPERIENCE',
+        title: 'Work experience',
+        editable_section_title: 'Experience',
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
       },
       {
-        section : 'PROJECT',
-        title : 'Project',
-         editable_section_title : 'Project'
+        section: 'PROJECT',
+        title: 'Project',
+        editable_section_title: 'Project',
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
       },
       {
-        section : 'CERTIFICATIONS',
-        title : 'Certification',
-        editable_section_title : 'Certifications'
+        section: 'CERTIFICATIONS',
+        title: 'Certification',
+        editable_section_title: 'Certifications',
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
       },
       {
-        section : 'ACHIEVEMENTS_BULLET_POINTS',
-        title : 'Achievements with bullet points',
-        editable_section_title : 'Achievements'
+        section: 'ACHIEVEMENTS_BULLET_POINTS',
+        title: 'Achievements with bullet points',
+        editable_section_title: 'Achievements',
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
       }
     ]
 
   template9right_sections  : Array<SectionDesc> = [
       {
-      section : 'PROFILE_SUMMARY',
-      title : 'Profile summary',
-      editable_section_title : 'Profile Summary'
+        section: 'PROFILE_SUMMARY',
+        title: 'Profile summary',
+        editable_section_title: 'Profile Summary',
+        description: '',
+        isAdded: false,
+        isPremium: false,
+        tags: '',
+        label: ''
+      },
+    {
+      section: 'WORK_EXPERIENCE',
+      title: 'Work experience',
+      editable_section_title: 'Experience',
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     },
     {
-      section : 'WORK_EXPERIENCE',
-      title : 'Work experience',
-      editable_section_title : 'Experience'
-    },
-    {
-      section : 'PROJECT',
-      title : 'Project',
-      editable_section_title : 'Project'
+      section: 'PROJECT',
+      title: 'Project',
+      editable_section_title: 'Project',
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     }
     ]
 
     template9left_sections : Array<SectionDesc> = [
    
     {
-      section : 'RELEVANT_COURSEWORK',
-      title : 'Relevant coursework',
-      editable_section_title :'Relevant Coursework'
+      section: 'RELEVANT_COURSEWORK',
+      title: 'Relevant coursework',
+      editable_section_title: 'Relevant Coursework',
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     },
     {
-      section : 'SKILLS_BULLET_POINTS',
-      title : 'Skills with bullet points',
-      editable_section_title : 'Skills'
+      section: 'SKILLS_BULLET_POINTS',
+      title: 'Skills with bullet points',
+      editable_section_title: 'Skills',
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     },
     {
-      section : 'EDUCATION',
-      title : 'Education',
-      editable_section_title : "Education"
+      section: 'EDUCATION',
+      title: 'Education',
+      editable_section_title: "Education",
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     },
     {
-      section : 'CERTIFICATIONS_BULLET_POINTS',
-      title : 'Certification with bullet points',
-      editable_section_title : 'Certifications'
+      section: 'CERTIFICATIONS_BULLET_POINTS',
+      title: 'Certification with bullet points',
+      editable_section_title: 'Certifications',
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     },
     {
-      section : 'ACHIEVEMENTS_BULLET_POINTS',
-      title : 'Achievements with bullet points',
-      editable_section_title : 'Achievements'
+      section: 'ACHIEVEMENTS_BULLET_POINTS',
+      title: 'Achievements with bullet points',
+      editable_section_title: 'Achievements',
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     }
   ]
 
   template10_sections : Array<SectionDesc> = [
     {
-      section : 'PROFILE_SUMMARY',
-      title : 'Profile summary',
-      editable_section_title : 'Profile Summary'
+      section: 'PROFILE_SUMMARY',
+      title: 'Profile summary',
+      editable_section_title: 'Profile Summary',
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     },
    {
-      section : 'EDUCATION',
-      title : 'Education',
-      editable_section_title : "Education"
-    },
+     section: 'EDUCATION',
+     title: 'Education',
+     editable_section_title: "Education",
+     description: '',
+     isAdded: false,
+     isPremium: false,
+     tags: '',
+     label: ''
+   },
    {
-      section : 'SKILLS_CATEGORY',
-      title : 'Skills category',
-      editable_section_title : 'Skills'
-    },
+     section: 'SKILLS_CATEGORY',
+     title: 'Skills category',
+     editable_section_title: 'Skills',
+     description: '',
+     isAdded: false,
+     isPremium: false,
+     tags: '',
+     label: ''
+   },
      {
-      section : 'WORK_EXPERIENCE',
-      title : 'Work experience',
-      editable_section_title : 'Experience'
-    },
+       section: 'WORK_EXPERIENCE',
+       title: 'Work experience',
+       editable_section_title: 'Experience',
+       description: '',
+       isAdded: false,
+       isPremium: false,
+       tags: '',
+       label: ''
+     },
     {
-      section : 'PROJECT',
-      title : 'Project',
-      editable_section_title : 'Project'
+      section: 'PROJECT',
+      title: 'Project',
+      editable_section_title: 'Project',
+      description: '',
+      isAdded: false,
+      isPremium: false,
+      tags: '',
+      label: ''
     },
 {
-      section : 'ACHIEVEMENT_WITH_DESC',
-      title : 'Accomplishments',
-      editable_section_title : 'Accomplishments'
-    }
+  section: 'ACHIEVEMENT_WITH_DESC',
+  title: 'Accomplishments',
+  editable_section_title: 'Accomplishments',
+  description: '',
+  isAdded: false,
+  isPremium: false,
+  tags: '',
+  label: ''
+}
   ]
 
 
