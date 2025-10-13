@@ -1321,7 +1321,7 @@ hideMenu() {
           });
       
           dialogRef.afterClosed().subscribe(result => {
-            if(result.event === "SAVE"){
+            if(result?.event === "SAVE"){
               if(this.isAllFormsValid()){
                 this.saveJobApplication("")
                 this.userStore.updateSidebar(false);
@@ -1332,11 +1332,12 @@ hideMenu() {
                 this.openSnackBar("Please complete all required fields in the application form.", "Close");
               }
             }
-            else{
+            else if(result?.event === "DISCARD"){
               this.userStore.setJobApplicationFlag(false);
               this.userStore.updateSidebar(false);
               this.router.navigateByUrl('/user/job-applications');
             }
+            // CANCEL or undefined -> do nothing
           })
       }
       else{
@@ -2041,12 +2042,15 @@ hideMenu() {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result.event === "SAVE"){
+      if(result?.event === "SAVE"){
         this.saveResume()
       }
-      this.userStore.updateSidebar(false);
-      this.userStore.setIsChangeInNewResume(false);
-      this.router.navigateByUrl('/user/resumes');
+      else if(result?.event === "DISCARD"){
+        this.userStore.updateSidebar(false);
+        this.userStore.setIsChangeInNewResume(false);
+        this.router.navigateByUrl('/user/resumes');
+      }
+      // CANCEL or undefined -> do nothing
     });
   }
 

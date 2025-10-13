@@ -56,5 +56,9 @@ export class DiscardDialogComponent {
     this.dialogRef.close({event : 'DISCARD'});
   }
 
+  onCancelClick(){
+    this.dialogRef.close({event : 'CANCEL'});
+  }
+
    
 }

@@ -109,11 +109,21 @@
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
-                                    <li (click)="saveResume()"><div><span class="checkmark"><p-icon class="pi pi-save  "></p-icon></span> SAVE</div>
+                                    <li (click)="saveResume()"
+                                        [ngClass]="{'action-highlight': isChangeInNewResume(), 'action-pulse': isChangeInNewResume()}"
+                                        matTooltip="You have unsaved changes. Click to save."
+                                        matTooltipPosition="right"
+                                    >
+                                        <div><span class="checkmark"><p-icon class="pi pi-save  "></p-icon></span> SAVE</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
-                                    <li (click)="saveAndDownload()"><div><span class="checkmark"><p-icon class="pi pi-download "></p-icon></span> SAVE & DOWNLOAD</div>
+                                    <li (click)="saveAndDownload()"
+                                        [ngClass]="{'action-highlight': isChangeInNewResume(), 'action-pulse': isChangeInNewResume()}"
+                                        matTooltip="You have unsaved changes. Save & download."
+                                        matTooltipPosition="right"
+                                    >
+                                        <div><span class="checkmark"><p-icon class="pi pi-download "></p-icon></span> SAVE & DOWNLOAD</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>

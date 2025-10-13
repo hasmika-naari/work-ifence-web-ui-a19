@@ -1108,7 +1108,7 @@ ngAfterViewInit(): void {
         });
     
         dialogRef.afterClosed().subscribe(result => {
-          if(result.event === "SAVE"){
+          if(result?.event === "SAVE"){
             if(this.isAllFormsValid()){
               this.saveJobApplication("")
               this.userStore.updateSidebar(false);
@@ -1119,11 +1119,12 @@ ngAfterViewInit(): void {
               this.openSnackBar("Please complete all required fields in the application form.", "Close");
             }
           }
-          else{
+          else if(result?.event === "DISCARD"){
             this.userStore.setJobApplicationFlag(false);
             this.userStore.updateSidebar(false);
             this.router.navigateByUrl('/user/job-applications');
           }
+          // CANCEL or undefined -> do nothing
         })
     }
     else{
@@ -1163,12 +1164,15 @@ confirmDiscardAction(): void {
   });
 
   dialogRef.afterClosed().subscribe(result => {
-    if(result.event === "SAVE"){
+    if(result?.event === "SAVE"){
       this.saveResume()
     }
-    this.userStore.updateSidebar(false);
-    this.userStore.setIsChangeInNewResume(false);
-    this.router.navigateByUrl('/user/resumes');
+    else if(result?.event === "DISCARD"){
+      this.userStore.updateSidebar(false);
+      this.userStore.setIsChangeInNewResume(false);
+      this.router.navigateByUrl('/user/resumes');
+    }
+    // CANCEL or undefined -> do nothing
   });
 }
 

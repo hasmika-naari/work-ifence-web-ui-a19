@@ -653,11 +653,9 @@ hideMenu() {
     //  }
     
 
-    this.getTemplate();
-    this.hidePanelWindow = true;
-    
-    // Close the p-drawer panel
-    this.showPanelWindow = false;
+  // Ensure preview updates via signals and then close drawer
+  this.cdr.detectChanges();
+  this.closePanelWindow(null);
     
 
        // Find the element by its ID
@@ -1903,7 +1901,7 @@ hideMenu() {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result.event === "SAVE"){
+      if(result?.event === "SAVE"){
         if(this.isResumeValid()){
           this.saveResume()
           this.userStore.updateSidebar(false);
@@ -1914,11 +1912,12 @@ hideMenu() {
           this.openSnackBar("Please complete all required fields in the Meta Data form.", "Close");
         }
       }
-      else{
+      else if(result?.event === "DISCARD"){
         this.userStore.updateSidebar(false);
         this.userStore.setIsChangeInNewResume(false);
         this.router.navigateByUrl('/user/resumes');
       }
+      // CANCEL or undefined -> do nothing, keep dialog closed and remain on page
     });
   }
 

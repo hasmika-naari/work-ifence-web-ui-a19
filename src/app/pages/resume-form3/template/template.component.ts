@@ -194,6 +194,13 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
           this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
           }
         })
+
+        // Reflect global unsaved-change state (e.g., edits from left-side forms)
+        effect(() => {
+          const changedSignal = this.userStore.getIsChangeInNewResume?.();
+          const changed = typeof changedSignal === 'function' ? !!changedSignal() : false;
+          this.hasUnsavedChanges = changed || this.hasUnsavedChanges; // preserve true until explicit save
+        });
       }
 
   ngOnDestroy(): void {
