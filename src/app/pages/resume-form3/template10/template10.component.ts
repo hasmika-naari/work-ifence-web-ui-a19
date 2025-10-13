@@ -130,8 +130,8 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
           console.log(this.currentSections());
 
           let skills = this.resumeForm().skill_v2
-          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
-          this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
+          this.firstHalfSkills = [...skills.slice(0, Math.floor(skills?.length/2))]
+          this.secondHalfSkills = [...skills.slice(Math.floor(skills?.length/2),)]
         })
       }
 
@@ -163,8 +163,8 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       isSection.isSummary = true;
       this.userStore.updateSectionStatus(isSection);
       }
-      this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2?.length/2))]
-      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2?.length/2) + 1,)]
+      this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.floor(this.resumeForm().skill_v2?.length/2))]
+      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.floor(this.resumeForm().skill_v2?.length/2) + 1,)]
   }
 
   confirmDeleteItemDialog(section: string, selectedJson : any): void {

@@ -413,7 +413,7 @@ export class Templatesv2Service {
   let secondHalfSkills: any[] = [];
 
   if (resume.skill_v2?.length > 0) {
-    const mid = Math.ceil(resume.skill_v2.length / 2);
+    const mid = Math.floor(resume.skill_v2.length / 2);
     firstHalfSkills = [...resume.skill_v2.slice(0, mid)];
     secondHalfSkills = [...resume.skill_v2.slice(mid)];
   }
@@ -1105,7 +1105,7 @@ export class Templatesv2Service {
   let secondHalfSkills: any[] = [];
 
   if (resume.skill_v2?.length > 0) {
-    const mid = Math.ceil(resume.skill_v2.length / 2);
+    const mid = Math.floor(resume.skill_v2.length / 2);
     firstHalfSkills = [...resume.skill_v2.slice(0, mid)];
     secondHalfSkills = [...resume.skill_v2.slice(mid)];
   }
@@ -1439,7 +1439,7 @@ export class Templatesv2Service {
                     display: flex;
                 }
                 .contact p{
-                    font-size: 10px;
+                    font-size: 12px;
                     padding: 0px 2.5px;
                     margin: 0;
                 }
@@ -1447,7 +1447,7 @@ export class Templatesv2Service {
                     margin-top: 10px;
                 }
                 .section-title {
-                    font-size: 18px;
+                    font-size: 14px;
                     font-weight: bold;
                     margin-bottom: 5px !important;
                     padding-bottom: 2px;
@@ -1492,7 +1492,7 @@ export class Templatesv2Service {
                 }
                 .experince ul{
                     padding: 0;
-                    margin-left: 12px;
+                    margin-left: 8px;
                     margin-top: 5px;
                     margin-bottom: 0;
                 }
@@ -1501,6 +1501,10 @@ export class Templatesv2Service {
                     font-size: 12px;
                 }
                 .experince li::marker{
+                    font-size: 8px; /* Adjust the size of the bullet point here */
+                    color: #000; /* You can also change the color of the bullet */
+                }
+                .summary li::marker{
                     font-size: 8px; /* Adjust the size of the bullet point here */
                     color: #000; /* You can also change the color of the bullet */
                 }
@@ -1647,6 +1651,53 @@ export class Templatesv2Service {
                 margin-left:8px;
                 }
 
+                .summary-content ol {
+                padding-left: 1.09rem !important;
+                margin: 0 !important;
+                }
+                
+                .summary-content ol li {
+                font-size: 12px;
+                font-weight: 400;
+                padding: 0px 0px 0px 0px;
+                font-family: 'Roboto', sans-serif;
+                color: black;
+                white-space: pre-wrap;
+                }
+                
+                .summary-content ul {
+                padding-left: 1.09rem !important;
+                margin: 0 !important;
+                }
+                
+                .summary-content ul li {
+                font-size: 12px;
+                font-weight: 400;
+                padding: 0px 0px 8px 0px;
+                font-family: 'Roboto', sans-serif;
+                color: black;
+                white-space: pre-wrap;
+                }
+                
+                .summary-content p {
+                font-size: 12px;
+                font-weight: 400;
+                padding: 0px 0px 0px 0px;
+                font-family: 'Roboto', sans-serif;
+                color: black;
+                white-space: pre-wrap;
+                margin: 0;
+                }
+                
+                .summary-content a {
+                font-size: 12px;
+                font-weight: 400;
+                font-family: 'Roboto', sans-serif;
+                color: black;
+                white-space: pre-wrap;
+                margin: 0;
+                }
+
             </style>
         </head>
         <body>
@@ -1718,7 +1769,7 @@ export class Templatesv2Service {
   let secondHalfSkills: any[] = [];
 
   if (resume.skill_v2?.length > 0) {
-    const mid = Math.ceil(resume.skill_v2.length / 2);
+    const mid = Math.floor(resume.skill_v2.length / 2);
     firstHalfSkills = [...resume.skill_v2.slice(0, mid)];
     secondHalfSkills = [...resume.skill_v2.slice(mid)];
   }
@@ -1730,10 +1781,10 @@ export class Templatesv2Service {
       case 'PROFILE_SUMMARY':
         return resume.profileSummary?.profile_summary?.length > 0
           ? `
-            <div class="section">
+            <div class="section summary">
               ${title}
               <div class="project-content-container" style="margin:0;padding:0;">
-                <div class="project-content">
+                <div class="summary-content">
                   ${resume.profileSummary.profile_summary}
                 </div>
               </div>
@@ -1754,7 +1805,7 @@ export class Templatesv2Service {
           ? `
             <div class="section">
               ${title}
-              <div class="course-work-section-content project-content" style="margin-top:7px;">
+              <div class="course-work-section-content" style="margin-top:7px;">
                 <ul class="skills-list-li" style="padding:0px !important;">
                   ${this.getCourseWorkWithBulletPointsSectionForModern(resume.courseWork)}
                 </ul>
@@ -1767,7 +1818,7 @@ export class Templatesv2Service {
           ? `
             <div class="section">
               ${title}
-              <div class="course-work-section-content project-content" style="margin-top:7px;">
+              <div class="course-work-section-content" style="margin-top:7px;">
                 <ul class="skills-list-li" style="padding:0px !important;">
                   ${this.getSkillsWithBulletPointsSectionForModern(resume.skill)}
                 </ul>

@@ -203,8 +203,8 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
               })
             }
           let skills = this.resumeForm().skill_v2
-          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
-          this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
+          this.firstHalfSkills = [...skills.slice(0, Math.floor(skills?.length/2))]
+          this.secondHalfSkills = [...skills.slice(Math.floor(skills?.length/2),)]
           })
       }
 

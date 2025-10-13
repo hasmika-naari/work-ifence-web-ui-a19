@@ -141,8 +141,8 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
           let skills = this.resumeForm().skill_v2
           if(skills?.length>0){
-            this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
-          this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
+            this.firstHalfSkills = [...skills.slice(0, Math.floor(skills?.length/2))]
+          this.secondHalfSkills = [...skills.slice(Math.floor(skills?.length/2),)]
           }
         })
       }
@@ -180,8 +180,8 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     }
 
     if(this.resumeForm().skill_v2?.length>0){
-    this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2?.length/2))]
-      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2?.length/2) + 1,)]
+    this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.floor(this.resumeForm().skill_v2?.length/2))]
+      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.floor(this.resumeForm().skill_v2?.length/2) + 1,)]
     }
   }
 

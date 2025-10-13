@@ -3238,8 +3238,8 @@ ul {
 
 
   getTemplate1HTMLV1(resumeForm : Resume){
-    let firstHalfSkills = [...resumeForm.skill_v2.slice(0, Math.ceil(resumeForm.skill_v2.length/2))]
-    let secondHalfSkills = [...resumeForm.skill_v2.slice(Math.ceil(resumeForm.skill_v2.length/2),)]
+    let firstHalfSkills = [...resumeForm.skill_v2.slice(0, Math.floor(resumeForm.skill_v2.length/2))]
+    let secondHalfSkills = [...resumeForm.skill_v2.slice(Math.floor(resumeForm.skill_v2.length/2),)]
     console.log(resumeForm);
     return `
     <!DOCTYPE html>
@@ -4331,8 +4331,8 @@ public formatHTMLTemplate9Education(items : Education[]) : string{
 
 
 public formatTemplate10HTML(resumeForm : Resume){
-  let firstHalfSkills = [...resumeForm.skill_v2.slice(0, Math.ceil(resumeForm.skill_v2.length/2))]
-  let secondHalfSkills = [...resumeForm.skill_v2.slice(Math.ceil(resumeForm.skill_v2.length/2),)]
+  let firstHalfSkills = [...resumeForm.skill_v2.slice(0, Math.floor(resumeForm.skill_v2.length/2))]
+  let secondHalfSkills = [...resumeForm.skill_v2.slice(Math.floor(resumeForm.skill_v2.length/2),)]
   return `
   <!DOCTYPE html>
   <html lang="en">

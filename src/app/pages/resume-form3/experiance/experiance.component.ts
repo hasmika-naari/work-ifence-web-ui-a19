@@ -664,7 +664,6 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       this.userStore.addExperienceItem(exp);
     }
     this.userStore.setExperience(new Experience());
-    this.experienceForm.reset()
     this.experienceForm.get('bullet_points')?.setValue('4');
     if(!this.sectionStatus().isExperience){
       let status = this.sectionStatus()
@@ -689,6 +688,7 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
             })
           this.userStore.setResumeSections(this.sections())
         }
+    this.experienceForm.reset()
     this.closePanelWindow()
     this.contact.emit();
   }

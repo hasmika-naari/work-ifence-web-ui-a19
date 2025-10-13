@@ -289,6 +289,11 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       }
     }));
 
+    this.projectForm.controls['section_title'].valueChanges.subscribe((e)=>{
+      console.log("Section Title Change:" , e);
+      
+    })
+
     // this.subs.push(this.routeActivated.url.subscribe(urlSegment => {
     //   const currentUrl = urlSegment.join('/');
     //   
@@ -509,7 +514,6 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       this.userStore.addProjectItem(project);
     }
     this.userStore.setProject(new Project());
-    this.projectForm.reset()
     this.projectForm.get('bullet_points')?.setValue('4');
     if(!this.sectionStatus().isProject){
       let status = this.sectionStatus()
@@ -529,12 +533,15 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     else{
       this.sections().map((section : SectionDesc)=>{
           if(section.section == 'PROJECT'){
+            console.log(this.projectForm.controls['section_title'].value);
             section.editable_section_title = this.projectForm.controls['section_title'].value?? 'Project'
           }
         })
         this.userStore.setResumeSections(this.sections())
     }
     console.log(this.resumeSignalForm());
+    console.log(this.sections());
+    this.projectForm.reset()
     this.closePanelWindow();
     this.contact.emit();
   }

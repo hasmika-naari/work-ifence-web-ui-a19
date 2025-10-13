@@ -260,7 +260,7 @@
     }
 
     <!-- Skills Section -->
-     @if(isSkillsCategoryDefault()){
+     @if(!isSkillsCategoryDefault()){
     <div class="section skills" style="position: relative;" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
         <div class="section-title">{{getSectionTitle(section)}}
         </div>
@@ -327,7 +327,7 @@
             </div>
             @if(!isPreview){
               <div class="section-actions">
-                @if(resumeForm().skill.length == 0){
+                @if(isSkillsCategoryDefault()){
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
                       <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
