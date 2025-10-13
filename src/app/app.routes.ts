@@ -162,6 +162,7 @@ import { LogoutComponent } from './authentication/logout/logout.component';
 // import { PolarChartsComponent } from './apexcharts/polar-charts/polar-charts.component';
 // import { MoreChartsComponent } from './apexcharts/more-charts/more-charts.component';
 import { AuthGuardService } from './services/auth-guard.service';
+import { pendingChangesGuard } from './guards/pending-changes.guard';
 
 export const routes: Routes = [
     {
@@ -417,6 +418,7 @@ export const routes: Routes = [
             },
             {
                 path: 'resumes/resume',
+                canDeactivate: [pendingChangesGuard],
                 loadComponent: () => 
                     import('./pages/resume-form3/resume-form3.component')
                         .then(m => m.ResumeForm3Component), 

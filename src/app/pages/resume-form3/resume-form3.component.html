@@ -178,7 +178,8 @@
                                         padding-top:0px;">
                             @if(resumeSignalForm().template_details.template_name == 'TEMPLATE_1'){
                                 <app-resume1-template
-                                     (editSection)="showEditSection($event)">
+                                     (editSection)="showEditSection($event)"
+                                     (saveRequested)="saveResume()">
                                 </app-resume1-template>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){

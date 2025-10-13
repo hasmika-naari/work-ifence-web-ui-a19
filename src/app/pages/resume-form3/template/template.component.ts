@@ -56,10 +56,19 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   
   @Output() editSection = new EventEmitter<any>();
+  @Output() saveRequested = new EventEmitter<void>();
 
   @Input() isPreview : boolean = false;
   currentDraggingSection: string = '';
   isDragging : boolean = false
+
+  hasUnsavedChanges = false;
+  private unloadHandler = (e: BeforeUnloadEvent) => {
+    if (this.hasUnsavedChanges) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  };
 
   sections  : string[]= ['PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS', 'ACHIEVEMENTS_BULLET_POINTS']
 
@@ -189,9 +198,15 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // this.userStore.setResumeSections([])
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('beforeunload', this.unloadHandler);
+    }
   }
 
   ngOnInit() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', this.unloadHandler);
+    }
     if(this.selectedResumeListItem().id){
       let isSection : IsSectionPresent = new IsSectionPresent();
       isSection.isContact = true;
@@ -263,6 +278,7 @@ formatSkills(items : string[]){
         else if(section == 'ACHIEVEMENT_WITH_DESC'){
           this.userStore.deleteAccomplishment(selectedJson)
         }
+        this.markDirty();
       }
     });
   }
@@ -307,6 +323,7 @@ formatSkills(items : string[]){
       let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateAccomplishmentItem(selectedJson, index);
     }
+    this.markDirty();
   }
 
   unHideSectionElement(section: string, selectedJson : any){
@@ -340,6 +357,7 @@ formatSkills(items : string[]){
       let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
       this.userStore.updateAccomplishmentItem(selectedJson, index);
     }
+    this.markDirty();
   }
 
   addSectionHandler(section : string){
@@ -358,7 +376,7 @@ formatSkills(items : string[]){
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       this.userStore.setSelectedAccomplishment(new Accomplishment());
     }
-    
+    this.markDirty();
     this.editSection.emit({section : section})
   }
 
@@ -378,6 +396,7 @@ formatSkills(items : string[]){
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       this.userStore.setSelectedAccomplishment(selectedJson)
     }
+    this.markDirty();
     this.editSection.emit({section : section})
   }
 
@@ -418,6 +437,7 @@ formatSkills(items : string[]){
       console.log("Move not possible");
     }
     this.userStore.updateEducationList(array);
+    this.markDirty();
   }
   else if(section === "PROJECT"){
     const array = this.resumeForm().project;
@@ -437,6 +457,7 @@ formatSkills(items : string[]){
       console.log("Move not possible");
     }
     this.userStore.updateProjectList(array);
+    this.markDirty();
   }
   else if(section === "WORK_EXPERIENCE"){
     const array = this.resumeForm().experience;
@@ -456,6 +477,7 @@ formatSkills(items : string[]){
       console.log("Move not possible");
     }
     this.userStore.updateExperienceList(array);
+    this.markDirty();
   }
   else if(section === "CERTIFICATIONS"){
     const array = this.resumeForm().certification;
@@ -475,6 +497,7 @@ formatSkills(items : string[]){
       console.log("Move not possible");
     }
     this.userStore.updateCertificationList(array);
+    this.markDirty();
   }
   else if(section === "ACHIEVEMENT_WITH_DESC"){
     const array = this.resumeForm().accomplishment;
@@ -494,6 +517,7 @@ formatSkills(items : string[]){
       console.log("Move not possible");
     }
     this.userStore.updateAccomplishmentList(array);
+    this.markDirty();
   }
 
 }
@@ -548,6 +572,7 @@ removeSection(section : string){
         }
         this.userStore.removeSection(section);
         this.userStore.updateResumeForm(resume);
+        this.markDirty();
       }
   })
 }
@@ -557,6 +582,7 @@ drop(event: CdkDragDrop<string[]>) {
   moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
   console.log("After: ",this.sections, event.previousIndex, event.currentIndex);
   this.syncSectionsToStore();
+  this.markDirty();
 }
 
 private syncSectionsToStore() {
@@ -574,6 +600,7 @@ moveSectionUp(section: string) {
   if (idx > 0) {
     [this.sections[idx - 1], this.sections[idx]] = [this.sections[idx], this.sections[idx - 1]];
     this.syncSectionsToStore();
+    this.markDirty();
   }
 }
 
@@ -582,6 +609,7 @@ moveSectionDown(section: string) {
   if (idx > -1 && idx < this.sections.length - 1) {
     [this.sections[idx], this.sections[idx + 1]] = [this.sections[idx + 1], this.sections[idx]];
     this.syncSectionsToStore();
+    this.markDirty();
   }
 }
 
@@ -637,5 +665,17 @@ isSkillsCategoryDefault(){
 
 
 
+  private markDirty(): void {
+    this.hasUnsavedChanges = true;
+    // Ensure change detection picks this up in OnPush scenarios
+    this.cdr.markForCheck?.();
+  }
+
+  onSaveChanges(): void {
+    // Hook actual persistence here if needed (parent can handle via event)
+    this.hasUnsavedChanges = false;
+    this.saveRequested.emit();
+    this.cdr.detectChanges();
+  }
   
 }
