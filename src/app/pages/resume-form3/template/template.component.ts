@@ -1,4 +1,3 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -27,6 +26,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { CdkDragDrop, CdkDragStart, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { SectionDesc } from 'src/app/services/store/user-store';
+import { IconsModule } from 'src/app/shared/icons.module';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
 
 
@@ -39,7 +40,7 @@ import { SectionDesc } from 'src/app/services/store/user-store';
     MatFormFieldModule,InputTextModule, MatTooltipModule,
     MatInputModule,ButtonModule,ConfirmDialogComponent,
     MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule, DragDropModule],
+    MatIconModule,MatExpansionModule, DragDropModule, IconsModule],
   templateUrl: './template.component.html',
   styleUrls: ['./template.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -81,7 +82,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isAdded: true,
       isPremium: false,
       tags: 'summary, profile, objective',
-      label: 'Summary'
+      label: 'Summary',
+      canMoveUp: false,
+      canMoveDown: true
     },
     {
       section: 'EDUCATION',
@@ -91,7 +94,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isAdded: true,
       isPremium: false,
       tags: 'education, school, degree',
-      label: 'Education'
+      label: 'Education',
+      canMoveUp: true,
+      canMoveDown: true
     },
     {
       section: 'RELEVANT_COURSEWORK',
@@ -101,7 +106,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isAdded: true,
       isPremium: false,
       tags: 'coursework, classes, subjects',
-      label: 'Coursework'
+      label: 'Coursework',
+      canMoveUp: true,
+      canMoveDown: true
     },
     {
       section: 'SKILLS_BULLET_POINTS',
@@ -111,7 +118,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isAdded: true,
       isPremium: false,
       tags: 'skills, abilities, competencies',
-      label: 'Skills (B.P.)'
+      label: 'Skills (B.P.)',
+      canMoveUp: true,
+      canMoveDown: true
     },
     {
       section: 'WORK_EXPERIENCE',
@@ -121,7 +130,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isAdded: true,
       isPremium: false,
       tags: 'experience, work, job',
-      label: 'Experience'
+      label: 'Experience',
+      canMoveUp: true,
+      canMoveDown: true
     },
     {
       section: 'PROJECT',
@@ -131,7 +142,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isAdded: true,
       isPremium: false,
       tags: 'projects, portfolio, work',
-      label: 'Projects'
+      label: 'Projects',
+      canMoveUp: true,
+      canMoveDown: true
     },
     {
       section: 'CERTIFICATIONS',
@@ -141,7 +154,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isAdded: true,
       isPremium: true,
       tags: 'certifications, credentials, qualifications',
-      label: 'Certifications'
+      label: 'Certifications',
+      canMoveUp: true,
+      canMoveDown: true
     },
     {
       section: 'ACHIEVEMENTS_BULLET_POINTS',
@@ -151,7 +166,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isAdded: true,
       isPremium: false,
       tags: 'achievements, accomplishments, awards',
-      label: 'Achievements'
+      label: 'Achievements',
+      canMoveUp: true,
+      canMoveDown: false
     }
   ]
 
@@ -178,6 +195,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
             this.isSectionsSetCount = this.isSectionsSetCount + 1
           }
           else if(this.currentSections()?.length == 0){
+            this.updateSectionVisibilityFlags(this.sectionsDesc);
             this.userStore.setResumeSections(this.sectionsDesc)
           }
           else if(this.currentSections()?.length !== this.sections?.length){
@@ -384,7 +402,8 @@ formatSkills(items : string[]){
       this.userStore.setSelectedAccomplishment(new Accomplishment());
     }
     this.markDirty();
-    // Trigger change detection to update arrow button states
+    // Update section visibility flags after adding
+    this.refreshSectionVisibilityFlags();
     this.cdr.detectChanges();
     this.editSection.emit({section : section})
   }
@@ -582,6 +601,8 @@ removeSection(section : string){
         this.userStore.removeSection(section);
         this.userStore.updateResumeForm(resume);
         this.markDirty();
+        // Update section visibility flags after removing
+        this.refreshSectionVisibilityFlags();
       }
   })
 }
@@ -592,25 +613,37 @@ drop(event: CdkDragDrop<string[]>) {
   console.log("After: ",this.sections, event.previousIndex, event.currentIndex);
   this.syncSectionsToStore();
   this.markDirty();
+  // Flags are already updated in syncSectionsToStore() -> updateSectionVisibilityFlags()
 }
 
-private syncSectionsToStore() {
-  let formattedSections: SectionDesc[] = [];
-  this.sections.forEach((e) => {
-    const found = this.currentSections().filter((s) => s.section === e);
-    formattedSections = [...formattedSections, ...found];
-  });
-  this.userStore.setResumeSections(formattedSections);
-  this.cdr.detectChanges();
-}
+  private syncSectionsToStore() {
+    let formattedSections: SectionDesc[] = [];
+    this.sections.forEach((e) => {
+      const found = this.currentSections().filter((s) => s.section === e);
+      formattedSections = [...formattedSections, ...found];
+    });
+    this.updateSectionVisibilityFlags(formattedSections);
+    this.userStore.setResumeSections(formattedSections);
+    this.cdr.detectChanges();
+  }
 
-moveSectionUp(section: string) {
+  private updateSectionVisibilityFlags(sections: SectionDesc[]) {
+    sections.forEach((section, index) => {
+      section.canMoveUp = index > 0;
+      section.canMoveDown = index < sections.length - 1;
+    });
+  }
+
+  private refreshSectionVisibilityFlags() {
+    const currentSections = this.currentSections();
+    this.updateSectionVisibilityFlags(currentSections);
+    this.userStore.setResumeSections([...currentSections]); // Trigger update
+  }moveSectionUp(section: string) {
   const idx = this.sections.indexOf(section);
   if (idx > 0) {
     [this.sections[idx - 1], this.sections[idx]] = [this.sections[idx], this.sections[idx - 1]];
-    this.syncSectionsToStore();
+    this.syncSectionsToStore(); // This automatically updates visibility flags
     this.markDirty();
-    // Trigger change detection to update arrow button states
     this.cdr.detectChanges();
   }
 }
@@ -619,23 +652,35 @@ moveSectionDown(section: string) {
   const idx = this.sections.indexOf(section);
   if (idx > -1 && idx < this.sections.length - 1) {
     [this.sections[idx], this.sections[idx + 1]] = [this.sections[idx + 1], this.sections[idx]];
-    this.syncSectionsToStore();
+    this.syncSectionsToStore(); // This automatically updates visibility flags
     this.markDirty();
-    // Trigger change detection to update arrow button states
     this.cdr.detectChanges();
   }
 }
 
-canMoveUp(section: string): boolean {
-  return this.sections.indexOf(section) > 0;
-}
+  canMoveUp(section: string): boolean {
+    const sectionData = this.getSectionData(section);
+    const canMove = sectionData?.canMoveUp ?? false;
+    // Debug: log for achievements section
+    if(section === 'ACHIEVEMENTS_BULLET_POINTS') {
+      console.log(`canMoveUp(${section}): ${canMove}`, sectionData);
+    }
+    return canMove;
+  }
 
-canMoveDown(section: string): boolean {
-  const idx = this.sections.indexOf(section);
-  return idx > -1 && idx < this.sections.length - 1;
-}
+  canMoveDown(section: string): boolean {
+    const sectionData = this.getSectionData(section);
+    const canMove = sectionData?.canMoveDown ?? false;
+    // Debug: log for achievements section
+    if(section === 'ACHIEVEMENTS_BULLET_POINTS') {
+      console.log(`canMoveDown(${section}): ${canMove}`, sectionData);
+    }
+    return canMove;
+  }
 
-dragStarted(event: CdkDragStart) {
+  getSectionData(sectionKey: string): SectionDesc | undefined {
+    return this.currentSections().find(s => s.section === sectionKey);
+  }dragStarted(event: CdkDragStart) {
   const element = (event.source.element.nativeElement as HTMLElement);
   element.parentElement?.style.setProperty('--drag-placeholder-height', `${element.offsetHeight}px`);
 }

@@ -81,6 +81,8 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
     label: string;
     title?: string;
     editable_section_title?: string;
+    canMoveUp?: boolean;
+    canMoveDown?: boolean;
   }
 
   export const sections: Array<SectionDesc> = [
