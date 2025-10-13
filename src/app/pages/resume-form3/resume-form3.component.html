@@ -287,3 +287,32 @@
           </div>
       </ng-template>
   </p-drawer>
+
+  <!-- Right-side preview drawer -->
+  <p-drawer 
+      [visible]="previewDrawerOpen"
+      [position]="'right'"
+      [style]="{'width': '60vw', 'min-width': '520px', 'max-width': '920px'}"
+      [showCloseIcon]="false"
+      [blockScroll]="true"
+  >
+      <ng-template pTemplate="header">
+          <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+              <h3 style="margin: 0;">Preview</h3>
+              <p-button 
+                  icon="pi pi-times" 
+                  [rounded]="true" 
+                  [text]="true" 
+                  severity="danger"
+                  (onClick)="closePreview()" 
+              />
+          </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+          <app-preview-resume 
+              [templateName]="resumeSignalForm().template_details.template_name"
+              (download)="saveAndDownload()"
+              (close)="closePreview()"
+          ></app-preview-resume>
+      </ng-template>
+  </p-drawer>

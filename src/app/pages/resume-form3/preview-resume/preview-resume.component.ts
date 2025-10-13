@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, inject, Input } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -51,18 +51,23 @@ import { ResumeTemplate10Component } from '../template10/template10.component';
 })
 export class PreviewResumeComponent implements OnInit, OnDestroy {
 
-    isUserNameCheckInProgress = false;
-    isToggled = false;
-    selectedTemplateName : String = ""
+  isUserNameCheckInProgress = false;
+  isToggled = false;
+  selectedTemplateName: string = '';
     private themeToggleSubscription: Subscription;
 
 
-    public dialogRef: MatDialogRef<PreviewResumeComponent> = inject( MatDialogRef<PreviewResumeComponent>);
-    public themeService: ThemeCustomizerService = inject(ThemeCustomizerService);
-    public data: DialogData = inject(MAT_DIALOG_DATA);
+  @Input() templateName: string | undefined;
+  @Output() download = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
+
+  public dialogRef: MatDialogRef<PreviewResumeComponent> | null = inject(MatDialogRef<PreviewResumeComponent>, { optional: true });
+  public themeService: ThemeCustomizerService = inject(ThemeCustomizerService);
+  public data: DialogData | undefined = inject(MAT_DIALOG_DATA, { optional: true });
 
     constructor(private router: Router) {
-      this.selectedTemplateName = this.data.name;
+  // Prefer @Input if provided; otherwise use dialog data if available
+  this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
       this.themeToggleSubscription = this.themeService.isToggled$.subscribe(isToggled => {
         this.isToggled = isToggled;
       });
@@ -74,19 +79,31 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
     }
  
     ngOnInit(): void {
-
+      // When used inside a drawer, @Input templateName is set before ngOnInit
+      // When used as a dialog, fall back to injected data
+      this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
   }
 
   onConfirmHandler(){
-    this.dialogRef.close({event : 'CONFIRM'});
+    if (this.dialogRef) {
+      this.dialogRef.close({event : 'CONFIRM'});
+    }
   }
 
   onDownloadHandler(){
-    this.dialogRef.close({event : 'DOWNLOAD'});
+    if (this.dialogRef) {
+      this.dialogRef.close({event : 'DOWNLOAD'});
+    } else {
+      this.download.emit();
+    }
   }
 
   onNoClick(){
-    this.dialogRef.close({event : 'CANCEL'});
+    if (this.dialogRef) {
+      this.dialogRef.close({event : 'CANCEL'});
+    } else {
+      this.close.emit();
+    }
   }
 
    

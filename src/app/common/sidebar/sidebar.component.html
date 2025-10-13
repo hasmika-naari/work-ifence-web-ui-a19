@@ -17,10 +17,10 @@
     <ng-scrollbar visibility="hover">
         <div  class="sidenav-user" [class.collapsed]="isToggled" >
             <img class="sidenav-user-image transition" [src]="bioProfile().imageUrl?bioProfile().imageUrl:'assets/img/avatars/noavatar.png'">
-            <h4 class="sidenav-user-name p-0 mb-1 ">{{bioProfile().firstName?bioProfile().firstName:'First Name'}} {{bioProfile().lastName?bioProfile().lastName:'Last Name'}}</h4>
-            <h5 class="sidenav-user-email p-0 m-0  show-gray">{{userAccount().email?userAccount().email:'email@xxxx.com'}}</h5>
+            <!-- <h4 class="sidenav-user-name p-0 mb-1 ">{{bioProfile().firstName?bioProfile().firstName:'First Name'}} {{bioProfile().lastName?bioProfile().lastName:'Last Name'}}</h4>
+            <h5 class="sidenav-user-email p-0 m-0  show-gray">{{userAccount().email?userAccount().email:'email@xxxx.com'}}</h5> -->
       
-            <div class="sidenav-user-icons mt-4 d-flex justify-content-center gap-3">
+            <!-- <div class="sidenav-user-icons mt-4 d-flex justify-content-center gap-3">
                 <a [routerLink]="['/tables/all-in-one-table']" class="btn p-2 show-primary">
                     <mat-icon>assignment</mat-icon>
                 </a>
@@ -30,7 +30,7 @@
                 <a [routerLink]="['/login']" class="btn p-2 show-primary">
                     <mat-icon>exit_to_app</mat-icon>
                 </a>
-            </div>
+            </div> -->
             <!-- <div class="sidenav-user-options">
                 <button
                 mat-button

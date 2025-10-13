@@ -145,7 +145,7 @@
         .sidebar-inner {
             position: relative;
             margin-right: -5px;
-            top: 100px;
+            top: 80px; /* keep a small gap below the logo */
             // margin-top: 20px;
             padding: {
                 top: 0px;
@@ -495,20 +495,21 @@
         &:hover {
             .sidenav-user {
                 position: relative;
-                top: 95px;
+                top: 80px; /* keep gap below logo when expanded on hover */
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
                 transition: width 0.3s ease-in-out;
                 width: 260px;
-                height: 250px;
+                height: 180px; /* allow for bigger avatar */
                 // border-bottom: 1px dotted gray;
                 /* Increase Profile Image Size */
                 .sidenav-user-image {
-                    width: 72px;
-                    height: 72px;
+                    width: 120px; /* keep large size when expanded */
+                    height: 120px;
                     opacity: 1;
+                    transition: width .25s ease, height .25s ease;
                 }
 
                 /* Profile Details: Always visible, no animation */
@@ -560,11 +561,11 @@
                 }
             }
         }
-        &.active {
+    &.active {
             sidebar-inner{
                 position: relative;
                 margin-right: -5px;
-                top: 10px;
+        top: 10px; /* unchanged */
                 padding: {
                     top: 0px;
                     left: 20px;
@@ -579,18 +580,18 @@
 
     .sidenav-user {
         position: relative;
-        top: 95px;
+        top: 80px; /* small gap below logo */
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        height: 250px;
+    height: 180px; /* allow bigger avatar while keeping menu close */
         /* No transition or animation */
         .sidenav-user-image {
-            width: 80px;
-            height: 80px;
+            width: 120px; /* larger to fill the section visually */
+            height: 120px;
             border-radius: 50%;
-            transition: none !important;
+            transition: width .25s ease, height .25s ease; /* smooth size change */
         }
         .sidenav-user-name{
             font-size: medium;
@@ -612,7 +613,7 @@
                 width: 60px;
                 height: 60px;
                 opacity: 1;
-                transition: none !important;
+                transition: width .25s ease, height .25s ease; /* smooth resize from small to big */
             }
             .sidenav-user-name,
             .sidenav-user-email,
@@ -625,10 +626,10 @@
                 width: 260px;
                 transition: none !important;
                 .sidenav-user-image {
-                    width: 72px;
-                    height: 72px;
+                    width: 120px; /* same large size on hover */
+                    height: 120px;
                     opacity: 1;
-                    transition: none !important;
+                    transition: width .25s ease, height .25s ease;
                 }
                 .sidenav-user-name,
                 .sidenav-user-email,
@@ -815,7 +816,7 @@
                 }
                 .sidebar-inner {
                     position: relative;
-                    top: 100px;
+                    top: 70px; /* compact spacing */
                     padding: {
                         top: 0px;
                         left: 20px;
@@ -897,17 +898,18 @@
                         opacity: 1;
                         visibility: visible;
                     }
-                    sidenav-user{
+                    .sidenav-user{
                         width: 260px;
-                        height: 250px;
+                        height: 180px; /* align with compact expanded height */
                         display: flex;
                         flex-direction: column;
                         align-items: center;
                         .sidenav-user-image {
                             display: block;
-                            height: 72px;
-                            width: 72px;
+                            height: 120px; /* larger to fill the section visually */
+                            width: 120px;
                             border-radius: 50%;
+                            transition: width .25s ease, height .25s ease;
                         }
                 
                         .sidenav-user-name {

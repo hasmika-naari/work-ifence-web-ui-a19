@@ -1,36 +1,106 @@
-.preview-resume-renderer-page {
-    background-color: #fff;
-    max-height: 100vh !important;
-    width:940px
-  }
+/* Container that fills the drawer, with space for a sticky footer */
+.preview-drawer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* fill the drawer content area */
+  background: linear-gradient(180deg, #f7f9fc 0%, #f4f6fb 100%); /* full-height subtle background */
+}
 
-  .preview-browser-resume-page {
-    /* box-shadow:0 0 2px 0 rgba(83,83,83,.5); */
-    margin-bottom: 40px !important;
-  }
-  
-  .preview-browser-resume-page:after,.preview-browser-resume-page:before {
-    background: transparent !important;
-    content: "" !important;
-    height: 10px !important;
-    width: 60% !important;
-    z-index: -1 !important;
-  }
+/* Scrollable area that centers the resume page */
+.preview-canvas {
+  flex: 1 1 auto;
+  overflow: auto;
+  background: transparent; /* gradient is on the container now */
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 96px; /* extra bottom space so paper bottom isn't hidden by sticky actions */
+  position: relative; /* allow pseudo background track */
+}
 
-.cdk-overlay-pane.mat-mdc-dialog-panel{
-    max-width: none !important;
-  }
-  
-  .preview-browser-resume-page:before {
-    bottom: 30px !important;
-    box-shadow: 0 31px 10px rgba(0,0,0,.6) !important;
-    left: 20px !important;
-    transform: rotate(-1deg) !important;
-  }
-  
-  .preview-browser-resume-page:after {
-    bottom: 50px !important;
-    box-shadow: 0 47px 14px rgba(0,0,0,.5) !important;
-    right: -1px !important;
-    transform: skew(2deg) rotate(3deg) !important;
-  }
+/* Full-height white track behind the page so background never "cuts" */
+.preview-canvas::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0; /* stretch entire scroll height, we already add extra padding on canvas */
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(900px, calc(100% - 32px));
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  z-index: 0; /* behind actual page content */
+  pointer-events: none;
+}
+
+/* Resume page look */
+.preview-page.preview-resume-renderer-page {
+  background-color: #ffffff; /* solid white to cover entire page content */
+  /* responsive width: cap to drawer and leave some breathing room */
+  width: min(900px, calc(100% - 32px));
+  min-height: 80vh;
+  border-radius: 6px;
+  padding: 24px 24px 24px;
+  position: relative;
+  /* allow page bottom shadow pseudo-elements to show */
+  overflow: visible;
+  z-index: 1; /* above background track */
+}
+
+.preview-browser-resume-page {
+  margin-bottom: 24px !important;
+}
+
+.preview-browser-resume-page:after,
+.preview-browser-resume-page:before {
+  background: transparent !important;
+  content: "" !important;
+  height: 12px !important;
+  width: 60% !important;
+  position: absolute;
+  z-index: 0 !important;
+}
+
+.cdk-overlay-pane.mat-mdc-dialog-panel {
+  max-width: none !important;
+}
+
+.preview-browser-resume-page:before {
+  left: 20px !important;
+  right: 20px !important;
+  bottom: -4px !important;
+  box-shadow: 0 14px 10px rgba(0, 0, 0, .05) !important;
+  transform: rotate(-0.5deg) !important;
+}
+
+.preview-browser-resume-page:after {
+  left: 40px !important;
+  right: 40px !important;
+  bottom: -10px !important;
+  box-shadow: 0 24px 14px rgba(0, 0, 0, .04) !important;
+  transform: rotate(0.5deg) !important;
+}
+
+/* Sticky actions area at bottom */
+.preview-actions {
+  flex: 0 0 auto;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* top-right icon inside the page, close to border */
+.preview-top-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  z-index: 3;
+}

@@ -95,7 +95,7 @@ export interface DialogData {
     MatInputModule,ButtonModule,OverlayPanelModule,ResumeContactComponent,ContextMenuComponent,
     MatButtonModule,AccordionModule,TextareaModule,CertificationComponent,CourseWorkComponent,
     EducationComponent,ProjectComponent,SkillsComponent,SummaryComponent,ProgressBarModule, MatTooltipModule,
-    MatIconModule,MatExpansionModule, ExperianceComponent, ResumeTitleComponent, ResumeTemplateListComponent, ResumeTemplate2Component,ResumeTemplate3Component
+    MatIconModule,MatExpansionModule, ExperianceComponent, ResumeTitleComponent, ResumeTemplateListComponent, ResumeTemplate2Component,ResumeTemplate3Component, PreviewResumeComponent
   , ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, DiscardDialogComponent, AchievementsComponent,
   JobDescriptionComponent, MatExpansionModule, ResumeTemplate9Component, ResumeTemplate10Component, AccomplishmentsComponent, AddSectionComponent],
   templateUrl: './resume-form3.component.html',
@@ -118,6 +118,8 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   listed_coursework : Array<String> = ['Data Structures and Algorithms','Object-Oriented Programming','Database Management Systems','Computer Networks','Operating Systems','Software Engineering','Artificial Intelligence','Web Development', 'Data Structures']
   skillCount : number = 0
   custom_fileName : string = ''
+  // Right-side preview drawer visibility
+  previewDrawerOpen: boolean = false;
   private _snackBar = inject(MatSnackBar);
   isExpanded = false; // Controls the expandable/collapsible section
   isFormPanleClosed : boolean = true;
@@ -993,16 +995,12 @@ hideMenu() {
   }
 
   previewResume(): void {
-    const dialogRef = this.dialog.open(PreviewResumeComponent, {
-      data: {name: this.resumeSignalForm().template_details.template_name},
-      panelClass: 'preview-resume-model-dialog'
-    });
+    // Open right-side drawer instead of modal
+    this.previewDrawerOpen = true;
+  }
 
-    dialogRef.afterClosed().subscribe(result => {    
-      if(result.event == 'DOWNLOAD'){
-        this.saveAndDownload();
-      }
-    });
+  closePreview(): void {
+    this.previewDrawerOpen = false;
   }
 
   showEditSection($event : any){
