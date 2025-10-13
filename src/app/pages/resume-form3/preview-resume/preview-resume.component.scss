@@ -4,6 +4,10 @@
   flex-direction: column;
   height: 100%; /* fill the drawer content area */
   background: linear-gradient(180deg, #f7f9fc 0%, #f4f6fb 100%); /* full-height subtle background */
+  position: relative; /* allow bottom pseudo-element */
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  position: relative;
+  border: 1px solid white;
 }
 
 /* Scrollable area that centers the resume page */
@@ -13,73 +17,77 @@
   background: transparent; /* gradient is on the container now */
   display: flex;
   justify-content: center;
+  align-items: flex-start; /* align to top */
   padding: 24px 16px 96px; /* extra bottom space so paper bottom isn't hidden by sticky actions */
   position: relative; /* allow pseudo background track */
 }
 
-/* Full-height white track behind the page so background never "cuts" */
-.preview-canvas::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0; /* stretch entire scroll height, we already add extra padding on canvas */
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(900px, calc(100% - 32px));
-  background: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  z-index: 0; /* behind actual page content */
-  pointer-events: none;
-}
+/* Removed container-level bottom shadow; use page-level pseudo-elements instead for precise alignment */
 
 /* Resume page look */
 .preview-page.preview-resume-renderer-page {
-  background-color: #ffffff; /* solid white to cover entire page content */
+  background-color: #ffffff !important; /* solid white background - force it */
   /* responsive width: cap to drawer and leave some breathing room */
   width: min(900px, calc(100% - 32px));
   min-height: 80vh;
   border-radius: 6px;
-  padding: 24px 24px 24px;
-  position: relative;
+  padding: 24px 24px 48px; /* extra bottom padding to ensure footer area is white */
+  position: relative !important; /* establish positioning context for top-actions */
   /* allow page bottom shadow pseudo-elements to show */
   overflow: visible;
+  display: flow-root; /* contain floats so background wraps all children */
   z-index: 1; /* above background track */
+  /* Subtle outer shadow for paper effect without affecting inner content */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 72px; /* keep bottom shadow visible above sticky actions */
+  padding-bottom: 0px;
 }
 
 .preview-browser-resume-page {
   margin-bottom: 24px !important;
+  /* Ensure this container wraps all floated/positioned children properly */
+  display: flow-root;
+  overflow: visible;
+  background-color: #ffffff !important; /* force white background on template container */
+  position: relative; /* establish stacking context */
+  z-index: 1; /* above shadows */
+  
+  /* Force all child template components to also contain their floats and have white background */
+  ::ng-deep {
+    /* Immediate child template component wrapper */
+    > * {
+      display: flow-root !important;
+      overflow: visible !important;
+      background-color: #ffffff !important;
+      position: relative !important;
+      z-index: 2 !important; /* ensure content is above shadows */
+    }
+    
+    /* Ensure all sections establish formatting context and white background */
+    section, .section-details, .course-work, .resume-summary, .skills {
+      display: flow-root !important;
+      overflow: visible !important;
+      background: transparent !important; /* let parent white show through */
+      position: relative !important;
+      z-index: 2 !important;
+    }
+    
+    /* Force white background on any potentially transparent areas */
+    * {
+      &:not(img):not(svg):not(path):not(circle):not(rect):not(line):not(polyline):not(polygon) {
+        background-clip: padding-box;
+      }
+    }
+  }
 }
 
-.preview-browser-resume-page:after,
-.preview-browser-resume-page:before {
-  background: transparent !important;
-  content: "" !important;
-  height: 12px !important;
-  width: 60% !important;
-  position: absolute;
-  z-index: 0 !important;
-}
+/* Remove pseudo-element shadows to prevent content blurring/overlap */
 
 .cdk-overlay-pane.mat-mdc-dialog-panel {
   max-width: none !important;
 }
 
-.preview-browser-resume-page:before {
-  left: 20px !important;
-  right: 20px !important;
-  bottom: -4px !important;
-  box-shadow: 0 14px 10px rgba(0, 0, 0, .05) !important;
-  transform: rotate(-0.5deg) !important;
-}
-
-.preview-browser-resume-page:after {
-  left: 40px !important;
-  right: 40px !important;
-  bottom: -10px !important;
-  box-shadow: 0 24px 14px rgba(0, 0, 0, .04) !important;
-  transform: rotate(0.5deg) !important;
-}
+/* Intentional: no :before/:after shadows here; handled by drop-shadow on .preview-page */
 
 /* Sticky actions area at bottom */
 .preview-actions {
@@ -92,15 +100,18 @@
   gap: 8px;
 }
 
-/* top-right icon inside the page, close to border */
+/* top-right download button - positioned relative to the page */
 .preview-top-actions {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0;
-  background: transparent;
-  z-index: 3;
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  left: auto !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  z-index: 100 !important; /* ensure it's above all content */
+  width: auto !important;
 }

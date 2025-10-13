@@ -14,6 +14,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmDialogComponent, DialogData } from '../confirm-dialog/confirm-dialog.component';
 import { Resume1TemplateComponent } from '../template/template.component';
@@ -41,7 +42,7 @@ import { ResumeTemplate10Component } from '../template10/template10.component';
     HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule, MatDialogModule,
     MatInputModule,ButtonModule,ConfirmDialogComponent,
-    MatButtonModule,AccordionModule,TextareaModule,
+    MatButtonModule,AccordionModule,TextareaModule,TooltipModule,
     MatIconModule,MatExpansionModule, Resume1TemplateComponent, ResumeTemplate2Component, ResumeTemplate3Component,
     ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, ResumeTemplate9Component
     , ResumeTemplate10Component],
