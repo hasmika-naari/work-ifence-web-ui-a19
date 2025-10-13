@@ -384,6 +384,8 @@ formatSkills(items : string[]){
       this.userStore.setSelectedAccomplishment(new Accomplishment());
     }
     this.markDirty();
+    // Trigger change detection to update arrow button states
+    this.cdr.detectChanges();
     this.editSection.emit({section : section})
   }
 
@@ -608,6 +610,8 @@ moveSectionUp(section: string) {
     [this.sections[idx - 1], this.sections[idx]] = [this.sections[idx], this.sections[idx - 1]];
     this.syncSectionsToStore();
     this.markDirty();
+    // Trigger change detection to update arrow button states
+    this.cdr.detectChanges();
   }
 }
 
@@ -617,6 +621,8 @@ moveSectionDown(section: string) {
     [this.sections[idx], this.sections[idx + 1]] = [this.sections[idx + 1], this.sections[idx]];
     this.syncSectionsToStore();
     this.markDirty();
+    // Trigger change detection to update arrow button states
+    this.cdr.detectChanges();
   }
 }
 
