@@ -611,6 +611,21 @@ a{
   color: #e74c3c; /* Red-ish for Delete */
 }
 
+/* Move arrows (section-level and item-level) */
+.pi-arrow-up,
+.pi-arrow-down,
+.pi-angle-up,
+.pi-angle-down {
+  color: #7f8c8d; /* Neutral gray for move */
+}
+
+.pi-arrow-up:hover,
+.pi-arrow-down:hover,
+.pi-angle-up:hover,
+.pi-angle-down:hover {
+  color: #2c3e50; /* Darker on hover for contrast */
+}
+
 
 .opacity-half{
   opacity: 0.5;
@@ -659,6 +674,35 @@ a{
 /* Optional: Hide floating item entirely */
 .cdk-drag-preview {
   display: none !important;
+}
+
+.section-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+
+  .section-actions {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease-in-out;
+    display: flex;
+    gap: 6px;
+  }
+
+  &:hover .section-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .icon-btn {
+    background: transparent;
+    border: 0;
+    padding: 2px 4px;
+    cursor: pointer;
+    color: inherit;
+  }
 }
 
 

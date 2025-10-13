@@ -29,7 +29,6 @@
       </div>
       @if(!isPreview){
             <div class="section-actions">
-              
         @if(!isContactDefaultData()){
           <div class="wif-tooltip" data-direction="bottom">
             <div class="wif-tooltip__initiator">
@@ -74,6 +73,26 @@
             <div class="section-actions">
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
+                  @if(canMoveUp(section)){
+                    <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                  }
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section up
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  @if(canMoveDown(section)){
+                    <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                  }
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section down
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
                    <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('PROFILE_SUMMARY', null)"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
@@ -100,6 +119,26 @@
         <span class="summary-section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  @if(canMoveUp(section)){
+                    <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                  }
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section up
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  @if(canMoveDown(section)){
+                    <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                  }
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section down
+                </div>
+              </div>
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
                   <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('PROFILE_SUMMARY')"></p-icon>
@@ -129,6 +168,26 @@
           <span class="summary-section-title">{{getSectionTitle(section)}}
             @if(!isPreview){
               <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    @if(canMoveUp(section)){
+                      <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                    }
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section up
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    @if(canMoveDown(section)){
+                      <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                    }
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section down
+                  </div>
+                </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
@@ -243,6 +302,22 @@
           <span class="summary-section-title">{{getSectionTitle(section)}}
             @if(!isPreview){
               <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom" [hidden]="!canMoveUp(section)">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section up
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom" [hidden]="!canMoveDown(section)">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section down
+                  </div>
+                </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
@@ -291,6 +366,22 @@
         <span class="summary-section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section up
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section down
+                </div>
+              </div>
               @if(resumeForm().courseWork.length == 0){
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
@@ -337,6 +428,22 @@
         <span class="summary-section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section up
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section down
+                </div>
+              </div>
               @if(resumeForm().skill.length == 0){
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
@@ -456,6 +563,22 @@
           <span class="summary-section-title">{{getSectionTitle(section)}}
             @if(!isPreview){
               <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom" [hidden]="!canMoveUp(section)">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section up
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom" [hidden]="!canMoveDown(section)">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section down
+                  </div>
+                </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('WORK_EXPERIENCE')"></p-icon>
@@ -550,6 +673,22 @@
               <div class="section-actions">
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section up
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section down
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('WORK_EXPERIENCE')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
@@ -586,6 +725,22 @@
           <span class="summary-section-title">{{getSectionTitle(section)}}
             @if(!isPreview){
               <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section up
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section down
+                  </div>
+                </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"></p-icon>
@@ -679,6 +834,22 @@
           <span class="summary-section-title">{{getSectionTitle(section)}}
             @if(!isPreview){
               <div class="section-actions">
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section up
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move section down
+                  </div>
+                </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"></p-icon>
@@ -1022,6 +1193,22 @@
         <span class="summary-section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section up
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section down
+                </div>
+              </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS_BULLET_POINTS', null)"></p-icon>
@@ -1053,6 +1240,22 @@
         <span class="summary-section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-arrow-up" title="Move up" (click)="moveSectionUp(section)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section up
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-arrow-down" title="Move down" (click)="moveSectionDown(section)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move section down
+                </div>
+              </div>
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
                   <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>

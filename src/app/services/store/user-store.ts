@@ -72,6 +72,7 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
   };
 
   export interface SectionDesc {
+    id?: string;
     section: string;
     description: string;
     isAdded: boolean;
@@ -205,4 +206,3 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
     isEdit : boolean = false;
   }
 
- 

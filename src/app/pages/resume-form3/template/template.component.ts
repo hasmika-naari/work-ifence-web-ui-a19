@@ -556,13 +556,42 @@ drop(event: CdkDragDrop<string[]>) {
   console.log("Before: ", this.sections, event.previousIndex, event.currentIndex);
   moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
   console.log("After: ",this.sections, event.previousIndex, event.currentIndex);
-  let formattedSections: any[] = []
-  this.sections.map((e)=>{
-    let section = this.currentSections().filter( s=> s.section == e)
-    formattedSections = [...formattedSections, ...section]
-  })
-  this.userStore.setResumeSections(formattedSections)
+  this.syncSectionsToStore();
+}
+
+private syncSectionsToStore() {
+  let formattedSections: SectionDesc[] = [];
+  this.sections.forEach((e) => {
+    const found = this.currentSections().filter((s) => s.section === e);
+    formattedSections = [...formattedSections, ...found];
+  });
+  this.userStore.setResumeSections(formattedSections);
   this.cdr.detectChanges();
+}
+
+moveSectionUp(section: string) {
+  const idx = this.sections.indexOf(section);
+  if (idx > 0) {
+    [this.sections[idx - 1], this.sections[idx]] = [this.sections[idx], this.sections[idx - 1]];
+    this.syncSectionsToStore();
+  }
+}
+
+moveSectionDown(section: string) {
+  const idx = this.sections.indexOf(section);
+  if (idx > -1 && idx < this.sections.length - 1) {
+    [this.sections[idx], this.sections[idx + 1]] = [this.sections[idx + 1], this.sections[idx]];
+    this.syncSectionsToStore();
+  }
+}
+
+canMoveUp(section: string): boolean {
+  return this.sections.indexOf(section) > 0;
+}
+
+canMoveDown(section: string): boolean {
+  const idx = this.sections.indexOf(section);
+  return idx > -1 && idx < this.sections.length - 1;
 }
 
 dragStarted(event: CdkDragStart) {
