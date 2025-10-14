@@ -32,7 +32,7 @@
             <h3>{{item.position_title}}</h3>
             <p>{{item.company_name}}, {{item.start_date}} - {{item.end_date}}</p>
             <ul style="margin-bottom: 0px !important;">
-                <li *ngFor="let des of item.description">{{des}}</li>
+                <div [innerHTML]="item.description"></div>
             </ul>
             </div>
             <div class="edit-context-menu menuFadeInUp" *ngIf="!isPreview">
@@ -81,7 +81,7 @@
         <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)" class="projects">
             <h3>{{item.project_name}}</h3>
             <ul>
-                <li *ngFor="let des of item.description">{{des}}</li>
+                <div [innerHTML]="item.description"></div>
             </ul>
         </div>
         <div class="edit-context-menu"  *ngIf="!isPreview">

@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { ResumeTemplateDto, SectionDesc, UserResume, UserState } from "./user-store";
 import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
-import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, AchievementBulletPoints, IsSectionPresent, SkillV2, Accomplishment, Skill, CertificationBulletPoints } from "../resume.model";
+import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, AchievementBulletPoints, IsSectionPresent, SkillV2, Accomplishment, Skill, CertificationBulletPoints, courseWork } from "../resume.model";
 import { ApplicationListDataItem, ClientContact, JobApplicationFeedback, JobApplicationRequest, JobInterviewRounds, ResumeListDataItem, VendorContact } from "../work-ifence-data.model";
 import { Address } from "../contact.model";
 
@@ -341,6 +341,16 @@ export class UserStoreService {
           }))
     }
 
+    setSkillsBulletPoints(skills: string[]){
+      this.state.update((state)=>({
+          ...state,
+          currentTab : 'SKILLS_BULLET_POINTS',
+          isEdit : false,
+          isChangeInNewResume : true,
+          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skillsBulletPoints : [...skills]} }
+          }))
+    }
+
     updateProjectItem(edu : Project, index : any){
         this.state.update((state)=>({
             ...state,
@@ -469,6 +479,16 @@ export class UserStoreService {
         }))
       }
 
+      updateExperienceAddMode(){
+        this.state.update((state)=>({
+          ...state,
+          currentTab : 'EXPERIENCE',
+          selectedResume : {...state.selectedResume,  selectedExperience: new Experience()},
+          isEdit : false,
+          isChangeInNewResume : true
+        }))
+      }
+
       updateCertification(exp : Certification){
         this.state.update((state)=>({
           ...state,
@@ -590,7 +610,7 @@ removeSectionFromMultipleSectionsList(section: string) {
           }))
       }
 
-      addCourseWork(courseWork : string[]){
+      addCourseWork(courseWork : courseWork[]){
         this.state.update((state)=>(
           {
             ...state,
@@ -606,6 +626,90 @@ removeSectionFromMultipleSectionsList(section: string) {
             isChangeInNewResume : true
           }
         ))
+      }
+
+      // New methods for courseWork item management
+      addCourseWorkItem(course: courseWork) {
+        this.state.update((state) => ({
+          ...state,
+          currentTab: 'COURSEWORK',
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              courseWork: [...state.selectedResume.resumeForm.courseWork, course]
+            }
+          },
+          isEdit: false,
+          isChangeInNewResume: true
+        }));
+      }
+
+      updateCourseWorkItem(course: courseWork, index: number) {
+        this.state.update((state) => ({
+          ...state,
+          currentTab: 'COURSEWORK',
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              courseWork: [
+                ...state.selectedResume.resumeForm.courseWork.slice(0, index),
+                course,
+                ...state.selectedResume.resumeForm.courseWork.slice(index + 1)
+              ]
+            }
+          },
+          isEdit: false,
+          isChangeInNewResume: true
+        }));
+      }
+
+      deleteCourseWorkItem(course: courseWork) {
+        this.state.update((state) => ({
+          ...state,
+          currentTab: 'COURSEWORK',
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              courseWork: state.selectedResume.resumeForm.courseWork.filter(c => c.id !== course.id)
+            }
+          },
+          isEdit: false,
+          isChangeInNewResume: true
+        }));
+      }
+
+      setCourseWorkList(courseList: courseWork[]) {
+        this.state.update((state) => ({
+          ...state,
+          currentTab: 'COURSEWORK',
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              courseWork: [...courseList]
+            }
+          },
+          isEdit: false,
+          isChangeInNewResume: true
+        }));
+      }
+
+      // Course work selection methods for editing
+      updateCourseWork(course: courseWork) {
+        this.state.update((state) => ({
+          ...state,
+          currentTab: 'COURSEWORK',
+          selectedResume: { ...state.selectedResume, selectedCourseWork: course },
+          isEdit: true,
+          isChangeInNewResume: true
+        }));
+      }
+
+      getSelectedCourseWork(): Signal<courseWork> {
+        return computed(() => this.state().selectedResume.selectedCourseWork);
       }
 
       deleteSkill(){

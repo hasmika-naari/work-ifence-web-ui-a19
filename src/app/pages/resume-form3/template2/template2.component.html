@@ -59,9 +59,7 @@
                     <p><strong>{{item.position_title}}</strong> | <strong>{{item.company_name}}</strong> | <strong>{{item.location}}</strong> | <strong>{{item.start_date}} - {{item.end_date}}</strong></p>
                 </div>
                 <div class="experience-bullets">
-                    <ul>
-                        <li *ngFor="let des of item.description">{{des}}</li> 
-                    </ul>
+                    <div [innerHTML]="item.description"></div>
                 </div>
                 </div>
                 <div class="edit-context-menu menuFadeInUp" *ngIf="!isPreview">
@@ -98,9 +96,7 @@
                     <!-- <p><strong>January 2020 - March 2021</strong></p> -->
                 </div>
                 <div class="project-bullets">
-                    <ul>
-                        <li *ngFor="let des of item.description">{{des}}</li> 
-                    </ul>
+                    <div [innerHTML]="item.description"></div>
                 </div>
                 </div>
                 <div class="edit-context-menu"  *ngIf="!isPreview">

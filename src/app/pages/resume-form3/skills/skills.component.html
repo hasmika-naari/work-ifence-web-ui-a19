@@ -30,6 +30,87 @@
                     </small>
                 </div>
                 <div class="field" style="position: relative;">
+                    <label for="skills">Add Skills</label>
+                    <input id="skills" type="text" pInputText formControlName="skills" placeholder="Type a skill and press Enter" (keydown.enter)="addSkillBulletPoint()">
+                </div>
+                
+                <!-- Display added skills as draggable chips -->
+                <div class="form-row form-row--single" *ngIf="skillsBulletPoints && skillsBulletPoints.length > 0">
+                    <div class="field">
+                        <label>Added Skills</label>
+                        <div class="skills-chips-container" 
+                             cdkDropList 
+                             cdkDropListOrientation="mixed" 
+                             (cdkDropListDropped)="dropSkill($event)">
+                            <div 
+                              *ngFor="let skill of skillsBulletPoints; let i = index"
+                              class="skill-chip"
+                              cdkDrag>
+                              <span class="skill-text">{{skill}}</span>
+                              <button 
+                                type="button"
+                                class="remove-btn"
+                                (click)="removeSkillBulletPoint(i)"
+                                title="Remove skill">
+                                <i class="pi pi-times"></i>
+                              </button>
+                              <div *cdkDragPlaceholder class="skill-chip-placeholder">
+                                {{skill}}
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button 
+                        type="button" 
+                        class="action-btn action-btn--primary" 
+                        (click)="saveAndContinue()"
+                        [disabled]="!isFormDirty()"
+                        matTooltip="Update Skills"
+                        tooltipPosition="top">
+                        <i class="pi pi-check"></i>
+                        Update Skills
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+@else {
+<div class="resume-form-container" style="overflow-y:auto;padding-bottom:50px;overflow-x: hidden;">
+    <div class="col-12">
+        <form [formGroup]="skillsForm">
+            <div class="form-row form-row--single">
+              <div class="field">
+                    <label for="section_title">Section title <span class="required">*</span></label>
+                    <input 
+                        id="section_title" 
+                        type="text" 
+                        pInputText 
+                        formControlName="section_title" 
+                        placeholder="Section Title"
+                        [matAutocomplete]="sectionAuto"
+                        (focus)="onSectionTitleFocus()"
+                        (click)="onSectionTitleFocus()"
+                        (input)="onSectionTitleInput($event)"
+                        #sectionInput>
+                    <mat-autocomplete 
+                        #sectionAuto="matAutocomplete" 
+                        class="section-autocomplete"
+                        [autoActiveFirstOption]="false">
+                        <mat-option *ngFor="let option of filteredSectionOptions | async" [value]="option">
+                            {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
+                    <small class="error" *ngIf="skillsForm.get('section_title')?.hasError('required') && skillsForm.get('section_title')?.touched">
+                        Required.
+                    </small>
+                </div>
+                <div class="field" style="position: relative;">
                     <label for="skills">Skill</label>
                     <input id="skills" type="text" pInputText formControlName="skills" placeholder="Skill" (keydown.enter)="addSkill()">
                     <span (click)="addSkill()" *ngIf="isVisible()" 
@@ -129,7 +210,7 @@
    
 </div>
 }
-@else{
+<!-- @else{
     <div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
         <div class="col-12"  >
             <form [formGroup]="skillsForm" >
@@ -181,7 +262,6 @@
                             <mat-label>Skill</mat-label>
                             <input matInput placeholder="Skill" formControlName="skillsv2">
                             <span matSuffix (click)="addSkillV2()" *ngIf="isVisiblev2()" style="color: black;">
-                                <!-- <p-icon class="pi pi-plus" style="cursor: pointer;"></p-icon> -->
                                 <p style="font-size: 14px;
                                 line-height: 17px;
                                 font-weight: 700;
@@ -256,4 +336,4 @@
        
        
     </div>
-}
+} -->

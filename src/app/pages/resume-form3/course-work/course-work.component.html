@@ -21,39 +21,49 @@
         <div class="form-row form-row--single">
             <div class="field">
                 <label for="coursework">Course Name</label>
-                <div style="position: relative;">
-                    <input 
-                        id="coursework" 
-                        type="text" 
-                        pInputText 
-                        formControlName="coursework" 
-                        placeholder="Enter course name"
-                        style="padding-right: 60px;"
-                    />
-                    <button 
-                        type="button"
-                        *ngIf="isVisible()" 
-                        (click)="addSkill()"
-                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: var(--mainColor, #f05b45); color: white; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 700;">
-                        ADD
-                    </button>
-                </div>
+                <input 
+                    id="coursework" 
+                    type="text" 
+                    pInputText 
+                    formControlName="coursework" 
+                    placeholder="Enter course name"
+                />
             </div>
         </div>
 
-        <div class="form-row form-row--single" *ngIf="fruits && fruits.length > 0">
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="institution">Institution/Organization</label>
+                <input 
+                    id="institution" 
+                    type="text" 
+                    pInputText 
+                    formControlName="institution" 
+                    placeholder="Enter institution or organization"
+                />
+            </div>
+        </div>
+
+        <div class="form-row form-row--single" *ngIf="fruits && fruits.length > 0 && !isEditMode">
             <div class="field">
                 <label>Added Courses</label>
-                <mat-chip-list #chipList>
-                    <mat-chip
+                <div class="course-work-list">
+                    <div
                       *ngFor="let fruit of fruits"
-                      [selectable]="selectable"
-                      [removable]="removable"
-                      (removed)="remove(fruit)">
-                      {{fruit}}
-                      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                    </mat-chip>
-                </mat-chip-list>
+                      class="course-work-item">
+                      <div class="course-work-content">
+                        <div class="course-name">{{fruit.courseworkname}}</div>
+                        <div class="course-institution" *ngIf="fruit.institution">{{fruit.institution}}</div>
+                      </div>
+                      <button 
+                        type="button"
+                        class="remove-btn"
+                        (click)="remove(fruit)"
+                        title="Remove course">
+                        <i class="pi pi-times"></i>
+                      </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -62,10 +72,11 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()"
-                matTooltip="Add to Resume"
+                [disabled]="isEditMode && !isFormDirty()"
+                [matTooltip]="isEditMode ? 'Update Course Work' : 'Add Course Work'"
                 tooltipPosition="top">
-                <i class="pi pi-check"></i>
-                Add to Resume
+                <i class="pi" [ngClass]="isEditMode ? 'pi-check' : 'pi-check'"></i>
+                {{isEditMode ? 'Update Course Work' : 'Add Course Work'}}
             </button>
         </div>
     </form>

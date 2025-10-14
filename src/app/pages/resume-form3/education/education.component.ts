@@ -137,7 +137,7 @@ export class EducationComponent implements OnInit, OnDestroy {
     degree: ['', Validators.required],
     field_of_study: [''],
     gpa: [''],
-    graduation_year: [''],
+    graduation_year: [null as Date | null],
     section_title : ['Education', Validators.required]
   });
   skillsForm = this._formBuilder.group({
@@ -341,13 +341,59 @@ export class EducationComponent implements OnInit, OnDestroy {
     op.hide();
 }
 
+  // Helper method to convert date string like "May 2021" to Date object
+  convertStringToDate(dateString: string): Date | null {
+    if (!dateString) return null;
+    
+    try {
+      // Handle format like "May 2021" or "Dec 2023"
+      const parts = dateString.trim().split(' ');
+      if (parts.length === 2) {
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthName = parts[0];
+        const year = parseInt(parts[1]);
+        
+        const monthIndex = monthNames.findIndex(m => m.toLowerCase() === monthName.toLowerCase().substring(0, 3));
+        if (monthIndex !== -1 && !isNaN(year)) {
+          return new Date(year, monthIndex, 1);
+        }
+      }
+      
+      // Fallback: try parsing the string directly
+      const date = new Date(dateString);
+      return isNaN(date.getTime()) ? null : date;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  // Helper method to convert Date object back to string format "Month Year"
+  convertDateToString(date: Date | null): string {
+    if (!date) return '';
+    
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    
+    return `${month} ${year}`;
+  }
+
   setEducationValues(){
-    this.educationForm.controls['school_name'].setValue(this.selectedEducation().school_name) 
-    this.educationForm.controls['school_location'].setValue(this.selectedEducation().school_location)
-    this.educationForm.controls['degree'].setValue(this.selectedEducation().degree)
-    this.educationForm.controls['field_of_study'].setValue(this.selectedEducation().field_of_study) 
-    this.educationForm.controls['gpa'].setValue(this.selectedEducation().gpa)
-    this.educationForm.controls['graduation_year'].setValue(this.selectedEducation().graduation_date) 
+    const selectedEdu = this.selectedEducation();
+    if (!selectedEdu) return;
+    
+    this.educationForm.controls['school_name'].setValue(selectedEdu.school_name || '') 
+    this.educationForm.controls['school_location'].setValue(selectedEdu.school_location || '')
+    this.educationForm.controls['degree'].setValue(selectedEdu.degree || '')
+    this.educationForm.controls['field_of_study'].setValue(selectedEdu.field_of_study || '') 
+    this.educationForm.controls['gpa'].setValue(selectedEdu.gpa || '')
+    
+    // Convert graduation date string to Date object for calendar component
+    const graduationDate = this.convertStringToDate(selectedEdu.graduation_date || '');
+    this.educationForm.controls['graduation_year'].setValue(graduationDate) 
         let section_title;
         if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
           this.multipleSections().map((e : SectionDesc[])=>{
@@ -452,7 +498,7 @@ export class EducationComponent implements OnInit, OnDestroy {
     education.degree = this.educationForm.value.degree?this.educationForm.value.degree : '';
     education.field_of_study = this.educationForm.value.field_of_study?this.educationForm.value.field_of_study : '';
     education.gpa = this.educationForm.value.gpa?this.educationForm.value.gpa : '';
-    education.graduation_date = this.educationForm.value.graduation_year?this.educationForm.value.graduation_year : '';
+    education.graduation_date = this.convertDateToString(this.educationForm.value.graduation_year || null);
     education.school_location = this.educationForm.value.school_location?this.educationForm.value.school_location : '';
     education.school_name = this.educationForm.value.school_name?this.educationForm.value.school_name : '';
     education.isDefault = false
@@ -1175,7 +1221,7 @@ export class EducationComponent implements OnInit, OnDestroy {
         degree : this.educationForm.controls['degree']?.value, 
         field_of_study : this.educationForm.controls['field_of_study']?.value,
         gpa : this.educationForm.controls['gpa']?.value, 
-        graduation_year : this.educationForm.controls['graduation_year']?.value
+        graduation_year : this.convertDateToString(this.educationForm.controls['graduation_year']?.value)
       }
       if(this.selectedEducationItem?.id || this.selectedEducationItem?.id === 0){
         this.education_list = [...this.education_list.slice(0,this.selectedEducationItem.id), new_education, ...this.education_list.slice(this.selectedEducationItem.id + 1,)];
@@ -1195,7 +1241,7 @@ export class EducationComponent implements OnInit, OnDestroy {
       this.educationForm.controls['degree'].setValue(education.degree?education.degree : "")
       this.educationForm.controls['field_of_study'].setValue(education.field_of_study?education.field_of_study : "") 
       this.educationForm.controls['gpa'].setValue(education.gpa?education.gpa : "")
-      this.educationForm.controls['graduation_year'].setValue(education.graduation_year?education.graduation_year : "") 
+      this.educationForm.controls['graduation_year'].setValue(this.convertStringToDate(education.graduation_year || '')) 
       this.selectedEducationItem = education;
       this.removeEducationItem(education);
   }

@@ -72,7 +72,7 @@ export class Education{
       this.description = "",
       this.isCurrentlyWorkHere = false;
       this.isHideSelected = false
-      this.bullet_points_count = "4"
+      this.bullet_points_count = ""
       this.original_description_html = ""
     }
   }
@@ -163,9 +163,13 @@ export class Education{
   export class courseWork{
     id : number
     courseworkname : string
+    institution : string
+    isHideSelected : boolean
     constructor(){
       this.id = -1
       this.courseworkname = ""
+      this.institution = ""
+      this.isHideSelected = false
     }
   }
 
@@ -279,6 +283,7 @@ export class Education{
     isCourseWork : boolean
     isSkill : boolean
     isSkillV2 : boolean
+    isSkillsBulletPoints : boolean
     isProject : boolean
     isExperience : boolean
     isCertification : boolean
@@ -292,6 +297,7 @@ export class Education{
       this.isCourseWork = false
       this.isSkill = false
       this.isSkillV2 = false;
+      this.isSkillsBulletPoints = false;
       this.isProject = false
       this.isExperience = false
       this.isCertification = false
@@ -348,6 +354,7 @@ export class Education{
     profileSummary : ProfileSummary;
     skill : Array<Skill>;
     skill_v2 : Array<SkillV2>;
+    skillsBulletPoints : Array<string>;
     education : Array<Education>;
     project : Array<Project>;
     experience : Array<Experience>;
@@ -355,7 +362,7 @@ export class Education{
     achievementBulletPoints : AchievementBulletPoints;
     accomplishment : Array<Accomplishment>;
     certificationBulletPoints : CertificationBulletPoints;
-    courseWork : Array<string>;
+    courseWork : Array<courseWork>;
     award : Array<Award>;
     language : Array<Language>;
     interest : Array<string>;
@@ -380,6 +387,7 @@ export class Education{
       this.profileSummary = { profile_summary : "", position_highlight : "", skills_highlight : "", isDefault : true, isHideSelected : false, original_summary_html : ''}
       this.skill = [] 
       this.skill_v2 = []
+      this.skillsBulletPoints = []
       this.education = []
       this.project = []
       this.experience = []
@@ -393,7 +401,7 @@ export class Education{
       this.professional_membership = []
       this.volunteer_experience = []
       this.accomplishment = []
-      this.isSectionPresent = {isContact : false, isSummary : false, isEducation : false, isCourseWork : false, isSkill : false,isSkillV2 : false, isProject : false, isExperience : false, isCertification : false, isAchievement : false, isSkillsCategory : false, isAccomplishments : false},
+      this.isSectionPresent = {isContact : false, isSummary : false, isEducation : false, isCourseWork : false, isSkill : false,isSkillV2 : false, isSkillsBulletPoints : false, isProject : false, isExperience : false, isCertification : false, isAchievement : false, isSkillsCategory : false, isAccomplishments : false},
       this.certificationBulletPoints = {point : '', original_html_content : '', isDefault : true}
       this.sections = [],
       this.multipleSections = []

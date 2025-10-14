@@ -1,7 +1,7 @@
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
 import { Address } from "../contact.model";
 import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
-import { Education, Experience, Project, Resume, Certification, JobDescriptionAIResponse, JobApplication, RoundDetails, Accomplishment} from "../resume.model";
+import { Education, Experience, Project, Resume, Certification, JobDescriptionAIResponse, JobApplication, RoundDetails, Accomplishment, courseWork} from "../resume.model";
 import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, ResumeListDataItem } from "../work-ifence-data.model";
 
 
@@ -52,6 +52,7 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
       selectedProject : new Project(),
       selectedEducation : new Education(),
       selectedCertification : new Certification(),
+      selectedCourseWork : new courseWork(),
       isEdit : false
     }
   };
@@ -205,6 +206,7 @@ import { ApplicationListDataItem, JobApplicationData, JobApplicationRequest, Res
     selectedEducation : Education = new Education();
     selectedCertification : Certification = new Certification();
     selectedAccomplishment : Accomplishment = new Accomplishment();
+    selectedCourseWork : courseWork = new courseWork();
     isEdit : boolean = false;
   }
 

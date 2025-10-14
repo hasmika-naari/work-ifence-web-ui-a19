@@ -611,12 +611,15 @@ export class Templatesv2Service {
       `).join('');
     }
 
-    public getCourseWorkSectionForMonoPro(items : string[]) : string{
-        return items.map((item : string)=> 
+    public getCourseWorkSectionForMonoPro(items : courseWork[]) : string{
+        return items.map((item : courseWork)=> 
         `
-        ${item.length > 0 ?
+        ${item.courseworkname && item.courseworkname.length > 0 ?
             `
-        <li class="course-work-lisit-item" style="margin:0;padding:0;">${item}</li>
+        <li class="course-work-lisit-item" style="margin:0;padding:0;">
+          <div class="course-name" style="font-weight: 600;">${item.courseworkname}</div>
+          ${item.institution ? `<div class="course-institution" style="font-size: 0.9em; color: #666; font-style: italic;">${item.institution}</div>` : ''}
+        </li>
         ` : ''
         }
         `).join('');
@@ -1314,11 +1317,12 @@ export class Templatesv2Service {
             `).join('');
     }
 
-    public getCourseWorkSectionForDualEdge(items : string[]){
-        return items.map((item : string)=> 
+    public getCourseWorkSectionForDualEdge(items : courseWork[]){
+        return items.map((item : courseWork)=> 
         `
         <div class="skill-item">
-            ${item}
+            <div class="course-name" style="font-weight: 600;">${item.courseworkname}</div>
+            ${item.institution ? `<div class="course-institution" style="font-size: 0.9em; color: #666; font-style: italic; margin-top: 2px;">${item.institution}</div>` : ''}
         </div>
         `).join('');
     }
@@ -1971,13 +1975,13 @@ export class Templatesv2Service {
         `).join('');
     }
 
-        public getCourseWorkWithBulletPointsSectionForModern(items : string[]) : string{
-        return items.map((item : string, index: number)=> 
+        public getCourseWorkWithBulletPointsSectionForModern(items : courseWork[]) : string{
+        return items.map((item : courseWork, index: number)=> 
         `
         ${items.length > 0 ?
             `
                   <li class="custom-li">
-                  <span style="font-size:12px;">${ item }</span>
+                  <span style="font-size:12px;">${ item.courseworkname }</span>
                   ${index !== items.length - 1 ? `<span class="bullet">•</span>` : ''}
                   </li>
         ` : ''

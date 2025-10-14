@@ -80,6 +80,10 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   fruits: Array<Skill> = [];
   old_subTitle  : string = ""
 
+  // Skills bullet points properties
+  skillsBulletPoints: string[] = [];
+  originalSkillsBulletPoints: string[] = [];
+
   draggingIndex: number | null = null;
 
   draggingIndex2: number | null = null; // Stores the position where placeholder should appear
@@ -117,7 +121,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       public dialog: MatDialog) {
         effect(()=>{
           if(this.sectionName == "SKILLS_BULLET_POINTS"){
-            this.setSkillsValues()
+            this.setSkillsBulletPointsValues()
           }
           else{
             this.setSkillsV2Values()
@@ -393,9 +397,17 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     this.markFormGroupTouched(this.skillsForm);
   
     if (this.sectionName == "SKILLS_BULLET_POINTS") {
-      this.userStore.addSkill(this.fruits);
+      // Save skills bullet points
+      this.userStore.setSkillsBulletPoints(this.skillsBulletPoints);
+      
+      // Update section status
+      if (!this.sectionStatus().isSkillsBulletPoints) {
+        const status = this.sectionStatus();
+        status.isSkillsBulletPoints = true;
+        this.userStore.updateSectionStatus(status);
+      }
     } else {
-      // Handle TEMPLATE_10
+      // Handle other skills sections
       let skills: Skill[] = [];
       this.skills_v2.forEach((e: any) => {
         if (Array.isArray(e.skills)) {
@@ -404,8 +416,16 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       });
   
       this.userStore.addSkillV2(this.skills_v2);
-      // this.userStore.addSkill(skills);
+      
+      // Update section status for regular skills
+      if (!this.sectionStatus().isSkill) {
+        const status = this.sectionStatus();
+        status.isSkill = true;
+        this.userStore.updateSectionStatus(status);
+      }
     }
+    
+    // Update section title
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
       this.multipleSections().map((e : SectionDesc[])=>{
         e.map((section : SectionDesc)=>{
@@ -425,14 +445,15 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
         this.userStore.setResumeSections(this.sections())
     }
   
-    // Reset form
-    this.skillsForm.reset();
-  
-    // Update section status if not already set
-    if (!this.sectionStatus().isSkill) {
-      const status = this.sectionStatus();
-      status.isSkill = true;
-      this.userStore.updateSectionStatus(status);
+    // Reset form and mark as pristine for skills bullet points
+    if (this.sectionName == "SKILLS_BULLET_POINTS") {
+      this.skillsForm.patchValue({
+        skills: ''
+      });
+      this.skillsForm.markAsPristine();
+      this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
+    } else {
+      this.skillsForm.reset();
     }
   
     // Emit contact event
@@ -563,5 +584,56 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     this.old_subTitle = item.sub_title
     this.skillsForm.controls['sub_title'].setValue(item.sub_title);
     this.isEditSubTitle = true;
+  }
+
+  // Skills Bullet Points Methods
+  addSkillBulletPoint(): void {
+    const skillValue = this.skillsForm.controls['skills'].value?.trim();
+    if (skillValue && !this.skillsBulletPoints.includes(skillValue)) {
+      this.skillsBulletPoints.push(skillValue);
+      this.skillsForm.controls['skills'].setValue('');
+      this.skillsForm.markAsDirty();
+    }
+  }
+
+  removeSkillBulletPoint(index: number): void {
+    this.skillsBulletPoints.splice(index, 1);
+    this.skillsForm.markAsDirty();
+  }
+
+  dropSkill(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.skillsBulletPoints, event.previousIndex, event.currentIndex);
+    this.skillsForm.markAsDirty();
+  }
+
+  isFormDirty(): boolean {
+    return this.skillsForm.dirty || 
+           JSON.stringify(this.skillsBulletPoints) !== JSON.stringify(this.originalSkillsBulletPoints);
+  }
+
+  setSkillsBulletPointsValues(): void {
+    // Load existing skills bullet points
+    this.skillsBulletPoints = [...(this.resumeSignalForm().skillsBulletPoints || [])];
+    this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
+    
+    // Set section title
+    let section_title;
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == this.sectionName){
+            section_title = section.editable_section_title
+          }
+        })
+      })
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == this.sectionName){
+            section_title = section.editable_section_title
+          }
+        })
+    }
+    this.skillsForm.controls['section_title'].setValue(section_title ?? 'Skills');
   }
 }

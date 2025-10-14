@@ -9,6 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
@@ -22,7 +23,7 @@ import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.compone
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Education, IsSectionPresent, JobDescriptionAIResponse, Resume, TemplateVariables } from 'src/app/services/resume.model';
+import { Education, IsSectionPresent, JobDescriptionAIResponse, Resume, TemplateVariables, courseWork } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -51,7 +52,7 @@ export interface DialogData {
     MatFormFieldModule,InputTextModule,TableModule,
     MatInputModule,ButtonModule,OverlayPanelModule,
     MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule],
+    MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule, MatTooltipModule],
   templateUrl: './course-work.component.html',
   styleUrls: ['./course-work.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -60,7 +61,9 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
  
   selectable = true;
   removable = true;
-  fruits: string[] = [];
+  fruits: courseWork[] = [];
+  isEditMode = false;
+  selectedCourseWorkForEdit: courseWork | null = null;
   private _formBuilder: FormBuilder = inject(FormBuilder);
 
   private userStore: UserStoreService = inject(UserStoreService);
@@ -69,6 +72,7 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
     sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
       multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
+  selectedCourseWork: Signal<courseWork> = this.userStore.getSelectedCourseWork(); 
 
   @Output() contact = new EventEmitter();
 
@@ -84,6 +88,14 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
         effect(()=>{
           this.setCourseWorkValues()
         })
+        
+        // Effect to handle course work editing
+        effect(() => {
+          const selectedCourse = this.selectedCourseWork();
+          if (selectedCourse && selectedCourse.id !== -1) {
+            this.loadCourseWorkForEdit(selectedCourse);
+          }
+        })
       }
 
 
@@ -92,6 +104,7 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   courseWorkForm = this._formBuilder.group({
     coursework: [''],
+    institution: [''],
     section_title : ['', Validators.required] 
   });
 
@@ -145,8 +158,48 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   saveAndContinue(){
     this.markFormGroupTouched(this.courseWorkForm);
-    this.userStore.addCourseWork(this.fruits);
-    this.courseWorkForm.reset()
+    
+    if (this.isEditMode && this.selectedCourseWorkForEdit) {
+      // Update existing course work
+      this.selectedCourseWorkForEdit.courseworkname = this.courseWorkForm.controls['coursework'].value?.trim() || '';
+      this.selectedCourseWorkForEdit.institution = this.courseWorkForm.controls['institution'].value?.trim() || '';
+      
+      // Update the fruits array and store
+      this.userStore.addCourseWork(this.fruits);
+      
+      // Reset edit mode and clear selected course work in store
+      this.isEditMode = false;
+      this.selectedCourseWorkForEdit = null;
+      const emptyCourseWork = new courseWork();
+      this.userStore.updateCourseWork(emptyCourseWork);
+      
+      // Reset only the coursework and institution fields for edit mode
+      this.courseWorkForm.patchValue({
+        coursework: '',
+        institution: ''
+      });
+      this.courseWorkForm.markAsUntouched();
+      this.courseWorkForm.markAsPristine();
+    } else {
+      // Add new course work from form
+      const courseworkName = this.courseWorkForm.controls['coursework'].value?.trim();
+      const institution = this.courseWorkForm.controls['institution'].value?.trim();
+      
+      if (courseworkName && institution) {
+        const newCourseWork = new courseWork();
+        newCourseWork.id = this.fruits.length > 0 ? Math.max(...this.fruits.map(f => f.id)) + 1 : 1;
+        newCourseWork.courseworkname = courseworkName;
+        newCourseWork.institution = institution;
+        newCourseWork.isHideSelected = false;
+        
+        this.fruits.push(newCourseWork);
+        this.userStore.addCourseWork(this.fruits);
+      }
+      
+      // For add mode, reset the entire form
+      this.courseWorkForm.reset();
+    }
+    
     if(!this.sectionStatus().isCourseWork){
       let status = this.sectionStatus()
       status.isCourseWork = true;
@@ -187,16 +240,21 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
     addSkill(): void {
       let lowerFruits : string[]= []
       this.fruits.map((e)=>{
-        lowerFruits = [...lowerFruits, e.toLowerCase()]
+        lowerFruits = [...lowerFruits, e.courseworkname.toLowerCase()]
       })
       if (this.courseWorkForm.controls['coursework'].value && !lowerFruits.includes(this.courseWorkForm.controls['coursework'].value.toLowerCase())) {
-        this.fruits.push(this.courseWorkForm.controls['coursework'].value.trim());
+        const newCourseWork = new courseWork();
+        newCourseWork.id = Date.now(); // Generate a unique ID
+        newCourseWork.courseworkname = this.courseWorkForm.controls['coursework'].value.trim();
+        newCourseWork.institution = this.courseWorkForm.controls['institution'].value?.trim() || '';
+        this.fruits.push(newCourseWork);
       }
       this.courseWorkForm.controls['coursework'].setValue(null);
+      this.courseWorkForm.controls['institution'].setValue(null);
       lowerFruits = []
     }
 
-  remove(fruit: string): void {
+  remove(fruit: courseWork): void {
     const index = this.fruits.indexOf(fruit);
 
     if (index >= 0) {
@@ -206,6 +264,25 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   isVisible(){
     return this.courseWorkForm.controls['coursework'].value?this.courseWorkForm.controls['coursework'].value.length > 0 : false 
+  }
+
+  loadCourseWorkForEdit(courseWork: courseWork): void {
+    this.isEditMode = true;
+    this.selectedCourseWorkForEdit = courseWork;
+    
+    // Preserve the current section title
+    const currentSectionTitle = this.courseWorkForm.controls['section_title'].value;
+    
+    // Load the selected course work data into the form
+    this.courseWorkForm.patchValue({
+      coursework: courseWork.courseworkname,
+      institution: courseWork.institution,
+      section_title: currentSectionTitle || 'Relevant Coursework' // fallback if no current title
+    });
+  }
+
+  isFormDirty(): boolean {
+    return this.courseWorkForm.dirty;
   }
 
 }

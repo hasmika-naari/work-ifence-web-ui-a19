@@ -88,9 +88,7 @@
                     </div>
                 </div>
                 <div class="project-bullets">
-                    <ul>
-                        <li *ngFor="let des of item.description">{{des}}</li> 
-                    </ul>
+                    <div [innerHTML]="item.description"></div>
                 </div>
             </div>
             <div class="edit-context-menu"  *ngIf="!isPreview">
@@ -133,9 +131,7 @@
                     </div>
                 </div>
                 <div class="experience-bullets">
-                    <ul>
-                        <li *ngFor="let des of item.description">{{des}}</li> 
-                    </ul>
+                    <div [innerHTML]="item.description"></div>
                 </div>
                 </div>
                 <div class="edit-context-menu menuFadeInUp" *ngIf="!isPreview">

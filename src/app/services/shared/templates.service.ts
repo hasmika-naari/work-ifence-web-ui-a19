@@ -1,5 +1,5 @@
 import { Injectable, Signal, inject } from '@angular/core';
-import { Accomplishment, achievement, Award, Certification, Education, Experience, Language, Project, Resume, Skill, SkillV2, TemplateVariables } from '../resume.model';
+import { Accomplishment, achievement, Award, Certification, Education, Experience, Language, Project, Resume, Skill, SkillV2, TemplateVariables, courseWork } from '../resume.model';
 import { UserStoreService } from '../store/user-store.service';
 
 @Injectable({
@@ -1122,9 +1122,12 @@ a{
     `).join('');
   }
 
-  public formatDefaultCourseWork(items : string[]) : string{
-    return items.map((item : string)=> `
-    ${item != ''?`<li class="course-work-lisit-item">${item}</li>`:''}
+  public formatDefaultCourseWork(items : courseWork[]) : string{
+    return items.map((item : courseWork)=> `
+    ${item.courseworkname != ''?`<li class="course-work-lisit-item">
+      <div class="course-name" style="font-weight: 600;">${item.courseworkname}</div>
+      ${item.institution ? `<div class="course-institution" style="font-size: 0.9em; color: #666; font-style: italic;">${item.institution}</div>` : ''}
+    </li>`:''}
     `).join('');
   }
 
@@ -3798,12 +3801,15 @@ ul {
     `).join('');
   }
 
-    public formatHTMLTemplate1CourseWorkV1(items : string[]) : string{
-    return items.map((item : string)=> 
+    public formatHTMLTemplate1CourseWorkV1(items : courseWork[]) : string{
+    return items.map((item : courseWork)=> 
     `
-    ${item.length > 0 ?
+    ${item.courseworkname && item.courseworkname.length > 0 ?
         `
-    <li class="course-work-lisit-item" style="margin:0;padding:0;">${item}</li>
+    <li class="course-work-lisit-item" style="margin:0;padding:0;">
+      <div class="course-name" style="font-weight: 600;">${item.courseworkname}</div>
+      ${item.institution ? `<div class="course-institution" style="font-size: 0.9em; color: #666; font-style: italic;">${item.institution}</div>` : ''}
+    </li>
     ` : ''
     }
     `).join('');
@@ -4309,11 +4315,12 @@ public formatHTMLTemplate9SkillWork(items : Skill[]) : string{
     `).join('');
 }
 
-public formatHTMLTemplate9CourseWork(items : string[]) : string{
-    return items.map((item : string)=> 
+public formatHTMLTemplate9CourseWork(items : courseWork[]) : string{
+    return items.map((item : courseWork)=> 
     `
     <div class="skill-item">
-        ${item}
+        <div class="course-name" style="font-weight: 600;">${item.courseworkname}</div>
+        ${item.institution ? `<div class="course-institution" style="font-size: 0.9em; color: #666; font-style: italic; margin-top: 2px;">${item.institution}</div>` : ''}
     </div>
     `).join('');
 }

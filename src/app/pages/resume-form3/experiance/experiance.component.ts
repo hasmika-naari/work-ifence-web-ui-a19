@@ -119,6 +119,7 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
 
   private editor!: Quill;
   optimize_index : any = -1
+  showActions: number = -1; // Track which experience item should show action buttons
 
   // userProjectForm! : FormGroup
   // certificationForm! : FormGroup
@@ -180,10 +181,11 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
       @Inject(PLATFORM_ID) private platformId: Object) {
         effect(()=>{
           if(this.selectedExperience().id){
+            // Edit mode: load selected experience data
             this.setExperienceValues()
           }else{
+            // Add mode: reset form but keep section title default
             this.experienceForm.reset();
-            this.experienceForm.get('bullet_points')?.setValue('4');
             this.experienceForm.get('section_title')?.setValue('Experience');
           }
         })
@@ -193,10 +195,10 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
     position_title: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9 .-]+$")]],
     company_name: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9 &',.-]+$")]],
     location : [''],
-    start_date: new FormControl(moment(), [Validators.required]),
-    end_date: new FormControl(moment(), [Validators.required]),
-    start: new FormControl(moment()),
-    end:  new FormControl(moment()),
+    start_date: new FormControl<Date | null>(null, [Validators.required]),
+    end_date: new FormControl<Date | null>(null, [Validators.required]),
+    start: new FormControl<Moment | null>(null),
+    end:  new FormControl<Moment | null>(null),
     description : [''],
     isCurrentlyWorkHere : [false],
     bullet_points : [''],
@@ -204,8 +206,8 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
     section_title : ['Experience', Validators.required]
   });
   
-  public sdate = new FormControl(moment());
-  public edate = new FormControl(moment());
+  public sdate = new FormControl<Date>(new Date());
+  public edate = new FormControl<Date>(new Date());
   
   // educationForm = this._formBuilder.group({
   //   school_name: [''],
@@ -359,18 +361,20 @@ openPanelWindow(){
 }
 
 setStartDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>) {
-  const ctrlValue = this.sdate.value ?? moment();
-  ctrlValue.month(normalizedMonthAndYear.month());
-  ctrlValue.year(normalizedMonthAndYear.year());
-  this.sdate.setValue(ctrlValue);
+  const ctrlValue = this.sdate.value ?? new Date();
+  const newDate = new Date(ctrlValue);
+  newDate.setMonth(normalizedMonthAndYear.month());
+  newDate.setFullYear(normalizedMonthAndYear.year());
+  this.sdate.setValue(newDate);
   datepicker.close();
 }
 
 setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>) {
-  const ctrlValue = this.edate.value ?? moment();
-  ctrlValue.month(normalizedMonthAndYear.month());
-  ctrlValue.year(normalizedMonthAndYear.year());
-  this.edate.setValue(ctrlValue);
+  const ctrlValue = this.edate.value ?? new Date();
+  const newDate = new Date(ctrlValue);
+  newDate.setMonth(normalizedMonthAndYear.month());
+  newDate.setFullYear(normalizedMonthAndYear.year());
+  this.edate.setValue(newDate);
   datepicker.close();
 }
 
@@ -495,7 +499,7 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     this.experienceForm.controls['position_title'].setValue(this.selectedExperience().position_title) 
     this.experienceForm.controls['company_name'].setValue(this.selectedExperience().company_name)
     this.experienceForm.controls['location'].setValue(this.selectedExperience().location)
-    this.experienceForm.controls['start_date'].setValue(moment(start));
+    this.experienceForm.controls['start_date'].setValue(moment(start).toDate());
     // this.experienceForm.controls['description'].setValue(this.selectedExperience().description.join("\n"))
     this.experienceForm.controls['bullet_points'].setValue(this.selectedExperience().bullet_points_count);
     if(this.selectedExperience().isCurrentlyWorkHere){
@@ -503,7 +507,7 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       this.experienceForm.controls['isCurrentlyWorkHere'].setValue(true);
     } 
     else{
-      this.experienceForm.controls['end_date'].setValue(moment(endd)); 
+      this.experienceForm.controls['end_date'].setValue(moment(endd).toDate()); 
       this.experienceForm.controls['isCurrentlyWorkHere'].setValue(false)
     }
 
@@ -553,8 +557,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       position_title: [''],
       company_name: [''],
       location : [''],
-      start_date:  new FormControl(moment()),
-      end_date:  new FormControl(moment()),
+      start_date:  new FormControl(new Date()),
+      end_date:  new FormControl(new Date()),
       current_work_check : [false],
       description : ['']
     });
@@ -669,8 +673,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       this.userStore.addExperienceItem(exp);
     }
     this.userStore.setExperience(new Experience());
-    this.experienceForm.reset()
-    this.experienceForm.get('bullet_points')?.setValue('4');
+    this.experienceForm.reset();
+    // Removed default bullet_points value - form should be completely empty
     if(!this.sectionStatus().isExperience){
       let status = this.sectionStatus()
       status.isExperience = true;
@@ -1528,22 +1532,18 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       end_date = "Present"
     }
     else{
-      var split_end_date = this.experienceForm.value.end_date?this.experienceForm.value.end_date?.toString().split(" ") : [];
-      if(split_end_date.length > 2){
-        end_date = split_end_date[1] + " " + split_end_date[3];
+      // Format Date object to "MMM YYYY" format
+      if(this.experienceForm.value.end_date) {
+        const endDateObj = this.experienceForm.value.end_date;
+        end_date = moment(endDateObj).format('MMM YYYY');
       }
-      else{
-        end_date = this.experienceForm.value.end_date?this.experienceForm.value.end_date.toString() : ''
-      }
-      end_date = end_date;
     }
-    var split_start_date = this.experienceForm.value.start_date?this.experienceForm.value.start_date?.toString().split(" ") : [];
+    
+    // Format Date object to "MMM YYYY" format
     var start_date = ""
-    if(split_start_date.length > 2){
-      start_date = split_start_date[1]+ " " + split_start_date[3];
-    }
-    else{
-      start_date = this.experienceForm.value.start_date?this.experienceForm.value.start_date.toString() : ''
+    if(this.experienceForm.value.start_date) {
+      const startDateObj = this.experienceForm.value.start_date;
+      start_date = moment(startDateObj).format('MMM YYYY');
     }
     if(this.experienceForm.controls['position_title']?.value && this.experienceForm.controls['company_name']?.value){
       let new_experience = 
@@ -1565,7 +1565,7 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       }
       this.selectedExperienceItem = {id : null,position_title :   null, company_name : null, location : null, start_date : null, end_date : null, description : null}
       this.experienceForm.reset();
-      this.experienceForm.get('bullet_points')?.setValue('4');
+      // Removed default bullet_points value - form should be completely empty
       //this.saveAndContinue("Changes saved");
       }
   }
@@ -1850,6 +1850,90 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
 
   logContent(): void {
     console.log(this.experienceForm.get('description')?.value);
+  }
+
+  editExperience(experience: any): void {
+    this.selectedExperienceItem = experience;
+    
+    // Populate the form with the selected experience data
+    this.experienceForm.patchValue({
+      position_title: experience.position_title,
+      company_name: experience.company_name,
+      location: experience.location,
+      section_title: this.experienceForm.get('section_title')?.value,
+      isCurrentlyWorkHere: experience.isCurrentlyWorkHere || experience.end_date === 'Present'
+    });
+
+    // Set dates - Handle both MM/YYYY and "MMM YYYY" formats and convert to Date objects for p-calendar
+    if (experience.start_date) {
+      let startMoment;
+      if (experience.start_date.includes('/')) {
+        // Format: MM/YYYY
+        startMoment = moment(experience.start_date, 'MM/YYYY');
+      } else {
+        // Format: "MMM YYYY" (e.g., "Apr 2022")
+        startMoment = moment(experience.start_date, 'MMM YYYY');
+      }
+      // Convert to Date object for p-calendar
+      this.experienceForm.get('start_date')?.setValue(startMoment.toDate());
+    }
+    
+    if (experience.end_date && experience.end_date !== 'Present') {
+      let endMoment;
+      if (experience.end_date.includes('/')) {
+        // Format: MM/YYYY
+        endMoment = moment(experience.end_date, 'MM/YYYY');
+      } else {
+        // Format: "MMM YYYY" (e.g., "Apr 2022")
+        endMoment = moment(experience.end_date, 'MMM YYYY');
+      }
+      // Convert to Date object for p-calendar
+      this.experienceForm.get('end_date')?.setValue(endMoment.toDate());
+    }
+
+    // Set description in the editor
+    if (this.editor && experience.description) {
+      this.editor.clipboard.dangerouslyPasteHTML(experience.description);
+    }
+
+    // Scroll to form
+    const formElement = document.querySelector('.resume-form-container');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  deleteExperience(experience: any): void {
+    const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Experience',
+        message: `Are you sure you want to delete the experience at ${experience.company_name}?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if(this.experience_list.length === 1){
+          this.experience_list = []
+        }
+        else{
+          this.experience_list = [...this.experience_list.slice(0,experience.id), ...this.experience_list.slice(experience.id + 1,)];
+        }
+        
+        // Update IDs of remaining experiences
+        this.experience_list = this.experience_list.map((exp, index) => ({
+          ...exp,
+          id: index
+        }));
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Experience deleted successfully'
+        });
+      }
+    });
   }
 
   

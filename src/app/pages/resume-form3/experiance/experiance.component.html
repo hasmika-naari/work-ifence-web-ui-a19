@@ -170,6 +170,48 @@
             </button>
         </div>
     </form>
+
+    <!-- Experience List Display -->
+    <div class="experience-list-section" *ngIf="experience_list.length > 0">
+        <h3 class="section-title">Saved Experiences</h3>
+        <div class="experience-items">
+            <div 
+                class="experience-item" 
+                *ngFor="let experience of experience_list; let i = index"
+                (mouseenter)="showActions = i" 
+                (mouseleave)="showActions = -1">
+                <div class="experience-header">
+                    <h4 class="position-title">{{experience.position_title}}</h4>
+                    <div class="experience-actions" [class.visible]="showActions === i">
+                        <button 
+                            type="button" 
+                            class="action-icon edit-btn" 
+                            (click)="editExperience(experience)"
+                            matTooltip="Edit Experience">
+                            <i class="pi pi-pencil"></i>
+                        </button>
+                        <button 
+                            type="button" 
+                            class="action-icon delete-btn" 
+                            (click)="deleteExperience(experience)"
+                            matTooltip="Delete Experience">
+                            <i class="pi pi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="experience-details">
+                    <p class="company-info">
+                        <strong>{{experience.company_name}}</strong>
+                        <span *ngIf="experience.location"> • {{experience.location}}</span>
+                    </p>
+                    <p class="date-range">
+                        {{experience.start_date}} - {{experience.end_date}}
+                    </p>
+                    <div class="description" [innerHTML]="experience.description"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="experience-ai-animated-panel" 
             [style.width]="width + 'px'" [style.border-width]="borderWidth + 'px'">

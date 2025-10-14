@@ -31,7 +31,7 @@
             <h3 style="margin: 0px;padding: 0px;font-size: 14px;">{{item.position_title}}</h3>
             <p style="margin: 0px;padding: 0px;font-size: 14px;">{{item.company_name}}, {{item.start_date}} - {{item.end_date}}</p>
             <ul style="margin-bottom: 0px;padding-bottom: 0px;">
-                <li *ngFor="let des of item.description">{{des}}</li>
+                <div [innerHTML]="item.description"></div>
             </ul>
             <div class="edit-context-menu menuFadeInUp" *ngIf="!isPreview">
                 <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('WORK_EXPERIENCE', item)"  ></i>
@@ -88,7 +88,7 @@
             <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
                 <h3 style="margin: 0px;padding: 0px;font-size: 14px;">{{item.project_name}}</h3>
                 <ul style="margin-bottom: 0px;padding-bottom: 0px;">
-                    <li *ngFor="let des of item.description">{{des}}</li>
+                    <div [innerHTML]="item.description"></div>
                 </ul>
             </div>
             <div class="edit-context-menu"  *ngIf="!isPreview">
