@@ -397,7 +397,7 @@ export class UserStoreService {
             currentTab : 'ACHIEVEMENT',
             isEdit : false,
             isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , achievement : ach} }
+            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , achievementBulletPoints : ach} }
             }))
     }
 

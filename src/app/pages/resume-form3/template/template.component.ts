@@ -514,7 +514,10 @@ formatSkills(items : string[]){
       this.userStore.addEducationItem(this.createSampleEducation())
     }
     else if(section === "PROJECT"){
-      this.userStore.setProject(this.createSampleProject())
+      // Set up add mode: clear selected project and set to add mode
+      this.userStore.setProject(new Project());
+      // You may need to add updateProjectAddMode() if it exists in the store
+      console.log('Adding new project - set to add mode with empty form');
     }
     else if(section === "WORK_EXPERIENCE"){
       // Set up add mode: clear selected experience and set isEdit to false
@@ -523,7 +526,9 @@ formatSkills(items : string[]){
       console.log('Adding new work experience - set to add mode with empty form');
     }
     else if(section === "CERTIFICATIONS"){
-      this.userStore.setCertification(this.createSampleCertification());
+      // Set up add mode: clear selected certification and set to add mode
+      this.userStore.setCertification(new Certification());
+      console.log('Adding new certification - set to add mode with empty form');
     }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       this.userStore.setSelectedAccomplishment(new Accomplishment());
@@ -858,9 +863,24 @@ private animateSuccessfulDrop(targetIndex: number) {
       return true;
     }
     
+    // Special logic for PROJECT: always show add button at header level to add new items
+    if (sectionType === 'PROJECT') {
+      return true;
+    }
+    
+    // Special logic for CERTIFICATIONS: always show add button at header level to add new items
+    if (sectionType === 'CERTIFICATIONS') {
+      return true;
+    }
+    
     // Special logic for SKILLS_BULLET_POINTS: show add button only when empty
     if (sectionType === 'SKILLS_BULLET_POINTS') {
       return !this.hasSkillsBulletPoints();
+    }
+    
+    // Special logic for ACHIEVEMENTS_BULLET_POINTS: show add button only when empty
+    if (sectionType === 'ACHIEVEMENTS_BULLET_POINTS') {
+      return !this.hasAchievements();
     }
     
     return true;
@@ -880,9 +900,24 @@ private animateSuccessfulDrop(targetIndex: number) {
       return false;
     }
     
+    // Special logic for PROJECT: don't show edit button at header level (individual items will have edit buttons)
+    if (sectionType === 'PROJECT') {
+      return false;
+    }
+    
+    // Special logic for CERTIFICATIONS: don't show edit button at header level (individual items will have edit buttons)
+    if (sectionType === 'CERTIFICATIONS') {
+      return false;
+    }
+    
     // Special logic for SKILLS_BULLET_POINTS: show edit button only when has content
     if (sectionType === 'SKILLS_BULLET_POINTS') {
       return this.hasSkillsBulletPoints();
+    }
+    
+    // Special logic for ACHIEVEMENTS_BULLET_POINTS: show edit button only when has content
+    if (sectionType === 'ACHIEVEMENTS_BULLET_POINTS') {
+      return this.hasAchievements();
     }
     
     return true;
@@ -1059,8 +1094,8 @@ private animateSuccessfulDrop(targetIndex: number) {
     contact.linkedIn_profile = "https://linkedin.com/in/alexrodriguez-dev";
     contact.github_profile = "https://github.com/alexrodriguez-dev";
     contact.portfolio_link = "https://alexrodriguez.dev";
-    contact.linkedIn_profile_display_name = "linkedin.com/in/alexrodriguez-dev";
-    contact.github_profile_display_name = "github.com/alexrodriguez-dev";
+    contact.linkedIn_profile_display_name = "alexrodriguez-dev";
+    contact.github_profile_display_name = "alexrodriguez-dev";
     contact.isDefaultData = false;
     contact.isHideSelected = false;
     return contact;
@@ -1407,7 +1442,7 @@ isAchievementDefaultData(){
 }
 
 hasAchievements(): boolean {
-  return !!(this.resumeForm().achievementBulletPoints?.ach?.length);
+  return !!(this.resumeForm().achievementBulletPoints?.ach && this.resumeForm().achievementBulletPoints.ach.trim().length > 0);
 }
 
 isCertificationDefaultData(){
@@ -1517,6 +1552,36 @@ isSkillsCategoryDefault(){
     }
     // Add other section types as needed
     this.markDirty();
+  }
+
+  // Project Section Methods
+  hasProjectData(): boolean {
+    return this.resumeForm().project && this.resumeForm().project.length > 0;
+  }
+
+  editProjectItem(index: number): void {
+    const projectItem = this.resumeForm().project[index];
+    this.editSectionHandler('PROJECT', projectItem);
+  }
+
+  deleteProjectItem(index: number): void {
+    const projectItem = this.resumeForm().project[index];
+    this.confirmDeleteItemDialog('PROJECT', projectItem);
+  }
+
+  // Certification Methods
+  hasCertificationData(): boolean {
+    return this.resumeForm().certification && this.resumeForm().certification.length > 0;
+  }
+
+  editCertificationItem(index: number): void {
+    const certificationItem = this.resumeForm().certification[index];
+    this.editSectionHandler('CERTIFICATIONS', certificationItem);
+  }
+
+  deleteCertificationItem(index: number): void {
+    const certificationItem = this.resumeForm().certification[index];
+    this.confirmDeleteItemDialog('CERTIFICATIONS', certificationItem);
   }
 
   private markDirty(): void {

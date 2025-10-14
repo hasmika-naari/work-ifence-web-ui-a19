@@ -20,11 +20,6 @@
                 @if(resumeForm().contact.github_profile.length > 0){
                 <li [ngClass]="isDefaultData(resumeForm().contact.github_profile)?'opacity-half' : 'opacity-full'"><p-icon class="pi pi-github contact-detail-icon"></p-icon> <a  href="{{resumeForm().contact.github_profile}}" target="_blank">{{resumeForm().contact.github_profile_display_name}}</a></li>
                 }
-                @if(resumeForm().contact.portfolio_link.length > 0){
-                  <li><b>Potfolio :</b> <a  href="{{resumeForm().contact.portfolio_link}}" target="_blank"> 
-                      Profile</a>
-                  </li>
-                  }
             </ul>
       </div>
       @if(!isPreview){
@@ -276,21 +271,59 @@
 
         <!-- Project Section -->
         <ng-container *ngIf="section === 'PROJECT'">
-          <div class="education-section-content template1-section-content" *ngFor="let item of resumeForm().project">
-            <div *ngIf="!isPreview || !item.isHideSelected" class="project-content-container">
-              <div style="display: flex;justify-content: space-between;" [class]="getDivClass(item)">
-                <div style="flex: 1;text-align: left;">
-                  <p class="qualification-name"><b>{{item.project_name}}</b></p>
+          @if(hasProjectData()) {
+            <!-- Project Items List -->
+            <div class="project-items-list">
+              <div class="project-item template1-section-content" *ngFor="let item of resumeForm().project; let i = index">
+                <div *ngIf="!isPreview || !item.isHideSelected" class="project-item-container">
+                  <div class="project-content">
+                    <!-- Main Content Row -->
+                    <div class="project-main-row">
+                      <!-- Project Left Content -->
+                      <div class="project-left">
+                        <p class="qualification-name"><b>{{item.project_name}}</b></p>
+                      </div>
+                      
+                      <!-- Project Right Content -->
+                      <div class="project-right">
+                        <p class="qualification-name">{{item.period}}</p>
+                        
+                        <!-- Project Item Actions -->
+                        <div class="project-item-actions">
+                          <div class="wif-tooltip" data-direction="bottom">
+                            <div class="wif-tooltip__initiator">
+                              <p-icon class="pi pi-pencil" title="Edit Project" (click)="editProjectItem(i)"></p-icon>
+                            </div>
+                            <div class="wif-tooltip__item">
+                              Edit Project
+                            </div>
+                          </div>
+                          <div class="wif-tooltip" data-direction="bottom">
+                            <div class="wif-tooltip__initiator">
+                              <p-icon class="pi pi-trash" title="Delete Project" (click)="deleteProjectItem(i)"></p-icon>
+                            </div>
+                            <div class="wif-tooltip__item">
+                              Delete Project
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Project Description -->
+                    <div [class]="getDivClass(item)" *ngIf="hasProjectDescription(item)">
+                      <div class="project-description" [innerHTML]="item.description"></div>
+                    </div>
+                  </div>
                 </div>
-                <div style="flex: 1;text-align: right;">
-                  <p class="qualification-name">{{item.period}}</p>
-                </div>
-              </div>
-              <div [class]="getDivClass(item)" *ngIf="hasProjectDescription(item)">
-                <div class="project-description" [innerHTML]="item.description"></div>
               </div>
             </div>
-          </div>
+          } @else {
+            <!-- Empty State Message -->
+            <div class="empty-section-message">
+              <p class="resume-summary-text opacity-half">Add your notable projects, including personal projects, open source contributions, or work-related projects to showcase your technical skills and accomplishments.</p>
+            </div>
+          }
         </ng-container>
 
         <!-- Skills Section -->
@@ -307,33 +340,68 @@
 
         <!-- Certifications Section -->
         <ng-container *ngIf="section === 'CERTIFICATIONS'">
-          <div class="education-section-content template1-section-content" *ngFor="let item of resumeForm().certification">
-            <div *ngIf="!isPreview || !item.isHideSelected" class="project-content-container">
-              <div style="display: flex;justify-content: space-between;" [class]="getDivClass(item)">
-                <div style="flex: 1;text-align: left;">
-                  <p class="qualification-name"><b>{{item.certification_name}}</b></p>
-                </div>
-                <div style="flex: 1;text-align: right;">
-                  <p class="qualification-name">{{item.issued_month}} {{item.issued_year}}</p>
-                </div>
-              </div>
-              <div style="display: flex;justify-content: space-between;" [class]="getDivClass(item)">
-                <div style="flex: 1;text-align: left;">
-                  <p class="qualification-name">{{item.issued_organisation}}</p>
+          @if(hasCertificationData()) {
+            <!-- Certification Items List -->
+            <div class="certification-items-list">
+              <div class="certification-item template1-section-content" *ngFor="let item of resumeForm().certification; let i = index">
+                <div *ngIf="!isPreview || !item.isHideSelected" class="certification-item-container">
+                  <div class="certification-content">
+                    <!-- Main Content Row -->
+                    <div class="certification-main-row">
+                      <!-- Certification Left Content -->
+                      <div class="certification-left">
+                        <p class="qualification-name"><b>{{item.certification_name}}</b></p>
+                        <p class="qualification-name certification-organisation" *ngIf="item.issued_organisation">{{item.issued_organisation}}</p>
+                      </div>
+                      
+                      <!-- Certification Right Content -->
+                      <div class="certification-right">
+                        <p class="qualification-name">{{item.issued_month}} {{item.issued_year}}</p>
+                        
+                        <!-- Certification Item Actions -->
+                        <div class="certification-item-actions">
+                          <div class="wif-tooltip" data-direction="bottom">
+                            <div class="wif-tooltip__initiator">
+                              <p-icon class="pi pi-pencil" title="Edit Certification" (click)="editCertificationItem(i)"></p-icon>
+                            </div>
+                            <div class="wif-tooltip__item">
+                              Edit Certification
+                            </div>
+                          </div>
+                          <div class="wif-tooltip" data-direction="bottom">
+                            <div class="wif-tooltip__initiator">
+                              <p-icon class="pi pi-trash" title="Delete Certification" (click)="deleteCertificationItem(i)"></p-icon>
+                            </div>
+                            <div class="wif-tooltip__item">
+                              Delete Certification
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          } @else {
+            <!-- Empty State Message -->
+            <div class="empty-section-message">
+              <p class="resume-summary-text opacity-half">Add your professional certifications, including industry certifications, course completions, and technical credentials to showcase your expertise and commitment to continuous learning.</p>
+            </div>
+          }
         </ng-container>
 
         <!-- Achievements Section -->
         <ng-container *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
           <div class="course-work-section-content">
-            <ul class="course-work-list" *ngIf="hasAchievements(); else emptyAchievements">
-              <li class="course-work-lisit-item" *ngFor="let item of resumeForm().achievementBulletPoints!.ach">{{item}}</li>
-            </ul>
+            <div *ngIf="hasAchievements(); else emptyAchievements" class="achievements-content">
+              <div [innerHTML]="resumeForm().achievementBulletPoints!.ach"></div>
+            </div>
             <ng-template #emptyAchievements>
-              <p class="opacity-half">Your Achievements</p>
+              <!-- Empty State Message -->
+              <div class="empty-section-message">
+                <p class="resume-summary-text opacity-half">Add your key achievements, awards, recognitions, and accomplishments that demonstrate your impact and success in your career or academic journey.</p>
+              </div>
             </ng-template>
           </div>
         </ng-container>
