@@ -66,6 +66,10 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
   selectedCourseWorkForEdit: courseWork | null = null;
   private _formBuilder: FormBuilder = inject(FormBuilder);
 
+  // Form change detection properties
+  private originalFormValues: any = {};
+  hasFormChanged = false;
+
   private userStore: UserStoreService = inject(UserStoreService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
@@ -127,31 +131,74 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
         console.log('Current route does not match the desired route');
       }
     }));
+
+    // Setup form change detection
+    this.setupFormChangeDetection();
+  }
+
+  private setupFormChangeDetection(): void {
+    // Subscribe to form value changes
+    this.courseWorkForm.valueChanges.subscribe(() => {
+      this.checkForFormChanges();
+    });
+
+    // Capture initial form values after they are set
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
+  }
+
+  private captureOriginalFormValues(): void {
+    this.originalFormValues = { ...this.courseWorkForm.value };
+    this.hasFormChanged = false;
+  }
+
+  private checkForFormChanges(): void {
+    const currentValues = this.courseWorkForm.value;
+    this.hasFormChanged = JSON.stringify(currentValues) !== JSON.stringify(this.originalFormValues);
+  }
+
+  getButtonTooltip(): string {
+    if (this.courseWorkForm.invalid) {
+      return 'Please fill in all required fields';
+    }
+    if (!this.hasFormChanged && !this.isEditMode) {
+      return 'No changes to save';
+    }
+    if (this.isEditMode && !this.isFormDirty()) {
+      return 'No changes made to update';
+    }
+    return this.isEditMode ? 'Update Course Work' : 'Add Course Work';
   }
 
 
 
   setCourseWorkValues(){  
-  this.fruits = [...this.resumeSignalForm().courseWork]
-  let section_title;
-  if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
-    this.multipleSections().map((e : SectionDesc[])=>{
-      e.map((section : SectionDesc)=>{
-        if(section.section == 'RELEVANT_COURSEWORK'){
-          section_title = section.editable_section_title
-        }
+    this.fruits = [...this.resumeSignalForm().courseWork]
+    let section_title;
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'RELEVANT_COURSEWORK'){
+            section_title = section.editable_section_title
+          }
+        })
       })
-    })
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'RELEVANT_COURSEWORK'){
+            section_title = section.editable_section_title
+          }
+        })
+    }
+    this.courseWorkForm.controls['section_title'].setValue(section_title??'')
+    
+    // Capture original values after setting form values
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
   }
-  else{
-    this.sections().map((section : SectionDesc)=>{
-        if(section.section == 'RELEVANT_COURSEWORK'){
-          section_title = section.editable_section_title
-        }
-      })
-  }
-  this.courseWorkForm.controls['section_title'].setValue(section_title??'')
-}
 
 
  
@@ -180,6 +227,11 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
       });
       this.courseWorkForm.markAsUntouched();
       this.courseWorkForm.markAsPristine();
+      
+      // Capture new original values after reset
+      setTimeout(() => {
+        this.captureOriginalFormValues();
+      }, 100);
     } else {
       // Add new course work from form
       const courseworkName = this.courseWorkForm.controls['coursework'].value?.trim();
@@ -198,6 +250,11 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
       
       // For add mode, reset the entire form
       this.courseWorkForm.reset();
+      
+      // Capture new original values after reset
+      setTimeout(() => {
+        this.captureOriginalFormValues();
+      }, 100);
     }
     
     if(!this.sectionStatus().isCourseWork){
@@ -279,6 +336,11 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
       institution: courseWork.institution,
       section_title: currentSectionTitle || 'Relevant Coursework' // fallback if no current title
     });
+    
+    // Capture original values for edit mode
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
   }
 
   isFormDirty(): boolean {

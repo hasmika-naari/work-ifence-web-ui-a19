@@ -936,3 +936,24 @@ to {
   right: 17px !important;
   top: 8px !important;
 }
+
+// Enhanced disabled button styling
+.action-btn--primary:disabled {
+  background-color: #e9ecef !important;
+  color: #6c757d !important;
+  border-color: #dee2e6 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+  
+  .pi {
+    color: #6c757d !important;
+  }
+  
+  &:hover {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+    border-color: #dee2e6 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}

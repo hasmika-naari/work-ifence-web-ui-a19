@@ -67,8 +67,8 @@
                         type="button" 
                         class="action-btn action-btn--primary" 
                         (click)="saveAndContinue()"
-                        [disabled]="!isFormDirty()"
-                        matTooltip="Update Skills"
+                        [disabled]="skillsForm.invalid || !hasFormChanged"
+                        [matTooltip]="getButtonTooltip()"
                         tooltipPosition="top">
                         <i class="pi pi-check"></i>
                         Update Skills
@@ -198,8 +198,8 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()" 
-                [disabled]="fruits && fruits.length == 0"
-                matTooltip="Add to Resume"
+                [disabled]="skillsForm.invalid || (fruits && fruits.length == 0) || !hasFormChanged"
+                [matTooltip]="getButtonTooltip()"
                 tooltipPosition="top">
                 <i class="pi pi-check"></i>
                 Add to Resume

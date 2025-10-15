@@ -126,11 +126,11 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()" 
-                [disabled]="educationForm.invalid"
-                matTooltip="Add to Resume"
-                tooltipPosition="top">
+                [disabled]="educationForm.invalid || !hasFormChanged"
+                [title]="getButtonTooltip()"
+            >
                 <i class="pi pi-check"></i>
-                Add to Resume
+                {{ hasFormChanged ? 'Update Resume' : 'Add to Resume' }}
             </button>
         </div>
     </form>

@@ -70,6 +70,10 @@ export class ResumeContactComponent implements OnInit, OnDestroy {
   outLineButton = true;
   @Output() contact = new EventEmitter();
 
+  // Form change tracking
+  private originalFormValues: any = null;
+  public hasFormChanged: boolean = false;
+
   constructor(
       private router : Router, 
       private cdr: ChangeDetectorRef,
@@ -131,6 +135,9 @@ get email_address(){
         console.log('Current route does not match the desired route');
       }
     }));
+
+    // Set up form change detection
+    this.setupFormChangeDetection();
     // this.userStore.updateSidebar(true);
   }
 
@@ -154,6 +161,51 @@ get email_address(){
       this.contactForm.controls['linkedIn_profile_display_name'].setValue(this.resumeForm().contact.linkedIn_profile_display_name);
       this.contactForm.controls['github_profile_display_name'].setValue(this.resumeForm().contact.github_profile_display_name);
     }
+    
+    // Capture original form values after form is populated
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 0);
+  }
+
+  private setupFormChangeDetection(): void {
+    // Subscribe to form value changes
+    this.subs.push(
+      this.contactForm.valueChanges.subscribe(() => {
+        this.checkForFormChanges();
+      })
+    );
+  }
+
+  private captureOriginalFormValues(): void {
+    this.originalFormValues = { ...this.contactForm.value };
+    this.hasFormChanged = false;
+  }
+
+  private checkForFormChanges(): void {
+    if (!this.originalFormValues) {
+      this.hasFormChanged = false;
+      return;
+    }
+
+    const currentValues = this.contactForm.value;
+    this.hasFormChanged = JSON.stringify(this.originalFormValues) !== JSON.stringify(currentValues);
+  }
+
+  // Helper method to check if form can be submitted
+  public canSubmitForm(): boolean {
+    return this.contactForm.valid && this.hasFormChanged;
+  }
+
+  // Get appropriate tooltip message for the button
+  public getButtonTooltip(): string {
+    if (this.contactForm.invalid) {
+      return 'Please fix form errors before saving';
+    }
+    if (!this.hasFormChanged) {
+      return 'Make changes to the form to enable saving';
+    }
+    return 'Click to save changes to your resume';
   }
 
   saveAndContinue(display : String | null){
@@ -183,6 +235,10 @@ get email_address(){
         status.isContact = true;
         this.userStore.updateSectionStatus(status);
       }
+      
+      // Reset form change tracking after successful save
+      this.captureOriginalFormValues();
+      
       this.contact.emit();
 
   }

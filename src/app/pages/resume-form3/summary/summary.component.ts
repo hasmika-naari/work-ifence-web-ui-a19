@@ -238,6 +238,11 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
   summaryAIResponses : string = ''
   textChangeHandler: any = ';';
   isButtonDisabled = false;
+  
+  // Form change tracking
+  private originalFormValues: any = null;
+  public hasFormChanged: boolean = false;
+  
   subs: Array<Subscription> = [];
   overlayVisible = true;
   selectedTemplate : Array<TemplateVariables> = [
@@ -312,6 +317,9 @@ openPanelWindow(){
         console.log('Current route does not match the desired route');
       }
     }));
+
+    // Set up form change detection
+    this.setupFormChangeDetection();
 
     // this.subs.push(this.routeActivated.url.subscribe(urlSegment => {
     //   const currentUrl = urlSegment.join('/');
@@ -435,6 +443,11 @@ openPanelWindow(){
         })
     }
     this.summaryForm.controls['section_title'].setValue(section_title??'Profile Summary', { emitEvent: false })
+    
+    // Capture original form values after form is populated
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 0);
   }
 
   addEducationField() {
@@ -570,6 +583,10 @@ openPanelWindow(){
       status.isSummary = true;
       this.userStore.updateSectionStatus(status);
     }
+    
+    // Reset form change tracking after successful save
+    this.captureOriginalFormValues();
+    
     // this.summaryForm.reset()
     this.closePanelWindow();
     this.contact.emit();
@@ -587,6 +604,55 @@ openPanelWindow(){
         this.markFormGroupTouched(control);
       }
     });
+  }
+
+  // Form change detection methods
+  private setupFormChangeDetection(): void {
+    // Subscribe to form value changes
+    this.subs.push(
+      this.summaryForm.valueChanges.subscribe(() => {
+        this.checkForFormChanges();
+      })
+    );
+  }
+
+  private captureOriginalFormValues(): void {
+    this.originalFormValues = { 
+      ...this.summaryForm.value,
+      editorContent: this.editor?.root.innerHTML || ''
+    };
+    this.hasFormChanged = false;
+  }
+
+  private checkForFormChanges(): void {
+    if (!this.originalFormValues) {
+      this.hasFormChanged = false;
+      return;
+    }
+
+    const currentValues = {
+      ...this.summaryForm.value,
+      editorContent: this.editor?.root.innerHTML || ''
+    };
+    
+    this.hasFormChanged = JSON.stringify(this.originalFormValues) !== JSON.stringify(currentValues);
+  }
+
+  // Get appropriate tooltip message for the button
+  public getButtonTooltip(): string {
+    if (this.is_summary_loading) {
+      return 'Please wait while AI is generating content';
+    }
+    if (this.summaryForm.invalid) {
+      return 'Please fix form errors before saving';
+    }
+    if (this.isButtonDisabled) {
+      return 'Please add content to your summary';
+    }
+    if (!this.hasFormChanged) {
+      return 'Make changes to enable saving';
+    }
+    return 'Click to save changes to your resume';
   }
 
   onFileSelected(event: any) {
@@ -1502,6 +1568,10 @@ handleTextChange() {
   if (editor) {
       const content = this.editor?.root.innerHTML.trim();
       this.isButtonDisabled = content === '<p><br></p>' || content === '';
+      
+      // Check for form changes when editor content changes
+      this.checkForFormChanges();
+      
       if (editor.innerHTML.trim() === '<p><br></p>' || editor.innerHTML.trim() === '') {
           editor.classList.add('ql-blank');
       } else {

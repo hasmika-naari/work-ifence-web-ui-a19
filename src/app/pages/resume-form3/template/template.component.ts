@@ -1173,13 +1173,13 @@ private animateSuccessfulDrop(targetIndex: number) {
       console.log('🔄 Loading comprehensive sample resume data...');
       
       // Add sample contact info
-      this.userStore.addContact(this.createSampleContact());
+      this.userStore.setContact(this.createSampleContact());
       
       // Add sample profile summary
-      this.userStore.addSummary(this.createSampleProfileSummary());
+      this.userStore.setSummary(this.createSampleProfileSummary());
       
-      // Add sample education entry (single item)
-      this.userStore.addEducationItem(this.createSampleEducation());
+      // Add sample education entry (single item) - using setEducationList with array
+      this.userStore.setEducationList([this.createSampleEducation()]);
       
       // Add sample work experience
       this.userStore.setExperience(this.createSampleExperience());
@@ -1196,7 +1196,7 @@ private animateSuccessfulDrop(targetIndex: number) {
       this.userStore.setCertification(this.createAdditionalSampleCertification());
       
       // Add sample skills with multiple categories
-      this.userStore.addSkillV2(this.createMultipleSampleSkills());
+      this.userStore.setSkillV2(this.createMultipleSampleSkills());
       
       // Add sample skills bullet points
       this.populateSampleSkillsBulletPoints();
@@ -1216,7 +1216,8 @@ private animateSuccessfulDrop(targetIndex: number) {
       // Ensure section visibility is updated
       this.refreshSectionVisibilityFlags();
       
-      this.markDirty();
+      // Reset change flag since this is initialization, not user changes
+      this.userStore.setIsChangeInNewResume(false);
       this.cdr.detectChanges();
       
       console.log('✅ Sample resume data loaded successfully!');
@@ -1238,10 +1239,13 @@ private animateSuccessfulDrop(targetIndex: number) {
   // Add sample data methods for other sections  
   addSampleData() {
     // Initialize with sample contact data
-    this.userStore.addContact(this.createSampleContact());
+    this.userStore.setContact(this.createSampleContact());
     
     // Initialize with sample profile summary
-    this.userStore.addSummary(this.createSampleProfileSummary());
+    this.userStore.setSummary(this.createSampleProfileSummary());
+    
+    // Reset change flag since this is initialization, not user changes
+    this.userStore.setIsChangeInNewResume(false);
   }
 
   // Sample data for achievements and coursework

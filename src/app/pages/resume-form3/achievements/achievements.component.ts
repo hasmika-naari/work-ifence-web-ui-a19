@@ -91,6 +91,11 @@ export class AchievementsComponent implements OnInit, OnDestroy {
     'section_title' : new FormControl('', Validators.required)
   })
 
+  // Form change detection properties
+  private originalFormValues: any = {};
+  private originalEditorContent: string = '';
+  hasFormChanged = false;
+
 
   private editor!: Quill;
 
@@ -116,6 +121,44 @@ export class AchievementsComponent implements OnInit, OnDestroy {
   
   ngOnDestroy(): void {
     // this.subs.forEach(s => s.unsubscribe());
+  }
+
+  private setupFormChangeDetection(): void {
+    // Subscribe to form value changes
+    this.achievementsForm.valueChanges.subscribe(() => {
+      this.checkForFormChanges();
+    });
+
+    // Capture initial form values after they are set
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
+  }
+
+  private captureOriginalFormValues(): void {
+    this.originalFormValues = { ...this.achievementsForm.value };
+    this.originalEditorContent = this.editor?.getContents()?.ops ? JSON.stringify(this.editor.getContents().ops) : '';
+    this.hasFormChanged = false;
+  }
+
+  private checkForFormChanges(): void {
+    const currentValues = this.achievementsForm.value;
+    const currentEditorContent = this.editor?.getContents()?.ops ? JSON.stringify(this.editor.getContents().ops) : '';
+    
+    const formChanged = JSON.stringify(currentValues) !== JSON.stringify(this.originalFormValues);
+    const editorChanged = currentEditorContent !== this.originalEditorContent;
+    
+    this.hasFormChanged = formChanged || editorChanged;
+  }
+
+  getButtonTooltip(): string {
+    if (this.achievementsForm.invalid) {
+      return 'Please fill in all required fields';
+    }
+    if (!this.hasFormChanged) {
+      return 'No changes to save';
+    }
+    return 'Add to Resume';
   }
 
 
@@ -245,6 +288,9 @@ setCertification(){
           this.userStore.setResumeSections(this.sections())
         }
     this.contact.emit();
+    
+    // Capture new baseline after saving
+    this.captureOriginalFormValues();
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -287,6 +333,8 @@ setCertification(){
       // Sync editor achievements with FormControl
       this.editor.on('text-change', () => {
         this.achievementsForm.get('achievements')?.setValue(this.editor.root.innerHTML, { emitEvent: false });
+        // Check for changes when editor content changes
+        this.checkForFormChanges();
       });
 
       // Sync FormControl value changes with Quill
@@ -295,6 +343,9 @@ setCertification(){
           this.editor.root.innerHTML = value || '';
         }
       });
+
+      // Setup form change detection after editor is ready
+      this.setupFormChangeDetection();
     }
 
     if(this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'){

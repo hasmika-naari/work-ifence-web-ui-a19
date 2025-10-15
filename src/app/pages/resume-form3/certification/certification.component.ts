@@ -9,6 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
@@ -53,7 +54,7 @@ export interface DialogData {
     HeaderWorkIfenceComponent,  MatStepperModule, MatAutocompleteModule,
     MatFormFieldModule,InputTextModule,TableModule,InputNumberModule,
     MatInputModule,ButtonModule,OverlayPanelModule,AutoCompleteModule,DropdownModule,
-    MatButtonModule,AccordionModule,TextareaModule,
+    MatButtonModule,AccordionModule,TextareaModule,MatTooltipModule,
     MatIconModule,MatExpansionModule, MatSelectModule],
   templateUrl: './certification.component.html',
   styleUrls: ['./certification.component.scss'],
@@ -93,6 +94,10 @@ export class CertificationComponent implements OnInit, OnDestroy {
   skills_list : {id : number, skills : String | null}[] = []
 
   selectedSkillItem! : {id : number | null, skills : String | null}
+
+  // Form change detection properties
+  private originalFormValues: any = {};
+  hasFormChanged = false;
 
   private _formBuilder: FormBuilder = inject(FormBuilder);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -278,6 +283,38 @@ private _filterYears(value: string): number[] {
     .sort((a: number, b: number) => b - a); // Sort in descending numerical order
 }
 
+  private setupFormChangeDetection(): void {
+    // Subscribe to form value changes
+    this.certifyForm.valueChanges.subscribe(() => {
+      this.checkForFormChanges();
+    });
+
+    // Capture initial form values after they are set
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
+  }
+
+  private captureOriginalFormValues(): void {
+    this.originalFormValues = { ...this.certifyForm.value };
+    this.hasFormChanged = false;
+  }
+
+  private checkForFormChanges(): void {
+    const currentValues = this.certifyForm.value;
+    this.hasFormChanged = JSON.stringify(currentValues) !== JSON.stringify(this.originalFormValues);
+  }
+
+  getButtonTooltip(): string {
+    if (this.certifyForm.invalid) {
+      return 'Please fill in all required fields';
+    }
+    if (!this.hasFormChanged) {
+      return 'No changes to save';
+    }
+    return 'Add to Resume';
+  }
+
 
 
   ngOnInit() {
@@ -364,6 +401,9 @@ private _filterYears(value: string): number[] {
     this.addWorkField();
     this.addProjectField();
     this.addCertificationField();
+    
+    // Setup form change detection
+    this.setupFormChangeDetection();
   }
 
   get eduFields() {
@@ -566,6 +606,9 @@ private _filterYears(value: string): number[] {
         this.userStore.setResumeSections(this.sections())
     }
     this.contact.emit();
+    
+    // Capture new baseline after saving
+    this.captureOriginalFormValues();
   }
 
   markFormGroupTouched(formGroup: FormGroup) {

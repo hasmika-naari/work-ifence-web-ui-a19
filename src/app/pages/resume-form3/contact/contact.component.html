@@ -155,10 +155,11 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue(null)" 
-                [disabled]="contactForm.invalid"
+                [disabled]="contactForm.invalid || !hasFormChanged"
+                [title]="getButtonTooltip()"
             >
                 <i class="pi pi-check"></i>
-                Add to Resume
+                {{ hasFormChanged ? 'Update Resume' : 'Add to Resume' }}
             </button>
         </div>
     </form>

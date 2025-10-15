@@ -1413,3 +1413,18 @@ to {
     }
   }
 }
+
+// Disabled button styling
+.action-btn:disabled {
+  background-color: #e9ecef !important;
+  color: #6c757d !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  
+  &:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: #e9ecef !important;
+  }
+}

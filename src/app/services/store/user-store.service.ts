@@ -84,8 +84,8 @@ export class UserStoreService {
           </ul>
         `;
         summary.profile_summary = '7+ years of experience in designing and developing scalable web applications...';
-        if (typeof this.addSummary === 'function') {
-          this.addSummary(summary);
+        if (typeof this.setSummary === 'function') {
+          this.setSummary(summary);
         }
       }
     }
@@ -238,6 +238,15 @@ export class UserStoreService {
             }))
         }
 
+        setContact(contact : ResumeContact){
+        this.state.update((state)=>({
+            ...state,
+            currentTab : 'CONTACT',
+            isEdit : false,
+            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm,contact : contact } }
+            }))
+        }
+
         addCertificationBulletPoints(certification : CertificationBulletPoints){
         this.state.update((state)=>({
             ...state,
@@ -254,6 +263,15 @@ export class UserStoreService {
             currentTab : 'SUMMARY',
             isEdit : false,
             isChangeInNewResume : true,
+            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , profileSummary : summary} }
+            }))
+    }
+
+    setSummary(summary : ProfileSummary){
+        this.state.update((state)=>({
+            ...state,
+            currentTab : 'SUMMARY',
+            isEdit : false,
             selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , profileSummary : summary} }
             }))
     }
@@ -310,7 +328,6 @@ export class UserStoreService {
         ...state,
         currentTab: 'EDUCATION',
         isEdit: false,
-        isChangeInNewResume: true,
         selectedResume: {
           ...state.selectedResume,
           resumeForm: {
@@ -341,12 +358,20 @@ export class UserStoreService {
           }))
     }
 
+    setSkillV2(skill : Array<SkillV2>){
+      this.state.update((state)=>({
+          ...state,
+          currentTab : 'SKILLS',
+          isEdit : false,
+          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skill_v2 : [...skill]} }
+          }))
+    }
+
     setSkillsBulletPoints(skills: string[]){
       this.state.update((state)=>({
           ...state,
           currentTab : 'SKILLS_BULLET_POINTS',
           isEdit : false,
-          isChangeInNewResume : true,
           selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skillsBulletPoints : [...skills]} }
           }))
     }
@@ -426,8 +451,7 @@ export class UserStoreService {
         this.state.update((state)=>({
           ...state,
           currentTab : 'CONTACT',
-          isEdit : true,
-          isChangeInNewResume : true
+          isEdit : true
         }))
       }
 
@@ -435,8 +459,7 @@ export class UserStoreService {
         this.state.update((state)=>({
           ...state,
           currentTab : 'SUMMARY',
-          isEdit : true,
-          isChangeInNewResume : true
+          isEdit : true
         }))
       }
 
@@ -445,8 +468,7 @@ export class UserStoreService {
           ...state,
           currentTab : 'EDUCATION',
           selectedResume : {...state.selectedResume,  selectedEducation: edu},
-          isEdit : true,
-          isChangeInNewResume : true
+          isEdit : true
         }))
       }
 
@@ -454,8 +476,7 @@ export class UserStoreService {
         this.state.update((state)=>({
           ...state,
           currentTab : 'SKILLS',
-          isEdit : true,
-          isChangeInNewResume : true
+          isEdit : true
         }))
       }
 
@@ -464,8 +485,7 @@ export class UserStoreService {
           ...state,
           currentTab : 'PROJECT',
           selectedResume : {...state.selectedResume,  selectedProject: project},
-          isEdit : true,
-          isChangeInNewResume : true
+          isEdit : true
         }))
       }
 
@@ -474,8 +494,7 @@ export class UserStoreService {
           ...state,
           currentTab : 'EXPERIENCE',
           selectedResume : {...state.selectedResume,  selectedExperience: exp},
-          isEdit : true,
-          isChangeInNewResume : true
+          isEdit : true
         }))
       }
 
@@ -484,8 +503,7 @@ export class UserStoreService {
           ...state,
           currentTab : 'EXPERIENCE',
           selectedResume : {...state.selectedResume,  selectedExperience: new Experience()},
-          isEdit : false,
-          isChangeInNewResume : true
+          isEdit : false
         }))
       }
 
@@ -494,8 +512,7 @@ export class UserStoreService {
           ...state,
           currentTab : 'CERTIFICATION',
           selectedResume : {...state.selectedResume,  selectedCertification: exp},
-          isEdit : true,
-          isChangeInNewResume : true
+          isEdit : true
         }))
       }
 
@@ -703,8 +720,7 @@ removeSectionFromMultipleSectionsList(section: string) {
           ...state,
           currentTab: 'COURSEWORK',
           selectedResume: { ...state.selectedResume, selectedCourseWork: course },
-          isEdit: true,
-          isChangeInNewResume: true
+          isEdit: true
         }));
       }
 

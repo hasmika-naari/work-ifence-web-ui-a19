@@ -30,7 +30,8 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()"
-                matTooltip="Add to Resume"
+                [disabled]="achievementsForm.invalid || !hasFormChanged"
+                [matTooltip]="getButtonTooltip()"
                 tooltipPosition="top">
                 <i class="pi pi-check"></i>
                 Add to Resume

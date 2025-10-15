@@ -753,3 +753,24 @@
     margin: 0.5rem 0;
     width:100%;
   }
+
+// Action button disabled styling
+.action-btn:disabled {
+  background-color: #e9ecef !important;
+  color: #6c757d !important;
+  border-color: #dee2e6 !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+  
+  &:hover {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+    border-color: #dee2e6 !important;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  i {
+    color: #6c757d !important;
+  }
+}

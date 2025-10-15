@@ -72,8 +72,8 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()"
-                [disabled]="isEditMode && !isFormDirty()"
-                [matTooltip]="isEditMode ? 'Update Course Work' : 'Add Course Work'"
+                [disabled]="courseWorkForm.invalid || (!hasFormChanged && !isEditMode) || (isEditMode && !isFormDirty())"
+                [matTooltip]="getButtonTooltip()"
                 tooltipPosition="top">
                 <i class="pi" [ngClass]="isEditMode ? 'pi-check' : 'pi-check'"></i>
                 {{isEditMode ? 'Update Course Work' : 'Add Course Work'}}

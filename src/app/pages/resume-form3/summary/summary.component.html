@@ -38,11 +38,11 @@
                     type="button" 
                     class="action-btn action-btn--primary" 
                     (click)="saveAndContinue()" 
-                    [disabled]="isButtonDisabled || is_summary_loading"
-                    matTooltip="Add to Resume"
-                    tooltipPosition="top">
+                    [disabled]="isButtonDisabled || is_summary_loading || summaryForm.invalid || !hasFormChanged"
+                    [title]="getButtonTooltip()"
+                >
                     <i class="pi pi-check"></i>
-                    Add to Resume
+                    {{ hasFormChanged ? 'Update Resume' : 'Add to Resume' }}
                 </button>
             </div>
         </form>

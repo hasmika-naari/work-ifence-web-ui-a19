@@ -470,6 +470,7 @@ ngAfterViewInit(): void {
   ngOnInit() {
     this.currentSections = this.userStore.getCurrentSections();
     this.browser = isPlatformBrowser(this.platformId);
+    
     if(isPlatformBrowser(this.platformId)){
       setTimeout(() => {
       // this.sidenavService.toggleCollapsed();

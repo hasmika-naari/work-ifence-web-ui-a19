@@ -84,6 +84,13 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   skillsBulletPoints: string[] = [];
   originalSkillsBulletPoints: string[] = [];
 
+  // Regular skills properties
+  originalFruits: Array<Skill> = [];
+
+  // Form change detection properties
+  private originalFormValues: any = {};
+  hasFormChanged = false;
+
   draggingIndex: number | null = null;
 
   draggingIndex2: number | null = null; // Stores the position where placeholder should appear
@@ -228,6 +235,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     const fruitIndex = this.fruits.findIndex(fruit => fruit.name === skill.name);
     if (fruitIndex !== -1) {
       this.fruits.splice(fruitIndex, 1); // Remove the skill by index
+      this.checkForFormChanges(); // Trigger change detection
     }
   
     // Add any additional logic if needed
@@ -272,6 +280,9 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
         this.skillsForm.controls['skillsv2'].disable();
       }
     })
+
+    // Setup form change detection
+    this.setupFormChangeDetection();
   }
 
   private _filter(value: string): string[] {
@@ -294,6 +305,65 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     );
     console.log('Filtered options:', filtered);
     return filtered;
+  }
+
+  private setupFormChangeDetection(): void {
+    // Subscribe to form value changes
+    this.skillsForm.valueChanges.subscribe(() => {
+      this.checkForFormChanges();
+    });
+
+    // Capture initial form values after they are set
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
+  }
+
+  private captureOriginalFormValues(): void {
+    this.originalFormValues = { ...this.skillsForm.value };
+    
+    if (this.sectionName === "SKILLS_BULLET_POINTS") {
+      this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
+    } else {
+      this.originalFruits = [...this.fruits];
+    }
+    
+    this.hasFormChanged = false;
+  }
+
+  private checkForFormChanges(): void {
+    const currentValues = this.skillsForm.value;
+    const formChanged = JSON.stringify(currentValues) !== JSON.stringify(this.originalFormValues);
+    
+    if (this.sectionName === "SKILLS_BULLET_POINTS") {
+      const skillsArrayChanged = JSON.stringify(this.skillsBulletPoints) !== JSON.stringify(this.originalSkillsBulletPoints);
+      this.hasFormChanged = formChanged || skillsArrayChanged;
+    } else {
+      // For regular skills, compare current fruits with original fruits
+      const fruitsChanged = JSON.stringify(this.fruits) !== JSON.stringify(this.originalFruits);
+      this.hasFormChanged = formChanged || fruitsChanged;
+    }
+  }
+
+  getButtonTooltip(): string {
+    if (this.skillsForm.invalid) {
+      return 'Please fill in all required fields';
+    }
+    
+    if (this.sectionName === "SKILLS_BULLET_POINTS") {
+      if (!this.hasFormChanged) {
+        return 'No changes to save';
+      }
+      return 'Update Skills';
+    } else {
+      if (this.fruits && this.fruits.length === 0) {
+        return 'Add skills before saving to resume';
+      }
+      if (!this.hasFormChanged) {
+        return 'No changes to save';
+      }
+      return 'Add to Resume';
+    }
   }
 
   onSectionTitleFocus(): void {
@@ -346,12 +416,18 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       this.options = [...this.options, e.sub_title]
     })
     this.skills_v2 = [...this.resumeSignalForm().skill_v2]
+    
+    // Capture original form values for regular skills mode
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
   }
   
   drop(event: CdkDragDrop<any[]>): void {
     console.log('previousIndex: ' + event.previousIndex + ' --- ' + 'currentIndex: ' + event.currentIndex);
     if (event.previousIndex !== event.currentIndex) {
       moveItemInArray(this.fruits, event.previousIndex, event.currentIndex);
+      this.checkForFormChanges(); // Trigger change detection
     }
   }
 
@@ -391,6 +467,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
 
   dropAI(event: CdkDragDrop<any[]>): void {
     moveItemInArray(this.fruits, event.previousIndex, event.currentIndex);
+    this.checkForFormChanges(); // Trigger change detection
   }
   
   saveAndContinue(): void {
@@ -452,8 +529,18 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       });
       this.skillsForm.markAsPristine();
       this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
+      
+      // Capture new original values after save
+      setTimeout(() => {
+        this.captureOriginalFormValues();
+      }, 100);
     } else {
       this.skillsForm.reset();
+      
+      // Capture new original values after save for regular skills
+      setTimeout(() => {
+        this.captureOriginalFormValues();
+      }, 100);
     }
   
     // Emit contact event
@@ -474,6 +561,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     // To make sure this does not conflict with OptionSelected Event
       if ((skill.name || '').trim()) {
         this.fruits.push(skill);
+        this.checkForFormChanges(); // Trigger change detection
       }
       this.skillsForm.controls['skills'].setValue(null);
     }
@@ -483,6 +571,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       // Ensure the input is not empty and does not already exist in the list
       if (inputSkill && !this.fruits.some(fruit => fruit.name.toLowerCase() === inputSkill.toLowerCase())) {
         this.fruits.push({ name: inputSkill, selected: false }); // Assuming each fruit is an object
+        this.checkForFormChanges(); // Trigger change detection
       }
     
       // Clear the input field
@@ -498,6 +587,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
 
     if (index >= 0) {
       this.fruits.splice(index, 1);
+      this.checkForFormChanges(); // Trigger change detection
     }
   }
 
@@ -593,17 +683,20 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       this.skillsBulletPoints.push(skillValue);
       this.skillsForm.controls['skills'].setValue('');
       this.skillsForm.markAsDirty();
+      this.checkForFormChanges(); // Trigger change detection
     }
   }
 
   removeSkillBulletPoint(index: number): void {
     this.skillsBulletPoints.splice(index, 1);
     this.skillsForm.markAsDirty();
+    this.checkForFormChanges(); // Trigger change detection
   }
 
   dropSkill(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.skillsBulletPoints, event.previousIndex, event.currentIndex);
     this.skillsForm.markAsDirty();
+    this.checkForFormChanges(); // Trigger change detection
   }
 
   isFormDirty(): boolean {
@@ -635,5 +728,10 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
         })
     }
     this.skillsForm.controls['section_title'].setValue(section_title ?? 'Skills');
+    
+    // Capture original form values after setting
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
   }
 }

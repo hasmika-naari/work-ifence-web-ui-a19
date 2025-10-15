@@ -107,6 +107,10 @@ export class EducationComponent implements OnInit, OnDestroy {
   outLineButton = true;
   @Output() contact = new EventEmitter();
 
+  // Form change tracking
+  private originalFormValues: any = null;
+  public hasFormChanged: boolean = false;
+
   constructor(
       private router : Router, 
       private cdr: ChangeDetectorRef,
@@ -256,6 +260,9 @@ export class EducationComponent implements OnInit, OnDestroy {
         console.log('Current route does not match the desired route');
       }
     }));
+
+    // Set up form change detection
+    this.setupFormChangeDetection();
 
     // this.subs.push(this.routeActivated.url.subscribe(urlSegment => {
     //   const currentUrl = urlSegment.join('/');
@@ -412,6 +419,11 @@ export class EducationComponent implements OnInit, OnDestroy {
             })
         }
         this.educationForm.controls['section_title'].setValue(section_title??'Education')
+        
+        // Capture original form values after form is populated
+        setTimeout(() => {
+          this.captureOriginalFormValues();
+        }, 0);
   }
 
   addEducationField() {
@@ -536,6 +548,10 @@ export class EducationComponent implements OnInit, OnDestroy {
         })
         this.userStore.setResumeSections(this.sections())
     }
+    
+    // Reset form change tracking after successful save
+    this.captureOriginalFormValues();
+    
     this.contact.emit();
   }
 
@@ -546,6 +562,42 @@ export class EducationComponent implements OnInit, OnDestroy {
         this.markFormGroupTouched(control);
       }
     });
+  }
+
+  // Form change detection methods
+  private setupFormChangeDetection(): void {
+    // Subscribe to form value changes
+    this.subs.push(
+      this.educationForm.valueChanges.subscribe(() => {
+        this.checkForFormChanges();
+      })
+    );
+  }
+
+  private captureOriginalFormValues(): void {
+    this.originalFormValues = { ...this.educationForm.value };
+    this.hasFormChanged = false;
+  }
+
+  private checkForFormChanges(): void {
+    if (!this.originalFormValues) {
+      this.hasFormChanged = false;
+      return;
+    }
+
+    const currentValues = this.educationForm.value;
+    this.hasFormChanged = JSON.stringify(this.originalFormValues) !== JSON.stringify(currentValues);
+  }
+
+  // Get appropriate tooltip message for the button
+  public getButtonTooltip(): string {
+    if (this.educationForm.invalid) {
+      return 'Please fix form errors before saving';
+    }
+    if (!this.hasFormChanged) {
+      return 'Make changes to enable saving';
+    }
+    return 'Click to save changes to your resume';
   }
 
   onFileSelected(event: any) {

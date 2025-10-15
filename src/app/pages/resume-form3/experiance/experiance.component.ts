@@ -130,6 +130,10 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
 
   selectedExperienceItem! : {id : number | null,position_title : String | null, company_name : String | null, location : String | null, start_date : String | null, end_date : String | null, description : String | null}
 
+  // Form change detection properties
+  private originalFormValues: any = {};
+  hasFormChanged = false;
+
   // project_list : {id : number,project_title : String | null, project_link : String | null, technologies_used : String | null, description : String | null}[] = []
 
   // selectedProjectItem! : {id : number | null,project_title : String | null, project_link : String | null, technologies_used : String | null, description : String | null}
@@ -187,6 +191,11 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
             // Add mode: reset form but keep section title default
             this.experienceForm.reset();
             this.experienceForm.get('section_title')?.setValue('Experience');
+            
+            // Capture original values after reset
+            setTimeout(() => {
+              this.captureOriginalFormValues();
+            }, 100);
           }
         })
       }
@@ -378,6 +387,51 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   datepicker.close();
 }
 
+  private setupFormChangeDetection(): void {
+    // Subscribe to form value changes
+    this.experienceForm.valueChanges.subscribe(() => {
+      this.checkForFormChanges();
+    });
+
+    // Also listen to the Quill editor content changes
+    if (this.editor) {
+      this.editor.on('text-change', () => {
+        this.checkForFormChanges();
+      });
+    }
+
+    // Capture initial form values after they are set
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
+  }
+
+  private captureOriginalFormValues(): void {
+    const formValues = { ...this.experienceForm.value };
+    // Also capture editor content
+    const editorContent = this.editor ? this.editor.getContents() : null;
+    this.originalFormValues = { ...formValues, editorContent };
+    this.hasFormChanged = false;
+  }
+
+  private checkForFormChanges(): void {
+    const currentFormValues = this.experienceForm.value;
+    const currentEditorContent = this.editor ? this.editor.getContents() : null;
+    const currentValues = { ...currentFormValues, editorContent: currentEditorContent };
+    
+    this.hasFormChanged = JSON.stringify(currentValues) !== JSON.stringify(this.originalFormValues);
+  }
+
+  getButtonTooltip(): string {
+    if (this.experienceForm.invalid) {
+      return 'Please fill in all required fields';
+    }
+    if (!this.hasFormChanged) {
+      return 'No changes to save';
+    }
+    return 'Add to Resume';
+  }
+
   ngOnInit() {
   //   this.productService.getProductsSmall().then((products) => {
   //     this.products = products;
@@ -396,6 +450,9 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
         console.log('Current route does not match the desired route');
       }
     }));
+
+    // Setup form change detection
+    this.setupFormChangeDetection();
 
     // this.subs.push(this.routeActivated.url.subscribe(urlSegment => {
     //   const currentUrl = urlSegment.join('/');
@@ -534,6 +591,11 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
             })
         }
         this.experienceForm.controls['section_title'].setValue(section_title??'Experience')
+        
+        // Capture original values after setting form values
+        setTimeout(() => {
+          this.captureOriginalFormValues();
+        }, 100);
   }
 
   // addEducationField() {
@@ -675,6 +737,11 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     this.userStore.setExperience(new Experience());
     this.experienceForm.reset();
     // Removed default bullet_points value - form should be completely empty
+    
+    // Reset change tracking after save
+    setTimeout(() => {
+      this.captureOriginalFormValues();
+    }, 100);
     if(!this.sectionStatus().isExperience){
       let status = this.sectionStatus()
       status.isExperience = true;
@@ -1815,6 +1882,7 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       // Sync editor description with FormControl
       this.editor.on('text-change', () => {
         this.experienceForm.get('description')?.setValue(this.editor.root.innerHTML, { emitEvent: false });
+        this.checkForFormChanges(); // Trigger change detection
       });
 
       // Sync FormControl value changes with Quill

@@ -162,8 +162,8 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()" 
-                [disabled]="experienceForm.invalid"
-                matTooltip="Add to Resume"
+                [disabled]="experienceForm.invalid || !hasFormChanged"
+                [matTooltip]="getButtonTooltip()"
                 tooltipPosition="top">
                 <i class="pi pi-check"></i>
                 Add to Resume
