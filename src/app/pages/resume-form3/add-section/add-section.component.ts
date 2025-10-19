@@ -91,7 +91,7 @@ export class AddSectionComponent implements OnInit, OnDestroy {
     if (!this.addedSections || this.addedSections.length === 0) {
       return false;
     }
-    return this.addedSections.some(s => s.section === section.section);
+    return this.addedSections.some(s => s.section === section.section && s.isAdded);
   }
 
   // Moved from template to component to be passed to the pipe

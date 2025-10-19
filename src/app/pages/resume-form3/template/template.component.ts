@@ -1,3 +1,4 @@
+
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -18,7 +19,15 @@ import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { AccordionModule } from 'primeng/accordion';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, ProfileSummary, Project, Resume, ResumeContact, CertificationBulletPoints, SkillV2, Accomplishment, courseWork } from 'src/app/services/resume.model';
+import { ContactSectionComponent } from '../sections/contact-section.component';
+import { ProfileSummarySectionComponent } from '../sections/profile-summary-section.component';
+import { EducationSectionComponent } from '../sections/education-section.component';
+import { WorkExperienceSectionComponent } from '../sections/work-experience-section.component';
+import { ProjectSectionComponent } from '../sections/project-section.component';
+import { Injector } from '@angular/core';
+
+import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, ProfileSummary, 
+  Project, Resume, ResumeContact, CertificationBulletPoints, SkillV2, Accomplishment, courseWork } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -39,6 +48,16 @@ interface SectionTemplate {
   hasMoveButtons: boolean;
 }
 
+const SECTION_COMPONENT_MAP: Record<string, any> = {
+  // Map section keys to their corresponding Angular components
+  // Extend this map if you add more section components
+  CONTACT: ContactSectionComponent,
+  PROFILE_SUMMARY: ProfileSummarySectionComponent,
+  EDUCATION: EducationSectionComponent,
+  WORK_EXPERIENCE: WorkExperienceSectionComponent,
+  PROJECT: ProjectSectionComponent
+};
+
 @Component({
   selector: 'app-resume1-template',
   standalone: true,
@@ -48,19 +67,41 @@ interface SectionTemplate {
     MatFormFieldModule,InputTextModule, MatTooltipModule,
     MatInputModule,ButtonModule,ConfirmDialogComponent,
     MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule, DragDropModule, IconsModule],
+    MatIconModule,MatExpansionModule, IconsModule, DragDropModule],
   templateUrl: './template.component.html',
   styleUrls: ['./template.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Needed for p-icon web component
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  constructor(
+    private _formBuilder: FormBuilder, 
+    private router : Router, 
+    private cdr: ChangeDetectorRef,
+    public dialog: MatDialog,
+    public promptService : PromptService, 
+    public genaiService : GenAIService, 
+    public templateService : TemplatesService,
+    private injector: Injector,
+    private userStore: UserStoreService
+  ) {}
 
-  private userStore: UserStoreService = inject(UserStoreService);
-  sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
-  sectionStatus: Signal<IsSectionPresent> = this.userStore.getSectionStatus();
-  resumeForm: Signal<Resume> = this.userStore.getResumeForm();
-  selectedResumeListItem: Signal<ResumeListDataItem> = this.userStore.getSelectedResumeListItem();
-  currentSections : Signal<SectionDesc[]> = this.userStore.getCurrentSections()
+  getSectionComponent(sectionKey: string) {
+    return SECTION_COMPONENT_MAP[sectionKey] || null;
+  }
+
+  createSectionInjector(section: SectionDesc) {
+    return Injector.create({
+      providers: [
+        { provide: 'data', useValue: section }
+      ],
+      parent: this.injector
+    });
+  }
+  sidebarIconOnly!: Signal<boolean>;
+  sectionStatus!: Signal<IsSectionPresent>;
+  resumeForm!: Signal<Resume>;
+  selectedResumeListItem!: Signal<ResumeListDataItem>;
+  currentSections!: Signal<SectionDesc[]>;
   
 
   
@@ -79,9 +120,21 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     }
   };
 
-  sections  : string[]= ['PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS', 'ACHIEVEMENTS_BULLET_POINTS']
+  sections  : string[]= ['CONTACT', 'PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'SKILLS_CATEGORY', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS', 'ACHIEVEMENTS_BULLET_POINTS']
 
   sectionsDesc: Array<SectionDesc> = [
+    {
+      section: 'CONTACT',
+      title: 'Contact Information',
+      editable_section_title: 'Contact',
+      description: 'Your contact details and personal information.',
+      isAdded: true,
+      isPremium: false,
+      tags: 'contact, personal, information',
+      label: 'Contact',
+      canMoveUp: false,
+      canMoveDown: true
+    },
     {
       section: 'PROFILE_SUMMARY',
       title: 'Profile summary',
@@ -91,7 +144,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isPremium: false,
       tags: 'summary, profile, objective',
       label: 'Summary',
-      canMoveUp: false,
+      canMoveUp: true,
       canMoveDown: true
     },
     {
@@ -127,6 +180,18 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isPremium: false,
       tags: 'skills, abilities, competencies',
       label: 'Skills (B.P.)',
+      canMoveUp: true,
+      canMoveDown: true
+    },
+    {
+      section: 'SKILLS_CATEGORY',
+      title: 'Skills category',
+      editable_section_title: 'Skills',
+      description: 'Categorized list of your skills.',
+      isAdded: false,
+      isPremium: false,
+      tags: 'skills, categorized, grouped',
+      label: 'Skills (Category)',
       canMoveUp: true,
       canMoveDown: true
     },
@@ -187,86 +252,19 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   // Configuration for section button behavior
   sectionConfig: { [key: string]: SectionTemplate } = {
+    'CONTACT': { section: 'CONTACT', htmlTemplate: '', hasAddButton: false, hasEditButton: true, hasDeleteButton: false, hasMoveButtons: false },
     'PROFILE_SUMMARY': { section: 'PROFILE_SUMMARY', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
     'EDUCATION': { section: 'EDUCATION', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
     'WORK_EXPERIENCE': { section: 'WORK_EXPERIENCE', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
     'PROJECT': { section: 'PROJECT', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
     'SKILLS_BULLET_POINTS': { section: 'SKILLS_BULLET_POINTS', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
+    'SKILLS_CATEGORY': { section: 'SKILLS_CATEGORY', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
     'CERTIFICATIONS': { section: 'CERTIFICATIONS', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
     'ACHIEVEMENTS_BULLET_POINTS': { section: 'ACHIEVEMENTS_BULLET_POINTS', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
     'RELEVANT_COURSEWORK': { section: 'RELEVANT_COURSEWORK', htmlTemplate: '', hasAddButton: true, hasEditButton: false, hasDeleteButton: true, hasMoveButtons: true }
   };
 
-  constructor(
-      private _formBuilder: FormBuilder, 
-      private router : Router, 
-      private cdr: ChangeDetectorRef,
-      public dialog: MatDialog,
-      public promptService : PromptService, 
-      public genaiService : GenAIService, 
-      public templateService : TemplatesService) {
-        effect(()=>{
-          if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections()?.length == 0){
-            this.sections = []
-            this.resumeForm().sections.map((e : SectionDesc)=>{
-              this.sections = [...this.sections, e.section]
-            })
-            this.userStore.setResumeSections(this.resumeForm().sections)
-            this.isSectionsSetCount = this.isSectionsSetCount + 1
-          }
-          else if(this.currentSections()?.length == 0){
-            this.updateSectionVisibilityFlags(this.sectionsDesc);
-            this.userStore.setResumeSections(this.sectionsDesc)
-          }
-          else if(this.currentSections()?.length !== this.sections?.length){
-            // Case 1: currentSections has more items than this.sections (sections were added to store)
-            if(this.currentSections()?.length > this.sections?.length) {
-              this.sections = []
-              this.currentSections().map((e : SectionDesc)=>{
-                this.sections = [...this.sections, e.section]
-              })
-            }
-            // Case 2: this.sections has more items than currentSections (sections were added from left menu)
-            else if(this.sections?.length > this.currentSections()?.length) {
-              const currentSections = this.currentSections();
-              const newSections: SectionDesc[] = [];
-              
-              this.sections.forEach(sectionKey => {
-                // Check if section already exists in current sections
-                let existingSection = currentSections.find(s => s.section === sectionKey);
-                if (existingSection) {
-                  newSections.push(existingSection);
-                } else {
-                  // Find template from sectionsDesc and add it
-                  const template = this.sectionsDesc.find(s => s.section === sectionKey);
-                  if (template) {
-                    newSections.push({ ...template });
-                  }
-                }
-              });
-              
-              // Update visibility flags and store
-              this.updateSectionVisibilityFlags(newSections);
-              this.userStore.setResumeSections(newSections);
-              console.log('Updated sectionsDesc from sections array change:', newSections);
-            }
-          }
-          console.log(this.currentSections());
-
-          let skills = this.resumeForm().skill_v2
-          if(skills?.length>0){
-            this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
-          this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
-          }
-        })
-
-        // Reflect global unsaved-change state (e.g., edits from left-side forms)
-        effect(() => {
-          const changedSignal = this.userStore.getIsChangeInNewResume?.();
-          const changed = typeof changedSignal === 'function' ? !!changedSignal() : false;
-          this.hasUnsavedChanges = changed || this.hasUnsavedChanges; // preserve true until explicit save
-        });
-      }
+  // Removed duplicate constructor implementation. Move effect logic to ngOnInit below.
 
   ngOnDestroy(): void {
     // this.userStore.setResumeSections([])
@@ -276,23 +274,16 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.sidebarIconOnly = this.userStore.getSidebarIconOnly();
+    this.sectionStatus = this.userStore.getSectionStatus();
+    this.resumeForm = this.userStore.getResumeForm();
+    this.selectedResumeListItem = this.userStore.getSelectedResumeListItem();
+    this.currentSections = this.userStore.getCurrentSections();
+
     if (typeof window !== 'undefined') {
       window.addEventListener('beforeunload', this.unloadHandler);
     }
-    if(this.selectedResumeListItem().id){
-      let isSection : IsSectionPresent = new IsSectionPresent();
-      isSection.isContact = true;
-      isSection.isSummary = true;
-      isSection.isEducation = true;
-      isSection.isCourseWork= true;
-      isSection.isSkill = true;
-      isSection.isProject = true;
-      isSection.isExperience =true;
-      isSection.isCertification= true;
-      isSection.isAchievement = true;
-      this.userStore.updateSectionStatus(isSection);
-    }
-    else{
+    // Always set section status for new or existing resumes
     let isSection : IsSectionPresent = new IsSectionPresent();
     isSection.isContact = true;
     isSection.isSummary = true;
@@ -304,13 +295,78 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     isSection.isCertification= true;
     isSection.isAchievement = true;
     this.userStore.updateSectionStatus(isSection);
+
+    // Ensure default sections are set if currentSections is empty
+    if (!this.currentSections() || this.currentSections().length === 0) {
+      this.userStore.setResumeSections(this.sectionsDesc);
     }
 
     if(this.resumeForm().skill_v2?.length>0){
-    this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2?.length/2))]
-      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2?.length/2) + 1,)]
+      this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2?.length/2))]
+      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2?.length/2),)]
     }
-    
+
+    // Section and unsaved change state logic from previous constructor
+    effect(() => {
+      if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections()?.length == 0){
+        this.sections = []
+        this.resumeForm().sections.map((e : SectionDesc)=>{
+          this.sections = [...this.sections, e.section]
+        })
+        this.userStore.setResumeSections(this.resumeForm().sections)
+        this.isSectionsSetCount = this.isSectionsSetCount + 1
+      }
+      else if(this.currentSections()?.length == 0){
+        this.updateSectionVisibilityFlags(this.sectionsDesc);
+        this.userStore.setResumeSections(this.sectionsDesc)
+      }
+      else if(this.currentSections()?.length !== this.sections?.length){
+        // Case 1: currentSections has more items than this.sections (sections were added to store)
+        if(this.currentSections()?.length > this.sections?.length) {
+          this.sections = []
+          this.currentSections().map((e : SectionDesc)=>{
+            this.sections = [...this.sections, e.section]
+          })
+        }
+        // Case 2: this.sections has more items than currentSections (sections were added from left menu)
+        else if(this.sections?.length > this.currentSections()?.length) {
+          const currentSections = this.currentSections();
+          const newSections: SectionDesc[] = [];
+          this.sections.forEach(sectionKey => {
+            // Check if section already exists in current sections
+            let existingSection = currentSections.find(s => s.section === sectionKey);
+            if (existingSection) {
+              newSections.push(existingSection);
+            } else {
+              // Find template from sectionsDesc and add it
+              const template = this.sectionsDesc.find(s => s.section === sectionKey);
+              if (template) {
+                newSections.push({ ...template });
+              }
+            }
+          });
+          // Update visibility flags and store
+          this.updateSectionVisibilityFlags(newSections);
+          this.userStore.setResumeSections(newSections);
+          console.log('Updated sectionsDesc from sections array change:', newSections);
+        }
+      }
+      console.log(this.currentSections());
+
+      let skills = this.resumeForm().skill_v2
+      if(skills?.length>0){
+        this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
+        this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
+      }
+    })
+
+    // Reflect global unsaved-change state (e.g., edits from left-side forms)
+    effect(() => {
+      const changedSignal = this.userStore.getIsChangeInNewResume?.();
+      const changed = typeof changedSignal === 'function' ? !!changedSignal() : false;
+      this.hasUnsavedChanges = changed || this.hasUnsavedChanges; // preserve true until explicit save
+    });
+
     // Check if resume is mostly empty and could benefit from sample data
     setTimeout(() => {
       this.checkAndOfferSampleData();
@@ -342,7 +398,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
                    resume.experience.length === 0 &&
                    resume.project.length === 0;
     
-    if (isEmpty && !this.isPreview) {
+  if (isEmpty && !this.isPreview) {
       console.log('🔄 Auto-populating resume with realistic sample data...');
       this.loadSampleResumeData();
       
@@ -545,6 +601,9 @@ formatSkills(items : string[]){
       this.userStore.addSkillV2(this.createMultipleSampleSkills());
     }
 
+    // Add the section to the live sections list so it appears in the template
+    this.addNewSectionToArray(section);
+
     this.markDirty();
     this.cdr.detectChanges();
     this.editSection.emit({section : section})
@@ -608,7 +667,7 @@ formatSkills(items : string[]){
 
 
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
-    if(section === "EDUCATION"){
+  if(section === "EDUCATION"){
     const array = this.resumeForm().education;
     const index = array.findIndex(obj => obj.id === id);
     if (index === -1) {
@@ -768,17 +827,16 @@ removeSection(section : string){
   })
 }
 
-drop(event: CdkDragDrop<string[]>) {
-  console.log("Before: ", this.sections, event.previousIndex, event.currentIndex);
+drop(event: CdkDragDrop<SectionDesc[]>) {
+  console.log("Before: ", this.currentSections(), event.previousIndex, event.currentIndex);
   
   if (event.previousIndex !== event.currentIndex) {
-    moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
-    console.log("After: ",this.sections, event.previousIndex, event.currentIndex);
+    this.userStore.reorderSections(event.previousIndex, event.currentIndex);
+    console.log("After: ",this.currentSections(), event.previousIndex, event.currentIndex);
     
     // Add a subtle success animation
     this.animateSuccessfulDrop(event.currentIndex);
     
-    this.syncSectionsToStore();
     this.markDirty();
   }
   
@@ -831,7 +889,8 @@ private animateSuccessfulDrop(targetIndex: number) {
   }
 
   shouldShowSection(sectionType: string): boolean {
-    const sectionDesc = this.sectionsDesc.find(desc => desc.section === sectionType);
+    const currentSections = this.currentSections();
+    const sectionDesc = currentSections.find(desc => desc.section === sectionType);
     return sectionDesc ? sectionDesc.isAdded : false;
   }
 
@@ -878,6 +937,11 @@ private animateSuccessfulDrop(targetIndex: number) {
       return !this.hasSkillsBulletPoints();
     }
     
+    // Special logic for SKILLS_CATEGORY: show add button only when empty
+    if (sectionType === 'SKILLS_CATEGORY') {
+      return !this.hasSkills();
+    }
+    
     // Special logic for ACHIEVEMENTS_BULLET_POINTS: show add button only when empty
     if (sectionType === 'ACHIEVEMENTS_BULLET_POINTS') {
       return !this.hasAchievements();
@@ -915,6 +979,11 @@ private animateSuccessfulDrop(targetIndex: number) {
       return this.hasSkillsBulletPoints();
     }
     
+    // Special logic for SKILLS_CATEGORY: show edit button only when has content
+    if (sectionType === 'SKILLS_CATEGORY') {
+      return this.hasSkills();
+    }
+    
     // Special logic for ACHIEVEMENTS_BULLET_POINTS: show edit button only when has content
     if (sectionType === 'ACHIEVEMENTS_BULLET_POINTS') {
       return this.hasAchievements();
@@ -937,11 +1006,13 @@ private animateSuccessfulDrop(targetIndex: number) {
 
   getSectionCssClass(sectionType: string): string {
     const classMap: { [key: string]: string } = {
+      'CONTACT': 'resume-contact-us',
       'PROFILE_SUMMARY': 'resume-summary',
       'EDUCATION': 'resume-education', 
       'WORK_EXPERIENCE': 'resume-experience',
       'PROJECT': 'resume-project',
       'SKILLS_BULLET_POINTS': 'resume-skills',
+      'SKILLS_CATEGORY': 'resume-skills',
       'CERTIFICATIONS': 'resume-certifications',
       'ACHIEVEMENTS_BULLET_POINTS': 'resume-achievements',
       'RELEVANT_COURSEWORK': 'resume-coursework'
@@ -951,11 +1022,13 @@ private animateSuccessfulDrop(targetIndex: number) {
 
   getSectionLabel(sectionType: string): string {
     const labelMap: { [key: string]: string } = {
+      'CONTACT': 'contact',
       'PROFILE_SUMMARY': 'summary',
       'EDUCATION': 'education',
       'WORK_EXPERIENCE': 'experience', 
       'PROJECT': 'project',
       'SKILLS_BULLET_POINTS': 'skills',
+      'SKILLS_CATEGORY': 'skills',
       'CERTIFICATIONS': 'certifications',
       'ACHIEVEMENTS_BULLET_POINTS': 'achievements',
       'RELEVANT_COURSEWORK': 'coursework'
@@ -1548,7 +1621,7 @@ isSkillsCategoryDefault(){
 
   // Delete individual section items
   deleteSectionItem(section: string, item: any): void {
-    if(section === "EDUCATION"){
+  if(section === "EDUCATION"){
       this.userStore.deleteEducation(item);
     }
     else if(section === "RELEVANT_COURSEWORK"){

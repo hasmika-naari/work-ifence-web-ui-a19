@@ -34,9 +34,11 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import Quill from 'quill';
+// Removed Quill import
 import { MatCardModule } from '@angular/material/card';
 import { SectionDesc } from 'src/app/services/store/user-store';
+import { DropdownModule } from 'primeng/dropdown';
+import { EditorModule } from 'primeng/editor';
 
 
 export interface DialogData {
@@ -59,10 +61,10 @@ export interface SummaryData{
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
+     NgOptimizedImage,FooterComponent, DropdownModule,
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,TooltipModule,MatCardModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,PanelModule,RippleModule,
+    MatInputModule,ButtonModule,OverlayPanelModule,PanelModule,RippleModule, EditorModule,
     MatButtonModule,AccordionModule,TextareaModule,ToastModule,MatTooltipModule,ProgressSpinnerModule,
     MatIconModule,MatExpansionModule],
   templateUrl: './summary.component.html',
@@ -70,6 +72,8 @@ export interface SummaryData{
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
+  private dummyParagraph = `<p>Dynamic, results-driven professional with a proven track record in delivering impactful solutions. Adept at collaborating with cross-functional teams and adapting to fast-paced environments. Passionate about continuous learning and professional growth. (This is dummy text for preview purposes.)</p>`;
+  private dummyBulleted = `<ul><li>Skilled in project management and team leadership</li><li>Excellent communication and interpersonal abilities</li><li>Proficient in modern web technologies and frameworks</li><li>Quick learner and adaptable to new challenges</li><li>(This is dummy text for preview purposes.)</li></ul>`;
 
   resumeForm!: FormGroup;
   contactForm! : FormGroup
@@ -104,13 +108,8 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
 
   selectedSkillItem! : {id : number | null, skills : String | null}
 
-  @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
   @Input() isFormPanleClosed : boolean = false;
-  action_taken : string = ''
-
-
-
-  public editor!: Quill;
+  action_taken : string = '';
 
   private _formBuilder: FormBuilder = inject(FormBuilder);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -178,7 +177,8 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
     position_highlight : [''],
     skills_highlight : [''],
     job_description : [''],
-    section_title : ['Profile Summary', Validators.required]
+    section_title : ['Profile Summary', Validators.required],
+    format: ['paragraph']
   });
   certificationsForm = this._formBuilder.group({
     certifications : [''],
@@ -273,7 +273,7 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
-    this.editor.off('text-change', this.textChangeHandler); // Detach the event handler
+  
   }
 
   toggle() {
@@ -300,6 +300,22 @@ openPanelWindow(){
 }
 
   ngOnInit() {
+    // Set default dummy summary text based on format
+    const format = this.summaryForm.controls['format'].value;
+    if (format === 'bulleted') {
+      this.summaryForm.controls['profile_summary'].setValue(this.dummyBulleted, { emitEvent: false });
+    } else {
+      this.summaryForm.controls['profile_summary'].setValue(this.dummyParagraph, { emitEvent: false });
+    }
+
+    // Listen for format changes to update dummy text
+    this.summaryForm.controls['format'].valueChanges.subscribe((val) => {
+      if (val === 'bulleted') {
+        this.summaryForm.controls['profile_summary'].setValue(this.dummyBulleted);
+      } else {
+        this.summaryForm.controls['profile_summary'].setValue(this.dummyParagraph);
+      }
+    });
   //   this.productService.getProductsSmall().then((products) => {
   //     this.products = products;
   //     this.selectedProduct = products[0];
@@ -408,21 +424,18 @@ openPanelWindow(){
 }
 
   setSummaryValues(){
+
     const resume = this.resumeSignalForm();
     const summary = resume?.profileSummary ?? new ProfileSummary();
     const editorHtml = summary.original_summary_html?.length ? summary.original_summary_html : (summary.profile_summary ?? '');
 
-    if (this.summaryForm) {
+    // Only patch if there is real content, otherwise let ngOnInit's dummy text logic run
+    if (this.summaryForm && (editorHtml && editorHtml.trim().length > 0)) {
       this.summaryForm.patchValue({
         profile_summary: editorHtml,
         position_highlight: summary.position_highlight ?? '',
         skills_highlight: summary.skills_highlight ?? ''
       }, { emitEvent: false });
-    }
-
-    if(this.editor?.clipboard){
-      this.editor.clipboard.dangerouslyPasteHTML(editorHtml);
-      this.handleTextChange();
     }
 
     let section_title;
@@ -538,7 +551,7 @@ openPanelWindow(){
     this.markFormGroupTouched(this.summaryForm);
 
     let summary = new ProfileSummary();
-    let profile_summary = this.getEditorData();
+    let profile_summary = this.summaryForm.controls['profile_summary'].value || '';
     if(profile_summary.includes('data-list="bullet"')){
       const correctedHTML = profile_summary.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
       summary.profile_summary = correctedHTML.length>0? correctedHTML.trim() : "";
@@ -592,9 +605,7 @@ openPanelWindow(){
     this.contact.emit();
   }
 
-  getEditorData(){
-    return this.editor.root.innerHTML;
-  }
+  // getEditorData removed, not needed with p-editor
 
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -619,7 +630,7 @@ openPanelWindow(){
   private captureOriginalFormValues(): void {
     this.originalFormValues = { 
       ...this.summaryForm.value,
-      editorContent: this.editor?.root.innerHTML || ''
+  // Removed editorContent assignment
     };
     this.hasFormChanged = false;
   }
@@ -632,7 +643,10 @@ openPanelWindow(){
 
     const currentValues = {
       ...this.summaryForm.value,
-      editorContent: this.editor?.root.innerHTML || ''
+  // Removed editorContent assignment
+
+  // Removed editorContainer reference
+  // Removed Quill editor property
     };
     
     this.hasFormChanged = JSON.stringify(this.originalFormValues) !== JSON.stringify(currentValues);
@@ -863,9 +877,10 @@ openPanelWindow(){
   }
 
   optimizeText() : void{
-     if(this.getEditorRawData().length > 0){
-      this.is_summary_loading = true;
-      const objective_prompt = this.promptService.final_optimized_profile_summary_prompt(this.getEditorRawData());
+    const summaryValue = this.summaryForm.controls['profile_summary'].value || '';
+    if(summaryValue.length > 0){
+    this.is_summary_loading = true;
+    const objective_prompt = this.promptService.final_optimized_profile_summary_prompt(summaryValue);
       this.resumeService.requestOpenAI({ "prompt" : objective_prompt}).subscribe({
         next: (res : any) => {
           console.log(res['choices'][0]['message']['content']);
@@ -1513,89 +1528,19 @@ openPanelWindow(){
   //   }
   // }
 
-  async ngAfterViewInit(): Promise<void> {
-    if (isPlatformBrowser(this.platformId)) {
-      const Quill = (await import('quill')).default; // Dynamically import Quill
-      this.editor = new Quill(this.editorContainer.nativeElement, {
-        theme: 'snow',
-        placeholder: 'Resume Summary', // Set placeholder text
-        modules: {
-          toolbar: [
-            ['bold', 'italic', 'underline'],
-            [{ list: 'ordered' }, { list: 'bullet' }]
-          ],
-        },
-      });
-
-      // Sync editor description with FormControl
-      // this.editor.on('text-change', () => {
-      //   this.summaryForm.get('profile_summary')?.setValue(this.editor.root.innerHTML, { emitEvent: false });
-      //   const editor = document.querySelector('.ql-editor');
-      //     if(editor){
-      //       if (editor.innerHTML.trim() === '<p><br></p>' || editor.innerHTML.trim() === '') {
-      //           editor.classList.add('ql-blank');
-      //       } else {
-      //           editor.classList.remove('ql-blank');
-      //       }
-      //     }
-      // });
-
-      // Sync FormControl value changes with Quill
-      this.summaryForm.get('profile_summary')?.valueChanges.subscribe((value) => {
-        if (this.editor.root.innerHTML !== value) {
-          this.editor.root.innerHTML = value || '';
-        }
-      });
-      this.initializeEditor();
-      this.setSummaryValues();
-
-    }
-
-  }
-
-
-initializeEditor() {
-  this.textChangeHandler = this.handleTextChange.bind(this); // Bind the handler to preserve context
-  this.editor.on('text-change', this.textChangeHandler); // Attach the event handler
-  const editor = document.querySelector('.ql-editor');
-  const content = this.editor?.root.innerHTML.trim();
-  this.isButtonDisabled = content === '<p><br></p>' || content === '';
-}
-
-handleTextChange() {
-  this.summaryForm.get('profile_summary')?.setValue(this.editor.root.innerHTML, { emitEvent: false });
-  const editor = document.querySelector('.ql-editor');
-  if (editor) {
-      const content = this.editor?.root.innerHTML.trim();
-      this.isButtonDisabled = content === '<p><br></p>' || content === '';
-      
-      // Check for form changes when editor content changes
-      this.checkForFormChanges();
-      
-      if (editor.innerHTML.trim() === '<p><br></p>' || editor.innerHTML.trim() === '') {
-          editor.classList.add('ql-blank');
-      } else {
-          editor.classList.remove('ql-blank');
-      }
-  }
-}
 
 
 
 
-  getEditorRawData(): string {
-    // const html = this.editor.root.innerHTML; 
-    const rawText = this.editor.getText().trim(); // Plain text (removes formatting and extra whitespace)
-    return rawText;
-  }
 
-  setDataInEditor(sentences: string[]): void {
-    if (this.editor) {
-      // Convert sentences to HTML
-      const html = sentences.map((sentence) => `<p>${sentence}</p>`).join('');
-      this.editor.clipboard.dangerouslyPasteHTML(html); // Set the HTML description in the editor
-    }
-  }
+
+
+
+
+
+
+
+
   
 
   logContent(): void {

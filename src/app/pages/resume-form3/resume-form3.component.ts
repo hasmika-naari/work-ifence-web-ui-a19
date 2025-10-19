@@ -45,7 +45,7 @@ import { ResumeTemplate } from 'src/app/services/bee-compete.model';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Account } from 'src/app/services/profile.model';
 import { AppUtilService } from 'src/app/services/app.util.service';
-import { ResumeTemplateDto, SectionDesc, UserResume } from 'src/app/services/store/user-store';
+import { ResumeTemplateDto, SectionDesc, UserResume, sections } from 'src/app/services/store/user-store';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { ResumeTemplate2Component } from './template2/template2.component';
 import { ResumeTemplate3Component } from './template3/template3.component';
@@ -153,6 +153,9 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   private platformId: object =  inject(PLATFORM_ID);
   private _formBuilder: FormBuilder =  inject(FormBuilder);
 
+  // Use the static sections array directly
+  private staticSections = sections;
+
   userAccount: Signal<Account> = this.userStore.getUserAccount();
   selectedResume : Signal<UserResume> = this.userStore.getSelectedResume();
   selectedResumeListItem : Signal<ResumeListDataItem> = this.userStore.getSelectedResumeListItem();
@@ -185,7 +188,9 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       public dialog: MatDialog,
       public resumeService : ResumeService,
       public pdfToImageService : PdfToImageService) {
-        this.userStore.setResumeSections([])
+        // Set initial sections, filtering out SKILLS_CATEGORY
+        const filteredSections = this.staticSections.filter(s => s.section !== 'SKILLS_CATEGORY');
+        this.userStore.setResumeSections(filteredSections);
       }
 
   experienceForm = this._formBuilder.group({
@@ -801,7 +806,8 @@ hideMenu() {
       if (!section) return;
       const currentSectionsSignal = this.userStore.getCurrentSections();
       const currentSections = currentSectionsSignal ? currentSectionsSignal() : [];
-      const updated = [...(currentSections || []), section];
+      const sectionToAdd = { ...section, isAdded: true };
+      const updated = [...(currentSections || []), sectionToAdd];
       this.userStore.setResumeSections(updated);
       // Close the panel after adding
       this.showPanelWindow = false;

@@ -543,6 +543,34 @@ removeSectionFromMultipleSectionsList(section: string) {
   console.log("After:", this.state().multipleSectionsList);
 }
 
+reorderSections(fromIndex: number, toIndex: number) {
+  this.state.update((state) => {
+    const newSections = [...state.currentResumeSections];
+    const [moved] = newSections.splice(fromIndex, 1);
+    newSections.splice(toIndex, 0, moved);
+    return {
+      ...state,
+      currentResumeSections: newSections
+    };
+  });
+}
+
+moveSectionUp(section: string) {
+  const currentSections = this.state().currentResumeSections;
+  const idx = currentSections.findIndex(s => s.section === section);
+  if (idx > 0) {
+    this.reorderSections(idx, idx - 1);
+  }
+}
+
+moveSectionDown(section: string) {
+  const currentSections = this.state().currentResumeSections;
+  const idx = currentSections.findIndex(s => s.section === section);
+  if (idx < currentSections.length - 1) {
+    this.reorderSections(idx, idx + 1);
+  }
+}
+
 
       setResumeForm(resume: Resume) {
         this.state.update((state) => ({
@@ -865,20 +893,12 @@ removeSectionFromMultipleSectionsList(section: string) {
         }))
       }
 
-      updateAccomplishmentList(edu : any[]){
+      updateAccomplishmentList(accom : Accomplishment[]){
         this.state.update((state)=>({
           ...state,
-          selectedResume : {...state.selectedResume, resumeForm : { ...state.selectedResume.resumeForm , accomplishment : [...edu]}},
+          selectedResume : {...state.selectedResume, resumeForm : { ...state.selectedResume.resumeForm , accomplishment : [...accom]}},
           isEdit : false,
           isChangeInNewResume : true
-        }))
-      }
-
-
-      addRoundDetails(rounds : RoundDetails){
-        this.state.update((state)=>({
-          ...state,
-          selectedJobApplication : {...state.selectedJobApplication, round_details : [ ...state.selectedJobApplication.round_details , rounds]},
         }))
       }
 
@@ -944,6 +964,13 @@ removeSectionFromMultipleSectionsList(section: string) {
         this.state.update((state) => ({
           ...state,
           selectedRoundDetails : round
+        }));
+      }
+
+      addRoundDetails(round : RoundDetails){
+        this.state.update((state) => ({
+          ...state,
+          selectedJobApplication : {...state.selectedJobApplication, round_details : [...state.selectedJobApplication.round_details, round]}
         }));
       }
 

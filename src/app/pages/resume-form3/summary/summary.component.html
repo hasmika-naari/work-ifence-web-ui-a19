@@ -1,7 +1,8 @@
-<div class="resume-form-container">
+<div class="resume-form-container summary-flex-layout">
     <div class="col-12">
-        <form [formGroup]="summaryForm">
-            <div class="form-row form-row--single">
+        <form [formGroup]="summaryForm" style="display: flex; flex-direction: column; height: 80vh;">
+
+            <div class="form-row form-row--single" style="flex: 1 1 auto; display: flex; flex-direction: column;">
                 <div class="field">
                     <label for="section_title">Section title <span class="required">*</span></label>
                     <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
@@ -10,30 +11,42 @@
                     </small>
                 </div>
                 <div class="field">
-                    <label>Summary</label>
-                    <div class="editor-wrapper" style="position: relative;">
-                        <div #editorContainer id="editorContainer" style="height: 60vh;color: black;font-size:15px;"></div>
-                        <div style="position: absolute; top: 5px; right: 20px; z-index: 100;">
-                            @if(!is_summary_loading){
-                                <button class="d-flex ai-btn" (click)="optimizeText()">
-                                   <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
-                                </button>
-                            } 
-                            @if(is_summary_loading){
-                                <button class="d-flex ai-btn">
-                                    <div class="progress-container">
-                                        <div class="progress-bar"></div>
-                                        <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
-                                    </div>
-                                    USE BOTBRO
-                                </button>
-                            }
-                        </div>
+                    <label for="summaryFormat">Summary Format</label>
+                                                            <p-dropdown id="summaryFormat" formControlName="format"
+                                                                    [options]="[
+                                                                        { label: 'Paragraph', value: 'paragraph' },
+                                                                        { label: 'Bulleted', value: 'bulleted' }
+                                                                    ]"
+                                                                    optionLabel="label"
+                                                                    optionValue="value"
+                                                                    placeholder="Select Format"
+                                                                    styleClass="p-inputtext summary-format-dropdown"
+                                                                    [size]="'small'"
+                                                            ></p-dropdown>
+                </div>
+                <div class="field" style="flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                        <label style="margin-bottom: 0;">Summary</label>
+                        <span>
+                            <button class="d-flex ai-btn" (click)="optimizeText()" *ngIf="!is_summary_loading">
+                                <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon> USE BOTBRO
+                            </button>
+                            <button class="d-flex ai-btn" disabled *ngIf="is_summary_loading">
+                                <div class="progress-container">
+                                    <div class="progress-bar"></div>
+                                    <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
+                                </div>
+                                USE BOTBRO
+                            </button>
+                        </span>
+                    </div>
+                    <div style="flex: 1 1 0; min-height: 0; display: flex; flex-direction: column;">
+                        <p-editor formControlName="profile_summary" [style]="{flex: '1 1 0', minHeight: '320px', maxHeight: 'none', height: '100%'}" styleClass="summary-editor"></p-editor>
                     </div>
                 </div>
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions" style="margin-top: 0; padding-top: 0;">
                 <button 
                     type="button" 
                     class="action-btn action-btn--primary" 

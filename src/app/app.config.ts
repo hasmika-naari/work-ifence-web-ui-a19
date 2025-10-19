@@ -1,5 +1,6 @@
 import { providePrimeNG } from 'primeng/config';
 import Material from '@primeng/themes/material';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
@@ -74,6 +75,7 @@ export const appConfig: ApplicationConfig = {
   importProvidersFrom([BrowserModule, 
       BrowserAnimationsModule, 
       MatNativeDateModule,
+      DragDropModule,
         LucideAngularModule.pick({
         BookOpen,
         Briefcase,

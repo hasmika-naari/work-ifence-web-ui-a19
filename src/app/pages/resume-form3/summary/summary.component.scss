@@ -1,13 +1,79 @@
+// Scoped Quill editor toolbar styles for summary editor
+::ng-deep .summary-editor .ql-snow .ql-picker.ql-header {
+  width: 73px !important;
+}
+::ng-deep .summary-editor .ql-snow .ql-picker.ql-font {
+  width: 89px !important;
+}
+::ng-deep .summary-editor .ql-toolbar.ql-snow .ql-formats {
+  margin-inline-end: 0px !important;
+}
+::ng-deep .summary-format-dropdown .p-select-label {
+  padding: 0 !important;
+}
+
+.summary-editor .p-editor-toolbar {
+  margin-bottom: 0.25rem !important;
+  flex-wrap: nowrap !important;
+  display: flex !important;
+  gap: 0.5rem !important;
+}
+.summary-editor {
+  height: 100% !important;
+  min-height: 320px !important;
+  max-height: none !important;
+}
+.summary-editor .p-editor-toolbar-group {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 0.5rem !important;
+}
+// Match dropdown height to input
+// Match PrimeNG dropdown to input field style
+.p-dropdown {
+  height: auto !important;
+  min-height: unset !important;
+  font-size: 1rem;
+  width: 100%;
+  background: white;
+  border: 2px solid #f0f0f0;
+  border-radius: 0.25em;
+}
+
+.p-dropdown .p-dropdown-label {
+  padding: 0.25em 0.75em 0.25em !important;
+  font-size: 1rem;
+  color: #495563;
+}
+
+.p-dropdown .p-dropdown-trigger {
+  height: 100%;
+}
+
+.p-dropdown .p-dropdown-label.p-placeholder {
+  color: #a0aec0 !important;
+  opacity: 1 !important;
+}
 @import '../shared-form-styles';
 
-.resume-form-container {
+.resume-form-container.summary-flex-layout {
   padding: 1.5rem 1rem;
+  // height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-actions {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  border-top: none !important;
 }
 
 #editorContainer {
   border: 1px solid rgba(148, 163, 184, 0.28);
   border-radius: 0.75rem;
-  min-height: 60vh;
+  // min-height: 60vh;
 
   &:focus-within {
     border-color: var(--mainColor);
