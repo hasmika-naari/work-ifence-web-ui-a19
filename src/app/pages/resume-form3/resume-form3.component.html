@@ -189,8 +189,11 @@
                             @if(resumeSignalForm().template_details.template_name == 'TEMPLATE_1'){
                                 <app-resume1-template
                                      (editSection)="showEditSection($event)"
+                                     (editContact)="showContact()"
                                      (saveRequested)="saveResume()">
                                 </app-resume1-template>
+
+                                
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
                                 <app-resume-template9
@@ -316,3 +319,4 @@
           ></app-preview-resume>
       </ng-template>
   </p-drawer>
+ 

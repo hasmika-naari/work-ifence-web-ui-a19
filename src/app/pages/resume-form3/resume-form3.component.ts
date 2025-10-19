@@ -1,3 +1,8 @@
+// ...imports and component decorator...
+
+// Inside ResumeForm3Component class:
+// ...existing code...
+// ...existing code...
 import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -103,6 +108,8 @@ export interface DialogData {
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked, OnChanges, AfterViewInit {
+
+  // Provide contact data for the contact section
 
   readonly panelOpenState = signal(false);
   resumeForm!: FormGroup;
@@ -583,7 +590,22 @@ ngAfterViewInit(): void {
       access_description: 'Private & Only Employer',
       tags : ''
     }
+
   ]
+
+  // Provide contact data for the contact section
+  get contactData() {
+    return {
+      fname: this.contactForm?.get('name')?.value || '',
+      lname: this.contactForm?.get('lname')?.value || '',
+      phone_number: this.contactForm?.get('phone_number')?.value || '',
+      email: this.contactForm?.get('email_address')?.value || '',
+      linkedIn_profile: this.contactForm?.get('linkedIn_profile')?.value || '',
+      linkedIn_profile_display_name: this.contactForm?.get('linkedIn_profile')?.value ? this.contactForm.get('linkedIn_profile')?.value.split('/').pop() : '',
+      github_profile: this.contactForm?.get('github_profile')?.value || '',
+      github_profile_display_name: this.contactForm?.get('github_profile')?.value ? this.contactForm.get('github_profile')?.value.split('/').pop() : ''
+    };
+  }
 
   getTemplate(){
     // this.default_template = this.templateService.getDefaultResumeTemplate();

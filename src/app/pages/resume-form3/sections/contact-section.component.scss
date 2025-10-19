@@ -1,0 +1,92 @@
+/* Force remove box-shadow from the edit icon in all states */
+:host ::ng-deep .resume-contact-edit-icon.p-button,
+:host ::ng-deep .resume-contact-edit-icon.p-button:focus,
+:host ::ng-deep .resume-contact-edit-icon.p-button:active,
+:host ::ng-deep .resume-contact-edit-icon.p-button:hover {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  outline: none !important;
+}
+.resume-contact-edit-icon {
+  position: absolute;
+  top: 0.7rem;
+  right: 1.2rem;
+  font-size: 1.3rem;
+  color: #888;
+  background: #fff;
+  border-radius: 50%;
+  padding: 0.2rem 0.3rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  z-index: 2;
+}
+.resume-contact-edit-icon:hover {
+  color: #2c3e50;
+  background: #f0f0f0;
+  box-shadow: none !important;
+}
+
+.resume-contact-edit-icon,
+.resume-contact-edit-icon:focus,
+.resume-contact-edit-icon:active {
+  box-shadow: none !important;
+}
+
+/* Remove box-shadow from PrimeNG p-button host and deep states */
+:host ::ng-deep .resume-contact-edit-icon,
+.resume-contact-edit-icon.p-button,
+.resume-contact-edit-icon.p-button:focus,
+.resume-contact-edit-icon.p-button:active,
+.resume-contact-edit-icon.p-button:hover {
+  box-shadow: none !important;
+}
+
+.section.contact-info {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  margin-bottom: 0.5rem;
+  box-shadow: none;
+}
+.resume-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.resume-contact-name-line {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 0.1rem;
+  letter-spacing: 0.5px;
+}
+.resume-contact-subtitle-line {
+  font-size: 1.2rem;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+.resume-contact-icons-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.98rem;
+  color: #222;
+  margin-bottom: 0.2rem;
+  flex-wrap: wrap;
+}
+.resume-contact-label {
+  font-size: 1.05rem;
+  color: #222;
+  margin-right: 0.2rem;
+}
+.resume-contact-link {
+  font-size: 1.05rem;
+  color: #222;
+  text-decoration: underline;
+  margin-left: 0.1rem;
+}
+.icon {
+  font-size: 1.1rem;
+  color: #222;
+  margin-right: 0.1rem;
+}

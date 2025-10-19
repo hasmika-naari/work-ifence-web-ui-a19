@@ -1,29 +1,37 @@
-<div class="container" cdkDropList [cdkDropListData]="currentSections()" (cdkDropListDropped)="drop($event)" >
+<div class="container">
+  <!-- Always show contact section at the top -->
+  <section class="trigger-area resume-contact-us">
+    <resume-contact-section [data]="resumeForm()?.contact || {}" (editContact)="showContact()"></resume-contact-section>
+  </section>
 
-  <pre *ngIf="currentSections()">{{ currentSections() | json }}</pre>
-  <ng-container *ngIf="currentSections() && currentSections().length">
-    <!-- <ng-container *ngFor="let section of currentSections()">
-      <section class="trigger-area"
-        *ngIf="section && shouldShowSection(section.section)"
-        [ngClass]="getSectionCssClass(section.section)"
-        cdkDrag
-        [cdkDragDisabled]="section.section === 'CONTACT'"
-        (cdkDragStarted)="dragStarted($event); onDragStart(section.section)"
-        (cdkDragEnded)="onDragEnd()"> -->
-        <!-- Section Header and Actions (unchanged) -->
-        <!-- <span class="summary-section-title" cdkDragHandle *ngIf="section.section !== 'CONTACT'">{{getSectionTitle(section.section)}}
-          @if(!isPreview){
-            <div class="section-actions"> -->
-              <!-- Move/Add/Edit/Delete buttons unchanged -->
-              <!-- ...existing code... -->
-            <!-- </div>
-          }
-        </span> -->
-        <!-- Dynamic Section Component -->
-        <!-- <ng-container *ngComponentOutlet="getSectionComponent(section.section); injector: createSectionInjector(section)"></ng-container>
-      </section>
-    </ng-container> -->
-  </ng-container>
+  <div cdkDropList [cdkDropListData]="currentSections()" (cdkDropListDropped)="drop($event)">
+    <ng-container *ngIf="currentSections() && currentSections().length">
+      <ng-container *ngFor="let section of currentSections()">
+        <section class="trigger-area"
+          *ngIf="section && shouldShowSection(section.section) && section.section !== 'CONTACT'"
+          [ngClass]="getSectionCssClass(section.section)"
+          cdkDrag
+          (cdkDragStarted)="dragStarted($event); onDragStart(section.section)"
+          (cdkDragEnded)="onDragEnd()">
+          <span class="summary-section-title" cdkDragHandle>{{getSectionTitle(section.section)}}
+            <ng-container *ngIf="!isPreview">
+              <div class="section-actions">
+                <!-- Move/Add/Edit/Delete buttons can go here -->
+              </div>
+            </ng-container>
+          </span>
+          <ng-container [ngSwitch]="section.section">
+            <resume-profile-summary-section *ngSwitchCase="'PROFILE_SUMMARY'" [data]="resumeForm()?.profileSummary || {}"></resume-profile-summary-section>
+            <resume-education-section *ngSwitchCase="'EDUCATION'" [data]="resumeForm()?.education || []"></resume-education-section>
+            <resume-work-experience-section *ngSwitchCase="'WORK_EXPERIENCE'" [data]="resumeForm()?.experience || []"></resume-work-experience-section>
+            <resume-project-section *ngSwitchCase="'PROJECT'" [data]="resumeForm()?.project || []"></resume-project-section>
+            <!-- Add more cases as needed, always null check -->
+            <div *ngSwitchDefault>Section '{{section.section}}' is not supported.</div>
+          </ng-container>
+        </section>
+      </ng-container>
+    </ng-container>
+  </div>
   <footer style="padding-top: 100px;padding-bottom:30px;">
     <div class="row">
       <div class="text-left">

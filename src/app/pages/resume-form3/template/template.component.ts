@@ -37,6 +37,9 @@ import { CdkDragDrop, CdkDragStart, DragDropModule, moveItemInArray, transferArr
 import { SectionDesc } from 'src/app/services/store/user-store';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { SkillsSectionComponent } from '../sections/skills-section.component';
+import { AchievementsSectionComponent } from '../sections/achievements-section.component';
+import { CertificationsSectionComponent } from '../sections/certifications-section.component';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
 
 interface SectionTemplate {
@@ -64,7 +67,9 @@ const SECTION_COMPONENT_MAP: Record<string, any> = {
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
      NgOptimizedImage,FooterComponent,
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
-    MatFormFieldModule,InputTextModule, MatTooltipModule,
+    MatFormFieldModule,InputTextModule, MatTooltipModule, ContactSectionComponent, 
+    ProfileSummarySectionComponent, EducationSectionComponent, WorkExperienceSectionComponent, 
+    ProjectSectionComponent,SkillsSectionComponent,AchievementsSectionComponent, CertificationsSectionComponent,
     MatInputModule,ButtonModule,ConfirmDialogComponent,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule, IconsModule, DragDropModule],
@@ -73,6 +78,27 @@ const SECTION_COMPONENT_MAP: Record<string, any> = {
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Needed for p-icon web component
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+
+   sidebarIconOnly!: Signal<boolean>;
+  sectionStatus!: Signal<IsSectionPresent>;
+  resumeForm!: Signal<Resume>;
+  selectedResumeListItem!: Signal<ResumeListDataItem>;
+  currentSections!: Signal<SectionDesc[]>;
+  
+  @Output() editSection = new EventEmitter<any>();
+  @Output() saveRequested = new EventEmitter<void>();
+
+  @Input() isPreview : boolean = false;
+  currentDraggingSection: string = '';
+  isDragging : boolean = false
+
+  hasUnsavedChanges = false;
+
+  // Called when the contact section edit icon is clicked
+  showContact() {
+    console.log('template: Contact edit requested');
+    this.editSection.emit({ section: 'CONTACT' });
+  }
   constructor(
     private _formBuilder: FormBuilder, 
     private router : Router, 
@@ -83,36 +109,96 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     public templateService : TemplatesService,
     private injector: Injector,
     private userStore: UserStoreService
-  ) {}
+  ) {
+    // Section and unsaved change state logic from previous ngOnInit
+    effect(() => {
+      if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections()?.length == 0){
+        this.sections = []
+        this.resumeForm().sections.map((e : SectionDesc)=>{
+          this.sections = [...this.sections, e.section]
+        })
+        this.userStore.setResumeSections(this.resumeForm().sections)
+        this.isSectionsSetCount = this.isSectionsSetCount + 1
+      }
+      else if(this.currentSections()?.length == 0){
+        this.updateSectionVisibilityFlags(this.sectionsDesc);
+        this.userStore.setResumeSections(this.sectionsDesc)
+      }
+      else if(this.currentSections()?.length !== this.sections?.length){
+        // Case 1: currentSections has more items than this.sections (sections were added to store)
+        if(this.currentSections()?.length > this.sections?.length) {
+          this.sections = []
+          this.currentSections().map((e : SectionDesc)=>{
+            this.sections = [...this.sections, e.section]
+          })
+        }
+        // Case 2: this.sections has more items than currentSections (sections were added from left menu)
+        else if(this.sections?.length > this.currentSections()?.length) {
+          const currentSections = this.currentSections();
+          const newSections: SectionDesc[] = [];
+          this.sections.forEach(sectionKey => {
+            // Check if section already exists in current sections
+            let existingSection = currentSections.find(s => s.section === sectionKey);
+            if (existingSection) {
+              newSections.push(existingSection);
+            } else {
+              // Find template from sectionsDesc and add it
+              const template = this.sectionsDesc.find(s => s.section === sectionKey);
+              if (template) {
+                newSections.push({ ...template });
+              }
+            }
+          });
+          // Update visibility flags and store
+          this.updateSectionVisibilityFlags(newSections);
+          this.userStore.setResumeSections(newSections);
+          console.log('Updated sectionsDesc from sections array change:', newSections);
+        }
+      }
+      console.log(this.currentSections());
+
+      let skills = this.resumeForm().skill_v2
+      if(skills?.length>0){
+        this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
+        this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
+      }
+    })
+
+    // Reflect global unsaved-change state (e.g., edits from left-side forms)
+    effect(() => {
+      const changedSignal = this.userStore.getIsChangeInNewResume?.();
+      const changed = typeof changedSignal === 'function' ? !!changedSignal() : false;
+      this.hasUnsavedChanges = changed || this.hasUnsavedChanges; // preserve true until explicit save
+    });
+  }
 
   getSectionComponent(sectionKey: string) {
     return SECTION_COMPONENT_MAP[sectionKey] || null;
   }
 
-  createSectionInjector(section: SectionDesc) {
+  createSectionInjector(data: any) {
     return Injector.create({
       providers: [
-        { provide: 'data', useValue: section }
+        { provide: 'data', useValue: data }
       ],
       parent: this.injector
     });
   }
-  sidebarIconOnly!: Signal<boolean>;
-  sectionStatus!: Signal<IsSectionPresent>;
-  resumeForm!: Signal<Resume>;
-  selectedResumeListItem!: Signal<ResumeListDataItem>;
-  currentSections!: Signal<SectionDesc[]>;
-  
 
-  
-  @Output() editSection = new EventEmitter<any>();
-  @Output() saveRequested = new EventEmitter<void>();
-
-  @Input() isPreview : boolean = false;
-  currentDraggingSection: string = '';
-  isDragging : boolean = false
-
-  hasUnsavedChanges = false;
+  // Helper to get correct resume section data for component rendering
+  getSectionResumeData(sectionKey: string) {
+    const resume = this.resumeForm();
+    switch (sectionKey) {
+      case 'CONTACT': return resume.contact;
+      case 'PROFILE_SUMMARY': return resume.profileSummary;
+      case 'EDUCATION': return resume.education;
+      case 'WORK_EXPERIENCE': return resume.experience;
+      case 'PROJECT': return resume.project;
+      // Add more cases as needed
+      default: return {};
+    }
+  }
+ 
   private unloadHandler = (e: BeforeUnloadEvent) => {
     if (this.hasUnsavedChanges) {
       e.preventDefault();
@@ -283,6 +369,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     if (typeof window !== 'undefined') {
       window.addEventListener('beforeunload', this.unloadHandler);
     }
+
     // Always set section status for new or existing resumes
     let isSection : IsSectionPresent = new IsSectionPresent();
     isSection.isContact = true;
@@ -306,72 +393,12 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2?.length/2),)]
     }
 
-    // Section and unsaved change state logic from previous constructor
-    effect(() => {
-      if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections()?.length == 0){
-        this.sections = []
-        this.resumeForm().sections.map((e : SectionDesc)=>{
-          this.sections = [...this.sections, e.section]
-        })
-        this.userStore.setResumeSections(this.resumeForm().sections)
-        this.isSectionsSetCount = this.isSectionsSetCount + 1
-      }
-      else if(this.currentSections()?.length == 0){
-        this.updateSectionVisibilityFlags(this.sectionsDesc);
-        this.userStore.setResumeSections(this.sectionsDesc)
-      }
-      else if(this.currentSections()?.length !== this.sections?.length){
-        // Case 1: currentSections has more items than this.sections (sections were added to store)
-        if(this.currentSections()?.length > this.sections?.length) {
-          this.sections = []
-          this.currentSections().map((e : SectionDesc)=>{
-            this.sections = [...this.sections, e.section]
-          })
-        }
-        // Case 2: this.sections has more items than currentSections (sections were added from left menu)
-        else if(this.sections?.length > this.currentSections()?.length) {
-          const currentSections = this.currentSections();
-          const newSections: SectionDesc[] = [];
-          this.sections.forEach(sectionKey => {
-            // Check if section already exists in current sections
-            let existingSection = currentSections.find(s => s.section === sectionKey);
-            if (existingSection) {
-              newSections.push(existingSection);
-            } else {
-              // Find template from sectionsDesc and add it
-              const template = this.sectionsDesc.find(s => s.section === sectionKey);
-              if (template) {
-                newSections.push({ ...template });
-              }
-            }
-          });
-          // Update visibility flags and store
-          this.updateSectionVisibilityFlags(newSections);
-          this.userStore.setResumeSections(newSections);
-          console.log('Updated sectionsDesc from sections array change:', newSections);
-        }
-      }
-      console.log(this.currentSections());
-
-      let skills = this.resumeForm().skill_v2
-      if(skills?.length>0){
-        this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
-        this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
-      }
-    })
-
-    // Reflect global unsaved-change state (e.g., edits from left-side forms)
-    effect(() => {
-      const changedSignal = this.userStore.getIsChangeInNewResume?.();
-      const changed = typeof changedSignal === 'function' ? !!changedSignal() : false;
-      this.hasUnsavedChanges = changed || this.hasUnsavedChanges; // preserve true until explicit save
-    });
-
     // Check if resume is mostly empty and could benefit from sample data
     setTimeout(() => {
       this.checkAndOfferSampleData();
     }, 500); // Add small delay to ensure all data is initialized
   }
+
 
   // Check if resume is empty and auto-populate with sample data
   checkAndOfferSampleData(): void {
