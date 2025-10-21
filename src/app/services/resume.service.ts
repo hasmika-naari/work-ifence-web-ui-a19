@@ -9,6 +9,12 @@ import { isPlatformBrowser } from '@angular/common';
 import { JobApplicationDetails, JobResume, JobResumeRequest } from './resume.model';
 import { JobApplication, JobApplicationRequest, ResumeListDataItem } from './work-ifence-data.model';
 
+
+export interface HtmlPayload {
+  html: string;
+  baseUri?: string;
+}
+
 @Injectable({providedIn: 'any'})
 export class ResumeService {
 
@@ -109,6 +115,24 @@ export class ResumeService {
 
     //console.log('postDeal: api call');
     return this.httpClient.post<any>(queryUrl, jobResume)
+      .pipe(catchError(this.handleError));
+  }
+
+  saveResumeToDocx(template : any, baseuri : any) : Observable<HttpResponse<Blob>>{
+    let baseUrl = this.appConstants.BASE_API_URL;
+    if(isPlatformBrowser(this.platformId)){
+      baseUrl = '';
+    }
+    let queryUrl = baseUrl + this.appConstants.SAVE_DOCX_RESUME;
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    });
+
+    let payload : HtmlPayload = { html : template, baseUri : baseuri}
+    //console.log('postDeal: api call');
+    return this.httpClient.post<any>(queryUrl, payload, {headers : headers, observe : 'response', responseType : 'blob'})
       .pipe(catchError(this.handleError));
   }
 

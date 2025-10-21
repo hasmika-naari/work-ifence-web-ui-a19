@@ -132,6 +132,7 @@ export class AppConstantsService {
     public GET_RESUMES_BY_USER_NAME_URL: string;
     public GET_RESUMES_BY_USER_ID: string;
     public SAVE_RESUMES: string;
+    public SAVE_DOCX_RESUME: string;
     public UPDATE_RESUME: string;
     public DELETE_RESUME: string;
     public SAVE_RESUME_AND_DOWNLOAD: string;
@@ -267,6 +268,10 @@ export class AppConstantsService {
       this.SAVE_RESUMES = APP_CONTEXT
       ? '/'
       : '' + APP_CONTEXT + '/api/saveResumeDocument';
+
+      this.SAVE_DOCX_RESUME = APP_CONTEXT
+      ? '/'
+      : '' + APP_CONTEXT + '/api/resume/to-docx-editable';
 
       this.UPDATE_RESUME = APP_CONTEXT
       ? '/'

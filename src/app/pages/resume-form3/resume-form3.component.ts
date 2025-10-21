@@ -74,6 +74,7 @@ import { AddSectionComponent } from './add-section/add-section.component';
 import * as _ from 'lodash'
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
+import { HttpResponse } from '@angular/common/http';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -1751,10 +1752,33 @@ hideMenu() {
           this.router.navigateByUrl('/user/resumes');
         });
       }
+    //   this.resumeService.saveResumeToDocx(request.htmlcontent, "http://workifence.com:8090").subscribe((res : HttpResponse<Blob>)=>{
+    //     const blob = res.body!;
+    //     const filename = 'resume.docx';
+    //     this.downloadBlob(blob, filename);
+    //   },
+    // (err: any) => {
+    //     console.error('Download failed', err);
+    //   })
     }
     else{
       this.openSnackBar("Please complete all required fields in the Meta Data form.", "Close");
     }
+  }
+
+  private downloadBlob(blob: Blob, filename: string) {
+    // Create a blob URL and click an anchor to download
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    // For Safari, set target
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    // Revoke after a small timeout to ensure download started
+    setTimeout(() => window.URL.revokeObjectURL(url), 1000);
   }
 
   openSnackBar(message: string, action: string) {
