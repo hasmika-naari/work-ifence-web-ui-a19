@@ -126,11 +126,11 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()" 
-                [disabled]="educationForm.invalid || !hasFormChanged"
-                [title]="getButtonTooltip()"
+                [disabled]="educationForm.invalid || !educationForm.touched"
+                [title]="educationForm.invalid ? 'Please fix form errors before saving' : 'Click to save changes to your resume'"
             >
                 <i class="pi pi-check"></i>
-                {{ hasFormChanged ? 'Update Resume' : 'Add to Resume' }}
+                Add to Resume
             </button>
         </div>
     </form>

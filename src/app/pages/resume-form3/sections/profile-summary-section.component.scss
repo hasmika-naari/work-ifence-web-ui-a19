@@ -1,0 +1,39 @@
+/* Match contact section: remove extra padding, background, border-radius, box-shadow */
+.profile-summary {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  margin-bottom: 0.5rem;
+  box-shadow: none;
+  text-align: left;
+  max-width: 100%;
+  width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  /* Remove any card/hover effect */
+  transition: none;
+}
+
+.profile-summary:hover, .profile-summary:active, .profile-summary:focus {
+  background: none !important;
+  box-shadow: none !important;
+  cursor: default;
+}
+/* Match contact section text styles */
+.profile-summary p,
+.profile-summary li {
+  font-size: 1.05rem;
+  color: #222;
+  margin-bottom: 0.25rem;
+  text-align: left;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.profile-summary ul {
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}

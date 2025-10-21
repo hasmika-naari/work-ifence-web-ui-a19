@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { UserStoreService } from 'src/app/services/store/user-store.service';
 
 @Component({
   selector: 'resume-profile-summary-section',
@@ -9,34 +9,15 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="section profile-summary">
-      <h3>Profile Summary</h3>
       <div *ngIf="!isEmpty; else dummySummary">
-        <label for="summaryFormat">Format:</label>
-        <select id="summaryFormat" [(ngModel)]="data.format">
-          <option value="paragraph">Paragraph</option>
-          <option value="bulleted">Bulleted</option>
-        </select>
         <ng-container [ngSwitch]="data.format">
-          <p *ngSwitchCase="'paragraph'">{{ data.paragraph }}</p>
-          <ul *ngSwitchCase="'bulleted'">
-            <li *ngFor="let item of data.bulleted">{{ item }}</li>
-          </ul>
-          <p *ngSwitchDefault>{{ data.paragraph || data.profile_summary }}</p>
+          <div *ngSwitchCase="'paragraph'" [innerHTML]="data.profile_summary"></div>
+          <div *ngSwitchCase="'bulleted'" [innerHTML]="data.profile_summary"></div>
+          <div *ngSwitchDefault [innerHTML]="data.profile_summary"></div>
         </ng-container>
       </div>
       <ng-template #dummySummary>
-        <label for="summaryFormat">Format:</label>
-        <select id="summaryFormat" [(ngModel)]="dummy.format">
-          <option value="paragraph">Paragraph</option>
-          <option value="bulleted">Bulleted</option>
-        </select>
-        <ng-container [ngSwitch]="dummy.format">
-          <p *ngSwitchCase="'paragraph'">{{ dummy.paragraph }}</p>
-          <ul *ngSwitchCase="'bulleted'">
-            <li *ngFor="let item of dummy.bulleted">{{ item }}</li>
-          </ul>
-          <p *ngSwitchDefault>{{ dummy.paragraph }}</p>
-        </ng-container>
+        <div [innerHTML]="defaultSummary"></div>
       </ng-template>
     </div>
   `,
@@ -44,20 +25,15 @@ import { FormsModule } from '@angular/forms';
 })
 export class ProfileSummarySectionComponent {
   @Input() data: any;
+  private userStore = inject(UserStoreService);
 
   get isEmpty(): boolean {
-    return !this.data || (!this.data.paragraph && (!this.data.bulleted || this.data.bulleted.length === 0));
+    return !this.data || !this.data.profile_summary;
   }
 
-  dummy = {
-    format: 'paragraph',
-    paragraph: 'Dynamic, results-driven professional with a proven track record in delivering impactful solutions. Adept at collaborating with cross-functional teams and adapting to fast-paced environments. Passionate about continuous learning and professional growth. (This is dummy text for preview purposes.)',
-    bulleted: [
-      'Skilled in project management and team leadership',
-      'Excellent communication and interpersonal abilities',
-      'Proficient in modern web technologies and frameworks',
-      'Quick learner and adaptable to new challenges',
-      '(This is dummy text for preview purposes.)'
-    ]
-  };
+  get defaultSummary(): string {
+    // Get default summary from store only
+    const resume = this.userStore.state().selectedResume?.resumeForm;
+    return resume?.profileSummary?.profile_summary || '';
+  }
 }

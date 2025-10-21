@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
+    <!-- Generic Skills Section: Use for simple skill lists -->
     <div class="section skills">
       <h3>Skills</h3>
       <ul *ngIf="skills && skills.length; else dummySkills">
@@ -19,6 +20,7 @@ import { CommonModule } from '@angular/common';
         <li>Python</li>
       </ng-template>
     </div>
+    <!-- For bullet points or category, use SkillsBulletPointsSectionComponent or SkillsCategorySectionComponent -->
   `,
   styleUrls: ['./skills-section.component.scss']
 })

@@ -300,20 +300,18 @@ openPanelWindow(){
 }
 
   ngOnInit() {
-    // Set default dummy summary text based on format
-    const format = this.summaryForm.controls['format'].value;
-    if (format === 'bulleted') {
-      this.summaryForm.controls['profile_summary'].setValue(this.dummyBulleted, { emitEvent: false });
-    } else {
-      this.summaryForm.controls['profile_summary'].setValue(this.dummyParagraph, { emitEvent: false });
+    // Set default summary text from store if no user data
+    const resume = this.resumeSignalForm();
+    const summary = resume?.profileSummary ?? new ProfileSummary();
+    const defaultSummary = summary.profile_summary ||
+      'Innovative Senior Software Developer with 4+ years of expertise in full-stack development, cloud architecture, and team leadership. Proven track record of delivering scalable web applications serving 100K+ users using React, TypeScript, Node.js, and AWS. Specialized in microservices architecture, performance optimization, and agile development practices. Passionate about mentoring teams, implementing best practices, and driving technical excellence to deliver business-critical solutions that exceed user expectations.';
+    if (!this.summaryForm.controls['profile_summary'].value) {
+      this.summaryForm.controls['profile_summary'].setValue(defaultSummary, { emitEvent: false });
     }
-
-    // Listen for format changes to update dummy text
+    // Listen for format changes to update dummy text from store
     this.summaryForm.controls['format'].valueChanges.subscribe((val) => {
-      if (val === 'bulleted') {
-        this.summaryForm.controls['profile_summary'].setValue(this.dummyBulleted);
-      } else {
-        this.summaryForm.controls['profile_summary'].setValue(this.dummyParagraph);
+      if (!this.summaryForm.controls['profile_summary'].value) {
+        this.summaryForm.controls['profile_summary'].setValue(defaultSummary);
       }
     });
   //   this.productService.getProductsSmall().then((products) => {

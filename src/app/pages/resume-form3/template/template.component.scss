@@ -502,12 +502,12 @@ a{
   transition: background-color 0.2s ease; // Smooth background transition
   
   &:hover {
-    background-color: rgba(0, 0, 0, 0.02); // Subtle background highlight on hover
+    // background-color: rgba(0, 0, 0, 0.02); // Subtle background highlight on hover
   }
   
   &:active {
     cursor: grabbing;
-    background-color: rgba(0, 0, 0, 0.05); // Slightly more visible when active
+    // background-color: rgba(0, 0, 0, 0.05); // Slightly more visible when active
   }
   
   // Add a visible drag indicator
@@ -738,7 +738,7 @@ a{
   // background-color: #eeeeee8f;
   // padding: 0.25rem 0.75rem;
   border-radius: 1000px !important;
-  gap: 10px;
+  gap: 2px;
   opacity: 0;
   transform: translateX(100%);
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -1011,8 +1011,8 @@ a{
   }
   
   &:hover:not(.cdk-drag-dragging) {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    // transform: translateY(-1px);
+    // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 }
 

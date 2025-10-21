@@ -1,24 +1,4 @@
 
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
-import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatStepperModule} from '@angular/material/stepper';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { TextareaModule } from 'primeng/textarea';
-import { AccordionModule } from 'primeng/accordion';
-import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { ContactSectionComponent } from '../sections/contact-section.component';
 import { ProfileSummarySectionComponent } from '../sections/profile-summary-section.component';
 import { EducationSectionComponent } from '../sections/education-section.component';
@@ -40,6 +20,29 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { SkillsSectionComponent } from '../sections/skills-section.component';
 import { AchievementsSectionComponent } from '../sections/achievements-section.component';
 import { CertificationsSectionComponent } from '../sections/certifications-section.component';
+import { RelevantCourseworkSectionComponent } from '../sections/relevant-coursework-section/relevant-coursework-section.component';
+import { SkillsBulletPointsSectionComponent } from '../sections/skills-bullet-points-section.component';
+import { SkillsCategorySectionComponent } from '../sections/skills-category-section.component';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatStepperModule} from '@angular/material/stepper';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { FooterComponent } from '../../home-page-one/footer/footer.component';
+import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { TextareaModule } from 'primeng/textarea';
+import { AccordionModule } from 'primeng/accordion';
+import { UserStoreService } from 'src/app/services/store/user-store.service';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
 
 interface SectionTemplate {
@@ -69,8 +72,11 @@ const SECTION_COMPONENT_MAP: Record<string, any> = {
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule, MatTooltipModule, ContactSectionComponent, 
     ProfileSummarySectionComponent, EducationSectionComponent, WorkExperienceSectionComponent, 
-    ProjectSectionComponent,SkillsSectionComponent,AchievementsSectionComponent, CertificationsSectionComponent,
-    MatInputModule,ButtonModule,ConfirmDialogComponent,
+  ProjectSectionComponent,SkillsSectionComponent,AchievementsSectionComponent, CertificationsSectionComponent,
+  RelevantCourseworkSectionComponent,
+  SkillsBulletPointsSectionComponent,
+  SkillsCategorySectionComponent,
+    MatInputModule,ButtonModule,ConfirmDialogComponent,SkillsSectionComponent,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule, IconsModule, DragDropModule],
   templateUrl: './template.component.html',
@@ -78,6 +84,35 @@ const SECTION_COMPONENT_MAP: Record<string, any> = {
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Needed for p-icon web component
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  // ...existing code...
+
+  // Handles edit event from resume-education-section (real or dummy)
+  onEditEducation(indexOrData: number | Object) {
+    const resume = this.resumeForm && this.resumeForm();
+    if (!resume) return;
+    if (typeof indexOrData === 'number') {
+      // Real item: get data from list
+      const educationList = resume.education || [];
+      const item = educationList[indexOrData];
+      if (item) {
+        this.editSectionHandler('EDUCATION', item);
+      }
+    } else if (indexOrData && typeof indexOrData === 'object') {
+      // Dummy item: open sidenav with dummy data
+      this.editSectionHandler('EDUCATION', indexOrData);
+    }
+  }
+
+  // Handles delete event from resume-education-section
+  onDeleteEducation(index: number) {
+    const resume = this.resumeForm && this.resumeForm();
+    if (!resume) return;
+    const educationList = resume.education || [];
+    const item = educationList[index];
+    if (item) {
+      this.deleteSectionItem('EDUCATION', item);
+    }
+  }
 
    sidebarIconOnly!: Signal<boolean>;
   sectionStatus!: Signal<IsSectionPresent>;
@@ -230,7 +265,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       isPremium: false,
       tags: 'summary, profile, objective',
       label: 'Summary',
-      canMoveUp: true,
+      canMoveUp: false,
       canMoveDown: true
     },
     {
@@ -594,7 +629,8 @@ formatSkills(items : string[]){
       this.userStore.addSummary(this.createSampleProfileSummary());
     }
     else if(section === "EDUCATION"){
-      this.userStore.addEducationItem(this.createSampleEducation())
+      // Only open the education form/sidenav here (do not add to store)
+      this.openEducationForm();
     }
     else if(section === "PROJECT"){
       // Set up add mode: clear selected project and set to add mode
@@ -634,6 +670,14 @@ formatSkills(items : string[]){
     this.markDirty();
     this.cdr.detectChanges();
     this.editSection.emit({section : section})
+  }
+
+  // Stub for opening the education form/sidenav
+  openEducationForm() {
+    // Implement this to open your sidenav or modal for education form
+    // Example: this.sidenavService.open('education');
+    // Or set a flag: this.showEducationForm = true;
+    console.log('Open education form/sidenav');
   }
 
   editSectionHandler(section : string, selectedJson : any){
@@ -693,111 +737,24 @@ formatSkills(items : string[]){
 
 
 
+  // (Removed duplicate moveObjectById definition. The correct version is below.)
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
-  if(section === "EDUCATION"){
-    const array = this.resumeForm().education;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
+    // Move section in the main section list (for section headers)
+    const sections = [...this.currentSections()];
+    const index = sections.findIndex(s => s.section === section);
+    if (index === -1) return;
+    if (direction === "up" && index > 0) {
+      [sections[index], sections[index - 1]] = [sections[index - 1], sections[index]];
+    } else if (direction === "down" && index < sections.length - 1) {
+      [sections[index], sections[index + 1]] = [sections[index + 1], sections[index]];
+    } else {
       return;
     }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateEducationList(array);
+    this.updateSectionVisibilityFlags(sections);
+    this.userStore.setResumeSections(sections);
     this.markDirty();
   }
-  else if(section === "PROJECT"){
-    const array = this.resumeForm().project;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateProjectList(array);
-    this.markDirty();
-  }
-  else if(section === "WORK_EXPERIENCE"){
-    const array = this.resumeForm().experience;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateExperienceList(array);
-    this.markDirty();
-  }
-  else if(section === "CERTIFICATIONS"){
-    const array = this.resumeForm().certification;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateCertificationList(array);
-    this.markDirty();
-  }
-  else if(section === "ACHIEVEMENT_WITH_DESC"){
-    const array = this.resumeForm().accomplishment;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateAccomplishmentList(array);
-    this.markDirty();
-  }
-
-}
-
-removeSection(section : string){
+  removeSection(section : string){
   const dialogRef = this.dialog.open(ConfirmDialogComponent, {
     data: {name: 'confirm'},
   });
@@ -899,9 +856,30 @@ private animateSuccessfulDrop(targetIndex: number) {
 
   private updateSectionVisibilityFlags(sections: SectionDesc[]) {
     sections.forEach((section, index) => {
-      section.canMoveUp = index > 0;
-      section.canMoveDown = index < sections.length - 1;
+      // Always force isAdded: true for these key sections
+      if (["PROJECT", "CERTIFICATIONS", "ACHIEVEMENTS_BULLET_POINTS"].includes(section.section)) {
+        section.isAdded = true;
+      }
+      if (index === 0) {
+        // First section: no arrows
+        section.canMoveUp = false;
+        section.canMoveDown = false;
+      } else if (index === 1) {
+        // Second section: only move down
+        section.canMoveUp = false;
+        section.canMoveDown = true;
+      } else if (index === sections.length - 1) {
+        // Last section: only move up
+        section.canMoveUp = true;
+        section.canMoveDown = false;
+      } else {
+        // All other sections: both arrows
+        section.canMoveUp = true;
+        section.canMoveDown = true;
+      }
     });
+    // Persist updated flags to store
+    this.userStore.setResumeSections([...sections]);
   }
 
   private refreshSectionVisibilityFlags() {
@@ -916,9 +894,15 @@ private animateSuccessfulDrop(targetIndex: number) {
   }
 
   shouldShowSection(sectionType: string): boolean {
+    // Check currentSections first
     const currentSections = this.currentSections();
     const sectionDesc = currentSections.find(desc => desc.section === sectionType);
-    return sectionDesc ? sectionDesc.isAdded : false;
+    if (sectionDesc) {
+      return sectionDesc.isAdded;
+    }
+    // Fallback: check sectionsDesc if not found in currentSections
+    const fallbackDesc = this.sectionsDesc.find(desc => desc.section === sectionType);
+    return fallbackDesc ? fallbackDesc.isAdded : false;
   }
 
   // Helper method to check if education section has data
@@ -1178,7 +1162,8 @@ private animateSuccessfulDrop(targetIndex: number) {
     profile.skills_highlight = "React, TypeScript, Node.js, AWS, Microservices, Team Leadership";
     profile.isDefault = false;
     profile.isHideSelected = false;
-    profile.original_summary_html = "<p>Innovative Senior Software Developer with 4+ years of expertise in full-stack development, cloud architecture, and team leadership. Proven track record of delivering scalable web applications serving 100K+ users using React, TypeScript, Node.js, and AWS.</p>";
+    // Always match the HTML to the full summary for fresh resumes
+    profile.original_summary_html = `<p>${profile.profile_summary}</p>`;
     return profile;
   }
 

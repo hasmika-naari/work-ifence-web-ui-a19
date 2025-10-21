@@ -1,0 +1,65 @@
+.education-item {
+  position: relative;
+  padding: 8px 0px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+.education-item:hover {
+  background-color: transparent;
+}
+.education-item-actions {
+  display: flex;
+  gap: 0px;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 6px;
+  padding: 2px 4px;
+//   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  z-index: 2;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.education-item:hover .education-item-actions {
+  opacity: 1;
+  visibility: visible;
+}
+.icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.icon-btn.pi-pencil {
+  color: #fff;
+  background: #2ecc71;
+}
+.icon-btn.pi-pencil:hover {
+  background: #27ae60;
+}
+.icon-btn.pi-trash {
+  color: #fff;
+  background: #e74c3c;
+}
+.icon-btn.pi-trash:hover {
+  background: #c0392b;
+}
+.icon-btn.pi-arrow-up, .icon-btn.pi-arrow-down {
+  color: #fff;
+  background: #5a6c7d;
+}
+.icon-btn.pi-arrow-up:hover, .icon-btn.pi-arrow-down:hover {
+  background: #34495e;
+}
+.icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
