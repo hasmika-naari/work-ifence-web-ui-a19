@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { AfterContentInit, AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject, SimpleChanges, OnChanges } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -57,7 +57,21 @@ export interface DialogData {
   styleUrls: ['./course-work.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
-export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
+  @Input() resetFormTrigger: boolean = false;
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['resetFormTrigger'] && !changes['resetFormTrigger'].firstChange) {
+      // Reset only coursework and institution fields, not section title
+      this.isEditMode = false;
+      this.selectedCourseWorkForEdit = null;
+      this.courseWorkForm.patchValue({
+        coursework: '',
+        institution: ''
+      });
+      this.courseWorkForm.markAsUntouched();
+      this.courseWorkForm.markAsPristine();
+    }
+  }
  
   selectable = true;
   removable = true;
@@ -205,29 +219,29 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   saveAndContinue(){
     this.markFormGroupTouched(this.courseWorkForm);
-    
+
     if (this.isEditMode && this.selectedCourseWorkForEdit) {
       // Update existing course work
       this.selectedCourseWorkForEdit.courseworkname = this.courseWorkForm.controls['coursework'].value?.trim() || '';
       this.selectedCourseWorkForEdit.institution = this.courseWorkForm.controls['institution'].value?.trim() || '';
-      
+
       // Update the fruits array and store
       this.userStore.addCourseWork(this.fruits);
-      
+
       // Reset edit mode and clear selected course work in store
       this.isEditMode = false;
       this.selectedCourseWorkForEdit = null;
       const emptyCourseWork = new courseWork();
       this.userStore.updateCourseWork(emptyCourseWork);
-      
-      // Reset only the coursework and institution fields for edit mode
+
+      // Reset only the coursework and institution fields for edit mode (not section title)
       this.courseWorkForm.patchValue({
         coursework: '',
         institution: ''
       });
       this.courseWorkForm.markAsUntouched();
       this.courseWorkForm.markAsPristine();
-      
+
       // Capture new original values after reset
       setTimeout(() => {
         this.captureOriginalFormValues();
@@ -236,21 +250,25 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked 
       // Add new course work from form
       const courseworkName = this.courseWorkForm.controls['coursework'].value?.trim();
       const institution = this.courseWorkForm.controls['institution'].value?.trim();
-      
-      if (courseworkName && institution) {
+      const sectionTitle = this.courseWorkForm.controls['section_title'].value?.trim();
+
+      if (courseworkName && institution && sectionTitle) {
         const newCourseWork = new courseWork();
         newCourseWork.id = this.fruits.length > 0 ? Math.max(...this.fruits.map(f => f.id)) + 1 : 1;
         newCourseWork.courseworkname = courseworkName;
         newCourseWork.institution = institution;
         newCourseWork.isHideSelected = false;
-        
+
         this.fruits.push(newCourseWork);
         this.userStore.addCourseWork(this.fruits);
       }
-      
-      // For add mode, reset the entire form
-      this.courseWorkForm.reset();
-      
+
+      // For add mode, reset only coursework and institution fields, not section title
+      this.courseWorkForm.patchValue({
+        coursework: '',
+        institution: ''
+      });
+
       // Capture new original values after reset
       setTimeout(() => {
         this.captureOriginalFormValues();

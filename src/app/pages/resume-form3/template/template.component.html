@@ -36,7 +36,15 @@
                 (delete)="onDeleteEducation($event)"
                 (dummyEdit)="onEditEducation($event)"
               ></resume-education-section>
-              <app-relevant-coursework-section *ngSwitchCase="'RELEVANT_COURSEWORK'" [courseworkList]="resumeForm()?.courseWork || []"></app-relevant-coursework-section>
+              <app-relevant-coursework-section
+                *ngSwitchCase="'RELEVANT_COURSEWORK'"
+                [courseworkList]="resumeForm()?.courseWork || []"
+                [resetFormTrigger]="resetCourseworkForm"
+                (edit)="onEditCoursework($event)"
+                (delete)="onDeleteCoursework($event)"
+                (moveUp)="onMoveUpCoursework($event)"
+                (moveDown)="onMoveDownCoursework($event)"
+              ></app-relevant-coursework-section>
               <resume-skills-bullet-points-section *ngSwitchCase="'SKILLS_BULLET_POINTS'" [skills]="resumeForm()?.skill_v2 || []"></resume-skills-bullet-points-section>
               <resume-skills-category-section *ngSwitchCase="'SKILLS_CATEGORY'" [skills]="resumeForm()?.skill_v2 || []"></resume-skills-category-section>
               <resume-work-experience-section *ngSwitchCase="'WORK_EXPERIENCE'" [data]="resumeForm()?.experience || []"></resume-work-experience-section>

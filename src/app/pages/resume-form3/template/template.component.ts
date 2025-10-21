@@ -1,4 +1,6 @@
 
+
+
 import { ContactSectionComponent } from '../sections/contact-section.component';
 import { ProfileSummarySectionComponent } from '../sections/profile-summary-section.component';
 import { EducationSectionComponent } from '../sections/education-section.component';
@@ -84,7 +86,55 @@ const SECTION_COMPONENT_MAP: Record<string, any> = {
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Needed for p-icon web component
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  resetCourseworkForm = false;
+  // Handles edit event from relevant-coursework-section
+  onEditCoursework(index: number) {
+    const resume = this.resumeForm && this.resumeForm();
+    if (!resume) return;
+    const courseworkList = resume.courseWork || [];
+    const item = courseworkList[index];
+    if (item) {
+      this.editSectionHandler('RELEVANT_COURSEWORK', item);
+    }
+  }
+  // Handles move up event from relevant-coursework-section
+  onMoveUpCoursework(index: number) {
+    const resume = this.resumeForm && this.resumeForm();
+    if (!resume) return;
+    const courseworkList = resume.courseWork || [];
+    if (index > 0) {
+      [courseworkList[index - 1], courseworkList[index]] = [courseworkList[index], courseworkList[index - 1]];
+      this.userStore.setCourseWorkList([...courseworkList]);
+      this.markDirty();
+    }
+  }
+
+  // Handles move down event from relevant-coursework-section
+  onMoveDownCoursework(index: number) {
+    const resume = this.resumeForm && this.resumeForm();
+    if (!resume) return;
+    const courseworkList = resume.courseWork || [];
+    if (index < courseworkList.length - 1) {
+      [courseworkList[index], courseworkList[index + 1]] = [courseworkList[index + 1], courseworkList[index]];
+      this.userStore.setCourseWorkList([...courseworkList]);
+      this.markDirty();
+    }
+  }
   // ...existing code...
+   sidebarIconOnly!: Signal<boolean>;
+  sectionStatus!: Signal<IsSectionPresent>;
+  resumeForm!: Signal<Resume>;
+  selectedResumeListItem!: Signal<ResumeListDataItem>;
+  currentSections!: Signal<SectionDesc[]>;
+  
+  @Output() editSection = new EventEmitter<any>();
+  @Output() saveRequested = new EventEmitter<void>();
+
+  @Input() isPreview : boolean = false;
+  currentDraggingSection: string = '';
+  isDragging : boolean = false
+
+  hasUnsavedChanges = false;
 
   // Handles edit event from resume-education-section (real or dummy)
   onEditEducation(indexOrData: number | Object) {
@@ -114,20 +164,17 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     }
   }
 
-   sidebarIconOnly!: Signal<boolean>;
-  sectionStatus!: Signal<IsSectionPresent>;
-  resumeForm!: Signal<Resume>;
-  selectedResumeListItem!: Signal<ResumeListDataItem>;
-  currentSections!: Signal<SectionDesc[]>;
-  
-  @Output() editSection = new EventEmitter<any>();
-  @Output() saveRequested = new EventEmitter<void>();
+  // Handles delete event from relevant-coursework-section
+  onDeleteCoursework(index: number) {
+    const resume = this.resumeForm && this.resumeForm();
+    if (!resume) return;
+    const courseworkList = resume.courseWork || [];
+    const item = courseworkList[index];
+    if (item) {
+      this.deleteSectionItem('RELEVANT_COURSEWORK', item);
+    }
+  }
 
-  @Input() isPreview : boolean = false;
-  currentDraggingSection: string = '';
-  isDragging : boolean = false
-
-  hasUnsavedChanges = false;
 
   // Called when the contact section edit icon is clicked
   showContact() {
@@ -172,6 +219,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
           const currentSections = this.currentSections();
           const newSections: SectionDesc[] = [];
           this.sections.forEach(sectionKey => {
+
             // Check if section already exists in current sections
             let existingSection = currentSections.find(s => s.section === sectionKey);
             if (existingSection) {
@@ -197,7 +245,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
         this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
         this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
       }
-    })
+    });
 
     // Reflect global unsaved-change state (e.g., edits from left-side forms)
     effect(() => {
@@ -422,6 +470,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     if (!this.currentSections() || this.currentSections().length === 0) {
       this.userStore.setResumeSections(this.sectionsDesc);
     }
+
 
     if(this.resumeForm().skill_v2?.length>0){
       this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2?.length/2))]
@@ -657,8 +706,10 @@ formatSkills(items : string[]){
       console.log('Sample achievements section added');
     }
     else if(section === "RELEVANT_COURSEWORK"){
-      // Sample coursework will be handled in the comprehensive data loading
-      console.log('Sample coursework section added');
+      // Toggle resetCourseworkForm to trigger form reset in child
+      this.resetCourseworkForm = !this.resetCourseworkForm;
+      // No section title reset
+      console.log('Sample coursework section add requested (fields cleared, section title preserved)');
     }
     else if(section === "SKILLS_BULLET_POINTS"){
       this.userStore.addSkillV2(this.createMultipleSampleSkills());

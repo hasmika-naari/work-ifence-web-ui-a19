@@ -44,35 +44,13 @@
             </div>
         </div>
 
-        <div class="form-row form-row--single" *ngIf="fruits && fruits.length > 0 && !isEditMode">
-            <div class="field">
-                <label>Added Courses</label>
-                <div class="course-work-list">
-                    <div
-                      *ngFor="let fruit of fruits"
-                      class="course-work-item">
-                      <div class="course-work-content">
-                        <div class="course-name">{{fruit.courseworkname}}</div>
-                        <div class="course-institution" *ngIf="fruit.institution">{{fruit.institution}}</div>
-                      </div>
-                      <button 
-                        type="button"
-                        class="remove-btn"
-                        (click)="remove(fruit)"
-                        title="Remove course">
-                        <i class="pi pi-times"></i>
-                      </button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="form-actions">
             <button 
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()"
-                [disabled]="courseWorkForm.invalid || (!hasFormChanged && !isEditMode) || (isEditMode && !isFormDirty())"
+                [disabled]="courseWorkForm.invalid || !courseWorkForm.get('section_title')?.value || !courseWorkForm.get('coursework')?.value || !courseWorkForm.get('institution')?.value || (!hasFormChanged && !isEditMode) || (isEditMode && !isFormDirty())"
                 [matTooltip]="getButtonTooltip()"
                 tooltipPosition="top">
                 <i class="pi" [ngClass]="isEditMode ? 'pi-check' : 'pi-check'"></i>

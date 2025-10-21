@@ -1,25 +1,55 @@
-.resume-section {
-  padding: 1rem;
+.resume-section.coursework-section {
+  padding: 0rem;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
-h2 {
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
-  color: #2a2a2a;
+
+
+.coursework-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 0.25rem;
+  position: relative;
+  &:last-child {
+    border-bottom: none;
+  }
+  &:hover .coursework-item-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
-ul {
-  list-style: disc inside;
-  margin: 0;
-  padding: 0 0 0 1rem;
+
+.coursework-item-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 2;
 }
-li {
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
+
+.coursework-title {
+  font-weight: 600;
+  font-size: 1.08rem;
+  color: #222;
+  margin-bottom: 2px;
 }
+
+.coursework-institution {
+  color: #555;
+  font-size: 0.98rem;
+  margin-bottom: 0;
+}
+
 p {
   color: #888;
   font-size: 0.95rem;
+  margin: 0.5rem 0 0 0;
 }
