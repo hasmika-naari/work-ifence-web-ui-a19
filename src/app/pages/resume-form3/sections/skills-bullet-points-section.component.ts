@@ -9,7 +9,11 @@ import { SkillV2 } from 'src/app/services/resume.model';
   template: `
     <div class="section skills-bullet-points">
       <div class="skills-list" *ngIf="allSkills.length; else noSkills">
-        {{ allSkills.join(', ') }}
+        <ul class="skills-bullets">
+          <ng-container *ngFor="let skill of allSkills">
+            <li>{{ skill }}</li>
+          </ng-container>
+        </ul>
       </div>
       <ng-template #noSkills>
         <div class="no-skills">No skills added yet. Click <i class='pi pi-plus'></i> to add your skills.</div>
