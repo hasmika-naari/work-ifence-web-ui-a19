@@ -45,7 +45,12 @@
                 (moveUp)="onMoveUpCoursework($event)"
                 (moveDown)="onMoveDownCoursework($event)"
               ></app-relevant-coursework-section>
-              <resume-skills-bullet-points-section *ngSwitchCase="'SKILLS_BULLET_POINTS'" [skills]="resumeForm()?.skill_v2 || []"></resume-skills-bullet-points-section>
+              <resume-skills-bullet-points-section
+                *ngSwitchCase="'SKILLS_BULLET_POINTS'"
+                [skillsBulletPoints]="resumeForm()?.skillsBulletPoints || []"
+                (add)="onAddSkills()"
+                (edit)="onEditSkills()"
+              ></resume-skills-bullet-points-section>
               <resume-skills-category-section *ngSwitchCase="'SKILLS_CATEGORY'" [skills]="resumeForm()?.skill_v2 || []"></resume-skills-category-section>
               <resume-work-experience-section *ngSwitchCase="'WORK_EXPERIENCE'" [data]="resumeForm()?.experience || []"></resume-work-experience-section>
               <resume-project-section *ngSwitchCase="'PROJECT'" [data]="resumeForm()?.project || []"></resume-project-section>

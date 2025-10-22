@@ -39,9 +39,9 @@
                     <div class="field">
                         <label>Added Skills</label>
                         <div class="skills-chips-container" 
-                             cdkDropList 
-                             cdkDropListOrientation="mixed" 
-                             (cdkDropListDropped)="dropSkill($event)">
+                          cdkDropList 
+                          cdkDropListOrientation="mixed" 
+                          (cdkDropListDropped)="onSkillsReordered($event)">
                             <div 
                               *ngFor="let skill of skillsBulletPoints; let i = index"
                               class="skill-chip"
@@ -71,7 +71,7 @@
                         [matTooltip]="getButtonTooltip()"
                         tooltipPosition="top">
                         <i class="pi pi-check"></i>
-                        Update Skills
+                        Update Skills {{skillsForm.invalid}} {{hasFormChanged}}
                     </button>
                 </div>
             </div>

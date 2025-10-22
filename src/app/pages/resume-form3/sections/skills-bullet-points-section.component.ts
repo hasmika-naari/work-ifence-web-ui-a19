@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SkillV2 } from 'src/app/services/resume.model';
 
@@ -8,15 +8,11 @@ import { SkillV2 } from 'src/app/services/resume.model';
   imports: [CommonModule],
   template: `
     <div class="section skills-bullet-points">
-      <h3>Skills (Bullet Points)</h3>
-      <ul *ngIf="skills && skills.length; else noSkills">
-        <li *ngFor="let skill of skills">
-          <strong>{{ skill.sub_title }}:</strong>
-          <span>{{ skill.skills.join(', ') }}</span>
-        </li>
-      </ul>
+      <div class="skills-list" *ngIf="allSkills.length; else noSkills">
+        {{ allSkills.join(', ') }}
+      </div>
       <ng-template #noSkills>
-        <li>No skills added yet.</li>
+        <div class="no-skills">No skills added yet. Click <i class='pi pi-plus'></i> to add your skills.</div>
       </ng-template>
     </div>
   `,
@@ -24,4 +20,16 @@ import { SkillV2 } from 'src/app/services/resume.model';
 })
 export class SkillsBulletPointsSectionComponent {
   @Input() skills: SkillV2[] = [];
+  @Input() skillsBulletPoints: string[] = [];
+  @Output() add = new EventEmitter<void>();
+  @Output() edit = new EventEmitter<void>();
+
+  get allSkills(): string[] {
+    if (this.skillsBulletPoints && this.skillsBulletPoints.length) {
+      return this.skillsBulletPoints;
+    }
+    if (!this.skills) return [];
+    // Flatten all skills from all SkillV2 objects
+    return this.skills.reduce((acc, s) => acc.concat(s.skills), [] as string[]);
+  }
 }

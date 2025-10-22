@@ -65,8 +65,11 @@ export interface Skill {
 })
 export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
 
-  @ViewChild('sectionAuto') sectionAutocomplete!: MatAutocomplete;
 
+  @ViewChild('sectionAuto') sectionAutocomplete!: MatAutocomplete;
+  private _checkForFormChangesTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    // Removed debounce logic for checkForFormChanges
   
 
   skills_list : {id : number, skills : String | null}[] = []
@@ -106,6 +109,11 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
 
 
   @Output() contact = new EventEmitter();
+  @Output() skillsReordered = new EventEmitter<string[]>();
+  onSkillsReordered(event: CdkDragDrop<string[]>) {
+    this.dropSkill(event); // dropSkill already calls checkForFormChanges
+    this.skillsReordered.emit([...this.skillsBulletPoints]);
+  }
 
   @Input()
   skillsValue! : number
@@ -308,40 +316,41 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   }
 
   private setupFormChangeDetection(): void {
-    // Subscribe to form value changes
-    this.skillsForm.valueChanges.subscribe(() => {
+    // Listen to section_title changes for form change detection
+    this.skillsForm.controls['section_title'].valueChanges.subscribe(() => {
       this.checkForFormChanges();
     });
-
-    // Capture initial form values after they are set
+    // No need to listen to 'skills' input changes for bullet points logic
     setTimeout(() => {
       this.captureOriginalFormValues();
+      this.checkForFormChanges();
     }, 100);
   }
 
   private captureOriginalFormValues(): void {
-    this.originalFormValues = { ...this.skillsForm.value };
-    
-    if (this.sectionName === "SKILLS_BULLET_POINTS") {
-      this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
-    } else {
-      this.originalFruits = [...this.fruits];
+      // Only store section_title for change detection, not the skills input
+      this.originalFormValues = {
+        section_title: this.skillsForm.controls['section_title'].value
+      };
+      if (this.sectionName === "SKILLS_BULLET_POINTS") {
+        // Store a copy of the original skills list
+        this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
+      } else {
+        this.originalFruits = [...this.fruits];
+      }
+      // Do not reset hasFormChanged here; let checkForFormChanges control it
     }
-    
-    this.hasFormChanged = false;
-  }
 
   private checkForFormChanges(): void {
-    const currentValues = this.skillsForm.value;
-    const formChanged = JSON.stringify(currentValues) !== JSON.stringify(this.originalFormValues);
-    
     if (this.sectionName === "SKILLS_BULLET_POINTS") {
-      const skillsArrayChanged = JSON.stringify(this.skillsBulletPoints) !== JSON.stringify(this.originalSkillsBulletPoints);
-      this.hasFormChanged = formChanged || skillsArrayChanged;
+      // Always enable the button for now
+      this.hasFormChanged = true;
     } else {
-      // For regular skills, compare current fruits with original fruits
+      const sectionTitleChanged = this.skillsForm.controls['section_title'].value !== this.originalFormValues.section_title;
       const fruitsChanged = JSON.stringify(this.fruits) !== JSON.stringify(this.originalFruits);
-      this.hasFormChanged = formChanged || fruitsChanged;
+      this.hasFormChanged = (sectionTitleChanged || fruitsChanged) &&
+        !!this.skillsForm.controls['section_title'].value?.trim() &&
+        this.fruits.length > 0;
     }
   }
 
@@ -472,11 +481,11 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   
   saveAndContinue(): void {
     this.markFormGroupTouched(this.skillsForm);
-  
+
     if (this.sectionName == "SKILLS_BULLET_POINTS") {
       // Save skills bullet points
       this.userStore.setSkillsBulletPoints(this.skillsBulletPoints);
-      
+
       // Update section status
       if (!this.sectionStatus().isSkillsBulletPoints) {
         const status = this.sectionStatus();
@@ -491,9 +500,9 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
           skills = [...skills, ...e.skills]; // Safely spread only arrays
         }
       });
-  
+
       this.userStore.addSkillV2(this.skills_v2);
-      
+
       // Update section status for regular skills
       if (!this.sectionStatus().isSkill) {
         const status = this.sectionStatus();
@@ -501,7 +510,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
         this.userStore.updateSectionStatus(status);
       }
     }
-    
+
     // Update section title
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
       this.multipleSections().map((e : SectionDesc[])=>{
@@ -521,28 +530,34 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
         })
         this.userStore.setResumeSections(this.sections())
     }
-  
+
+
     // Reset form and mark as pristine for skills bullet points
     if (this.sectionName == "SKILLS_BULLET_POINTS") {
       this.skillsForm.patchValue({
         skills: ''
       });
       this.skillsForm.markAsPristine();
+      // Update the originalSkillsBulletPoints after save
       this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
-      
+      // Reset hasFormChanged to false after save
+      this.hasFormChanged = false;
       // Capture new original values after save
       setTimeout(() => {
         this.captureOriginalFormValues();
+        this.checkForFormChanges();
       }, 100);
     } else {
       this.skillsForm.reset();
-      
+      // Reset hasFormChanged to false after save
+      this.hasFormChanged = false;
       // Capture new original values after save for regular skills
       setTimeout(() => {
         this.captureOriginalFormValues();
+        this.checkForFormChanges();
       }, 100);
     }
-  
+
     // Emit contact event
     this.contact.emit();
   }
@@ -677,38 +692,47 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   }
 
   // Skills Bullet Points Methods
+
   addSkillBulletPoint(): void {
     const skillValue = this.skillsForm.controls['skills'].value?.trim();
     if (skillValue && !this.skillsBulletPoints.includes(skillValue)) {
       this.skillsBulletPoints.push(skillValue);
       this.skillsForm.controls['skills'].setValue('');
       this.skillsForm.markAsDirty();
-      this.checkForFormChanges(); // Trigger change detection
+      this.checkForFormChanges(); // Always check for changes after add
     }
   }
+
 
   removeSkillBulletPoint(index: number): void {
     this.skillsBulletPoints.splice(index, 1);
     this.skillsForm.markAsDirty();
-    this.checkForFormChanges(); // Trigger change detection
+    this.checkForFormChanges(); // Always check for changes after remove
   }
+
 
   dropSkill(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.skillsBulletPoints, event.previousIndex, event.currentIndex);
     this.skillsForm.markAsDirty();
-    this.checkForFormChanges(); // Trigger change detection
+    // Force a new array reference to ensure change detection
+    this.skillsBulletPoints = [...this.skillsBulletPoints];
+    this.checkForFormChanges(); // Always check for changes after reorder
+    this.cdr.detectChanges(); // Force UI update for button state
   }
 
   isFormDirty(): boolean {
-    return this.skillsForm.dirty || 
-           JSON.stringify(this.skillsBulletPoints) !== JSON.stringify(this.originalSkillsBulletPoints);
+    // Section title must be non-empty, and at least one skill must be present
+    const sectionTitle = this.skillsForm.get('section_title')?.value?.trim();
+    return (
+      this.skillsForm.dirty ||
+      JSON.stringify(this.skillsBulletPoints) !== JSON.stringify(this.originalSkillsBulletPoints)
+    ) && !!sectionTitle && this.skillsBulletPoints.length > 0;
   }
 
   setSkillsBulletPointsValues(): void {
     // Load existing skills bullet points
     this.skillsBulletPoints = [...(this.resumeSignalForm().skillsBulletPoints || [])];
     this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
-    
     // Set section title
     let section_title;
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
@@ -727,8 +751,9 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
           }
         })
     }
+    this.skillsForm.controls['section_title'].setValidators([Validators.required]);
+    this.skillsForm.controls['section_title'].updateValueAndValidity();
     this.skillsForm.controls['section_title'].setValue(section_title ?? 'Skills');
-    
     // Capture original form values after setting
     setTimeout(() => {
       this.captureOriginalFormValues();

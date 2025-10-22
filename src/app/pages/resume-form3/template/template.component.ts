@@ -1,6 +1,4 @@
-
-
-
+// ...existing code...
 import { ContactSectionComponent } from '../sections/contact-section.component';
 import { ProfileSummarySectionComponent } from '../sections/profile-summary-section.component';
 import { EducationSectionComponent } from '../sections/education-section.component';
@@ -86,6 +84,19 @@ const SECTION_COMPONENT_MAP: Record<string, any> = {
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Needed for p-icon web component
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  // ...existing code...
+
+  // Handles add event from skills bullet points section
+  onAddSkills() {
+    this.editSectionHandler('SKILLS_BULLET_POINTS', null);
+  }
+
+  // Handles edit event from skills bullet points section
+  onEditSkills() {
+    const resume = this.resumeForm && this.resumeForm();
+    const skills = resume?.skill_v2 || [];
+    this.editSectionHandler('SKILLS_BULLET_POINTS', skills);
+  }
   resetCourseworkForm = false;
   // Handles edit event from relevant-coursework-section
   onEditCoursework(index: number) {
