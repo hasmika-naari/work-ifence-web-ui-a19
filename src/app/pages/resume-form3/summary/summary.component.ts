@@ -302,7 +302,8 @@ openPanelWindow(){
   ngOnInit() {
     // Set default summary text from store if no user data
     const resume = this.resumeSignalForm();
-    const summary = resume?.profileSummary ?? new ProfileSummary();
+    const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
+    const summary = section?.items?.[0]?.data ?? new ProfileSummary();
     const defaultSummary = summary.profile_summary ||
       'Innovative Senior Software Developer with 4+ years of expertise in full-stack development, cloud architecture, and team leadership. Proven track record of delivering scalable web applications serving 100K+ users using React, TypeScript, Node.js, and AWS. Specialized in microservices architecture, performance optimization, and agile development practices. Passionate about mentoring teams, implementing best practices, and driving technical excellence to deliver business-critical solutions that exceed user expectations.';
     if (!this.summaryForm.controls['profile_summary'].value) {
@@ -423,9 +424,10 @@ openPanelWindow(){
 
   setSummaryValues(){
 
-    const resume = this.resumeSignalForm();
-    const summary = resume?.profileSummary ?? new ProfileSummary();
-    const editorHtml = summary.original_summary_html?.length ? summary.original_summary_html : (summary.profile_summary ?? '');
+  const resume = this.resumeSignalForm();
+  const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
+  const summary = section?.items?.[0]?.data ?? new ProfileSummary();
+  const editorHtml = summary.original_summary_html?.length ? summary.original_summary_html : (summary.profile_summary ?? '');
 
     // Only patch if there is real content, otherwise let ngOnInit's dummy text logic run
     if (this.summaryForm && (editorHtml && editorHtml.trim().length > 0)) {

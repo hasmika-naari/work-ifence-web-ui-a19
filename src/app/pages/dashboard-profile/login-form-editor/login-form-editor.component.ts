@@ -304,11 +304,11 @@ export class LoginFormEditorComponent implements OnInit, OnDestroy {
     this.authService.patchLoginProfile(form).subscribe((e)=>{
       this.phoneUpdateInProgress = false;
       this.phoneUpdateRequired = false;
-    const ulProfile : LoginProfile = this.loginProfile();
-      ulProfile.emailId = this.loginProfile().emailId;
-      this.userStore.setPhoneInLoginProfile(form.phoneNumber);
+      const ulProfile : LoginProfile = this.loginProfile();
+      ulProfile.phoneNumber = form.phoneNumber;
+      this.userStore.setLoginProfile(ulProfile);
       this.phoneNumberUpdateSuccess = true;
-      this.formSaved.emit()
+      this.formSaved.emit();
       setTimeout(() => {
         this.phoneNumberUpdateSuccess = false;
       }, 1500);

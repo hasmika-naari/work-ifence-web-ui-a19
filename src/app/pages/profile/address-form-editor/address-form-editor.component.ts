@@ -201,7 +201,12 @@ usaStates: string[] = [
     if(this.address().id){
         this.authService.updateAddress(form).subscribe((e)=>{
             let index = this.userAddressess().findIndex(obj => obj.id === e.id)
-            this.userStore.editAddress(e, index);
+            // Find and update the address in the array, then update addresses
+            let updatedAddresses = [...this.userAddressess()];
+            if (index > -1) {
+              updatedAddresses[index] = e;
+              this.userStore.updateAddresses(updatedAddresses);
+            }
             this.userStore.setSelectedAddress(new Address());
             this.formSaved.emit()
         })

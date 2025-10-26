@@ -222,8 +222,8 @@ removeAddress($event: any, address: Address){
         this.actionInProgress = true;
         this._subscriptions.push(this.authService.removeAddress(address.id).subscribe((resp) => {
           console.log('Save Bio Profile' + resp);
-          let index = this.userAddressess().findIndex(obj => obj.id === address.id)
-          this.userStore.removeAddress(index);
+          let addresses = this.userAddressess().filter(obj => obj.id !== address.id);
+          this.userStore.updateAddresses(addresses);
           this.actionInProgress = false;
         }))
       }

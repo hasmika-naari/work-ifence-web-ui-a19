@@ -6,10 +6,33 @@ import { UserStoreService } from '../store/user-store.service';
   providedIn: 'root',
 })
 export class TemplatesService {
-
   constructor() {}
-
   private userStore: UserStoreService = inject(UserStoreService);
+  // Helper functions to extract data from resume.sections
+  private getSectionData<T>(resume: Resume, sectionName: string): T | undefined {
+    return resume.sections?.find((s: any) => s.section === sectionName)?.items?.[0]?.data;
+  }
+  private getSectionList<T>(resume: Resume, sectionName: string): T[] {
+    return resume.sections?.find((s: any) => s.section === sectionName)?.items?.map((i: any) => i.data) ?? [];
+  }
+  private getContact(resume: Resume) {
+    return this.getSectionData<any>(resume, 'CONTACT') ?? { fname: '', lname: '', email: '', phone_number: '', linkedIn_profile: '', github_profile: '' };
+  }
+  private getProfileSummary(resume: Resume) {
+    return this.getSectionData<any>(resume, 'PROFILE_SUMMARY') ?? { profile_summary: '' };
+  }
+  private getSkills(resume: Resume) {
+    return this.getSectionList<any>(resume, 'SKILLS');
+  }
+  private getExperience(resume: Resume) {
+    return this.getSectionList<any>(resume, 'WORK_EXPERIENCE');
+  }
+  private getEducation(resume: Resume) {
+    return this.getSectionList<any>(resume, 'EDUCATION');
+  }
+  private getProjects(resume: Resume) {
+    return this.getSectionList<any>(resume, 'PROJECT');
+  }
 
   private templates_json : Array<TemplateVariables>= [
     {
@@ -64,11 +87,9 @@ export class TemplatesService {
     if(template_name == "TEMPLATE_1"){
       return this.getTemplate1HTMLV1(resume);
     }
-    else if(template_name == 'TEMPLATE_2'){
-      return this.getTemplate2HTMLText(resume);
-    }
+    // TEMPLATE_2 removed: no implementation available
     else if(template_name == 'TEMPLATE_3'){
-      return this.getTemplate3HTMLText(resume);
+  return this.getTemplate4HTMLText(resume);
     }
     else if(template_name == 'TEMPLATE_4'){
       return this.getTemplate4HTMLText(resume);
@@ -77,7 +98,8 @@ export class TemplatesService {
       return this.getTemplate5HTMLText(resume);
     }
     else if(template_name == 'TEMPLATE_6'){
-      return this.getTemplate6HTMLText(resume);
+      // getTemplate6HTMLText removed: duplicate/invalid implementation
+      return '';
     }
     else if(template_name == 'TEMPLATE_7'){
       return this.getTemplate7HTMLText(resume);
@@ -166,306 +188,7 @@ export class TemplatesService {
     // }
 
     // .contact-container {
-    //   width: 45%; /* Updated to 40% width */
-    //   display: inline-block;
-    // }
-
-    // .contact-icons li {
-    //   margin-bottom: 5px;
-    // }
-
-    // .contact-icons i {
-    //   color: black;
-    //   margin-right: 5px;
-    // }
-
-    // section {
-    //   background-color: #ffffff; /* White background for sections */
-    //   margin-bottom: 12px; /* Margin between sections */
-    // }
-
-    // /* New styles for the Profile Summary, Technical Skills, Soft Skills, and Education sections */
-    // .profile-summary,
-    // .technical-skills,
-    // .soft-skills,
-    // .education,
-    // .projects,
-    // .experience,
-    // .certifications {
-    //   font-family: 'Poppins', sans-serif; /* Use Poppins font for titles */
-    // }
-
-    // .profile-summary h2,
-    // .technical-skills h2,
-    // .soft-skills h2,
-    // .education h2,
-    // .projects h2,
-    // .experience h2,
-    // .certifications h2 {
-    //   letter-spacing: 0.1em; /* Character spacing for titles */
-    //   margin-bottom: 5px; /* Margin below titles */
-    // }
-
-    // .profile-summary p,
-    // .technical-skills p,
-    // .soft-skills p,
-    // .education p,
-    // .projects p,
-    // .experience p,
-    // .certifications p {
-    //   font-family: 'Wix Madefor Text', sans-serif; /* Use Wix Madefor Text font for paragraphs */
-    // }
-
-    // /* Education Section */
-    // .education span {
-    //   color: #4F4F4F; /* Color for date */
-    // }
-
-    // .education p,
-    // .projects p,
-    // .experience p,
-    // .certifications p{
-    //   margin-bottom: 5px;
-    // }
-    // </style>
-    // </head>
-    // <body>
-    // <!-- resume.component.html -->
-
-    // <div class="container">
-    // <header>
-    //     ${resume.name? `
-    //     <h1>${resume.name}</h1>
-    //     ` : ''}
-    //     <div class="contact-icons">
-    //     ${resume.email?`
-    //     <div class="contact-container">
-    //         <li><i class="fas fa-envelope"></i> ${resume.email}</li>
-    //     </div>
-    //     `:''
-    //     }
-    //     ${resume.phone_number?`
-    //     <div class="contact-container">
-    //         <li><i class="fas fa-phone"></i> ${resume.phone_number}</li>
-    //     </div>
-    //     ` : ''}
-    //     ${resume.linkedIn_profile?`
-    //     <div class="contact-container">
-    //         <li><i class="fab fa-linkedin"></i> <a href="${resume.linkedIn_profile}">LinkedIn Profile</a></li>
-    //     </div>
-    //     `:''}
-    //     ${resume.github_profile?`
-    //     <div class="contact-container">
-    //         <li><i class="fab fa-github"></i> <a href="${resume.github_profile}">Github Profile</a></li>
-    //     </div>
-    //     ` : ''}
-    //     </div>
-    //     ${resume.imageBase64Encoded?`
-    //     <img src="data:image/png;base64,${ resume.imageBase64Encoded }" alt="Profile Image">
-    //     `:''}
-    // </header>
-
-    // <!-- Profile Summary Section -->
-    // ${resume.profile_summary?`
-    // <section class="profile-summary">
-    //     <h2>Profile Summary</h2>
-    //     <p>${resume.profile_summary}</p>
-    // </section>
-    // ` : ''}
-
-    // <!-- Technical Skills Section -->
-    // ${resume.technical_skills || resume.soft_skills?`
-    // <section class="technical-skills">
-    //     <h2>Skills</h2>
-    //     ${resume.technical_skills?`
-    //     <p>Technical Skills : ${resume.technical_skills.join(', ')}</p>
-    // ` : ""}
-    //     ${resume.soft_skills?`
-    //         <p>Soft Skills : ${resume.soft_skills.join(', ')}</p>
-    //     ` : ""}
-    // </section>
-    // ` : ''}
-
-    // <!-- Education Section -->
-    // ${resume.educationList?`
-    // <section class="education">
-    //     <h2>Education</h2>
-    //     ${this.formatEductionListItems(resume.educationList)}
-    // </section>
-    // ` : ''}
-
-    // <!-- Projects Section -->
-    // ${resume.projectList?`
-    // <section class="projects">
-    //     <h2>Projects</h2>
-    //     ${this.formatProjectListItems(resume.projectList)}
-    // </section>
-    // ` : ''}
-
-    // <!-- Experience Section -->
-    // ${resume.experienceList?`
-    // <section class="experience">
-    //     <h2>Experience</h2>
-    //     ${this.formatExperienceListItems(resume.experienceList)}
-    // </section>
-    // ` : ''}
-
-    // <!-- Certifications Section -->
-    // ${resume.certificationList?`
-    // <section class="certifications">
-    //  <h2>Certifications</h2>
-    //  ${this.formatCertificationListItems(resume.certificationList)}
-    // </section>
-    // ` : ''}
-    // </div>  
-    // </body>
-    // </html>
-    // `
-
-    return ``
-  }
-
-  private formatEductionListItems(items: any[]): string {
-    return items.map((item: any) => `
-      <p>
-        <b>${item.degree_earned}(${item.major_or_field_of_study}), ${item.school_or_university_name}</b><br>
-        <span>${item.graduation_date}</span><br>
-        GPA - ${item.gpa}
-      </p>
-    `).join('');
-  }
-
-  private formatProjectListItems(items: any[]): string {
-    return items.map((item: any) => `
-      <p>
-        <strong>${item.title_of_the_project}</strong><br>
-        <span>${item.description}</span><br>
-        <b>Technologies - </b> ${item.technologies_used}
-      </p>
-    `).join('');
-  }
-
-  private formatExperienceListItems(items: any[]): string {
-    return items.map((item: any) => `
-      <p>
-        <strong>${item.job_title}, ${ item.company_name }</strong>
-        <span style="float: right;">${ item.dates_of_employment }</span>
-        <br>
-        ${ item.description }
-      </p>
-    `).join('');
-  }
-
-  private formatCertificationListItems(items: Certification[]): string {
-    return items.map((item: Certification) => `
-    <div style="font-size: 12px;" class="template1-section-content trigger-area">
-    <div>
-      <p>
-      <span><a href="${item.certification_link}" style="color : black !important"> ${item.certification_name}</a>, ${item.issued_organisation}</span>
-      <span style="float: right;">${item.issued_month} ${item.issued_year}</span>
-      </p>
-    </div>
-  </div>
-    `).join('');
-  }
-
-
-  getDevresume_Template(resume : Resume){
-    // return `
-    // <!DOCTYPE html>
-    // <html lang="en">
-    // <head>
-    //   <meta charset="UTF-8">
-    //   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //   <title>${resume.name}'s - Resume</title>
-    //   <script defer src="src/main/resources/templates/fontawesome/js/all.min.js"></script>
-    //   <link href="src/main/resources/templates/template-fonts/devresume.css" id="theme-style" rel="stylesheet">
-    //   <style>
-    //     * {
-    //       margin: 0;
-    //       padding: 0;
-    //       box-sizing: border-box;
-    //     }
-    
-    //     html {
-    //       height: 100%;
-    //     }
-    
-    //     body {
-    //       min-height: 100%;
-    //       background: #eee;
-    //       font-family: 'Roboto',sans-serif !important;
-    //       font-weight: 400;
-    //       font-size: 0.85rem;
-    //       background-color: #ffffff;
-    //       color: #000000;
-    //     }
-    
-    //     .container {
-    //       max-width: 700px;
-    //       background: #ffffff;
-    //       margin: 0px auto 0px;
-    //     }
-    
-    //     .header {
-    //       background-color: #ffffff;
-    //       color: black;
-    //       text-align: left;
-    //       display: flex;
-    //       justify-content: space-between;
-    //       align-items: center;
-    //     }
-    
-    //     .header h2 {
-    //       font-family: 'Roboto',sans-serif !important;
-    //       font-size: 1.9rem;
-    //       font-weight: bold;
-    //       letter-spacing: 0.1rem;
-    //       color: #54B689;
-    //       text-transform: uppercase !important;
-    //     }
-    
-    //     .contact-details {
-    //       list-style: none;
-    //       padding: 0 0 0 5px;
-    //       margin: 0;
-    //       display: flex;
-    //       flex-direction: column;
-    //       align-items: flex-start;
-    //     }
-    
-    //     .resume-contact {
-    //       border-left: 1px solid rgba(0, 0, 0, 0.08);
-    //       font-size: 0.75rem;
-    //     }
-    
-    //     .resume-tagline {
-    //       font-size: 0.9rem;
-    //       font-weight: 100;
-    //       padding-top: 12px;
-    //     }
-    
-    //     .col-12 {
-    //       flex: 0 0 auto;
-    //       width: 100%;
-    //     }
-    
-    //     .row {
-    //       --bs-gutter-x: 1.5rem;
-    //       --bs-gutter-y: 0;
-    //       display: flex;
-    //       flex-wrap: wrap;
-    //       margin-top: calc(-1 * var(--bs-gutter-y));
-    //       margin-right: calc(-.5 * var(--bs-gutter-x));
-    //       margin-left: calc(-.5 * var(--bs-gutter-x));
-    //     }
-    
-    //     .row>* {
-    //       flex-shrink: 0;
-    //       width: 100%;
-    //       max-width: 100%;
-    //       padding-right: calc(var(--bs-gutter-x) * .5);
-    //       padding-left: calc(var(--bs-gutter-x) * .5);
+// ...existing code...
     //       margin-top: var(--bs-gutter-y);
     //     }
     
@@ -717,1039 +440,12 @@ export class TemplatesService {
     //     </div>
     //   </body>
     // </html>    
-    // `
 
-    return ``
+// Invalid HTML/CSS/JSX-like code removed for TypeScript compatibility
   }
 
-
-  public formatWorkExperienceDevResume(items: Experience[]): string {
-    return items.map((item: Experience) => `
-    <div class="item mb-3">
-    <div class="item-heading row align-items-center mb-2">
-        <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">${item.position_title}</h4>
-        <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">${ item.company_name} | ${item.start_date} - ${item.end_date}</div>
-        
-    </div>
-    <div class="item-content">
-        <ul class="resume-list">
-        </ul>
-    </div>
-    </div><!--//item-->
-    `).join('');
-  }
-
-  public formatListItems(items : String[]) : string {
-    return items.map((item : String)=> `
-    <li style="margin: 5px 0; font-size: 12px">${item}</li>
-    `).join('');
-  }
-
-    public formatSkillListItems(items : Skill[]) : string {
-    return items.map((item : Skill)=> `
-    <li style="margin: 5px 0; font-size: 12px">${item.name}</li>
-    `).join('');
-  }
-
-  public formatProjectDevResume(items : Project[]) : string{
-    return items.map((item : Project)=> `
-    <div class="item mb-3" style="padding-bottom : 5px">
-    <div class="item-heading row align-items-center mb-2">
-        <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">${item.project_name}</h4>                        
-    </div>
-    <div class="item-content">
-        <p>${item.description}</p>
-        <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end"><b>Technologies :</b> ${item.technologies_used}</div>  
-    </div>
-    </div><!--//item-->
-    `).join('');
-  }
-
-  public formatEductionDevResume(items : Education[]) : string{
-    return items.map((item : Education)=> `
-    <li class="mb-3">
-        <div class="resume-degree font-weight-bold">${item.degree} in ${item.field_of_study}</div>
-        <div class="resume-degree-org text-muted">${item.school_name}</div>
-        <div class="resume-degree-time text-muted">${item.graduation_date}</div>
-    </li>
-    `).join('');
-  }
-
-  private formatAwardDevResume(items : Award[]) : string{
-    return items.map((item : Award)=> `
-    <li class="mb-3">
-        <div class="font-weight-bold">${item.award_name}</div>
-        <div class="text-muted">${item.issuing_organization} (${item.date_received})</div>
-    </li>
-    `).join('');
-  }
-
-  private formatLanguageDevResume(items : Language[]) : string{
-    return items.map((item : Language)=> `
-    <li class="mb-2">${item.language_name} <span class="text-muted">(${item.proficiency_level})</span></li>
-    `).join('');
-  }
-
-
-  getDefaultResumeTemplate(resumeForm : Resume){
-
-    return `
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume</title>
-  <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body{
-        background-color: #fff;
-        font-family: "Manrope", sans-serif !important;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .resume-contact-us{
-  text-align: left !important;
-  margin-bottom: 15px;
-  padding: 8px 16px;
-  padding-left: 0px;
-  .profile-full-name{
-    white-space:0 pre-wrap;
-    padding-bottom: 0px;
-    font-family: 'Poppins', sans-serif !important;
-    text-transform: uppercase;
-    // font-size: 34px;
-    font-weight: 500 !important;
-    font-size: 2rem;
-    margin-bottom: 4px;
-    text-align: left;
-  }
-a{
-  color: dodgerblue;
-}
-
-  .profile-sub-title{
-    
-    padding-bottom: 4px;
-    // font-family: Rubik, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    margin-bottom: 2px !important;
-    text-align: left;
-    width: 100%;
-    display: block;
-  }
-  .profile-contact-details-list{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: left;
-    font-size: 0.9rem !important;
-      li{
-        margin: 0 7px;
-        i{
-          color:  rgb(185, 185, 185);
-          margin-right: 6px;
-        }
-        span{
-            color: rgb(43, 49, 51) !important;
-        }
-
-        a{
-          padding: 0px !important;
-          
-          span{
-            color: rgb(43, 49, 51) !important;
-        }
-        }
-      }
-  }
-}
-
-
-.course-work{
-  padding: 0.2rem;
-   text-align: left;
-  .course-work-section-title{
-    font-weight: 400;
-    color: black;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(101, 105, 109, .5);
-    
-    padding-bottom: 1px;
-    // font-family: Rubik, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
-    font-size: 12px;
-    width: 100%;
-    display: block;
-    text-align: left;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .course-work-section-content{
-    border-radius: 5px;
-    color: black;
-    text-align: left;
-
-  .qualification-name{
-    
-    color: black;
-    font-size: 12px;
-    font-weight: 500 !important;
-  }
-
-  .university-name{
-    
-    color: black;
-    font-size: 12px !important;
-  }
-
-  .course-work-list{
-    display: flex;
-    flex-wrap: wrap;
-    font-size: 12px;
-    text-align:left;
-
-    .course-work-lisit-item{
-      flex: 0 0 25%;
-      font-size: 12px;
-    }
-  }
-}
-
-}
-
-.resume-summary{
-  padding: 0.2rem;
-  text-align: left;
-  .summary-section-title{
-    font-weight: 400;
-    color: black;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(101, 105, 109, .5);
-    
-    padding-bottom: 1px;
-    font-size: 1rem;
-    width: 100%;
-    display: block;
-    text-align: left;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .resume-summary{
-    
-    // font-family: Inter, Arial, Helvetica, "Noto Sans Devanagari", "Noto Sans CJK SC Thin", "Noto Sans SC", "Noto Sans Hebrew", sans-serif;
-    text-align: left;
-    font-size: 1rem;
-    padding: 8px 16px;
-    font-family: 'Poppins', sans-serif ;
-    color: rgb(17, 17, 17);
-  }
-}
-
-.skill-section{
-  padding: 0.2rem;
-  text-align: left;
-  .skills-section-title{
-    font-weight: 400;
-    color: black;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(101, 105, 109, .5);
-    
-    padding-bottom: 1px;
-    font-size: 1rem;
-    width: 100%;
-    display: block;
-    text-align: left;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .skills-section-content{
-    padding: 8px 16px;
-    border-radius: 5px;
-    color: black;
-    text-align: left;
-
-    .skills-list{
-      list-style:none; 
-      font-size: 1rem;
-      text-align:left;
-
-      .skills-list-item{
-        font-size: 1rem;
-      }
-    }
-
-  }
-
-}
-.opacity-50{
-  opacity: 0.5;
-}
-
-.opacity-100{
-  opacity: 1;
-}
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header class="trigger-area resume-contact-us" >
-      <div>
-          <h1 class="profile-full-name" id="resumeName">${resumeForm.contact.fname + ' ' + resumeForm.contact.lname}</h1>
-          <span class="profile-sub-title">PMP Certified Manager | Enterprise SaaS | Strategy Development</span>
-      </div>
-      <div>
-            <ul class="profile-contact-details-list">
-                ${resumeForm.contact.phone_number.length > 0?
-                `<li><i class="fa fa-phone" ></i> <span style="margin-right:12px">${resumeForm.contact.phone_number}</span></li>`:''
-                }
-                ${resumeForm.contact.email.length > 0?
-                `<li><i class="fa fa-envelope" ></i><span style="margin-right:12px">${resumeForm.contact.email}</span></li>`:''
-                }
-                ${resumeForm.contact.linkedIn_profile.length > 0?
-                `<li> <a href="${resumeForm.contact.linkedIn_profile}"> 
-                    <span style="margin-right:12px"> ${resumeForm.contact.linkedIn_profile}</span> </a>
-                </li>`:''
-                }
-                ${resumeForm.contact.github_profile.length > 0?
-                `<li> <a  href="${resumeForm.contact.github_profile}"> 
-                    <span style="margin-right:12px">${resumeForm.contact.github_profile}</span></a>
-                </li>`:''
-                }
-            </ul>
-      </div>
-    </header>
-
-    ${resumeForm.profileSummary.profile_summary.length > 0?
-      `<section class="trigger-area resume-summary"  >
-        <span class="summary-section-title">Summary</span>
-          <p class="resume-summary" >${resumeForm.profileSummary.profile_summary}</p>
-      </section>` : ''
-    }
-
-    ${resumeForm.education.length > 0?
-      `<section  class="trigger-area resume-education">
-        <span class="education-section-title">Education</span>
-         ${this.formatDefaultEducation(resumeForm.education)}
-      </section>` : ''
-    }
-
-    ${resumeForm.courseWork.length > 0?
-      `<section  class="trigger-area course-work">
-        <span class="course-work-section-title">Relevant Coursework</span>
-        <div  class="course-work-section-content">
-        <ul class="course-work-list">
-           ${this.formatDefaultCourseWork(resumeForm.courseWork)}
-        </ul>
-        </div>
-      </section> ` : ''
-    }
-
-
-    ${resumeForm.skill.length > 0?
-      `<section  class="trigger-area skill-section">
-        <span class="skills-section-title">Technical Skills</span>
-        <div class="template1-section-content ">
-          <ul  class="skills-list">
-            ${this.formatDefaultSkill(resumeForm.skill)}
-          </ul>
-         
-        </div>
-      </section>`:''
-    }
-
-    ${resumeForm.project.length > 0?
-      `<section style="padding: 0.2rem;">
-        <span class="template1-section-title">Projects</span>
-          ${this.formatDefaultProject(resumeForm.project)}
-      </section>`:''
-    }
-
-    ${resumeForm.experience.length > 0?
-      `<section style="padding: 0.2rem;">
-        <span class="template1-section-title">Experience</span>
-          ${this.formatDefaultExperience(resumeForm.experience)}
-      </section>` : ''
-    }
-
-    ${resumeForm.certification.length > 0?
-      `<section style="padding: 0.2rem;">
-        <span class="template1-section-title">Certifications</span>
-        ${this.formatCertificationListItems(resumeForm.certification)}
-      </section>` : ''
-    }
-  </div>
-</body>
-</html>
-
-    `
-  }
-
-
-  public formatDefaultEducation(items : Education[]) : string{
-    return items.map((item : Education)=> 
-    `
-    <div class="education-section-content" style="margin:12px 0;margin-bottom:0">
-      <div style="display: flex;justify-content: space-between;padding:0;margin:0;margin-bottom:5px">
-        <div style="flex: 1;text-align: left;padding:0;margin:0">
-            <p class="qualification-name" style="font-size:12px">${item.degree}, ${item.field_of_study}</p>
-        </div>
-        <div style="flex: 1;text-align: right;padding:0;margin:0">
-            <p style="font-size: 12px;padding:0;margin:0;color : black">${item.school_location}</p></div>
-        </div>
-      <div style="display: flex;justify-content: space-between;padding:0;margin:0;margin-bottom:5px">
-        <div style="flex: 1;text-align: left;padding:0;margin:0">
-          <p class="university-name">${item.school_name}</p></div>
-        <div style="flex: 1;text-align: right;padding:0;margin:0">
-          <p style="font-size:12px;padding:0;margin:0;color: black;">${item.graduation_date}</p></div>
-      </div>
-      <div style="padding:0;margin:0;">
-        <div style="flex: 1;text-align: left;padding:0;margin:0">
-          <p style="font-size: 12px;padding:0;margin:0; color: black;">CGPA - ${item.gpa}</p></div>
-      </div>
-
-    </div>
-    `).join('');
-  }
-
-  public formatDefaultCourseWork(items : courseWork[]) : string{
-    return items.map((item : courseWork)=> `
-    ${item.courseworkname != ''?`<li class="course-work-lisit-item">
-      <div class="course-name" style="font-weight: 600;">${item.courseworkname}</div>
-      ${item.institution ? `<div class="course-institution" style="font-size: 0.9em; color: #666; font-style: italic;">${item.institution}</div>` : ''}
-    </li>`:''}
-    `).join('');
-  }
-
-    public formatDefaultSKillWork(items : Skill[]) : string{
-    return items.map((item : Skill)=> `
-    ${item.name != ''?`<li class="course-work-lisit-item">${item.name}</li>`:''}
-    `).join('');
-  }
-
-
-  public formatDefaultSkill(items : Skill[]) : string{
-    return items.map((item : Skill)=> `
-    ${item.name != ''?`<li class="skills-list-item">${item.name}</li>`:''}
-    `).join('');
-  }
-
-  public formatDefaultProject(items : Project[]) : string{
-    return items.map((item : Project)=> `
-    <div  class="template1-section-content trigger-area" style="margin-top:15px">
-            <div style="padding:0;margin:0">
-              <div style="display: flex;justify-content: space-between;font-size: 12px">
-                <a href="${item.project_link}">${item.project_name}</a>
-            </div>
-            <p style="font-size: 12px;color: black;padding:0;margin:0;margin-top:5px">${item.technologies_used}</p>
-            <div style="padding: 0;margin: 0;font-size: 12px;color: black;">
-              <ul style="margin-top:5px;padding-top:0;">
-              </ul>
-            </div>
-            </div>
-        </div>
-    `).join('');
-  }
-
-  public formatDefaultExperience(items : Experience[]) : string{
-    return items.map((item : Experience)=> `
-    <div class="template1-section-content trigger-area" style="margin-top:15px">
-    <div>
-      <div style="display: flex;justify-content: space-between;font-size: 12px;padding:0;margin:0"><span style="flex: 1;text-align: left;font-size: 12px;color: black;">${item.company_name}</span><span style="flex: 1;text-align: right;color: black;font-size:12px">${item.start_date} - ${item.end_date}</span></div>
-      <p style="font-size: 12px;color: black;padding:0;margin:0;margin-top:5px">${item.position_title}</p>
-      <div style="padding: 0;margin: 0;font-size: 12px;color: black;">
-        <ul style="margin-top:5px;padding-top:0;">
-        </ul>
-      </div>
-    </div>
-</div>
-    `).join('');
-  }
-
-
-
-  getTemplate1HTMLText(resumeForm : Resume){
-
-    return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <title>Resume</title>
-    <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
-    <style>
-    .container {
-      margin: auto;
-      position: relative;
-      text-align: start !important;
-      }
-    .resume-contact-us{
-    text-align: center;
-    margin-bottom: 15px;
-  
-    }
-
-     .profile-contact-details-list{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: left;
-    font-size: 12px !important;
-      li{
-        margin: 0 7px;
-        i{
-          color:  rgb(185, 185, 185) !important;
-          margin-right: 6px;
-        }
-        span{
-            color: black;
-        }
-
-        a{
-          padding: 0px !important;
-        }
-      }
-    }
-
-    .profile-full-name{
-    padding-bottom: 0px;
-    font-family: 'Poppins', sans-serif;
-    text-transform: uppercase;
-    font-weight: 500 !important;
-    font-size: 24px;
-    margin-bottom: 4px;
-    text-align: left;
-    }
-
-    .profile-sub-title{
-    
-    padding-bottom: 4px;
-    font-size: 12px;
-    font-weight: 400 !important;
-    margin-bottom: 2px !important;
-    text-align: left;
-    width: 100%;
-    display: block;
-    }
-
-
-    .education-section-content{
-        border-radius: 5px;
-        color: black;
-        text-align: left;
-        padding:0;
-        margin:0;
-        margin-bottom:15px;
-    }
-
-.education-section-title{
-      font-weight: 600;
-      color: black;
-      text-transform: uppercase;
-      border-bottom: 1px solid rgba(101, 105, 109, .5);
-      
-      padding-bottom: 1px;
-      font-size: 12px;
-      width: 100%;
-      display: block;
-      text-align: left;
-      font-family: 'Poppins', sans-serif;
-    }
-
-   .qualification-name{
-        
-        color: black;
-        font-size: 12px;
-        font-weight: 500 !important;
-        padding:0;
-        margin:0
-      }
-
-      .university-name{
-        
-        color: black;
-        font-size: 12px !important;
-        padding:0;
-        margin:0
-      }
-
-      .course-work-section-title{
-    font-weight: 600;
-    color: black;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(101, 105, 109, .5);
-    
-    padding-bottom: 1px;
-    font-size: 12px;
-    width: 100%;
-    display: block;
-    text-align: left;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .qualification-name{
-    
-    color: black;
-    font-size: 12px;
-    font-weight: 500 !important;
-  }
-
-  .course-work-lisit-item{
-      flex: 0 0 25%;
-      font-size: 12px;
-      padding-bottom:5px !important;
-    }
-
-    .course-work-list{
-    display: flex;
-    flex-wrap: wrap;
-    font-size: 12px;
-    text-align:left;
-
-
-  }
-
-  .course-work-section-content{
-    border-radius: 5px;
-    color: black;
-    text-align: left;
-}
-
-.summary-section-title{
-    font-weight: 600;
-    color: black;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(101, 105, 109, .5);
-    padding-bottom: 1px;
-    font-size: 12px;
-    width: 100%;
-    display: block;
-    text-align: left;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .resume-summary{
-    text-align: left;
-    font-size: 12px;
-    font-family: 'Poppins', sans-serif ;
-    color: rgb(17, 17, 17);
-  }
-
-
-.skills-section-title{
-    font-weight: 600;
-    color: black;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(101, 105, 109, .5);
-    
-    padding-bottom: 1px;
-    font-size: 12px;
-    width: 100%;
-    display: block;
-    text-align: left;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .skills-list-item{
-        font-size: 12px;
-        color: black;
-        margin-bottom:5px;
-      }
-
-      .skills-list{
-      list-style:none; 
-      font-size: 12px;
-      text-align:left;
-
-      
-    }
-
-    .skills-section-content{
-    border-radius: 5px;
-    color: black;
-    text-align: left;
-    }
-
-
-    .opacity-50{
-    opacity: 0.5;
-    }
-
-    .opacity-100{
-    opacity: 1;
-    }
-    .education-section-title{
-      font-weight: 600;
-      color: black;
-      text-transform: uppercase;
-      border-bottom: 1px solid rgba(101, 105, 109, .5);
-      padding-bottom: 1px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 12px;
-      width: 100%;
-      display: block;
-      text-align: left;
-      font-family: 'Poppins', sans-serif;
-    }
-
-     .qualification-name{
-        color: black;
-        font-size: 12px;
-        font-weight: 500 !important;
-      }
-
-      .university-name{
-       
-        color: black;
-        font-size: 12px;
-        
-      }
-
-    .resume-education{
-     text-align: left;
-     margin-bottom:12px;
-    }
-     .qualification-name, .university-name, .resume-summary, .skills-list-item {
-  font-size: 12px !important;
-}
-  .profile-contact-details-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .profile-contact-details-list li {
-            margin-right: 15px;
-            font-size: 12px;
-        }
-
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header class="trigger-area resume-contact-us" >
-      <div>
-          <h1 class="profile-full-name" id="resumeName">${resumeForm.contact.fname + ' ' + resumeForm.contact.lname}</h1>
-          <span class="profile-sub-title">${resumeForm.contact.subTitle}</span>
-      </div>
-      <div>
-            <ul class="profile-contact-details-list">
-            ${resumeForm.contact.phone_number.length > 0 ? `<li>Phone: ${resumeForm.contact.phone_number}</li>` : ''}
-            ${resumeForm.contact.email.length > 0 ? `<li>Email: ${resumeForm.contact.email}</li>` : ''}
-            ${resumeForm.contact.linkedIn_profile.length > 0 ? `<li>LinkedIn: <a href="${resumeForm.contact.linkedIn_profile}">Profile</a></li>` : ''}
-            ${resumeForm.contact.github_profile.length > 0 ? `<li>GitHub: <a href="${resumeForm.contact.github_profile}">Profile</a></li>` : ''}
-           
-        </ul>
-      </div>
-    </header>
-
-    ${resumeForm.profileSummary.profile_summary.length > 0?
-      `<section class="trigger-area resume-summary"  >
-        <span class="summary-section-title" style="margin:0px;margin-bottom:10px;padding:0px">Summary</span>
-          <p class="resume-summary" >${resumeForm.profileSummary.profile_summary}</p>
-      </section>` : ''
-    }
-
-    ${resumeForm.education.length > 0?
-      `<section  class="trigger-area resume-education">
-        <span class="education-section-title">Education</span>
-         ${this.formatDefaultEducation(resumeForm.education)}
-      </section>` : ''
-    }
-
-    ${resumeForm.courseWork.length > 0?
-      `<section  class="trigger-area course-work">
-        <span class="course-work-section-title">Relevant Coursework</span>
-        <div  class="course-work-section-content">
-        <ul class="course-work-list" style="padding-left:18px">
-           ${this.formatDefaultCourseWork(resumeForm.courseWork)}
-        </ul>
-        </div>
-      </section> ` : ''
-    }
-
-
-    ${resumeForm.skill.length > 0?
-      `<section  class="trigger-area skill-section">
-        <span class="skills-section-title">Technical Skills</span>
-         <div  class="course-work-section-content">
-          <ul  class="course-work-list" style="padding-left:18px">
-            ${this.formatDefaultSKillWork(resumeForm.skill)}
-          </ul>
-         
-        </div>
-      </section>`:''
-    }
-
-    ${resumeForm.project.length > 0?
-      `<section>
-        <span class="course-work-section-title">Projects</span>
-          ${this.formatDefaultProject(resumeForm.project)}
-      </section>`:''
-    }
-
-    ${resumeForm.experience.length > 0?
-      `<section>
-        <span class="course-work-section-title">Experience</span>
-          ${this.formatDefaultExperience(resumeForm.experience)}
-      </section>` : ''
-    }
-
-    ${resumeForm.certification.length > 0?
-      `<section style="color: black !important;margin-top:10px">
-        <span class="course-work-section-title">Certifications</span>
-        ${this.formatCertificationListItems(resumeForm.certification)}
-      </section>` : ''
-    }
-     ${resumeForm.achievementBulletPoints.ach.length > 0?
-      `<section style="color: black !important;">
-        <span class="course-work-section-title">Achievements</span>
-      </section>` : ''
-    }
-  </div>
-</body>
-</html>
-
-    `
-  }
-
-  getTemplate2HTMLText(resume : Resume){
-    return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Resume</title>
-      <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
-      <style>
-      .resume-container {
-      margin: auto;
-      position: relative;
-      text-align: start !important;
-      }
-
-
-.header {
-    text-align: left;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-}
-
-.header h1 {
-    margin: 0;
-    color: black;
-    font-size: 24px;
-    font-weight: 500;
-    margin-bottom:5px;
-}
-
-.contact-details {
-   font-weight: 600;
-    color: black;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(101, 105, 109, .5);
-    padding-bottom: 1px;
-    font-size: 12px;
-    width: 100%;
-    display: block;
-    text-align: left;
-    font-family: 'Poppins', sans-serif;
-}
-
-.profile-contact-details-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .profile-contact-details-list li {
-            margin-right: 15px;
-            font-size: 12px;
-        }
-
-
-.icon {
-    color: black;
-    font-size: 12px;
-}
-
-.summary {
-    margin-top: 15px;
-}
-
-.summary h2 {
-    margin: 0;
-    margin-bottom: 5px;
-    font-size: 12px;
-    padding: 0;
-    font-weight: 600 !important;
-}
-
-.summary p {
-    font-size: 12px;
-    margin: 0;
-}
-
-.experience,
-.project,
-.education,
-.skills {
-    margin-top: 12px;
-}
-
-.experience h2,
-.project h2,
-.education h2,
-.skills h2 {
-    margin: 0;
-    font-size: 12px;
-    margin-bottom: 5px;
-    font-weight: 600 !important;
-}
-
-.experience-details,
-.project-details,
-.education-details {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin :0;
-    // margin-top: 12px;
-}
-
-.education-details{
-margin-bottom:5px}
-
-.experience-details p,
-.project-details p,
-.education-details p,
-.skills-details p{
-    margin: 0;
-    font-size: 12px;
-    margin-right: 12px;
-    opacity: 1;
-}
-  ..project-details a{
-  font-size:12px}
-
-.experience-bullets,
-.project-bullets,
-.skills-bullets {
-    // margin-top: 12px;
-}
-
-.experience-bullets ul,
-.project-bullets ul {
-    list-style-type: disc;
-    margin-top:5px;
-}
-
-.skills-bullets ul{
-list-style-type: disc;
-}
-
-.experience-bullets li,
-.project-bullets li,
-.skills-bullets li{
-    font-size: 12px;
-    margin-bottom: 5px;
-}
-      .course-work-section-content{
-    border-radius: 5px;
-    color: black;
-    text-align: left;
-}
-      .course-work-lisit-item{
-      flex: 0 0 25%;
-      font-size: 12px;
-    }
-
-    .course-work-list{
-    display: flex;
-    flex-wrap: wrap;
-    font-size: 12px;
-    text-align:left;
-
-
-  }
-      </style>
-    </head>
-    <body>
-      <div class="resume-container">
-    <div class="body-container">
-        <header class="trigger-area">
-        <div class="header">
-            <h1>${resume.contact.fname + ' ' + resume.contact.lname}</h1>
-        </div>
-        <div>
-        <ul class="profile-contact-details-list">
-            ${resume.contact.phone_number.length > 0 ? `<li>Phone: ${resume.contact.phone_number}</li>` : ''}
-            ${resume.contact.email.length > 0 ? `<li>Email: ${resume.contact.email}</li>` : ''}
-            ${resume.contact.linkedIn_profile.length > 0 ? `<li>LinkedIn: <a href="${resume.contact.linkedIn_profile}">Profile</a></li>` : ''}
-            ${resume.contact.github_profile.length > 0 ? `<li>GitHub: <a href="${resume.contact.github_profile}">Profile</a></li>` : ''}
-           
-        </ul>
-        </div>
-
-        </header>
-        ${resume.profileSummary.profile_summary.length > 0?`
-        <div class="summary trigger-area" style='margin-top:12px'>
-            <h2>Summary</h2>
-            <p class="resume-summary" >${resume.profileSummary.profile_summary}</p>
-        </div>
-        ` : ''}
-        ${resume.experience.length > 0?`
-        <div class="experience trigger-area">
-            <h2>Experience</h2>
-            ${this.formatTemplate2Experience(resume.experience)}
-        </div>
-        ` : ''}
-        ${resume.project.length > 0?` 
-        <div class="project trigger-area">
-            <h2>Projects</h2>
-            ${this.formatTemplate2Project(resume.project)}
-        </div>
-        ` : ''}
-        ${resume.education.length > 0?`
-        <div class="education trigger-area">
-            <h2>Education</h2>
-            ${this.formatTemplate2Education(resume.education)}
-        </div>
-        ` :''}
-        ${resume.skill.length > 0?`
-        <div class="skills trigger-area">
-            <h2 style="margin:0px;padding:0px">Skills</h2>
-           <div  class="course-work-section-content" style="margin:0px;padding:0px">
-              <ul  class="course-work-list" style="color:black !important; padding-left:17px;margin:0px;padding:0px">
-                ${this.formatDefaultSKillWork(resume.skill)}
-              </ul>
-            
-            </div>
-        </div>
-        ` : ''}
-    </div>
-</div>
-    <body>
-    </html>
-    `
-  }
+  // ...existing code...
+// ...existing code...
 
   formatTemplate2Experience(items : Array<Experience>){
     return items.map((item : Experience)=> `
@@ -1783,266 +479,7 @@ list-style-type: disc;
     `).join('');
   }
 
-  getTemplate3HTMLText(resume : Resume){
-    return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Resume</title>
-      <script defer src="http://Workifence.com:8090/css/fontawesome/js/all.min.js"></script>
-      <link href="http://Workifence.com:8090/css/template-fonts/delloite.css" id="theme-style" rel="stylesheet">
-      <style>
-      .resume-container {
-          margin: auto;
-          background-color: white;
-          text-align: start !important;
-      }
-
-      .header {
-          text-align: center;
-          margin: 0;
-          padding: 0;
-      }
-
-      .header h1 {
-          white-space:0 pre-wrap;
-          padding-bottom: 0px;
-          font-family: 'Tahoma', sans-serif;
-          text-transform: uppercase;
-          color: black;
-          font-size: 20px;
-          font-weight: 500 !important;
-          margin-bottom: 4px;
-      }
-
-      .divider {
-          width: 100%;
-          height: 1px;
-          background-color: rgba(0, 0, 0, 0.4);
-      }
-
-      .contact-details {
-          display: flex;
-          flex-wrap: wrap; /* Allow items to wrap */
-          justify-content: center; /* Center items horizontally */
-          margin: 0;
-          padding: 0;
-      }
-
-      .contact-details p, a {
-          margin: 0;
-          margin-left: 12px;
-          font-size: 12px;
-      }
-
-      .icon {
-          color: black;
-          font-size: 12px;
-      }
-
-      .summary h2 {
-          margin: 0;
-          font-size: 12px;
-          padding: 0;
-          border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-          font-weight:500
-      }
-
-      .summary p {
-          font-size: 12px;
-          margin: 0;
-      }
-
-      .education h2,
-      .skills h2 {
-          margin: 0;
-          font-size: 12px;
-          margin-bottom: 5px;
-          border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-          font-weight:500
-      }
-
-      .education-details{
-          margin-top: 12px;
-      }
-
-      .education-details p,
-      .skills-bullets p {
-          margin: 0;
-          font-size: 12px;
-          opacity: 1;
-      }
-
-      .skills-bullets ul {
-          list-style-type: disc;
-          padding-left: 20px;
-      }
-
-      .skills-bullets li {
-          margin-bottom: 5px;
-      }
-
-      .summary,
-      .experience,
-      .project,
-      .education,
-      .skills
-      {
-        margin-top : 12px;
-      }
-
-    .experience h2,
-    .project h2 {
-      margin: 0;
-      font-size: 12px;
-      margin-bottom: 5px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-      font-weight:500
-    }
-
-    .experience-item-header,
-    .project-item-header {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .experience-item-header-left,
-    .project-item-header-left {
-        flex: 1;
-        text-align: left;
-    }
-
-    .experience-item-header-right,
-    .project-item-header-right {
-        flex: 1;
-        text-align: right;
-    }
-
-    .experience-item-header-left p,
-    .project-item-header-left p,
-    .experience-item-header-right p,
-    .project-item-header-right p {
-        margin: 0;
-        font-size: 12px;
-        opacity: 1;
-    }
-
-    .experience-item-details,
-    .project-item-details {
-        margin-top: 5px;
-        opacity: 1;
-    }
-
-    .experience-bullets,
-    .project-bullets,
-    .skills-bullets {
-        margin-top: 12px;
-    }
-
-    .experience-bullets ul,
-    .project-bullets ul,
-    .skills-bullets ul {
-        list-style-type: disc;
-        padding-left: 18px;
-        margin-top : 5px;
-    }
-
-    .experience-bullets li,
-    .project-bullets li,
-    .skills-bullets li {
-        margin-bottom: 5px;
-        font-size: 12px !important;
-    }
-
-    .course-work-section-content{
-        border-radius: 5px;
-        color: black;
-        text-align: left;
-    }
-
-    .course-work-lisit-item{
-      flex: 0 0 25%;
-      font-size: 12px;
-       padding-bottom:5px !important;
-    }
-
-    .course-work-list{
-      display: flex;
-      flex-wrap: wrap;
-      font-size: 12px;
-      text-align:left;
-    }
-    </style>
-    </head>
-    <body>
-    <div class="resume-container">
-    <div class="body-container">
-        <header class="trigger-area">
-        <div class="header">
-            <h1>${resume.contact.fname + ' ' + resume.contact.lname}</h1>
-        </div>
-        <div class="contact-details">
-            ${resume.contact.email.length > 0?`
-            <i class="fa fa-envelope  icon"></i>
-            <p>${resume.contact.email}</p>
-            ` : ''}
-            ${resume.contact.phone_number.length > 0?`
-            <i class="fa fa-phone icon" style="margin-left: 12px;"></i>
-            <p>${resume.contact.phone_number}</p>
-            ` : ''}
-            ${resume.contact.linkedIn_profile.length > 0?`
-            <i class="fa fa-linkedin icon" style="margin-left: 12px;"></i>
-            <a href="${resume.contact.linkedIn_profile}"> LinkedIn Profile</a>
-            ` : ''}
-            ${resume.contact.github_profile.length > 0?`
-            <i class="fa fa-github icon" style="margin-left: 12px;"></i>
-            <a  href="${resume.contact.github_profile}"> GitHub Profile</a>
-            ` : ''}
-        </div>
-        </header>
-
-        ${resume.profileSummary.profile_summary.length > 0?`
-        <div class="summary trigger-area">
-            <h2>Summary</h2>
-            <p class="resume-summary" style="padding-top:12px !important">${resume.profileSummary.profile_summary}</p>
-        </div>
-        ` : ''}
-        ${resume.experience.length > 0?`
-        <div class="experience trigger-area">
-            <h2>Experience</h2>
-            ${this.formatTemplate3Experience(resume.experience)}
-        </div>
-        ` : ''}
-    ${resume.project.length > 0 ? `
-        <div class="project trigger-area">
-            <h2>Projects</h2>
-            ${this.formatTemplate3Project(resume.project)}
-        </div>
-    ` : ''}
-    ${resume.education.length > 0 ? `
-        <div class="education trigger-area">
-            <h2>Education</h2>
-            ${this.formatTemplate3Education(resume.education)}
-        </div>
-    ` : ''}
-    ${resume.skill.length > 0?`
-        <div class="skills trigger-area">
-            <h2>Skills</h2>
-            <div  class="course-work-section-content">
-              <ul  class="course-work-list" style="color:black !important;padding-left: 18px;">
-                ${this.formatDefaultSKillWork(resume.skill)}
-              </ul>
-            </div>
-        </div>
-    ` : ''}
-    </div>
-</div>
-    <body>
-    </html>
-    `
-  }
+  // Duplicate getTemplate6HTMLText removed
 
 
   formatTemplate3Experience(items : Array<Experience>){
@@ -2302,70 +739,70 @@ list-style-type: disc;
     <div class="body-container">
         <header class="trigger-area header">
         <div class="header-left" style="width:60%;top:0;left:0">
-            <h1 style="font-size: 20px;font-weight:500 !important">${resume.contact.fname + ' ' + resume.contact.lname}</h1>
+            <h1 style="font-size: 20px;font-weight:500 !important">${this.getContact(resume).fname + ' ' + this.getContact(resume).lname}</h1>
         </div>
         <div class="contact-details header-right" style="width:40%">
-            ${resume.contact.email.length > 0?`
-            <div style="width: 100%; float: right;display: flex;justify-content:right;align-items: center;">
-                <i class="fa fa-envelope icon" style="margin-right: 5px;"></i>
-                <p>${resume.contact.email}</p><br>
-            </div>
-            ` : ''}
-            ${resume.contact.phone_number.length > 0? `
-                <div style="width: 100%; float: right;display: flex;justify-content:right;align-items: center;">
-                    <i class="fa fa-phone icon" style="margin-right: 5px;"></i>
-                    <p>${resume.contact.phone_number}</p><br>
-                </div>
-            ` : ''}
-            ${resume.contact.linkedIn_profile.length > 0?`
-                <div style="width: 100%; float: right;display: flex;justify-content:right;align-items: center;">
-                    <i class="fa fa-linkedin icon" style="margin-right: 5px;"></i>
-                    <a href="${resume.contact.linkedIn_profile}" style="color: black;text-decoration: none;"> <p>${resume.contact.linkedIn_profile}</p></a><br>
-                </div>
-            ` : ''}
-            ${resume.contact.github_profile.length > 0?`
-                <div style="width: 100%; float: right;display: flex;justify-content:right;align-items: center;">
-                    <i class="fa fa-github icon" style="margin-right: 5px;"></i>
-                    <a  href="${resume.contact.github_profile}" style="color: black;text-decoration: none;"> <p>${resume.contact.github_profile}</p></a>
-                </div>
-            ` : ''}
+      ${this.getContact(resume).email?.length > 0 ? `
+      <div style="width: 100%; float: right;display: flex;justify-content:right;align-items: center;">
+        <i class="fa fa-envelope icon" style="margin-right: 5px;"></i>
+        <p>${this.getContact(resume).email}</p><br>
+      </div>
+      ` : ''}
+      ${this.getContact(resume).phone_number?.length > 0 ? `
+        <div style="width: 100%; float: right;display: flex;justify-content:right;align-items: center;">
+          <i class="fa fa-phone icon" style="margin-right: 5px;"></i>
+          <p>${this.getContact(resume).phone_number}</p><br>
+        </div>
+      ` : ''}
+      ${this.getContact(resume).linkedIn_profile?.length > 0 ? `
+        <div style="width: 100%; float: right;display: flex;justify-content:right;align-items: center;">
+          <i class="fa fa-linkedin icon" style="margin-right: 5px;"></i>
+          <a href="${this.getContact(resume).linkedIn_profile}" style="color: black;text-decoration: none;"> <p>${this.getContact(resume).linkedIn_profile}</p></a><br>
+        </div>
+      ` : ''}
+      ${this.getContact(resume).github_profile?.length > 0 ? `
+        <div style="width: 100%; float: right;display: flex;justify-content:right;align-items: center;">
+          <i class="fa fa-github icon" style="margin-right: 5px;"></i>
+          <a  href="${this.getContact(resume).github_profile}" style="color: black;text-decoration: none;"> <p>${this.getContact(resume).github_profile}</p></a>
+        </div>
+      ` : ''}
         </div>
         </header>
 
-         ${resume.profileSummary.profile_summary.length > 0?`
-        <div class="summary trigger-area">
-            <h2>Summary</h2>
-            <p class="resume-summary" style="padding-top:12px !important">${resume.profileSummary.profile_summary}</p>
-        </div>
-        ` : ''}
-        ${resume.skill.length > 0?`
-        <div class="skills trigger-area">
-            <h2>Skills</h2>
-            <div  class="course-work-section-content">
-              <ul  class="course-work-list" style="color:black !important;padding-left: 18px;">
-                ${this.formatDefaultSKillWork(resume.skill)}
-              </ul>
-            </div>
-        </div>
-        ` : ''}
-        ${resume.project.length > 0? `
-        <div class="project trigger-area">
-            <h2>Projects</h2>
-            ${this.formatTemplate3Project(resume.project)}
-        </div>
-        ` : ''}
-        ${resume.experience.length > 0? `
-        <div class="experience trigger-area">
-            <h2>Experience</h2>
-            ${this.formatTemplate3Experience(resume.experience)}
-        </div>
-        ` : ''}
-        ${resume.education.length > 0? `
-        <div class="education trigger-area">
-            <h2>Education</h2>
-            ${this.formatTemplate3Education(resume.education)}
-        </div>
-        ` : ''}
+    ${(this.getProfileSummary(resume).profile_summary?.length ?? 0) > 0 ? `
+    <div class="summary trigger-area">
+      <h2>Summary</h2>
+      <p class="resume-summary" style="padding-top:12px !important">${this.getProfileSummary(resume).profile_summary ?? ''}</p>
+    </div>
+    ` : ''}
+    ${(this.getSkills(resume)?.length ?? 0) > 0 ? `
+    <div class="skills trigger-area">
+      <h2>Skills</h2>
+      <div  class="course-work-section-content">
+        <ul  class="course-work-list" style="color:black !important;padding-left: 18px;">
+        ${this.formatDefaultSKillWork(this.getSkills(resume))}
+        </ul>
+      </div>
+    </div>
+    ` : ''}
+    ${(this.getProjects(resume)?.length ?? 0) > 0 ? `
+    <div class="project trigger-area">
+      <h2>Projects</h2>
+      ${this.formatTemplate3Project(this.getProjects(resume))}
+    </div>
+    ` : ''}
+    ${(this.getExperience(resume)?.length ?? 0) > 0 ? `
+    <div class="experience trigger-area">
+      <h2>Experience</h2>
+      ${this.formatTemplate3Experience(this.getExperience(resume))}
+    </div>
+    ` : ''}
+    ${(this.getEducation(resume)?.length ?? 0) > 0 ? `
+    <div class="education trigger-area">
+      <h2>Education</h2>
+      ${this.formatTemplate3Education(this.getEducation(resume))}
+    </div>
+    ` : ''}
     </div>
 </div>
     <body>
@@ -2684,54 +1121,54 @@ list-style-type: disc;
     <div class="body-container">
         <header class="trigger-area">
             <div class="header">
-                <h1>${resume.contact.fname + ' ' + resume.contact.lname}</h1>
+                <h1>${this.getContact(resume).fname + ' ' + this.getContact(resume).lname}</h1>
             </div>
             <div class="contact-details">
-                ${resume.contact.email.length > 0?`
+                ${this.getContact(resume).email.length > 0?`
                 <i class="fa fa-envelope"></i>
-                <p>${resume.contact.email}</p>
+                <p>${this.getContact(resume).email}</p>
                 ` : ''}
-                ${resume.contact.phone_number.length > 0?`
+                ${this.getContact(resume).phone_number.length > 0?`
                 <i class="fa fa-phone" style="margin-left: 12px;"></i>
-                <p>${resume.contact.phone_number}</p>
+                <p>${this.getContact(resume).phone_number}</p>
                 ` : ''}
-                ${resume.contact.linkedIn_profile.length > 0?`
+                ${this.getContact(resume).linkedIn_profile.length > 0?`
                 <i class="fa fa-linkedin" style="margin-left: 12px;"></i>
-                <a href="${resume.contact.linkedIn_profile}"> <p>${resume.contact.linkedIn_profile}</p></a>
+                <a href="${this.getContact(resume).linkedIn_profile}"> <p>${this.getContact(resume).linkedIn_profile}</p></a>
                 ` : ''}
-                ${resume.contact.github_profile.length > 0?`
+                ${this.getContact(resume).github_profile.length > 0?`
                 <i class="fa fa-github" style="margin-left: 12px;"></i>
-                <a  href="${resume.contact.github_profile}"> <p>${resume.contact.github_profile}</p></a>
+                <a  href="${this.getContact(resume).github_profile}"> <p>${this.getContact(resume).github_profile}</p></a>
                   ` : ''}
             </div>
             </header>
 
-        ${resume.profileSummary.profile_summary.length > 0?`
+        ${((resume as any).profileSummary?.profile_summary?.length ?? 0) > 0?`
         <div class="summary trigger-area">
             <h2>Summary</h2>
-            <p class="resume-summary" >${resume.profileSummary.profile_summary}</p>
+            <p class="resume-summary" >${(resume as any).profileSummary?.profile_summary ?? ''}</p>
         </div>
         ` : ''}
-        ${resume.project.length > 0?`
+  ${this.getProjects(resume).length > 0?`
         <div class="project trigger-area">
             <h2>Projects</h2>
-            ${this.formatTemplate5Project(resume.project)}
+            ${this.formatTemplate5Project(this.getProjects(resume))}
         </div>
         ` : ''}
-        ${resume.experience.length > 0?`
+  ${this.getExperience(resume).length > 0?`
         <div class="experience trigger-area">
             <h2>Experience</h2>
-            ${this.formatTemplate5Experience(resume.experience)}
+            ${this.formatTemplate5Experience(this.getExperience(resume))}
         </div>
 
         ` : ''}
-        ${resume.education.length > 0?`
+  ${this.getEducation(resume).length > 0?`
         <div class="education trigger-area">
             <h2>Education</h2>
-            ${this.formatTemplate5Education(resume.education)}
+            ${this.formatTemplate5Education(this.getEducation(resume))}
         </div>
         ` : ''}
-        ${resume.skill.length > 0?`
+  ${(this.getSkills(resume) && this.getSkills(resume).length > 0)?`
         <div class="skills trigger-area">
             <h2 style="margin: 0;padding: 0;">Skills</h2>
             <div style="display: flex;width: 100%;height: auto;margin: 0;padding: 0;">
@@ -2741,7 +1178,7 @@ list-style-type: disc;
                 <div style="width: 82%;margin: 0;padding: 0;height: fit-content;">
                     <div class="skills-bullets">
                         <ul style="list-style-type: none;padding: 0;margin: 0;">
-                            ${this.formatSkillListItems(resume.skill)}
+                            ${this.formatDefaultSKillWork(this.getSkills(resume))}
                         </ul>
                     </div>
                 </div>
@@ -2899,33 +1336,33 @@ ul {
     
 <div class="resume-container">
     <header class="trigger-area">
-        <h1 style="font-weight:300 !important">${resume.contact.fname + ' ' + resume.contact.lname}</h1>
-        <p>${resume.contact.email} | ${resume.contact.phone_number}</p>
-        <p><a href="${resume.contact.linkedIn_profile}"> LinkedIn Profile</a> | <a  href="${resume.contact.github_profile}"> Github Profile</a></p>
+        <h1 style="font-weight:300 !important">${(resume as any).contact.fname + ' ' + (resume as any).contact.lname}</h1>
+        <p>${(resume as any).contact.email} | ${(resume as any).contact.phone_number}</p>
+        <p><a href="${(resume as any).contact.linkedIn_profile}"> LinkedIn Profile</a> | <a  href="${(resume as any).contact.github_profile}"> Github Profile</a></p>
     </header>
     <section class="trigger-area">
         <h2 class="section-header">Objective</h2>
-        <p>${resume.profileSummary.profile_summary}</p>
+        <p>${(resume as any).profileSummary?.profile_summary ?? ''}</p>
     </section>
     <section class="trigger-area">
         <h2 class="section-header">Experience</h2>
-        ${this.formatTemplate7Experience(resume.experience)}
+        ${this.formatTemplate7Experience((resume as any).experience ?? (resume as any).experienceList ?? [])}
     </section>
     <section class="trigger-area">
         <h2 class="section-header">Skills</h2>
          <div  class="course-work-section-content">
               <ul  class="course-work-list" style="color:black !important;padding-left: 23px;">
-                ${this.formatDefaultSKillWork(resume.skill)}
+                ${this.formatDefaultSKillWork(this.getSkills(resume))}
               </ul>
             </div>
     </section>
     <section class="trigger-area">
         <h2 class="section-header">Projects</h2>
-        ${this.formatTemplate7Project(resume.project)}
+        ${this.formatTemplate7Project((resume as any).project ?? (resume as any).projectList ?? [])}
     </section>
     <section class="trigger-area">
         <h2 class="section-header">Education</h2>
-       ${this.formatTemplate7Education(resume.education)}
+      ${this.formatTemplate7Education((resume as any).education ?? (resume as any).educationList ?? [])}
     </section>
 </div>
 
@@ -3013,33 +1450,33 @@ ul {
     <body>
     <div class="resume-container">
     <header class="trigger-area">
-        <h1 style="font-weight: 300 !important">${resume.contact.fname + ' ' + resume.contact.lname}</h1>
-        <p>${resume.contact.email} | ${resume.contact.phone_number}</p>
-        <p><a href="${resume.contact.linkedIn_profile}"> LinkedIn Profile</a> | <a  href="${resume.contact.github_profile}"> Github Profile</a></p>
+        <h1 style="font-weight: 300 !important">${(resume as any).contact.fname + ' ' + (resume as any).contact.lname}</h1>
+        <p>${(resume as any).contact.email} | ${(resume as any).contact.phone_number}</p>
+        <p><a href="${(resume as any).contact.linkedIn_profile}"> LinkedIn Profile</a> | <a  href="${(resume as any).contact.github_profile}"> Github Profile</a></p>
     </header>
     <section class="trigger-area" style="margin:0px;margin-top:20px">
         <h2 style="margin:0px; margin-bottom:12px;">Objective</h2>
-        <p style="margin:0px">${resume.profileSummary.profile_summary}</p>
+        <p style="margin:0px">${(resume as any).profileSummary?.profile_summary ?? ''}</p>
     </section>
     <section class="trigger-area" style="margin:0px;margin-top:12px">
         <h2 style="margin:0px;">Experience</h2>
-        ${this.formatTemplate7Experience(resume.experience)}
+        ${this.formatTemplate7Experience((resume as any).experience ?? (resume as any).experienceList ?? [])}
     </section>
-    <section class="trigger-area" style="margin:0px;margin-top:12px">
+        <section class="trigger-area" style="margin:0px;margin-top:12px">
         <h2 style="margin:0px; margin-bottom:12px;">Skills</h2>
         <div  class="course-work-section-content">
               <ul  class="course-work-list" style="padding-left: 20px;color:#333">
-                ${this.formatDefaultSKillWork(resume.skill)}
+                ${this.formatDefaultSKillWork((resume as any).skill ?? [])}
               </ul>
             </div>
     </section>
     <section class="trigger-area" style="margin:0px;margin-top:12px">
         <h2 style="margin:0px">Projects</h2>
-        ${this.formatTemplate7Project(resume.project)}
+        ${this.formatTemplate7Project((resume as any).project ?? (resume as any).projectList ?? [])}
     </section>
     <section class="trigger-area" style="margin:0px;margin-top:12px">
         <h2 style="margin:0px">Education</h2>
-        ${this.formatTemplate7Education(resume.education)}
+        ${this.formatTemplate7Education((resume as any).education ?? (resume as any).educationList ?? [])}
     </section>
 </div>
 
@@ -3170,33 +1607,33 @@ ul {
     <body>
       <div class="resume-container">
     <div class="header trigger-area">
-        <h1 style="font-weight: 300 !important">${resume.contact.fname + ' ' + resume.contact.lname}</h1>
-        <p>${resume.contact.email} | ${resume.contact.phone_number}</p>
-        <p><a href="${resume.contact.linkedIn_profile}"> LinkedIn Profile</a> | <a  href="${resume.contact.github_profile}"> Github</a></p>
+        <h1 style="font-weight: 300 !important">${(resume as any).contact.fname + ' ' + (resume as any).contact.lname}</h1>
+        <p>${(resume as any).contact.email} | ${(resume as any).contact.phone_number}</p>
+        <p><a href="${(resume as any).contact.linkedIn_profile}"> LinkedIn Profile</a> | <a  href="${(resume as any).contact.github_profile}"> Github</a></p>
     </div>
     <div class="section trigger-area" style="margin:0px;margin-top:12px">
         <div class="section-title" style="font-weight : 500 !important">Professional Summary</div>
-        <p>${resume.profileSummary.profile_summary}</p>
+        <p>${(resume as any).profileSummary?.profile_summary ?? ''}</p>
     </div>
     <div class="section trigger-area" style="margin:0px;margin-top:12px">
         <div class="section-title" style="font-weight : 500 !important">Experience</div>
-        ${this.formatTemplate8Experience(resume.experience)}
+        ${this.formatTemplate8Experience((resume as any).experience ?? (resume as any).experienceList ?? [])}
     </div>
-    <div class="section trigger-area" style="margin:0px;margin-top:12px">
+        <div class="section trigger-area" style="margin:0px;margin-top:12px">
         <div class="section-title" style="font-weight : 500 !important">Technical Skills</div>
        <div  class="course-work-section-content">
               <ul  class="course-work-list" style="color:black !important;padding-left: 40px;">
-                ${this.formatDefaultSKillWork(resume.skill)}
+                ${this.formatDefaultSKillWork((resume as any).skill ?? [])}
               </ul>
             </div>
     </div>
     <div class="section trigger-area" style="margin:0px;margin-top:12px">
         <div class="section-title" style="font-weight : 500 !important">Projects</div>
-        ${this.formatTemplate8Project(resume.project)}
+        ${this.formatTemplate8Project((resume as any).project ?? (resume as any).projectList ?? [])}
     </div>
     <div class="section trigger-area" style="margin:0px;margin-top:12px">
         <div class="section-title" style="font-weight : 500 !important">Education</div>
-        ${this.formatTemplate8Education(resume.education)}
+        ${this.formatTemplate8Education((resume as any).education ?? (resume as any).educationList ?? [])}
     </div>
 </div>
 
@@ -3240,9 +1677,10 @@ ul {
   // ------------------------------------------------- Updated Templates -------------------------------------------
 
 
-  getTemplate1HTMLV1(resumeForm : Resume){
-    let firstHalfSkills = [...resumeForm.skill_v2.slice(0, Math.ceil(resumeForm.skill_v2.length/2))]
-    let secondHalfSkills = [...resumeForm.skill_v2.slice(Math.ceil(resumeForm.skill_v2.length/2),)]
+  getTemplate1HTMLV1(resumeForm : any){
+    const skillV2List: SkillV2[] = (resumeForm as any).skill_v2 ?? (resumeForm.sections?.find((s: any) => s.section === 'SKILLS_CATEGORY')?.items?.map((i: any) => i.data) ?? []);
+    let firstHalfSkills = [...skillV2List.slice(0, Math.ceil(skillV2List.length/2))];
+    let secondHalfSkills = [...skillV2List.slice(Math.ceil(skillV2List.length/2))];
     console.log(resumeForm);
     return `
     <!DOCTYPE html>
@@ -3704,23 +2142,24 @@ ul {
       }
       
   
-      ${(resumeForm.certification.length > 0 && resumeForm.isSectionPresent.isCertification)?
+      ${((resumeForm.sections?.find((s: any) => s.section === 'CERTIFICATIONS')?.items?.length ?? 0) > 0 && resumeForm.isSectionPresent.isCertification)?
         `
         <section class="course-work section-details trigger-area">
             <span class="summary-section-title">Certifications</span>  
-            ${this.formatHTMLTemplate1CertificationV1(resumeForm.certification)}
+            ${this.formatHTMLTemplate1CertificationV1(resumeForm.sections?.find((s: any) => s.section === 'CERTIFICATIONS')?.items?.map((i: any) => i.data) ?? [])}
         </section>
         ` : ''
       }
   
-      ${(resumeForm.achievementBulletPoints.ach.length > 0 && resumeForm.isSectionPresent.isAchievement)?
+      ${((resumeForm.sections?.find((s: any) => s.section === 'ACCOMPLISHMENTS')?.items?.length ?? 0) > 0 && resumeForm.isSectionPresent?.isAchievement)?
         `
         <section  class="trigger-area course-work trigger-area">
           <span class="summary-section-title">Achievements</span>
           <div  class="course-work-section-content">
           <div class="project-content">
             ${
-            resumeForm.achievementBulletPoints.ach
+              // Join the stored achievement descriptions (fall back to empty string if none)
+              (resumeForm.sections?.find((s: any) => s.section === 'ACCOMPLISHMENTS')?.items?.map((i: any) => i.data.description).join('')) ?? ''
             }
             </div>
           </div>
@@ -3897,20 +2336,20 @@ ul {
   }
 
 
-  getTemplate9HTMLV1(resumeForm : Resume){
-    return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <title>Resume</title>
-    <style>
-      .container {
-          margin: 0;
-          //font-family: Arial, sans-serif;
-          color: #333;
-          box-sizing: border-box;
-      }
+  getTemplate9HTMLV1(resumeForm : any){
+      return `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+      <meta charset="UTF-8">
+      <title>Resume</title>
+      <style>
+        .container {
+            margin: 0;
+            //font-family: Arial, sans-serif;
+            color: #333;
+            box-sizing: border-box;
+        }
 
       /* Layout */
       .container {
@@ -4336,10 +2775,23 @@ public formatHTMLTemplate9Education(items : Education[]) : string{
     `).join('');
 }
 
+/**
+ * Provide a default formatter used across several templates to render skill lists.
+ * Accepts arrays of Skill objects or simple string arrays and returns <li> elements.
+ */
+public formatDefaultSKillWork(items: Skill[] | string[] = []): string {
+    const list = (items ?? []);
+    return list.map((s: any) => {
+        const name = typeof s === 'string' ? s : s?.name ?? '';
+        return name ? `<li class="course-work-lisit-item" style="margin:0;padding:0;">${name}</li>` : '';
+    }).join('');
+}
 
 public formatTemplate10HTML(resumeForm : Resume){
-  let firstHalfSkills = [...resumeForm.skill_v2.slice(0, Math.ceil(resumeForm.skill_v2.length/2))]
-  let secondHalfSkills = [...resumeForm.skill_v2.slice(Math.ceil(resumeForm.skill_v2.length/2),)]
+  const skillV2List: SkillV2[] = (resumeForm as any).skill_v2 ?? (resumeForm.sections?.find(s => s.section === 'SKILLS_CATEGORY')?.items?.map(i => i.data) ?? []);
+  let firstHalfSkills = [...skillV2List.slice(0, Math.ceil(skillV2List.length/2))];
+  let secondHalfSkills = [...skillV2List.slice(Math.ceil(skillV2List.length/2))];
+  const contact = resumeForm.sections?.find(s => s.section === 'CONTACT')?.items?.[0]?.data ?? { fname: '', lname: '', address: '', phone_number: '', email: '', linkedIn_profile:'', linkedIn_profile_display_name:'', github_profile:'', github_profile_display_name:'', subTitle: '' };
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -4508,68 +2960,68 @@ public formatTemplate10HTML(resumeForm : Resume){
         }
       </style>
   </head>
-  <body>
       <div class="container">
     
       <div class="header">
-        <div class="name">${resumeForm.contact.fname + ' ' + resumeForm.contact.lname}</div>
+        <div class="name">${contact.fname + ' ' + contact.lname}</div>
         <div class="contact">
-        ${resumeForm.contact.address.length > 0?
+        ${contact.address?.length > 0?
         `
-        <p style="padding-left: 0;">${resumeForm.contact.address}</p>
+        <p style="padding-left: 0;">${contact.address}</p>
         ` : ''
         } 
-        ${resumeForm.contact.phone_number.length > 0 && resumeForm.contact.address.length > 0?
+        ${contact.phone_number?.length > 0 && contact.address?.length > 0?
         `
         <p>|</p>   
         ` : ''
         }
-        ${resumeForm.contact.phone_number.length > 0?
+        ${contact.phone_number?.length > 0?
         `
-        <p>${resumeForm.contact.phone_number}</p>
+        <p>${contact.phone_number}</p>
         ` : ''
         }
-        ${resumeForm.contact.email.length > 0?
+        ${contact.email?.length > 0?
         `
         <p>|</p>
         ` : ''   
         }
-        ${resumeForm.contact.email.length > 0?
+        ${contact.email?.length > 0?
         `
-        <p>${resumeForm.contact.email}</p>
+        <p>${contact.email}</p>
         ` : ''
         }
-        ${resumeForm.contact.linkedIn_profile.length > 0?
-        `
-        <p>|</p>   
-        ` : ''
-        }
-        ${resumeForm.contact.linkedIn_profile.length > 0?
-        `
-        <p><a href="${resumeForm.contact.linkedIn_profile}" target="_blank" style="color: #39A5B7; text-decoration: none;">${resumeForm.contact.linkedIn_profile_display_name}</a></p>
-        ` : ''
-        }
-        ${resumeForm.contact.github_profile.length > 0?
+        ${contact.linkedIn_profile?.length > 0?
         `
         <p>|</p>   
         ` : ''
         }
-        ${resumeForm.contact.github_profile.length > 0?
+        ${contact.linkedIn_profile?.length > 0?
         `
-        <p><a href="${resumeForm.contact.github_profile}" target="_blank" style="color: #39A5B7; text-decoration: none;">${resumeForm.contact.github_profile_display_name}</a></p>
+        <p><a href="${contact.linkedIn_profile}" target="_blank" style="color: #39A5B7; text-decoration: none;">${contact.linkedIn_profile_display_name}</a></p>
         ` : ''
         }
+  ${contact.github_profile?.length > 0?
+  `
+  <p>|</p>   
+  ` : ''
+  }
+  ${contact.github_profile?.length > 0?
+  `
+  <p><a href="${contact.github_profile}" target="_blank" style="color: #39A5B7; text-decoration: none;">${contact.github_profile_display_name}</a></p>
+  ` : ''
+  }
         </div>
     </div>
+    </div>
 
-    ${resumeForm.profileSummary.profile_summary.length > 0 && resumeForm.isSectionPresent?.isSummary?
+    ${(resumeForm.sections?.find(s => s.section === 'PROFILE_SUMMARY')?.items?.[0]?.data?.profile_summary?.length ?? 0) > 0 && resumeForm.isSectionPresent?.isSummary?
       `
       <div class="section">
         <span class="section-title">Profile Summary</span>
         <div class="project-content-container" style="margin:0;padding:0;">
           <div class="project-content">
               ${
-                resumeForm.profileSummary.profile_summary
+                resumeForm.sections.find(s => s.section === 'PROFILE_SUMMARY')?.items?.[0]?.data?.profile_summary
               }
           </div>
           </div>
@@ -4578,58 +3030,59 @@ public formatTemplate10HTML(resumeForm : Resume){
     }
 
 
-      ${resumeForm.education.length > 0 && resumeForm.isSectionPresent?.isEducation?
+    ${(resumeForm.sections?.find(s => s.section === 'EDUCATION')?.items?.length ?? 0) > 0 && resumeForm.isSectionPresent?.isEducation?
+    `
+    <div class="section education">
+      <div class="section-title">Education</div>
+      ${this.formatEducationTemplate10(resumeForm.sections.find(s => s.section === 'EDUCATION')?.items?.map(i => i.data) ?? [])}
+    </div>
+    `: ''
+    }
+
+    ${(resumeForm.sections?.find(s => s.section === 'SKILLS_CATEGORY')?.items?.length ?? 0) > 0 && resumeForm.isSectionPresent?.isSkillV2?
       `
-      <div class="section education">
-          <div class="section-title">Education</div>
-          ${this.formatEducationTemplate10(resumeForm.education)}
+    <div class="section skills">
+      <div class="section-title">Skills</div>
+      <div class="skills-content">
+        <ul class="skill-category">
+        ${this.formatSkillsTemplate10(firstHalfSkills)}
+        </ul>
+        <ul class="skill-category">
+          ${this.formatSkillsTemplate10(secondHalfSkills)}
+        </ul>
       </div>
-      `: ''
-      }
+    </div>
+    ` : ''
+    }
 
-      ${resumeForm.skill_v2.length > 0 && resumeForm.isSectionPresent?.isSkillV2?
-          `
-        <div class="section skills">
-            <div class="section-title">Skills</div>
-            <div class="skills-content">
-                <ul class="skill-category">
-                ${this.formatSkillsTemplate10(firstHalfSkills)}
-                </ul>
-                <ul class="skill-category">
-                    ${this.formatSkillsTemplate10(secondHalfSkills)}
-                </ul>
-            </div>
-        </div>
-        ` : ''
-        }
+    ${(resumeForm.sections?.find(s => s.section === 'ACCOMPLISHMENTS')?.items?.length ?? 0) > 0 && resumeForm.isSectionPresent?.isAccomplishments?
+    `
+    <div class="section education">
+      <div class="section-title">Accomplishments</div>
+      ${this.formatAccomplishmentsTemplate10(resumeForm.sections.find(s => s.section === 'ACCOMPLISHMENTS')?.items?.map(i => i.data) ?? [])}
+    </div>
+    ` : ''
+    }
 
-        ${resumeForm.accomplishment.length > 0 && resumeForm.isSectionPresent?.isAccomplishments?
-        `
-        <div class="section education">
-            <div class="section-title">Accomplishments</div>
-            ${this.formatAccomplishmentsTemplate10(resumeForm.accomplishment)}
-        </div>
-        ` : ''
-        }
-      
+    ${
+      (resumeForm.sections?.find(s => s.section === 'WORK_EXPERIENCE')?.items?.length ?? 0) > 0 && resumeForm.isSectionPresent?.isExperience
+        ? `
+    <div class="section experince trigger-area">
+      <div class="section-title">Experience</div>
+      ${this.formatExperienceTemplate10(resumeForm.sections.find(s => s.section === 'WORK_EXPERIENCE')?.items?.map(i => i.data) ?? [])}
+    </div>
+    ` : ''
+    }
 
-        ${resumeForm.experience.length > 0 && resumeForm.isSectionPresent?.isExperience?
-        `
-        <div class="section experince trigger-area">
-            <div class="section-title">Experience</div>
-            ${this.formatExperienceTemplate10(resumeForm.experience)}
-        </div>
-        ` : ''
-        }
-      
-        ${resumeForm.project.length > 0 && resumeForm.isSectionPresent?.isProject?
-        `
-        <div class="section experince trigger-area">
-            <div class="section-title">Projects</div>
-            ${this.formatProjectTemplate10(resumeForm.project)}
-        </div>
-        ` : ''
-        }
+    ${
+      (resumeForm.sections?.find(s => s.section === 'PROJECT')?.items?.length ?? 0) > 0 && resumeForm.isSectionPresent?.isProject
+        ? `
+    <div class="section experince trigger-area">
+      <div class="section-title">Projects</div>
+      ${this.formatProjectTemplate10(resumeForm.sections.find(s => s.section === 'PROJECT')?.items?.map(i => i.data) ?? [])}
+    </div>
+    ` : ''
+    }
   </div>
   </body>
   </html>

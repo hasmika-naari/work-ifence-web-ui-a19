@@ -48,6 +48,13 @@ export class ResumeTemplate3Component implements OnInit, OnDestroy {
 
   resumeForm: Signal<Resume> = this.userStore.getResumeForm();
 
+  // Helper to get section items by section name
+  getSectionItems(sectionName: string): any[] {
+    const sections = this.resumeForm().sections || [];
+    const section = sections.find(s => s.section === sectionName);
+    return section?.items?.map(i => i.data) ?? [];
+  }
+
   
   @Output() editSection = new EventEmitter<any>();
 
@@ -166,6 +173,8 @@ export class ResumeTemplate3Component implements OnInit, OnDestroy {
   }
 
   addSectionHandler(section : string,selectedJson : any){
+    // This method may need to be updated to use section-based update methods if available
+    // For now, keep as is, but ensure section-based access elsewhere
     if(section === "EDUCATION"){
       this.userStore.updateEducation(selectedJson)
     }
@@ -178,12 +187,12 @@ export class ResumeTemplate3Component implements OnInit, OnDestroy {
     else if(section === "CERTIFICATION"){
       this.userStore.updateCertification(selectedJson);
     }
-    
     this.editSection.emit({section : section})
   }
 
 
   editSectionHandler(section : string, selectedJson : any){
+    // This method may need to be updated to use section-based update methods if available
     if(section === "EDUCATION"){
       this.userStore.updateEducation(selectedJson)
     }
@@ -200,98 +209,48 @@ export class ResumeTemplate3Component implements OnInit, OnDestroy {
   }
 
   checkEducationCondition(){
-      return this.resumeForm().education.filter(obj => obj.isHideSelected === false).length > 0
+  return this.getSectionItems('EDUCATION').filter(obj => obj.isHideSelected === false).length > 0
   }
 
   checkProjectCondition(){
-    return this.resumeForm().project.filter(obj => obj.isHideSelected === false).length > 0
+  return this.getSectionItems('PROJECT').filter(obj => obj.isHideSelected === false).length > 0
   }
 
   checkExperienceCondition(){
-    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false).length > 0
+  return this.getSectionItems('WORK_EXPERIENCE').filter(obj => obj.isHideSelected === false).length > 0
   }
 
   checkCertificationCondition(){
-    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false).length > 0
+  return this.getSectionItems('CERTIFICATION').filter(obj => obj.isHideSelected === false).length > 0
   }
 
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
-    if(section === "EDUCATION"){
-    const array = this.resumeForm().education;
-    const index = array.findIndex(obj => obj.id === id);
+    // Use section-based access and update*Item methods
+    let sectionKey = section;
+    if (section === 'EXPERIENCE') sectionKey = 'WORK_EXPERIENCE';
+    const items = this.getSectionItems(sectionKey);
+    const index = items.findIndex(obj => obj.id === id);
     if (index === -1) {
       console.log("Object with the given id not found");
       return;
     }
-    
     if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
+      [items[index], items[index - 1]] = [items[index - 1], items[index]];
+    } else if (direction === "down" && index < items.length - 1) {
+      [items[index], items[index + 1]] = [items[index + 1], items[index]];
     } else {
       console.log("Move not possible");
     }
-    this.userStore.updateEducationList(array);
-  }
-  else if(section === "PROJECT"){
-    const array = this.resumeForm().project;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
+    // Call the correct update*Item method
+    if (section === 'EDUCATION') {
+      this.userStore.updateEducationItem(items[index], index);
+    } else if (section === 'PROJECT') {
+      this.userStore.updateProjectItem(items[index], index);
+    } else if (section === 'EXPERIENCE') {
+      this.userStore.updateExperienceItem(items[index], index);
+    } else if (section === 'CERTIFICATION') {
+      this.userStore.updateCertificationItem(items[index], index);
     }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateProjectList(array);
-  }
-  else if(section === "EXPERIENCE"){
-    const array = this.resumeForm().experience;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateExperienceList(array);
-  }
-  else if(section === "CERTIFICATION"){
-    const array = this.resumeForm().certification;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateCertificationList(array);
-  }
 
 }
 

@@ -1,29 +1,74 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { UserStoreService } from 'src/app/services/store/user-store.service';
+import { Experience } from 'src/app/services/resume.model';
 
 @Component({
   selector: 'resume-work-experience-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ButtonModule],
   template: `
     <div class="section work-experience">
-      <h3>Work Experience</h3>
-      <div *ngIf="data && data.length; else dummyWork">
-        <div *ngFor="let job of data">
-          <div>{{ job.position_title }} at {{ job.company_name }} ({{ job.start_date }} - {{ job.end_date }})</div>
-          <div>{{ job.description }}</div>
+      <div *ngIf="data && data.length" class="work-experience-list">
+        <div *ngFor="let job of data; let i = index" class="work-experience-item">
+          <div class="work-experience-item-container">
+            <span class="work-experience-item-actions">
+              <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
+              <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete.emit(i)"></button>
+              <button *ngIf="data.length > 1" pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === 0" (click)="moveUp.emit(i)"></button>
+              <button *ngIf="data.length > 1" pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === data.length - 1" (click)="moveDown.emit(i)"></button>
+            </span>
+            <div class="job-header">
+              <div>
+                <div class="job-title">{{ job.position_title }}</div>
+                <div class="company">{{ job.company_name }}</div>
+              </div>
+              <div class="dates">{{ formatDate(job.start_date) }} - {{ formatDate(job.end_date) }}</div>
+            </div>
+            <div class="job-description" [innerHTML]="job.description"></div>
+          </div>
         </div>
       </div>
-      <ng-template #dummyWork>
-        <div>Software Engineer at TechCorp (2022 - 2024)</div>
-        <div>Developed scalable web applications and collaborated with cross-functional teams.</div>
-        <div>Intern at WebStart (2021 - 2022)</div>
-        <div>Assisted in frontend development and testing.</div>
-      </ng-template>
     </div>
   `,
   styleUrls: ['./work-experience-section.component.scss']
 })
+
 export class WorkExperienceSectionComponent {
   @Input() data!: any[];
+  @Output() edit = new EventEmitter<number>();
+  @Output() delete = new EventEmitter<number>();
+  @Output() moveUp = new EventEmitter<number>();
+  @Output() moveDown = new EventEmitter<number>();
+
+  private userStore = inject(UserStoreService);
+
+  // No dummy logic or direct store calls; emit index to parent
+
+  formatDate(date: string): string {
+    if (!date) return '';
+    const presentLabels = ['present', 'current', 'now'];
+    if (presentLabels.includes(date.trim().toLowerCase())) {
+      return 'Present';
+    }
+    // Try to parse as YYYY-MM-DD, YYYY-MM, or MM/YYYY
+    let d: Date | null = null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      d = new Date(date);
+    } else if (/^\d{4}-\d{2}$/.test(date)) {
+      d = new Date(date + '-01');
+    } else if (/^\d{2}[\/-]\d{4}$/.test(date)) {
+      // MM/YYYY or MM-YYYY
+      const [mm, yyyy] = date.split(/[\/-]/);
+      d = new Date(`${yyyy}-${mm}-01`);
+    } else if (/^\d{4}$/.test(date)) {
+      // Just a year
+      return date;
+    }
+    if (d && !isNaN(d.getTime())) {
+      return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+    }
+    return date;
+  }
 }

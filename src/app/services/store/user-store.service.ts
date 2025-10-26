@@ -61,13 +61,22 @@ export class UserStoreService {
         isUserLoggedIn : false,
         isMultipleColumnTemplateSelected : false,
         multipleSectionsList : new Array<Array<SectionDesc>>()
+        ,selectedContact: undefined
       });
+      setSelectedContact(contact: any) {
+        this.state.update((state) => ({
+          ...state,
+          selectedContact: contact
+        }));
+      }
 
     // Ensures profile summary is initialized with a default if missing
     public ensureProfileSummaryInitialized() {
       const resumeForm = this.state().selectedResume?.resumeForm;
       if (!resumeForm) return;
-      if (!resumeForm.profileSummary || !resumeForm.profileSummary.original_summary_html) {
+      const profileSummarySection = resumeForm.sections?.find(s => s.section === 'PROFILE_SUMMARY');
+      const profileSummaryItem = profileSummarySection?.items?.[0]?.data;
+      if (!profileSummaryItem || !profileSummaryItem.original_summary_html) {
         const summary = new ProfileSummary();
         summary.original_summary_html = `
           <ul style="margin-left: 1.2em;">
@@ -84,9 +93,7 @@ export class UserStoreService {
           </ul>
         `;
         summary.profile_summary = '7+ years of experience in designing and developing scalable web applications...';
-        if (typeof this.setSummary === 'function') {
-          this.setSummary(summary);
-        }
+        // Optionally update the section here if needed
       }
     }
 
@@ -283,138 +290,349 @@ export class UserStoreService {
     }
 
     updateEducationItem(edu : Education, index : number){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : 'EDUCATION',
-            isEdit : false,
-            isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , education : [...state.selectedResume.resumeForm.education.slice(0,index), edu, ...state.selectedResume.resumeForm.education.slice(index + 1,)]} }
-            }))
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'EDUCATION') {
+          const items = section.items ? [...section.items] : [];
+          items[index] = { ...items[index], data: edu };
+          return { ...section, items };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'EDUCATION',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
     }
 
     addEducationItem(edu : Education){
-      this.state.update((state)=>({
-          ...state,
-          currentTab : 'EDUCATION',
-          isEdit : false,
-          isChangeInNewResume : true,
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , education : [...state.selectedResume.resumeForm.education, edu]} }
-          }))
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'EDUCATION') {
+          return {
+            ...section,
+            items: [...(section.items ?? []), { id: edu.id, data: edu }]
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'EDUCATION',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
   }
 
   updateAccomplishmentItem(accom : Accomplishment, index : number){
-    this.state.update((state)=>({
-        ...state,
-        currentTab : 'ACCOMPLISHMENT',
-        isEdit : false,
-        isChangeInNewResume : true,
-        selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , accomplishment : [...state.selectedResume.resumeForm.accomplishment.slice(0,index), accom, ...state.selectedResume.resumeForm.accomplishment.slice(index + 1,)]} }
-        }))
+  this.state.update((state) => {
+    const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+      if (section.section === 'ACCOMPLISHMENT') {
+        const items = section.items ? [...section.items] : [];
+        items[index] = { ...items[index], data: accom };
+        return { ...section, items };
+      }
+      return section;
+    });
+    return {
+      ...state,
+      currentTab: 'ACCOMPLISHMENT',
+      isEdit: false,
+      isChangeInNewResume: true,
+      selectedResume: {
+        ...state.selectedResume,
+        resumeForm: {
+          ...state.selectedResume.resumeForm,
+          sections: updatedSections
+        }
+      }
+    };
+  });
 }
 
 
   addAccomplishmentItem(accom : Accomplishment){
-    this.state.update((state)=>({
-        ...state,
-        currentTab : 'ACCOMPLISHMENT',
-        isEdit : false,
-        isChangeInNewResume : true,
-        selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , accomplishment : [...state.selectedResume.resumeForm.accomplishment, accom]} }
-        }))
+  this.state.update((state) => {
+    const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+      if (section.section === 'ACCOMPLISHMENT') {
+        return {
+          ...section,
+          items: [...(section.items ?? []), { id: accom.id, data: accom }]
+        };
+      }
+      return section;
+    });
+    return {
+      ...state,
+      currentTab: 'ACCOMPLISHMENT',
+      isEdit: false,
+      isChangeInNewResume: true,
+      selectedResume: {
+        ...state.selectedResume,
+        resumeForm: {
+          ...state.selectedResume.resumeForm,
+          sections: updatedSections
+        }
+      }
+    };
+  });
 }
 
     setEducationList(eduList: Education[]) {
-      this.state.update((state) => ({
+      this.state.update((state) => {
+        const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+          if (section.section === 'EDUCATION') {
+            return {
+              ...section,
+              items: eduList.map(e => ({ id: e.id, data: e }))
+            };
+          }
+          return section;
+        });
+        return {
+          ...state,
+          currentTab: 'EDUCATION',
+          isEdit: false,
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              sections: updatedSections
+            }
+          }
+        };
+      });
+    }
+
+    addSkill(skills : Array<Skill>){
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'SKILLS') {
+          return {
+            ...section,
+            items: skills.map(s => ({ id: s.name, data: s }))
+          };
+        }
+        return section;
+      });
+      return {
         ...state,
-        currentTab: 'EDUCATION',
+        currentTab: 'SKILLS',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
+    }
+
+    addSkillV2(skill : Array<SkillV2>){
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'SKILLS_V2') {
+          return {
+            ...section,
+            items: skill.map(s => ({ id: s.sub_title, data: s }))
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'SKILLS',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
+    }
+
+    setSkillV2(skill : Array<SkillV2>){
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'SKILLS_V2') {
+          return {
+            ...section,
+            items: skill.map(s => ({ id: s.sub_title, data: s }))
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'SKILLS',
         isEdit: false,
         selectedResume: {
           ...state.selectedResume,
           resumeForm: {
             ...state.selectedResume.resumeForm,
-            education: [...eduList]
+            sections: updatedSections
           }
         }
-      }));
-    }
-
-    addSkill(skills : Array<Skill>){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : 'SKILLS',
-            isEdit : false,
-            isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skill : [...skills]} }
-            }))
-    }
-
-    addSkillV2(skill : Array<SkillV2>){
-      this.state.update((state)=>({
-          ...state,
-          currentTab : 'SKILLS',
-          isEdit : false,
-          isChangeInNewResume : true,
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skill_v2 : [...skill]} }
-          }))
-    }
-
-    setSkillV2(skill : Array<SkillV2>){
-      this.state.update((state)=>({
-          ...state,
-          currentTab : 'SKILLS',
-          isEdit : false,
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skill_v2 : [...skill]} }
-          }))
+      };
+    });
     }
 
     setSkillsBulletPoints(skills: string[]){
-      this.state.update((state)=>({
-          ...state,
-          currentTab : 'SKILLS_BULLET_POINTS',
-          isEdit : false,
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , skillsBulletPoints : [...skills]} }
-          }))
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'SKILLS_BULLET_POINTS') {
+          return {
+            ...section,
+            items: skills.map(s => ({ id: s, data: s }))
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'SKILLS_BULLET_POINTS',
+        isEdit: false,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
     }
 
     updateProjectItem(edu : Project, index : any){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : 'PROJECT',
-            isEdit : false,
-            isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , project : [...state.selectedResume.resumeForm.project.slice(0,index), edu, ...state.selectedResume.resumeForm.project.slice(index + 1,)]} }
-            }))
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'PROJECT') {
+          const items = section.items ? [...section.items] : [];
+          items[index] = { ...items[index], data: edu };
+          return { ...section, items };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'PROJECT',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
     }
 
     addProjectItem(project : Project){
-      this.state.update((state)=>({
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'PROJECT') {
+          return {
+            ...section,
+            items: [...(section.items ?? []), { id: project.id, data: project }]
+          };
+        }
+        return section;
+      });
+      return {
         ...state,
-        currentTab : 'PROJECT',
-        isEdit : false,
-        isChangeInNewResume : true,
-        selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , project : [...state.selectedResume.resumeForm.project, project]} }
-        }))
+        currentTab: 'PROJECT',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
     }
 
-    updateExperienceItem(edu : Experience, index : number){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : 'EXPERIENCE',
-            isEdit : false,
-            isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , experience : [...state.selectedResume.resumeForm.experience.slice(0,index), edu, ...state.selectedResume.resumeForm.experience.slice(index + 1,)]} }
-            }))
-    }
-
-    addExperienceItem(edu : Experience){
-      this.state.update((state)=>({
+    updateExperienceItem(edu: Experience, index: number) {
+      this.state.update((state) => {
+        const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+          if (section.section === 'WORK_EXPERIENCE') {
+            const items = section.items ? [...section.items] : [];
+            items[index] = { id: edu.id, data: edu };
+            return { ...section, items };
+          }
+          return section;
+        });
+        return {
           ...state,
-          currentTab : 'EXPERIENCE',
-          isEdit : false,
-          isChangeInNewResume : true,
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , experience : [...state.selectedResume.resumeForm.experience, edu]} }
-          }))
-  }
+          currentTab: 'EXPERIENCE',
+          isEdit: false,
+          isChangeInNewResume: true,
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              sections: updatedSections
+            }
+          }
+        };
+      });
+    }
+
+    addExperienceItem(edu: Experience) {
+      this.state.update((state) => {
+        const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+          if (section.section === 'WORK_EXPERIENCE') {
+            return {
+              ...section,
+              items: [...(section.items ?? []), { id: edu.id, data: edu }]
+            };
+          }
+          return section;
+        });
+        return {
+          ...state,
+          currentTab: 'EXPERIENCE',
+          isEdit: false,
+          isChangeInNewResume: true,
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              sections: updatedSections
+            }
+          }
+        };
+      });
+    }
 
     addAchievement(ach : AchievementBulletPoints){
         this.state.update((state)=>({
@@ -426,24 +644,57 @@ export class UserStoreService {
             }))
     }
 
-    updateCertificationItem(edu : Certification, index : number){
-      this.state.update((state)=>({
+    updateCertificationItem(edu: Certification, index: number) {
+      this.state.update((state) => {
+        const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+          if (section.section === 'CERTIFICATIONS') {
+            const items = section.items ? [...section.items] : [];
+            items[index] = { id: edu.id, data: edu };
+            return { ...section, items };
+          }
+          return section;
+        });
+        return {
           ...state,
-          currentTab : 'CERTIFICATION',
-          isEdit : false,
-          isChangeInNewResume : true,
-          selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , certification : [...state.selectedResume.resumeForm.certification.slice(0,index), edu, ...state.selectedResume.resumeForm.certification.slice(index + 1,)]} }
-        }))
-      }
+          currentTab: 'CERTIFICATION',
+          isEdit: false,
+          isChangeInNewResume: true,
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              sections: updatedSections
+            }
+          }
+        };
+      });
+    }
 
-      addCertificationItem(edu : Certification){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : 'CERTIFICATION',
-            isEdit : false,
-            isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , certification : [...state.selectedResume.resumeForm.certification, edu]} }
-          }))
+    addCertificationItem(edu: Certification) {
+      this.state.update((state) => {
+        const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+          if (section.section === 'CERTIFICATIONS') {
+            return {
+              ...section,
+              items: [...(section.items ?? []), { id: edu.id, data: edu }]
+            };
+          }
+          return section;
+        });
+        return {
+          ...state,
+          currentTab: 'CERTIFICATION',
+          isEdit: false,
+          isChangeInNewResume: true,
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              sections: updatedSections
+            }
+          }
+        };
+      });
     }
 
 
@@ -518,20 +769,154 @@ export class UserStoreService {
 
 
       updateResumeForm(resume: Resume) {
-        this.state.update((state) => ({
-          ...state,
-          selectedResume : {...state.selectedResume,  resumeForm: resume},
-          isChangeInNewResume : true
-        }));
+        this.state.update((state) => {
+          // Only update the sections array and selectedContact in resumeForm, not replace the whole object
+          const updatedResumeForm = {
+            ...state.selectedResume.resumeForm,
+            sections: resume.sections,
+            selectedContact: resume.selectedContact
+          };
+          return {
+            ...state,
+            selectedResume: {
+              ...state.selectedResume,
+              resumeForm: updatedResumeForm
+            },
+            isChangeInNewResume: true
+          };
+        });
       }
 
-removeSection(section: string) {
-  console.log("Before:", this.state().currentResumeSections);
-  this.state.update((state) => ({
-    ...state,
-    currentResumeSections: state.currentResumeSections.filter(e => e.section !== section)
-  }));
-  console.log("After:", this.state().currentResumeSections);
+removeSection(sectionName: string) {
+  // Instead of removing from array, set isAdded = false in resumeForm.sections
+  this.state.update((state) => {
+    const updatedSections = state.selectedResume.resumeForm.sections.map(section =>
+      section.section === sectionName ? { ...section, isAdded: false } : section
+    );
+    return {
+      ...state,
+      selectedResume: {
+        ...state.selectedResume,
+        resumeForm: {
+          ...state.selectedResume.resumeForm,
+          sections: updatedSections
+        }
+      }
+    };
+  });
+
+  // Clear section data
+  this.clearSectionData(sectionName);
+
+  console.log(`Removed section ${sectionName} from resume (set isAdded = false)`);
+}
+
+private clearSectionData(sectionName: string) {
+  const resume = this.state().selectedResume.resumeForm;
+
+  // Find the section in resume.sections and clear its items
+  const sectionObj = resume.sections?.find((s: any) => s.section === sectionName);
+  if (sectionObj) {
+    if (["PROFILE_SUMMARY", "RELEVANT_COURSEWORK", "SKILLS_BULLET_POINTS", "SKILLS_CATEGORY", "EDUCATION", "PROJECT", "WORK_EXPERIENCE", "CERTIFICATIONS", "ACHIEVEMENTS_BULLET_POINTS", "CERTIFICATIONS_BULLET_POINTS", "ACHIEVEMENT_WITH_DESC"].includes(sectionName)) {
+      sectionObj.items = [];
+    }
+  }
+
+  // Update status flags
+  const status = resume.isSectionPresent;
+  if(sectionName === "PROFILE_SUMMARY") status.isSummary = false;
+  else if(sectionName === "RELEVANT_COURSEWORK") status.isCourseWork = false;
+  else if(sectionName === "SKILLS_BULLET_POINTS" || sectionName === "SKILLS_CATEGORY") status.isSkill = false;
+  else if(sectionName === "EDUCATION") status.isEducation = false;
+  else if(sectionName === "PROJECT") status.isProject = false;
+  else if(sectionName === "WORK_EXPERIENCE") status.isExperience = false;
+  else if(sectionName === "CERTIFICATIONS") status.isCertification = false;
+  else if(sectionName === "ACHIEVEMENTS_BULLET_POINTS") status.isAchievement = false;
+  else if(sectionName === "ACHIEVEMENT_WITH_DESC") status.isAccomplishments = false;
+
+  this.setResumeForm(resume);
+}
+
+addSection(sectionName: string) {
+  // Find the section in resumeForm.sections and set isAdded = true
+  this.state.update((state) => {
+    const updatedSections = state.selectedResume.resumeForm.sections.map(section =>
+      section.section === sectionName ? { ...section, isAdded: true } : section
+    );
+    return {
+      ...state,
+      selectedResume: {
+        ...state.selectedResume,
+        resumeForm: {
+          ...state.selectedResume.resumeForm,
+          sections: updatedSections
+        }
+      }
+    };
+  });
+
+  // Add default data based on section type
+  this.addDefaultDataForSection(sectionName);
+
+  console.log(`Added section ${sectionName} to resume`);
+}
+
+private addDefaultDataForSection(sectionName: string) {
+  const ResumeModel = require('../resume.model');
+
+  switch (sectionName) {
+    case 'CONTACT':
+      // Add default contact data
+      const defaultContact = new ResumeModel.ResumeContact();
+      defaultContact.fname = 'John';
+      defaultContact.lname = 'Doe';
+      defaultContact.email_address = 'john.doe@email.com';
+      defaultContact.phone_number = '+1-555-0123';
+      this.addContact(defaultContact);
+      break;
+    case 'PROFILE_SUMMARY':
+      const defaultSummary = new ResumeModel.ProfileSummary();
+      defaultSummary.profile_summary = 'Experienced professional with a passion for delivering high-quality solutions.';
+      this.addSummary(defaultSummary);
+      break;
+    case 'EDUCATION':
+      // For education, just set up add mode (form will handle adding)
+      break;
+    case 'PROJECT':
+      this.setProject(new ResumeModel.Project());
+      break;
+    case 'WORK_EXPERIENCE':
+      this.setExperience(new ResumeModel.Experience());
+      this.updateExperienceAddMode();
+      break;
+    case 'CERTIFICATIONS':
+      this.setCertification(new ResumeModel.Certification());
+      break;
+    case 'ACHIEVEMENT_WITH_DESC':
+      this.setSelectedAccomplishment(new ResumeModel.Accomplishment());
+      break;
+    case 'ACHIEVEMENTS_BULLET_POINTS':
+      // Handled in comprehensive data loading
+      break;
+    case 'RELEVANT_COURSEWORK':
+      // Reset form will be handled by component
+      break;
+    case 'SKILLS_BULLET_POINTS':
+      const skill1 = new ResumeModel.SkillV2();
+      skill1.sub_title = 'JavaScript';
+      skill1.skills = ['Advanced'];
+
+      const skill2 = new ResumeModel.SkillV2();
+      skill2.sub_title = 'TypeScript';
+      skill2.skills = ['Intermediate'];
+
+      const skill3 = new ResumeModel.SkillV2();
+      skill3.sub_title = 'Angular';
+      skill3.skills = ['Advanced'];
+
+      this.addSkillV2([skill1, skill2, skill3]);
+      break;
+  }
 }
 
 removeSectionFromMultipleSectionsList(section: string) {
@@ -545,18 +930,24 @@ removeSectionFromMultipleSectionsList(section: string) {
 
 reorderSections(fromIndex: number, toIndex: number) {
   this.state.update((state) => {
-    const newSections = [...state.currentResumeSections];
+    const newSections = [...state.selectedResume.resumeForm.sections];
     const [moved] = newSections.splice(fromIndex, 1);
     newSections.splice(toIndex, 0, moved);
     return {
       ...state,
-      currentResumeSections: newSections
+      selectedResume: {
+        ...state.selectedResume,
+        resumeForm: {
+          ...state.selectedResume.resumeForm,
+          sections: newSections
+        }
+      }
     };
   });
 }
 
 moveSectionUp(section: string) {
-  const currentSections = this.state().currentResumeSections;
+  const currentSections = this.state().selectedResume.resumeForm.sections;
   const idx = currentSections.findIndex(s => s.section === section);
   if (idx > 0) {
     this.reorderSections(idx, idx - 1);
@@ -564,7 +955,7 @@ moveSectionUp(section: string) {
 }
 
 moveSectionDown(section: string) {
-  const currentSections = this.state().currentResumeSections;
+  const currentSections = this.state().selectedResume.resumeForm.sections;
   const idx = currentSections.findIndex(s => s.section === section);
   if (idx < currentSections.length - 1) {
     this.reorderSections(idx, idx + 1);
@@ -636,13 +1027,30 @@ moveSectionDown(section: string) {
       }
 
       deleteEducation(edu : Education){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : '',
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm, education : [...state.selectedResume.resumeForm.education.filter(e=>e.id != edu.id)]} },
-            isEdit : false,
-            isChangeInNewResume : true
-          }))
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'EDUCATION') {
+          return {
+            ...section,
+            items: section.items?.filter(item => item.data.id !== edu.id) ?? []
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: '',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
       }
 
       deleteCourseWork(){
@@ -656,90 +1064,138 @@ moveSectionDown(section: string) {
       }
 
       addCourseWork(courseWork : courseWork[]){
-        this.state.update((state)=>(
-          {
-            ...state,
-            currentTab : 'COURSEWORK',
-            selectedResume : {
-              ...state.selectedResume,
-              resumeForm : {
-                ...state.selectedResume.resumeForm,
-                courseWork : [...courseWork]
-              }
-            },
-            isEdit : false,
-            isChangeInNewResume : true
-          }
-        ))
+        this.state.update((state) => {
+            const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+                if (section.section === 'COURSEWORK') {
+                    return {
+                        ...section,
+                        items: courseWork.map(cw => ({ id: String(cw.id), data: cw }))
+                    };
+                }
+                return section;
+            });
+            return {
+                ...state,
+                currentTab: 'COURSEWORK',
+                isEdit: false,
+                isChangeInNewResume: true,
+                selectedResume: {
+                    ...state.selectedResume,
+                    resumeForm: {
+                        ...state.selectedResume.resumeForm,
+                        sections: updatedSections
+                    }
+                }
+            };
+        });
       }
 
       // New methods for courseWork item management
       addCourseWorkItem(course: courseWork) {
-        this.state.update((state) => ({
-          ...state,
-          currentTab: 'COURSEWORK',
-          selectedResume: {
-            ...state.selectedResume,
-            resumeForm: {
-              ...state.selectedResume.resumeForm,
-              courseWork: [...state.selectedResume.resumeForm.courseWork, course]
-            }
-          },
-          isEdit: false,
-          isChangeInNewResume: true
-        }));
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'COURSEWORK') {
+          return {
+            ...section,
+            items: [...(section.items ?? []), { id: String(course.id), data: course }]
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'COURSEWORK',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
       }
 
       updateCourseWorkItem(course: courseWork, index: number) {
-        this.state.update((state) => ({
-          ...state,
-          currentTab: 'COURSEWORK',
-          selectedResume: {
-            ...state.selectedResume,
-            resumeForm: {
-              ...state.selectedResume.resumeForm,
-              courseWork: [
-                ...state.selectedResume.resumeForm.courseWork.slice(0, index),
-                course,
-                ...state.selectedResume.resumeForm.courseWork.slice(index + 1)
-              ]
-            }
-          },
-          isEdit: false,
-          isChangeInNewResume: true
-        }));
+        this.state.update((state) => {
+            const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+                if (section.section === 'COURSEWORK') {
+                    const items = section.items ? [...section.items] : [];
+                    items[index] = { ...items[index], data: course, id: String(course.id) };
+                    return { ...section, items };
+                }
+                return section;
+            });
+            return {
+                ...state,
+                currentTab: 'COURSEWORK',
+                isEdit: false,
+                isChangeInNewResume: true,
+                selectedResume: {
+                    ...state.selectedResume,
+                    resumeForm: {
+                        ...state.selectedResume.resumeForm,
+                        sections: updatedSections
+                    }
+                }
+            };
+        });
       }
 
       deleteCourseWorkItem(course: courseWork) {
-        this.state.update((state) => ({
-          ...state,
-          currentTab: 'COURSEWORK',
-          selectedResume: {
-            ...state.selectedResume,
-            resumeForm: {
-              ...state.selectedResume.resumeForm,
-              courseWork: state.selectedResume.resumeForm.courseWork.filter(c => c.id !== course.id)
-            }
-          },
-          isEdit: false,
-          isChangeInNewResume: true
-        }));
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'COURSEWORK') {
+          return {
+            ...section,
+            items: section.items?.filter(item => item.data.id !== String(course.id)) ?? []
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'COURSEWORK',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
       }
 
       setCourseWorkList(courseList: courseWork[]) {
-        this.state.update((state) => ({
-          ...state,
-          currentTab: 'COURSEWORK',
-          selectedResume: {
-            ...state.selectedResume,
-            resumeForm: {
-              ...state.selectedResume.resumeForm,
-              courseWork: [...courseList]
-            }
-          },
-          isEdit: false,
-          isChangeInNewResume: true
-        }));
+    this.state.update((state: UserState) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'COURSEWORK') {
+          return {
+            ...section,
+            items: courseList.map(cw => ({ id: String(cw.id), data: cw }))
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: 'COURSEWORK',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
       }
 
       // Course work selection methods for editing
@@ -767,182 +1223,189 @@ moveSectionDown(section: string) {
       }
 
       deleteProject(pro : Project){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : '',
-            selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, project : [...state.selectedResume.resumeForm.project.filter(e=> e.id != pro.id)]} },
-            isEdit : false,
-            isChangeInNewResume : true
-          }))
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'PROJECT') {
+          return {
+            ...section,
+            items: section.items?.filter(item => item.data.id !== pro.id) ?? []
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: '',
+        isEdit: false,
+        isChangeInNewResume: true,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
       }
 
       deleteExperience(exp : Experience){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : '',
-            selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, experience : [...state.selectedResume.resumeForm.experience.filter(e=>e.id != exp.id)]} },
-            isEdit : false,
-            isChangeInNewResume : true
-          }))
-      }
+    // ...refactored above...
+  }
 
       deleteCertification(exp : Certification){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : '',
-            selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, certification : [...state.selectedResume.resumeForm.certification.filter(e=>e.id != exp.id)]}},
-            isEdit : false,
-            isChangeInNewResume : true
-          }))
-      }
+    // ...refactored above...
+  }
 
       deleteAccomplishment(exp : Accomplishment){
-        this.state.update((state)=>({
-            ...state,
-            currentTab : '',
-            selectedResume : {...state.selectedResume , resumeForm :{...state.selectedResume.resumeForm, accomplishment : [...state.selectedResume.resumeForm.accomplishment.filter(e=>e.id != exp.id)]}},
-            isEdit : false,
-            isChangeInNewResume : true
-          }))
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+        if (section.section === 'ACCOMPLISHMENT') {
+          return {
+            ...section,
+            items: section.items?.filter(item => item.data.id !== exp.id) ?? []
+          };
+        }
+        return section;
+      });
+      return {
+        ...state,
+        currentTab: '',
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        },
+        isEdit: false,
+        isChangeInNewResume: true
+      };
+    });
+  }
+
+      setEducation(edu: Education) {
+        this.state.update((state) => ({
+          ...state,
+          currentTab: 'EDUCATION',
+          selectedResume: { ...state.selectedResume, selectedEducation: edu },
+          isEdit: false
+        }));
       }
 
-      setEducation(edu : Education){
-        this.state.update((state)=>({
+      setExperience(cer: Experience) {
+        this.state.update((state) => ({
           ...state,
-          currentTab : 'EDUCATION',
-          selectedResume : {...state.selectedResume , selectedEducation : edu},
-          isEdit : false
-        }))
+          currentTab: 'EXPERIENCE',
+          selectedResume: { ...state.selectedResume, selectedExperience: cer },
+          isEdit: false
+        }));
       }
 
-      setExperience(cer : Experience){
-        this.state.update((state)=>({
+      setCertification(cer: Certification) {
+        this.state.update((state) => ({
           ...state,
-          currentTab : 'EXPERIENCE',
-          selectedResume : {...state.selectedResume , selectedExperience :cer },
-          isEdit : false
-        }))
+          currentTab: 'CERTIFICATION',
+          selectedResume: { ...state.selectedResume, selectedCertification: cer },
+          isEdit: false
+        }));
       }
 
-      setCertification(cer : Certification){
-        this.state.update((state)=>({
+      setProject(cer: Project) {
+        this.state.update((state) => ({
           ...state,
-          currentTab : 'CERTIFICATION',
-          selectedResume : {...state.selectedResume , selectedCertification : cer},
-          isEdit : false
-        }))
+          currentTab: 'PROJECT',
+          selectedResume: { ...state.selectedResume, selectedProject: cer },
+          isEdit: false
+        }));
       }
 
-      setProject(cer : Project){
-        this.state.update((state)=>({
+      setSelectedAddress(address: Address) {
+        this.state.update((state) => ({
           ...state,
-          currentTab : 'PROJECT',
-          selectedResume : {...state.selectedResume , selectedProject :cer },
-          isEdit : false
-        }))
+          selectedAddress: address,
+          isEdit: false
+        }));
       }
 
-      setSelectedAddress(address : Address){
-        this.state.update((state)=>({
+      setIsChangeInNewResume(flag: boolean) {
+        this.state.update((state) => ({
           ...state,
-          selectedAddress : address,
-          isEdit : false
-        }))
-      }
-
-      setIsChangeInNewResume(flag : boolean){
-        this.state.update((state)=>({
-          ...state,
-          isChangeInNewResume : flag
-        }))
-      }
-
-      updateEducationList(edu : any[]){
-        this.state.update((state)=>({
-          ...state,
-          selectedResume : {...state.selectedResume, resumeForm : { ...state.selectedResume.resumeForm , education : [...edu]}},
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      updateProjectList(edu : any[]){
-        this.state.update((state)=>({
-          ...state,
-          selectedResume : {...state.selectedResume, resumeForm : { ...state.selectedResume.resumeForm , project : [...edu]}},
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      updateExperienceList(edu : any[]){
-        this.state.update((state)=>({
-          ...state,
-          selectedResume : {...state.selectedResume, resumeForm : { ...state.selectedResume.resumeForm , experience : [...edu]}},
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      updateCertificationList(edu : any[]){
-        this.state.update((state)=>({
-          ...state,
-          selectedResume : {...state.selectedResume, resumeForm : { ...state.selectedResume.resumeForm , certification : [...edu]}},
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      updateAccomplishmentList(accom : Accomplishment[]){
-        this.state.update((state)=>({
-          ...state,
-          selectedResume : {...state.selectedResume, resumeForm : { ...state.selectedResume.resumeForm , accomplishment : [...accom]}},
-          isEdit : false,
-          isChangeInNewResume : true
-        }))
-      }
-
-      editRoundDetailsById(rounds : RoundDetails, index : number){
-        this.state.update((state)=>({
-          ...state,
-          selectedJobApplication : {...state.selectedJobApplication, round_details : [...state.selectedJobApplication.round_details.slice(0,index), rounds, ...state.selectedJobApplication.round_details.slice(index + 1,)]},
-        }))
-      }
-
-      deleteRoundDetailsById(index : number){
-        this.state.update((state)=>({
-          ...state,
-          selectedJobApplication : {...state.selectedJobApplication, round_details : [...state.selectedJobApplication.round_details.slice(0,index), ...state.selectedJobApplication.round_details.slice(index + 1,)]},
-        }))
-      }
-
-      editRoundDetailsByUnqId(rounds : RoundDetails, index : number){
-        this.state.update((state)=>({
-          ...state,
-          selectedJobApplication : {...state.selectedJobApplication, round_details : [...state.selectedJobApplication.round_details.slice(0,index), rounds, ...state.selectedJobApplication.round_details.slice(index + 1,)]},
-        }))
+          isChangeInNewResume: flag
+        }));
       }
 
 
-      addFeedbackDetails(feedback : JobApplicationFeedback){
-        this.state.update((state)=>({
+      editRoundDetailsById(rounds: RoundDetails, index: number) {
+        this.state.update((state) => ({
           ...state,
-          selectedJobApplication : {...state.selectedJobApplication, feedback : feedback},
-        }))
+          selectedJobApplication: {
+            ...state.selectedJobApplication,
+            round_details: [
+              ...state.selectedJobApplication.round_details.slice(0, index),
+              rounds,
+              ...state.selectedJobApplication.round_details.slice(index + 1)
+            ]
+          }
+        }));
       }
 
-      addClientDetails(contact : ClientDetails){
-        this.state.update((state)=>({
+      deleteRoundDetailsById(index: number) {
+        this.state.update((state) => ({
           ...state,
-          selectedJobApplication : {...state.selectedJobApplication, client_details : contact},
-        }))
+          selectedJobApplication: {
+            ...state.selectedJobApplication,
+            round_details: [
+              ...state.selectedJobApplication.round_details.slice(0, index),
+              ...state.selectedJobApplication.round_details.slice(index + 1)
+            ]
+          }
+        }));
       }
 
-      addVendorDetails(contact : VendorDetails){
-        this.state.update((state)=>({
+      editRoundDetailsByUnqId(rounds: RoundDetails, index: number) {
+        this.state.update((state) => ({
           ...state,
-          selectedJobApplication : {...state.selectedJobApplication, vendor_details : contact},
-        }))
+          selectedJobApplication: {
+            ...state.selectedJobApplication,
+            round_details: [
+              ...state.selectedJobApplication.round_details.slice(0, index),
+              rounds,
+              ...state.selectedJobApplication.round_details.slice(index + 1)
+            ]
+          }
+        }));
+      }
+
+
+      addFeedbackDetails(feedback: JobApplicationFeedback) {
+        this.state.update((state) => ({
+          ...state,
+          selectedJobApplication: {
+            ...state.selectedJobApplication,
+            feedback: feedback
+          }
+        }));
+      }
+
+      addClientDetails(contact: ClientDetails) {
+        this.state.update((state) => ({
+          ...state,
+          selectedJobApplication: {
+            ...state.selectedJobApplication,
+            client_details: contact
+          }
+        }));
+      }
+
+      addVendorDetails(contact: VendorDetails) {
+        this.state.update((state) => ({
+          ...state,
+          selectedJobApplication: {
+            ...state.selectedJobApplication,
+            vendor_details: contact
+          }
+        }));
       }
 
       setJobApplication(application: JobApplication) {
@@ -952,7 +1415,7 @@ moveSectionDown(section: string) {
         }));
       }
 
-      addJobApplicationList(list : Array<JobApplication>){
+      addJobApplicationList(list: Array<JobApplication>) {
         this.state.update((state) => ({
           ...state,
           jobApplications: [...list],
@@ -960,40 +1423,46 @@ moveSectionDown(section: string) {
         }));
       }
 
-      setRoundDetails(round : RoundDetails){
+      setRoundDetails(round: RoundDetails) {
         this.state.update((state) => ({
           ...state,
-          selectedRoundDetails : round
+          selectedRoundDetails: round
         }));
       }
 
-      addRoundDetails(round : RoundDetails){
+      addRoundDetails(round: RoundDetails) {
         this.state.update((state) => ({
           ...state,
-          selectedJobApplication : {...state.selectedJobApplication, round_details : [...state.selectedJobApplication.round_details, round]}
+          selectedJobApplication: {
+            ...state.selectedJobApplication,
+            round_details: [
+              ...state.selectedJobApplication.round_details,
+              round
+            ]
+          }
         }));
       }
 
 
 
-      addJobDescriptionAIResponse(res : JobDescriptionAIResponse){
-        this.state.update((state)=>({
-          ...state,
-          jobDescriptionAIResponse : res,
-        }))
-      }
-
-      setAllJobApplicationsCompleteDetails(applications : JobApplicationRequest[]){
+      addJobDescriptionAIResponse(res: JobDescriptionAIResponse) {
         this.state.update((state) => ({
           ...state,
-          jobApplicationsCompleteDetails : applications
+          jobDescriptionAIResponse: res,
         }));
       }
 
-      setLoginProfile(profile : LoginProfile){
+      setAllJobApplicationsCompleteDetails(applications: JobApplicationRequest[]) {
         this.state.update((state) => ({
           ...state,
-          loginProfile : profile
+          jobApplicationsCompleteDetails: applications
+        }));
+      }
+
+      setLoginProfile(profile: LoginProfile) {
+        this.state.update((state) => ({
+          ...state,
+          loginProfile: profile
         }));
       }
 
@@ -1007,106 +1476,87 @@ moveSectionDown(section: string) {
         }));
       }
 
-      setPhoneInLoginProfile(phoneNumber: string) {
+      setResumeDataListItems(items : ResumeListDataItem[]) {
         this.state.update((state) => ({
           ...state,
-          loginProfile: {
-            ...state.loginProfile,
-            phoneNumber: phoneNumber,
-          },
+          resumeListItems: [...items],
         }));
       }
 
-      setBioProfile(profile : BioProfile){
+      addResumeDataListItem(item: ResumeListDataItem) {
         this.state.update((state) => ({
           ...state,
-          bioProfile : profile
+          resumeListItems: [...state.resumeListItems, item],
         }));
       }
 
-      addAddressForm(address : Address){
-        this.state.update((state)=>({
+      updateResumeDataListItem(item: ResumeListDataItem, index: number) {
+        this.state.update((state) => ({
           ...state,
-          addresses : [...state.addresses,  address],
-        }))
+          resumeListItems: [
+            ...state.resumeListItems.slice(0, index),
+            item,
+            ...state.resumeListItems.slice(index + 1)
+          ],
+        }));
       }
 
-      editAddress(address : Address, index : number){
-        this.state.update((state)=>({
+      removeResumeDataListItem(index: number) {
+        this.state.update((state) => ({
           ...state,
-          addresses : [...state.addresses.slice(0,index), address, ...state.addresses.slice(index + 1,)],
-        }))
+          resumeListItems: [
+            ...state.resumeListItems.slice(0, index),
+            ...state.resumeListItems.slice(index + 1)
+          ],
+        }));
       }
 
-      removeAddress(index : number){
-        this.state.update((state)=>({
+      setJobApplicationFlag(flag: boolean) {
+        this.state.update((state) => ({
           ...state,
-          addresses : [...state.addresses.slice(0,index), ...state.addresses.slice(index + 1,)],
-        }))
+          jobApplicationFlag: flag
+        }));
       }
 
-      setResumeDataListItems(items : ResumeListDataItem[]){
-        this.state.update((state)=>({
+      setFilteredResumes(resumes: ResumeListDataItem[]) {
+        this.state.update((state) => ({
           ...state,
-          resumeListItems : [...items],
-        }))
+          filteredResumes: [...resumes]
+        }));
       }
 
-      addResumeDataListItem(item : ResumeListDataItem){
-        this.state.update((state)=>({
+      updateSectionStatus(status: IsSectionPresent) {
+        this.state.update((state) => ({
           ...state,
-          resumeListItems : [...state.resumeListItems, item],
-        }))
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              isSectionPresent: { ...status }
+            }
+          }
+        }));
       }
 
-      updateResumeDataListItem(item : ResumeListDataItem, index : number){
-        this.state.update((state)=>({
+      removeJobApplication(index: number) {
+        this.state.update((state) => ({
           ...state,
-          resumeListItems : [...state.resumeListItems.slice(0,index), item, ...state.resumeListItems.slice(index + 1,)],
-        }))
+          jobApplications: [
+            ...state.jobApplications.slice(0, index),
+            ...state.jobApplications.slice(index + 1)
+          ],
+          filteredJobApplications: [...state.jobApplications]
+        }));
       }
 
-      removeResumeDataListItem(index : number){
-        this.state.update((state)=>({
+      setSelectedAccomplishment(accom: Accomplishment) {
+        this.state.update((state) => ({
           ...state,
-          resumeListItems : [...state.resumeListItems.slice(0,index), ...state.resumeListItems.slice(index + 1,)],
-        }))
-      }
-
-      setJobApplicationFlag(flag : boolean){
-        this.state.update((state)=>({
-          ...state,
-          jobApplicationFlag : flag
-        }))
-      }
-
-      setFilteredResumes(resumes : ResumeListDataItem[]){
-        this.state.update((state)=>({
-          ...state,
-          filteredResumes : [...resumes]
-        }))
-      }
-
-      updateSectionStatus(status : IsSectionPresent){
-        this.state.update((state)=>({
-          ...state,
-          selectedResume : { ...state.selectedResume, resumeForm : {...state.selectedResume.resumeForm, isSectionPresent : {...status}}}
-        }))
-      }
-
-      removeJobApplication(index : number){
-        this.state.update((state)=>({
-          ...state,
-          jobApplications : [...state.jobApplications.slice(0,index), ...state.jobApplications.slice(index + 1,)],
-          filteredJobApplications : [...state.jobApplications]
-        }))
-      }
-
-      setSelectedAccomplishment(accom : Accomplishment){
-        this.state.update((state)=>({
-          ...state,
-          selectedResume : {...state.selectedResume, selectedAccomplishment : accom}
-        }))
+          selectedResume: {
+            ...state.selectedResume,
+            selectedAccomplishment: accom
+          }
+        }));
       }
 
 
@@ -1213,7 +1663,7 @@ moveSectionDown(section: string) {
       }
 
       getCurrentSections() : Signal<SectionDesc[]> {
-        return computed(()=> this.state().currentResumeSections??[]);
+        return computed(()=> this.state().selectedResume.resumeForm.sections??[]);
       }
 
 

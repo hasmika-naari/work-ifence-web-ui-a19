@@ -308,13 +308,13 @@ usaStates: { label: string, value: string }[] = [
     form.userName = this.userAccount().login;
 
     if(this.address().id){
-        this.authService.updateAddress(form).subscribe((e)=>{
-            let index = this.userAddressess().findIndex(obj => obj.id === e.id)
-            this.userStore.editAddress(e, index);
-            this.userStore.setSelectedAddress(new Address());
-            this.formSaved.emit()
-            this.formClosed.emit();
-        })
+    this.authService.updateAddress(form).subscribe((e)=>{
+      let addresses = this.userAddressess().map(obj => obj.id === e.id ? e : obj);
+      this.userStore.updateAddresses(addresses);
+      this.userStore.setSelectedAddress(new Address());
+      this.formSaved.emit()
+      this.formClosed.emit();
+    })
     }
     else{
         this.authService.saveAddress(form).subscribe((e)=>{

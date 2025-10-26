@@ -258,27 +258,32 @@ export class ApplicationListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getUnHideElements(resumeForm : Resume){
-        let resume = new Resume();
-        resume.achievementBulletPoints = resumeForm.achievementBulletPoints;
-        resume.award = resumeForm.award;
-        resume.certification = resumeForm.certification.filter(e=>e.isHideSelected == false)
-        resume.contact = resumeForm.contact;
-        resume.courseWork = resumeForm.courseWork;
-        resume.education = resumeForm.education.filter(e=>e.isHideSelected == false)
-        resume.experience = resumeForm.experience.filter(e=>e.isHideSelected == false)
-        resume.imageBase64Encoded = resumeForm.imageBase64Encoded;
-        resume.interest = resumeForm.interest;
-        resume.language = resumeForm.language;
-        resume.professional_membership = resumeForm.professional_membership;
-        resume.profileSummary = resumeForm.profileSummary;
-        resume.project = resumeForm.project.filter(e=>e.isHideSelected == false)
-        resume.publication = resumeForm.publication;
-        resume.skill = resumeForm.skill;
-        resume.volunteer_experience = resumeForm.volunteer_experience;
-    
-        return resume;
-    
-      }
+                        // Helper to extract section items by section name
+                        const getSectionList = (resume: Resume, sectionName: string) =>
+                            resume.sections?.find((s: any) => s.section === sectionName)?.items?.map((i: any) => i.data) ?? [];
+                        const getSectionData = (resume: Resume, sectionName: string) =>
+                            resume.sections?.find((s: any) => s.section === sectionName)?.items?.[0]?.data;
+
+                        // Return an object with all extracted section data
+                        return {
+                            achievementBulletPoints: getSectionList(resumeForm, 'ACHIEVEMENT_BULLET_POINTS'),
+                            award: getSectionList(resumeForm, 'AWARD'),
+                            certification: getSectionList(resumeForm, 'CERTIFICATION').filter((e: any) => !e.isHideSelected),
+                            contact: getSectionData(resumeForm, 'CONTACT'),
+                            courseWork: getSectionList(resumeForm, 'COURSEWORK'),
+                            education: getSectionList(resumeForm, 'EDUCATION').filter((e: any) => !e.isHideSelected),
+                            experience: getSectionList(resumeForm, 'WORK_EXPERIENCE').filter((e: any) => !e.isHideSelected),
+                            imageBase64Encoded: resumeForm.imageBase64Encoded,
+                            interest: getSectionList(resumeForm, 'INTEREST'),
+                            language: getSectionList(resumeForm, 'LANGUAGE'),
+                            professional_membership: getSectionList(resumeForm, 'PROFESSIONAL_MEMBERSHIP'),
+                            profileSummary: getSectionData(resumeForm, 'PROFILE_SUMMARY'),
+                            project: getSectionList(resumeForm, 'PROJECT').filter((e: any) => !e.isHideSelected),
+                            publication: getSectionList(resumeForm, 'PUBLICATION'),
+                            skill: getSectionList(resumeForm, 'SKILLS'),
+                            volunteer_experience: getSectionList(resumeForm, 'VOLUNTEER_EXPERIENCE'),
+                        };
+                    }
     
 
 

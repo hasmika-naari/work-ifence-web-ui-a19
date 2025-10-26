@@ -514,13 +514,16 @@ export class EducationComponent implements OnInit, OnDestroy {
     education.school_location = this.educationForm.value.school_location?this.educationForm.value.school_location : '';
     education.school_name = this.educationForm.value.school_name?this.educationForm.value.school_name : '';
     education.isDefault = false
+    // Find the EDUCATION section and its items
+    const educationSection = this.sections().find((section: any) => section.section === 'EDUCATION');
+    const educationItems = educationSection?.items || [];
     if(this.selectedEducation().id){
       education.id = this.selectedEducation().id;
-      let index = this.resumeSignalForm().education.findIndex(obj => obj.id === this.selectedEducation().id)
+      const index = educationItems.findIndex((obj: any) => obj.id === this.selectedEducation().id);
       this.userStore.updateEducationItem(education, index);
     }
     else{ 
-      education.id = (this.resumeSignalForm().education.length + 1).toString()
+      education.id = (educationItems.length + 1).toString();
       this.userStore.addEducationItem(education);
     }
     this.userStore.setEducation(new Education());

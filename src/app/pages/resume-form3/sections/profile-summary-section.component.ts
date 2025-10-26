@@ -17,7 +17,9 @@ import { UserStoreService } from 'src/app/services/store/user-store.service';
         </ng-container>
       </div>
       <ng-template #dummySummary>
-        <div [innerHTML]="defaultSummary"></div>
+        <div class="empty-profile-summary-message" style="color: #888; font-style: italic; padding: 8px 0;">
+          No profile summary provided. Add a summary to highlight your background and key skills.
+        </div>
       </ng-template>
     </div>
   `,
@@ -32,8 +34,20 @@ export class ProfileSummarySectionComponent {
   }
 
   get defaultSummary(): string {
-    // Get default summary from store only
+    // Get default summary from PROFILE_SUMMARY section
     const resume = this.userStore.state().selectedResume?.resumeForm;
-    return resume?.profileSummary?.profile_summary || '';
+    const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
+    return section?.items?.[0]?.data?.profile_summary || '';
+  }
+
+  /**
+   * Loads the profile summary data from the store's PROFILE_SUMMARY section.
+   * Returns the data object or an empty object if not found.
+   * This can be used to populate a form for editing.
+   */
+  loadProfileSummaryFromStore(): any {
+    const resume = this.userStore.state().selectedResume?.resumeForm;
+    const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
+    return section?.items?.[0]?.data || {};
   }
 }

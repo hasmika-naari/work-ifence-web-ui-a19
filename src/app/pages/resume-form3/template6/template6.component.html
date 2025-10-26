@@ -1,16 +1,25 @@
 
 <div class="resume-container">
     <header class="trigger-area">
-        <h1 style="margin: 0;padding: 0;font-size: 2rem;">{{resumeForm().contact.fname + ' ' + resumeForm().contact.lname}}</h1>
-        <p style="font-size: 1rem;">{{resumeForm().contact.email}} | {{resumeForm().contact.phone_number}}</p>
-        <p style="font-size: 1rem;"><a href="{{resumeForm().contact.linkedIn_profile}}"> LinkedIn Profile</a> | <a  href="{{resumeForm().contact.github_profile}}"> Github</a></p>
+        <h1 style="margin: 0;padding: 0;font-size: 2rem;">
+          {{ (resumeForm().sections | sectionItems:'CONTACT')[0]?.fname + ' ' + (resumeForm().sections | sectionItems:'CONTACT')[0]?.lname }}
+        </h1>
+        <p style="font-size: 1rem;">
+          {{ (resumeForm().sections | sectionItems:'CONTACT')[0]?.email }} | {{ (resumeForm().sections | sectionItems:'CONTACT')[0]?.phone_number }}
+        </p>
+        <p style="font-size: 1rem;">
+          <a href="{{ (resumeForm().sections | sectionItems:'CONTACT')[0]?.linkedIn_profile }}"> LinkedIn Profile</a> |
+          <a href="{{ (resumeForm().sections | sectionItems:'CONTACT')[0]?.github_profile }}"> Github</a>
+        </p>
         <div class="edit-context-menu"  *ngIf="!isPreview">
             <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('CONTACT', null)"  ></i>
         </div>
     </header>
     <section class="trigger-area">
         <h2 style="padding: 0;margin: 0;font-size: 16px !important;font-weight: 600;text-transform: uppercase;">Objective</h2>
-        <p style="padding: 0;margin: 0;">{{resumeForm().profileSummary.profile_summary}}</p>
+        <p style="padding: 0;margin: 0;">
+          {{ (resumeForm().sections | sectionItems:'PROFILE_SUMMARY')[0]?.profile_summary }}
+        </p>
         <div class="edit-context-menu"  *ngIf="!isPreview">
             <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('PROFILE_SUMMARY', null)"  ></i>
             <i class="fa fa-trash show-orange-red" (click)="confirmDeleteDialog('SUMMARY', null)"  ></i>
@@ -27,7 +36,7 @@
               </i> 
             </span>
           </span>
-        <div class="experience trigger-area" [ngStyle]="{'border-top': (index == 0) ? '1px solid rgba(101, 105, 109, .5)' : '0'}" *ngFor="let item of resumeForm().experience; let index = index">
+  <div class="experience trigger-area" [ngStyle]="{'border-top': (index == 0) ? '1px solid rgba(101, 105, 109, .5)' : '0'}" *ngFor="let item of resumeForm().sections | sectionItems:'EXPERIENCE'; let index = index">
             <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
             <h3>{{item.position_title}}</h3>
             <p>{{item.company_name}}, {{item.start_date}} - {{item.end_date}}</p>
@@ -56,7 +65,7 @@
             <div  class="course-work-section-content">
               <ul class="course-work-list" style="margin: 0;">
                 <!-- ${this.formatDefaultCourseWork(resumeForm().courseWork)} -->
-                  <li class="course-work-lisit-item" style="padding-bottom: 5px;" *ngFor="let item of resumeForm().skill">{{item}}</li>
+                  <li class="course-work-lisit-item" style="padding-bottom: 5px;" *ngFor="let item of resumeForm().sections | sectionItems:'SKILLS'">{{item}}</li>
               </ul>
              
               </div>
@@ -77,7 +86,7 @@
               </i> 
             </span>
           </span>
-        <div class="projects trigger-area" style="margin: 0px !important;" [ngStyle]="{'border-top': (index == 0) ? '1px solid rgba(101, 105, 109, .5)' : '0'}" *ngFor="let item of resumeForm().project; let index = index">
+  <div class="projects trigger-area" style="margin: 0px !important;" [ngStyle]="{'border-top': (index == 0) ? '1px solid rgba(101, 105, 109, .5)' : '0'}" *ngFor="let item of resumeForm().sections | sectionItems:'PROJECT'; let index = index">
         <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)" class="projects">
             <h3>{{item.project_name}}</h3>
             <ul>
@@ -109,7 +118,7 @@
               </i> 
             </span>
           </span>
-        <div class="education trigger-area" style="margin: 0px;padding: 0px;" [ngStyle]="{'border-top': (index == 0) ? '1px solid rgba(101, 105, 109, .5)' : '0'}" *ngFor="let item of resumeForm().education; let index = index">
+  <div class="education trigger-area" style="margin: 0px;padding: 0px;" [ngStyle]="{'border-top': (index == 0) ? '1px solid rgba(101, 105, 109, .5)' : '0'}" *ngFor="let item of resumeForm().sections | sectionItems:'EDUCATION'; let index = index">
             <div class="education" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
                 <h3>{{item.school_name}}, {{item.school_location}}</h3>
                 <p>{{item.field_of_study}}, {{item.degree}}, {{item.graduation_date}}</p>

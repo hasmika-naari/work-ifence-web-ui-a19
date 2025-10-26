@@ -1,15 +1,15 @@
 <div class="resume-container">
     <header class="trigger-area">
-        <h1>{{resumeForm().contact.fname + ' ' + resumeForm().contact.lname}}</h1>
-        <p>{{resumeForm().contact.email}} | {{resumeForm().contact.phone_number}}</p>
-        <p><a href="{{resumeForm().contact.linkedIn_profile}}"> LinkedIn Profile</a> | <a  href="{{resumeForm().contact.github_profile}}"> Github</a></p>
+  <h1>{{getContactData().fname + ' ' + getContactData().lname}}</h1>
+  <p>{{getContactData().email}} | {{getContactData().phone_number}}</p>
+  <p><a href="{{getContactData().linkedIn_profile}}"> LinkedIn Profile</a> | <a  href="{{getContactData().github_profile}}"> Github</a></p>
         <div class="edit-context-menu"  *ngIf="!isPreview">
             <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('CONTACT', null)"  ></i>
         </div>
     </header>
     <section class="trigger-area" style="padding: 0;margin: 0;">
         <h2 style="font-size: 16px !important;font-weight: 600;text-transform: uppercase;border: 0;margin: 0;padding: 0;">Objective</h2>
-        <p style="margin-bottom: 0px;">{{resumeForm().profileSummary.profile_summary}}</p>
+  <p style="margin-bottom: 0px;">{{getProfileSummary()}}</p>
         <div class="edit-context-menu"  *ngIf="!isPreview">
             <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('PROFILE_SUMMARY', null)"  ></i>
             <i class="fa fa-trash show-orange-red" (click)="confirmDeleteDialog('SUMMARY', null)"  ></i>
@@ -26,7 +26,7 @@
               </i> 
             </span>
           </span>
-        <div class="experience trigger-area"  style="margin-bottom: 0px;padding-bottom: 0px;" *ngFor="let item of resumeForm().experience">
+  <div class="experience trigger-area"  style="margin-bottom: 0px;padding-bottom: 0px;" *ngFor="let item of getExperienceItems()">
             <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
             <h3 style="margin: 0px;padding: 0px;font-size: 14px;">{{item.position_title}}</h3>
             <p style="margin: 0px;padding: 0px;font-size: 14px;">{{item.company_name}}, {{item.start_date}} - {{item.end_date}}</p>
@@ -63,7 +63,7 @@
             <div  class="course-work-section-content">
               <ul class="course-work-list" style="margin: 0;padding: 0">
                 <!-- ${this.formatDefaultCourseWork(resumeForm().courseWork)} -->
-                  <li class="course-work-lisit-item" *ngFor="let item of resumeForm().skill">{{item}}</li>
+                  <li class="course-work-lisit-item" *ngFor="let item of getSkillItems()">{{item}}</li>
               </ul>
              
               </div>
@@ -84,7 +84,7 @@
               </i> 
             </span>
           </span>
-        <div class="projects trigger-area"  style="margin-bottom: 0px;padding-bottom: 0px;" *ngFor="let item of resumeForm().project">
+  <div class="projects trigger-area"  style="margin-bottom: 0px;padding-bottom: 0px;" *ngFor="let item of getProjectItems()">
             <div *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
                 <h3 style="margin: 0px;padding: 0px;font-size: 14px;">{{item.project_name}}</h3>
                 <ul style="margin-bottom: 0px;padding-bottom: 0px;">
@@ -116,7 +116,7 @@
               </i> 
             </span>
           </span>
-        <div class="education trigger-area"  style="margin-bottom: 0px;padding-bottom: 0px;" *ngFor="let item of resumeForm().education">
+  <div class="education trigger-area"  style="margin-bottom: 0px;padding-bottom: 0px;" *ngFor="let item of getEducationItems()">
             <div class="education" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
                 <h3 style="margin: 0px;padding: 0px;font-size: 14px;">{{item.school_name}}, {{item.school_location}}</h3>
                 <p style="margin: 0px;padding: 0px;font-size: 14px;">{{item.field_of_study}}, {{item.degree}}, {{item.graduation_date}}</p>

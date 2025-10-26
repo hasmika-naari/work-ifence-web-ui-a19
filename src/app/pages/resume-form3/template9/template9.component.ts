@@ -1,3 +1,4 @@
+
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -24,7 +25,8 @@ import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
-import { SectionDesc, sections } from 'src/app/services/store/user-store';
+import { SectionDesc } from 'src/app/services/store/user-store';
+import { sections } from 'src/app/services/store/resume-sections';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 // import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
@@ -45,6 +47,67 @@ import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class ResumeTemplate9Component implements OnInit, OnDestroy {
+
+  // Generic helper to get section items by section name
+  getSectionItems(sectionName: string): any[] {
+    const sections = this.resumeForm().sections || [];
+    const section = sections.find(s => s.section === sectionName);
+    return section?.items?.map(i => i.data) ?? [];
+  }
+  // Helper to get project items from sections
+  getProjectItems(): any[] {
+    const section = this.resumeForm().sections?.find(s => s.section === 'PROJECT');
+    return section?.items?.map(i => i.data) || [];
+  }
+
+  // Helper to get certification items from sections
+  getCertificationItems(): any[] {
+    const section = this.resumeForm().sections?.find(s => s.section === 'CERTIFICATIONS');
+    return section?.items?.map(i => i.data) || [];
+  }
+  getContactData(): any {
+    const section = this.currentSections()?.find(s => s.section === 'CONTACT');
+    return section?.items?.[0]?.data || {};
+  }
+  getCourseWorkItems(): any[] {
+    const section = this.currentSections()?.find(s => s.section === 'COURSEWORK');
+    return section?.items?.map(i => i.data) || [];
+  }
+
+  getSkillItems(): any[] {
+    // Try SKILLS_BULLET_POINTS first, fallback to SKILLS if needed
+    let section = this.currentSections()?.find(s => s.section === 'SKILLS_BULLET_POINTS');
+    if (!section) section = this.currentSections()?.find(s => s.section === 'SKILLS');
+    // Some skills sections may store an array, some a string, adapt as needed
+    if (section?.items?.length) {
+      // If items are objects with a 'skills' array
+      if (Array.isArray(section.items[0].data?.skills)) {
+        return section.items[0].data.skills;
+      }
+      // If items are just an array of strings
+      if (Array.isArray(section.items)) {
+        return section.items.map(i => i.data).flat();
+      }
+    }
+    return [];
+  }
+
+  // Section data helpers
+  getEducationItems(): any[] {
+    const section = this.currentSections()?.find(s => s.section === 'EDUCATION');
+    return section?.items?.map(i => i.data) || [];
+  }
+
+  getCertificationBulletPoints(): any {
+    const section = this.currentSections()?.find(s => s.section === 'CERTIFICATIONS_BULLET_POINTS');
+    // Some templates use .point, some use .items[0].data, adapt as needed
+    return section?.items?.[0]?.data || {};
+  }
+
+  getAchievementBulletPoints(): any {
+    const section = this.currentSections()?.find(s => s.section === 'ACHIEVEMENTS_BULLET_POINTS');
+    return section?.items?.[0]?.data || {};
+  }
 
   private userStore: UserStoreService = inject(UserStoreService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
@@ -242,9 +305,11 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
                 this.dynamicSections = [...this.dynamicSections, e.section]
               })
             }
-          let skills = this.resumeForm().skill_v2
-          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
-          this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
+          // Get skills from SKILLS_BULLET_POINTS section
+          const skillsSection = this.resumeForm().sections?.find(s => s.section === 'SKILLS_BULLET_POINTS');
+          const skills = skillsSection?.items?.map(i => i.data) ?? [];
+          this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills.length/2))];
+          this.secondHalfSkills = [...skills.slice(Math.ceil(skills.length/2))];
           })
       }
 
@@ -377,27 +442,37 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     }
     else if(section === "EDUCATION"){
       selectedJson.isHideSelected = true;
-      let index = this.resumeForm().education.findIndex(obj => obj.id === selectedJson.id)
+      const eduSection = this.resumeForm().sections?.find(s => s.section === 'EDUCATION');
+      const array = eduSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateEducationItem(selectedJson, index)
     }
     else if(section === "PROJECT"){
       selectedJson.isHideSelected = true;
-      let index = this.resumeForm().project.findIndex(obj => obj.id === selectedJson.id)
+      const projSection = this.resumeForm().sections?.find(s => s.section === 'PROJECT');
+      const array = projSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateProjectItem(selectedJson, index)
     }
     else if(section === "WORK_EXPERIENCE"){
       selectedJson.isHideSelected = true;
-      let index = this.resumeForm().experience.findIndex(obj => obj.id === selectedJson.id)
+      const expSection = this.resumeForm().sections?.find(s => s.section === 'WORK_EXPERIENCE');
+      const array = expSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateExperienceItem(selectedJson, index)
     }
     else if(section === "CERTIFICATIONS"){
       selectedJson.isHideSelected = true;
-      let index = this.resumeForm().certification.findIndex(obj => obj.id === selectedJson.id)
+      const certSection = this.resumeForm().sections?.find(s => s.section === 'CERTIFICATIONS');
+      const array = certSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateCertificationItem(selectedJson, index)
     }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       selectedJson.isHideSelected = true;
-      let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
+      const accSection = this.resumeForm().sections?.find(s => s.section === 'ACHIEVEMENT_WITH_DESC');
+      const array = accSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateAccomplishmentItem(selectedJson, index);
     }
   }
@@ -414,27 +489,37 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     }
     else if(section === "EDUCATION"){
       selectedJson.isHideSelected = false;
-      let index = this.resumeForm().education.findIndex(obj => obj.id === selectedJson.id)
+      const eduSection = this.resumeForm().sections?.find(s => s.section === 'EDUCATION');
+      const array = eduSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateEducationItem(selectedJson, index)
     }
     else if(section === "PROJECT"){
       selectedJson.isHideSelected = false;
-      let index = this.resumeForm().project.findIndex(obj => obj.id === selectedJson.id)
+      const projSection = this.resumeForm().sections?.find(s => s.section === 'PROJECT');
+      const array = projSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateProjectItem(selectedJson, index)
     }
     else if(section === "WORK_EXPERIENCE"){
       selectedJson.isHideSelected = false;
-      let index = this.resumeForm().experience.findIndex(obj => obj.id === selectedJson.id)
+      const expSection = this.resumeForm().sections?.find(s => s.section === 'WORK_EXPERIENCE');
+      const array = expSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateExperienceItem(selectedJson, index)
     }
     else if(section === "CERTIFICATIONS"){
       selectedJson.isHideSelected = false;
-      let index = this.resumeForm().certification.findIndex(obj => obj.id === selectedJson.id)
+      const certSection = this.resumeForm().sections?.find(s => s.section === 'CERTIFICATIONS');
+      const array = certSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateCertificationItem(selectedJson, index)
     }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       selectedJson.isHideSelected = false;
-      let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
+      const accSection = this.resumeForm().sections?.find(s => s.section === 'ACHIEVEMENT_WITH_DESC');
+      const array = accSection?.items?.map(i => i.data) ?? [];
+      let index = array.findIndex((obj: any) => obj.id === selectedJson.id);
       this.userStore.updateAccomplishmentItem(selectedJson, index);
     }
   }
@@ -480,118 +565,118 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
   }
 
   checkEducationCondition(){
-      return this.resumeForm().education.filter(obj => obj.isHideSelected === false)?.length > 0
+  const eduSection = this.resumeForm().sections?.find(s => s.section === 'EDUCATION');
+  if (!eduSection || !Array.isArray(eduSection.items)) return false;
+  return (eduSection.items.map(i => i.data).filter((obj: any) => obj.isHideSelected === false).length > 0);
   }
 
   checkProjectCondition(){
-    return this.resumeForm().project.filter(obj => obj.isHideSelected === false)?.length > 0
+  const projSection = this.resumeForm().sections?.find(s => s.section === 'PROJECT');
+  if (!projSection || !Array.isArray(projSection.items)) return false;
+  return (projSection.items.map(i => i.data).filter((obj: any) => obj.isHideSelected === false).length > 0);
   }
 
   checkExperienceCondition(){
-    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false)?.length > 0
+  const expSection = this.resumeForm().sections?.find(s => s.section === 'WORK_EXPERIENCE');
+  if (!expSection || !Array.isArray(expSection.items)) return false;
+  return (expSection.items.map(i => i.data).filter((obj: any) => obj.isHideSelected === false).length > 0);
   }
 
   checkCertificationCondition(){
-    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false)?.length > 0
+  const certSection = this.resumeForm().sections?.find(s => s.section === 'CERTIFICATIONS');
+  if (!certSection || !Array.isArray(certSection.items)) return false;
+  return (certSection.items.map(i => i.data).filter((obj: any) => obj.isHideSelected === false).length > 0);
   }
 
 
 
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
     if(section === "EDUCATION"){
-    const array = this.resumeForm().education;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
+      const eduSection = this.resumeForm().sections?.find(s => s.section === 'EDUCATION');
+      const array = eduSection?.items?.map((i: any) => i.data) ?? [];
+      const index = array.findIndex((obj: any) => obj.id === id);
+      if (index === -1) {
+        console.log("Object with the given id not found");
+        return;
+      }
+      if (direction === "up" && index > 0) {
+        [array[index], array[index - 1]] = [array[index - 1], array[index]];
+      } else if (direction === "down" && index < array.length - 1) {
+        [array[index], array[index + 1]] = [array[index + 1], array[index]];
+      } else {
+        console.log("Move not possible");
+      }
+      array.forEach((item: any, idx: number) => this.userStore.updateEducationItem(item, idx));
     }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateEducationList(array);
-  }
   else if(section === "PROJECT"){
-    const array = this.resumeForm().project;
-    const index = array.findIndex(obj => obj.id === id);
+    const projSection = this.resumeForm().sections?.find(s => s.section === 'PROJECT');
+    const array = projSection?.items?.map((i: any) => i.data) ?? [];
+    const index = array.findIndex((obj: any) => obj.id === id);
     if (index === -1) {
       console.log("Object with the given id not found");
       return;
     }
-    
     if (direction === "up" && index > 0) {
-      // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
     } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
       console.log("Move not possible");
     }
-    this.userStore.updateProjectList(array);
+    array.forEach((item: any, idx: number) => this.userStore.updateProjectItem(item, idx));
   }
   else if(section === "WORK_EXPERIENCE"){
-    const array = this.resumeForm().experience;
-    const index = array.findIndex(obj => obj.id === id);
+    const expSection = this.resumeForm().sections?.find(s => s.section === 'WORK_EXPERIENCE');
+    const array = expSection?.items?.map((i: any) => i.data) ?? [];
+    const index = array.findIndex((obj: any) => obj.id === id);
     if (index === -1) {
       console.log("Object with the given id not found");
       return;
     }
-    
     if (direction === "up" && index > 0) {
-      // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
     } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
       console.log("Move not possible");
     }
-    this.userStore.updateExperienceList(array);
+    array.forEach((item: any, idx: number) => this.userStore.updateExperienceItem(item, idx));
   }
   else if(section === "CERTIFICATIONS"){
-    const array = this.resumeForm().certification;
-    const index = array.findIndex(obj => obj.id === id);
+    const certSection = this.resumeForm().sections?.find(s => s.section === 'CERTIFICATIONS');
+    const array = certSection?.items?.map(i => i.data) ?? [];
+    const index = array.findIndex((obj: any) => obj.id === id);
     if (index === -1) {
       console.log("Object with the given id not found");
       return;
     }
-    
     if (direction === "up" && index > 0) {
-      // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
     } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
       console.log("Move not possible");
     }
-    this.userStore.updateCertificationList(array);
+    // Update each item using updateCertificationItem
+    array.forEach((item: any, idx: number) => this.userStore.updateCertificationItem(item, idx));
   }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
-    const array = this.resumeForm().accomplishment;
-    const index = array.findIndex(obj => obj.id === id);
+    const accSection = this.resumeForm().sections?.find(s => s.section === 'ACHIEVEMENT_WITH_DESC');
+    const array = accSection?.items?.map(i => i.data) ?? [];
+    const index = array.findIndex((obj: any) => obj.id === id);
     if (index === -1) {
       console.log("Object with the given id not found");
       return;
     }
-    
     if (direction === "up" && index > 0) {
-      // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
     } else if (direction === "down" && index < array?.length - 1) {
-      // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
       console.log("Move not possible");
     }
-    this.userStore.updateAccomplishmentList(array);
+    // Update each item using updateAccomplishmentItem
+    array.forEach((item: any, idx: number) => this.userStore.updateAccomplishmentItem(item, idx));
   }
 
 }
@@ -603,46 +688,57 @@ removeSection(section : string){
 
   dialogRef.afterClosed().subscribe(result => {
     if(result.event === "CONFIRM"){
-        let status = this.sectionStatus()
-        let resume = this.resumeForm()
+        let status = this.sectionStatus();
+        let resume = this.resumeForm();
+        // Helper to clear items in a section
+        const clearSectionItems = (sectionName: string, newData?: any) => {
+          const sec = resume.sections?.find(s => s.section === sectionName);
+          if (sec && Array.isArray(sec.items)) {
+            if (newData !== undefined) {
+              sec.items = [{ id: sec.items[0]?.id || sectionName, data: newData }];
+            } else {
+              sec.items = [];
+            }
+          }
+        };
         if(section === "PROFILE_SUMMARY"){
-          resume.profileSummary = new ProfileSummary()
+          clearSectionItems("PROFILE_SUMMARY", new ProfileSummary());
           status.isSummary = false;
         }
         else if(section === "RELEVANT_COURSEWORK"){
-          resume.courseWork = []
+          clearSectionItems("RELEVANT_COURSEWORK");
           status.isCourseWork = false;
         }
         else if(section === "SKILLS_BULLET_POINTS"){
-          resume.skill = []
+          clearSectionItems("SKILLS_BULLET_POINTS");
           status.isSkill = false;
         }
         else if(section === "EDUCATION"){
-          resume.education = []
+          clearSectionItems("EDUCATION");
           status.isEducation = false;
         }
         else if(section === "PROJECT"){
-          resume.project = []
+          clearSectionItems("PROJECT");
           status.isProject = false;
         }
         else if(section === "WORK_EXPERIENCE"){
-          resume.experience = []
+          clearSectionItems("WORK_EXPERIENCE");
           status.isExperience = false;
         }
         else if(section === "CERTIFICATIONS_BULLET_POINTS"){
-          resume.certificationBulletPoints = new CertificationBulletPoints();
-          status.isSkillsCategory = false
+          clearSectionItems("CERTIFICATIONS_BULLET_POINTS", new CertificationBulletPoints());
+          status.isSkillsCategory = false;
         }
         else if(section === "ACHIEVEMENTS_BULLET_POINTS"){
-          resume.achievementBulletPoints = new AchievementBulletPoints()
-          status.isAchievement = false
+          clearSectionItems("ACHIEVEMENTS_BULLET_POINTS", new AchievementBulletPoints());
+          status.isAchievement = false;
         }
         else if(section === "CERTIFICATIONS"){
-          resume.certification = []
-          status.isCertification = false
+          clearSectionItems("CERTIFICATIONS");
+          status.isCertification = false;
         }
         else if(section === "ACHIEVEMENT_WITH_DESC"){
-          resume.accomplishment = [];
+          clearSectionItems("ACHIEVEMENT_WITH_DESC");
           status.isAccomplishments = false;
         }
         this.userStore.removeSectionFromMultipleSectionsList(section);
@@ -656,24 +752,40 @@ return data?.length==0
 }
 
 isContactNotDefaultData(){
-  return this.resumeForm().contact?.fname?.length>0 || this.resumeForm().contact?.lname?.length>0 || this.resumeForm().contact?.subTitle?.length>0 || this.resumeForm().contact?.phone_number?.length>0
-  || this.resumeForm().contact?.email?.length>0 || this.resumeForm().contact?.github_profile?.length>0 || this.resumeForm().contact?.linkedIn_profile?.length>0
+  const contact = this.resumeForm().sections?.find(s => s.section === 'CONTACT')?.items?.[0]?.data;
+  return (
+    contact?.fname?.length > 0 ||
+    contact?.lname?.length > 0 ||
+    contact?.subTitle?.length > 0 ||
+    contact?.phone_number?.length > 0 ||
+    contact?.email?.length > 0 ||
+    contact?.github_profile?.length > 0 ||
+    contact?.linkedIn_profile?.length > 0
+  );
 }
 
 isAchievementDefaultData(){
-  return this.resumeForm().achievementBulletPoints?.ach == null || this.resumeForm().achievementBulletPoints?.ach?.length == 0 || this.resumeForm().achievementBulletPoints?.ach == undefined
+  const achSection = this.resumeForm().sections?.find(s => s.section === 'ACHIEVEMENTS_BULLET_POINTS');
+  const achItem = achSection?.items?.[0]?.data;
+  return achItem?.ach == null || achItem?.ach?.length === 0 || achItem?.ach == undefined;
 }
 
 isCertificationDefaultData(){
-  return  this.resumeForm().certificationBulletPoints?.point == null || this.resumeForm().certificationBulletPoints?.point?.length == 0 || this.resumeForm().certificationBulletPoints?.point == undefined
+  const certSection = this.resumeForm().sections?.find(s => s.section === 'CERTIFICATIONS_BULLET_POINTS');
+  const certItem = certSection?.items?.[0]?.data;
+  return certItem?.point == null || certItem?.point?.length === 0 || certItem?.point == undefined;
 }
 
 isAccomplishmentDefaultData(){
-  return this.resumeForm().accomplishment?.length == 0 || this.resumeForm().accomplishment == null || this.resumeForm().accomplishment == undefined
+  const accSection = this.resumeForm().sections?.find(s => s.section === 'ACCOMPLISHMENTS');
+  const accItems = accSection?.items?.map(i => i.data) ?? [];
+  return accItems.length === 0 || accItems == null || accItems == undefined;
 }
 
 isSkillsCategoryDefault(){
-  return this.resumeForm().skill_v2?.length == 0 || this.resumeForm().skill_v2 == null || this.resumeForm().skill_v2 == undefined
+  const skillV2Section = this.resumeForm().sections?.find(s => s.section === 'SKILLS_CATEGORY');
+  const skillV2Items = skillV2Section?.items?.map(i => i.data) ?? [];
+  return skillV2Items.length === 0 || skillV2Items == null || skillV2Items == undefined;
 }
 
 

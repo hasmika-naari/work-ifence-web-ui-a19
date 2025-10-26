@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject, AfterViewInit, computed, signal } from '@angular/core';
 
 interface LayoutRole { title: string; [key: string]: any; }
 import { SidebarDirective } from '../../@navan/shared/sidebar/sidebar.directive';
@@ -36,24 +36,32 @@ import { IconsModule } from '../shared/icons.module';
 })
 export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   menuSidenavOpened = false;
-  userRoles = (): LayoutRole[] => (this.headerComponent?.userRoles?.() || []);
-  userActiveRole = (): LayoutRole | null => {
-    const role = this.headerComponent?.userActiveRole?.();
+  
+  // Use signals to handle async ViewChild initialization
+  private headerComponentSignal = signal<HeaderComponent | undefined>(undefined);
+  userRoles = computed(() => this.headerComponentSignal()?.userRoles?.() || []);
+  userActiveRole = computed(() => {
+    const role = this.headerComponentSignal()?.userActiveRole?.();
     return role && typeof role.title === 'string' ? role : null;
-  };
-  @ViewChild(HeaderComponent) headerComponent?: HeaderComponent;
+  });
+  
+  @ViewChild(HeaderComponent) set headerComponent(component: HeaderComponent | undefined) {
+    this.headerComponentSignal.set(component);
+  }
   // Proxy for dashboard switching
   switchDashboard($event: any, role: any) {
-    if (this.headerComponent && this.headerComponent.switchDashboard) {
-      this.headerComponent.switchDashboard($event, role);
+    const headerComponent = this.headerComponentSignal();
+    if (headerComponent && headerComponent.switchDashboard) {
+      headerComponent.switchDashboard($event, role);
       this.menuSidenavOpened = false;
     }
   }
 
   // Proxy for logout
   logoutHandler($event: any) {
-    if (this.headerComponent && this.headerComponent.logoutHandler) {
-      this.headerComponent.logoutHandler($event);
+    const headerComponent = this.headerComponentSignal();
+    if (headerComponent && headerComponent.logoutHandler) {
+      headerComponent.logoutHandler($event);
       this.menuSidenavOpened = false;
     }
   }

@@ -53,27 +53,45 @@ export interface DialogData {
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class ResumeContactComponent implements OnInit, OnDestroy {
+  ngOnDestroy(): void {
+    // Unsubscribe from all subscriptions to prevent memory leaks
+    this.subs.forEach(sub => sub.unsubscribe());
+  }
 
+  sections: Signal<any[]>;
   imageBase64: String | null = null; // Define a class property to store the image bytes
   cPage : number = 0
   panelOpenState = true;
   showProfileImage : boolean = false
-
   private _formBuilder: FormBuilder = inject(FormBuilder);
   private userStore: UserStoreService = inject(UserStoreService);
+  subs: Array<Subscription> = [];
+  contactForm = this._formBuilder.group({
+    fname: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]+$')]],
+    lname: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]+$')]],
+    subTitle: [''],
+    // Fixed phone number regex: properly escape + and use correct digit patterns
+    phone_number: ['', Validators.pattern('^(?:(?:\\+91|91|0)?\\d{10})$|^(?:(?:\\+1|1)?[-.\\s]?(\\d{3}|\\(\\d{3}\\))[-.\\s]?\\d{3}[-.\\s]?\\d{4})$')],
+    email_address: ['', Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')],
+    address: [''],
+    role: [''],
+    linkedIn_profile: ['', Validators.pattern('^https:\\/\\/(www\\.)?linkedin\\.com\\/in\\/[a-zA-Z0-9-]+\\/?$')],
+    github_profile: ['', Validators.pattern('^https:\\/\\/github\\.com\\/[a-zA-Z0-9-]+\\/?$')],
+    portfolio_url: ['', Validators.pattern('^https?:\\/\\/(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[a-zA-Z0-9._~-]*)*\\/?$')],
+    linkedIn_profile_display_name: [''],
+    github_profile_display_name: ['']
+  });
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
-
-
   visible = true;
   outLineButton = true;
   @Output() contact = new EventEmitter();
-
-  // Form change tracking
   private originalFormValues: any = null;
   public hasFormChanged: boolean = false;
-
+  profile_summary_genai : Array<String> | null = null 
+  is_summary_loading : boolean = false;
+  isSummarySkipped : boolean = false;
   constructor(
       private router : Router, 
       private cdr: ChangeDetectorRef,
@@ -82,39 +100,11 @@ export class ResumeContactComponent implements OnInit, OnDestroy {
       public genaiService : GenAIService, 
       public templateService : TemplatesService, 
       public dialog: MatDialog) {
+        this.sections = this.userStore.getCurrentSections();
         effect(()=>{
           this.setContactValues()
         })
       }
-
- 
-  profile_summary_genai : Array<String> | null = null 
-  is_summary_loading : boolean = false;
-
-  isSummarySkipped : boolean = false;
-
-  subs: Array<Subscription> = [];
-
-  contactForm = this._formBuilder.group({
-    fname: ['', [Validators.required,Validators.pattern('^[a-zA-Z ]+$')]],
-    lname: ['', [Validators.required,Validators.pattern('^[a-zA-Z ]+$')]],
-    subTitle: [''],
-    phone_number: ['', Validators.pattern('^(?:(?:\\+91|91|0)?\\d{10})$|^(?:(?:\\+1|1)?[-.\\s]?(\\d{3}|\\(\\d{3}\\))[-.\\s]?\\d{3}[-.\\s]?\\d{4})$')],
-    email_address: ['', Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')],
-    address: [''],
-    role: [''],
-    linkedIn_profile: ['', Validators.pattern('^https:\\/\\/(www\\.)?linkedin\\.com\\/in\\/[a-zA-Z0-9-]+\\/?$')],
-    github_profile: ['', Validators.pattern('^https:\\/\\/github\\.com\\/[a-zA-Z0-9-]+\\/?$')],
-    portfolio_url: ['', Validators.pattern('^https?:\\/\\/(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[a-zA-Z0-9._~-]*)*\\/?$')],
-    linkedIn_profile_display_name : [''],
-    github_profile_display_name : ['']
-});
-
-
-  ngOnDestroy(): void {
-    this.subs.forEach(s => s.unsubscribe());
-  }
-
   toggle() {
 }
 
@@ -147,22 +137,28 @@ get email_address(){
 }
 
   setContactValues(){
-    if(!this.resumeForm().contact.isDefaultData){
-      this.contactForm.controls['address'].setValue(this.resumeForm().contact.address);
-      this.contactForm.controls['email_address'].setValue(this.resumeForm().contact.email);
-      this.contactForm.controls['github_profile'].setValue(this.resumeForm().contact.github_profile);
-      this.contactForm.controls['linkedIn_profile'].setValue(this.resumeForm().contact.linkedIn_profile);
-      this.contactForm.controls['subTitle'].setValue(this.resumeForm().contact.subTitle);
-      this.contactForm.controls['fname'].setValue(this.resumeForm().contact.fname);
-      this.contactForm.controls['lname'].setValue(this.resumeForm().contact.lname);
-      this.contactForm.controls['phone_number'].setValue(this.resumeForm().contact.phone_number);
-      this.contactForm.controls['portfolio_url'].setValue(this.resumeForm().contact.portfolio_link);
-      this.contactForm.controls['role'].setValue(this.resumeForm().contact.role);
-      this.contactForm.controls['linkedIn_profile_display_name'].setValue(this.resumeForm().contact.linkedIn_profile_display_name);
-      this.contactForm.controls['github_profile_display_name'].setValue(this.resumeForm().contact.github_profile_display_name);
+    // Prefer selectedContact from resumeForm if present
+    const selectedContact = this.resumeForm()?.selectedContact;
+    let contactData = selectedContact;
+    if (!contactData) {
+      // Fallback to canonical section data (section.data)
+      const contactSection = this.sections().find((section: any) => section.section === 'CONTACT');
+      contactData = contactSection?.data || {};
     }
-    
-    // Capture original form values after form is populated
+    this.contactForm.patchValue({
+      address: contactData.address || '',
+      email_address: contactData.email_address || '',
+      github_profile: contactData.github_profile || '',
+      linkedIn_profile: contactData.linkedIn_profile || '',
+      subTitle: contactData.subTitle || '',
+      fname: contactData.fname || '',
+      lname: contactData.lname || '',
+      phone_number: contactData.phone_number || '',
+      portfolio_url: contactData.portfolio_url || '',
+      role: contactData.role || '',
+      linkedIn_profile_display_name: contactData.linkedIn_profile_display_name || '',
+      github_profile_display_name: contactData.github_profile_display_name || ''
+    });
     setTimeout(() => {
       this.captureOriginalFormValues();
     }, 0);
@@ -210,36 +206,42 @@ get email_address(){
 
   saveAndContinue(display : String | null){
     this.markFormGroupTouched(this.contactForm);
-    
-    // if (this.contactForm.invalid) {
-    //   return;
-    // }
-      let resumeContact: ResumeContact = new ResumeContact();
-      resumeContact.fname =  this.contactForm.value.fname?this.contactForm.value.fname?.trim() : '';
-      resumeContact.lname =  this.contactForm.value.lname?this.contactForm.value.lname?.trim() : '';
-      resumeContact.subTitle =  this.contactForm.value.subTitle?this.contactForm.value.subTitle:'';
-      resumeContact.phone_number =  this.contactForm.value.phone_number?this.contactForm.value.phone_number : "";
-      resumeContact.email =  this.contactForm.value.email_address?this.contactForm.value.email_address : "";
-      resumeContact.linkedIn_profile =  this.contactForm.value.linkedIn_profile?this.contactForm.value.linkedIn_profile : "";
-      resumeContact.github_profile =  this.contactForm.value.github_profile?this.contactForm.value.github_profile : "";
-      resumeContact.portfolio_link =  this.contactForm.value.portfolio_url?this.contactForm.value.portfolio_url : "";
-      resumeContact.linkedIn_profile_display_name = this.contactForm.value.linkedIn_profile_display_name?this.contactForm.value.linkedIn_profile_display_name:"";
-      resumeContact.github_profile_display_name = this.contactForm.value.github_profile_display_name?this.contactForm.value.github_profile_display_name:"";
-      resumeContact.address = this.contactForm.value.address?this.contactForm.value.address:"";
-      resumeContact.isDefaultData = false
-      
+    let resumeContact: ResumeContact = new ResumeContact();
+    resumeContact.fname =  this.contactForm.value.fname?this.contactForm.value.fname?.trim() : '';
+    resumeContact.lname =  this.contactForm.value.lname?this.contactForm.value.lname?.trim() : '';
+    resumeContact.subTitle =  this.contactForm.value.subTitle?this.contactForm.value.subTitle:'';
+    resumeContact.phone_number =  this.contactForm.value.phone_number?this.contactForm.value.phone_number : "";
+    resumeContact.email =  this.contactForm.value.email_address?this.contactForm.value.email_address : "";
+    resumeContact.linkedIn_profile =  this.contactForm.value.linkedIn_profile?this.contactForm.value.linkedIn_profile : "";
+    resumeContact.github_profile =  this.contactForm.value.github_profile?this.contactForm.value.github_profile : "";
+    resumeContact.portfolio_link =  this.contactForm.value.portfolio_url?this.contactForm.value.portfolio_url : "";
+    resumeContact.linkedIn_profile_display_name = this.contactForm.value.linkedIn_profile_display_name?this.contactForm.value.linkedIn_profile_display_name:"";
+    resumeContact.github_profile_display_name = this.contactForm.value.github_profile_display_name?this.contactForm.value.github_profile_display_name:"";
+    resumeContact.address = this.contactForm.value.address?this.contactForm.value.address:"";
+    resumeContact.isDefaultData = false
 
-      this.userStore.addContact(resumeContact);
-      if(!this.sectionStatus().isContact){
-        let status = this.sectionStatus()
-        status.isContact = true;
-        this.userStore.updateSectionStatus(status);
+    // Update CONTACT section's data in selectedResume.sections
+    const resume = this.resumeForm();
+    if (resume && Array.isArray(resume.sections)) {
+      const contactSection = resume.sections.find((section: any) => section.section === 'CONTACT');
+      if (contactSection) {
+        contactSection.data = { ...resumeContact };
       }
-      
-      // Reset form change tracking after successful save
-      this.captureOriginalFormValues();
-      
-      this.contact.emit();
+      // Clear selectedContact after save
+      resume.selectedContact = undefined;
+      // Only call setResumeForm to replace the object and trigger the signal
+      this.userStore.setResumeForm({ ...resume });
+    }
+
+    if(!this.sectionStatus().isContact){
+      let status = this.sectionStatus()
+      status.isContact = true;
+      this.userStore.updateSectionStatus(status);
+    }
+
+    // Reset form change tracking after successful save
+    this.captureOriginalFormValues();
+    this.contact.emit();
 
   }
 

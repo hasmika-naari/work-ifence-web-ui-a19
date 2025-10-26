@@ -188,48 +188,56 @@
                                         padding-top:0px;">
                             @if(resumeSignalForm().template_details.template_name == 'TEMPLATE_1'){
                                 <app-resume1-template
-                                     (editSection)="showEditSection($event)"
-                                     (editContact)="showContact()"
-                                     (saveRequested)="saveResume()">
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"
+                                    (editContact)="showContact()"
+                                    (saveRequested)="saveResume()">
                                 </app-resume1-template>
-
-                                
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
                                 <app-resume-template9
-                                (editSection)="showEditSection($event)"></app-resume-template9>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template9>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_2'){
                                 <app-resume-template2 
-                                (editSection)="showEditSection($event)"></app-resume-template2>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template2>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_3'){
                                 <app-resume-template3 
-                                (editSection)="showEditSection($event)"></app-resume-template3>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template3>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_4'){
                                 <app-resume-template4 
-                                (editSection)="showEditSection($event)"></app-resume-template4>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template4>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_5'){
                                 <app-resume-template5 
-                                (editSection)="showEditSection($event)"></app-resume-template5>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template5>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_6'){
                                 <app-resume-template6 
-                                (editSection)="showEditSection($event)"></app-resume-template6>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template6>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_7'){
                                 <app-resume-template7 
-                                (editSection)="showEditSection($event)"></app-resume-template7>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template7>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_8'){
                                 <app-resume-template8 
-                                (editSection)="showEditSection($event)"></app-resume-template8>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template8>
                             }
                             @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_10'){
                                 <app-resume-template10
-                                (editSection)="showEditSection($event)"></app-resume-template10>
+                                    [resumeSections]="resumeSignalForm().sections"
+                                    (editSection)="showEditSection($event)"></app-resume-template10>
                             }
                             </div>
                                 <div class="view-resume">
@@ -267,12 +275,17 @@
       </ng-template>
       
       <ng-template pTemplate="content">
+         {{activePanel}}
           <div [ngSwitch]="activePanel" style="position: relative; height: calc(100vh - 120px); overflow-y: auto; overflow-x: hidden;">
               <app-resume-job-description (contact)="saveContact()" *ngSwitchCase="'jobDescription'"></app-resume-job-description>
               <app-resume-template-list (contact)="saveContact()" *ngSwitchCase="'resumeTemplateList'"></app-resume-template-list>
               <app-resume-title (contact)="saveContact()" *ngSwitchCase="'resumeTitle'"></app-resume-title>
               <app-resume-experience (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngSwitchCase="'workExperianceDetails'"></app-resume-experience>
-              <app-resume-contact (contact)="saveContact()" *ngSwitchCase="'contactDetails'"></app-resume-contact>
+              <app-resume-contact 
+                  [data]="contactSectionData"
+                  (contact)="saveContact()" 
+                  *ngSwitchCase="'contactDetails'">
+              </app-resume-contact>
               <app-resume-project (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngSwitchCase="'projectWorkDetails'"></app-resume-project>
               <app-resume-education (contact)="saveContact()" *ngSwitchCase="'educationDetails'"></app-resume-education>
               <app-resume-certificate (contact)="saveContact()" *ngSwitchCase="'certificationsDetails'"></app-resume-certificate>

@@ -571,14 +571,24 @@ private _filterYears(value: string): number[] {
     cer.issued_organisation = this.certifyForm.value.issued_organisation?this.certifyForm.value.issued_organisation : '';
     cer.issued_month = this.certifyForm.value.issued_month?this.certifyForm.value.issued_month : '';
     cer.issued_year = this.certifyForm.value.issued_year?this.certifyForm.value.issued_year : '';
+    // Find the CERTIFICATIONS section in the sections array
+    const certSectionIdx = this.sections().findIndex((section: any) => section.section === 'CERTIFICATIONS');
+    let certItems = certSectionIdx !== -1 ? this.sections()[certSectionIdx].items || [] : [];
     if(this.selectedCertification().id){
       cer.id = this.selectedCertification().id;
-      let index = this.resumeSignalForm().certification.findIndex(obj => obj.id === this.selectedCertification().id)
-      this.userStore.updateCertificationItem(cer, index);
-    }
-    else{ 
-      cer.id = (this.resumeSignalForm().certification.length + 1).toString()
-      this.userStore.addCertificationItem(cer);
+      let index = certItems.findIndex((obj: any) => obj.id === this.selectedCertification().id);
+      if (index !== -1) {
+        certItems[index] = { id: cer.id, data: cer };
+      }
+      this.sections()[certSectionIdx].items = certItems;
+      this.userStore.setResumeSections(this.sections());
+    } else {
+      cer.id = (certItems.length + 1).toString();
+      certItems.push({ id: cer.id, data: cer });
+      if (certSectionIdx !== -1) {
+        this.sections()[certSectionIdx].items = certItems;
+        this.userStore.setResumeSections(this.sections());
+      }
     }
     this.userStore.setCertification(new Certification());
     this.certifyForm.reset()

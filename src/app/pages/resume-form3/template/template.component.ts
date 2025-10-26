@@ -1,198 +1,159 @@
-// ...existing code...
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectorRef, Signal, effect, computed, signal } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { CdkDragDrop, CdkDragStart } from '@angular/cdk/drag-drop';
+import { Resume, ResumeContact, IsSectionPresent, ProfileSummary, Education, Project, Experience, Certification, SkillV2, Accomplishment, courseWork } from '../../../services/resume.model';
+import { SectionDesc } from '../../../services/store/user-store';
+import { ResumeListDataItem } from '../../../services/work-ifence-data.model';
+import { UserStoreService } from '../../../services/store/user-store.service';
+import { PromptService } from '../../../services/shared/prompt.service';
+import { GenAIService } from '../../../services/shared/genai.service';
+import { TemplatesService } from '../../../services/shared/templates.service';
+import { Injector } from '@angular/core';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+
+// Angular modules
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { RouterModule, RouterLink } from '@angular/router';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+
+// Angular Material modules
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+// Angular CDK modules
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
+// PrimeNG modules
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { TextareaModule } from 'primeng/textarea';
+import { AccordionModule } from 'primeng/accordion';
+
+// Carousel module
+import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+
+// Icons module
+import { IconsModule } from '../../../shared/icons.module';
+
+// Section components
 import { ContactSectionComponent } from '../sections/contact-section.component';
 import { ProfileSummarySectionComponent } from '../sections/profile-summary-section.component';
 import { EducationSectionComponent } from '../sections/education-section.component';
 import { WorkExperienceSectionComponent } from '../sections/work-experience-section.component';
 import { ProjectSectionComponent } from '../sections/project-section.component';
-import { Injector } from '@angular/core';
-
-import { AchievementBulletPoints, Certification, Education, Experience, IsSectionPresent, ProfileSummary, 
-  Project, Resume, ResumeContact, CertificationBulletPoints, SkillV2, Accomplishment, courseWork } from 'src/app/services/resume.model';
-import { PromptService } from 'src/app/services/shared/prompt.service';
-import { GenAIService } from 'src/app/services/shared/genai.service';
-import { TemplatesService } from 'src/app/services/shared/templates.service';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
-import { CdkDragDrop, CdkDragStart, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { SectionDesc } from 'src/app/services/store/user-store';
-import { IconsModule } from 'src/app/shared/icons.module';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { SkillsSectionComponent } from '../sections/skills-section.component';
-import { AchievementsSectionComponent } from '../sections/achievements-section.component';
 import { CertificationsSectionComponent } from '../sections/certifications-section.component';
-import { RelevantCourseworkSectionComponent } from '../sections/relevant-coursework-section/relevant-coursework-section.component';
+import { AchievementsSectionComponent } from '../sections/achievements-section.component';
 import { SkillsBulletPointsSectionComponent } from '../sections/skills-bullet-points-section.component';
 import { SkillsCategorySectionComponent } from '../sections/skills-category-section.component';
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
-import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatStepperModule} from '@angular/material/stepper';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { TextareaModule } from 'primeng/textarea';
-import { AccordionModule } from 'primeng/accordion';
-import { UserStoreService } from 'src/app/services/store/user-store.service';
-// import { PhoneNumberPipe } from '@app/components/shared/pipes/phone-number-pipe';
+import { RelevantCourseworkSectionComponent } from '../sections/relevant-coursework-section/relevant-coursework-section.component';
+
+// Other components
+import { FooterComponent } from '../../../pages/home-page-one/footer/footer.component';
+import { HeaderWorkIfenceComponent } from '../../../pages/landing/header-wifence/header-wifence.component';
+
+
+// ...existing code...
 
 interface SectionTemplate {
   section: string;
   htmlTemplate: string;
-  hasAddButton: boolean;
-  hasEditButton: boolean;
-  hasDeleteButton: boolean;
-  hasMoveButtons: boolean;
 }
 
-const SECTION_COMPONENT_MAP: Record<string, any> = {
-  // Map section keys to their corresponding Angular components
-  // Extend this map if you add more section components
-  CONTACT: ContactSectionComponent,
-  PROFILE_SUMMARY: ProfileSummarySectionComponent,
-  EDUCATION: EducationSectionComponent,
-  WORK_EXPERIENCE: WorkExperienceSectionComponent,
-  PROJECT: ProjectSectionComponent
-};
 
 @Component({
   selector: 'app-resume1-template',
-  standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
-    CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
-    MatFormFieldModule,InputTextModule, MatTooltipModule, ContactSectionComponent, 
-    ProfileSummarySectionComponent, EducationSectionComponent, WorkExperienceSectionComponent, 
-  ProjectSectionComponent,SkillsSectionComponent,AchievementsSectionComponent, CertificationsSectionComponent,
-  RelevantCourseworkSectionComponent,
-  SkillsBulletPointsSectionComponent,
-  SkillsCategorySectionComponent,
-    MatInputModule,ButtonModule,ConfirmDialogComponent,SkillsSectionComponent,
-    MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule, IconsModule, DragDropModule],
   templateUrl: './template.component.html',
   styleUrls: ['./template.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Needed for p-icon web component
+  standalone: true,
+  imports: [
+    // Angular core modules
+    CommonModule,
+    NgOptimizedImage,
+    
+    // Angular Material modules
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatStepperModule,
+    MatExpansionModule,
+    MatTooltipModule,
+    
+    // Angular CDK modules
+    DragDropModule,
+    
+    // PrimeNG modules
+    InputTextModule,
+    ButtonModule,
+    TextareaModule,
+    AccordionModule,
+    
+    // Section components
+    ContactSectionComponent,
+    ProfileSummarySectionComponent,
+    EducationSectionComponent,
+    WorkExperienceSectionComponent,
+    ProjectSectionComponent,
+    CertificationsSectionComponent,
+    AchievementsSectionComponent,
+    SkillsBulletPointsSectionComponent,
+    SkillsCategorySectionComponent,
+    RelevantCourseworkSectionComponent,
+    
+    // Other components
+    FooterComponent,
+    HeaderWorkIfenceComponent,
+    
+    // Routing
+    RouterModule,
+    RouterLink,
+    
+    // Forms
+    ReactiveFormsModule,
+    FormsModule,
+    
+    // Carousel
+    CarouselModule,
+    
+    // Icons
+    IconsModule
+  ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
-  // ...existing code...
-
-  // Handles add event from skills bullet points section
-  onAddSkills() {
-    this.editSectionHandler('SKILLS_BULLET_POINTS', null);
-  }
-
-  // Handles edit event from skills bullet points section
-  onEditSkills() {
-    const resume = this.resumeForm && this.resumeForm();
-    const skills = resume?.skill_v2 || [];
-    this.editSectionHandler('SKILLS_BULLET_POINTS', skills);
-  }
-  resetCourseworkForm = false;
-  // Handles edit event from relevant-coursework-section
-  onEditCoursework(index: number) {
-    const resume = this.resumeForm && this.resumeForm();
-    if (!resume) return;
-    const courseworkList = resume.courseWork || [];
-    const item = courseworkList[index];
-    if (item) {
-      this.editSectionHandler('RELEVANT_COURSEWORK', item);
-    }
-  }
-  // Handles move up event from relevant-coursework-section
-  onMoveUpCoursework(index: number) {
-    const resume = this.resumeForm && this.resumeForm();
-    if (!resume) return;
-    const courseworkList = resume.courseWork || [];
-    if (index > 0) {
-      [courseworkList[index - 1], courseworkList[index]] = [courseworkList[index], courseworkList[index - 1]];
-      this.userStore.setCourseWorkList([...courseworkList]);
-      this.markDirty();
-    }
-  }
-
-  // Handles move down event from relevant-coursework-section
-  onMoveDownCoursework(index: number) {
-    const resume = this.resumeForm && this.resumeForm();
-    if (!resume) return;
-    const courseworkList = resume.courseWork || [];
-    if (index < courseworkList.length - 1) {
-      [courseworkList[index], courseworkList[index + 1]] = [courseworkList[index + 1], courseworkList[index]];
-      this.userStore.setCourseWorkList([...courseworkList]);
-      this.markDirty();
-    }
-  }
-  // ...existing code...
-   sidebarIconOnly!: Signal<boolean>;
+  // --- Properties ---
+  sidebarIconOnly!: Signal<boolean>;
   sectionStatus!: Signal<IsSectionPresent>;
   resumeForm!: Signal<Resume>;
   selectedResumeListItem!: Signal<ResumeListDataItem>;
-  currentSections!: Signal<SectionDesc[]>;
-  
   @Output() editSection = new EventEmitter<any>();
   @Output() saveRequested = new EventEmitter<void>();
-
   @Input() isPreview : boolean = false;
   currentDraggingSection: string = '';
-  isDragging : boolean = false
-
+  isDragging : boolean = false;
   hasUnsavedChanges = false;
+  resetCourseworkForm = false;
+  firstHalfSkills : SkillV2[] = [];
+  secondHalfSkills : SkillV2[] = [];
+  isSectionsSetCount : number = 1;
+  sectionsDesc = computed(() => this.resumeForm().sections || []);
+  // Computed signal for added sections (for drag and drop)
+  addedSections = computed(() => this.sectionsDesc().filter(s => s.isAdded));
 
-  // Handles edit event from resume-education-section (real or dummy)
-  onEditEducation(indexOrData: number | Object) {
-    const resume = this.resumeForm && this.resumeForm();
-    if (!resume) return;
-    if (typeof indexOrData === 'number') {
-      // Real item: get data from list
-      const educationList = resume.education || [];
-      const item = educationList[indexOrData];
-      if (item) {
-        this.editSectionHandler('EDUCATION', item);
-      }
-    } else if (indexOrData && typeof indexOrData === 'object') {
-      // Dummy item: open sidenav with dummy data
-      this.editSectionHandler('EDUCATION', indexOrData);
-    }
+  // Getter for drag and drop data binding
+  get dragDropSections(): SectionDesc[] {
+    return this.sectionsDesc().filter(s => s.isAdded);
   }
+  certificationsTitles = computed(() => this.getCertificationsSection().map(c => c.title || c.name || ''));
+  sectionConfig: { [key: string]: SectionTemplate } = {};
 
-  // Handles delete event from resume-education-section
-  onDeleteEducation(index: number) {
-    const resume = this.resumeForm && this.resumeForm();
-    if (!resume) return;
-    const educationList = resume.education || [];
-    const item = educationList[index];
-    if (item) {
-      this.deleteSectionItem('EDUCATION', item);
-    }
-  }
-
-  // Handles delete event from relevant-coursework-section
-  onDeleteCoursework(index: number) {
-    const resume = this.resumeForm && this.resumeForm();
-    if (!resume) return;
-    const courseworkList = resume.courseWork || [];
-    const item = courseworkList[index];
-    if (item) {
-      this.deleteSectionItem('RELEVANT_COURSEWORK', item);
-    }
-  }
-
-
-  // Called when the contact section edit icon is clicked
-  showContact() {
-    console.log('template: Contact edit requested');
-    this.editSection.emit({ section: 'CONTACT' });
-  }
-  constructor(
+   constructor(
     private _formBuilder: FormBuilder, 
     private router : Router, 
     private cdr: ChangeDetectorRef,
@@ -203,55 +164,10 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     private injector: Injector,
     private userStore: UserStoreService
   ) {
-    // Section and unsaved change state logic from previous ngOnInit
+    console.log('🚀🚀🚀 Resume1TemplateComponent constructor invoked 🚀🚀🚀');
+    // Section and unsaved change state logic simplified: only update skills arrays as needed
     effect(() => {
-      if(this.resumeForm()?.sections?.length>0 && this.isSectionsSetCount == 1 && this.currentSections()?.length == 0){
-        this.sections = []
-        this.resumeForm().sections.map((e : SectionDesc)=>{
-          this.sections = [...this.sections, e.section]
-        })
-        this.userStore.setResumeSections(this.resumeForm().sections)
-        this.isSectionsSetCount = this.isSectionsSetCount + 1
-      }
-      else if(this.currentSections()?.length == 0){
-        this.updateSectionVisibilityFlags(this.sectionsDesc);
-        this.userStore.setResumeSections(this.sectionsDesc)
-      }
-      else if(this.currentSections()?.length !== this.sections?.length){
-        // Case 1: currentSections has more items than this.sections (sections were added to store)
-        if(this.currentSections()?.length > this.sections?.length) {
-          this.sections = []
-          this.currentSections().map((e : SectionDesc)=>{
-            this.sections = [...this.sections, e.section]
-          })
-        }
-        // Case 2: this.sections has more items than currentSections (sections were added from left menu)
-        else if(this.sections?.length > this.currentSections()?.length) {
-          const currentSections = this.currentSections();
-          const newSections: SectionDesc[] = [];
-          this.sections.forEach(sectionKey => {
-
-            // Check if section already exists in current sections
-            let existingSection = currentSections.find(s => s.section === sectionKey);
-            if (existingSection) {
-              newSections.push(existingSection);
-            } else {
-              // Find template from sectionsDesc and add it
-              const template = this.sectionsDesc.find(s => s.section === sectionKey);
-              if (template) {
-                newSections.push({ ...template });
-              }
-            }
-          });
-          // Update visibility flags and store
-          this.updateSectionVisibilityFlags(newSections);
-          this.userStore.setResumeSections(newSections);
-          console.log('Updated sectionsDesc from sections array change:', newSections);
-        }
-      }
-      console.log(this.currentSections());
-
-      let skills = this.resumeForm().skill_v2
+      const skills = this.getSkillsCategorySection();
       if(skills?.length>0){
         this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
         this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
@@ -266,31 +182,109 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     });
   }
 
-  getSectionComponent(sectionKey: string) {
-    return SECTION_COMPONENT_MAP[sectionKey] || null;
-  }
 
-  createSectionInjector(data: any) {
-    return Injector.create({
-      providers: [
-        { provide: 'data', useValue: data }
-      ],
-      parent: this.injector
-    });
+  // --- Public Helper Methods ---
+  getContactSection() {
+    const section = this.resumeForm().sections?.find(s => s.section === 'CONTACT');
+    return section?.data || {};
   }
+  getProfileSummarySection() { const section = this.sectionsDesc().find((s: any) => s.section === 'PROFILE_SUMMARY' && s.isAdded); return section?.data || {}; }
+  getCourseWorkSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'RELEVANT_COURSEWORK' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
+  getSkillsCategorySection() { const section = this.sectionsDesc().find((s: any) => s.section === 'SKILLS_CATEGORY' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
+  getSkillsBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'SKILLS_BULLET_POINTS' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
+  getAccomplishmentSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'ACHIEVEMENT_WITH_DESC' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
+  getAchievementBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'ACHIEVEMENTS_BULLET_POINTS' && s.isAdded); return section?.items?.[0]?.data || {}; }
+  getCertificationBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'CERTIFICATIONS_BULLET_POINTS' && s.isAdded); return section?.items?.[0]?.data || {}; }
+  getCertificationsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'CERTIFICATIONS' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
 
-  // Helper to get correct resume section data for component rendering
-  getSectionResumeData(sectionKey: string) {
-    const resume = this.resumeForm();
-    switch (sectionKey) {
-      case 'CONTACT': return resume.contact;
-      case 'PROFILE_SUMMARY': return resume.profileSummary;
-      case 'EDUCATION': return resume.education;
-      case 'WORK_EXPERIENCE': return resume.experience;
-      case 'PROJECT': return resume.project;
-      // Add more cases as needed
-      default: return {};
+  // Handles edit event from resume-education-section (real or dummy)
+  onEditEducation(indexOrData: number | Object) {
+    if (typeof indexOrData === 'number') {
+      const educationList = this.getSectionItems('EDUCATION');
+      const item = educationList[indexOrData];
+      if (item) {
+        this.editSectionHandler('EDUCATION', item);
+      }
+    } else if (indexOrData && typeof indexOrData === 'object') {
+      this.editSectionHandler('EDUCATION', indexOrData);
     }
+  }
+
+  // Handles delete event from resume-education-section
+  onDeleteEducation(index: number) {
+    const educationList = this.getSectionItems('EDUCATION');
+    const item = educationList[index];
+    if (item) {
+      this.deleteSectionItem('EDUCATION', item);
+    }
+  }
+
+  // Handles delete event from relevant-coursework-section
+  onDeleteCoursework(index: number) {
+    const courseworkList = this.getSectionItems('RELEVANT_COURSEWORK');
+    const item = courseworkList[index];
+    if (item) {
+      this.deleteSectionItem('RELEVANT_COURSEWORK', item);
+    }
+  }
+
+  // Handles edit event from relevant-coursework-section
+  onEditCoursework(index: number) {
+    const courseworkList = this.getSectionItems('RELEVANT_COURSEWORK');
+    const item = courseworkList[index];
+    if (item) {
+      this.editSectionHandler('RELEVANT_COURSEWORK', item);
+    }
+  }
+
+  // Handles move up event from relevant-coursework-section
+  onMoveUpCoursework(index: number) {
+    // Implementation for moving coursework up
+    console.log('Move coursework up:', index);
+  }
+
+  // Handles move down event from relevant-coursework-section
+  onMoveDownCoursework(index: number) {
+    // Implementation for moving coursework down
+    console.log('Move coursework down:', index);
+  }
+
+  // Handles add event from skills section
+  onAddSkills() {
+    this.addSectionHandler('SKILLS_BULLET_POINTS');
+  }
+
+  // Handles edit event from skills section
+  onEditSkills() {
+    this.editSectionHandler('SKILLS_BULLET_POINTS', this.getSkillsBulletPointsSection());
+  }
+
+  // Handles contact section update
+  onContactSectionUpdated() {
+    this.markDirty();
+  }
+
+
+  // Called when the contact section edit icon is clicked
+  showContact(contact: any) {
+    // Set selectedContact in the selectedResume in the store
+    const resume = this.resumeForm();
+    if (resume) {
+      resume.selectedContact = contact;
+      this.userStore.updateResumeForm(resume);
+    }
+    this.editSection.emit({ section: 'CONTACT', contact });
+  }
+ 
+
+  // All section rendering and logic should now depend only on the sections list from the selected Resume in the store.
+
+  // Helper to get items from sections by section name
+  getSectionItems(sectionName: string): any[] {
+    const resume = this.resumeForm && this.resumeForm();
+    if (!resume || !resume.sections) return [];
+    const section = resume.sections.find((s: any) => s.section === sectionName);
+    return section?.items?.map((i: any) => i.data) ?? [];
   }
  
   private unloadHandler = (e: BeforeUnloadEvent) => {
@@ -300,151 +294,6 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     }
   };
 
-  sections  : string[]= ['CONTACT', 'PROFILE_SUMMARY','EDUCATION','RELEVANT_COURSEWORK', 'SKILLS_BULLET_POINTS', 'SKILLS_CATEGORY', 'WORK_EXPERIENCE', 'PROJECT', 'CERTIFICATIONS', 'ACHIEVEMENTS_BULLET_POINTS']
-
-  sectionsDesc: Array<SectionDesc> = [
-    {
-      section: 'CONTACT',
-      title: 'Contact Information',
-      editable_section_title: 'Contact',
-      description: 'Your contact details and personal information.',
-      isAdded: true,
-      isPremium: false,
-      tags: 'contact, personal, information',
-      label: 'Contact',
-      canMoveUp: false,
-      canMoveDown: true
-    },
-    {
-      section: 'PROFILE_SUMMARY',
-      title: 'Profile summary',
-      editable_section_title: 'Profile Summary',
-      description: 'A brief summary of your skills and experience.',
-      isAdded: true,
-      isPremium: false,
-      tags: 'summary, profile, objective',
-      label: 'Summary',
-      canMoveUp: false,
-      canMoveDown: true
-    },
-    {
-      section: 'EDUCATION',
-      title: 'Education',
-      editable_section_title: 'Education',
-      description: 'Details about your educational background.',
-      isAdded: true,
-      isPremium: false,
-      tags: 'education, school, degree',
-      label: 'Education',
-      canMoveUp: true,
-      canMoveDown: true
-    },
-    {
-      section: 'RELEVANT_COURSEWORK',
-      title: 'Relevant coursework',
-      editable_section_title: 'Relevant Coursework',
-      description: 'Relevant coursework you have completed.',
-      isAdded: true,
-      isPremium: false,
-      tags: 'coursework, classes, subjects',
-      label: 'Coursework',
-      canMoveUp: true,
-      canMoveDown: true
-    },
-    {
-      section: 'SKILLS_BULLET_POINTS',
-      title: 'Skills with bullet points',
-      editable_section_title: 'Skills',
-      description: 'A list of your skills in bullet points.',
-      isAdded: true,
-      isPremium: false,
-      tags: 'skills, abilities, competencies',
-      label: 'Skills (B.P.)',
-      canMoveUp: true,
-      canMoveDown: true
-    },
-    {
-      section: 'SKILLS_CATEGORY',
-      title: 'Skills category',
-      editable_section_title: 'Skills',
-      description: 'Categorized list of your skills.',
-      isAdded: false,
-      isPremium: false,
-      tags: 'skills, categorized, grouped',
-      label: 'Skills (Category)',
-      canMoveUp: true,
-      canMoveDown: true
-    },
-    {
-      section: 'WORK_EXPERIENCE',
-      title: 'Work experience',
-      editable_section_title: 'Experience',
-      description: 'Your professional work experience.',
-      isAdded: true,
-      isPremium: false,
-      tags: 'experience, work, job',
-      label: 'Experience',
-      canMoveUp: true,
-      canMoveDown: true
-    },
-    {
-      section: 'PROJECT',
-      title: 'Project',
-      editable_section_title: 'Project',
-      description: 'Projects you have worked on.',
-      isAdded: true,
-      isPremium: false,
-      tags: 'projects, portfolio, work',
-      label: 'Projects',
-      canMoveUp: true,
-      canMoveDown: true
-    },
-    {
-      section: 'CERTIFICATIONS',
-      title: 'Certification',
-      editable_section_title: 'Certifications',
-      description: 'Your certifications.',
-      isAdded: true,
-      isPremium: true,
-      tags: 'certifications, credentials, qualifications',
-      label: 'Certifications',
-      canMoveUp: true,
-      canMoveDown: true
-    },
-    {
-      section: 'ACHIEVEMENTS_BULLET_POINTS',
-      title: 'Achievements with bullet points',
-      editable_section_title: 'Achievements',
-      description: 'Your achievements in bullet points.',
-      isAdded: true,
-      isPremium: false,
-      tags: 'achievements, accomplishments, awards',
-      label: 'Achievements',
-      canMoveUp: true,
-      canMoveDown: false
-    }
-  ]
-
-    firstHalfSkills : SkillV2[] = []
-    secondHalfSkills : SkillV2[] = []
-    
-  isSectionsSetCount : number = 1
-
-  // Configuration for section button behavior
-  sectionConfig: { [key: string]: SectionTemplate } = {
-    'CONTACT': { section: 'CONTACT', htmlTemplate: '', hasAddButton: false, hasEditButton: true, hasDeleteButton: false, hasMoveButtons: false },
-    'PROFILE_SUMMARY': { section: 'PROFILE_SUMMARY', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
-    'EDUCATION': { section: 'EDUCATION', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
-    'WORK_EXPERIENCE': { section: 'WORK_EXPERIENCE', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
-    'PROJECT': { section: 'PROJECT', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
-    'SKILLS_BULLET_POINTS': { section: 'SKILLS_BULLET_POINTS', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
-    'SKILLS_CATEGORY': { section: 'SKILLS_CATEGORY', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
-    'CERTIFICATIONS': { section: 'CERTIFICATIONS', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
-    'ACHIEVEMENTS_BULLET_POINTS': { section: 'ACHIEVEMENTS_BULLET_POINTS', htmlTemplate: '', hasAddButton: true, hasEditButton: true, hasDeleteButton: true, hasMoveButtons: true },
-    'RELEVANT_COURSEWORK': { section: 'RELEVANT_COURSEWORK', htmlTemplate: '', hasAddButton: true, hasEditButton: false, hasDeleteButton: true, hasMoveButtons: true }
-  };
-
-  // Removed duplicate constructor implementation. Move effect logic to ngOnInit below.
 
   ngOnDestroy(): void {
     // this.userStore.setResumeSections([])
@@ -454,11 +303,14 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('🚀🚀🚀 Resume1TemplateComponent ngOnInit STARTED 🚀🚀🚀');
     this.sidebarIconOnly = this.userStore.getSidebarIconOnly();
     this.sectionStatus = this.userStore.getSectionStatus();
     this.resumeForm = this.userStore.getResumeForm();
     this.selectedResumeListItem = this.userStore.getSelectedResumeListItem();
-    this.currentSections = this.userStore.getCurrentSections();
+    console.log('📝 Resume1TemplateComponent initialized. isPreview:', this.isPreview);
+    // Effect to sync sectionsDesc with store - now computed from resumeForm
+    // sectionsDesc is now a computed signal from resumeForm().sections
 
     if (typeof window !== 'undefined') {
       window.addEventListener('beforeunload', this.unloadHandler);
@@ -477,65 +329,47 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     isSection.isAchievement = true;
     this.userStore.updateSectionStatus(isSection);
 
-    // Ensure default sections are set if currentSections is empty
-    if (!this.currentSections() || this.currentSections().length === 0) {
-      this.userStore.setResumeSections(this.sectionsDesc);
-    }
-
-
-    if(this.resumeForm().skill_v2?.length>0){
-      this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2?.length/2))]
-      this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2?.length/2),)]
-    }
-
     // Check if resume is mostly empty and could benefit from sample data
     setTimeout(() => {
       this.checkAndOfferSampleData();
     }, 500); // Add small delay to ensure all data is initialized
   }
 
-
   // Check if resume is empty and auto-populate with sample data
   checkAndOfferSampleData(): void {
     const resume = this.resumeForm();
     
+    const contact = this.getContactSection();
+    const profile = this.getProfileSummarySection();
+    const education = this.getSectionItems('EDUCATION');
+    const experience = this.getSectionItems('WORK_EXPERIENCE');
+    const project = this.getSectionItems('PROJECT');
+    const certification = this.getSectionItems('CERTIFICATIONS');
+    const skills = this.getSkillsCategorySection();
     console.log('🔍 Checking resume data:', {
-      hasName: !!resume.contact?.fname,
-      isDefaultContact: resume.contact?.isDefaultData,
-      hasProfile: !!resume.profileSummary?.profile_summary,
-      isDefaultProfile: resume.profileSummary?.isDefault,
+      hasName: !!contact.fname,
+      isDefaultContact: contact.isDefaultData,
+      hasProfile: !!profile.profile_summary,
+      isDefaultProfile: profile.isDefault,
       sectionsCount: {
-        education: resume.education?.length || 0,
-        experience: resume.experience?.length || 0,
-        projects: resume.project?.length || 0,
-        certifications: resume.certification?.length || 0,
-        skills: resume.skill_v2?.length || 0
+        education: education.length || 0,
+        experience: experience.length || 0,
+        projects: project.length || 0,
+        certifications: certification.length || 0,
+        skills: skills.length || 0
       },
       isPreview: this.isPreview
     });
 
-    const isEmpty = (!resume.contact.fname || resume.contact.isDefaultData) &&
-                   (!resume.profileSummary.profile_summary || resume.profileSummary.isDefault) &&
-                   resume.education.length === 0 &&
-                   resume.experience.length === 0 &&
-                   resume.project.length === 0;
+    const isEmpty = (!contact.fname || contact.isDefaultData) &&
+                   (!profile.profile_summary || profile.isDefault) &&
+                   education.length === 0 &&
+                   experience.length === 0 &&
+                   project.length === 0;
     
-  if (isEmpty && !this.isPreview) {
-      console.log('🔄 Auto-populating resume with realistic sample data...');
-      this.loadSampleResumeData();
-      
-      // Verify sample data was loaded after a brief delay
-      setTimeout(() => {
-        const updatedResume = this.resumeForm();
-        console.log('✅ Sample data loaded:', {
-          name: updatedResume.contact?.fname + ' ' + (updatedResume.contact?.lname || ''),
-          email: updatedResume.contact?.email,
-          hasProfile: !!updatedResume.profileSummary?.profile_summary,
-          education: updatedResume.education?.length || 0,
-          experience: updatedResume.experience?.length || 0
-        });
-        this.cdr.detectChanges(); // Force change detection
-      }, 300);
+    if (isEmpty && !this.isPreview) {
+      console.log('🔄 Resume is empty - sample data will be added when sections are enabled');
+      // Sample data is now handled by the store's addSection method
     } else {
       console.log('ℹ️ Resume already has content or is in preview mode');
     }
@@ -638,7 +472,8 @@ formatSkills(items : string[]){
     }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       selectedJson.isHideSelected = true;
-      let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
+  let acc = this.getAccomplishmentSection();
+  let index = acc.findIndex((obj: any) => obj.id === selectedJson.id)
       this.userStore.updateAccomplishmentItem(selectedJson, index);
     }
     this.markDirty();
@@ -672,80 +507,29 @@ formatSkills(items : string[]){
     }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       selectedJson.isHideSelected = false;
-      let index = this.resumeForm().accomplishment.findIndex(obj => obj.id === selectedJson.id)
+  let acc = this.getAccomplishmentSection();
+  let index = acc.findIndex((obj: any) => obj.id === selectedJson.id)
       this.userStore.updateAccomplishmentItem(selectedJson, index);
     }
     this.markDirty();
   }
 
-  addSectionHandler(section : string){
-    if(section === "CONTACT"){
-      // Load sample contact data if not already present
-      if (!this.isContactDefaultData()) {
-        this.userStore.addContact(this.createSampleContact());
-      }
-    }
-    else if(section === "PROFILE_SUMMARY"){
-      this.userStore.addSummary(this.createSampleProfileSummary());
-    }
-    else if(section === "EDUCATION"){
-      // Only open the education form/sidenav here (do not add to store)
-      this.openEducationForm();
-    }
-    else if(section === "PROJECT"){
-      // Set up add mode: clear selected project and set to add mode
-      this.userStore.setProject(new Project());
-      // You may need to add updateProjectAddMode() if it exists in the store
-      console.log('Adding new project - set to add mode with empty form');
-    }
-    else if(section === "WORK_EXPERIENCE"){
-      // Set up add mode: clear selected experience and set isEdit to false
-      this.userStore.setExperience(new Experience());
-      this.userStore.updateExperienceAddMode();
-      console.log('Adding new work experience - set to add mode with empty form');
-    }
-    else if(section === "CERTIFICATIONS"){
-      // Set up add mode: clear selected certification and set to add mode
-      this.userStore.setCertification(new Certification());
-      console.log('Adding new certification - set to add mode with empty form');
-    }
-    else if(section === "ACHIEVEMENT_WITH_DESC"){
-      this.userStore.setSelectedAccomplishment(new Accomplishment());
-    }
-    else if(section === "ACHIEVEMENTS_BULLET_POINTS"){
-      // Sample achievements will be handled in the comprehensive data loading
-      console.log('Sample achievements section added');
-    }
-    else if(section === "RELEVANT_COURSEWORK"){
-      // Toggle resetCourseworkForm to trigger form reset in child
-      this.resetCourseworkForm = !this.resetCourseworkForm;
-      // No section title reset
-      console.log('Sample coursework section add requested (fields cleared, section title preserved)');
-    }
-    else if(section === "SKILLS_BULLET_POINTS"){
-      this.userStore.addSkillV2(this.createMultipleSampleSkills());
-    }
-
-    // Add the section to the live sections list so it appears in the template
-    this.addNewSectionToArray(section);
+  addSectionHandler(section: string) {
+    // Call store method to add section and set default data
+    this.userStore.addSection(section);
 
     this.markDirty();
     this.cdr.detectChanges();
-    this.editSection.emit({section : section})
+    this.editSection.emit({ section: section });
   }
 
-  // Stub for opening the education form/sidenav
-  openEducationForm() {
-    // Implement this to open your sidenav or modal for education form
-    // Example: this.sidenavService.open('education');
-    // Or set a flag: this.showEducationForm = true;
-    console.log('Open education form/sidenav');
-  }
+
 
   editSectionHandler(section : string, selectedJson : any){
     if(section == "CONTACT"){
-      // For contact editing, we set the edit state
-      // The current contact data will be automatically loaded in the contact component
+      // For contact editing, set selectedContact to the current contact section data
+      const contactSection = this.getContactSection();
+      this.userStore.setSelectedContact(contactSection);
       this.userStore.updateContact();
     }
     else if(section == "EDUCATION"){
@@ -772,38 +556,44 @@ formatSkills(items : string[]){
 
   // Item-level edit and delete methods for experience
   editExperienceItem(index: number): void {
-    const experienceItem = this.resumeForm().experience[index];
+  const experienceList = this.getSectionItems('WORK_EXPERIENCE');
+  const experienceItem = experienceList[index];
     this.editSectionHandler('WORK_EXPERIENCE', experienceItem);
   }
 
   deleteExperienceItem(index: number): void {
-    const experienceItem = this.resumeForm().experience[index];
+  const experienceList = this.getSectionItems('WORK_EXPERIENCE');
+  const experienceItem = experienceList[index];
     this.confirmDeleteItemDialog('WORK_EXPERIENCE', experienceItem);
   }
 
   checkEducationCondition(){
-      return this.resumeForm().education.filter(obj => obj.isHideSelected === false)?.length > 0
+  const education = this.getSectionItems('EDUCATION');
+  return education.filter((obj: any) => obj.isHideSelected === false)?.length > 0
   }
 
   checkProjectCondition(){
-    return this.resumeForm().project.filter(obj => obj.isHideSelected === false)?.length > 0
+  const project = this.getSectionItems('PROJECT');
+  return project.filter((obj: any) => obj.isHideSelected === false)?.length > 0
   }
 
   checkExperienceCondition(){
-    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false)?.length > 0
+  const experience = this.getSectionItems('WORK_EXPERIENCE');
+  return experience.filter((obj: any) => obj.isHideSelected === false)?.length > 0
   }
 
   checkCertificationCondition(){
-    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false)?.length > 0
+  const certification = this.getSectionItems('CERTIFICATIONS');
+  return certification.filter((obj: any) => obj.isHideSelected === false)?.length > 0
   }
 
 
 
   // (Removed duplicate moveObjectById definition. The correct version is below.)
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
-    // Move section in the main section list (for section headers)
-    const sections = [...this.currentSections()];
-    const index = sections.findIndex(s => s.section === section);
+  // Move section in the main section list (for section headers)
+  const sections = this.sectionsDesc().filter(s => s.isAdded);
+  const index = sections.findIndex(s => s.section === section);
     if (index === -1) return;
     if (direction === "up" && index > 0) {
       [sections[index], sections[index - 1]] = [sections[index - 1], sections[index]];
@@ -812,73 +602,23 @@ formatSkills(items : string[]){
     } else {
       return;
     }
-    this.updateSectionVisibilityFlags(sections);
     this.userStore.setResumeSections(sections);
     this.markDirty();
   }
-  removeSection(section : string){
-  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-    data: {name: 'confirm'},
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    if(result.event === "CONFIRM"){
-        let status = this.sectionStatus()
-        let resume = this.resumeForm()
-        if(section === "PROFILE_SUMMARY"){
-          resume.profileSummary = new ProfileSummary()
-          status.isSummary = false;
-        }
-        else if(section === "RELEVANT_COURSEWORK"){
-          resume.courseWork = []
-          status.isCourseWork = false;
-        }
-        else if(section === "SKILLS_BULLET_POINTS"){
-          resume.skill = []
-          status.isSkill = false;
-        }
-        else if(section === "EDUCATION"){
-          resume.education = []
-          status.isEducation = false;
-        }
-        else if(section === "PROJECT"){
-          resume.project = []
-          status.isProject = false;
-        }
-        else if(section === "WORK_EXPERIENCE"){
-          resume.experience = []
-          status.isExperience = false;
-        }
-        else if(section === "CERTIFICATIONS"){
-          resume.certification = []
-          status.isCertification = false
-        }
-        else if(section === "ACHIEVEMENTS_BULLET_POINTS"){
-          resume.achievementBulletPoints = new AchievementBulletPoints()
-          status.isAchievement = false
-        }
-        else if(section === "CERTIFICATIONS_BULLET_POINTS"){
-          resume.certificationBulletPoints = new CertificationBulletPoints();
-        }
-        else if(section === "ACHIEVEMENT_WITH_DESC"){
-          resume.accomplishment = [];
-          status.isAccomplishments = false;
-        }
-        this.userStore.removeSection(section);
-        this.userStore.updateResumeForm(resume);
-        this.markDirty();
-        // Update section visibility flags after removing
-        this.refreshSectionVisibilityFlags();
-      }
-  })
-}
+  removeSection(section: string) {
+    this.userStore.removeSection(section);
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
 
 drop(event: CdkDragDrop<SectionDesc[]>) {
-  console.log("Before: ", this.currentSections(), event.previousIndex, event.currentIndex);
+  const addedSections = this.sectionsDesc().filter(s => s.isAdded);
+  console.log("Before: ", addedSections, event.previousIndex, event.currentIndex);
   
   if (event.previousIndex !== event.currentIndex) {
     this.userStore.reorderSections(event.previousIndex, event.currentIndex);
-    console.log("After: ",this.currentSections(), event.previousIndex, event.currentIndex);
+    const afterSections = this.sectionsDesc().filter(s => s.isAdded);
+    console.log("After: ", afterSections, event.previousIndex, event.currentIndex);
     
     // Add a subtle success animation
     this.animateSuccessfulDrop(event.currentIndex);
@@ -905,50 +645,7 @@ private animateSuccessfulDrop(targetIndex: number) {
   }, 50);
 }
 
-  private syncSectionsToStore() {
-    let formattedSections: SectionDesc[] = [];
-    this.sections.forEach((e) => {
-      const found = this.currentSections().filter((s) => s.section === e);
-      formattedSections = [...formattedSections, ...found];
-    });
-    this.updateSectionVisibilityFlags(formattedSections);
-    this.userStore.setResumeSections(formattedSections);
-    this.cdr.detectChanges();
-  }
 
-  private updateSectionVisibilityFlags(sections: SectionDesc[]) {
-    sections.forEach((section, index) => {
-      // Always force isAdded: true for these key sections
-      if (["PROJECT", "CERTIFICATIONS", "ACHIEVEMENTS_BULLET_POINTS"].includes(section.section)) {
-        section.isAdded = true;
-      }
-      if (index === 0) {
-        // First section: no arrows
-        section.canMoveUp = false;
-        section.canMoveDown = false;
-      } else if (index === 1) {
-        // Second section: only move down
-        section.canMoveUp = false;
-        section.canMoveDown = true;
-      } else if (index === sections.length - 1) {
-        // Last section: only move up
-        section.canMoveUp = true;
-        section.canMoveDown = false;
-      } else {
-        // All other sections: both arrows
-        section.canMoveUp = true;
-        section.canMoveDown = true;
-      }
-    });
-    // Persist updated flags to store
-    this.userStore.setResumeSections([...sections]);
-  }
-
-  private refreshSectionVisibilityFlags() {
-    const currentSections = this.currentSections();
-    this.updateSectionVisibilityFlags(currentSections);
-    this.userStore.setResumeSections([...currentSections]); // Trigger update
-  }
 
   // Template management helper methods
   getSectionTemplate(sectionType: string): SectionTemplate | null {
@@ -956,24 +653,18 @@ private animateSuccessfulDrop(targetIndex: number) {
   }
 
   shouldShowSection(sectionType: string): boolean {
-    // Check currentSections first
-    const currentSections = this.currentSections();
-    const sectionDesc = currentSections.find(desc => desc.section === sectionType);
-    if (sectionDesc) {
-      return sectionDesc.isAdded;
-    }
-    // Fallback: check sectionsDesc if not found in currentSections
-    const fallbackDesc = this.sectionsDesc.find(desc => desc.section === sectionType);
-    return fallbackDesc ? fallbackDesc.isAdded : false;
+    // Only use sectionsDesc
+    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
+    return sectionDesc ? sectionDesc.isAdded : false;
   }
 
   // Helper method to check if education section has data
   hasEducationData(): boolean {
-    return this.resumeForm().education?.length > 0;
+  return this.getSectionItems('EDUCATION')?.length > 0;
   }
 
   hasExperienceData(): boolean {
-    return this.resumeForm().experience?.length > 0;
+  return this.getSectionItems('WORK_EXPERIENCE')?.length > 0;
   }
 
   // Helper method to check if education section is empty
@@ -982,100 +673,98 @@ private animateSuccessfulDrop(targetIndex: number) {
   }
 
   shouldShowAddButton(sectionType: string): boolean {
-    const template = this.getSectionTemplate(sectionType);
-    if (!template || !template.hasAddButton) return false;
-    
+    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
+    if (!sectionDesc?.headerActions?.add) return false;
+
     // Special logic for EDUCATION: always show add button at header level to add new items
     if (sectionType === 'EDUCATION') {
       return true;
     }
-    
+
     // Special logic for WORK_EXPERIENCE: always show add button at header level to add new items
     if (sectionType === 'WORK_EXPERIENCE') {
       return true;
     }
-    
+
     // Special logic for PROJECT: always show add button at header level to add new items
     if (sectionType === 'PROJECT') {
       return true;
     }
-    
+
     // Special logic for CERTIFICATIONS: always show add button at header level to add new items
     if (sectionType === 'CERTIFICATIONS') {
       return true;
     }
-    
+
     // Special logic for SKILLS_BULLET_POINTS: show add button only when empty
     if (sectionType === 'SKILLS_BULLET_POINTS') {
       return !this.hasSkillsBulletPoints();
     }
-    
+
     // Special logic for SKILLS_CATEGORY: show add button only when empty
     if (sectionType === 'SKILLS_CATEGORY') {
       return !this.hasSkills();
     }
-    
+
     // Special logic for ACHIEVEMENTS_BULLET_POINTS: show add button only when empty
     if (sectionType === 'ACHIEVEMENTS_BULLET_POINTS') {
       return !this.hasAchievements();
     }
-    
+
     return true;
   }
 
   shouldShowEditButton(sectionType: string): boolean {
-    const template = this.getSectionTemplate(sectionType);
-    if (!template || !template.hasEditButton) return false;
-    
+    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
+    if (!sectionDesc?.headerActions?.edit) return false;
+
     // Special logic for EDUCATION: don't show edit button at header level (individual items will have edit buttons)
     if (sectionType === 'EDUCATION') {
       return false;
     }
-    
+
     // Special logic for WORK_EXPERIENCE: don't show edit button at header level (individual items will have edit buttons)
     if (sectionType === 'WORK_EXPERIENCE') {
       return false;
     }
-    
+
     // Special logic for PROJECT: don't show edit button at header level (individual items will have edit buttons)
     if (sectionType === 'PROJECT') {
       return false;
     }
-    
+
     // Special logic for CERTIFICATIONS: don't show edit button at header level (individual items will have edit buttons)
     if (sectionType === 'CERTIFICATIONS') {
       return false;
     }
-    
+
     // Special logic for SKILLS_BULLET_POINTS: show edit button only when has content
     if (sectionType === 'SKILLS_BULLET_POINTS') {
       return this.hasSkillsBulletPoints();
     }
-    
+
     // Special logic for SKILLS_CATEGORY: show edit button only when has content
     if (sectionType === 'SKILLS_CATEGORY') {
       return this.hasSkills();
     }
-    
+
     // Special logic for ACHIEVEMENTS_BULLET_POINTS: show edit button only when has content
     if (sectionType === 'ACHIEVEMENTS_BULLET_POINTS') {
       return this.hasAchievements();
     }
-    
+
     return true;
   }
 
   shouldShowDeleteButton(sectionType: string): boolean {
-    const template = this.getSectionTemplate(sectionType);
-    return template ? template.hasDeleteButton : false;
+    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
+    return !!sectionDesc?.headerActions?.delete;
   }
 
   shouldShowMoveButtons(sectionType: string): boolean {
-    const template = this.getSectionTemplate(sectionType);
-    return template ? template.hasMoveButtons : false;
+    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
+    return !!(sectionDesc?.headerActions?.moveUp || sectionDesc?.headerActions?.moveDown);
   }
-
-
 
   getSectionCssClass(sectionType: string): string {
     const classMap: { [key: string]: string } = {
@@ -1109,411 +798,67 @@ private animateSuccessfulDrop(targetIndex: number) {
     return labelMap[sectionType] || sectionType.toLowerCase();
   }
 
-  // Sample data generators for realistic content
-  createSampleEducation(): Education {
-    const education = new Education();
-    education.id = this.generateId();
-    education.degree = "Bachelor of Science";
-    education.field_of_study = "Computer Science";
-    education.school_name = "Stanford University";
-    education.school_location = "Stanford, CA";
-    education.graduation_date = "May 2021"; // Month and year format only
-    education.gpa = "3.85";
-    education.isDefault = false;
-    education.isHideSelected = false;
-    return education;
-  }
-
-  // Create additional sample education for demonstration
-  createAdditionalSampleEducation(): Education {
-    const education = new Education();
-    education.id = this.generateId();
-    education.degree = "Master of Science";
-    education.field_of_study = "Data Science";
-    education.school_name = "MIT";
-    education.school_location = "Cambridge, MA";
-    education.graduation_date = "Dec 2023"; // Month and year format only
-    education.gpa = "3.92";
-    education.isDefault = false;
-    education.isHideSelected = false;
-    return education;
-  }
-
-  createSampleProject(): Project {
-    const project = new Project();
-    project.id = this.generateId();
-    project.project_name = "E-commerce Web Application";
-    project.project_link = "https://github.com/johndoe/ecommerce-app";
-    project.period = "Jan 2023 - Mar 2023";
-    project.description = "• Built responsive e-commerce platform serving 10,000+ active users with React and TypeScript\n• Implemented secure payment processing with Stripe integration and fraud detection\n• Developed real-time inventory management system with automated stock alerts\n• Optimized database queries and caching strategies, reducing page load time by 40%\n• Integrated third-party APIs for shipping, tax calculation, and customer reviews";
-    project.technologies_used = "React, TypeScript, Node.js, MongoDB, Express.js, Stripe API, Redis, AWS";
-    project.isHideSelected = false;
-    project.bullet_points_count = "5";
-    project.original_description_html = "<ul><li>Built responsive e-commerce platform serving 10,000+ active users with React and TypeScript</li><li>Implemented secure payment processing with Stripe integration and fraud detection</li><li>Developed real-time inventory management system with automated stock alerts</li><li>Optimized database queries and caching strategies, reducing page load time by 40%</li><li>Integrated third-party APIs for shipping, tax calculation, and customer reviews</li></ul>";
-    return project;
-  }
-
-  createSampleExperience(): Experience {
-    const experience = new Experience();
-    experience.id = this.generateId();
-    experience.position_title = "Senior Software Developer";
-    experience.company_name = "Tech Solutions Inc.";
-    experience.location = "San Francisco, CA";
-    experience.start_date = "Jun 2023";
-    experience.end_date = "Present";
-    experience.description = "• Led development of 8+ scalable web applications using React, TypeScript, and Node.js serving 50K+ users\n• Architected microservices infrastructure on AWS, improving system reliability by 45% and reducing deployment time by 60%\n• Implemented automated CI/CD pipelines with Jenkins and Docker, enabling daily deployments with zero downtime\n• Reduced application load time by 35% through code optimization, lazy loading, and performance monitoring\n• Mentored team of 4 junior developers on coding standards, code reviews, and modern development practices\n• Collaborated with product managers and UX designers to deliver user-centric features ahead of schedule";
-    experience.isCurrentlyWorkHere = true;
-    experience.isHideSelected = false;
-    experience.bullet_points_count = "6";
-    experience.original_description_html = "<ul><li>Led development of 8+ scalable web applications using React, TypeScript, and Node.js serving 50K+ users</li><li>Architected microservices infrastructure on AWS, improving system reliability by 45% and reducing deployment time by 60%</li><li>Implemented automated CI/CD pipelines with Jenkins and Docker, enabling daily deployments with zero downtime</li><li>Reduced application load time by 35% through code optimization, lazy loading, and performance monitoring</li><li>Mentored team of 4 junior developers on coding standards, code reviews, and modern development practices</li><li>Collaborated with product managers and UX designers to deliver user-centric features ahead of schedule</li></ul>";
-    return experience;
-  }
-
-  createSampleCertification(): Certification {
-    const certification = new Certification();
-    certification.id = this.generateId();
-    certification.certification_name = "AWS Certified Solutions Architect - Professional";
-    certification.issued_organisation = "Amazon Web Services (AWS)";
-    certification.certification_link = "https://aws.amazon.com/certification/certified-solutions-architect-professional/";
-    certification.issued_month = "December";
-    certification.issued_year = "2024";
-    certification.isHideSelected = false;
-    return certification;
-  }
-
-  createSampleSkill(): SkillV2 {
-    const skill = new SkillV2();
-    skill.sub_title = "Programming Languages";
-    skill.skills = ["JavaScript", "Python", "Java", "TypeScript"];
-    return skill;
-  }
-
-  createMultipleSampleSkills(): SkillV2[] {
-    return [
-      {
-        sub_title: "Programming Languages",
-        skills: ["JavaScript", "Python", "Java", "TypeScript", "C#", "Go"]
-      },
-      {
-        sub_title: "Frontend Technologies",
-        skills: ["React", "Angular", "Vue.js", "HTML5", "CSS3", "SCSS", "Bootstrap", "Tailwind CSS"]
-      },
-      {
-        sub_title: "Backend & APIs",
-        skills: ["Node.js", "Express.js", "ASP.NET Core", "Spring Boot", "FastAPI", "GraphQL", "REST APIs"]
-      },
-      {
-        sub_title: "Databases & Storage",
-        skills: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "DynamoDB", "Elasticsearch"]
-      },
-      {
-        sub_title: "Cloud & DevOps",
-        skills: ["AWS", "Azure", "Docker", "Kubernetes", "Jenkins", "GitHub Actions", "Terraform"]
-      },
-      {
-        sub_title: "Tools & Frameworks",
-        skills: ["Git", "Webpack", "Vite", "Jest", "Cypress", "Postman", "VS Code", "IntelliJ IDEA"]
-      }
-    ] as SkillV2[];
-  }
-
-  createSampleProfileSummary(): ProfileSummary {
-    const profile = new ProfileSummary();
-    profile.profile_summary = "Innovative Senior Software Developer with 4+ years of expertise in full-stack development, cloud architecture, and team leadership. Proven track record of delivering scalable web applications serving 100K+ users using React, TypeScript, Node.js, and AWS. Specialized in microservices architecture, performance optimization, and agile development practices. Passionate about mentoring teams, implementing best practices, and driving technical excellence to deliver business-critical solutions that exceed user expectations.";
-    profile.position_highlight = "Senior Full-Stack Developer & Technical Lead";
-    profile.skills_highlight = "React, TypeScript, Node.js, AWS, Microservices, Team Leadership";
-    profile.isDefault = false;
-    profile.isHideSelected = false;
-    // Always match the HTML to the full summary for fresh resumes
-    profile.original_summary_html = `<p>${profile.profile_summary}</p>`;
-    return profile;
-  }
-
-  createSampleContact(): ResumeContact {
-    const contact = new ResumeContact();
-    contact.fname = "Alexandra";
-    contact.lname = "Rodriguez";
-    contact.subTitle = "Senior Full-Stack Developer & Technical Lead";
-    contact.role = "Senior Software Developer";
-    contact.email = "alexandra.rodriguez@email.com";
-    contact.phone_number = "+1 (415) 789-0123";
-    contact.address = "San Francisco, CA";
-    contact.linkedIn_profile = "https://linkedin.com/in/alexrodriguez-dev";
-    contact.github_profile = "https://github.com/alexrodriguez-dev";
-    contact.portfolio_link = "https://alexrodriguez.dev";
-    contact.linkedIn_profile_display_name = "alexrodriguez-dev";
-    contact.github_profile_display_name = "alexrodriguez-dev";
-    contact.isDefaultData = false;
-    contact.isHideSelected = false;
-    return contact;
-  }
-
-  createSampleAchievements(): string[] {
-    return [
-      "Led cross-functional team of 8 engineers to deliver enterprise-scale application 3 weeks ahead of schedule, resulting in $2M+ cost savings",
-      "Architected microservices infrastructure that improved system scalability by 300% and reduced deployment downtime by 95%",
-      "Implemented automated testing framework that increased code coverage from 45% to 92% and reduced production bugs by 60%",
-      "Received 'Technical Innovation Award' for developing AI-powered optimization tool that increased team productivity by 35%",
-      "Mentored 6 junior developers, with 100% promotion rate within 18 months and consistent top performance ratings"
-    ];
-  }
-
-  createSampleCoursework(): courseWork[] {
-    const courseData = [
-      { name: "Advanced Data Structures & Algorithms", institution: "Stanford University" }
-    ];
-    
-    return courseData.map((data, index) => {
-      const course = new courseWork();
-      course.id = index + 1;
-      course.courseworkname = data.name;
-      course.institution = data.institution;
-      return course;
-    });
-  }
-
-  createAdditionalSampleProject(): Project {
-    const project = new Project();
-    project.id = this.generateId();
-    project.project_name = "Real-time Chat Application";
-    project.project_link = "https://github.com/alexrodriguez-dev/chat-app";
-    project.period = "Aug 2023 - Oct 2023";
-    project.description = "• Built scalable real-time chat application supporting 5,000+ concurrent users with Socket.io and React\n• Implemented end-to-end encryption for secure messaging and file sharing capabilities\n• Developed message search functionality with Elasticsearch, improving search speed by 70%\n• Created responsive mobile-first UI with React Native for iOS and Android platforms\n• Integrated push notifications and offline message synchronization features";
-    project.technologies_used = "React, React Native, Node.js, Socket.io, MongoDB, Elasticsearch, Redis, AWS";
-    project.isHideSelected = false;
-    project.bullet_points_count = "5";
-    project.original_description_html = "<ul><li>Built scalable real-time chat application supporting 5,000+ concurrent users with Socket.io and React</li><li>Implemented end-to-end encryption for secure messaging and file sharing capabilities</li><li>Developed message search functionality with Elasticsearch, improving search speed by 70%</li><li>Created responsive mobile-first UI with React Native for iOS and Android platforms</li><li>Integrated push notifications and offline message synchronization features</li></ul>";
-    return project;
-  }
-
-  createAdditionalSampleExperience(): Experience {
-    const experience = new Experience();
-    experience.id = this.generateId();
-    experience.position_title = "Full-Stack Developer";
-    experience.company_name = "InnovateTech Solutions";
-    experience.location = "Remote";
-    experience.start_date = "Jan 2022";
-    experience.end_date = "May 2023";
-    experience.description = "•Developed and deployed 12+ responsive web applications using React, Angular, and Vue.js for diverse client base\n• Built robust REST APIs and GraphQL services with Node.js, serving 25K+ daily active users\n• Implemented automated testing suites achieving 95% code coverage and reducing manual testing time by 80%\n• Optimized database performance and queries, resulting in 50% faster page load times across all applications\n• Collaborated with international remote teams across 4 time zones using Agile/Scrum methodologies";
-    experience.isCurrentlyWorkHere = false;
-    experience.isHideSelected = false;
-    experience.bullet_points_count = "5";
-    experience.original_description_html = "<ul><li>Developed and deployed 12+ responsive web applications using React, Angular, and Vue.js for diverse client base</li><li>Built robust REST APIs and GraphQL services with Node.js, serving 25K+ daily active users</li><li>Implemented automated testing suites achieving 95% code coverage and reducing manual testing time by 80%</li><li>Optimized database performance and queries, resulting in 50% faster page load times across all applications</li><li>Collaborated with international remote teams across 4 time zones using Agile/Scrum methodologies</li></ul>";
-    return experience;
-  }
-
-  createAdditionalSampleCertification(): Certification {
-    const certification = new Certification();
-    certification.id = this.generateId();
-    certification.certification_name = "Google Cloud Professional Developer";
-    certification.issued_organisation = "Google Cloud";
-    certification.certification_link = "https://cloud.google.com/certification/cloud-developer";
-    certification.issued_month = "August";
-    certification.issued_year = "2024";
-    certification.isHideSelected = false;
-    return certification;
-  }
-
-  // Initialize entire resume with realistic sample data
-  loadSampleResumeData() {
-    try {
-      console.log('🔄 Loading comprehensive sample resume data...');
-      
-      // Add sample contact info
-      this.userStore.setContact(this.createSampleContact());
-      
-      // Add sample profile summary
-      this.userStore.setSummary(this.createSampleProfileSummary());
-      
-      // Add sample education entry (single item) - using setEducationList with array
-      this.userStore.setEducationList([this.createSampleEducation()]);
-      
-      // Add sample work experience
-      this.userStore.setExperience(this.createSampleExperience());
-      
-      // Add sample projects
-      this.userStore.setProject(this.createSampleProject());
-      this.userStore.setProject(this.createAdditionalSampleProject());
-      
-      // Add additional experience
-      this.userStore.setExperience(this.createAdditionalSampleExperience());
-      
-      // Add sample certifications
-      this.userStore.setCertification(this.createSampleCertification());
-      this.userStore.setCertification(this.createAdditionalSampleCertification());
-      
-      // Add sample skills with multiple categories
-      this.userStore.setSkillV2(this.createMultipleSampleSkills());
-      
-      // Add sample skills bullet points
-      this.populateSampleSkillsBulletPoints();
-      
-      // Add sample achievements
-      this.populateSampleAchievements();
-      
-      // Add sample coursework
-      this.populateSampleCoursework();
-      
-      // Force update skills display
-      if(this.resumeForm().skill_v2?.length > 0){
-        this.firstHalfSkills = [...this.resumeForm().skill_v2.slice(0, Math.ceil(this.resumeForm().skill_v2?.length/2))]
-        this.secondHalfSkills = [...this.resumeForm().skill_v2.slice(Math.ceil(this.resumeForm().skill_v2?.length/2))]
-      }
-      
-      // Ensure section visibility is updated
-      this.refreshSectionVisibilityFlags();
-      
-      // Reset change flag since this is initialization, not user changes
-      this.userStore.setIsChangeInNewResume(false);
-      this.cdr.detectChanges();
-      
-      console.log('✅ Sample resume data loaded successfully!');
-      console.log('📊 Loaded data includes:', {
-        contact: !!this.resumeForm().contact.fname,
-        summary: !!this.resumeForm().profileSummary.profile_summary,
-        education: this.resumeForm().education.length,
-        experience: this.resumeForm().experience.length,
-        projects: this.resumeForm().project.length,
-        certifications: this.resumeForm().certification.length,
-        skills: this.resumeForm().skill_v2.length
-      });
-      
-    } catch (error) {
-      console.error('❌ Error loading sample data:', error);
-    }
-  }
-
-  // Add sample data methods for other sections  
-  addSampleData() {
-    // Initialize with sample contact data
-    this.userStore.setContact(this.createSampleContact());
-    
-    // Initialize with sample profile summary
-    this.userStore.setSummary(this.createSampleProfileSummary());
-    
-    // Reset change flag since this is initialization, not user changes
-    this.userStore.setIsChangeInNewResume(false);
-  }
-
-  // Sample data for achievements and coursework
-  populateSampleAchievements(): void {
-    // Based on the Resume model, achievementBulletPoints seems to be a single object with an array
-    const resume = this.resumeForm();
-    if (!resume.achievementBulletPoints.ach || resume.achievementBulletPoints.ach.length === 0) {
-      // Try to update achievements if there's a method available
-      console.log('Adding sample achievements...');
-      // This would need the proper store method, for now we'll log the sample data
-      const sampleAchievements = [
-        "Led a cross-functional team of 8 members to deliver a $2M project 3 weeks ahead of schedule",
-        "Increased team productivity by 45% through implementation of Agile methodologies",
-        "Received 'Project Manager of the Year' award for outstanding leadership and delivery",
-        "Successfully managed 15+ concurrent projects with 98% on-time delivery rate"
-      ];
-      console.log('Sample achievements:', sampleAchievements);
-    }
-  }
-
-  populateSampleCoursework(): void {
-    const resume = this.resumeForm();
-    if (!resume.courseWork || resume.courseWork.length === 0) {
-      console.log('Adding sample coursework...');
-      const sampleCourses = this.createSampleCoursework();
-      this.userStore.setCourseWorkList(sampleCourses);
-    }
-  }
-
-  populateSampleSkillsBulletPoints(): void {
-    const resume = this.resumeForm();
-    if (!resume.skillsBulletPoints || resume.skillsBulletPoints.length === 0) {
-      console.log('Adding sample skills bullet points...');
-      const sampleSkills = this.createSampleSkillsBulletPoints();
-      this.userStore.setSkillsBulletPoints(sampleSkills);
-    }
-  }
-
-  createSampleSkillsBulletPoints(): string[] {
-    return [
-      'JavaScript', 'TypeScript', 'React', 'Angular', 'Node.js', 
-      'Python', 'Java', 'HTML/CSS', 'MongoDB', 'PostgreSQL',
-      'AWS', 'Docker', 'Git', 'Agile/Scrum', 'REST APIs'
-    ];
-  }
 
   generateId(): string {
     return Math.random().toString(36).substr(2, 9);
   }
 
-  // Public method to manually load sample data (can be called from console or UI)
-  public loadSampleData(): void {
-    console.log('🎯 Manually loading sample resume data...');
-    this.loadSampleResumeData();
-  }
-
   // Public method to check current resume data status
   public checkDataStatus(): void {
-    const resume = this.resumeForm();
+  const contact = this.getSectionData('CONTACT');
+  const profileSummary = this.getSectionData('PROFILE_SUMMARY');
+    const education = this.getSectionItems('EDUCATION');
+    const experience = this.getSectionItems('WORK_EXPERIENCE');
+    const project = this.getSectionItems('PROJECT');
+    const certification = this.getSectionItems('CERTIFICATIONS');
+    const skills = this.getSectionItems('SKILLS_CATEGORY');
+    // For achievements and coursework, fallback to empty array if not found
+  const achievements = (this.getAchievementBulletPointsSection()?.ach?.length) || 0;
+  const coursework = (this.getCourseWorkSection()?.length) || 0;
     console.log('📊 Current Resume Data Status:', {
       contact: {
-        name: resume.contact.fname + ' ' + resume.contact.lname,
-        email: resume.contact.email,
-        hasDefaultData: resume.contact.isDefaultData
+        name: contact?.data?.fname + ' ' + contact?.data?.lname,
+        email: contact?.data?.email_address || contact?.data?.emailId,
+        hasDefaultData: contact?.data?.isDefaultData
       },
       profileSummary: {
-        hasContent: !!resume.profileSummary.profile_summary,
-        isDefault: resume.profileSummary.isDefault,
-        length: resume.profileSummary.profile_summary?.length || 0
+        hasContent: !!profileSummary?.data?.paragraph,
+        isDefault: profileSummary?.data?.isDefault,
+        length: profileSummary?.data?.paragraph?.length || 0
       },
       sections: {
-        education: resume.education.length,
-        experience: resume.experience.length,
-        projects: resume.project.length,
-        certifications: resume.certification.length,
-        skills: resume.skill_v2.length,
-        achievements: resume.achievementBulletPoints?.ach?.length || 0,
-        coursework: resume.courseWork?.length || 0
+        education: education.length,
+        experience: experience.length,
+        projects: project.length,
+        certifications: certification.length,
+        skills: skills.length,
+        achievements,
+        coursework
       }
     });
   }
 
-  // Force load sample data for debugging
-  public forceLoadSampleData(): void {
-    console.log('🚀 Force loading all sample data...');
-    this.loadSampleResumeData();
-    
-    // Check data after loading
-    setTimeout(() => {
-      const updatedResume = this.resumeForm();
-      console.log('✅ Data after force load:', {
-        contact: updatedResume.contact,
-        profileSummary: updatedResume.profileSummary.profile_summary?.substring(0, 100) + '...',
-        education: updatedResume.education.length,
-        experience: updatedResume.experience.length,
-        projects: updatedResume.project.length
-      });
-    }, 100);
-  }
-
-  moveSectionUp(section: string) {
-  const idx = this.sections.indexOf(section);
+moveSectionUp(section: string) {
+  const addedSections = this.sectionsDesc().filter(s => s.isAdded);
+  const idx = addedSections.findIndex(s => s.section === section);
   if (idx > 0) {
-    [this.sections[idx - 1], this.sections[idx]] = [this.sections[idx], this.sections[idx - 1]];
-    this.syncSectionsToStore(); // This automatically updates visibility flags
+    [addedSections[idx - 1], addedSections[idx]] = [addedSections[idx], addedSections[idx - 1]];
+    this.userStore.setResumeSections(addedSections);
     this.markDirty();
     this.cdr.detectChanges();
   }
 }
 
-moveSectionDown(section: string) {
-  const idx = this.sections.indexOf(section);
-  if (idx > -1 && idx < this.sections.length - 1) {
-    [this.sections[idx], this.sections[idx + 1]] = [this.sections[idx + 1], this.sections[idx]];
-    this.syncSectionsToStore(); // This automatically updates visibility flags
-    this.markDirty();
-    this.cdr.detectChanges();
-  }
-}
-
-  canMoveUp(section: string): boolean {
+  moveSectionDown(section: string) {
+    const addedSections = this.sectionsDesc().filter(s => s.isAdded);
+    const idx = addedSections.findIndex(s => s.section === section);
+    if (idx > -1 && idx < addedSections.length - 1) {
+      [addedSections[idx], addedSections[idx + 1]] = [addedSections[idx + 1], addedSections[idx]];
+      this.userStore.setResumeSections(addedSections);
+      this.markDirty();
+      this.cdr.detectChanges();
+    }
+  }  canMoveUp(section: string): boolean {
     const sectionData = this.getSectionData(section);
     return sectionData?.canMoveUp ?? false;
   }
@@ -1524,45 +869,10 @@ moveSectionDown(section: string) {
   }
 
   getSectionData(sectionKey: string): SectionDesc | undefined {
-    return this.currentSections().find(s => s.section === sectionKey);
+  return this.sectionsDesc().find(s => s.section === sectionKey && s.isAdded);
   }
 
-  private addNewSectionToArray(sectionKey: string) {
-    // Find the section description from the initial sectionsDesc array
-    const sectionTemplate = this.sectionsDesc.find(s => s.section === sectionKey);
-    if (sectionTemplate) {
-      const currentSections = this.currentSections();
-      
-      // Check if section already exists in current sections
-      const existingIndex = currentSections.findIndex(s => s.section === sectionKey);
-      
-      if (existingIndex === -1) {
-        // Create a new section with proper flags
-        const newSection: SectionDesc = {
-          ...sectionTemplate,
-          canMoveUp: true,
-          canMoveDown: false // New section becomes the last
-        };
-        
-        // Update the current sections by adding to the end
-        const updatedSections = [...currentSections, newSection];
-        this.updateSectionVisibilityFlags(updatedSections);
-        
-        // Update store - this should trigger the effect to update this.sections
-        this.userStore.setResumeSections(updatedSections);
-        
-        console.log(`Added section ${sectionKey} to sectionsDesc array`, updatedSections);
-        console.log(`Current sections length: ${currentSections.length}, Updated length: ${updatedSections.length}`);
-      } else {
-        console.log(`Section ${sectionKey} already exists, updating flags only`);
-        // Section exists, just update flags
-        this.updateSectionVisibilityFlags(currentSections);
-        this.userStore.setResumeSections([...currentSections]);
-      }
-    } else {
-      console.warn(`Section template not found for: ${sectionKey}`);
-    }
-  }
+
 
   dragStarted(event: CdkDragStart) {
   const element = (event.source.element.nativeElement as HTMLElement);
@@ -1583,44 +893,52 @@ isDefaultData(data : string){
 return data?.length==0
 }
 
-isContactDefaultData(){
-  return this.resumeForm().contact?.fname?.length>0 || this.resumeForm().contact?.lname?.length>0 || this.resumeForm().contact?.subTitle?.length>0 || this.resumeForm().contact?.phone_number?.length>0
-  || this.resumeForm().contact?.email?.length>0 || this.resumeForm().contact?.github_profile?.length>0 || this.resumeForm().contact?.linkedIn_profile?.length>0
-}
+  isContactDefaultData(){
+    const contact = this.getContactSection();
+    return contact?.fname?.length>0 || contact?.lname?.length>0 || contact?.subTitle?.length>0 || contact?.phone_number?.length>0
+      || contact?.email?.length>0 || contact?.github_profile?.length>0 || contact?.linkedIn_profile?.length>0;
+  }
 
-isAchievementDefaultData(){
-  return this.resumeForm().achievementBulletPoints?.ach == null || this.resumeForm().achievementBulletPoints?.ach.length == 0 || this.resumeForm().achievementBulletPoints?.ach == undefined
-}
+  isAchievementDefaultData(){
+    const ach = this.getAchievementBulletPointsSection();
+    return ach?.ach == null || ach?.ach?.length == 0 || ach?.ach == undefined;
+  }
 
-hasAchievements(): boolean {
-  return !!(this.resumeForm().achievementBulletPoints?.ach && this.resumeForm().achievementBulletPoints.ach.trim().length > 0);
-}
+  hasAchievements(): boolean {
+    const ach = this.getAchievementBulletPointsSection();
+    return !!(ach?.ach && ach.ach.trim().length > 0);
+  }
 
-isCertificationDefaultData(){
-   return  this.resumeForm().certificationBulletPoints?.point == null || this.resumeForm().certificationBulletPoints?.point.length == 0 || this.resumeForm().certificationBulletPoints?.point == undefined
+  isCertificationDefaultData(){
+    const cert = this.getCertificationBulletPointsSection();
+    return cert?.point == null || cert?.point?.length == 0 || cert?.point == undefined;
+  }
 
-}
+  hasCourseWork(): boolean {
+    const courseWork = this.getCourseWorkSection();
+    return !!courseWork.length;
+  }
 
-hasCourseWork(): boolean {
-  return !!(this.resumeForm().courseWork?.length);
-}
+  hasProfileSummary(): boolean {
+    const profile = this.getProfileSummarySection();
+    return !!(profile?.profile_summary?.length);
+  }
 
-hasProfileSummary(): boolean {
-  return !!(this.resumeForm().profileSummary?.profile_summary?.length);
-}
+  hasSkills(): boolean {
+    const skills = this.getSkillsCategorySection();
+    return !!skills.length && !this.isSkillsCategoryDefault();
+  }
 
-hasSkills(): boolean {
-  return !!(this.resumeForm().skill_v2?.length) && !this.isSkillsCategoryDefault();
-}
+  hasSkillsBulletPoints(): boolean {
+    const skillsBP = this.getSkillsBulletPointsSection();
+    return !!skillsBP.length;
+  }
 
-hasSkillsBulletPoints(): boolean {
-  return !!(this.resumeForm().skillsBulletPoints?.length);
-}
-
-formatSkillsBulletPoints(): string {
-  if (!this.resumeForm().skillsBulletPoints?.length) return '';
-  return this.resumeForm().skillsBulletPoints.join(', ');
-}
+  formatSkillsBulletPoints(): string {
+    const skillsBP = this.getSkillsBulletPointsSection();
+    if (!skillsBP.length) return '';
+    return skillsBP.join(', ');
+  }
 
 getProjectBulletPoints(description: string): string[] {
   if (!description) return [];
@@ -1666,7 +984,7 @@ hasGPA(item: Education): boolean {
 
 getSectionTitle(section : string){
   let sectionTitle;
-  this.currentSections().map((e : SectionDesc)=>{
+  this.sectionsDesc().filter((e : SectionDesc) => e.isAdded).map((e : SectionDesc)=>{
     if(e.section == section){
       sectionTitle = e.editable_section_title
     }
@@ -1674,14 +992,15 @@ getSectionTitle(section : string){
   return sectionTitle??'Section Title'
 }
 
-isAccomplishmentDefaultData(){
-  return this.resumeForm().accomplishment?.length == 0 || this.resumeForm().accomplishment == null || this.resumeForm().accomplishment == undefined
-}
+  isAccomplishmentDefaultData(){
+    const acc = this.getAccomplishmentSection();
+    return acc.length == 0 || acc == null || acc == undefined;
+  }
 
-isSkillsCategoryDefault(){
-  return this.resumeForm().skill_v2?.length == 0 || this.resumeForm().skill_v2 == null || this.resumeForm().skill_v2 == undefined
-}
-
+  isSkillsCategoryDefault(){
+    const skills = this.getSkillsCategorySection();
+    return skills.length == 0 || skills == null || skills == undefined;
+  }
 
 
   // TrackBy functions for performance optimization
@@ -1707,31 +1026,37 @@ isSkillsCategoryDefault(){
 
   // Project Section Methods
   hasProjectData(): boolean {
-    return this.resumeForm().project && this.resumeForm().project.length > 0;
+    const projects = this.getSectionItems('PROJECT');
+    return projects && projects.length > 0;
   }
 
   editProjectItem(index: number): void {
-    const projectItem = this.resumeForm().project[index];
+    const projects = this.getSectionItems('PROJECT');
+    const projectItem = projects[index];
     this.editSectionHandler('PROJECT', projectItem);
   }
 
   deleteProjectItem(index: number): void {
-    const projectItem = this.resumeForm().project[index];
+    const projects = this.getSectionItems('PROJECT');
+    const projectItem = projects[index];
     this.confirmDeleteItemDialog('PROJECT', projectItem);
   }
 
   // Certification Methods
   hasCertificationData(): boolean {
-    return this.resumeForm().certification && this.resumeForm().certification.length > 0;
+    const certifications = this.getSectionItems('CERTIFICATIONS');
+    return certifications && certifications.length > 0;
   }
 
   editCertificationItem(index: number): void {
-    const certificationItem = this.resumeForm().certification[index];
+    const certifications = this.getSectionItems('CERTIFICATIONS');
+    const certificationItem = certifications[index];
     this.editSectionHandler('CERTIFICATIONS', certificationItem);
   }
 
   deleteCertificationItem(index: number): void {
-    const certificationItem = this.resumeForm().certification[index];
+    const certifications = this.getSectionItems('CERTIFICATIONS');
+    const certificationItem = certifications[index];
     this.confirmDeleteItemDialog('CERTIFICATIONS', certificationItem);
   }
 

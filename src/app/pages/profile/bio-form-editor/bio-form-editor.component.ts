@@ -172,7 +172,7 @@ export class BioFormEditorComponent implements OnInit, OnDestroy, OnChanges {
     form.imageUrl = this.imageUrl?this.imageUrl : this.bioProfile().imageUrl;
 
     this.authService.updateBioProfile(form).subscribe((e)=>{
-        this.userStore.setBioProfile(e);
+  this.userStore.updateBioProfile(e);
         this.change_in_profile = false
         this.formSaved.emit()
     })

@@ -504,13 +504,19 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     project.bullet_points_count = this.projectForm.value.bullet_points?this.projectForm.value.bullet_points : '';
     project.period = this.projectForm.value.period?this.projectForm.value.period :'';
 
+    // Helper to get PROJECT section items
+    const getProjectSectionItems = () => {
+      const sections = this.sections();
+      const section = sections.find(s => s.section === 'PROJECT');
+      return section?.items || [];
+    };
     if(this.selectedProject().id){
       project.id = this.selectedProject().id;
-      let index = this.resumeSignalForm().project.findIndex(obj => obj.id === this.selectedProject().id)
+      let index = getProjectSectionItems().findIndex((obj: any) => obj.id === this.selectedProject().id);
       this.userStore.updateProjectItem(project, index);
     }
     else{
-      project.id = (this.resumeSignalForm().project.length + 1).toString()
+      project.id = (getProjectSectionItems().length + 1).toString();
       this.userStore.addProjectItem(project);
     }
     this.userStore.setProject(new Project());

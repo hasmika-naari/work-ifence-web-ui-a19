@@ -107,9 +107,14 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
   jobProfileSignal: Signal<any | null> = this.userStore.getJobProfileSignal();
   resumeFormSignal: Signal<Resume> = this.userStore.getResumeForm();
 
+  // Helper to extract profile summary from Resume.sections
+  private getProfileSummaryFromSections(resume: Resume): any {
+    return resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY')?.items?.[0]?.data;
+  }
+
   get profileSummaryHtml(): string {
     const jobProfile = this.jobProfileSignal();
-    const resumeSummary = this.resumeFormSignal()?.profileSummary;
+    const resumeSummary = this.getProfileSummaryFromSections(this.resumeFormSignal());
     const summary = jobProfile?.summary ?? resumeSummary;
     if (!summary) {
       return '';
@@ -237,8 +242,16 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
 
   get profileSkills(): SkillDisplaySection[] {
     const jobProfile = this.jobProfileSignal();
+    // Helper to extract skills from Resume.sections
+    const getSkillsFromSections = (resume: Resume): any[] => {
+      return resume?.sections?.find((s: any) => s.section === 'SKILLS')?.items?.map((i: any) => i.data) ?? [];
+    };
     const resumeForm = this.resumeFormSignal();
-    const normalized = this.normalizeSkillSections(jobProfile?.skills, resumeForm?.skill_v2, resumeForm?.skill);
+    const normalized = this.normalizeSkillSections(
+      jobProfile?.skills,
+      getSkillsFromSections(resumeForm),
+      []
+    );
 
     if (normalized.length > 0) {
       this.skillsPlaceholderDismissed = true;
@@ -306,7 +319,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     // Handler to open the summary edit form in the drawer
     showSummaryFormEditorWindow() {
       this.userStore.ensureProfileSummaryInitialized();
-      const resumeSummary = this.resumeFormSignal()?.profileSummary;
+  const resumeSummary = this.getProfileSummaryFromSections(this.resumeFormSignal());
       if (resumeSummary) {
         const currentProfile = this.jobProfileSignal();
         const mergedProfile = {
@@ -511,9 +524,15 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       return this.cachedSkillSections;
     }
 
+    // Helper to extract experience items from Resume.sections
+    private getExperienceFromSections(resume: Resume): any[] {
+      return resume?.sections?.find((s: any) => s.section === 'WORK_EXPERIENCE')?.items?.map((i: any) => i.data) ?? [];
+    }
+
     get profileExperiences(): ExperienceProfileItem[] {
       const jobProfile = this.jobProfileSignal();
-      const resumeExperiences = this.resumeFormSignal()?.experience ?? [];
+      // Use section-based access for experience
+      const resumeExperiences = this.getExperienceFromSections(this.resumeFormSignal());
       const source = (jobProfile?.experience ?? resumeExperiences ?? []) as any[];
 
       const normalized = source
@@ -650,7 +669,11 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
       }
 
       const resumeForm = this.resumeFormSignal();
-      const normalized = this.normalizeSkillSections(jobProfile?.skills, resumeForm?.skill_v2, resumeForm?.skill);
+      // Helper to extract skills from Resume.sections
+      const getSkillsFromSections = (resume: Resume): any[] => {
+        return resume?.sections?.find((s: any) => s.section === 'SKILLS')?.items?.map((i: any) => i.data) ?? [];
+      };
+      const normalized = this.normalizeSkillSections(jobProfile?.skills, getSkillsFromSections(resumeForm), []);
 
       if (normalized.length) {
         this.skillsPlaceholderDismissed = true;
@@ -739,7 +762,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
     private ensureExperienceProfileSeeded() {
       const jobProfile = this.jobProfileSignal();
       if (!jobProfile?.experience) {
-        const resumeExperiences = [...(this.resumeFormSignal()?.experience ?? [])];
+        const resumeExperiences = [...this.getExperienceFromSections(this.resumeFormSignal())];
         const mergedProfile = {
           ...(jobProfile ?? {}),
           experience: resumeExperiences
@@ -1453,7 +1476,7 @@ export class DashboardProfileComponent implements OnInit, OnDestroy, AfterViewIn
    * Handles the "Add Job Application" button click.
    */
   onAddResume(): void {
-    this.userStore.updateResumeForm(new Resume());
+    this.userStore.setResumeForm(new Resume());
     this.userStore.updateSelectedResumeListItem(new ResumeListDataItem());
     this.userStore.setIsChangeInNewResume(false);
     this.router.navigateByUrl('/user/resumes/resume');

@@ -269,27 +269,23 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
     }
 
     getUnHideElements(resumeForm : Resume){
-        let resume = new Resume();
-        resume.achievementBulletPoints = resumeForm.achievementBulletPoints;
-        resume.award = resumeForm.award;
-        resume.certification = resumeForm.certification.filter(e=>e.isHideSelected == false)
-        resume.contact = resumeForm.contact;
-        resume.courseWork = resumeForm.courseWork;
-        resume.education = resumeForm.education.filter(e=>e.isHideSelected == false)
-        resume.experience = resumeForm.experience.filter(e=>e.isHideSelected == false)
-        resume.imageBase64Encoded = resumeForm.imageBase64Encoded;
-        resume.interest = resumeForm.interest;
-        resume.language = resumeForm.language;
-        resume.professional_membership = resumeForm.professional_membership;
-        resume.profileSummary = resumeForm.profileSummary;
-        resume.project = resumeForm.project.filter(e=>e.isHideSelected == false)
-        resume.publication = resumeForm.publication;
-        resume.skill = resumeForm.skill;
-        resume.volunteer_experience = resumeForm.volunteer_experience;
-    
-        return resume;
-    
-      }
+                // Create a deep copy of the resumeForm
+                const resumeCopy: Resume = JSON.parse(JSON.stringify(resumeForm));
+
+                // For each section, filter out items where isHideSelected == true (if present)
+                if (resumeCopy.sections && Array.isArray(resumeCopy.sections)) {
+                    resumeCopy.sections = resumeCopy.sections.map(section => {
+                        if (Array.isArray(section.items)) {
+                            return {
+                                ...section,
+                                items: section.items.filter(item => !item.data?.isHideSelected)
+                            };
+                        }
+                        return section;
+                    });
+                }
+                return resumeCopy;
+            }
     
 
 
@@ -297,16 +293,20 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
         console.log(item);
         if(option.label === 'Edit'){
             
-            if(item && item.resumeJson) {
-                let resumeForm: Resume = JSON.parse(item.resumeJson);
-                resumeForm.contact.isDefaultData = false;
-                this.userStore.setResumeForm(resumeForm);
-                console.log(resumeForm, item);
-                this.userStore.updateSelectedResumeListItem(item);
-                // //this.sidenavService.setCollapsed(true);
-                // this.sidenavService.setExpanded(false);
-                this.router.navigateByUrl('/user/resumes/resume');
-            }
+                        if(item && item.resumeJson) {
+                                let resumeForm: Resume = JSON.parse(item.resumeJson);
+                                // Set isDefaultData = false for CONTACT section if present
+                                const contactSection = resumeForm.sections?.find(s => s.section === 'CONTACT');
+                                if (contactSection && Array.isArray(contactSection.items) && contactSection.items[0]?.data) {
+                                    contactSection.items[0].data.isDefaultData = false;
+                                }
+                                this.userStore.setResumeForm(resumeForm);
+                                console.log(resumeForm, item);
+                                this.userStore.updateSelectedResumeListItem(item);
+                                // //this.sidenavService.setCollapsed(true);
+                                // this.sidenavService.setExpanded(false);
+                                this.router.navigateByUrl('/user/resumes/resume');
+                        }
         }else if(option.label === 'Duplicate'){
             this.childEvent.emit(true);
             let request = new JobResumeRequest();
@@ -395,7 +395,7 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
         // this.showResumeGenerator = true;
         this.userStore.updateSidebar(true);
         let resumeForm = new Resume();
-        this.userStore.updateResumeForm(resumeForm);
+        this.userStore.setResumeForm(resumeForm);
         this.userStore.setIsChangeInNewResume(false);
         this.router.navigateByUrl("/user/resumes/resume");
     }

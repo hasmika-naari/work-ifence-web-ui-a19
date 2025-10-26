@@ -282,7 +282,7 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
   showResumeGeneratorHandler($event: any){
       // this.showResumeGenerator = true;
       let resumeForm = new Resume();
-      this.userStore.updateResumeForm(resumeForm);
+      this.userStore.setResumeForm(resumeForm);
       this.userStore.setIsChangeInNewResume(false);
       this.router.navigateByUrl("/user/jobapplications/jobapp");
   }

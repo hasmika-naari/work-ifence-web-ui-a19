@@ -20,6 +20,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { AccordionModule } from 'primeng/accordion';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Resume } from 'src/app/services/resume.model';
+import { SectionItemsPipe } from '../pipes/section-items.pipe';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -36,7 +37,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatFormFieldModule,InputTextModule, MatTooltipModule,
     MatInputModule,ButtonModule,ConfirmDialogComponent,
     MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule],
+    MatIconModule,MatExpansionModule,
+    SectionItemsPipe],
   templateUrl: './template6.component.html',
   styleUrls: ['./template6.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -200,102 +202,97 @@ export class ResumeTemplate6Component implements OnInit, OnDestroy {
   }
 
   checkEducationCondition(){
-      return this.resumeForm().education.filter(obj => obj.isHideSelected === false).length > 0
+  const eduSection = this.resumeForm().sections?.find(s => s.section === 'EDUCATION');
+  const eduArray = eduSection?.items?.map(i => i.data) ?? [];
+  return eduArray.filter((obj: any) => obj.isHideSelected === false).length > 0;
   }
 
   checkProjectCondition(){
-    return this.resumeForm().project.filter(obj => obj.isHideSelected === false).length > 0
+    const projSection = this.resumeForm().sections?.find(s => s.section === 'PROJECT');
+    const projArray = projSection?.items?.map(i => i.data) ?? [];
+    return projArray.filter((obj: any) => obj.isHideSelected === false).length > 0;
   }
 
   checkExperienceCondition(){
-    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false).length > 0
+    const expSection = this.resumeForm().sections?.find(s => s.section === 'EXPERIENCE');
+    const expArray = expSection?.items?.map(i => i.data) ?? [];
+    return expArray.filter((obj: any) => obj.isHideSelected === false).length > 0;
   }
 
   checkCertificationCondition(){
-    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false).length > 0
+    const certSection = this.resumeForm().sections?.find(s => s.section === 'CERTIFICATION');
+    const certArray = certSection?.items?.map(i => i.data) ?? [];
+    return certArray.filter((obj: any) => obj.isHideSelected === false).length > 0;
   }
 
 
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
     if(section === "EDUCATION"){
-    const array = this.resumeForm().education;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
+      const eduSection = this.resumeForm().sections?.find(s => s.section === 'EDUCATION');
+      const eduArray = eduSection?.items?.map(i => i.data) ?? [];
+      const index = eduArray.findIndex((obj: any) => obj.id === id);
+      if (index === -1) {
+        console.log("Object with the given id not found");
+        return;
+      }
+      if (direction === "up" && index > 0) {
+        [eduArray[index], eduArray[index - 1]] = [eduArray[index - 1], eduArray[index]];
+      } else if (direction === "down" && index < eduArray.length - 1) {
+        [eduArray[index], eduArray[index + 1]] = [eduArray[index + 1], eduArray[index]];
+      } else {
+        console.log("Move not possible");
+      }
+      eduArray.forEach((item: any, idx: number) => this.userStore.updateEducationItem(item, idx));
+    } else if(section === "PROJECT"){
+      const projSection = this.resumeForm().sections?.find(s => s.section === 'PROJECT');
+      const projArray = projSection?.items?.map(i => i.data) ?? [];
+      const index = projArray.findIndex((obj: any) => obj.id === id);
+      if (index === -1) {
+        console.log("Object with the given id not found");
+        return;
+      }
+      if (direction === "up" && index > 0) {
+        [projArray[index], projArray[index - 1]] = [projArray[index - 1], projArray[index]];
+      } else if (direction === "down" && index < projArray.length - 1) {
+        [projArray[index], projArray[index + 1]] = [projArray[index + 1], projArray[index]];
+      } else {
+        console.log("Move not possible");
+      }
+      projArray.forEach((item: any, idx: number) => this.userStore.updateProjectItem(item, idx));
+    } else if(section === "EXPERIENCE"){
+      const expSection = this.resumeForm().sections?.find(s => s.section === 'EXPERIENCE');
+      const expArray = expSection?.items?.map(i => i.data) ?? [];
+      const index = expArray.findIndex((obj: any) => obj.id === id);
+      if (index === -1) {
+        console.log("Object with the given id not found");
+        return;
+      }
+      if (direction === "up" && index > 0) {
+        [expArray[index], expArray[index - 1]] = [expArray[index - 1], expArray[index]];
+      } else if (direction === "down" && index < expArray.length - 1) {
+        [expArray[index], expArray[index + 1]] = [expArray[index + 1], expArray[index]];
+      } else {
+        console.log("Move not possible");
+      }
+      expArray.forEach((item: any, idx: number) => this.userStore.updateExperienceItem(item, idx));
+    } else if(section === "CERTIFICATION"){
+      const certSection = this.resumeForm().sections?.find(s => s.section === 'CERTIFICATION');
+      const certArray = certSection?.items?.map(i => i.data) ?? [];
+      const index = certArray.findIndex((obj: any) => obj.id === id);
+      if (index === -1) {
+        console.log("Object with the given id not found");
+        return;
+      }
+      if (direction === "up" && index > 0) {
+        [certArray[index], certArray[index - 1]] = [certArray[index - 1], certArray[index]];
+      } else if (direction === "down" && index < certArray.length - 1) {
+        [certArray[index], certArray[index + 1]] = [certArray[index + 1], certArray[index]];
+      } else {
+        console.log("Move not possible");
+      }
+      certArray.forEach((item: any, idx: number) => this.userStore.updateCertificationItem(item, idx));
     }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateEducationList(array);
-  }
-  else if(section === "PROJECT"){
-    const array = this.resumeForm().project;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateProjectList(array);
-  }
-  else if(section === "EXPERIENCE"){
-    const array = this.resumeForm().experience;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateExperienceList(array);
-  }
-  else if(section === "CERTIFICATION"){
-    const array = this.resumeForm().certification;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateCertificationList(array);
-  }
 
+  }
 }
 
-  
-  
-}

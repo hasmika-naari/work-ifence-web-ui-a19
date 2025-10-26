@@ -395,9 +395,9 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
 
   setSkillsValues(): void {
     // Safely handle skill values, defaulting to an empty array
-    const skillValues = this.resumeSignalForm().skill as any[] || [];
-    
-    // Assign the array to fruits
+    const resume = this.resumeSignalForm();
+    const section = resume.sections?.find((s: any) => s.section === 'SKILLS_CATEGORY');
+    const skillValues = section?.items?.map((i: any) => i.data) || [];
     this.fruits = [...skillValues];
     let section_title;
         if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
@@ -421,10 +421,13 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   
   setSkillsV2Values(){
     this.options = []
-    this.resumeSignalForm().skill_v2.map((e : SkillV2)=>{
-      this.options = [...this.options, e.sub_title]
-    })
-    this.skills_v2 = [...this.resumeSignalForm().skill_v2]
+      const resume = this.resumeSignalForm();
+      const section = resume.sections?.find((s: any) => s.section === 'SKILLS_CATEGORY');
+      const skillV2List = section?.items?.map((i: any) => i.data) || [];
+      skillV2List.forEach((e: any) => {
+        this.options = [...this.options, e.sub_title];
+      });
+      this.skills_v2 = [...skillV2List];
     
     // Capture original form values for regular skills mode
     setTimeout(() => {
@@ -731,8 +734,10 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
 
   setSkillsBulletPointsValues(): void {
     // Load existing skills bullet points
-    this.skillsBulletPoints = [...(this.resumeSignalForm().skillsBulletPoints || [])];
-    this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
+  const resume = this.resumeSignalForm();
+  const section = resume.sections?.find((s: any) => s.section === 'SKILLS_BULLET_POINTS');
+  this.skillsBulletPoints = section?.items?.map((i: any) => i.data) || [];
+  this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
     // Set section title
     let section_title;
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){

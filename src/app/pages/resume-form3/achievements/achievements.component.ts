@@ -172,7 +172,12 @@ export class AchievementsComponent implements OnInit, OnDestroy {
 
 setAchievements(){
   if(this.editor?.clipboard){
-    this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().achievementBulletPoints.original_html_achievement);
+    // Find the ACHIEVEMENTS_BULLET_POINTS section and get its first item's data
+    const achSection = this.sections().find((section: any) => section.section === 'ACHIEVEMENTS_BULLET_POINTS');
+    const achItem = achSection?.items && achSection.items.length > 0 ? achSection.items[0].data : null;
+    if(achItem && achItem.original_html_achievement) {
+      this.editor.clipboard.dangerouslyPasteHTML(achItem.original_html_achievement);
+    }
   }
   let section_title;
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
@@ -196,7 +201,12 @@ setAchievements(){
 
 setCertification(){
   if(this.editor?.clipboard){
-    this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().certificationBulletPoints.original_html_content);
+    // Find the CERTIFICATIONS_BULLET_POINTS section and get its first item's data
+    const certSection = this.sections().find((section: any) => section.section === 'CERTIFICATIONS_BULLET_POINTS');
+    const certItem = certSection?.items && certSection.items.length > 0 ? certSection.items[0].data : null;
+    if(certItem && certItem.original_html_content) {
+      this.editor.clipboard.dangerouslyPasteHTML(certItem.original_html_content);
+    }
   }
   let section_title;
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){

@@ -97,6 +97,45 @@ export interface WorkData{
 })
 export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
 
+  moveExperienceUp(index: number): void {
+    if (index > 0) {
+      const temp = this.experience_list[index - 1];
+      this.experience_list[index - 1] = this.experience_list[index];
+      this.experience_list[index] = temp;
+      this.hasFormChanged = true;
+      this.saveExperienceListToStore();
+    }
+  }
+
+  moveExperienceDown(index: number): void {
+    if (index < this.experience_list.length - 1) {
+      const temp = this.experience_list[index + 1];
+      this.experience_list[index + 1] = this.experience_list[index];
+      this.experience_list[index] = temp;
+      this.hasFormChanged = true;
+      this.saveExperienceListToStore();
+    }
+  }
+
+  saveExperienceListToStore(): void {
+    // Persist the reordered experience_list to the store, ensuring all Experience fields are present
+    const mappedList = this.experience_list.map(item => ({
+      id: (item.id !== undefined && item.id !== null) ? String(item.id) : '',
+      position_title: item.position_title ? item.position_title.toString() : '',
+      company_name: item.company_name ? item.company_name.toString() : '',
+      location: item.location ? item.location.toString() : '',
+      start_date: item.start_date ? item.start_date.toString() : '',
+      end_date: item.end_date ? item.end_date.toString() : '',
+      description: item.description ? item.description.toString() : '',
+      isCurrentlyWorkHere: (item as any).isCurrentlyWorkHere ?? false,
+      isHideSelected: (item as any).isHideSelected ?? false,
+      bullet_points_count: (item as any).bullet_points_count ? (item as any).bullet_points_count.toString() : '',
+      original_description_html: (item as any).original_description_html ? (item as any).original_description_html.toString() : ''
+    }));
+    const resume = { ...this.resumeSignalForm(), experience: mappedList };
+    this.userStore.setResumeForm(resume);
+  }
+
   // showCalenderIcon: boolean = true;
   resumeForm!: FormGroup;
   contactForm! : FormGroup
@@ -725,13 +764,16 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     exp.isCurrentlyWorkHere = this.experienceForm.controls['isCurrentlyWorkHere'].value != null?this.experienceForm.controls['isCurrentlyWorkHere'].value : false ;
     exp.bullet_points_count = this.experienceForm.value.bullet_points?this.experienceForm.value.bullet_points : '';
 
+    // Find the WORK_EXPERIENCE section and its items
+    const experienceSection = this.sections().find((section: any) => section.section === 'WORK_EXPERIENCE');
+    const experienceItems = experienceSection?.items || [];
     if(this.selectedExperience().id){
       exp.id = this.selectedExperience().id;
-      let index = this.resumeSignalForm().experience.findIndex(obj => obj.id === this.selectedExperience().id)
+      const index = experienceItems.findIndex((obj: any) => obj.id === this.selectedExperience().id);
       this.userStore.updateExperienceItem(exp, index);
     }
     else{ 
-      exp.id = (this.resumeSignalForm().experience.length + 1).toString()
+      exp.id = (experienceItems.length + 1).toString();
       this.userStore.addExperienceItem(exp);
     }
     this.userStore.setExperience(new Experience());

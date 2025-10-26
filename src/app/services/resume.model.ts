@@ -1,4 +1,104 @@
+// Skills (Bulleted)
+export class SkillsBulletPoint {
+  id: string;
+  skill: string;
+  constructor() {
+    this.id = '';
+    this.skill = '';
+  }
+}
+
+// Skills (Category)
+export class SkillsCategory {
+  id: string;
+  category: string;
+  skills: string[];
+  constructor() {
+    this.id = '';
+    this.category = '';
+    this.skills = [];
+  }
+}
+
+// Award
+export class Award {
+  id: string;
+  award_name: string;
+  issuing_organization: string;
+  date_received: string;
+  constructor() {
+    this.id = '';
+    this.award_name = '';
+    this.issuing_organization = '';
+    this.date_received = '';
+  }
+}
+
+// Language
+export class Language {
+  id: string;
+  language_name: string;
+  proficiency_level: string;
+  constructor() {
+    this.id = '';
+    this.language_name = '';
+    this.proficiency_level = '';
+  }
+}
+
+// Interest
+export class Interest {
+  id: string;
+  interest: string;
+  constructor() {
+    this.id = '';
+    this.interest = '';
+  }
+}
+
+// Publication
+export class Publication {
+  id: string;
+  title: string;
+  publication_source: string;
+  date: string;
+  constructor() {
+    this.id = '';
+    this.title = '';
+    this.publication_source = '';
+    this.date = '';
+  }
+}
+
+// Professional Membership
+export class ProfessionalMembership {
+  id: string;
+  organization_name: string;
+  membership_level: string;
+  dates_of_membership: string;
+  constructor() {
+    this.id = '';
+    this.organization_name = '';
+    this.membership_level = '';
+    this.dates_of_membership = '';
+  }
+}
+
+// Volunteer Experience
+export class VolunteerExperience {
+  id: string;
+  organization_name: string;
+  dates_of_service: string;
+  responsibilities: string;
+  constructor() {
+    this.id = '';
+    this.organization_name = '';
+    this.dates_of_service = '';
+    this.responsibilities = '';
+  }
+}
 import { ResumeTemplateDto, SectionDesc } from "./store/user-store";
+import { sections } from "./store/resume-sections";
 
 export class Education{
     id! : string
@@ -97,34 +197,7 @@ export class Education{
     }
   }
   
-  export class Award{
-    award_name!: string;
-    issuing_organization!: string;
-    date_received!: string;
-  }
   
-  export class Language{
-    language_name! : string;
-    proficiency_level! : string
-  }
-  
-  export class Publication{
-    title!: string
-    publication_source!: string
-    date!: string
-  }
-  
-  export class Professional_Membership{
-    organization_name!: string;
-    membership_level!: string;
-    dates_of_membership!: string;
-  }
-  
-  export class Volunteer_Experience{
-    organization_Name!: string;
-    dates_of_service!: string;
-    responsibilities!: string;
-  }
 
   export class ResumeContact{
     fname : string;
@@ -343,68 +416,37 @@ export class Education{
   
   export class Resume{
     title: string;
-    resume_category : string;
-    role_category : string;
-    access_level : string;
-    template_details : ResumeTemplateDto;
-    isPrimary : boolean;
-    isActive : boolean;
+    resume_category: string;
+    role_category: string;
+    access_level: string;
+    template_details: ResumeTemplateDto;
+    isPrimary: boolean;
+    isActive: boolean;
     subTitle: string;
-    contact : ResumeContact;
-    profileSummary : ProfileSummary;
-    skill : Array<Skill>;
-    skill_v2 : Array<SkillV2>;
-    skillsBulletPoints : Array<string>;
-    education : Array<Education>;
-    project : Array<Project>;
-    experience : Array<Experience>;
-    certification : Array<Certification>;
-    achievementBulletPoints : AchievementBulletPoints;
-    accomplishment : Array<Accomplishment>;
-    certificationBulletPoints : CertificationBulletPoints;
-    courseWork : Array<courseWork>;
-    award : Array<Award>;
-    language : Array<Language>;
-    interest : Array<string>;
-    publication  : Array<Publication>;
-    professional_membership : Array<Professional_Membership>;
-    volunteer_experience : Array<Volunteer_Experience>;
-    imageBase64Encoded : any
-    isSectionPresent : IsSectionPresent;
-    sections : Array<SectionDesc>
-    multipleSections : Array<Array<SectionDesc>>
+    imageBase64Encoded: any;
+    isSectionPresent: IsSectionPresent;
+    sections: Array<SectionDesc>;
+    multipleSections: Array<Array<SectionDesc>>;
 
-    constructor(){
+  selectedContact?: any;
+  constructor() {
       this.title = '';
       this.subTitle = 'Experienced Project Manager';
       this.access_level = 'Private';
       this.resume_category = '';
       this.role_category = '';
-      this.template_details = { id: 1,name: 'Template 1',companyName : '',template_name: 'TEMPLATE_1',imgPath : 'assets/img/resume-avatar3.png'};
+      this.template_details = { id: 1, name: 'Template 1', companyName: '', template_name: 'TEMPLATE_1', imgPath: 'assets/img/resume-avatar3.png' };
       this.isActive = false;
       this.isPrimary = false;
-      this.contact = {subTitle: 'Experienced Project Manager',fname : "JOHN", lname : "DOE", role : "Software Developer", email : "Email", phone_number : "Phone", address : "Location", linkedIn_profile : "https://www.linkedin.com/", github_profile : "https://github.com/", portfolio_link : "",linkedIn_profile_display_name : "LinkedIn" ,github_profile_display_name : 'GitHub' , isHideSelected : false, isDefaultData : true}
-      this.profileSummary = { profile_summary : "", position_highlight : "", skills_highlight : "", isDefault : true, isHideSelected : false, original_summary_html : ''}
-      this.skill = [] 
-      this.skill_v2 = []
-      this.skillsBulletPoints = []
-      this.education = []
-      this.project = []
-      this.experience = []
-      this.certification = []
-      this.achievementBulletPoints = { ach : "", original_html_achievement : '', isDefault : true}
-      this.courseWork = []
-      this.award = []
-      this.language = []
-      this.interest = []
-      this.publication = []
-      this.professional_membership = []
-      this.volunteer_experience = []
-      this.accomplishment = []
-      this.isSectionPresent = {isContact : false, isSummary : false, isEducation : false, isCourseWork : false, isSkill : false,isSkillV2 : false, isSkillsBulletPoints : false, isProject : false, isExperience : false, isCertification : false, isAchievement : false, isSkillsCategory : false, isAccomplishments : false},
-      this.certificationBulletPoints = {point : '', original_html_content : '', isDefault : true}
-      this.sections = [],
-      this.multipleSections = []
+      this.imageBase64Encoded = null;
+      this.isSectionPresent = new IsSectionPresent();
+      // Initialize all sections from the sections array, with default sections having isAdded: true
+      this.sections = sections.map(section => ({
+        ...section,
+        // Only CONTACT, PROFILE_SUMMARY, EDUCATION, WORK_EXPERIENCE, SKILLS_BULLET_POINTS are default
+        isAdded: ['CONTACT', 'PROFILE_SUMMARY', 'EDUCATION', 'WORK_EXPERIENCE', 'SKILLS_BULLET_POINTS'].includes(section.section)
+      }));
+      this.multipleSections = [];
     }
   }
 

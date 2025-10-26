@@ -1,8 +1,4 @@
-// ...imports and component decorator...
 
-// Inside ResumeForm3Component class:
-// ...existing code...
-// ...existing code...
 import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -50,7 +46,8 @@ import { ResumeTemplate } from 'src/app/services/bee-compete.model';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Account } from 'src/app/services/profile.model';
 import { AppUtilService } from 'src/app/services/app.util.service';
-import { ResumeTemplateDto, SectionDesc, UserResume, sections } from 'src/app/services/store/user-store';
+import { ResumeTemplateDto, SectionDesc, UserResume } from 'src/app/services/store/user-store';
+import { sections } from 'src/app/services/store/resume-sections';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { ResumeTemplate2Component } from './template2/template2.component';
 import { ResumeTemplate3Component } from './template3/template3.component';
@@ -108,6 +105,111 @@ export interface DialogData {
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked, OnChanges, AfterViewInit {
+
+  // --- Section Editing State ---
+  selectedSection: any = null;
+  selectedSubSection: any = null;
+
+  // --- Helpers ---
+  /**
+   * Returns the section object from the selected resume's sections array by section name.
+   */
+  getSection(sectionName: string) {
+    const resume = this.resumeSignalForm();
+    return resume.sections?.find(s => s.section === sectionName) || null;
+  }
+
+  /**
+   * Returns the subsection object from a section by subsection name (if applicable).
+   */
+  getSubSection(section: any, subSectionName: string) {
+    return section?.items?.find((item: any) => item.subSection === subSectionName) || null;
+  }
+
+  // --- Edit Handlers ---
+  /**
+   * Call this when user clicks edit on a section.
+   */
+  onEditSection(sectionName: string) {
+    this.selectedSection = this.getSection(sectionName);
+    this.selectedSubSection = null;
+    this.openPanel(sectionName, sectionName); // or your panel logic
+  }
+
+  /**
+   * Call this when user clicks edit on a subsection.
+   */
+  onEditSubSection(sectionName: string, subSectionName: string) {
+    const section = this.getSection(sectionName);
+    this.selectedSection = section;
+    this.selectedSubSection = this.getSubSection(section, subSectionName);
+    this.openPanel(subSectionName, subSectionName); // or your panel logic
+  }
+
+  // --- Save/Update Handlers ---
+  /**
+   * Save handler for section. Updates the section data in the sections array.
+   */
+  saveSection(sectionName: string, updatedData: any) {
+    // Get the current UserResume from the store
+    const userResume = this.userStore.state().selectedResume;
+    const resume = userResume.resumeForm;
+    // Update the section in the sections array
+    const updatedSections = resume.sections.map((section: any) => {
+      if (section.section === sectionName && section.items && section.items[0]) {
+        const updatedItems = [...section.items];
+        updatedItems[0] = { ...updatedItems[0], data: updatedData };
+        return { ...section, items: updatedItems };
+      }
+      return section;
+    });
+    // Update the store with the new sections array
+    this.userStore.state.update((state) => ({
+      ...state,
+      selectedResume: {
+        ...state.selectedResume,
+        resumeForm: {
+          ...state.selectedResume.resumeForm,
+          sections: updatedSections
+        }
+      }
+    }));
+    this.closePanelWindow(null);
+  }
+
+  /**
+   * Save handler for subsection. Updates the subsection data in the sections array.
+   */
+  saveSubSection(sectionName: string, subSectionName: string, updatedData: any) {
+    // Get the current UserResume from the store
+    const userResume = this.userStore.state().selectedResume;
+    const resume = userResume.resumeForm;
+    // Update the subsection in the sections array
+    const updatedSections = resume.sections.map((section: any) => {
+      if (section.section === sectionName && section.items) {
+        const updatedItems = section.items.map((item: any) => {
+          if (item.subSection === subSectionName) {
+            return { ...item, data: updatedData };
+          }
+          return item;
+        });
+        return { ...section, items: updatedItems };
+      }
+      return section;
+    });
+    // Update the store with the new sections array
+    this.userStore.state.update((state) => ({
+      ...state,
+      selectedResume: {
+        ...state.selectedResume,
+        resumeForm: {
+          ...state.selectedResume.resumeForm,
+          sections: updatedSections
+        }
+      }
+    }));
+    this.closePanelWindow(null);
+  }
 
   // Provide contact data for the contact section
 
@@ -195,10 +297,23 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       public dialog: MatDialog,
       public resumeService : ResumeService,
       public pdfToImageService : PdfToImageService) {
-        // Set initial sections, filtering out SKILLS_CATEGORY
-        const filteredSections = this.staticSections.filter(s => s.section !== 'SKILLS_CATEGORY');
+        const filteredSections = this.staticSections.filter((s: SectionDesc) => s.section !== 'SKILLS_CATEGORY');
         this.userStore.setResumeSections(filteredSections);
       }
+
+  
+    // Getter to provide contact section data for the drawer/component
+    get contactSectionData(): any {
+      // Use the section-based model to get contact section data
+      const resume = this.resumeSignalForm();
+      const contactSection = resume && resume.sections ? resume.sections.find((s: any) => s.section === 'CONTACT') : null;
+      // If section exists and has items, return the first item's data
+      if (contactSection && contactSection.items && contactSection.items.length > 0) {
+        return contactSection.items[0].data;
+      }
+      // Fallback to contactForm values if section is missing
+      return this.contactData;
+    }
 
   experienceForm = this._formBuilder.group({
     position_title: [''],
@@ -1792,21 +1907,24 @@ hideMenu() {
 
   getUnHideElements(){
     let resume = this.resumeSignalForm();
-    if(this.resumeSignalForm()?.certification){
-    resume.certification = this.resumeSignalForm().certification.filter(e=>e.isHideSelected == false)
-    }
-    if(this.resumeSignalForm()?.education){
-    resume.education = this.resumeSignalForm().education.filter(e=>e.isHideSelected == false)
-    }
-    if(this.resumeSignalForm()?.experience){
-    resume.experience = this.resumeSignalForm().experience.filter(e=>e.isHideSelected == false)
-    }
-    if(this.resumeSignalForm()?.project){
-    resume.project = this.resumeSignalForm().project.filter(e=>e.isHideSelected == false)
-    }
-    if(this.resumeSignalForm()?.accomplishment){
-    resume.accomplishment=this.resumeSignalForm().accomplishment.filter(e=>e.isHideSelected == false);
-    }
+    // Helper to filter items in a section
+    const filterSectionItems = (sectionName: string) => {
+      const section = resume.sections?.find((s: any) => s.section === sectionName);
+      if (!section || !section.items) return [];
+      return section.items.map((i: any) => i.data).filter((e: any) => e.isHideSelected == false);
+    };
+    // Update sections with filtered items
+    const updateSection = (sectionName: string) => {
+      const section = resume.sections?.find((s: any) => s.section === sectionName);
+      if (section) {
+        section.items = filterSectionItems(sectionName).map((data: any) => ({ data }));
+      }
+    };
+    updateSection('CERTIFICATIONS');
+    updateSection('EDUCATION');
+    updateSection('WORK_EXPERIENCE');
+    updateSection('PROJECT');
+    updateSection('ACHIEVEMENT_WITH_DESC');
     return resume;
 
   }

@@ -543,7 +543,7 @@ export class ResumeFormTabbedComponent implements OnInit {
           this.educationGeminiResponse = this.parseResponse(response);
           const element = document.getElementById("edu-card-info");
           if(element && this.educationGeminiResponse){
-            element.innerHTML = this.templateService.formatEductionDevResume(this.educationGeminiResponse);
+            element.innerHTML = this.templateService.formatTemplate3Education(this.educationGeminiResponse);
           }
           this.is_education_loading = false
         });
@@ -574,6 +574,7 @@ export class ResumeFormTabbedComponent implements OnInit {
           // const element = document.getElementById("project-card-info");
           // if(element && this.projectList_genai){
           //   element.innerHTML = this.templateService.formatProjectDevResume(this.projectList_genai);
+          //   element.innerHTML = this.templateService.formatTemplate3Project(this.projectList_genai as any);
           // }
           this.is_projects_loading = false;
         });

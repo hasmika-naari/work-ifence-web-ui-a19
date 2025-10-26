@@ -41,26 +41,62 @@ import { TemplatesService } from 'src/app/services/shared/templates.service';
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class ResumeTemplate5Component implements OnInit, OnDestroy {
+  // Section-based helpers for contact and profile summary
+  getContactData(): any {
+    const section = this.resumeForm().sections?.find(s => s.section === 'CONTACT');
+    return section?.items?.[0]?.data || {};
+  }
+
+  getProfileSummary(): string {
+    const section = this.resumeForm().sections?.find(s => s.section === 'PROFILE_SUMMARY');
+    return section?.items?.[0]?.data?.profile_summary || '';
+  }
+  // Section-based helpers for project and experience
+  getProjectItems(): any[] {
+    const section = this.resumeForm().sections?.find(s => s.section === 'PROJECT');
+    return section?.items?.map(i => i.data) || [];
+  }
+
+  getExperienceItems(): any[] {
+    const section = this.resumeForm().sections?.find(s => s.section === 'EXPERIENCE');
+    return section?.items?.map(i => i.data) || [];
+  }
+
+  // Section-based helpers for template
+  getEducationItems(): any[] {
+    const section = this.resumeForm().sections?.find(s => s.section === 'EDUCATION');
+    return section?.items?.map(i => i.data) || [];
+  }
+
+  getSkillItems(): any[] {
+    const section = this.resumeForm().sections?.find(s => s.section === 'SKILLS_BULLET_POINTS');
+    return section?.items?.map(i => i.data).flat() || [];
+  }
 
   private userStore: UserStoreService = inject(UserStoreService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
 
   resumeForm: Signal<Resume> = this.userStore.getResumeForm();
 
-  
-  @Output() editSection = new EventEmitter<any>();
-
   @Input() isPreview : boolean = false;
+  @Output() editSection = new EventEmitter<any>();
+  public dialog: MatDialog;
 
-  constructor(
-      private _formBuilder: FormBuilder, 
-      private router : Router, 
-      private cdr: ChangeDetectorRef,
-      public dialog: MatDialog,
-      public promptService : PromptService, 
-      public genaiService : GenAIService, 
-      public templateService : TemplatesService) {}
+  checkEducationCondition() {
+    return (this.resumeForm().sections.find(s => s.section === 'EDUCATION')?.items || []).filter((obj: any) => obj.isHideSelected === false).length > 0;
+  }
 
+  checkProjectCondition() {
+    return (this.resumeForm().sections.find(s => s.section === 'PROJECT')?.items || []).filter((obj: any) => obj.isHideSelected === false).length > 0;
+  }
+
+  checkExperienceCondition() {
+    return (this.resumeForm().sections.find(s => s.section === 'EXPERIENCE')?.items || []).filter((obj: any) => obj.isHideSelected === false).length > 0;
+  }
+
+  checkCertificationCondition() {
+    return (this.resumeForm().sections.find(s => s.section === 'CERTIFICATION' || s.section === 'CERTIFICATIONS')?.items || []).filter((obj: any) => obj.isHideSelected === false).length > 0;
+  }
   ngOnDestroy(): void {
   }
 
@@ -68,12 +104,23 @@ export class ResumeTemplate5Component implements OnInit, OnDestroy {
  
   }
 
+  constructor(
+    private _formBuilder: FormBuilder, 
+    private router : Router, 
+    private cdr: ChangeDetectorRef,
+    dialog: MatDialog,
+    public promptService : PromptService, 
+    public genaiService : GenAIService, 
+    public templateService : TemplatesService) {
+    this.dialog = dialog;
+  }
+
   confirmDeleteDialog(section: string, selectedJson : any): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {name: 'confirm'},
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if(result.event === "CONFIRM"){
         if(section === "SUMMARY"){
           this.userStore.deleteSummary();
@@ -198,99 +245,32 @@ export class ResumeTemplate5Component implements OnInit, OnDestroy {
     this.editSection.emit({section : section})
   }
 
-  checkEducationCondition(){
-      return this.resumeForm().education.filter(obj => obj.isHideSelected === false).length > 0
-  }
-
-  checkProjectCondition(){
-    return this.resumeForm().project.filter(obj => obj.isHideSelected === false).length > 0
-  }
-
-  checkExperienceCondition(){
-    return this.resumeForm().experience.filter(obj => obj.isHideSelected === false).length > 0
-  }
-
-  checkCertificationCondition(){
-    return this.resumeForm().certification.filter(obj => obj.isHideSelected === false).length > 0
-  }
+  // Removed legacy check*Condition methods using direct property access
 
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
-    if(section === "EDUCATION"){
-    const array = this.resumeForm().education;
-    const index = array.findIndex(obj => obj.id === id);
+  let sectionType = section;
+  let array: any[] = (this.resumeForm().sections.find((s: any) => s.section === sectionType)?.items || []);
+    const index = array.findIndex((obj: any) => obj.id === id);
     if (index === -1) {
       console.log("Object with the given id not found");
       return;
     }
-    
     if (direction === "up" && index > 0) {
-      // Swap with the previous element
       [array[index], array[index - 1]] = [array[index - 1], array[index]];
     } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
       [array[index], array[index + 1]] = [array[index + 1], array[index]];
     } else {
       console.log("Move not possible");
     }
-    this.userStore.updateEducationList(array);
-  }
-  else if(section === "PROJECT"){
-    const array = this.resumeForm().project;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
+    if(sectionType === "EDUCATION") {
+      array.forEach((item: any, idx: number) => this.userStore.updateEducationItem(item, idx));
+    } else if(sectionType === "PROJECT") {
+      array.forEach((item: any, idx: number) => this.userStore.updateProjectItem(item, idx));
+    } else if(sectionType === "EXPERIENCE") {
+      array.forEach((item: any, idx: number) => this.userStore.updateExperienceItem(item, idx));
+    } else if(sectionType === "CERTIFICATION") {
+      array.forEach((item: any, idx: number) => this.userStore.updateCertificationItem(item, idx));
     }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateProjectList(array);
-  }
-  else if(section === "EXPERIENCE"){
-    const array = this.resumeForm().experience;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateExperienceList(array);
-  }
-  else if(section === "CERTIFICATION"){
-    const array = this.resumeForm().certification;
-    const index = array.findIndex(obj => obj.id === id);
-    if (index === -1) {
-      console.log("Object with the given id not found");
-      return;
-    }
-    
-    if (direction === "up" && index > 0) {
-      // Swap with the previous element
-      [array[index], array[index - 1]] = [array[index - 1], array[index]];
-    } else if (direction === "down" && index < array.length - 1) {
-      // Swap with the next element
-      [array[index], array[index + 1]] = [array[index + 1], array[index]];
-    } else {
-      console.log("Move not possible");
-    }
-    this.userStore.updateCertificationList(array);
-  }
 
 }
 

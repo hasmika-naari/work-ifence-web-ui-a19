@@ -588,7 +588,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
    * Handles the "Add Job Application" button click.
    */
   onAddResume(): void {
-    this.userStore.updateResumeForm(new Resume());
+    this.userStore.setResumeForm(new Resume());
     this.userStore.updateSelectedResumeListItem(new ResumeListDataItem());
     this.userStore.setIsChangeInNewResume(false);
     this.router.navigateByUrl('/user/resumes/resume');

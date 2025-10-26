@@ -1,39 +1,39 @@
 <div class="container" cdkDropList [cdkDropListData]="sections" (cdkDropListDropped)="drop($event)">
     <!-- Header Section -->
     <div class="header">
-        <div class="name">{{resumeForm().contact.fname + ' ' + resumeForm().contact.lname}}</div>
+  <div class="name">{{getContactSection().fname + ' ' + getContactSection().lname}}</div>
         <div class="contact">
-        @if(resumeForm().contact.address.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'" style="padding-left: 0;">{{resumeForm().contact.address}}</p>
+  @if(getContactSection().address?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'" style="padding-left: 0;">{{getContactSection().address}}</p>
         } 
-        @if(resumeForm().contact.phone_number.length > 0 && resumeForm().contact.address.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
+  @if(getContactSection().phone_number?.length > 0 && getContactSection().address?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
         }
-        @if(resumeForm().contact.phone_number.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'">{{resumeForm().contact.phone_number}}</p>
+  @if(getContactSection().phone_number?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">{{getContactSection().phone_number}}</p>
         }
-        @if(resumeForm().contact.email.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
+  @if(getContactSection().email?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
         }
-        @if(resumeForm().contact.email.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'">{{resumeForm().contact.email}}</p>
+  @if(getContactSection().email?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">{{getContactSection().email}}</p>
         }
-        @if(resumeForm().contact.linkedIn_profile.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
+  @if(getContactSection().linkedIn_profile?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
         }
-        @if(resumeForm().contact.linkedIn_profile.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{resumeForm().contact.linkedIn_profile}}" target="_blank" style="color: #39A5B7; text-decoration: none;">{{resumeForm().contact.linkedIn_profile_display_name}}</a></p>
+  @if(getContactSection().linkedIn_profile?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{getContactSection().linkedIn_profile}}" target="_blank" style="color: #39A5B7; text-decoration: none;">{{getContactSection().linkedIn_profile_display_name}}</a></p>
         }
-        @if(resumeForm().contact.github_profile.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
+  @if(getContactSection().github_profile?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
         }
-        @if(resumeForm().contact.github_profile.length > 0){
-        <p [ngClass]="resumeForm().contact.isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{resumeForm().contact.github_profile}}" target="_blank" style="color: #39A5B7; text-decoration: none;">{{resumeForm().contact.github_profile_display_name}}</a></p>
+  @if(getContactSection().github_profile?.length > 0){
+  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{getContactSection().github_profile}}" target="_blank" style="color: #39A5B7; text-decoration: none;">{{getContactSection().github_profile_display_name}}</a></p>
         }
         </div>
         @if(!isPreview){
           <div class="section-actions">
-      @if(resumeForm().contact.isDefaultData){
+  @if(getContactSection().isDefaultData){
         <div class="wif-tooltip" data-direction="bottom">
           <div class="wif-tooltip__initiator">
             <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CONTACT')"></p-icon>
@@ -66,7 +66,7 @@
     </div>
 
      <ng-container *ngFor="let section of sections">
-    @if(resumeForm().profileSummary.profile_summary.length > 0){
+  @if(getSectionItems('PROFILE_SUMMARY')[0]?.profile_summary?.length > 0){
       <div class="section" style="position: relative;" cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
         <span class="section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
@@ -90,7 +90,7 @@
             </div>
           }
         </span>
-        <div [innerHTML]="resumeForm().profileSummary.profile_summary" class="project-content">
+  <div [innerHTML]="getSectionItems('PROFILE_SUMMARY')[0]?.profile_summary" class="project-content">
         </div>
           <!-- <p class="resume-summary-text" [ngClass]="resumeForm().profileSummary.isDefault?'opacity-half' : 'opacity-full'">{{resumeForm().profileSummary.profile_summary}}</p> -->
       </div>
@@ -125,7 +125,7 @@
     }
 
     <!-- Education Section -->
-    @if(resumeForm().education.length > 0){
+  @if(getSectionItems('EDUCATION').length > 0){
     <div class="section education" style="position: relative;" cdkDrag *ngIf="section === 'EDUCATION'">
         <div class="section-title" style="position: relative;">{{getSectionTitle(section)}}
           @if(!isPreview){
@@ -149,7 +149,7 @@
           </div>
         }
         </div>
-        <div *ngFor="let item of resumeForm().education">
+  <div *ngFor="let item of getSectionItems('EDUCATION')">
             <div class="education-p">
             @if(item.degree.length > 0){
                 <p style="padding-left: 0;"><b>{{item.degree}}</b></p>
@@ -327,7 +327,7 @@
             </div>
             @if(!isPreview){
               <div class="section-actions">
-                @if(resumeForm().skill.length == 0){
+              @if(getSectionItems('SKILLS_CATEGORY').length == 0){
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
                       <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
@@ -384,7 +384,7 @@
             </div>
           }
             </div>
-            <div *ngFor="let item of resumeForm().accomplishment">
+            <div *ngFor="let item of getSectionItems('ACHIEVEMENT_WITH_DESC')">
               <div class="experience-container" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
                 <div style="display: flex;">
                     <p style="flex: 1;text-align: left;margin: 0;font-size: 14px;color: #000;"><b>{{item.accomplisment}}</b></p>
@@ -489,7 +489,7 @@
             <p style="font-size: 14px;" class="opacity-half">Highlight your accomplishments, using numbers if possible.</p>
         </div>
       }
-    @if(resumeForm().experience.length > 0){
+  @if(getSectionItems('WORK_EXPERIENCE').length > 0){
         <div class="section experince trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
             <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
@@ -513,7 +513,7 @@
             </div>
           }
             </div>
-            <div *ngFor="let item of resumeForm().experience">
+            <div *ngFor="let item of getSectionItems('WORK_EXPERIENCE')">
               <div class="experience-container" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
                 <p style="font-size: 14px;margin: 0;"><b>{{item.position_title}} | {{item.company_name}} | {{item.start_date}} - {{item.end_date}}</b></p>
                 <div [innerHTML]="item.description" class="project-content"></div>
@@ -609,7 +609,7 @@
             </div>
         </div>
       }
-        @if(resumeForm().certification.length > 0){
+  @if(getSectionItems('CERTIFICATIONS').length > 0){
         <div class="section experince trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS'">
             <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
@@ -633,7 +633,7 @@
             </div>
           }
             </div>
-            <div *ngFor="let item of resumeForm().certification">
+            <div *ngFor="let item of getSectionItems('CERTIFICATIONS')">
               <div class="experience-container" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
                 <p [class]="getDivClass(item)" style="margin: 0;padding: 0;">
                     <span><a href="{{item.certification_link}}" target="_blank">{{item.certification_name}}</a>, {{item.issued_organisation}}</span>
@@ -760,7 +760,7 @@
             </div>
             <div>
               <div class="experience-container">
-                <div [innerHTML]="resumeForm().certificationBulletPoints.point" class="project-content"></div>
+                <div [innerHTML]="getCertificationBulletPointsSection().point" class="project-content"></div>
             </div>
             </div>
             </div>
@@ -800,7 +800,7 @@
             <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
             <div class="section-actions">
-              @if(resumeForm().skill.length == 0){
+              @if(getSectionItems('SKILLS_BULLET_POINTS').length == 0){
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_BULLET_POINTS')"></p-icon>
@@ -833,14 +833,14 @@
             </div>
             <div>
               <div class="experience-container" style="margin-left: 0;">
-                @if(resumeForm().skill.length == 0){
+                @if(getSectionItems('SKILLS_BULLET_POINTS').length == 0){
                 <p class="opacity-half">Your Skills</p>
                 }
                 @else{
                 <ul class="course-work-list">
-                  <li *ngFor="let item of resumeForm().skill; let i = index" class="custom-li">
+                  <li *ngFor="let item of getSectionItems('SKILLS_CATEGORY'); let i = index" class="custom-li">
                   <span>{{ item.name || item }}</span>
-                  <span class="bullet" *ngIf=" i != (resumeForm().skill.length-1)">•</span>
+                  <span class="bullet" *ngIf=" i != (getSectionItems('SKILLS_CATEGORY').length-1)">•</span>
                   </li>
                 </ul>
                 }
@@ -851,7 +851,7 @@
             <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
             <div class="section-actions">
-              @if(resumeForm().courseWork.length == 0){
+            @if(getSectionItems('RELEVANT_COURSEWORK').length == 0){
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('RELEVANT_COURSEWORK')"></p-icon>
@@ -884,14 +884,14 @@
             </div>
             <div>
               <div class="experience-container" style="margin-left: 0;">
-                @if(resumeForm().courseWork.length == 0){
+                @if(getSectionItems('RELEVANT_COURSEWORK').length == 0){
                 <p class="opacity-half">Your Course Work</p>
                 }
                 @else{
                 <ul class="course-work-list">
-                  <li *ngFor="let item of resumeForm().courseWork; let i = index" class="custom-li">
+                  <li *ngFor="let item of getSectionItems('RELEVANT_COURSEWORK'); let i = index" class="custom-li">
                   <span>{{ item }}</span>
-                   <span class="bullet" *ngIf=" i != (resumeForm().courseWork.length-1)">•</span>
+                   <span class="bullet" *ngIf=" i != (getSectionItems('RELEVANT_COURSEWORK').length-1)">•</span>
                   </li>
                 </ul>
                 }
@@ -924,7 +924,7 @@
             </div>
             <div>
               <div class="experience-container">
-                <div [innerHTML]="resumeForm().achievementBulletPoints.ach" class="project-content"></div>
+                <div [innerHTML]="getAchievementBulletPointsSection().ach" class="project-content"></div>
             </div>
             </div>
             </div>
@@ -960,7 +960,7 @@
             </div>
         </div>
       }
-      @if(resumeForm().project.length > 0){
+      @if(getSectionItems('PROJECT').length > 0){
         <div class="section experince trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
             <div class="section-title">{{getSectionTitle(section)}}
               @if(!isPreview){
@@ -985,7 +985,7 @@
             </div>
           }
             </div>
-            <div *ngFor="let item of resumeForm().project">
+            <div *ngFor="let item of getSectionItems('PROJECT')">
               <div class="experience-container" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
                 <p style="font-size: 14px;margin: 0;"><b>{{item.project_name}} | {{item.period}}</b></p>
                 <div [innerHTML]="item.description" class="project-content"></div>

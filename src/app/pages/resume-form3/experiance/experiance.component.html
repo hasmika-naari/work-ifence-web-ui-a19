@@ -185,6 +185,22 @@
                     <div class="experience-actions" [class.visible]="showActions === i">
                         <button 
                             type="button" 
+                            class="action-icon move-up-btn" 
+                            (click)="moveExperienceUp(i)"
+                            [disabled]="i === 0"
+                            matTooltip="Move Up">
+                            <i class="pi pi-arrow-up"></i>
+                        </button>
+                        <button 
+                            type="button" 
+                            class="action-icon move-down-btn" 
+                            (click)="moveExperienceDown(i)"
+                            [disabled]="i === experience_list.length - 1"
+                            matTooltip="Move Down">
+                            <i class="pi pi-arrow-down"></i>
+                        </button>
+                        <button 
+                            type="button" 
                             class="action-icon edit-btn" 
                             (click)="editExperience(experience)"
                             matTooltip="Edit Experience">

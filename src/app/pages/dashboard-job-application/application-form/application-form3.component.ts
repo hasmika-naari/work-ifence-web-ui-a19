@@ -1134,27 +1134,30 @@ ngAfterViewInit(): void {
     }
 }
 
-getUnHideElements(){
-  let resume = new Resume();
-  resume.achievementBulletPoints = this.resumeSignalForm().achievementBulletPoints;
-  resume.award = this.resumeSignalForm().award;
-  resume.certification = this.resumeSignalForm().certification.filter(e=>e.isHideSelected == false)
-  resume.contact = this.resumeSignalForm().contact;
-  resume.courseWork = this.resumeSignalForm().courseWork;
-  resume.education = this.resumeSignalForm().education.filter(e=>e.isHideSelected == false)
-  resume.experience = this.resumeSignalForm().experience.filter(e=>e.isHideSelected == false)
-  resume.imageBase64Encoded = this.resumeSignalForm().imageBase64Encoded;
-  resume.interest = this.resumeSignalForm().interest;
-  resume.language = this.resumeSignalForm().language;
-  resume.professional_membership = this.resumeSignalForm().professional_membership;
-  resume.profileSummary = this.resumeSignalForm().profileSummary;
-  resume.project = this.resumeSignalForm().project.filter(e=>e.isHideSelected == false)
-  resume.publication = this.resumeSignalForm().publication;
-  resume.skill = this.resumeSignalForm().skill;
-  resume.volunteer_experience = this.resumeSignalForm().volunteer_experience;
-
+getUnHideElements() {
+  const resumeForm = this.resumeSignalForm();
+  // Deep clone the resume to avoid mutating the original
+  const resume = new Resume();
+  Object.assign(resume, resumeForm);
+  resume.sections = (resumeForm.sections || []).map(section => {
+    // Clone section
+    const newSection = { ...section };
+    // If section has items, filter out hidden ones if needed
+    if (Array.isArray(newSection.items)) {
+      newSection.items = newSection.items.filter((item: any) => !item.data?.isHideSelected);
+      // If subsections exist, filter them as well
+      if ('subsections' in newSection && Array.isArray((newSection as any).subsections)) {
+        (newSection as any).subsections = ((newSection as any).subsections as any[]).map((subsection: any) => ({
+          ...subsection,
+          items: Array.isArray(subsection.items)
+            ? subsection.items.filter((item: any) => !item.data?.isHideSelected)
+            : subsection.items
+        }));
+      }
+    }
+    return newSection;
+  });
   return resume;
-
 }
 
 confirmDiscardAction(): void {

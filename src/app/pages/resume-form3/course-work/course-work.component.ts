@@ -188,7 +188,9 @@ export class CourseWorkComponent implements OnInit, OnDestroy, AfterViewChecked,
 
 
   setCourseWorkValues(){  
-    this.fruits = [...this.resumeSignalForm().courseWork]
+  // Find the RELEVANT_COURSEWORK section and use its items
+  const courseWorkSection = this.sections().find((section: any) => section.section === 'RELEVANT_COURSEWORK');
+  this.fruits = courseWorkSection?.items?.map((item: any) => item.data) ?? [];
     let section_title;
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
       this.multipleSections().map((e : SectionDesc[])=>{

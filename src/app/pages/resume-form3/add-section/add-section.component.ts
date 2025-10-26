@@ -16,7 +16,8 @@ import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Resume } from 'src/app/services/resume.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeHtmlCachePipe } from './safe-html-cache.pipe';
-import { SectionDesc, sections } from 'src/app/services/store/user-store';
+import { SectionDesc } from 'src/app/services/store/user-store';
+import { sections } from 'src/app/services/store/resume-sections';
 
 
 
@@ -80,7 +81,7 @@ export class AddSectionComponent implements OnInit, OnDestroy {
       // Emit selected section to parent. Parent should update the store.
       this.sectionSelected.emit(section);
       // Also emit a generic sectionAdded event for backward compatibility
-      this.sectionAdded.emit();
+      // this.sectionAdded.emit();
     } catch (error) {
       console.error('[AddSectionComponent] Error in addSection:', error);
       this.sectionAdded.emit();

@@ -157,7 +157,12 @@ setAccomplishments(){
 
 setSkillsCategory(){
   if(this.editor?.clipboard){
-    this.editor.clipboard.dangerouslyPasteHTML(this.resumeSignalForm().certificationBulletPoints.original_html_content);
+    // Find the CERTIFICATIONS_BULLET_POINTS section and get its first item's data
+    const certSection = this.sections().find((section: any) => section.section === 'CERTIFICATIONS_BULLET_POINTS');
+    const certItem = certSection?.items && certSection.items.length > 0 ? certSection.items[0].data : null;
+    if(certItem && certItem.original_html_content) {
+      this.editor.clipboard.dangerouslyPasteHTML(certItem.original_html_content);
+    }
   }
 }
 
@@ -183,14 +188,24 @@ setSkillsCategory(){
       accom.date = this.accomplishmentForm.controls['date'].value?this.accomplishmentForm.controls['date'].value : '';
       accom.isDefault = false;
       accom.isHideSelected = false;
+    // Find the ACHIEVEMENT_WITH_DESC section in the sections array
+    const accSectionIdx = this.sections().findIndex((section: any) => section.section === 'ACHIEVEMENT_WITH_DESC');
+    let accItems = accSectionIdx !== -1 ? this.sections()[accSectionIdx].items || [] : [];
     if(this.selectedAccomplishment().id){
       accom.id = this.selectedAccomplishment().id;
-      let index = this.resumeSignalForm().accomplishment.findIndex(obj => obj.id === this.selectedAccomplishment().id)
-      this.userStore.updateAccomplishmentItem(accom, index);
-    }
-    else{ 
-      accom.id = (this.resumeSignalForm().accomplishment.length + 1).toString()
-      this.userStore.addAccomplishmentItem(accom);
+      let index = accItems.findIndex((obj: any) => obj.id === this.selectedAccomplishment().id);
+      if (index !== -1) {
+        accItems[index] = { id: accom.id, data: accom };
+      }
+      this.sections()[accSectionIdx].items = accItems;
+      this.userStore.setResumeSections(this.sections());
+    } else {
+      accom.id = (accItems.length + 1).toString();
+      accItems.push({ id: accom.id, data: accom });
+      if (accSectionIdx !== -1) {
+        this.sections()[accSectionIdx].items = accItems;
+        this.userStore.setResumeSections(this.sections());
+      }
     }
     this.userStore.setSelectedAccomplishment(new Accomplishment());
     this.accomplishmentForm.reset()
