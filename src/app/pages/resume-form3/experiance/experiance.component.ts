@@ -40,10 +40,10 @@ import { PanelModule } from 'primeng/panel';
 import { ProgressSpinner, ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { EditorModule, Editor } from 'primeng/editor';
 
 
 
-import Quill from 'quill';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -90,7 +90,7 @@ export interface WorkData{
     MatFormFieldModule,InputTextModule,TableModule,CalendarModule,DropdownModule,
     MatInputModule,ButtonModule,OverlayPanelModule,PanelModule,
     MatButtonModule,AccordionModule,TextareaModule,TooltipModule,
-    MatIconModule,MatExpansionModule, MatCheckboxModule, MatCardModule, ProgressSpinnerModule, MatProgressSpinnerModule, ToastModule],
+    MatIconModule,MatExpansionModule, MatCheckboxModule, MatCardModule, ProgressSpinnerModule, ToastModule, EditorModule],
   templateUrl: './experiance.component.html',
   styleUrls: ['./experiance.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -152,11 +152,7 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
   borderWidth = 0;
   isOpen = false;
   workExperienceAIResponses : Array<WorkData> = []
-  @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
   action_taken : string = ''
-
-
-  private editor!: Quill;
   optimize_index : any = -1
   showActions: number = -1; // Track which experience item should show action buttons
 
@@ -167,7 +163,7 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
 
   experience_list : {id : number,position_title : String | null, company_name : String | null, location : String | null, start_date : String | null, end_date : String | null, description : String | null}[] = []
 
-  selectedExperienceItem! : {id : number | null,position_title : String | null, company_name : String | null, location : String | null, start_date : String | null, end_date : String | null, description : String | null}
+  selectedExperienceItem! : {id : string | null,position_title : String | null, company_name : String | null, location : String | null, start_date : String | null, end_date : String | null, description : String | null}
 
   // Form change detection properties
   private originalFormValues: any = {};
@@ -211,6 +207,10 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
 
   aiResponsePoint = new FormControl();
 
+  @ViewChild(Editor) editorComponent!: Editor;
+
+  editor: any;
+
   constructor(
       private router : Router, 
       private cdr: ChangeDetectorRef,
@@ -222,21 +222,47 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
       public resumeService : ResumeService,
       private messageService: MessageService,
       @Inject(PLATFORM_ID) private platformId: Object) {
-        effect(()=>{
-          if(this.selectedExperience().id){
-            // Edit mode: load selected experience data
-            this.setExperienceValues()
-          }else{
-            // Add mode: reset form but keep section title default
-            this.experienceForm.reset();
-            this.experienceForm.get('section_title')?.setValue('Experience');
-            
-            // Capture original values after reset
-            setTimeout(() => {
-              this.captureOriginalFormValues();
-            }, 100);
-          }
-        })
+        
+      console.log('Experience component constructor called');
+        
+      // Add reactive effect to watch for selectedExperience changes
+      // effect(() => {
+      //   const selected = this.selectedExperience();
+      //   console.log('Experience effect triggered, selected:', selected);
+      //   if (selected && selected.position_title) {
+      //     console.log('Setting experience values for:', selected.position_title);
+      //     this.setExperienceValues();
+      //     this.selectedExperienceItem = selected; // Set the selected item for editing
+      //     console.log('selectedExperienceItem set to:', this.selectedExperienceItem);
+      //   } else {
+      //     console.log('No valid selected experience, selected:', selected);
+      //   }
+      // }, { allowSignalWrites: true });
+
+      // Add reactive effect to populate experience_list from store
+      // effect(() => {
+      //   const resume = this.resumeSignalForm();
+      //   if (resume && resume.sections) {
+      //     const section = resume.sections.find((s: any) => s.section === 'WORK_EXPERIENCE');
+      //     const experienceItems = section?.items?.map((i: any) => i.data) || [];
+      //     if (experienceItems && experienceItems.length > 0) {
+      //       this.experience_list = experienceItems.map((exp: any, index: number) => ({
+      //         id: exp.id,
+      //         position_title: exp.position_title || null,
+      //         company_name: exp.company_name || null,
+      //         location: exp.location || null,
+      //         start_date: exp.start_date || null,
+      //         end_date: exp.end_date || null,
+      //         description: exp.description || null
+      //       }));
+      //       console.log('Experience list updated from store:', this.experience_list);
+      //     } else {
+      //       this.experience_list = [];
+      //     }
+      //   } else {
+      //     this.experience_list = [];
+      //   }
+      // });
       }
 
   experienceForm = this._formBuilder.group({
@@ -432,13 +458,6 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       this.checkForFormChanges();
     });
 
-    // Also listen to the Quill editor content changes
-    if (this.editor) {
-      this.editor.on('text-change', () => {
-        this.checkForFormChanges();
-      });
-    }
-
     // Capture initial form values after they are set
     setTimeout(() => {
       this.captureOriginalFormValues();
@@ -447,18 +466,13 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
 
   private captureOriginalFormValues(): void {
     const formValues = { ...this.experienceForm.value };
-    // Also capture editor content
-    const editorContent = this.editor ? this.editor.getContents() : null;
-    this.originalFormValues = { ...formValues, editorContent };
+    this.originalFormValues = { ...formValues };
     this.hasFormChanged = false;
   }
 
   private checkForFormChanges(): void {
     const currentFormValues = this.experienceForm.value;
-    const currentEditorContent = this.editor ? this.editor.getContents() : null;
-    const currentValues = { ...currentFormValues, editorContent: currentEditorContent };
-    
-    this.hasFormChanged = JSON.stringify(currentValues) !== JSON.stringify(this.originalFormValues);
+    this.hasFormChanged = JSON.stringify(currentFormValues) !== JSON.stringify(this.originalFormValues);
   }
 
   getButtonTooltip(): string {
@@ -472,99 +486,30 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   }
 
   ngOnInit() {
-  //   this.productService.getProductsSmall().then((products) => {
-  //     this.products = products;
-  //     this.selectedProduct = products[0];
-  //     this.cdr.markForCheck()
-  // });
-    this.subs.push(this.router.events.subscribe(() => {
-      const currentUrl = this.router.url;
-      if (currentUrl.includes('/resumes/resume')) {
-        // The current active route matches the desired route
-        // console.log('Current route matches the desired route');
-        this.userStore.updateSidebar(true);
-      } else if(currentUrl.includes('/user/resumes')){
-        this.userStore.updateSidebar(false);
-        // The current active route does not match the desired route
-        console.log('Current route does not match the desired route');
-      }
-    }));
+    console.log('Experience component ngOnInit called');
+    // Temporarily disable router subscription and form change detection to prevent hanging
+    // this.subs.push(this.router.events.subscribe(() => {
+    //   const currentUrl = this.router.url;
+    //   if (currentUrl.includes('/resumes/resume')) {
+    //     // The current active route matches the desired route
+    //     // console.log('Current route matches the desired route');
+    //     this.userStore.updateSidebar(true);
+    //   } else if(currentUrl.includes('/user/resumes')){
+    //     this.userStore.updateSidebar(false);
+    //     // The current active route does not match the desired route
+    //     console.log('Current route does not match the desired route');
+    //   }
+    // }));
 
     // Setup form change detection
-    this.setupFormChangeDetection();
+    // this.setupFormChangeDetection();
+  }
 
-    // this.subs.push(this.routeActivated.url.subscribe(urlSegment => {
-    //   const currentUrl = urlSegment.join('/');
-    //   
-    //   if (currentUrl.includes('/resumes/resume')) {
-    //     // The current active route contains the specific string
-    //     this.userStore.updateSidebar(true);
-    //   } else {
-    //     // The current active route does not contain the specific string
-    //     // this.userStore.updateSidebar(false);
-    //   }
-    // }));  
-    
-    // this.userStore.updateSidebar(true);
-
-    // this.eduForm = this._formBuilder.group({
-    //   edu_fields: this._formBuilder.array([])
-    // });
-
-    // this.certificationForm = this._formBuilder.group({
-    //   certification_fields : this._formBuilder.array([])
-    // })
-
-    // this.workForm = this._formBuilder.group({
-    //   work_fields : this._formBuilder.array([])
-    // });
-
-    // this.userProjectForm = this._formBuilder.group({
-    //   project_fields: this._formBuilder.array([])
-    // });
-
-    // this.contactForm = this._formBuilder.group({
-    //   name: [''],
-    //   lname: [''],
-    //   phone_number: [''],
-    //   email_address: [''],
-    //   address : [''],
-    //   role: [''],
-    //   linkedIn_profile: [''],
-    //   github_profile: [''],
-    //   portfolio_url : ['']
-    // })
-    // this.resumeForm = this._formBuilder.group({
-    //   profile_summary: [''],
-    //   experience: [``],
-    //   education: [``],
-    //   skills: [''],
-    //   certifications: [``],
-    //   projects: [``],
-    //   award : [``],
-    //   language : [``],
-    //   interest : [''],
-    //   publication : [''],
-    //   professional_membership : [''],
-    //   volunteer_experiences : [''],
-    //   imageBase64Encoded : ['']
-    // });
-
-    // this.addEducationField();
-    // this.addWorkField();
-    // this.addProjectField();
-    // this.addCertificationField();
-    this.experienceForm.controls['isCurrentlyWorkHere'].valueChanges.subscribe((change)=>{
-      if(change){
-        this.experienceForm.controls['end_date'].reset();
-        this.experienceForm.controls['end_date'].disable();
-        this.experienceForm.controls['end_date'].removeValidators(Validators.required);
-      }
-      else{
-        this.experienceForm.controls['end_date'].enable();
-        this.experienceForm.controls['end_date'].addValidators(Validators.required);
-      }
-    })
+  ngAfterViewInit(): void {
+    // Set the editor reference for getEditorData method
+    if (this.editorComponent) {
+      this.editor = this.editorComponent.quill;
+    }
   }
 
   // get eduFields() {
@@ -596,8 +541,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     this.experienceForm.controls['company_name'].setValue(this.selectedExperience().company_name)
     this.experienceForm.controls['location'].setValue(this.selectedExperience().location)
     this.experienceForm.controls['start_date'].setValue(moment(start).toDate());
-    // this.experienceForm.controls['description'].setValue(this.selectedExperience().description.join("\n"))
-    this.experienceForm.controls['bullet_points'].setValue(this.selectedExperience().bullet_points_count);
+    this.experienceForm.controls['description'].setValue(this.selectedExperience().description)
+    // this.experienceForm.controls['bullet_points'].setValue(this.selectedExperience().bullet_points_count);
     if(this.selectedExperience().isCurrentlyWorkHere){
       this.experienceForm.controls['end_date'].disable();
       this.experienceForm.controls['isCurrentlyWorkHere'].setValue(true);
@@ -605,10 +550,6 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     else{
       this.experienceForm.controls['end_date'].setValue(moment(endd).toDate()); 
       this.experienceForm.controls['isCurrentlyWorkHere'].setValue(false)
-    }
-
-    if(this.editor?.clipboard){
-      this.editor.clipboard.dangerouslyPasteHTML(this.selectedExperience().original_description_html);
     }
     let section_title;
     console.log(this.sections());
@@ -719,20 +660,15 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     if(this.experienceForm.invalid){
       return;
     }
-    console.log(this.experienceForm.value.end_date);
     console.log("In Save");
+    console.log('selectedExperienceItem:', this.selectedExperienceItem);
+    console.log('Has ID:', this.selectedExperienceItem?.id);
     this.markFormGroupTouched(this.experienceForm);
     let exp = new Experience();
     exp.company_name = this.experienceForm.value.company_name?this.experienceForm.value.company_name : '';
     // exp.description = this.experienceForm.value.description?this.experienceForm.value.description.split('\n').filter((item)=>{return item != ""}) : [];
-    let des = this.getEditorData();
-    if(des.includes('data-list="bullet"')){
-      const correctedHTML = des.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
-      exp.description = correctedHTML.length>0? correctedHTML : "";
-    }
-    else{
-      exp.description = des.length>0? des : "";
-    }
+    let des = this.experienceForm.value.description || '';
+    exp.description = des;
     exp.original_description_html = des;
     if(this.experienceForm.value.isCurrentlyWorkHere){
       exp.end_date = "Present"
@@ -765,19 +701,31 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     exp.bullet_points_count = this.experienceForm.value.bullet_points?this.experienceForm.value.bullet_points : '';
 
     // Find the WORK_EXPERIENCE section and its items
-    const experienceSection = this.sections().find((section: any) => section.section === 'WORK_EXPERIENCE');
+    const resume = this.resumeSignalForm();
+    if (!resume || !resume.sections) {
+      console.error('Resume or sections not available');
+      return;
+    }
+    const experienceSection = resume.sections.find((section: any) => section.section === 'WORK_EXPERIENCE');
     const experienceItems = experienceSection?.items || [];
-    if(this.selectedExperience().id){
-      exp.id = this.selectedExperience().id;
-      const index = experienceItems.findIndex((obj: any) => obj.id === this.selectedExperience().id);
+    
+    if(this.selectedExperienceItem && this.selectedExperienceItem.id !== null && this.selectedExperienceItem.id !== undefined){
+      console.log('UPDATE MODE: Updating existing experience with ID:', this.selectedExperienceItem.id);
+      exp.id = this.selectedExperienceItem.id;
+      const index = experienceItems.findIndex((obj: any) => obj.id === this.selectedExperienceItem?.id);
+      console.log('Found index in store:', index);
       this.userStore.updateExperienceItem(exp, index);
     }
     else{ 
-      exp.id = (experienceItems.length + 1).toString();
+      console.log('ADD MODE: Adding new experience');
+      exp.id = (experienceItems.length + 1).toString(); // Ensure ID is string for store
       this.userStore.addExperienceItem(exp);
     }
     this.userStore.setExperience(new Experience());
     this.experienceForm.reset();
+    // Reset selectedExperienceItem after save
+    this.selectedExperienceItem = {id : null,position_title : null, company_name : null, location : null, start_date : null, end_date : null, description : null};
+    
     // Removed default bullet_points value - form should be completely empty
     
     // Reset change tracking after save
@@ -789,23 +737,31 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       status.isExperience = true;
       this.userStore.updateSectionStatus(status);
     }
-    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
-          this.multipleSections().map((e : SectionDesc[])=>{
-            e.map((section : SectionDesc)=>{
-              if(section.section == 'WORK_EXPERIENCE'){
-                section.editable_section_title = this.experienceForm.controls['section_title'].value??'Experience'
+    if(this.resumeSignalForm() && this.resumeSignalForm().template_details && this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+          const multipleSections = this.multipleSections();
+          if(multipleSections && multipleSections.length > 0){
+            multipleSections.map((e : SectionDesc[])=>{
+              if(e && e.length > 0){
+                e.map((section : SectionDesc)=>{
+                  if(section && section.section == 'WORK_EXPERIENCE'){
+                    section.editable_section_title = this.experienceForm.controls['section_title'].value??'Experience'
+                  }
+                })
               }
             })
-          })
-          this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+            this.userStore.setMultipleColumnTemplateSections(multipleSections)
+          }
         }
         else{
-          this.sections().map((section : SectionDesc)=>{
-              if(section.section == 'WORK_EXPERIENCE'){
-               section.editable_section_title = this.experienceForm.controls['section_title'].value??'Experience'
-              }
-            })
-          this.userStore.setResumeSections(this.sections())
+          const sections = this.sections();
+          if(sections && sections.length > 0){
+            sections.map((section : SectionDesc)=>{
+                if(section && section.section == 'WORK_EXPERIENCE'){
+                 section.editable_section_title = this.experienceForm.controls['section_title'].value??'Experience'
+                }
+              })
+            this.userStore.setResumeSections(sections)
+          }
         }
     this.closePanelWindow()
     this.contact.emit();
@@ -1372,9 +1328,10 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   extractedStrings : string[] = []
 
   optimizeWorkHistory(){
-    if(this.getEditorRawData().length > 0){
+    const descriptionValue = this.experienceForm.get('description')?.value;
+    if(descriptionValue && typeof descriptionValue === 'string' && descriptionValue.length > 0){
       this.is_work_history_loading = true;
-      const experience_prompt = this.promptService.testing_work_exp_prompt(this.getEditorRawData());
+      const experience_prompt = this.promptService.testing_work_exp_prompt(descriptionValue);
       console.log(experience_prompt);
       this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe({
         next: (res : any) => {
@@ -1454,133 +1411,6 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   
 
   optimizeResponse(index : any){
-    this.action_taken = 'OPTIMIZE'
-    this.optimize_index = index;
-    const experience_prompt = this.promptService.optimize_the_point(this.workHistoryList[index]);
-      console.log(experience_prompt);
-      this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe({
-        next: (res : any) => {
-          console.log(res['choices'][0]['message']['content']);
-          
-          //store OpenAI response in our Backend. Need a table to store
-          let content = res['choices'][0]['message']['content'];
-          this.workHistoryList[index] = content
-          this.optimize_index = -1;
-          this.action_taken = ''
-          
-          // Show success message
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Optimized', 
-            detail: 'Suggestion optimized successfully!',
-            life: 3000
-          });
-        },
-        error: (error) => {
-          console.error('Error optimizing response:', error);
-          this.optimize_index = -1;
-          this.action_taken = ''
-          
-          // Show error message
-          this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Error', 
-            detail: 'Failed to optimize suggestion. Please try again.',
-            life: 5000
-          });
-        }
-      });
-  }
-
-  useResponse(index: number): void {
-    // Get the editor content as Delta
-  let newText = this.workHistoryList[index];
-  const content = this.editor.getContents();
-
-  let charIndex = 0; // Tracks the character index
-  let targetFound = false;
-
-  if(this.getEditorData().includes('data-list="bullet"')){
-    const lines = this.extractULStrings(this.getEditorData());
-    console.log(lines);
-    lines[index] = newText;
-    let newHTML = this.convertULToHtml(lines);
-    if(this.editor?.clipboard){
-      this.editor.clipboard.dangerouslyPasteHTML(newHTML);
-    }   
-  }
-  else if(this.getEditorData().includes('data-list="ordered"')){
-    const lines = this.extractOLStrings(this.getEditorData());
-    console.log(lines);
-    lines[index] = newText;
-    let newHTML = this.convertOLToHtml(lines);
-    if(this.editor?.clipboard){
-      this.editor.clipboard.dangerouslyPasteHTML(newHTML);
-    }   
-  }
-  else{
-    for (const op of content.ops || []) {
-      if (typeof op.insert === 'string') {
-         // Split lines by newline characters
-         const lines = op.insert.split('\n');
-         for (let i = 0; i < lines.length; i++) {
-           if (index === 0) {
-             targetFound = true;
-   
-             // Remove the target point/line
-             this.editor.deleteText(charIndex, lines[i].length);
-   
-             // Insert the new text
-             this.editor.insertText(charIndex, newText);
-   
-             return; // Exit once replacement is done
-           }
-   
-           // Update the character index and decrement the target index
-           charIndex += lines[i].length + 1; // Include newline
-           index--;
-         }
-       } else {
-         console.log("Else if working----------------------------");
-         // Handle cases where `op.insert` is not a string
-         charIndex += typeof op.insert === 'object' ? 1 : 0; // Increment for embedded objects
-       }
-     }
-   
-     if (!targetFound) {
-       console.warn('Index out of range. No replacement made.');
-     }
-  }
-  }
-
-  extractULStrings(htmlContent : string): string[] {
-    const regex = /<li[^>]*>\s*<span[^>]*><\/span>(.*?)<\/li>/gs;
-    const matches = [...htmlContent.matchAll(regex)];
-    return matches.map(match => match[1].trim().replace(/\s+/g, ' '));
-  }
-
-
-  convertULToHtml(points : string[]): string {
-   return `
-      <ol>
-        ${points.map(string => `<li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>${string}</li>`).join('')}
-      </ol>
-    `;
-  }
-
-  extractOLStrings(htmlContent : string): string[] {
-    const regex = /<li[^>]*data-list="ordered"[^>]*>\s*<span[^>]*><\/span>(.*?)<\/li>/gs;
-    const matches = [...htmlContent.matchAll(regex)];
-    return matches.map(match => match[1].trim().replace(/\s+/g, ' '));
-  }
-
-  convertOLToHtml(points : string[]): string {
-    return `
-      <ol>
-        ${points.map(string => `<li data-list="ordered"><span class="ql-ui" contenteditable="false"></span>${string}</li>`).join('')}
-      </ol>
-    `;
-  }
   
   
   
@@ -1601,19 +1431,17 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   //     this.is_projects_loading = false;
   //   });
   //   }
-  // }
+  }
 
-  optimizeProjectDetails(){
-    let raw_data = this.getEditorRawData();
-    this.is_work_history_loading = true;
-    console.log(raw_data);
-    const experience_prompt = this.promptService.testing_work_exp_prompt(raw_data);
-      console.log(experience_prompt);
-      this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe((res : any)=>{
-        console.log(res['choices'][0]['message']['content']);
-        this.is_work_history_loading = false;
-        this.openPanelWindow();
-      });
+  getEditorData(){
+    return this.editor.root.innerHTML;
+  }
+
+  useResponse(index: number): void {
+    // Set the selected AI response to the form
+    if (this.workHistoryList && this.workHistoryList[index]) {
+      this.experienceForm.get('description')?.setValue(this.workHistoryList[index]);
+    }
   }
 
   setAIResponse(exp : WorkData){
@@ -1666,8 +1494,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
         description : this.experienceForm.controls['description']?.value,
         isCurrentlyWorkHere : this.experienceForm.controls['isCurrentlyWorkHere'].value != null?this.experienceForm.controls['isCurrentlyWorkHere'].value : false 
       }
-      if(this.selectedExperienceItem?.id || this.selectedExperienceItem?.id === 0){
-        this.experience_list = [...this.experience_list.slice(0,this.selectedExperienceItem.id), new_experience, ...this.experience_list.slice(this.selectedExperienceItem.id + 1,)];
+      if(this.selectedExperienceItem?.id){
+        this.experience_list = [...this.experience_list.slice(0,parseInt(this.selectedExperienceItem.id)), new_experience, ...this.experience_list.slice(parseInt(this.selectedExperienceItem.id) + 1,)];
       }
       else{
         this.experience_list.push(new_experience)
@@ -1700,11 +1528,14 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   removeExperienceItem(experience : any){
     this.openDialog();
     console.log(experience);
-    if(this.experience_list.length === 1){
-      this.experience_list = []
-    }
-    else{
-      this.experience_list = [...this.experience_list.slice(0,experience.id), ...this.experience_list.slice(experience.id + 1,)];
+    const index = this.experience_list.findIndex(exp => exp.id === experience.id);
+    if (index !== -1) {
+      if(this.experience_list.length === 1){
+        this.experience_list = []
+      }
+      else{
+        this.experience_list = [...this.experience_list.slice(0,index), ...this.experience_list.slice(index + 1,)];
+      }
     }
   }
 
@@ -1902,68 +1733,10 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     return this.workExperienceAIResponses.length > 0;
   }
 
-  async ngAfterViewInit(): Promise<void> {
-    if (isPlatformBrowser(this.platformId)) {
-      const Quill = (await import('quill')).default; // Dynamically import Quill
-
-      this.editor = new Quill(this.editorContainer.nativeElement, {
-        theme: 'snow',
-        placeholder: 'Describe your responsibilities and achievements...', // Set placeholder text
-        modules: {
-          toolbar: [
-            ['bold', 'italic', 'underline', 'strike'], // Text formatting
-            [{ 'header': [1, 2, 3, false] }], // Headers
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Lists
-            [{ 'indent': '-1' }, { 'indent': '+1' }], // Indentation
-            ['link'], // Links
-            ['clean'] // Remove formatting
-          ],
-        },
-      });
-
-      // Sync editor description with FormControl
-      this.editor.on('text-change', () => {
-        this.experienceForm.get('description')?.setValue(this.editor.root.innerHTML, { emitEvent: false });
-        this.checkForFormChanges(); // Trigger change detection
-      });
-
-      // Sync FormControl value changes with Quill
-      this.experienceForm.get('description')?.valueChanges.subscribe((value) => {
-        if (this.editor.root.innerHTML !== value) {
-          this.editor.root.innerHTML = value || '';
-        }
-      });
-    }
-
-    this.editor.clipboard.dangerouslyPasteHTML(this.selectedExperience().original_description_html);
-  }
-
-  getEditorRawData(): string {
-    // const html = this.editor.root.innerHTML; 
-    const rawText = this.editor.getText().trim(); // Plain text (removes formatting and extra whitespace)
-    return rawText;
-  }
-
-  setDataInEditor(sentences: string[]): void {
-    if (this.editor) {
-      // Convert sentences to HTML
-      const html = sentences.map((sentence) => `<p>${sentence}</p>`).join('');
-      this.editor.clipboard.dangerouslyPasteHTML(html); // Set the HTML description in the editor
-    }
-  }
-
-  getEditorData(){
-    return this.editor.root.innerHTML;
-  }
-
-  
-
-  logContent(): void {
-    console.log(this.experienceForm.get('description')?.value);
-  }
-
   editExperience(experience: any): void {
-    this.selectedExperienceItem = experience;
+    console.log('editExperience called with:', experience);
+    this.selectedExperienceItem = { ...experience, id: experience.id.toString() };
+    console.log('selectedExperienceItem after edit:', this.selectedExperienceItem);
     
     // Populate the form with the selected experience data
     this.experienceForm.patchValue({
@@ -2002,8 +1775,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     }
 
     // Set description in the editor
-    if (this.editor && experience.description) {
-      this.editor.clipboard.dangerouslyPasteHTML(experience.description);
+    if (experience.description) {
+      this.experienceForm.get('description')?.setValue(experience.description);
     }
 
     // Scroll to form
@@ -2024,11 +1797,14 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        if(this.experience_list.length === 1){
-          this.experience_list = []
-        }
-        else{
-          this.experience_list = [...this.experience_list.slice(0,experience.id), ...this.experience_list.slice(experience.id + 1,)];
+        const index = this.experience_list.findIndex(exp => exp.id === experience.id);
+        if (index !== -1) {
+          if(this.experience_list.length === 1){
+            this.experience_list = []
+          }
+          else{
+            this.experience_list = [...this.experience_list.slice(0,index), ...this.experience_list.slice(index + 1,)];
+          }
         }
         
         // Update IDs of remaining experiences

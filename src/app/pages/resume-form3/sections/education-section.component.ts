@@ -9,7 +9,7 @@ import { ButtonModule } from 'primeng/button';
   template: `
     <div class="section education">
       <div *ngIf="data && data.length; else dummyEducation">
-        <div *ngFor="let edu of data; let i = index" class="education-item" style="position:relative;">
+        <div *ngFor="let edu of data; let i = index; trackBy: trackByEducationId" class="education-item" style="position:relative;">
           <div class="education-item-container" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; position: relative; width: 100%;">
             <span class="education-item-actions">
               <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
@@ -19,7 +19,7 @@ import { ButtonModule } from 'primeng/button';
             </span>
             <div style="display: flex; align-items: flex-start; width: 100%;">
               <div style="flex:1; min-width:0;">
-                <div style="font-weight:600;">{{ edu.degree || 'Degree and Field of Study' }}</div>
+                <div style="font-weight:600;">{{ (edu.degree && edu.field_of_study) ? (edu.degree + ' in ' + edu.field_of_study) : (edu.degree || edu.field_of_study || 'Degree and Field of Study') }}</div>
                 <div style="color:#555; font-size:14px;">{{ edu.school_name || 'School or University' }}</div>
               </div>
               <span style="margin-left:24px; text-align:right; min-width:120px;">
@@ -67,11 +67,17 @@ export class EducationSectionComponent {
   onDummyEdit() {
     // Emit dummy data for the sidenav form
     this.dummyEdit.emit({
-      degree: 'Degree and Field of Study',
-      school_name: 'School or University',
-      location: 'Location',
-      date_period: 'Date Period',
-      gpa: 'GPA/Percentage'
+      degree: '',
+      field_of_study: '',
+      school_name: '',
+      school_location: '',
+      graduation_date: '',
+      gpa: ''
     });
+  }
+
+  // TrackBy function for performance optimization
+  trackByEducationId(index: number, item: any): any {
+    return item.id || index;
   }
 }

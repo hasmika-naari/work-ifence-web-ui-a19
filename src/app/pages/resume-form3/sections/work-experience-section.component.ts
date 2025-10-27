@@ -11,22 +11,20 @@ import { Experience } from 'src/app/services/resume.model';
   template: `
     <div class="section work-experience">
       <div *ngIf="data && data.length" class="work-experience-list">
-        <div *ngFor="let job of data; let i = index" class="work-experience-item">
+        <div *ngFor="let job of data; let i = index; trackBy: trackByExperienceId" class="work-experience-item">
           <div class="work-experience-item-container">
             <span class="work-experience-item-actions">
               <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
               <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete.emit(i)"></button>
-              <button *ngIf="data.length > 1" pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === 0" (click)="moveUp.emit(i)"></button>
-              <button *ngIf="data.length > 1" pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === data.length - 1" (click)="moveDown.emit(i)"></button>
             </span>
             <div class="job-header">
               <div>
-                <div class="job-title">{{ job.position_title }}</div>
-                <div class="company">{{ job.company_name }}</div>
+                <div class="job-title">{{ job.position_title || 'Position Title' }}</div>
+                <div class="company">{{ job.company_name || 'Company Name' }}</div>
               </div>
               <div class="dates">{{ formatDate(job.start_date) }} - {{ formatDate(job.end_date) }}</div>
             </div>
-            <div class="job-description" [innerHTML]="job.description"></div>
+            <div class="job-description" [innerHTML]="job.description || 'Job description'"></div>
           </div>
         </div>
       </div>
@@ -39,12 +37,15 @@ export class WorkExperienceSectionComponent {
   @Input() data!: any[];
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
-  @Output() moveUp = new EventEmitter<number>();
-  @Output() moveDown = new EventEmitter<number>();
 
   private userStore = inject(UserStoreService);
 
   // No dummy logic or direct store calls; emit index to parent
+
+  // TrackBy function for performance optimization
+  trackByExperienceId(index: number, item: any): any {
+    return item.id || index;
+  }
 
   formatDate(date: string): string {
     if (!date) return '';
@@ -62,6 +63,9 @@ export class WorkExperienceSectionComponent {
       // MM/YYYY or MM-YYYY
       const [mm, yyyy] = date.split(/[\/-]/);
       d = new Date(`${yyyy}-${mm}-01`);
+    } else if (/^[A-Za-z]{3} \d{4}$/.test(date)) {
+      // MMM YYYY format (e.g., "Apr 2020")
+      d = new Date(date + '-01');
     } else if (/^\d{4}$/.test(date)) {
       // Just a year
       return date;

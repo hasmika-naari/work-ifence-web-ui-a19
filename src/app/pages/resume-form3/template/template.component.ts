@@ -166,13 +166,13 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   ) {
     console.log('🚀🚀🚀 Resume1TemplateComponent constructor invoked 🚀🚀🚀');
     // Section and unsaved change state logic simplified: only update skills arrays as needed
-    effect(() => {
-      const skills = this.getSkillsCategorySection();
-      if(skills?.length>0){
-        this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
-        this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
-      }
-    });
+    // effect(() => {
+    //   const skills = this.getSkillsCategorySection();
+    //   if(skills?.length>0){
+    //     this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
+    //     this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
+    //   }
+    // });
 
     // Reflect global unsaved-change state (e.g., edits from left-side forms)
     effect(() => {
@@ -188,10 +188,13 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     const section = this.resumeForm().sections?.find(s => s.section === 'CONTACT');
     return section?.data || {};
   }
-  getProfileSummarySection() { const section = this.sectionsDesc().find((s: any) => s.section === 'PROFILE_SUMMARY' && s.isAdded); return section?.data || {}; }
+  getProfileSummarySection() {
+    const section = this.resumeForm().sections?.find(s => s.section === 'PROFILE_SUMMARY');
+    return section?.data || {};
+  }
   getCourseWorkSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'RELEVANT_COURSEWORK' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
   getSkillsCategorySection() { const section = this.sectionsDesc().find((s: any) => s.section === 'SKILLS_CATEGORY' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
-  getSkillsBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'SKILLS_BULLET_POINTS' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
+  getSkillsBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'SKILLS_BULLET_POINTS' && s.isAdded); return section?.items?.map((i: any) => i.data.skill) || []; }
   getAccomplishmentSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'ACHIEVEMENT_WITH_DESC' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
   getAchievementBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'ACHIEVEMENTS_BULLET_POINTS' && s.isAdded); return section?.items?.[0]?.data || {}; }
   getCertificationBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'CERTIFICATIONS_BULLET_POINTS' && s.isAdded); return section?.items?.[0]?.data || {}; }
@@ -256,14 +259,23 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   // Handles edit event from skills section
   onEditSkills() {
-    this.editSectionHandler('SKILLS_BULLET_POINTS', this.getSkillsBulletPointsSection());
+    this.editSectionHandler('SKILLS_BULLET_POINTS', this.getSectionItems('SKILLS_BULLET_POINTS'));
+  }
+
+  // Handles profile summary section edit
+  onEditProfileSummary() {
+    this.editSectionHandler('PROFILE_SUMMARY', this.getProfileSummarySection());
+  }
+
+  // Handles profile summary section move down
+  onMoveDownProfileSummary() {
+    this.moveSectionDown('PROFILE_SUMMARY');
   }
 
   // Handles contact section update
   onContactSectionUpdated() {
     this.markDirty();
   }
-
 
   // Called when the contact section edit icon is clicked
   showContact(contact: any) {
@@ -284,7 +296,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     const resume = this.resumeForm && this.resumeForm();
     if (!resume || !resume.sections) return [];
     const section = resume.sections.find((s: any) => s.section === sectionName);
-    return section?.items?.map((i: any) => i.data) ?? [];
+    return section?.items?.map((i: any) => ({ ...i.data, id: i.data?.id || i.id })) ?? [];
   }
  
   private unloadHandler = (e: BeforeUnloadEvent) => {
@@ -526,25 +538,37 @@ formatSkills(items : string[]){
 
 
   editSectionHandler(section : string, selectedJson : any){
+    console.log('editSectionHandler called with section:', section, 'selectedJson:', selectedJson);
     if(section == "CONTACT"){
       // For contact editing, set selectedContact to the current contact section data
       const contactSection = this.getContactSection();
       this.userStore.setSelectedContact(contactSection);
       this.userStore.updateContact();
     }
+    else if(section == "PROFILE_SUMMARY"){
+      // For profile summary editing, set selectedSummary to the current profile summary section data
+      const profileSummarySection = this.getProfileSummarySection();
+      this.userStore.setSelectedSummary(profileSummarySection);
+      this.userStore.updateSummaryWithData(profileSummarySection);
+    }
     else if(section == "EDUCATION"){
+      this.userStore.setSelectedEducation(selectedJson);
       this.userStore.updateEducation(selectedJson)
     }
     else if(section == "RELEVANT_COURSEWORK"){
+      this.userStore.setSelectedCourseWork(selectedJson);
       this.userStore.updateCourseWork(selectedJson)
     }
     else if(section == "PROJECT"){
+      this.userStore.setSelectedProject(selectedJson);
       this.userStore.updateProject(selectedJson)
     }
     else if(section == "WORK_EXPERIENCE"){
+      this.userStore.setSelectedExperience(selectedJson);
       this.userStore.updateExperience(selectedJson)
     }
     else if(section == "CERTIFICATIONS"){
+      this.userStore.setSelectedCertification(selectedJson);
       this.userStore.updateCertification(selectedJson)
     }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
@@ -552,19 +576,6 @@ formatSkills(items : string[]){
     }
     this.markDirty();
     this.editSection.emit({section : section})
-  }
-
-  // Item-level edit and delete methods for experience
-  editExperienceItem(index: number): void {
-  const experienceList = this.getSectionItems('WORK_EXPERIENCE');
-  const experienceItem = experienceList[index];
-    this.editSectionHandler('WORK_EXPERIENCE', experienceItem);
-  }
-
-  deleteExperienceItem(index: number): void {
-  const experienceList = this.getSectionItems('WORK_EXPERIENCE');
-  const experienceItem = experienceList[index];
-    this.confirmDeleteItemDialog('WORK_EXPERIENCE', experienceItem);
   }
 
   checkEducationCondition(){
@@ -606,9 +617,21 @@ formatSkills(items : string[]){
     this.markDirty();
   }
   removeSection(section: string) {
-    this.userStore.removeSection(section);
-    this.markDirty();
-    this.cdr.detectChanges();
+    this.confirmRemoveSection(section);
+  }
+
+  confirmRemoveSection(section: string): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { name: 'confirm' },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.event === 'CONFIRM') {
+        this.userStore.removeSection(section);
+        this.markDirty();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
 drop(event: CdkDragDrop<SectionDesc[]>) {
@@ -663,107 +686,54 @@ private animateSuccessfulDrop(targetIndex: number) {
   return this.getSectionItems('EDUCATION')?.length > 0;
   }
 
-  hasExperienceData(): boolean {
-  return this.getSectionItems('WORK_EXPERIENCE')?.length > 0;
-  }
-
   // Helper method to check if education section is empty
   isEducationEmpty(): boolean {
     return !this.hasEducationData();
   }
 
-  shouldShowAddButton(sectionType: string): boolean {
+  shouldShowButton(sectionType: string, buttonType: string): boolean {
     const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
-    if (!sectionDesc?.headerActions?.add) return false;
+    if (!sectionDesc?.headerActions) return false;
 
-    // Special logic for EDUCATION: always show add button at header level to add new items
-    if (sectionType === 'EDUCATION') {
-      return true;
-    }
+    // Check if the button type is enabled in headerActions
+    const isButtonEnabled = !!sectionDesc.headerActions[buttonType];
+    if (!isButtonEnabled) return false;
 
-    // Special logic for WORK_EXPERIENCE: always show add button at header level to add new items
-    if (sectionType === 'WORK_EXPERIENCE') {
-      return true;
-    }
+    // Define special logic for different button types
+    const buttonLogic: { [key: string]: { [key: string]: () => boolean } } = {
+      'edit': {
+        'EDUCATION': () => false, // Individual items have edit buttons
+        'WORK_EXPERIENCE': () => false,
+        'PROJECT': () => false,
+        'CERTIFICATIONS': () => false,
+        'SKILLS_BULLET_POINTS': () => this.hasSkillsBulletPoints(),
+        'SKILLS_CATEGORY': () => this.hasSkills(),
+        'ACHIEVEMENTS_BULLET_POINTS': () => this.hasAchievements(),
+        'default': () => true
+      },
+      'add': {
+        'EDUCATION': () => true, // Always show add for item-based sections
+        'WORK_EXPERIENCE': () => true,
+        'PROJECT': () => true,
+        'CERTIFICATIONS': () => true,
+        'SKILLS_BULLET_POINTS': () => !this.hasSkillsBulletPoints(),
+        'SKILLS_CATEGORY': () => !this.hasSkills(),
+        'ACHIEVEMENTS_BULLET_POINTS': () => !this.hasAchievements(),
+        'default': () => true
+      },
+      'delete': {
+        'default': () => isButtonEnabled
+      },
+      'moveUp': {
+        'default': () => isButtonEnabled
+      },
+      'moveDown': {
+        'default': () => isButtonEnabled
+      }
+    };
 
-    // Special logic for PROJECT: always show add button at header level to add new items
-    if (sectionType === 'PROJECT') {
-      return true;
-    }
-
-    // Special logic for CERTIFICATIONS: always show add button at header level to add new items
-    if (sectionType === 'CERTIFICATIONS') {
-      return true;
-    }
-
-    // Special logic for SKILLS_BULLET_POINTS: show add button only when empty
-    if (sectionType === 'SKILLS_BULLET_POINTS') {
-      return !this.hasSkillsBulletPoints();
-    }
-
-    // Special logic for SKILLS_CATEGORY: show add button only when empty
-    if (sectionType === 'SKILLS_CATEGORY') {
-      return !this.hasSkills();
-    }
-
-    // Special logic for ACHIEVEMENTS_BULLET_POINTS: show add button only when empty
-    if (sectionType === 'ACHIEVEMENTS_BULLET_POINTS') {
-      return !this.hasAchievements();
-    }
-
-    return true;
-  }
-
-  shouldShowEditButton(sectionType: string): boolean {
-    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
-    if (!sectionDesc?.headerActions?.edit) return false;
-
-    // Special logic for EDUCATION: don't show edit button at header level (individual items will have edit buttons)
-    if (sectionType === 'EDUCATION') {
-      return false;
-    }
-
-    // Special logic for WORK_EXPERIENCE: don't show edit button at header level (individual items will have edit buttons)
-    if (sectionType === 'WORK_EXPERIENCE') {
-      return false;
-    }
-
-    // Special logic for PROJECT: don't show edit button at header level (individual items will have edit buttons)
-    if (sectionType === 'PROJECT') {
-      return false;
-    }
-
-    // Special logic for CERTIFICATIONS: don't show edit button at header level (individual items will have edit buttons)
-    if (sectionType === 'CERTIFICATIONS') {
-      return false;
-    }
-
-    // Special logic for SKILLS_BULLET_POINTS: show edit button only when has content
-    if (sectionType === 'SKILLS_BULLET_POINTS') {
-      return this.hasSkillsBulletPoints();
-    }
-
-    // Special logic for SKILLS_CATEGORY: show edit button only when has content
-    if (sectionType === 'SKILLS_CATEGORY') {
-      return this.hasSkills();
-    }
-
-    // Special logic for ACHIEVEMENTS_BULLET_POINTS: show edit button only when has content
-    if (sectionType === 'ACHIEVEMENTS_BULLET_POINTS') {
-      return this.hasAchievements();
-    }
-
-    return true;
-  }
-
-  shouldShowDeleteButton(sectionType: string): boolean {
-    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
-    return !!sectionDesc?.headerActions?.delete;
-  }
-
-  shouldShowMoveButtons(sectionType: string): boolean {
-    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
-    return !!(sectionDesc?.headerActions?.moveUp || sectionDesc?.headerActions?.moveDown);
+    const logic = buttonLogic[buttonType]?.[sectionType] || buttonLogic[buttonType]?.['default'];
+    return logic ? logic() : isButtonEnabled;
   }
 
   getSectionCssClass(sectionType: string): string {
@@ -858,14 +828,22 @@ moveSectionUp(section: string) {
       this.markDirty();
       this.cdr.detectChanges();
     }
-  }  canMoveUp(section: string): boolean {
-    const sectionData = this.getSectionData(section);
-    return sectionData?.canMoveUp ?? false;
+  }  
+  
+  canMoveUp(section: string): boolean {
+    const sectionDesc = this.sectionsDesc().find(s => s.section === section);
+    if (!sectionDesc?.headerActions?.moveUp) return false;
+    const displayedSections = this.sectionsDesc().filter(s => s.isAdded && s.section !== 'CONTACT');
+    const idx = displayedSections.findIndex(s => s.section === section);
+    return idx > 0;
   }
 
-  canMoveDown(section: string): boolean {
-    const sectionData = this.getSectionData(section);
-    return sectionData?.canMoveDown ?? false;
+  canMoveSectionDown(section: string): boolean {
+    const sectionDesc = this.sectionsDesc().find(s => s.section === section);
+    if (!sectionDesc?.headerActions?.moveDown) return false;
+    const displayedSections = this.sectionsDesc().filter(s => s.isAdded && s.section !== 'CONTACT');
+    const idx = displayedSections.findIndex(s => s.section === section);
+    return idx < displayedSections.length - 1;
   }
 
   getSectionData(sectionKey: string): SectionDesc | undefined {
@@ -1058,6 +1036,24 @@ getSectionTitle(section : string){
     const certifications = this.getSectionItems('CERTIFICATIONS');
     const certificationItem = certifications[index];
     this.confirmDeleteItemDialog('CERTIFICATIONS', certificationItem);
+  }
+
+  // Experience Methods
+  hasExperienceData(): boolean {
+    const experiences = this.getSectionItems('WORK_EXPERIENCE');
+    return experiences && experiences.length > 0;
+  }
+
+  editExperienceItem(index: number): void {
+    const experiences = this.getSectionItems('WORK_EXPERIENCE');
+    const experienceItem = experiences[index];
+    this.editSectionHandler('WORK_EXPERIENCE', experienceItem);
+  }
+
+  deleteExperienceItem(index: number): void {
+    const experiences = this.getSectionItems('WORK_EXPERIENCE');
+    const experienceItem = experiences[index];
+    this.confirmDeleteItemDialog('WORK_EXPERIENCE', experienceItem);
   }
 
   private markDirty(): void {

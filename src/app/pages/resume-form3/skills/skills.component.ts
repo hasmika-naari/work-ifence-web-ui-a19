@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { AfterContentChecked, AfterContentInit, AfterViewChecked, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
+import { AfterContentChecked, AfterContentInit, AfterViewChecked, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -63,55 +63,39 @@ export interface Skill {
   styleUrls: ['./skills.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
-export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
-
+export class SkillsComponent implements OnInit, OnDestroy {
 
   @ViewChild('sectionAuto') sectionAutocomplete!: MatAutocomplete;
-  private _checkForFormChangesTimeout: ReturnType<typeof setTimeout> | null = null;
-
-    // Removed debounce logic for checkForFormChanges
-  
-
-  skills_list : {id : number, skills : String | null}[] = []
-  skillCount : number = 1
-  isEditSubTitle : boolean = false
-
-  selectedSkillItem! : {id : number | null, skills : String | null}
-
-  selectable = true;
-  removable = true;
-  fruits: Array<Skill> = [];
-  old_subTitle  : string = ""
 
   // Skills bullet points properties
   skillsBulletPoints: string[] = [];
   originalSkillsBulletPoints: string[] = [];
 
   // Regular skills properties
+  fruits: Array<Skill> = [];
   originalFruits: Array<Skill> = [];
 
   // Form change detection properties
   private originalFormValues: any = {};
   hasFormChanged = false;
 
-  draggingIndex: number | null = null;
-
   draggingIndex2: number | null = null; // Stores the position where placeholder should appear
-  
+
   private _formBuilder: FormBuilder = inject(FormBuilder);
   private userStore: UserStoreService = inject(UserStoreService);
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private router: Router = inject(Router);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   jobDescAISuggestions : Signal<JobDescriptionAIResponse> = this.userStore.getJobDescAIRes();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
-    sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
-    multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
-
+  sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
+  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
   @Output() contact = new EventEmitter();
   @Output() skillsReordered = new EventEmitter<string[]>();
   onSkillsReordered(event: CdkDragDrop<string[]>) {
-    this.dropSkill(event); // dropSkill already calls checkForFormChanges
+    this.dropSkill(event);
     this.skillsReordered.emit([...this.skillsBulletPoints]);
   }
 
@@ -124,47 +108,20 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
   filteredOptions: Observable<string[]> | undefined;
   isSuffixVisible: boolean | string = false;
 
-  
+  selectable = true;
+  removable = true;
+  selectableAI = true;
+  removableAI = false;
+  selectedSkills: Skill[] = [];
+  skills: Skill[] = [];
+  skills_v2 : SkillV2[] = [];
 
-  constructor(
-      private router : Router, 
-      private cdr: ChangeDetectorRef,
-      private routeActivated: ActivatedRoute,
-      public promptService : PromptService, 
-      public genaiService : GenAIService, 
-      public templateService : TemplatesService, 
-      public dialog: MatDialog) {
-        effect(()=>{
-          if(this.sectionName == "SKILLS_BULLET_POINTS"){
-            this.setSkillsBulletPointsValues()
-          }
-          else{
-            this.setSkillsV2Values()
-          }
-        })
-      }
+  isEditSubTitle : boolean = false;
+  old_subTitle  : string = ""
 
-    
-  ngOnChanges(changes: SimpleChanges): void {
-    this.setSkillsV2Values()
+  filteredSectionOptions!: Observable<string[]>;
 
-  }
-
-
-    ngAfterViewChecked() {
-    if(this.skillCount == this.skillsValue){
-      this.setSkillsValues();
-      this.skillCount = this.skillCount+1;
-    }
-  }
-
-  startDrag(index: number) {
-    this.draggingIndex = index; // Set placeholder index
-  }
-
-  endDrag() {
-    this.draggingIndex = null; // Remove placeholder after drag
-  }
+  subs: Array<Subscription> = [];
 
 
   skillsForm = this._formBuilder.group({
@@ -197,17 +154,6 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     'Languages',
     'Certifications'
   ];
-
-  filteredSectionOptions!: Observable<string[]>;
-
-  subs: Array<Subscription> = [];
-  overlayVisible = true;
-
-  selectableAI = true;
-  removableAI = false; // Chips cannot be removed
-  selectedSkills: Skill[] = []; // To track selected skills
-  skills: Skill[] = [];
-  skills_v2 : SkillV2[] = [];
 
   toggleSkill(skill: any): void {
     // Toggle the skill between selected and deselected
@@ -258,6 +204,14 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     this.getAISkills();
     console.log(this.sectionName);
     this.skillsForm.controls['skillsv2'].disable();
+    
+    // Load data based on section name
+    if (this.sectionName === 'SKILLS_BULLET_POINTS') {
+      this.setSkillsBulletPointsValues();
+    } else if (this.sectionName === 'SKILLS_CATEGORY') {
+      this.setSkillsValues();
+      this.setSkillsV2Values();
+    }
     
     // Initialize section title autocomplete
     this.filteredSectionOptions = this.skillsForm.controls['section_title'].valueChanges.pipe(
@@ -441,24 +395,6 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
       moveItemInArray(this.fruits, event.previousIndex, event.currentIndex);
       this.checkForFormChanges(); // Trigger change detection
     }
-  }
-
-  // dropInList(item:SkillV2, event: CdkDragDrop<any[]>): void {
-  //   console.log('previousIndex: ' + event.previousIndex + ' --- ' + 'currentIndex: ' + event.currentIndex);
-  //   debugger;
-  //   if (event.previousIndex !== event.currentIndex) {
-  //     moveItemInArray(item.skills, event.previousIndex, event.currentIndex);
-  //     this.isDragging = false; // Remove placeholder
-  //   }
-  // }
-
-  dropInList(item:SkillV2, event: CdkDragDrop<any[]>): void {
-    console.log('previousIndex: ' + event.previousIndex + ' --- ' + 'currentIndex: ' + event.currentIndex);
-    debugger;
-    // if (event.previousIndex !== event.currentIndex) {
-      moveItemInArray(item.skills, event.previousIndex, event.currentIndex);
-      // this.draggingIndex2 = null; 
-    // }
   }
 
   startSkillDrag(event: CdkDragEnter<any[]>, index: number) {
@@ -736,7 +672,7 @@ export class SkillsComponent implements OnInit, OnDestroy, AfterViewChecked, OnC
     // Load existing skills bullet points
   const resume = this.resumeSignalForm();
   const section = resume.sections?.find((s: any) => s.section === 'SKILLS_BULLET_POINTS');
-  this.skillsBulletPoints = section?.items?.map((i: any) => i.data) || [];
+  this.skillsBulletPoints = section?.items?.map((i: any) => i.data.skill) || [];
   this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
     // Set section title
     let section_title;

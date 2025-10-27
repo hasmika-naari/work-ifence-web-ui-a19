@@ -36,6 +36,7 @@ import { sections } from "./resume-sections";
     isMultipleColumnTemplateSelected : boolean
     multipleSectionsList : Array<Array<SectionDesc>>
     selectedContact?: any;
+    selectedSummary?: any;
   }
 
   

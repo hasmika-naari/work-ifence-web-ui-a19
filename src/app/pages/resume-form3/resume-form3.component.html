@@ -146,7 +146,7 @@
                 <div class="browser-resume-title-div trigger-area" style="text-align:left;" >
                     <div class="row wrap streach-h-100 m-0 p-0">
                         <div class="metadata-container">
-                            <p-panel class="form-title-panel-pp" [header]="(resumeSignalForm().title || 'Resume Title') + ' | ' + (resumeSignalForm().role_category || 'Role')"
+                            <p-panel class="form-title-panel-pp" [header]="(resumeSignalForm()?.title || 'Resume Title') + ' | ' + (resumeSignalForm()?.role_category || 'Role')"
                                    [collapsed]="true"  [toggleable]="true">
                                 <ng-template pTemplate="icons">
                                         <span class="pp-inline-message" severity="info">{{resumeSignalForm()?.access_level ?? 'Private'}}</span> 
@@ -159,15 +159,15 @@
                                 </ng-template>
                                 <div class="details">
                                     <div class="detail-item" style="text-align: start;">
-                                        <strong class="data-value">{{resumeSignalForm().resume_category || 'NA'}}</strong>
+                                        <strong class="data-value">{{resumeSignalForm()?.resume_category || 'NA'}}</strong>
                                         <span class="data-label">Category</span>
                                     </div>
                                     <div class="detail-item" style="text-align: start;">
-                                        <strong class="data-value">{{resumeSignalForm().isPrimary?'Primary' : 'Not Primary'}}</strong>
+                                        <strong class="data-value">{{resumeSignalForm()?.isPrimary?'Primary' : 'Not Primary'}}</strong>
                                         <span class="data-label">Priority</span>
                                     </div>
                                     <div class="detail-item" style="text-align: start;">
-                                        <strong class="data-value">{{resumeSignalForm().isActive? 'Active' : 'Not Active'}}</strong>
+                                        <strong class="data-value">{{resumeSignalForm()?.isActive? 'Active' : 'Not Active'}}</strong>
                                         <span class="data-label">Status</span>
                                     </div>
                                 </div>
@@ -186,58 +186,62 @@
                                         position: relative;
                                         padding: 36px 36px 0px;
                                         padding-top:0px;">
-                            @if(resumeSignalForm().template_details.template_name == 'TEMPLATE_1'){
+                            @if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_1'){
                                 <app-resume1-template
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"
-                                    (editContact)="showContact()"
                                     (saveRequested)="saveResume()">
                                 </app-resume1-template>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
                                 <app-resume-template9
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template9>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_2'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_2'){
                                 <app-resume-template2 
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template2>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_3'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_3'){
                                 <app-resume-template3 
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template3>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_4'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_4'){
                                 <app-resume-template4 
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template4>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_5'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_5'){
                                 <app-resume-template5 
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template5>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_6'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_6'){
                                 <app-resume-template6 
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template6>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_7'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_7'){
                                 <app-resume-template7 
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template7>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_8'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_8'){
                                 <app-resume-template8 
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template8>
                             }
-                            @else if(resumeSignalForm().template_details.template_name == 'TEMPLATE_10'){
+                            @else if(resumeSignalForm() && resumeSignalForm().template_details && resumeSignalForm().template_details.template_name == 'TEMPLATE_10'){
                                 <app-resume-template10
-                                    [resumeSections]="resumeSignalForm().sections"
+                                    [resumeSections]="resumeSignalForm()?.sections"
                                     (editSection)="showEditSection($event)"></app-resume-template10>
+                            }
+                            @else {
+                                <div class="text-center p-4">
+                                    <p class="text-muted">Loading resume template...</p>
+                                </div>
                             }
                             </div>
                                 <div class="view-resume">
@@ -326,7 +330,7 @@
       </ng-template>
       <ng-template pTemplate="content">
           <app-preview-resume 
-              [templateName]="resumeSignalForm().template_details.template_name"
+              [templateName]="resumeSignalForm()?.template_details?.template_name || 'TEMPLATE_1'"
               (download)="saveAndDownload()"
               (close)="closePreview()"
           ></app-preview-resume>

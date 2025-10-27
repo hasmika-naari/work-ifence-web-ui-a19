@@ -61,12 +61,20 @@ export class UserStoreService {
         isUserLoggedIn : false,
         isMultipleColumnTemplateSelected : false,
         multipleSectionsList : new Array<Array<SectionDesc>>()
-        ,selectedContact: undefined
+        ,selectedContact: undefined,
+        selectedSummary: undefined
       });
       setSelectedContact(contact: any) {
         this.state.update((state) => ({
           ...state,
           selectedContact: contact
+        }));
+      }
+
+      setSelectedSummary(summary: any) {
+        this.state.update((state) => ({
+          ...state,
+          selectedSummary: summary
         }));
       }
 
@@ -93,7 +101,8 @@ export class UserStoreService {
           </ul>
         `;
         summary.profile_summary = '7+ years of experience in designing and developing scalable web applications...';
-        // Optionally update the section here if needed
+        // Update both resumeForm.profileSummary and sections data
+        this.setSummary(summary);
       }
     }
 
@@ -270,7 +279,13 @@ export class UserStoreService {
             currentTab : 'SUMMARY',
             isEdit : false,
             isChangeInNewResume : true,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , profileSummary : summary} }
+            selectedResume : {...state.selectedResume , resumeForm : {
+              ...state.selectedResume.resumeForm,
+              profileSummary : summary,
+              sections: state.selectedResume.resumeForm.sections.map(section =>
+                section.section === 'PROFILE_SUMMARY' ? { ...section, data: summary } : section
+              )
+            }}
             }))
     }
 
@@ -279,7 +294,13 @@ export class UserStoreService {
             ...state,
             currentTab : 'SUMMARY',
             isEdit : false,
-            selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , profileSummary : summary} }
+            selectedResume : {...state.selectedResume , resumeForm : {
+              ...state.selectedResume.resumeForm,
+              profileSummary : summary,
+              sections: state.selectedResume.resumeForm.sections.map(section =>
+                section.section === 'PROFILE_SUMMARY' ? { ...section, data: summary } : section
+              )
+            }}
             }))
     }
     setUserLoginStatus(status : boolean){
@@ -508,7 +529,7 @@ export class UserStoreService {
         if (section.section === 'SKILLS_BULLET_POINTS') {
           return {
             ...section,
-            items: skills.map(s => ({ id: s, data: s }))
+            items: skills.map((s, index) => ({ id: `skill${index + 1}`, data: { skill: s }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } }))
           };
         }
         return section;
@@ -710,6 +731,15 @@ export class UserStoreService {
         this.state.update((state)=>({
           ...state,
           currentTab : 'SUMMARY',
+          isEdit : true
+        }))
+      }
+
+      updateSummaryWithData(summary: any){
+        this.state.update((state)=>({
+          ...state,
+          currentTab : 'SUMMARY',
+          selectedSummary: summary,
           isEdit : true
         }))
       }
@@ -1559,6 +1589,58 @@ moveSectionDown(section: string) {
         }));
       }
 
+      setSelectedEducation(edu: Education) {
+        this.state.update((state) => ({
+          ...state,
+          selectedResume: {
+            ...state.selectedResume,
+            selectedEducation: edu
+          }
+        }));
+      }
+
+      setSelectedExperience(exp: Experience) {
+        console.log('setSelectedExperience called with:', exp);
+        this.state.update((state) => ({
+          ...state,
+          selectedResume: {
+            ...state.selectedResume,
+            selectedExperience: exp
+          }
+        }));
+        console.log('selectedExperience after update:', this.state().selectedResume.selectedExperience);
+      }
+
+      setSelectedProject(proj: Project) {
+        this.state.update((state) => ({
+          ...state,
+          selectedResume: {
+            ...state.selectedResume,
+            selectedProject: proj
+          }
+        }));
+      }
+
+      setSelectedCertification(cert: Certification) {
+        this.state.update((state) => ({
+          ...state,
+          selectedResume: {
+            ...state.selectedResume,
+            selectedCertification: cert
+          }
+        }));
+      }
+
+      setSelectedCourseWork(cw: courseWork) {
+        this.state.update((state) => ({
+          ...state,
+          selectedResume: {
+            ...state.selectedResume,
+            selectedCourseWork: cw
+          }
+        }));
+      }
+
 
 
       getSidebarIconOnly(): Signal<boolean> {
@@ -1736,4 +1818,7 @@ moveSectionDown(section: string) {
       //   return computed(()=> this.state().selectedResume.currentAccessLevel);
       // }
 
+      getSelectedSummary(): Signal<any> {
+        return computed(() => this.state().selectedSummary);
+      }
   }

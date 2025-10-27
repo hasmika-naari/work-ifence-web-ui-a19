@@ -118,7 +118,9 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
   jobDescAIRes : Signal<JobDescriptionAIResponse> = this.userStore.getJobDescAIRes();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
   sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
-  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
+  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections();
+  selectedSummary: Signal<any> = this.userStore.getSelectedSummary();
+  isEdit: Signal<boolean> = this.userStore.getSelectedIsEdit(); 
 
 
   
@@ -300,11 +302,10 @@ openPanelWindow(){
 }
 
   ngOnInit() {
-    // Set default summary text from store if no user data
+    // Set default summary text from store section data if no user data
     const resume = this.resumeSignalForm();
     const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
-    const summary = section?.items?.[0]?.data ?? new ProfileSummary();
-    const defaultSummary = summary.profile_summary ||
+    const defaultSummary = section?.data?.profile_summary ||
       'Innovative Senior Software Developer with 4+ years of expertise in full-stack development, cloud architecture, and team leadership. Proven track record of delivering scalable web applications serving 100K+ users using React, TypeScript, Node.js, and AWS. Specialized in microservices architecture, performance optimization, and agile development practices. Passionate about mentoring teams, implementing best practices, and driving technical excellence to deliver business-critical solutions that exceed user expectations.';
     if (!this.summaryForm.controls['profile_summary'].value) {
       this.summaryForm.controls['profile_summary'].setValue(defaultSummary, { emitEvent: false });
@@ -423,22 +424,41 @@ openPanelWindow(){
 }
 
   setSummaryValues(){
+    // If editing, load from selectedSummary, otherwise load from resume form
+    const isEditing = this.isEdit();
+    const selectedSummaryData = this.selectedSummary();
+    
+    if (isEditing && selectedSummaryData) {
+      // Load from selectedSummary for editing
+      const editorHtml = selectedSummaryData.original_summary_html?.length ? selectedSummaryData.original_summary_html : (selectedSummaryData.profile_summary ?? '');
+      
+      if (this.summaryForm && (editorHtml && editorHtml.trim().length > 0)) {
+        this.summaryForm.patchValue({
+          profile_summary: editorHtml,
+          position_highlight: selectedSummaryData.position_highlight ?? '',
+          skills_highlight: selectedSummaryData.skills_highlight ?? ''
+        }, { emitEvent: false });
+      }
+    } else {
+      // Load from resume form (existing logic)
+      const resume = this.resumeSignalForm();
+      const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
+      const summary = section?.items?.[0]?.data ?? new ProfileSummary();
+      const editorHtml = summary.original_summary_html?.length ? summary.original_summary_html : (summary.profile_summary ?? '');
 
-  const resume = this.resumeSignalForm();
-  const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
-  const summary = section?.items?.[0]?.data ?? new ProfileSummary();
-  const editorHtml = summary.original_summary_html?.length ? summary.original_summary_html : (summary.profile_summary ?? '');
-
-    // Only patch if there is real content, otherwise let ngOnInit's dummy text logic run
-    if (this.summaryForm && (editorHtml && editorHtml.trim().length > 0)) {
-      this.summaryForm.patchValue({
-        profile_summary: editorHtml,
-        position_highlight: summary.position_highlight ?? '',
-        skills_highlight: summary.skills_highlight ?? ''
-      }, { emitEvent: false });
+      // Only patch if there is real content, otherwise let ngOnInit's dummy text logic run
+      if (this.summaryForm && (editorHtml && editorHtml.trim().length > 0)) {
+        this.summaryForm.patchValue({
+          profile_summary: editorHtml,
+          position_highlight: summary.position_highlight ?? '',
+          skills_highlight: summary.skills_highlight ?? ''
+        }, { emitEvent: false });
+      }
     }
 
+    // Set section title (same logic for both cases)
     let section_title;
+    const resume = this.resumeSignalForm();
     if(resume?.template_details.template_name == 'TEMPLATE_9'){
       this.multipleSections().map((e : SectionDesc[])=>{
         e.map((section : SectionDesc)=>{
@@ -596,6 +616,9 @@ openPanelWindow(){
       status.isSummary = true;
       this.userStore.updateSectionStatus(status);
     }
+    
+    // Clear selectedSummary after successful save
+    this.userStore.setSelectedSummary(undefined);
     
     // Reset form change tracking after successful save
     this.captureOriginalFormValues();

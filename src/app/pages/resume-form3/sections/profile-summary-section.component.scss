@@ -19,6 +19,48 @@
   box-shadow: none !important;
   cursor: default;
 }
+
+/* Section header with action buttons */
+.section-header {
+  position: relative;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.section-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.section-header:hover .section-actions {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Default summary styling */
+.default-summary {
+  color: #666;
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+.default-summary ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.default-summary li {
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
 /* Match contact section text styles */
 .profile-summary p,
 .profile-summary li {
@@ -30,6 +72,7 @@
   overflow-wrap: break-word;
   word-break: break-word;
 }
+
 .profile-summary ul {
   padding-left: 1.25rem;
   margin-bottom: 0.5rem;
