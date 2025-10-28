@@ -41,7 +41,15 @@
                         </span>
                     </div>
                     <div style="flex: 1 1 0; min-height: 0; display: flex; flex-direction: column;">
-                        <p-editor formControlName="profile_summary" [style]="{flex: '1 1 0', minHeight: '320px', maxHeight: 'none', height: '100%'}" styleClass="summary-editor"></p-editor>
+                        <div class="editor">
+                            <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+                            <ngx-editor
+                                [editor]="editor"
+                                [formControl]="summaryForm.controls['profile_summary']"
+                                [placeholder]="'Write your professional summary here...'"
+                                style="width:100%;display:block;min-height:320px;"
+                            ></ngx-editor>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,55 +69,37 @@
         </form>
     </div>
 </div>
-<div class="summary-ai-animated-panel" 
-            [style.width]="width + 'px'" [style.border-width]="borderWidth + 'px'">
-     <div class="summary-ai-response-panel-pp" header="">
-        <div  class="row" style="height: 50px;">
-            <div class="col-9" style="display: flex;justify-content: flex-start;align-items: center;">
-                <h3 style="margin-top: 0;
-                    color: #333;
-                    font-size: 1rem;margin-left: 15px;">AI Response</h3>
-            </div>
-            <div class="col-3">
-                <div class="position-close-icon">
-                    <p-button icon="pi pi-times"   
-                    [rounded]="true" [text]="true" severity="danger"
-                 (click)="closePanelWindow()" />
+<div class="summary-ai-overlay" [class.active]="isOpen">
+    <div class="summary-ai-overlay-backdrop" (click)="closePanelWindow()"></div>
+    <div class="summary-ai-animated-panel" [style.width]="width + 'px'" [style.border-width]="borderWidth + 'px'">
+        <div class="summary-ai-response-panel-pp" header="">
+            <div class="row" style="height: 50px;">
+                <div class="col-9" style="display: flex;justify-content: flex-start;align-items: center;">
+                    <h3 style="margin-top: 0; color: #333; font-size: 1rem;margin-left: 15px;">AI Response</h3>
                 </div>
-              
-            </div>
-        </div>
-        <div style="position: relative;top:10px;height:71vh;margin-left:10px;margin-right:10px;">
-            @if(summaryAIResponses.length > 0){
-                <div class="col-12 p-b-1 p-t-2" style="position: absolute;top:0px;bottom:0px;">
-                    <mat-card class="ai-response-panel">
-                            @if(action_taken == ''){
-                                <div class="section-actions">
-                                    <p-icon class="pi pi-pencil" title="Edit" (click)="editAIResponse()"></p-icon>
-                                    <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Use BotBro" (click)="reoptimizeSummary()"></p-icon>
-                                    <p-icon class="pi pi-plus" title="Use This Response" (click)="setAIResponse()" ></p-icon>
-                                  </div>
-                            }
-                            @if(action_taken != 'EDIT'){
-                                <p [ngClass]="action_taken == 'OPTIMIZE'? 'spinner-wrapper' : ''">{{ summaryAIResponses }}</p>
-                            }
-                            @if(action_taken == 'OPTIMIZE'){
-                                <div class="spinner-overlay">
-                                    <div class="spinner"></div>
-                                </div>
-                            }
-                            @else if(action_taken == 'EDIT'){
-                                <mat-form-field appearance="outline">
-                                    <textarea matInput [formControl]="aiResponsePoint"></textarea>
-                                </mat-form-field>
-                                <div style="display: flex;justify-content: space-between;align-items: center;">
-                                    <button mat-button color="warn" (click)="cancelPoint()">Cancel</button>
-                                    <button mat-stroked-button color="primary" (click)="updatePoint()">Update</button>
-                                </div>
-                            }
-                    </mat-card>
+                <div class="col-3">
+                    <div class="position-close-icon">
+                        <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" (click)="closePanelWindow()" />
+                    </div>
                 </div>
-            }
+            </div>
+            <div style="position: relative;top:10px;height:71vh;margin-left:10px;margin-right:10px;overflow-y:auto;">
+                @if(summaryAIList && summaryAIList.length > 0){
+                    <div class="col-12 p-b-1 p-t-2">
+                        <mat-card class="ai-response-panel" *ngFor="let summary of summaryAIList; let i = index">
+                            <div class="section-actions">
+                                <ng-container *ngIf="!addedAISummaries.has(i); else checkmark">
+                                    <p-icon class="pi pi-plus" title="Use This Response" (click)="useSummaryResponse(i)"></p-icon>
+                                </ng-container>
+                                <ng-template #checkmark>
+                                    <p-icon class="pi pi-check" style="color: green;" title="Already Added"></p-icon>
+                                </ng-template>
+                            </div>
+                            <p>{{ summary }}</p>
+                        </mat-card>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
