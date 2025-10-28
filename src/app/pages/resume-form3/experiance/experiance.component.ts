@@ -40,8 +40,9 @@ import { PanelModule } from 'primeng/panel';
 import { ProgressSpinner, ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { EditorModule, Editor } from 'primeng/editor';
-
+import { EditorModule} from 'primeng/editor';
+import { Editor, Toolbar } from 'ngx-editor';
+import { SharedNgxEditorModule } from 'src/app/shared/shared-ngx-editor.module';
 
 
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -90,12 +91,29 @@ export interface WorkData{
     MatFormFieldModule,InputTextModule,TableModule,CalendarModule,DropdownModule,
     MatInputModule,ButtonModule,OverlayPanelModule,PanelModule,
     MatButtonModule,AccordionModule,TextareaModule,TooltipModule,
+  SharedNgxEditorModule, FormsModule,
     MatIconModule,MatExpansionModule, MatCheckboxModule, MatCardModule, ProgressSpinnerModule, ToastModule, EditorModule],
   templateUrl: './experiance.component.html',
   styleUrls: ['./experiance.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
-export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+export class ExperianceComponent implements OnInit, OnDestroy, OnChanges {
+  get descriptionControl(): FormControl {
+    return this.experienceForm.get('description') as FormControl;
+  }
+  editor!: Editor;
+  toolbar: Toolbar = [
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['code', 'blockquote'],
+    ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+    ['link', 'image'],
+    ['text_color', 'background_color'],
+    ['align_left', 'align_center', 'align_right', 'align_justify'],
+  ];
+  // Bullet style for AI response insertion
+  selectedBulletStyle: 'disc' | 'circle' | 'square' = 'disc';
 
   moveExperienceUp(index: number): void {
     if (index > 0) {
@@ -151,6 +169,7 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
   width = 0;
   borderWidth = 0;
   isOpen = false;
+  isPanelOpen = false; // New property for overlay state
   workExperienceAIResponses : Array<WorkData> = []
   action_taken : string = ''
   optimize_index : any = -1
@@ -181,6 +200,9 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
 
   // selectedCertificationItem! : {id : number | null,certification_name: String | null,issued_organisation: String | null,issued_month: String | null,issued_year: String | null,certification_link: String | null,description: String | null}
 
+  // Track which AI bullets have been added
+  addedAIBullets = new Set<number>();
+
   // skills_list : {id : number, skills : String | null}[] = []
 
   // selectedSkillItem! : {id : number | null, skills : String | null}
@@ -209,8 +231,6 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
 
   @ViewChild(Editor) editorComponent!: Editor;
 
-  editor: any;
-
   constructor(
       private router : Router, 
       private cdr: ChangeDetectorRef,
@@ -226,18 +246,25 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
       console.log('Experience component constructor called');
         
       // Add reactive effect to watch for selectedExperience changes
-      // effect(() => {
-      //   const selected = this.selectedExperience();
-      //   console.log('Experience effect triggered, selected:', selected);
-      //   if (selected && selected.position_title) {
-      //     console.log('Setting experience values for:', selected.position_title);
-      //     this.setExperienceValues();
-      //     this.selectedExperienceItem = selected; // Set the selected item for editing
-      //     console.log('selectedExperienceItem set to:', this.selectedExperienceItem);
-      //   } else {
-      //     console.log('No valid selected experience, selected:', selected);
-      //   }
-      // }, { allowSignalWrites: true });
+      effect(() => {
+        const selected = this.selectedExperience();
+        console.log('Experience effect triggered, selected:', selected);
+        if (selected && selected.position_title) {
+          console.log('Setting experience values for:', selected.position_title);
+          (this as any).setExperienceValues();
+          this.selectedExperienceItem = selected; // Set the selected item for editing
+          console.log('selectedExperienceItem set to:', this.selectedExperienceItem);
+          // Track which AI bullets have been added
+          this.addedAIBullets = new Set<number>();
+        } else {
+          console.log('No valid selected experience, resetting form for new entry');
+          // Reset selectedExperienceItem for new entry
+          this.selectedExperienceItem = {id : null,position_title : null, company_name : null, location : null, start_date : null, end_date : null, description : null};
+          // Reset form for new entry
+          this.experienceForm.reset();
+          this.experienceForm.get('section_title')?.setValue('Experience');
+        }
+      }, { allowSignalWrites: true });
 
       // Add reactive effect to populate experience_list from store
       // effect(() => {
@@ -383,6 +410,9 @@ export class ExperianceComponent implements OnInit, OnDestroy, AfterViewInit, On
   ];
 
   ngOnDestroy(): void {
+    if (this.editor) {
+      this.editor.destroy();
+    }
     this.userStore.updateExperience(new Experience());
     this.subs.forEach(s => s.unsubscribe());
   }
@@ -426,12 +456,14 @@ closePanelWindow(){
   this.isOpen = false;
   this.width = 0;
   this.borderWidth = 0;
+  this.isPanelOpen = false; // Close overlay
 }
 
 openPanelWindow(){
   this.isOpen = true;
   this.width = 450;
   this.borderWidth = 3;
+  this.isPanelOpen = true; // Open overlay
 }
 
 setStartDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>) {
@@ -475,6 +507,10 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     this.hasFormChanged = JSON.stringify(currentFormValues) !== JSON.stringify(this.originalFormValues);
   }
 
+  get isEditingExistingExperience(): boolean {
+    return this.selectedExperienceItem && this.selectedExperienceItem.id !== null && this.selectedExperienceItem.id !== undefined;
+  }
+
   getButtonTooltip(): string {
     if (this.experienceForm.invalid) {
       return 'Please fill in all required fields';
@@ -487,6 +523,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
 
   ngOnInit() {
     console.log('Experience component ngOnInit called');
+    // Initialize the editor instance
+    this.editor = new Editor();
     // Temporarily disable router subscription and form change detection to prevent hanging
     // this.subs.push(this.router.events.subscribe(() => {
     //   const currentUrl = this.router.url;
@@ -502,14 +540,11 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     // }));
 
     // Setup form change detection
-    // this.setupFormChangeDetection();
-  }
-
-  ngAfterViewInit(): void {
+    this.setupFormChangeDetection();
     // Set the editor reference for getEditorData method
-    if (this.editorComponent) {
-      this.editor = this.editorComponent.quill;
-    }
+    // if (this.editorComponent) {
+    //   this.editor = this.editorComponent.quill;
+    // }
   }
 
   // get eduFields() {
@@ -572,10 +607,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
         }
         this.experienceForm.controls['section_title'].setValue(section_title??'Experience')
         
-        // Capture original values after setting form values
-        setTimeout(() => {
-          this.captureOriginalFormValues();
-        }, 100);
+        // Capture original values immediately after setting form values
+        this.captureOriginalFormValues();
   }
 
   // addEducationField() {
@@ -1328,50 +1361,44 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   extractedStrings : string[] = []
 
   optimizeWorkHistory(){
-    const descriptionValue = this.experienceForm.get('description')?.value;
-    if(descriptionValue && typeof descriptionValue === 'string' && descriptionValue.length > 0){
+    let descriptionValue = this.experienceForm.get('description')?.value;
+    if (typeof descriptionValue !== 'string') {
+      if (descriptionValue === null || descriptionValue === undefined) {
+        descriptionValue = '';
+      } else if (typeof descriptionValue === 'object') {
+        try {
+          descriptionValue = JSON.stringify(descriptionValue);
+        } catch {
+          descriptionValue = String(descriptionValue);
+        }
+      } else {
+        descriptionValue = String(descriptionValue);
+      }
+    }
+    // Remove HTML tags and decode HTML entities
+    const text = descriptionValue.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    if(text.length > 0){
       this.is_work_history_loading = true;
       const experience_prompt = this.promptService.testing_work_exp_prompt(descriptionValue);
       console.log(experience_prompt);
       this.resumeService.requestOpenAI({ "prompt" : experience_prompt}).subscribe({
         next: (res : any) => {
           console.log(res['choices'][0]['message']['content']);
-          
-          //store OpenAI response in our Backend. Need a table to store
           let content = res['choices'][0]['message']['content'];
-          // let description = content.split("&&&");
-          // description[1] has suggestions to improve. need to show it to the user.
-          // this.workHistoryList = content?.split("###").filter((item : any)=>{return (item != "" && !/^\s*$/.test(item))});
-          // console.log(this.workHistoryList);
-          this.workHistoryList = this.handleStringInput(content); //JSON.parse(content)
-          
-
-          // if(this.isJobDescAISuggestionsPresent()){
-          //   let response : WorkData = {bulletPoints : this.workHistoryList.slice(0,this.workHistoryList.length-1), ats_score : this.workHistoryList[this.workHistoryList.length - 1]}
-          //   this.workExperienceAIResponses.push(response);
-          // }
-          // else{
-          //   let response : WorkData = {bulletPoints : this.workHistoryList, ats_score : ""}
-          //   this.workExperienceAIResponses.push(response);
-          // }
-
-          // this.experienceForm.controls['description'].setValue(this.workHistoryList.join("\n"))
+          this.workHistoryList = this.handleStringInput(content);
+          // Set the editor value as HTML bullet list
+          if (Array.isArray(this.workHistoryList)) {
+            const html = '<ul>' + this.workHistoryList.map(item => `<li>${item}</li>`).join('') + '</ul>';
+            this.experienceForm.get('description')?.setValue(html);
+          } else {
+            this.experienceForm.get('description')?.setValue(String(this.workHistoryList));
+          }
           this.is_work_history_loading = false;
           this.openPanelWindow();
-          
-          // Show success message
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Success', 
-            detail: 'AI suggestions generated successfully!',
-            life: 3000
-          });
         },
         error: (error) => {
           console.error('Error optimizing work history:', error);
           this.is_work_history_loading = false;
-          
-          // Show error message
           this.messageService.add({ 
             severity: 'error', 
             summary: 'Error', 
@@ -1434,13 +1461,26 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   }
 
   getEditorData(){
-    return this.editor.root.innerHTML;
+  // ngx-editor v18: get HTML from the form control
+  return this.experienceForm.get('description')?.value || '';
   }
 
   useResponse(index: number): void {
-    // Set the selected AI response to the form
+    // Always add the selected item as a new bullet point (list item) in the description
     if (this.workHistoryList && this.workHistoryList[index]) {
-      this.experienceForm.get('description')?.setValue(this.workHistoryList[index]);
+      const selectedResponse = this.workHistoryList[index];
+      // Clean the response text
+      const cleanText = selectedResponse.replace(/(<([^>]+)>)/gi, '').replace(/\n/g, ' ');
+      // Use the selected bullet style
+      const bulletStyle = this.selectedBulletStyle || 'disc';
+      // Insert a <ul> with the chosen bullet style
+      const htmlResponse = `<ul style=\"list-style-type: ${bulletStyle}; margin-left: 1.5em;\"><li>${cleanText}</li></ul>`;
+      // Get current HTML from the editor (form control)
+      const currentHtml = this.getEditorData();
+      // Append the new bullet HTML to the existing content
+      const newHtml = currentHtml ? currentHtml + htmlResponse : htmlResponse;
+      // Update the form control to reflect the new content
+      this.experienceForm.get('description')?.setValue(newHtml);
     }
   }
 

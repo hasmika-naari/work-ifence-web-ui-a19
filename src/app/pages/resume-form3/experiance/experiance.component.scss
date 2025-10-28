@@ -35,6 +35,70 @@
     }
 }
 
+.editor {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+
+  .NgxEditor {
+    background: var(--ngx-editor-background-color) !important;
+    color: var(--ngx-editor-text-color) !important;
+    background-clip: padding-box !important;
+    border-radius: var(--ngx-editor-border-radius) !important;
+    border:none;
+    border-top: 1px solid var(--ngx-editor-border-color) !important;
+    position: relative !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Make only the content area scrollable, not the toolbar */
+  .NgxEditor__Content {
+    min-height: 350px !important;
+    max-height: 1200px !important;
+    overflow-y: auto !important;
+    box-sizing: border-box;
+  }
+
+  .NgxEditor__MenuBar {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  }
+
+  .NgxEditor {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border: none;
+  }
+
+  .CodeMirror {
+    border: 1px solid #eee;
+    height: auto;
+    margin-bottom: 0.7rem;
+
+    pre {
+      white-space: pre !important;
+    }
+  }
+}
+ :host ::ng-deep .NgxEditor {
+    background: var(--ngx-editor-background-color) !important;
+    color: var(--ngx-editor-text-color) !important;
+    background-clip: padding-box !important;
+    border-radius: var(--ngx-editor-border-radius) !important;
+    border:none;
+    border-top: 1px solid var(--ngx-editor-border-color) !important;
+    position: relative !important;
+    min-height: 350px !important;
+    height: 100% !important;
+}
+
+
 #editorContainer {
   border: 1px solid rgba(148, 163, 184, 0.28);
   padding: 0;
@@ -44,6 +108,8 @@
   min-height: 300px;
   overflow: visible;
 }
+
+
 
 // Quill editor styling
 :host ::ng-deep #editorContainer {
@@ -1057,17 +1123,56 @@ textarea:disabled {
 
 
 //////////  Animated Div
-.experience-ai-animated-panel {
+// Overlay container for AI response panel
+.experience-ai-overlay {
   position: fixed;
-  top: 75px;
-  bottom: 21px;
-  background-color: rgba(245, 245, 245, 0.9);
-  left: 574px;
-  width: var(--width, 0px);
-  overflow: hidden;
-  transition: width 0.5s ease;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1000;
-  border: 3px solid white;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.5s;
+
+  &.active {
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  // Backdrop for overlay
+  .experience-ai-overlay-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  // Animated panel that slides from right to left
+  .experience-ai-animated-panel {
+    position: absolute;
+    top: 75px;
+    bottom: 21px;
+    right: 1rem;
+    width: 400px;
+    background-color: rgba(245, 245, 245, 0.95);
+    transform: translateX(100%);
+    transition: transform 0.5s ease;
+    z-index: 1001;
+    border: 3px solid white;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+}
+
+// When overlay is active, slide the panel in from the right
+.experience-ai-overlay.active .experience-ai-animated-panel {
+  transform: translateX(0);
 }
 
 .experience-ai-response-panel-pp{
@@ -1175,6 +1280,50 @@ textarea:disabled {
     // color: #fff; /* Ensures contrast */
   }
   
+}
+
+// Edit textarea styling to fill the card
+.ai-response-panel mat-form-field {
+  width: 100% !important;
+  height: calc(100% - 60px) !important; // Leave space for buttons below
+  display: block !important;
+  
+  ::ng-deep .mat-mdc-form-field-outline {
+    height: 100% !important;
+  }
+  
+  ::ng-deep .mat-mdc-form-field-flex {
+    height: 100% !important;
+    align-items: flex-start !important;
+  }
+  
+  ::ng-deep .mat-mdc-form-field-infix {
+    height: 100% !important;
+  }
+  
+  textarea {
+    height: 100% !important;
+    min-height: 150px !important;
+    resize: vertical !important;
+    font-family: inherit !important;
+    line-height: 1.5 !important;
+    padding: 12px !important;
+    border-radius: 4px !important;
+  }
+}
+
+// Edit buttons container styling
+.ai-response-panel .edit-buttons-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  
+  button {
+    flex: 1;
+    max-width: 120px;
+  }
 }
 
 .ai-response-panel:hover .section-actions {

@@ -564,7 +564,11 @@ formatSkills(items : string[]){
       this.userStore.updateProject(selectedJson)
     }
     else if(section == "WORK_EXPERIENCE"){
-      this.userStore.setSelectedExperience(selectedJson);
+      if (selectedJson === null) {
+        this.userStore.setSelectedExperience(new Experience());
+      } else {
+        this.userStore.setSelectedExperience(selectedJson);
+      }
       this.userStore.updateExperience(selectedJson)
     }
     else if(section == "CERTIFICATIONS"){
@@ -1050,9 +1054,7 @@ getSectionTitle(section : string){
     this.editSectionHandler('WORK_EXPERIENCE', experienceItem);
   }
 
-  deleteExperienceItem(index: number): void {
-    const experiences = this.getSectionItems('WORK_EXPERIENCE');
-    const experienceItem = experiences[index];
+  deleteExperienceItem(experienceItem: any): void {
     this.confirmDeleteItemDialog('WORK_EXPERIENCE', experienceItem);
   }
 

@@ -67,6 +67,8 @@
   background: transparent !important;
   backdrop-filter: blur(10px);
   border-radius: 0;
+  overflow-y: hidden;
+  min-height: 350px !important;
 }
 
 /* .p-drawer .p-drawer-header {

@@ -1205,6 +1205,18 @@ hideMenu() {
 
   showWorkExperianceDetails(){
     this.openPanel('workExperianceDetails', 'Experience');
+    // Load data from selectedExperience into form fields
+    const selectedExp = this.userStore.getSelectedExperience()();
+    if (selectedExp) {
+      this.experienceForm.patchValue({
+        position_title: selectedExp.position_title || '',
+        company_name: selectedExp.company_name || '',
+        location: selectedExp.location || '',
+        start_date: selectedExp.start_date || '',
+        end_date: selectedExp.end_date || '',
+        description: selectedExp.description || ''
+      });
+    }
   }
   
 
