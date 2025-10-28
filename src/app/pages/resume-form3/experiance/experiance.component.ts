@@ -1386,13 +1386,9 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
           console.log(res['choices'][0]['message']['content']);
           let content = res['choices'][0]['message']['content'];
           this.workHistoryList = this.handleStringInput(content);
-          // Set the editor value as HTML bullet list
-          if (Array.isArray(this.workHistoryList)) {
-            const html = '<ul>' + this.workHistoryList.map(item => `<li>${item}</li>`).join('') + '</ul>';
-            this.experienceForm.get('description')?.setValue(html);
-          } else {
-            this.experienceForm.get('description')?.setValue(String(this.workHistoryList));
-          }
+          // Do NOT update the description form control here. Only update workHistoryList.
+          // Reset the set of added AI bullets so user can add new ones
+          this.addedAIBullets = new Set<number>();
           this.is_work_history_loading = false;
           this.openPanelWindow();
         },
@@ -1466,8 +1462,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   }
 
   useResponse(index: number): void {
-    // Always add the selected item as a new bullet point (list item) in the description
-    if (this.workHistoryList && this.workHistoryList[index]) {
+    // Only add the selected AI suggestion to the description when user clicks plus, and mark as added
+    if (this.workHistoryList && this.workHistoryList[index] && !this.addedAIBullets.has(index)) {
       const selectedResponse = this.workHistoryList[index];
       // Clean the response text
       const cleanText = selectedResponse.replace(/(<([^>]+)>)/gi, '').replace(/\n/g, ' ');
@@ -1481,6 +1477,8 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
       const newHtml = currentHtml ? currentHtml + htmlResponse : htmlResponse;
       // Update the form control to reflect the new content
       this.experienceForm.get('description')?.setValue(newHtml);
+      // Mark this AI bullet as added
+      this.addedAIBullets.add(index);
     }
   }
 
