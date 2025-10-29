@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'resume-project-section',
   standalone: true,
+  imports: [CommonModule],
   template: `
     <div class="section project">
       <h3>Projects</h3>
