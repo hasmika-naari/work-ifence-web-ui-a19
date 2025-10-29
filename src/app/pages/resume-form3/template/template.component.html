@@ -4,8 +4,8 @@
   <resume-contact-section [data]="getContactSection()" (editContact)="showContact($event)" (dataChange)="onContactSectionUpdated()" [isFormPanleClosed]="isPreview"></resume-contact-section>
   </section>
 
-  <div *ngIf="sectionsDesc() && sectionsDesc().length">
-    <ng-container *ngFor="let section of sectionsDesc(); let idx = index; let last = last">
+  <div *ngIf="addedSections() && addedSections().length">
+    <ng-container *ngFor="let section of addedSections(); let idx = index; let last = last">
       <section class="trigger-area"
         style="margin-bottom:16px;"
         *ngIf="section && section.isAdded && shouldShowSection(section.section) && section.section !== 'CONTACT'"

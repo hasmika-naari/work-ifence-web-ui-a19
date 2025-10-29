@@ -125,11 +125,16 @@ export class UserStoreService {
 
     setResumeSections(sections : Array<SectionDesc>){
       console.log("Set Sections", sections);
-      
-      this.state.update((state)=>({
+      this.state.update((state) => ({
         ...state,
-        currentResumeSections : sections
-      }))
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: sections
+          }
+        }
+      }));
     }
 
     setMultipleColumnTemplateSections(list : Array<Array<SectionDesc>>){

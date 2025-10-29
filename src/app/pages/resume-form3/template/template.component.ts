@@ -147,13 +147,17 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   firstHalfSkills : SkillV2[] = [];
   secondHalfSkills : SkillV2[] = [];
   isSectionsSetCount : number = 1;
-  sectionsDesc = computed(() => this.resumeForm().sections || []);
-  // Computed signal for added sections (for drag and drop)
-  addedSections = computed(() => this.sectionsDesc().filter(s => s.isAdded));
+  // Single computed signal for added sections (for display and drag-and-drop)
+  addedSections = computed(() => {
+    const sections = this.resumeForm().sections || [];
+    const added = sections.filter(s => s.isAdded);
+    console.log('addedSections recomputed', added.map(s => ({section: s.section, isAdded: s.isAdded})));
+    return added;
+  });
 
   // Getter for drag and drop data binding
   get dragDropSections(): SectionDesc[] {
-    return this.sectionsDesc().filter(s => s.isAdded);
+    return this.addedSections();
   }
   certificationsTitles = computed(() => this.getCertificationsSection().map(c => c.title || c.name || ''));
   sectionConfig: { [key: string]: SectionTemplate } = {};
@@ -197,13 +201,13 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     const section = this.resumeForm().sections?.find(s => s.section === 'PROFILE_SUMMARY');
     return section?.data || {};
   }
-  getCourseWorkSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'RELEVANT_COURSEWORK' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
-  getSkillsCategorySection() { const section = this.sectionsDesc().find((s: any) => s.section === 'SKILLS_CATEGORY' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
-  getSkillsBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'SKILLS_BULLET_POINTS' && s.isAdded); return section?.items?.map((i: any) => i.data.skill) || []; }
-  getAccomplishmentSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'ACHIEVEMENT_WITH_DESC' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
-  getAchievementBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'ACHIEVEMENTS_BULLET_POINTS' && s.isAdded); return section?.items?.[0]?.data || {}; }
-  getCertificationBulletPointsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'CERTIFICATIONS_BULLET_POINTS' && s.isAdded); return section?.items?.[0]?.data || {}; }
-  getCertificationsSection() { const section = this.sectionsDesc().find((s: any) => s.section === 'CERTIFICATIONS' && s.isAdded); return section?.items?.map((i: any) => i.data) || []; }
+  getCourseWorkSection() { const section = this.addedSections().find((s: any) => s.section === 'RELEVANT_COURSEWORK'); return section?.items?.map((i: any) => i.data) || []; }
+  getSkillsCategorySection() { const section = this.addedSections().find((s: any) => s.section === 'SKILLS_CATEGORY'); return section?.items?.map((i: any) => i.data) || []; }
+  getSkillsBulletPointsSection() { const section = this.addedSections().find((s: any) => s.section === 'SKILLS_BULLET_POINTS'); return section?.items?.map((i: any) => i.data.skill) || []; }
+  getAccomplishmentSection() { const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENT_WITH_DESC'); return section?.items?.map((i: any) => i.data) || []; }
+  getAchievementBulletPointsSection() { const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENTS_BULLET_POINTS'); return section?.items?.[0]?.data || {}; }
+  getCertificationBulletPointsSection() { const section = this.addedSections().find((s: any) => s.section === 'CERTIFICATIONS_BULLET_POINTS'); return section?.items?.[0]?.data || {}; }
+  getCertificationsSection() { const section = this.addedSections().find((s: any) => s.section === 'CERTIFICATIONS'); return section?.items?.map((i: any) => i.data) || []; }
 
   // Handles edit event from resume-education-section (real or dummy)
   onEditEducation(indexOrData: number | Object) {
@@ -298,9 +302,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   // Helper to get items from sections by section name
   getSectionItems(sectionName: string): any[] {
-    const resume = this.resumeForm && this.resumeForm();
-    if (!resume || !resume.sections) return [];
-    const section = resume.sections.find((s: any) => s.section === sectionName);
+    const section = this.addedSections().find((s: any) => s.section === sectionName);
     return section?.items?.map((i: any) => ({ ...i.data, id: i.data?.id || i.id })) ?? [];
   }
  
@@ -326,8 +328,6 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     this.resumeForm = this.userStore.getResumeForm();
     this.selectedResumeListItem = this.userStore.getSelectedResumeListItem();
     console.log('📝 Resume1TemplateComponent initialized. isPreview:', this.isPreview);
-    // Effect to sync sectionsDesc with store - now computed from resumeForm
-    // sectionsDesc is now a computed signal from resumeForm().sections
 
     if (typeof window !== 'undefined') {
       window.addEventListener('beforeunload', this.unloadHandler);
@@ -532,12 +532,13 @@ formatSkills(items : string[]){
   }
 
   addSectionHandler(section: string) {
-    // Call store method to add section and set default data
-    this.userStore.addSection(section);
+  // Call store method to add section and set default data
+  this.userStore.addSection(section);
 
-    this.markDirty();
-    this.cdr.detectChanges();
-    this.editSection.emit({ section: section });
+  this.markDirty();
+  this.cdr.detectChanges();
+  this.cdr.markForCheck();
+  this.editSection.emit({ section: section });
   }
 
 
@@ -612,8 +613,8 @@ formatSkills(items : string[]){
   // (Removed duplicate moveObjectById definition. The correct version is below.)
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
   // Move section in the main section list (for section headers)
-  const sections = this.sectionsDesc().filter(s => s.isAdded);
-  const index = sections.findIndex(s => s.section === section);
+  const sections = this.addedSections();
+  const index = sections.findIndex((s: any) => s.section === section);
     if (index === -1) return;
     if (direction === "up" && index > 0) {
       [sections[index], sections[index - 1]] = [sections[index - 1], sections[index]];
@@ -644,20 +645,17 @@ formatSkills(items : string[]){
   }
 
 drop(event: CdkDragDrop<SectionDesc[]>) {
-  const addedSections = this.sectionsDesc().filter(s => s.isAdded);
+  const addedSections = this.addedSections();
   console.log("Before: ", addedSections, event.previousIndex, event.currentIndex);
   
   if (event.previousIndex !== event.currentIndex) {
     this.userStore.reorderSections(event.previousIndex, event.currentIndex);
-    const afterSections = this.sectionsDesc().filter(s => s.isAdded);
+    const afterSections = this.addedSections();
     console.log("After: ", afterSections, event.previousIndex, event.currentIndex);
-    
     // Add a subtle success animation
     this.animateSuccessfulDrop(event.currentIndex);
-    
     this.markDirty();
   }
-  
   // Clean up any drag states
   this.onDragEnd();
 }
@@ -685,9 +683,8 @@ private animateSuccessfulDrop(targetIndex: number) {
   }
 
   shouldShowSection(sectionType: string): boolean {
-    // Only use sectionsDesc
-    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
-    return sectionDesc ? sectionDesc.isAdded : false;
+    const sectionDesc = this.addedSections().find((desc: any) => desc.section === sectionType);
+    return !!sectionDesc;
   }
 
   // Helper method to check if education section has data
@@ -706,7 +703,7 @@ private animateSuccessfulDrop(targetIndex: number) {
       return false;
     }
 
-    const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
+    const sectionDesc = this.addedSections().find((desc: any) => desc.section === sectionType);
     if (!sectionDesc?.headerActions) return false;
 
     // Check if the button type is enabled in headerActions
@@ -822,9 +819,10 @@ private animateSuccessfulDrop(targetIndex: number) {
     });
   }
 
+
 moveSectionUp(section: string) {
-  const addedSections = this.sectionsDesc().filter(s => s.isAdded);
-  const idx = addedSections.findIndex(s => s.section === section);
+  const addedSections = this.addedSections();
+  const idx = addedSections.findIndex((s: any) => s.section === section);
   if (idx > 0) {
     [addedSections[idx - 1], addedSections[idx]] = [addedSections[idx], addedSections[idx - 1]];
     this.userStore.setResumeSections(addedSections);
@@ -834,34 +832,34 @@ moveSectionUp(section: string) {
 }
 
   moveSectionDown(section: string) {
-    const addedSections = this.sectionsDesc().filter(s => s.isAdded);
-    const idx = addedSections.findIndex(s => s.section === section);
+    const addedSections = this.addedSections();
+    const idx = addedSections.findIndex((s: any) => s.section === section);
     if (idx > -1 && idx < addedSections.length - 1) {
       [addedSections[idx], addedSections[idx + 1]] = [addedSections[idx + 1], addedSections[idx]];
       this.userStore.setResumeSections(addedSections);
       this.markDirty();
       this.cdr.detectChanges();
     }
-  }  
+  }
   
   canMoveUp(section: string): boolean {
-    const sectionDesc = this.sectionsDesc().find(s => s.section === section);
+    const sectionDesc = this.addedSections().find((s: any) => s.section === section);
     if (!sectionDesc?.headerActions?.moveUp) return false;
-    const displayedSections = this.sectionsDesc().filter(s => s.isAdded && s.section !== 'CONTACT');
-    const idx = displayedSections.findIndex(s => s.section === section);
+    const displayedSections = this.addedSections().filter((s: any) => s.section !== 'CONTACT');
+    const idx = displayedSections.findIndex((s: any) => s.section === section);
     return idx > 0;
   }
 
   canMoveSectionDown(section: string): boolean {
-    const sectionDesc = this.sectionsDesc().find(s => s.section === section);
+    const sectionDesc = this.addedSections().find((s: any) => s.section === section);
     if (!sectionDesc?.headerActions?.moveDown) return false;
-    const displayedSections = this.sectionsDesc().filter(s => s.isAdded && s.section !== 'CONTACT');
-    const idx = displayedSections.findIndex(s => s.section === section);
+    const displayedSections = this.addedSections().filter((s: any) => s.section !== 'CONTACT');
+    const idx = displayedSections.findIndex((s: any) => s.section === section);
     return idx < displayedSections.length - 1;
   }
 
   getSectionData(sectionKey: string): SectionDesc | undefined {
-  return this.sectionsDesc().find(s => s.section === sectionKey && s.isAdded);
+    return this.addedSections().find((s: any) => s.section === sectionKey);
   }
 
 
@@ -976,7 +974,7 @@ hasGPA(item: Education): boolean {
 
 getSectionTitle(section : string){
   let sectionTitle;
-  this.sectionsDesc().filter((e : SectionDesc) => e.isAdded).map((e : SectionDesc)=>{
+  this.addedSections().map((e: any) => {
     if(e.section == section){
       sectionTitle = e.editable_section_title
     }
