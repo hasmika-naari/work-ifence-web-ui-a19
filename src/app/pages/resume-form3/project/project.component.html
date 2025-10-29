@@ -143,61 +143,58 @@
         </form>
     </div>
 </div>
-<div class="project-ai-animated-panel" 
-            [style.width]="width + 'px'" [style.border-width]="borderWidth + 'px'">
-     <div class="project-ai-response-panel-pp" header="">
-        <div  class="row" style="height: 50px;">
-            <div class="col-9" style="display: flex;justify-content: flex-start;align-items: center;">
-                <h3 style="margin-top: 0;
-                    color: #333;
-                    font-size: 1rem;margin-left: 15px;">AI Response</h3>
-            </div>
-            <div class="col-3" style="display: flex;justify-content: flex-start;align-items: center;">
-                <div class="position-close-icon">
-                    <p-button icon="pi pi-times"   
-                    [rounded]="true" [text]="true" severity="danger"
-                 (click)="closePanelWindow()" />
-                </div>
-              
-            </div>
-        </div>
-        <div style="position: relative;top:10px;height:71vh;margin-left:10px;margin-right:10px;overflow-y: scroll;">
-            @if(projectListPoints.length > 0){
-                <div class="col-12 p-b-1 p-t-2">
-                    <mat-card class="ai-response-panel" *ngFor="let project of projectListPoints; let i = index">
-                        @if(i != optimize_index){
-                            <div class="section-actions">
-                                <p-icon class="pi pi-pencil" title="Edit" (click)="editAIResponse(i)"></p-icon>
-                                <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Use BotBro" (click)="optimizeResponse(i)"></p-icon>
-                                <p-icon class="pi pi-plus" title="Use This Response" (click)="useResponse(i)"></p-icon>
-                            </div>
-                        }
-                        @if(i != optimize_index){
-                            <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
-                        }
-                        @else if(i == optimize_index && action_taken != 'EDIT'){
-                            <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
-                        }
-                        @if(i == optimize_index && action_taken == 'OPTIMIZE'){
-                            <div class="spinner-overlay">
-                                <div class="spinner"></div>
-                            </div>
-                        }
-                        @else if(i == optimize_index && action_taken == 'EDIT'){
-                            <mat-form-field appearance="outline">
-                                <textarea matInput [formControl]="aiResponsePoint"></textarea>
-                            </mat-form-field>
-                            <div style="display: flex;justify-content: space-between;align-items: center;">
-                                <button mat-button color="warn" (click)="cancelPoint(i)">Cancel</button>
-                                <button mat-stroked-button color="primary" (click)="updatePoint(i)">Update</button>
-                            </div>
-                        }
 
-                    </mat-card>
-                    
-                </div>
-            }
-
-        </div>
+<!-- Overlay above the editor, slides from right to left -->
+<div 
+    class="summary-ai-overlay" 
+    *ngIf="isOpen" 
+    [@slideInOut] 
+    (click)="$event.stopPropagation()"
+    style="z-index: 2000;"
+>
+    <div class="summary-ai-drawer-shell">
+        <header class="summary-ai-header">
+            <div class="summary-ai-title-group">
+                <h2>AI Assistance</h2>
+                <p>Project Suggestions</p>
+            </div>
+            <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closePanelWindow()">
+                <i class="pi pi-times"></i>
+            </button>
+        </header>
+        <section class="summary-ai-stack">
+            <div *ngIf="projectListPoints && projectListPoints.length > 0">
+                <mat-card class="ai-response-panel" *ngFor="let project of projectListPoints; let i = index">
+                    <div class="section-actions" *ngIf="i !== optimize_index">
+                        <p-icon class="pi pi-pencil" title="Edit" (click)="editAIResponse(i)"></p-icon>
+                        <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Use BotBro" (click)="optimizeResponse(i)"></p-icon>
+                        <p-icon class="pi pi-plus" title="Use This Response" (click)="useResponse(i)"></p-icon>
+                    </div>
+                    <ng-container *ngIf="i !== optimize_index">
+                        <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
+                    </ng-container>
+                    <ng-container *ngIf="i === optimize_index && action_taken !== 'EDIT'">
+                        <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
+                    </ng-container>
+                    <ng-container *ngIf="i === optimize_index && action_taken === 'OPTIMIZE'">
+                        <div class="spinner-overlay">
+                            <div class="spinner"></div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="i === optimize_index && action_taken === 'EDIT'">
+                        <mat-form-field appearance="outline">
+                            <textarea matInput [formControl]="aiResponsePoint"></textarea>
+                        </mat-form-field>
+                        <div style="display: flex;justify-content: space-between;align-items: center;">
+                            <button mat-button color="warn" (click)="cancelPoint(i)">Cancel</button>
+                            <button mat-stroked-button color="primary" (click)="updatePoint(i)">Update</button>
+                        </div>
+                    </ng-container>
+                </mat-card>
+            </div>
+            <div *ngIf="!projectListPoints || projectListPoints.length === 0" class="summary-ai-empty">
+                <span>No AI suggestions available yet.</span>
+            </div>
+        </section>
     </div>
 </div>

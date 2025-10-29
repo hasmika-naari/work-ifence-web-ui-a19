@@ -27,7 +27,7 @@
             </div>
             <div class="summary-label-row">
                 <label>Summary</label>
-                <span *ngIf="!isFormPanleClosed">
+                <span >
                     <button class="d-flex ai-btn" (click)="optimizeText()" *ngIf="!is_summary_loading">
                         <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon> USE BOTBRO
                     </button>
@@ -49,7 +49,7 @@
                     style="width:100%;display:block;min-height:350px;"
                 ></ngx-editor>
             </div>
-            <div class="form-actions summary-actions-row" *ngIf="!isFormPanleClosed">
+            <div class="form-actions summary-actions-row" >
                 <button 
                     type="button" 
                     class="action-btn summary-save-btn summary-save-btn--light" 
@@ -73,7 +73,7 @@
 <!-- Pure animated AI overlay drawer -->
 <div 
     class="summary-ai-overlay" 
-    *ngIf="isOpen && !isFormPanleClosed" 
+    *ngIf="isOpen " 
     [@slideInOut] 
     (click)="closePanelWindow()"
 >

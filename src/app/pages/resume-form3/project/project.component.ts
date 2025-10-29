@@ -2,6 +2,7 @@
 
 import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -68,7 +69,18 @@ export interface ProjectData{
   SharedNgxEditorModule],
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(100%)' }),
+        animate('320ms cubic-bezier(.77,0,.18,1)', style({ opacity: 1, transform: 'translateX(0)' }))
+      ]),
+      transition(':leave', [
+        animate('220ms cubic-bezier(.77,0,.18,1)', style({ opacity: 0, transform: 'translateX(100%)' }))
+      ])
+    ])
+  ]
 })
 export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   editor!: Editor;
@@ -1145,12 +1157,6 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
           this.projectListPoints = this.handleStringInput(content);
           this.is_projects_loading = false;
           this.openPanelWindow();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'AI suggestions generated successfully!',
-            life: 3000
-          });
         },
         error: (error) => {
           console.error('Error optimizing project:', error);
@@ -1486,14 +1492,10 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
 
   closePanelWindow(){
     this.isOpen = false;
-    this.width = 0;
-    this.borderWidth = 0;
   }
-  
+
   openPanelWindow(){
     this.isOpen = true;
-    this.width = 450;
-    this.borderWidth = 3;
   }
 
 

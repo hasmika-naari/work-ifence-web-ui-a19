@@ -653,12 +653,6 @@ openPanelWindow(){
           this.addedAISummaries = new Set<number>();
           this.is_summary_loading = false;
           this.openPanelWindow();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'AI suggestions generated successfully!',
-            life: 3000
-          });
         },
         error: (error) => {
           this.is_summary_loading = false;

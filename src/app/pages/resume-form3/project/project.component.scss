@@ -1,3 +1,79 @@
+// --- Overlay Drawer Fix (copied from summary.component.scss for consistency) ---
+.summary-ai-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1200;
+  background: rgba(30, 41, 59, 0.18);
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  transition: background 0.2s;
+}
+
+.summary-ai-drawer-shell {
+  width: 32rem;
+  max-width: 90vw;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 16px 0 rgba(30,41,59,0.10);
+  display: flex;
+  flex-direction: column;
+  animation: slideInDrawer 0.32s cubic-bezier(.77,0,.18,1);
+  position: relative;
+  padding: 1.1rem 1.5rem 1.5rem 1.5rem;
+  box-sizing: border-box;
+}
+
+@keyframes slideInDrawer {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #64748b;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.summary-ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.summary-ai-title-group h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 1.4vw + 1rem, 1.75rem);
+  color: #0f172a;
+}
+.summary-ai-title-group p {
+  margin: 0.3rem 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+.summary-ai-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding-bottom: 0.25rem;
+}
+.summary-ai-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #636f83;
+  font-size: 1rem;
+  height: 100%;
+}
 @import '../shared-form-styles';
 
 // Import Quill styles
@@ -919,18 +995,7 @@ textarea:disabled {
 
 
 //////////////////////
-.project-ai-animated-panel {
-  position: fixed;
-  top: 77px;
-  bottom: 23px;
-  background-color: rgba(245,245,245,.9);
-  border: 3px solid  rgba(254,254,254,1);
-  left: 549px;
-  width: var(--width, 0px);
-  overflow: hidden;
-  transition: width 0.5s ease;
-  z-index: 1000;
-}
+
 
 .project-ai-response-panel-pp{
   .p-panel .p-panel-header {
