@@ -24,4 +24,5 @@ import { Component, Input } from '@angular/core';
 })
 export class ProjectSectionComponent {
   @Input() data!: any[];
+  @Input() isPreview: boolean = false;
 }

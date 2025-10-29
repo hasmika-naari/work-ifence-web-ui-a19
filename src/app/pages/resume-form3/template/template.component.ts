@@ -102,7 +102,7 @@ interface SectionTemplate {
     WorkExperienceSectionComponent,
     ProjectSectionComponent,
     CertificationsSectionComponent,
-    AchievementsSectionComponent,
+  AchievementsSectionComponent,
     SkillsBulletPointsSectionComponent,
     SkillsCategorySectionComponent,
     RelevantCourseworkSectionComponent,
@@ -135,6 +135,11 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   @Output() editSection = new EventEmitter<any>();
   @Output() saveRequested = new EventEmitter<void>();
   @Input() isPreview : boolean = false;
+
+  // Pass isPreview to all section components
+  sectionInputs = {
+    isPreview: computed(() => this.isPreview)
+  };
   currentDraggingSection: string = '';
   isDragging : boolean = false;
   hasUnsavedChanges = false;
@@ -696,6 +701,11 @@ private animateSuccessfulDrop(targetIndex: number) {
   }
 
   shouldShowButton(sectionType: string, buttonType: string): boolean {
+    // Hide all buttons in preview mode for every section
+    if (this.isPreview) {
+      return false;
+    }
+
     const sectionDesc = this.sectionsDesc().find(desc => desc.section === sectionType);
     if (!sectionDesc?.headerActions) return false;
 

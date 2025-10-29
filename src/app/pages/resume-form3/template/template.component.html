@@ -1,77 +1,74 @@
-<div class="container">
+<div class="container" [class.is-preview]="isPreview">
   <!-- Always show contact section at the top -->
   <section class="trigger-area resume-contact-us">
-  <resume-contact-section [data]="getContactSection()" (editContact)="showContact($event)" (dataChange)="onContactSectionUpdated()"></resume-contact-section>
+  <resume-contact-section [data]="getContactSection()" (editContact)="showContact($event)" (dataChange)="onContactSectionUpdated()" [isFormPanleClosed]="isPreview"></resume-contact-section>
   </section>
 
-  <div cdkDropList [cdkDropListData]="dragDropSections" (cdkDropListDropped)="drop($event)">
-    <ng-container *ngIf="sectionsDesc() && sectionsDesc().length">
-      <ng-container *ngFor="let section of sectionsDesc(); let idx = index; let last = last">
-        <section class="trigger-area"
-          style="margin-bottom:16px;"
-          *ngIf="section && section.isAdded && shouldShowSection(section.section) && section.section !== 'CONTACT'"
-          [ngClass]="getSectionCssClass(section.section)"
-          cdkDrag
-          (cdkDragStarted)="dragStarted($event); onDragStart(section.section)"
-          (cdkDragEnded)="onDragEnd()">
-          <span class="summary-section-title" cdkDragHandle>
-            {{getSectionTitle(section.section)}}
-            <ng-container *ngIf="!isPreview">
-              <div class="section-actions">
-                <!-- Only Move Down for first, only Move Up for last, both for others -->
-                <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" *ngIf="canMoveUp(section.section)" (click)="moveObjectById(section.section, section.id || '', 'up')"></button>
-                <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" *ngIf="canMoveSectionDown(section.section)" (click)="moveObjectById(section.section, section.id || '', 'down')"></button>
-                <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'edit')" (click)="editSectionHandler(section.section, section.section === 'PROFILE_SUMMARY' ? getProfileSummarySection() : section.section === 'EDUCATION' ? getSectionItems('EDUCATION') : section.section === 'WORK_EXPERIENCE' ? getSectionItems('WORK_EXPERIENCE') : section.section === 'PROJECT' ? getSectionItems('PROJECT') : null)"></button>
-                <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'delete')" (click)="removeSection(section.section)"></button>
-                <button pButton pTooltip="Add" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'add')" (click)="addSectionHandler(section.section)"></button>
-              </div>
-            </ng-container>
-          </span>
-            <ng-container [ngSwitch]="section.section">
-               <resume-profile-summary-section 
-                *ngSwitchCase="'PROFILE_SUMMARY'" 
-                [data]="getProfileSummarySection()"
-                [isPreview]="isPreview"
-                [canMoveDown]="canMoveSectionDown('PROFILE_SUMMARY')"
-                (edit)="onEditProfileSummary()"
-                (moveDown)="onMoveDownProfileSummary()"
-              ></resume-profile-summary-section>
-             <resume-education-section
-                *ngSwitchCase="'EDUCATION'"
-                [data]="getSectionItems('EDUCATION')"
-                (edit)="onEditEducation($event)"
-                (delete)="onDeleteEducation($event)"
-                (dummyEdit)="onEditEducation($event)"
-              ></resume-education-section>
-               <app-relevant-coursework-section
-                *ngSwitchCase="'RELEVANT_COURSEWORK'"
-                [courseworkList]="getCourseWorkSection()"
-                [resetFormTrigger]="resetCourseworkForm"
-                (edit)="onEditCoursework($event)"
-                (delete)="onDeleteCoursework($event)"
-                (moveUp)="onMoveUpCoursework($event)"
-                (moveDown)="onMoveDownCoursework($event)"
-              ></app-relevant-coursework-section>
-              <resume-skills-bullet-points-section
-                *ngSwitchCase="'SKILLS_BULLET_POINTS'"
-                [skillsBulletPoints]="getSkillsBulletPointsSection()"
-                (add)="onAddSkills()"
-                (edit)="onEditSkills()"
-              ></resume-skills-bullet-points-section>
-              <resume-skills-category-section *ngSwitchCase="'SKILLS_CATEGORY'" [skills]="getSkillsCategorySection()"></resume-skills-category-section>
-              <resume-work-experience-section
-                *ngSwitchCase="'WORK_EXPERIENCE'"
-                [data]="getSectionItems('WORK_EXPERIENCE')"
-                (edit)="editExperienceItem($event)"
-                (delete)="deleteExperienceItem($event)"
-              ></resume-work-experience-section>
-               <resume-project-section *ngSwitchCase="'PROJECT'" [data]="getSectionItems('PROJECT')"></resume-project-section>
-              <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'" [certifications]="certificationsTitles()"></resume-certifications-section>
-              <resume-achievements-section *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" [achievements]="getAchievementBulletPointsSection().ach || []"></resume-achievements-section>
-              <div *ngSwitchDefault>Section '{{section.section}}' is not supported.</div>
-            </ng-container>
-        </section>
-      </ng-container>
+  <div *ngIf="sectionsDesc() && sectionsDesc().length">
+    <ng-container *ngFor="let section of sectionsDesc(); let idx = index; let last = last">
+      <section class="trigger-area"
+        style="margin-bottom:16px;"
+        *ngIf="section && section.isAdded && shouldShowSection(section.section) && section.section !== 'CONTACT'"
+        [ngClass]="getSectionCssClass(section.section)">
+        <span class="summary-section-title">
+          {{getSectionTitle(section.section)}}
+          <div class="section-actions" *ngIf="!isPreview">
+            <!-- Only Move Down for first, only Move Up for last, both for others -->
+            <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'moveUp')" (click)="moveObjectById(section.section, section.id || '', 'up')"></button>
+            <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'moveDown')" (click)="moveObjectById(section.section, section.id || '', 'down')"></button>
+            <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'edit')" (click)="editSectionHandler(section.section, section.section === 'PROFILE_SUMMARY' ? getProfileSummarySection() : section.section === 'EDUCATION' ? getSectionItems('EDUCATION') : section.section === 'WORK_EXPERIENCE' ? getSectionItems('WORK_EXPERIENCE') : section.section === 'PROJECT' ? getSectionItems('PROJECT') : null)"></button>
+            <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'delete')" (click)="removeSection(section.section)"></button>
+            <button pButton pTooltip="Add" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'add')" (click)="addSectionHandler(section.section)"></button>
+          </div>
+        </span>
+        <ng-container [ngSwitch]="section.section">
+          <resume-profile-summary-section 
+            *ngSwitchCase="'PROFILE_SUMMARY'" 
+            [data]="getProfileSummarySection()"
+            [isPreview]="isPreview"
+            [canMoveDown]="canMoveSectionDown('PROFILE_SUMMARY')"
+            (edit)="onEditProfileSummary()"
+            (moveDown)="onMoveDownProfileSummary()"
+          ></resume-profile-summary-section>
+          <resume-education-section
+            *ngSwitchCase="'EDUCATION'"
+            [data]="getSectionItems('EDUCATION')"
+            [isPreview]="isPreview"
+            (edit)="onEditEducation($event)"
+            (delete)="onDeleteEducation($event)"
+            (dummyEdit)="onEditEducation($event)"
+          ></resume-education-section>
+          <app-relevant-coursework-section
+            *ngSwitchCase="'RELEVANT_COURSEWORK'"
+            [courseworkList]="getCourseWorkSection()"
+            [resetFormTrigger]="resetCourseworkForm"
+            [isPreview]="isPreview"
+            (edit)="onEditCoursework($event)"
+            (delete)="onDeleteCoursework($event)"
+            (moveUp)="onMoveUpCoursework($event)"
+            (moveDown)="onMoveDownCoursework($event)"
+          ></app-relevant-coursework-section>
+          <resume-skills-bullet-points-section
+            *ngSwitchCase="'SKILLS_BULLET_POINTS'"
+            [skillsBulletPoints]="getSkillsBulletPointsSection()"
+            [isPreview]="isPreview"
+            (add)="onAddSkills()"
+            (edit)="onEditSkills()"
+          ></resume-skills-bullet-points-section>
+          <resume-skills-category-section *ngSwitchCase="'SKILLS_CATEGORY'" [skills]="getSkillsCategorySection()" [isPreview]="isPreview"></resume-skills-category-section>
+          <resume-work-experience-section
+            *ngSwitchCase="'WORK_EXPERIENCE'"
+            [data]="getSectionItems('WORK_EXPERIENCE')"
+            [isPreview]="isPreview"
+            (edit)="editExperienceItem($event)"
+            (delete)="deleteExperienceItem($event)"
+          ></resume-work-experience-section>
+          <resume-project-section *ngSwitchCase="'PROJECT'" [data]="getSectionItems('PROJECT')" [isPreview]="isPreview"></resume-project-section>
+          <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'" [certifications]="certificationsTitles()" [isPreview]="isPreview"></resume-certifications-section>
+          <resume-achievements-section *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" [achievements]="getAchievementBulletPointsSection().ach || []" [isPreview]="isPreview"></resume-achievements-section>
+          <div *ngSwitchDefault>Section '{{section.section}}' is not supported.</div>
+        </ng-container>
+      </section>
     </ng-container>
   </div>
   <footer style="padding-top: 100px;padding-bottom:30px;">

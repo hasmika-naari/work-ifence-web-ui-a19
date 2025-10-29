@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
       <div *ngIf="data && data.length; else dummyEducation">
         <div *ngFor="let edu of data; let i = index; trackBy: trackByEducationId" class="education-item" style="position:relative;">
           <div class="education-item-container" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; position: relative; width: 100%;">
-            <span class="education-item-actions">
+            <span class="education-item-actions" *ngIf="!isPreview">
               <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
               <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete.emit(i)"></button>
               <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === 0" (click)="moveUp.emit(i)"></button>
@@ -34,7 +34,7 @@ import { ButtonModule } from 'primeng/button';
       <ng-template #dummyEducation>
         <div class="education-item" style="position:relative;">
           <div class="education-item-container" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; position: relative; width: 100%;">
-            <span class="education-item-actions">
+            <span class="education-item-actions" *ngIf="!isPreview">
               <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="onDummyEdit()"></button>
               <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" disabled></button>
             </span>
@@ -58,6 +58,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export class EducationSectionComponent {
   @Input() data!: any[];
+  @Input() isPreview: boolean = false;
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
   @Output() moveUp = new EventEmitter<number>();

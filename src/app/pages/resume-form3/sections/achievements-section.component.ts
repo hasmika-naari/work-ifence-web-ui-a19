@@ -22,4 +22,5 @@ import { CommonModule } from '@angular/common';
 })
 export class AchievementsSectionComponent {
   @Input() achievements: string[] = [];
+  @Input() isPreview: boolean = false;
 }

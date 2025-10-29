@@ -26,4 +26,5 @@ import { SkillV2 } from 'src/app/services/resume.model';
 })
 export class SkillsCategorySectionComponent {
   @Input() skills: SkillV2[] = [];
+  @Input() isPreview: boolean = false;
 }

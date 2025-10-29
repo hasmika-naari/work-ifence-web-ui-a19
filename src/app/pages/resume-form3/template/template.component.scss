@@ -486,9 +486,20 @@ a{
   }
 }
 
-.summary-section-title{
-  font-weight: 400;
-  color: #384347;
+// Drag/cursor for section header
+// In preview mode, remove drag icon and set default cursor
+.is-preview .summary-section-title,
+.is-preview .summary-section-title:hover {
+  cursor: default !important;
+}
+
+// Hide drag icon in preview mode if you use a drag icon element (e.g., .drag-icon)
+.is-preview .drag-icon {
+  display: none !important;
+}
+
+.summary-section-title {
+  cursor: grab !important;
   text-transform: uppercase;
   border-bottom: 1px solid rgba(101, 105, 109, .5);
   white-space: pre-wrap;
@@ -498,7 +509,6 @@ a{
   display: block;
   text-align: left;
   position: relative;
-  cursor: grab; // Only header has grab cursor
   transition: background-color 0.2s ease; // Smooth background transition
   
   &:hover {
@@ -508,6 +518,12 @@ a{
   &:active {
     cursor: grabbing;
     // background-color: rgba(0, 0, 0, 0.05); // Slightly more visible when active
+  }
+  
+  // Prevent grabbing cursor in preview mode
+  .is-preview &,
+  .is-preview &:active {
+    cursor: default !important;
   }
   
   // Add a visible drag indicator
@@ -1024,6 +1040,10 @@ a{
     padding: 12px;
   }
   
+  // Hide drag icon in preview mode
+  .is-preview .summary-section-title::before {
+    content: none !important;
+  }
   .summary-section-title::before {
     left: -15px;
     font-size: 12px;

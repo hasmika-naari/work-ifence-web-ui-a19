@@ -279,7 +279,7 @@
       </ng-template>
       
       <ng-template pTemplate="content">
-         {{activePanel}}
+         <!-- Removed accidental display of activePanel label -->
           <div [ngSwitch]="activePanel" style="position: relative; height: calc(100vh - 120px); overflow-y: auto; overflow-x: hidden;">
               <app-resume-job-description (contact)="saveContact()" *ngSwitchCase="'jobDescription'"></app-resume-job-description>
               <app-resume-template-list (contact)="saveContact()" *ngSwitchCase="'resumeTemplateList'"></app-resume-template-list>

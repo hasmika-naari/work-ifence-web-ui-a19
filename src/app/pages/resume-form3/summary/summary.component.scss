@@ -1,7 +1,189 @@
+.editor.summary-editor-field {
+  min-height: 350px;
+  // max-height: 480px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+::ng-deep .editor.summary-editor-field .NgxEditor__content {
+  min-height: 220px;
+  // max-height: 400px;
+  overflow-y: auto;
+}
+.section-title-field {
+  width: 100%;
+}
+.section-title-field input[type="text"] {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+.summary-save-btn--light {
+  background: rgba(240,91,78,0.08) !important;
+  color: #f05b4e !important;
+  border: 1.5px solid #f05b4e !important;
+  border-radius: 6px !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  box-shadow: none !important;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.summary-save-btn--light:disabled {
+  background: rgba(240,91,78,0.04) !important;
+  color: #f05b4e80 !important;
+  border-color: #f05b4e40 !important;
+  cursor: not-allowed;
+}
+.summary-save-btn--light:hover:not(:disabled) {
+  background: #f05b4e !important;
+  color: #fff !important;
+  border-color: #f05b4e !important;
+}
+
+.summary-section-row {
+  margin-bottom: 0.8rem;
+}
+
+.summary-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.2rem;
+  padding-right: 1px;
+}
+
+.summary-editor-field {
+  margin-bottom: 0.5rem;
+}
+
+.summary-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 0;
+  border-top: none;
+}
+
+.summary-save-btn {
+  background: #f05b4e !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(240,91,78,0.08);
+  transition: background 0.2s, color 0.2s;
+}
+.summary-save-btn:hover:not(:disabled) {
+  background: #d94a2b !important;
+  color: #fff !important;
+}
+// --- Overlay Drawer Fix ---
+.summary-ai-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1200;
+  background: rgba(30, 41, 59, 0.18);
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  transition: background 0.2s;
+}
+
+.summary-ai-drawer-shell {
+  width: 32rem;
+  max-width: 90vw;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 16px 0 rgba(30,41,59,0.10);
+  display: flex;
+  flex-direction: column;
+  animation: slideInDrawer 0.32s cubic-bezier(.77,0,.18,1);
+  position: relative;
+}
+
+@keyframes slideInDrawer {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #64748b;
+  cursor: pointer;
+  margin-left: auto;
+}
+.summary-ai-drawer-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.1rem 1.5rem 1.5rem 1.5rem;
+  box-sizing: border-box;
+  background: #fff;
+}
+.summary-ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.summary-ai-title-group h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 1.4vw + 1rem, 1.75rem);
+  color: #0f172a;
+}
+.summary-ai-title-group p {
+  margin: 0.3rem 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+.summary-ai-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding-bottom: 0.25rem;
+}
+.summary-ai-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #636f83;
+  font-size: 1rem;
+  height: 100%;
+}
+
+// --- Restore Add to Resume button style ---
+.action-btn.action-btn--primary {
+  background: #f05b4e !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(240,91,78,0.08);
+  transition: background 0.2s, color 0.2s;
+}
+.action-btn.action-btn--primary:hover:not(:disabled) {
+  background: #d94a2b !important;
+  color: #fff !important;
+}
 // Scoped Quill editor toolbar styles for summary editor
 ::ng-deep .summary-editor .ql-snow .ql-picker.ql-header {
   width: 73px !important;
-}
 ::ng-deep .summary-editor .ql-snow .ql-picker.ql-font {
   width: 89px !important;
 }
@@ -81,53 +263,48 @@
   }
 }
 
-.editor-wrapper {
-  position: relative;
-}
 
-.container{
-  min-height: 100vh;
+// Drawer style overlay for summary AI (matches Experience AI overlay)
+.summary-ai-drawer-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.1rem 1.5rem 1.5rem 1.5rem;
+  box-sizing: border-box;
+}
+.summary-ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.summary-ai-title-group h2 {
   margin: 0;
-  min-width: 100%;
-  color: black !important;
+  font-size: clamp(1.35rem, 1.4vw + 1rem, 1.75rem);
+  color: #0f172a;
 }
-
-
-.editor {
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  min-height: 0;
-  max-height: none;
-  overflow: visible;
-
-  .NgxEditor {
-    background: var(--ngx-editor-background-color) !important;
-    color: var(--ngx-editor-text-color) !important;
-    background-clip: padding-box !important;
-    border-radius: var(--ngx-editor-border-radius) !important;
-    border:none;
-    border-top: 1px solid var(--ngx-editor-border-color) !important;
-    position: relative !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    height: auto !important;
-    overflow: visible !important;
-  }
-
-  /* Make only the content area scrollable, not the toolbar */
-  .NgxEditor__Content {
-    min-height: 350px !important;
-    max-height: 1200px !important;
-    overflow-y: auto !important;
-    box-sizing: border-box;
-  }
-
-  .NgxEditor__MenuBar {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  }
-
+.summary-ai-title-group p {
+  margin: 0.3rem 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+.summary-ai-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding-bottom: 0.25rem;
+}
+.summary-ai-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #636f83;
+  font-size: 1rem;
+  height: 100%;
+}
   .NgxEditor {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -1076,3 +1253,68 @@ to {
     box-shadow: none !important;
   }
 }
+
+
+.editor {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+
+  .NgxEditor {
+    background: var(--ngx-editor-background-color) !important;
+    color: var(--ngx-editor-text-color) !important;
+    background-clip: padding-box !important;
+    border-radius: var(--ngx-editor-border-radius) !important;
+    border:none;
+    border-top: 1px solid var(--ngx-editor-border-color) !important;
+    position: relative !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Make only the content area scrollable, not the toolbar */
+  .NgxEditor__Content {
+    min-height: 350px !important;
+    max-height: 1200px !important;
+    overflow-y: auto !important;
+    box-sizing: border-box;
+  }
+
+  .NgxEditor__MenuBar {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  }
+
+  .NgxEditor {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border: none;
+  }
+
+  .CodeMirror {
+    border: 1px solid #eee;
+    height: auto;
+    margin-bottom: 0.7rem;
+
+    pre {
+      white-space: pre !important;
+    }
+  }
+}
+ :host ::ng-deep .NgxEditor {
+    background: var(--ngx-editor-background-color) !important;
+    color: var(--ngx-editor-text-color) !important;
+    background-clip: padding-box !important;
+    border-radius: var(--ngx-editor-border-radius) !important;
+    border:none;
+    border-top: 1px solid var(--ngx-editor-border-color) !important;
+    position: relative !important;
+    min-height: 350px !important;
+    height: 100% !important;
+}
+

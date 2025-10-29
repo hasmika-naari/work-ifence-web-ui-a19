@@ -1,4 +1,3 @@
-
 import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { CommonModule } from '@angular/common';
@@ -11,7 +10,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
   imports: [CommonModule, ButtonModule, IconsModule],
   template: `
     <div class="resume-contact-details" (mouseenter)="showEdit=true" (mouseleave)="showEdit=false" style="position:relative;">
-      <p-button *ngIf="showEdit"
+      <p-button *ngIf="showEdit && !isFormPanleClosed"
         icon="pi pi-pencil"
         [rounded]="true"
         [text]="true"
@@ -35,20 +34,21 @@ import { IconsModule } from 'src/app/shared/icons.module';
       </div>
     </div>
       `,
-      styleUrls: ['./contact-section.component.scss']
-    })
-    export class ContactSectionComponent {
-      @Input() data: any;
-      @Input() sectionConfig: any;
-      showEdit = false;
-      @Output() editContact = new EventEmitter<any>();
-      @Output() dataChange = new EventEmitter<void>();
+  styleUrls: ['./contact-section.component.scss']
+})
+export class ContactSectionComponent {
+  @Input() data: any;
+  @Input() sectionConfig: any;
+  @Input() isFormPanleClosed: boolean = false;
+  showEdit = false;
+  @Output() editContact = new EventEmitter<any>();
+  @Output() dataChange = new EventEmitter<void>();
 
-      ngOnChanges() {
-        this.dataChange.emit();
-      }
+  ngOnChanges() {
+    this.dataChange.emit();
+  }
 
-      showContact() {
-        this.editContact.emit(this.data);
-      }
-    }
+  showContact() {
+    this.editContact.emit(this.data);
+  }
+}

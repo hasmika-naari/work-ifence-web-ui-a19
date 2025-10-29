@@ -1,4 +1,5 @@
 import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -73,7 +74,14 @@ export interface SummaryData{
   ],
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  animations: [
+    trigger('slideInOut', [
+      state('void', style({ transform: 'translateX(100%)', opacity: 0 })),
+      state('*', style({ transform: 'translateX(0)', opacity: 1 })),
+      transition('void <=> *', animate('320ms cubic-bezier(.77,0,.18,1)')),
+    ])
+  ]
 })
 export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
   // Project list and selected item for project section
@@ -306,11 +314,11 @@ toggleAnimation() {
   this.width = this.isOpen ? 450 : 0; // Toggle between expanded and collapsed
 }
 
-closePanelWindow(){
-  this.isOpen = false;
-  this.width = 0;
-  this.borderWidth = 0;
-}
+  closePanelWindow(){
+    this.isOpen = false;
+    this.width = 0;
+    this.borderWidth = 0;
+  }
 
 openPanelWindow(){
   this.isOpen = true;

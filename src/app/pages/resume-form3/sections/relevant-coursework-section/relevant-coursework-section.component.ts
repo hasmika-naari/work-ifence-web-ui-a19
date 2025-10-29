@@ -30,9 +30,10 @@ import { courseWork } from 'src/app/services/resume.model';
   `,
   styleUrls: ['./relevant-coursework-section.component.scss']
 })
-export class RelevantCourseworkSectionComponent {
+export class RelevantCourseworkSectionComponent implements OnChanges {
   @Input() courseworkList: courseWork[] = [];
   @Input() resetFormTrigger: boolean = false;
+  @Input() isPreview: boolean = false;
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
   @Output() moveUp = new EventEmitter<number>();

@@ -22,4 +22,5 @@ import { CommonModule } from '@angular/common';
 })
 export class CertificationsSectionComponent {
   @Input() certifications: string[] = [];
+  @Input() isPreview: boolean = false;
 }

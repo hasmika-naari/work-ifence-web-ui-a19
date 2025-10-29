@@ -25,6 +25,7 @@ import { SkillV2 } from 'src/app/services/resume.model';
 export class SkillsBulletPointsSectionComponent {
   @Input() skills: SkillV2[] = [];
   @Input() skillsBulletPoints: string[] = [];
+  @Input() isPreview: boolean = false;
   @Output() add = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
 

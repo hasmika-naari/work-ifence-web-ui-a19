@@ -13,7 +13,7 @@ import { Experience } from 'src/app/services/resume.model';
       <div *ngIf="data && data.length" class="work-experience-list">
         <div *ngFor="let job of data; let i = index; trackBy: trackByExperienceId" class="work-experience-item">
           <div class="work-experience-item-container">
-            <span class="work-experience-item-actions">
+            <span class="work-experience-item-actions" *ngIf="!isPreview">
               <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
               <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete.emit(i)"></button>
             </span>
@@ -35,6 +35,7 @@ import { Experience } from 'src/app/services/resume.model';
 
 export class WorkExperienceSectionComponent {
   @Input() data!: any[];
+  @Input() isPreview: boolean = false;
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
 
