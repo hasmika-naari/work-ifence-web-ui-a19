@@ -106,10 +106,25 @@
                             <span>USE BOTBRO</span>
                         </button>
                     }
-                    <div class="field">
-                        <label>Project Description</label>
-                        <div #editorContainer id="editorContainer"></div>
-                    </div>
+                                        <div class="field">
+                                                <label>Project Description</label>
+                                                <div class="editor">
+                                                    <ngx-editor-menu [editor]="editor" [toolbar]="toolbar">
+                                                    </ngx-editor-menu>
+                                                    <ngx-editor
+                                                        [editor]="editor"
+                                                        [formControl]="descriptionControl"
+                                                        [placeholder]="'Enter project description...'"
+                                                        [spellcheck]="true"
+                                                        [minHeight]="'150px'"
+                                                        [maxHeight]="'350px'"
+                                                        style="width:100%;display:block;min-height:350px;"
+                                                    ></ngx-editor>
+                                                </div>
+                                                <small class="error" *ngIf="projectForm.get('description')?.hasError('required') && projectForm.get('description')?.touched">
+                                                    Project description is required.
+                                                </small>
+                                        </div>
                 </div>
 
                 <div class="form-actions">

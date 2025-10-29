@@ -1,3 +1,5 @@
+// All imports should be at the top of the file
+
 import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -28,13 +30,13 @@ import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { ResumeService } from 'src/app/services/resume.service';
-import Quill from 'quill';
 import { MatCardModule } from '@angular/material/card';
 import { SectionDesc } from 'src/app/services/store/user-store';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
-
+import { SharedNgxEditorModule } from 'src/app/shared/shared-ngx-editor.module';
+import { Editor, Toolbar } from 'ngx-editor';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -62,12 +64,28 @@ export interface ProjectData{
    MatFormFieldModule,InputTextModule,TableModule,
    MatInputModule,ButtonModule,OverlayPanelModule,
    MatButtonModule,AccordionModule,TextareaModule,
-   MatIconModule,MatExpansionModule, MatCardModule, ToastModule, TooltipModule],
+  MatIconModule,MatExpansionModule, MatCardModule, ToastModule, TooltipModule,
+  SharedNgxEditorModule],
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
+  editor!: Editor;
+   toolbar: Toolbar = [
+      ['bold', 'italic'],
+      ['underline', 'strike'],
+      ['code', 'blockquote'],
+      ['ordered_list', 'bullet_list'],
+      [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+      ['link', 'image'],
+      ['text_color', 'background_color'],
+      ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ];
+  // Getter for description FormControl to avoid null type error in template
+  get descriptionControl() {
+    return this.projectForm.get('description') as FormControl;
+  }
 
   resumeForm!: FormGroup;
   contactForm! : FormGroup
@@ -107,7 +125,7 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   skills_list : {id : number, skills : String | null}[] = []
 
   selectedSkillItem! : {id : number | null, skills : String | null}
-  @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
+  // Removed legacy Quill editorContainer
 
 
   
@@ -115,7 +133,7 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   width = 0;
   borderWidth = 0;
   isOpen = false;
-  private editor!: Quill;
+  // Removed legacy Quill editor instance
 
   private _formBuilder: FormBuilder = inject(FormBuilder);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -268,6 +286,9 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
+    if (this.editor) {
+      this.editor.destroy();
+    }
   }
 
   toggle() {
@@ -275,6 +296,11 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
 }
 
   ngOnInit() {
+    this.editor = new Editor();
+    // Debug: Log value changes to ensure editor and form control are in sync
+    this.projectForm.get('description')?.valueChanges.subscribe(val => {
+      console.log('description form value changed:', val);
+    });
 
   //   this.productService.getProductsSmall().then((products) => {
   //     this.products = products;
@@ -385,9 +411,6 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     this.projectForm.controls['technologies_used'].setValue(this.selectedProject().technologies_used)
     this.projectForm.controls['period'].setValue(this.selectedProject().period)
     this.projectForm.get('bullet_points')?.setValue(this.selectedProject().bullet_points_count);
-    if(this.editor?.clipboard){
-      this.editor.clipboard.dangerouslyPasteHTML(this.selectedProject().original_description_html);
-    }
     let section_title;
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
       this.multipleSections().map((e : SectionDesc[])=>{
@@ -489,20 +512,19 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   saveAndContinue(){
     this.markFormGroupTouched(this.projectForm);
     let project = new Project();
-    project.project_name = this.projectForm.value.project_title?this.projectForm.value.project_title : '';
-    let des = this.getEditorData();
-    if(des.includes('data-list="bullet"')){
-      const correctedHTML = des.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
-      project.description = correctedHTML.length>0? correctedHTML : "";
+    project.project_name = this.projectForm.value.project_title ? this.projectForm.value.project_title : '';
+    const descriptionValue = this.projectForm.value.description || '';
+    if(descriptionValue.includes('data-list="bullet"')){
+      const correctedHTML = descriptionValue.replace('<ol>', '<ul>').replace('</ol>', '</ul>');
+      project.description = correctedHTML.length > 0 ? correctedHTML : '';
+    } else {
+      project.description = descriptionValue.length > 0 ? descriptionValue : '';
     }
-    else{
-      project.description = des.length>0? des : "";
-    }
-    project.original_description_html = des;
-    project.project_link = this.projectForm.value.project_link?this.projectForm.value.project_link : '';
-    project.technologies_used = this.projectForm.value.technologies_used?this.projectForm.value.technologies_used : '';
-    project.bullet_points_count = this.projectForm.value.bullet_points?this.projectForm.value.bullet_points : '';
-    project.period = this.projectForm.value.period?this.projectForm.value.period :'';
+    project.original_description_html = descriptionValue;
+    project.project_link = this.projectForm.value.project_link ? this.projectForm.value.project_link : '';
+    project.technologies_used = this.projectForm.value.technologies_used ? this.projectForm.value.technologies_used : '';
+    project.bullet_points_count = this.projectForm.value.bullet_points ? this.projectForm.value.bullet_points : '';
+    project.period = this.projectForm.value.period ? this.projectForm.value.period : '';
 
     // Helper to get PROJECT section items
     const getProjectSectionItems = () => {
@@ -1098,35 +1120,34 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  optimizeProject(){
-    if(this.getEditorRawData().length > 0){
+  optimizeProject() {
+    // Use FormControl value for description instead of Quill/editor methods
+    let descriptionValue = this.projectForm.get('description')?.value || '';
+    // If value is not a string, try to convert to string (e.g., JSON or Delta)
+    if (typeof descriptionValue !== 'string') {
+      try {
+        descriptionValue = JSON.stringify(descriptionValue);
+      } catch {
+        descriptionValue = '';
+      }
+    }
+    // Remove HTML tags and whitespace to check for real content
+    const plainText = descriptionValue.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim();
+    console.log('BOTBRO: descriptionValue =', descriptionValue);
+    console.log('BOTBRO: plainText =', plainText);
+    if (plainText.length > 0) {
       this.is_projects_loading = true;
-      const project_prompt = this.promptService.testing_project_desc_prompt(this.getEditorRawData());
-      this.resumeService.requestOpenAI({ "prompt" : project_prompt}).subscribe({
-        next: (res : any) => {
+      const project_prompt = this.promptService.testing_project_desc_prompt(descriptionValue);
+      this.resumeService.requestOpenAI({ "prompt": project_prompt }).subscribe({
+        next: (res: any) => {
           console.log(res['choices'][0]['message']['content']);
-          
-          //store OpenAI response in our Backend. Need a table to store
           let content = res['choices'][0]['message']['content'];
-          // let description = content.split("&&&");
-          // description[1] has suggestions to improve. need to show it to the user.
-          this.projectListPoints = this.handleStringInput(content); // JSON.parse(content)
-          // this.projectForm.controls['description'].setValue(this.projectListPoints.join("\n"))
-          // if(this.isJobDescAISuggestionsPresent()){
-          //   let response : ProjectData = {bulletPoints : this.projectListPoints.slice(0,this.projectListPoints.length-1), ats_score : this.projectListPoints[this.projectListPoints.length - 1]}
-          //   this.projectAIResponses.push(response);
-          // }
-          // else{
-          //   let response : ProjectData = {bulletPoints : this.projectListPoints, ats_score : ""}
-          //   this.projectAIResponses.push(response);
-          // }
+          this.projectListPoints = this.handleStringInput(content);
           this.is_projects_loading = false;
           this.openPanelWindow();
-          
-          // Show success message
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Success', 
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
             detail: 'AI suggestions generated successfully!',
             life: 3000
           });
@@ -1134,22 +1155,18 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
         error: (error) => {
           console.error('Error optimizing project:', error);
           this.is_projects_loading = false;
-          
-          // Show error message
-          this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Error', 
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
             detail: 'Failed to generate AI suggestions. Please try again.',
             life: 5000
           });
         }
       });
-      
     } else {
-      // Show warning if no content to optimize
-      this.messageService.add({ 
-        severity: 'warn', 
-        summary: 'Warning', 
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
         detail: 'Please add some project description content before using BotBro.',
         life: 4000
       });
@@ -1479,153 +1496,6 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     this.borderWidth = 3;
   }
 
-  async ngAfterViewInit(): Promise<void> {
-    if (isPlatformBrowser(this.platformId)) {
-      const Quill = (await import('quill')).default; // Dynamically import Quill
-
-      this.editor = new Quill(this.editorContainer.nativeElement, {
-        theme: 'snow',
-        placeholder: 'Describe your project details and achievements...', // Set placeholder text
-        modules: {
-          toolbar: [
-            ['bold', 'italic', 'underline', 'strike'], // Text formatting
-            [{ 'header': [1, 2, 3, false] }], // Headers
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Lists
-            [{ 'indent': '-1' }, { 'indent': '+1' }], // Indentation
-            ['link'], // Links
-            ['clean'] // Remove formatting
-          ],
-        },
-      });
-
-      // Sync editor description with FormControl
-      this.editor.on('text-change', () => {
-        this.projectForm.get('description')?.setValue(this.editor.root.innerHTML, { emitEvent: false });
-      });
-
-      // Sync FormControl value changes with Quill
-      this.projectForm.get('description')?.valueChanges.subscribe((value) => {
-        if (this.editor.root.innerHTML !== value) {
-          this.editor.root.innerHTML = value || '';
-        }
-      });
-    }
-
-    this.editor.clipboard.dangerouslyPasteHTML(this.selectedProject().original_description_html);
-  }
-
-  getEditorRawData(): string {
-    // const html = this.editor.root.innerHTML; 
-    const rawText = this.editor.getText().trim(); // Plain text (removes formatting and extra whitespace)
-    return rawText;
-  }
-
-  getEditorData(){
-    return this.editor.root.innerHTML;
-  }
-
-  setDataInEditor(sentences: string[]): void {
-    if (this.editor) {
-      // Convert sentences to HTML
-      const html = sentences.map((sentence) => `<p>${sentence}</p>`).join('');
-      this.editor.clipboard.dangerouslyPasteHTML(html); // Set the HTML description in the editor
-    }
-  }
-  
-
-  logContent(): void {
-    console.log(this.projectForm.get('description')?.value);
-  }
-
-  useResponse(index: number): void {
-    // Get the editor content as Delta
-  let newText = this.projectListPoints[index];
-  const content = this.editor.getContents();
-
-  let charIndex = 0; // Tracks the character index
-  let targetFound = false;
-
-  if(this.getEditorData().includes('data-list="bullet"')){
-    const lines = this.extractULStrings(this.getEditorData());
-    console.log(lines);
-    lines[index] = newText;
-    let newHTML = this.convertULToHtml(lines);
-    if(this.editor?.clipboard){
-      this.editor.clipboard.dangerouslyPasteHTML(newHTML);
-    }   
-  }
-  else if(this.getEditorData().includes('data-list="ordered"')){
-    const lines = this.extractOLStrings(this.getEditorData());
-    console.log(lines);
-    lines[index] = newText;
-    let newHTML = this.convertOLToHtml(lines);
-    if(this.editor?.clipboard){
-      this.editor.clipboard.dangerouslyPasteHTML(newHTML);
-    }   
-  }
-  else{
-    for (const op of content.ops || []) {
-      if (typeof op.insert === 'string') {
-         // Split lines by newline characters
-         const lines = op.insert.split('\n');
-         for (let i = 0; i < lines.length; i++) {
-           if (index === 0) {
-             targetFound = true;
-   
-             // Remove the target point/line
-             this.editor.deleteText(charIndex, lines[i].length);
-   
-             // Insert the new text
-             this.editor.insertText(charIndex, newText);
-   
-             return; // Exit once replacement is done
-           }
-   
-           // Update the character index and decrement the target index
-           charIndex += lines[i].length + 1; // Include newline
-           index--;
-         }
-       } else {
-         console.log("Else if working----------------------------");
-         // Handle cases where `op.insert` is not a string
-         charIndex += typeof op.insert === 'object' ? 1 : 0; // Increment for embedded objects
-       }
-     }
-   
-     if (!targetFound) {
-       console.warn('Index out of range. No replacement made.');
-     }
-  }
-  }
-
-  extractULStrings(htmlContent : string): string[] {
-    const regex = /<li[^>]*>\s*<span[^>]*><\/span>(.*?)<\/li>/gs;
-    const matches = [...htmlContent.matchAll(regex)];
-    return matches.map(match => match[1].trim().replace(/\s+/g, ' '));
-  }
-
-
-  convertULToHtml(points : string[]): string {
-   return `
-      <ol>
-        ${points.map(string => `<li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>${string}</li>`).join('')}
-      </ol>
-    `;
-  }
-
-  extractOLStrings(htmlContent : string): string[] {
-    const regex = /<li[^>]*data-list="ordered"[^>]*>\s*<span[^>]*><\/span>(.*?)<\/li>/gs;
-    const matches = [...htmlContent.matchAll(regex)];
-    return matches.map(match => match[1].trim().replace(/\s+/g, ' '));
-  }
-
-  convertOLToHtml(points : string[]): string {
-    return `
-      <ol>
-        ${points.map(string => `<li data-list="ordered"><span class="ql-ui" contenteditable="false"></span>${string}</li>`).join('')}
-      </ol>
-    `;
-  }
 
   editAIResponse(index : number){
     this.optimize_index = index
@@ -1646,4 +1516,11 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     this.optimize_index = -1
   }
 
+  // Use the selected AI response as the project description
+  useResponse(index: number): void {
+    const response = this.projectListPoints[index];
+    if (response) {
+      this.projectForm.get('description')?.setValue(response);
+    }
+  }
 }
