@@ -84,6 +84,7 @@ export interface SummaryData{
   ]
 })
 export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() sectionType: string = 'PROFILE_SUMMARY';
   // Project list and selected item for project section
   project_list: any[] = [];
   selectedProjectItem: any = {id : null, project_title : null, project_link : null, technologies_used : null, description : null};
@@ -327,20 +328,33 @@ openPanelWindow(){
 }
 
   ngOnInit() {
-  // Initialize ngx-editor instance
-    // Set default summary text from store section data if no user data
-    const resume = this.resumeSignalForm();
-    const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
-    const defaultSummary = section?.data?.profile_summary ||
-      'Innovative Senior Software Developer with 4+ years of expertise in full-stack development, cloud architecture, and team leadership. Proven track record of delivering scalable web applications serving 100K+ users using React, TypeScript, Node.js, and AWS. Specialized in microservices architecture, performance optimization, and agile development practices. Passionate about mentoring teams, implementing best practices, and driving technical excellence to deliver business-critical solutions that exceed user expectations.';
-    if (!this.summaryForm.controls['profile_summary'].value) {
-      this.summaryForm.controls['profile_summary'].setValue(defaultSummary, { emitEvent: false });
+    // Set format based on sectionType
+    if (this.sectionType === 'PROFILE_SUMMARY_BULLETED') {
+      this.summaryForm.controls['format'].setValue('bulleted', { emitEvent: false });
+      // Only load summary_bullets as list, not paragraph
+      const resume = this.resumeSignalForm();
+      const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY_BULLETED');
+      if (section && section.data && Array.isArray(section.data.summary_bullets)) {
+        const bullets = section.data.summary_bullets.map((b: string) => `<li>${b}</li>`).join('');
+        this.summaryForm.controls['profile_summary'].setValue(`<ul>${bullets}</ul>`, { emitEvent: false });
+      } else {
+        this.summaryForm.controls['profile_summary'].setValue('', { emitEvent: false });
+      }
+    } else {
+      this.summaryForm.controls['format'].setValue('paragraph', { emitEvent: false });
+      // Use paragraph summary only
+      const resume = this.resumeSignalForm();
+      const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
+      if (section && section.data && section.data.profile_summary) {
+        this.summaryForm.controls['profile_summary'].setValue(section.data.profile_summary, { emitEvent: false });
+      } else {
+        this.summaryForm.controls['profile_summary'].setValue('', { emitEvent: false });
+      }
     }
+  // Initialize ngx-editor instance
     // Listen for format changes to update dummy text from store
     this.summaryForm.controls['format'].valueChanges.subscribe((val) => {
-      if (!this.summaryForm.controls['profile_summary'].value) {
-        this.summaryForm.controls['profile_summary'].setValue(defaultSummary);
-      }
+      // No-op: handled above
     });
     this.subs.push(this.router.events.subscribe(() => {
       const currentUrl = this.router.url;

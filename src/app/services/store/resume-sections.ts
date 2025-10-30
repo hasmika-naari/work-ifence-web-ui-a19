@@ -229,6 +229,33 @@ export const sections: Array<SectionDesc> = [
           },
           actions: { edit: true, delete: true, moveUp: true, moveDown: false }
         }
+        ,
+        {
+          id: 'project2',
+          data: {
+            project_title: 'E-Commerce Analytics Dashboard',
+            project_link: 'https://github.com/johndoe/ecommerce-analytics',
+            technologies_used: 'Angular, TypeScript, PrimeNG, Node.js, Express, PostgreSQL, Chart.js',
+            description: 'Built an analytics dashboard for e-commerce businesses to visualize sales, customer behavior, and inventory trends. Included interactive charts, real-time data updates, and exportable reports.',
+            start_date: '2023-03',
+            end_date: '2023-10',
+            role: 'Frontend Engineer',
+            responsibilities: [
+              'Developed reusable Angular components for data visualization.',
+              'Integrated Chart.js for interactive and dynamic charting.',
+              'Collaborated with backend team to design RESTful APIs for analytics data.',
+              'Implemented authentication and role-based access control.',
+              'Optimized dashboard performance for large datasets.',
+              'Created exportable PDF and CSV reports.'
+            ],
+            highlights: [
+              'Enabled business users to reduce manual reporting time by 80%.',
+              'Supported 10,000+ concurrent users with real-time updates.',
+              'Recognized as a top internal tool by client stakeholders.'
+            ]
+          },
+          actions: { edit: true, delete: true, moveUp: true, moveDown: true }
+        }
       ]
     },
     {

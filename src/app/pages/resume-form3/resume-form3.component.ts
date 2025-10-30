@@ -1262,7 +1262,9 @@ hideMenu() {
     this.sectionName=section
   }
 
-  showSummaryDetails(){
+  summarySectionType: string = 'PROFILE_SUMMARY';
+  showSummaryDetails(sectionType: string = 'PROFILE_SUMMARY') {
+    this.summarySectionType = sectionType;
     this.openPanel('summaryDetails', 'Summary');
   }
 

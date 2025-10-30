@@ -87,13 +87,13 @@
                                             }</li>
                                         }
                                     @if(isSectionActive('PROFILE_SUMMARY')){
-                                    <li (click)="showSummaryDetails()"><div><span class="checkmark"><p-icon class="pi pi-align-left"></p-icon></span> SUMMARY</div>
+                                    <li (click)="showSummaryDetails('PROFILE_SUMMARY')"><div><span class="checkmark"><p-icon class="pi pi-align-left"></p-icon></span> SUMMARY</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('PROFILE_SUMMARY_BULLETED')){
-                                    <li (click)="showSummaryDetails()"><div><span class="checkmark"><p-icon class="pi pi-list"></p-icon></span> SUMMARY (BULLETED)</div>
+                                    <li (click)="showSummaryDetails('PROFILE_SUMMARY_BULLETED')"><div><span class="checkmark"><p-icon class="pi pi-list"></p-icon></span> SUMMARY (BULLETED)</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
@@ -302,7 +302,7 @@
               <app-resume-course-work [courseValue]="courseWorkCount" (contact)="saveContact()" *ngSwitchCase="'courseWorkDetails'"></app-resume-course-work>
               <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" [sectionName]="sectionName" *ngSwitchCase="'skillsDetails'"></app-resume-skills>
               <app-resume-achievements (contact)="saveContact()" [sectionName]="sectionName" *ngSwitchCase="'achievementsDetails'"></app-resume-achievements>
-              <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" *ngSwitchCase="'summaryDetails'"></app-resume-summary>
+              <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" [sectionType]="summarySectionType" *ngSwitchCase="'summaryDetails'"></app-resume-summary>
               <app-resume-accomplishments (contact)="saveContact()" *ngSwitchCase="'accomplishments'"></app-resume-accomplishments>
               <app-add-section 
                   [addedSections]="currentSections()"
