@@ -415,6 +415,7 @@ export class Education{
   }
   
   export class Resume{
+    id?: string;
     title: string;
     resume_category: string;
     role_category: string;

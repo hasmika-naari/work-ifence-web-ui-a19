@@ -941,15 +941,8 @@ hideMenu() {
     try {
       console.log('[ResumeForm3] handleSectionSelected called for:', section?.section);
       if (!section) return;
-      const currentSectionsSignal = this.userStore.getCurrentSections();
-      const currentSections = currentSectionsSignal ? currentSectionsSignal() : [];
-      // Update isAdded flag for the matching section, do not add duplicate
-      const updated = currentSections.map((s: any) =>
-        s.section === section.section ? { ...s, isAdded: true } : s
-      );
-      console.log('[ResumeForm3] Section isAdded updated:', section.section);
-      console.log('[ResumeForm3] Updated sections:', updated);
-      this.userStore.setResumeSections(updated);
+      // Use store logic to add section as last, update arrows, set isAdded, etc.
+      this.userStore.addSection(section.section);
       // Close the panel after adding
       this.showPanelWindow = false;
       this.activePanel = null;

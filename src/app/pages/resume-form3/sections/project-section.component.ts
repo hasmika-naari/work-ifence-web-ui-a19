@@ -1,16 +1,24 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
 import { SplitCommaPipe } from './split-comma.pipe';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Component({
   selector: 'resume-project-section',
   standalone: true,
-  imports: [CommonModule, SplitCommaPipe],
+  imports: [CommonModule, ButtonModule, SplitCommaPipe],
   template: `
     <div class="section project">
       <div *ngIf="items && items.length; else noProjects">
-        <div *ngFor="let item of items; let last = last" class="project-item" style="margin-bottom:2.5rem; padding-bottom:2rem; border-bottom: 1px solid #e0e0e0;">
+        <div *ngFor="let item of items; let i = index; let last = last" class="project-item" style="margin-bottom:2.5rem; padding-bottom:2rem; position:relative;">
+          <!-- Hover action buttons -->
+          <span class="project-item-actions" *ngIf="!isPreview">
+            <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit(i)"></button>
+            <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete(i)"></button>
+            <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" [disabled]="!canMoveUp(i)" (click)="moveUp(i)"></button>
+            <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" [disabled]="!canMoveDown(i)" (click)="moveDown(i)"></button>
+          </span>
           <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap;">
             <div>
               <span class="project-title" style="font-size:1.15em; font-weight:600; letter-spacing:0.01em; color:#222;">
@@ -63,28 +71,20 @@ export class ProjectSectionComponent {
   @Input() items: any[] = [];
   @Input() isPreview: boolean = false;
 
-  ngOnChanges() {
-    console.log('[ProjectSectionComponent] ngOnChanges items:', this.items);
-    if (!this.items || !this.items.length) {
-      console.warn('[ProjectSectionComponent] items is empty or undefined!');
-    } else {
-      console.log('[ProjectSectionComponent] First item:', this.items[0]);
-    }
+  @Output() editProject = new EventEmitter<number>();
+  @Output() deleteProject = new EventEmitter<number>();
+  @Output() moveProjectUp = new EventEmitter<number>();
+  @Output() moveProjectDown = new EventEmitter<number>();
+
+  canMoveUp(index: number): boolean {
+    return index > 0;
+  }
+  canMoveDown(index: number): boolean {
+    return index < this.items.length - 1;
   }
 
-  ngOnInit() {
-    console.log('[ProjectSectionComponent] ngOnInit items:', this.items);
-    if (!this.items || !this.items.length) {
-      console.warn('[ProjectSectionComponent] items is empty or undefined!');
-    } else {
-      console.log('[ProjectSectionComponent] First item:', this.items[0]);
-    }
-  }
-
-  ngDoCheck() {
-    // Only log if items is empty
-    if (!this.items || !this.items.length) {
-      console.warn('[ProjectSectionComponent] ngDoCheck: items is empty or undefined!');
-    }
-  }
+  edit(index: number) { this.editProject.emit(index); }
+  delete(index: number) { this.deleteProject.emit(index); }
+  moveUp(index: number) { this.moveProjectUp.emit(index); }
+  moveDown(index: number) { this.moveProjectDown.emit(index); }
 }

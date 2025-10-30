@@ -1,0 +1,22 @@
+.experience-item {
+  position: relative;
+}
+.experience-item-actions {
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  background: rgba(255,255,255,0.85);
+  border-radius: 1.5rem;
+  padding: 0.25rem 0.5rem;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
+  z-index: 2;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.experience-item:hover .experience-item-actions {
+  opacity: 1;
+  visibility: visible;
+}

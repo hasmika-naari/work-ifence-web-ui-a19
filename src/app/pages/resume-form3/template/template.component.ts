@@ -1,3 +1,6 @@
+
+
+import { sections as defaultSections } from '../../../services/store/resume-sections';
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectorRef, Signal, effect, computed, signal } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -65,6 +68,15 @@ interface SectionTemplate {
   htmlTemplate: string;
 }
 
+// Section keys (titles) used for this template, in order
+export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
+  'CONTACT',
+  'PROFILE_SUMMARY',
+  'SKILLS_BULLET_POINTS',
+  'WORK_EXPERIENCE',
+  'EDUCATION',
+  'PROJECT',
+];
 
 @Component({
   selector: 'app-resume1-template',
@@ -321,19 +333,15 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
 
   // Update sectionItemsCache for all item-based sections whenever addedSections changes
+  // This should only be called from effects or after section order/data changes, not from the template directly
   updateSectionItemsCache() {
     const cache: { [section: string]: any[] } = {};
     for (const section of this.addedSections()) {
       if (Array.isArray(section.items)) {
-        // Log the raw items array for debugging
-        console.log(`[updateSectionItemsCache] section '${section.section}' raw items:`, section.items);
-        // Store the raw items array for debugging (not just i.data)
         cache[section.section] = section.items;
       }
     }
     this.sectionItemsCache = cache;
-    // Log the full cache for debugging
-    console.log('[updateSectionItemsCache] sectionItemsCache:', this.sectionItemsCache);
   }
  
   private unloadHandler = (e: BeforeUnloadEvent) => {
@@ -364,6 +372,16 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       window.addEventListener('beforeunload', this.unloadHandler);
     }
 
+    // If this is a new resume (no id), generate id and initialize sections for this template
+    const resume = this.resumeForm();
+    if (!resume?.id) {
+      // Generate a new unique id for the resume
+      const newId = this.generateId();
+      resume.id = newId;
+      this.userStore.updateResumeForm(resume); // Persist the new id
+      this.loadSectionsForNewResume();
+    }
+
     // Always set section status for new or existing resumes
     let isSection : IsSectionPresent = new IsSectionPresent();
     isSection.isContact = true;
@@ -377,13 +395,56 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     isSection.isAchievement = true;
     this.userStore.updateSectionStatus(isSection);
 
-
     // Update sectionItemsCache initially
     this.updateSectionItemsCache();
     this.logSectionItemsDebug();
-
     // (effect for sectionItemsCache is now only in the constructor)
+  }
 
+  /**
+   * Loads sections for a new resume using RESUME1_TEMPLATE_SECTION_TITLES and defaultSections.
+   * Sets isAdded=true in both the default list and the new list, and updates the store.
+   */
+  loadSectionsForNewResume() {
+    // Set isAdded=true for all defaultSections that match the template titles
+    RESUME1_TEMPLATE_SECTION_TITLES.forEach(sectionKey => {
+      const def = defaultSections.find(s => s.section === sectionKey);
+      if (def) def.isAdded = true;
+    });
+
+    // Build the new sections list for this template
+    const newSections = RESUME1_TEMPLATE_SECTION_TITLES.map((sectionKey, idx, arr) => {
+      const def = defaultSections.find(s => s.section === sectionKey);
+      if (!def) return null;
+      // Deep clone the section and set isAdded to true
+      const sectionCopy = JSON.parse(JSON.stringify(def));
+      sectionCopy.isAdded = true;
+      // Set headerActions for moveUp/moveDown based on position
+      if (!sectionCopy.headerActions) sectionCopy.headerActions = {};
+      // CONTACT (first) - no arrows
+      if (idx === 0) {
+        sectionCopy.headerActions.moveUp = false;
+        sectionCopy.headerActions.moveDown = false;
+      }
+      // Second item - only down arrow
+      else if (idx === 1) {
+        sectionCopy.headerActions.moveUp = false;
+        sectionCopy.headerActions.moveDown = true;
+      }
+      // Last item - only up arrow
+      else if (idx === arr.length - 1) {
+        sectionCopy.headerActions.moveUp = true;
+        sectionCopy.headerActions.moveDown = false;
+      }
+      // All others - both arrows
+      else {
+        sectionCopy.headerActions.moveUp = true;
+        sectionCopy.headerActions.moveDown = true;
+      }
+      return sectionCopy;
+    }).filter(Boolean);
+    // Update the store with the new sections list
+    this.userStore.setResumeSections(newSections);
   }
   // Check if resume is empty and auto-populate with sample data
   checkAndOfferSampleData(): void {
@@ -644,9 +705,9 @@ formatSkills(items : string[]){
 
   // (Removed duplicate moveObjectById definition. The correct version is below.)
   moveObjectById(section: string, id: string, direction: "up" | "down"): void {
-  // Move section in the main section list (for section headers)
-  const sections = this.addedSections();
-  const index = sections.findIndex((s: any) => s.section === section);
+    // Move section in the main section list (for section headers)
+    const sections = this.addedSections();
+    const index = sections.findIndex((s: any) => s.section === section);
     if (index === -1) return;
     if (direction === "up" && index > 0) {
       [sections[index], sections[index - 1]] = [sections[index - 1], sections[index]];
@@ -655,8 +716,11 @@ formatSkills(items : string[]){
     } else {
       return;
     }
+    // Update arrow button configuration after move
+    this.updateSectionArrows(sections);
     this.userStore.setResumeSections(sections);
     this.markDirty();
+    this.cdr.detectChanges();
   }
   removeSection(section: string) {
     this.confirmRemoveSection(section);
@@ -864,6 +928,7 @@ moveSectionUp(section: string) {
   const idx = addedSections.findIndex((s: any) => s.section === section);
   if (idx > 0) {
     [addedSections[idx - 1], addedSections[idx]] = [addedSections[idx], addedSections[idx - 1]];
+    this.updateSectionArrows(addedSections);
     this.userStore.setResumeSections(addedSections);
     this.markDirty();
     this.cdr.detectChanges();
@@ -875,9 +940,34 @@ moveSectionUp(section: string) {
     const idx = addedSections.findIndex((s: any) => s.section === section);
     if (idx > -1 && idx < addedSections.length - 1) {
       [addedSections[idx], addedSections[idx + 1]] = [addedSections[idx + 1], addedSections[idx]];
+      this.updateSectionArrows(addedSections);
       this.userStore.setResumeSections(addedSections);
       this.markDirty();
       this.cdr.detectChanges();
+    }
+  }
+
+  // Helper to update moveUp/moveDown arrow configuration for all sections
+  updateSectionArrows(sections: any[]) {
+    for (let i = 0; i < sections.length; i++) {
+      if (!sections[i].headerActions) sections[i].headerActions = {};
+      if (i === 0) {
+        // First (CONTACT): no arrows
+        sections[i].headerActions.moveUp = false;
+        sections[i].headerActions.moveDown = false;
+      } else if (i === 1) {
+        // Second: only down
+        sections[i].headerActions.moveUp = false;
+        sections[i].headerActions.moveDown = true;
+      } else if (i === sections.length - 1) {
+        // Last: only up
+        sections[i].headerActions.moveUp = true;
+        sections[i].headerActions.moveDown = false;
+      } else {
+        // Middle: both
+        sections[i].headerActions.moveUp = true;
+        sections[i].headerActions.moveDown = true;
+      }
     }
   }
   

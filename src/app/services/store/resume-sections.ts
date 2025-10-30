@@ -4,7 +4,7 @@ export const sections: Array<SectionDesc> = [
   {
     section: 'CONTACT',
     description: 'Your contact details and personal information.',
-    isAdded: true,
+    isAdded: false,
     isPremium: false,
     tags: 'contact, personal, information',
     label: 'Contact',
@@ -31,7 +31,7 @@ export const sections: Array<SectionDesc> = [
   {
     section: 'PROFILE_SUMMARY',
     description: 'A brief summary of your skills and experience.',
-    isAdded: true,
+    isAdded: false,
     isPremium: false,
     tags: 'summary, profile, objective',
     label: 'Summary',
@@ -51,7 +51,7 @@ export const sections: Array<SectionDesc> = [
   {
     section: 'SKILLS_BULLET_POINTS',
     description: 'Your skills in bullet points.',
-    isAdded: true,
+    isAdded: false,
     isPremium: false,
     tags: 'skills, bulleted',
     label: 'Skills',
@@ -69,7 +69,7 @@ export const sections: Array<SectionDesc> = [
   {
     section: 'WORK_EXPERIENCE',
     description: 'Your professional work experience.',
-    isAdded: true,
+    isAdded: false,
     isPremium: false,
     tags: 'experience, work, job',
     label: 'Experience',
@@ -95,7 +95,7 @@ export const sections: Array<SectionDesc> = [
   {
     section: 'EDUCATION',
     description: 'Details about your educational background.',
-    isAdded: true,
+    isAdded: false,
     isPremium: false,
     tags: 'education, school, degree',
     label: 'Education',

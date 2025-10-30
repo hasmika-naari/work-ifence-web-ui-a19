@@ -823,11 +823,9 @@ export class UserStoreService {
       }
 
 removeSection(sectionName: string) {
-  // Instead of removing from array, set isAdded = false in resumeForm.sections
+  // Remove the section from the selected resume's sections array
   this.state.update((state) => {
-    const updatedSections = state.selectedResume.resumeForm.sections.map(section =>
-      section.section === sectionName ? { ...section, isAdded: false } : section
-    );
+    let updatedSections = state.selectedResume.resumeForm.sections.filter(section => section.section !== sectionName);
     return {
       ...state,
       selectedResume: {
@@ -840,10 +838,15 @@ removeSection(sectionName: string) {
     };
   });
 
+  // Set isAdded = false in the default sections list
+  const defaultSections = require('./resume-sections').sections;
+  const defaultSection = defaultSections.find((s: any) => s.section === sectionName);
+  if (defaultSection) defaultSection.isAdded = false;
+
   // Clear section data
   this.clearSectionData(sectionName);
 
-  console.log(`Removed section ${sectionName} from resume (set isAdded = false)`);
+  console.log(`Removed section ${sectionName} from resume (removed from array, set isAdded = false in default list)`);
 }
 
 private clearSectionData(sectionName: string) {
@@ -874,50 +877,69 @@ private clearSectionData(sectionName: string) {
 
 
 addSection(sectionName: string) {
-  // For PROJECT, set isAdded and items in a single update
-  if (sectionName === 'PROJECT') {
-    const staticProjectSection = require('./resume-sections').sections.find((s: any) => s.section === 'PROJECT');
-    const defaultItems = staticProjectSection && staticProjectSection.items ? [...staticProjectSection.items] : [];
-    this.state.update((state) => {
-      const updatedSections = state.selectedResume.resumeForm.sections.map(section =>
-        section.section === 'PROJECT'
-          ? { ...section, isAdded: true, items: defaultItems }
-          : section
-      );
-      return {
-        ...state,
-        selectedResume: {
-          ...state.selectedResume,
-          resumeForm: {
-            ...state.selectedResume.resumeForm,
-            sections: updatedSections
-          }
-        }
-      };
-    });
-    this.setProject(require('../resume.model').Project());
-    console.log(`Added section PROJECT to resume`);
+  // Find the default section definition
+  const defaultSections = require('./resume-sections').sections;
+  const defaultSection = defaultSections.find((s: any) => s.section === sectionName);
+  if (!defaultSection) {
+    console.error(`Section ${sectionName} not found in default sections.`);
     return;
   }
-  // Default: set isAdded = true
+  // Set isAdded to true in the default list
+  defaultSection.isAdded = true;
+
+  // Deep clone the section to add
+  const newSection = JSON.parse(JSON.stringify(defaultSection));
+  newSection.isAdded = true;
+
+  // Get current sections and add the new section as last
   this.state.update((state) => {
-    const updatedSections = state.selectedResume.resumeForm.sections.map(section =>
-      section.section === sectionName ? { ...section, isAdded: true } : section
-    );
+    let sections = state.selectedResume.resumeForm.sections ? [...state.selectedResume.resumeForm.sections] : [];
+    // Prevent duplicate add
+    if (sections.some(s => s.section === sectionName && s.isAdded)) {
+      return state;
+    }
+
+    // Update previous last section's headerActions
+    if (sections.length > 0) {
+      const prevLast = sections[sections.length - 1];
+      if (!prevLast.headerActions) prevLast.headerActions = {};
+      // If adding the second section (after CONTACT), only enable down arrow for it
+      if (sections.length === 1 && prevLast.section === 'CONTACT') {
+        prevLast.headerActions.moveUp = false;
+        prevLast.headerActions.moveDown = true;
+      } else {
+        prevLast.headerActions.moveDown = true;
+        prevLast.headerActions.moveUp = sections.length > 1;
+      }
+    }
+    // Set headerActions for new section
+    if (!newSection.headerActions) newSection.headerActions = {};
+    // If this is the second section (first after CONTACT), only down arrow
+    if (sections.length === 1 && sections[0].section === 'CONTACT') {
+      newSection.headerActions.moveUp = false;
+      newSection.headerActions.moveDown = false;
+    } else {
+      newSection.headerActions.moveUp = sections.length > 0;
+      newSection.headerActions.moveDown = false;
+    }
+
+    // Add the new section as last
+    sections.push(newSection);
+
     return {
       ...state,
       selectedResume: {
         ...state.selectedResume,
         resumeForm: {
           ...state.selectedResume.resumeForm,
-          sections: updatedSections
+          sections: sections
         }
       }
     };
   });
   // Add default data based on section type
   this.addDefaultDataForSection(sectionName);
-  console.log(`Added section ${sectionName} to resume`);
+  console.log(`Added section ${sectionName} to resume as last, updated arrow flags.`);
 }
 
 private addDefaultDataForSection(sectionName: string) {

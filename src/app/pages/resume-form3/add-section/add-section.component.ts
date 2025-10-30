@@ -31,7 +31,12 @@ import { sections } from 'src/app/services/store/resume-sections';
 })
 export class AddSectionComponent implements OnInit, OnDestroy {
   @Input() addedSections: SectionDesc[] = [];
-  sections: SectionDesc[] = [];
+  // Always use the static sections list from the store for add-section panel, but set isAdded to false for all (deep clone)
+  sections: SectionDesc[] = sections.map(s => ({
+    ...s,
+    isAdded: false,
+    items: s.items ? s.items.map(item => ({ ...item })) : []
+  }));
     // @Input() isVisible: boolean = false;
     // @Output() closePanel = new EventEmitter<void>();
   @Output() sectionAdded = new EventEmitter<void>();
@@ -55,7 +60,7 @@ export class AddSectionComponent implements OnInit, OnDestroy {
     constructor(private router: Router, public userStore : UserStoreService, private sanitizer: DomSanitizer) {
       console.log('[AddSectionComponent] constructor called');
       this.selectedTemplateName = "";
-      this.sections = [...sections];
+      // Do not override this.sections here; keep all isAdded false
     }
     ngOnDestroy(): void {
       // if (this.themeToggleSubscription) {
