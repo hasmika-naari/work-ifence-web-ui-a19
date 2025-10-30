@@ -102,7 +102,7 @@ export const sections: Array<SectionDesc> = [
     title: 'Education',
     editable_section_title: 'Education',
     data: {},
-    headerActions: { edit: true, delete: true, moveDown: true, moveUp: true, add: true },
+    headerActions: { edit: true, delete: true, moveDown: false, moveUp: true, add: true },
     items: [
       {
         id: 'edu1',
@@ -129,7 +129,34 @@ export const sections: Array<SectionDesc> = [
       editable_section_title: 'Project',
       data: {},
       headerActions: { edit: true, delete: true, moveDown: false, moveUp: true, add: true },
-      items: []
+      items: [
+        {
+          id: 'project1',
+          data: {
+            project_title: 'AI-Powered Resume Builder',
+            project_link: 'https://github.com/johndoe/ai-resume-builder',
+            technologies_used: 'Angular, TypeScript, PrimeNG, Node.js, Express, MongoDB, OpenAI API',
+            description: 'Developed a full-stack AI-powered resume builder that generates personalized resume content using OpenAI. Features include customizable templates, drag-and-drop sections, PDF export, and real-time preview.',
+            start_date: '2024-01',
+            end_date: '2024-06',
+            role: 'Full Stack Developer',
+            responsibilities: [
+              'Designed and implemented the Angular frontend with dynamic form generation and live preview.',
+              'Integrated OpenAI API for AI-generated resume summaries and bullet points.',
+              'Built RESTful APIs with Node.js and Express for user authentication and data management.',
+              'Implemented MongoDB for persistent storage of user profiles and resumes.',
+              'Enabled PDF export and print-ready formatting using server-side rendering.',
+              'Deployed the application on Azure with CI/CD pipelines.'
+            ],
+            highlights: [
+              'Reduced resume creation time by 70% for users.',
+              'Achieved 99.9% uptime post-deployment.',
+              'Adopted by 500+ users within the first month.'
+            ]
+          },
+          actions: { edit: true, delete: true, moveUp: true, moveDown: false }
+        }
+      ]
     },
     {
       section: 'CERTIFICATIONS',

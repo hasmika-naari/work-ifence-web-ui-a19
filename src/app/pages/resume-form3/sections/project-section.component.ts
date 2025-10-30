@@ -1,30 +1,90 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SplitCommaPipe } from './split-comma.pipe';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Component({
   selector: 'resume-project-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SplitCommaPipe],
   template: `
     <div class="section project">
-      <h3>Projects</h3>
-      <div *ngIf="data && data.length; else dummyProjects">
-        <div *ngFor="let project of data">
-          <div>{{ project.project_title }} <span *ngIf="project.project_link">(<a [href]="project.project_link" target="_blank">Link</a>)</span></div>
-          <div>{{ project.description }}</div>
+      <div *ngIf="items && items.length; else noProjects">
+        <div *ngFor="let item of items; let last = last" class="project-item" style="margin-bottom:2.5rem; padding-bottom:2rem; border-bottom: 1px solid #e0e0e0;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap;">
+            <div>
+              <span class="project-title" style="font-size:1.15em; font-weight:600; letter-spacing:0.01em; color:#222;">
+                {{ item.data?.project_title }}
+              </span>
+              <span *ngIf="item.data?.project_link" style="margin-left:0.5em; font-size:0.95em;">
+                <a [href]="item.data?.project_link" target="_blank" style="color:#1976d2; text-decoration:underline;">[Link]</a>
+              </span>
+            </div>
+            <div *ngIf="item.data?.role || item.data?.start_date || item.data?.end_date" style="font-size:0.98em; color:#555; text-align:right; min-width:180px;">
+              <span *ngIf="item.data?.role"><strong>{{ item.data?.role }}</strong></span>
+              <span *ngIf="item.data?.role && (item.data?.start_date || item.data?.end_date)"> | </span>
+              <span *ngIf="item.data?.start_date || item.data?.end_date">
+                <span *ngIf="item.data?.start_date">{{ item.data?.start_date }}</span>
+                <span *ngIf="item.data?.end_date"> - {{ item.data?.end_date }}</span>
+              </span>
+            </div>
+          </div>
+          <div *ngIf="item.data?.technologies_used" style="margin:0.5em 0 0.5em 0;">
+            <span style="font-size:0.97em; color:#666;">Technologies:</span>
+            <ng-container *ngFor="let tech of (item.data?.technologies_used | splitComma)">
+              <span style="display:inline-block; background:#f3f3f3; color:#333; border-radius:12px; padding:2px 10px; margin:0 6px 4px 0; font-size:0.93em;">{{ tech }}</span>
+            </ng-container>
+          </div>
+          <div *ngIf="item.data?.description" style="margin:0.5em 0 0.5em 0; color:#444; font-size:0.98em;">
+            {{ item.data?.description }}
+          </div>
+          <div *ngIf="item.data?.responsibilities?.length" style="margin:0.5em 0 0.5em 0;">
+            <span style="font-weight:500; color:#333;">Responsibilities:</span>
+            <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; font-size:0.97em; color:#444;">
+              <li *ngFor="let resp of item.data?.responsibilities">{{ resp }}</li>
+            </ul>
+          </div>
+          <div *ngIf="item.data?.highlights?.length" style="margin:0.5em 0 0.5em 0;">
+            <span style="font-weight:500; color:#333;">Highlights:</span>
+            <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; font-size:0.97em; color:#444;">
+              <li *ngFor="let hl of item.data?.highlights">{{ hl }}</li>
+            </ul>
+          </div>
         </div>
       </div>
-      <ng-template #dummyProjects>
-        <div>Resume Builder App <span>(<a href="#" target="_blank">Link</a>)</span></div>
-        <div>Created a dynamic resume builder using Angular and PrimeNG.</div>
-        <div>Portfolio Website <span>(<a href="#" target="_blank">Link</a>)</span></div>
-        <div>Designed and deployed a personal portfolio site.</div>
+      <ng-template #noProjects>
+        <div>No projects added yet.</div>
       </ng-template>
     </div>
   `,
   styleUrls: ['./project-section.component.scss']
 })
 export class ProjectSectionComponent {
-  @Input() data!: any[];
+  @Input() items: any[] = [];
   @Input() isPreview: boolean = false;
+
+  ngOnChanges() {
+    console.log('[ProjectSectionComponent] ngOnChanges items:', this.items);
+    if (!this.items || !this.items.length) {
+      console.warn('[ProjectSectionComponent] items is empty or undefined!');
+    } else {
+      console.log('[ProjectSectionComponent] First item:', this.items[0]);
+    }
+  }
+
+  ngOnInit() {
+    console.log('[ProjectSectionComponent] ngOnInit items:', this.items);
+    if (!this.items || !this.items.length) {
+      console.warn('[ProjectSectionComponent] items is empty or undefined!');
+    } else {
+      console.log('[ProjectSectionComponent] First item:', this.items[0]);
+    }
+  }
+
+  ngDoCheck() {
+    // Only log if items is empty
+    if (!this.items || !this.items.length) {
+      console.warn('[ProjectSectionComponent] ngDoCheck: items is empty or undefined!');
+    }
+  }
 }

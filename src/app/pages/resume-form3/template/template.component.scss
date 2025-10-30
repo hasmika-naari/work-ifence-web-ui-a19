@@ -498,50 +498,84 @@ a{
   display: none !important;
 }
 
-.summary-section-title {
-  cursor: grab !important;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(101, 105, 109, .5);
-  white-space: pre-wrap;
-  // padding-bottom: 8px;
-  font-size: 20px;
-  line-height: 24px;
-  display: block;
-  text-align: left;
+  .summary-section-title {
+    cursor: grab !important;
+    text-transform: uppercase;
+    white-space: pre-wrap;
+    font-size: 20px;
+    line-height: 20px;
+    display: block;
+    text-align: left;
+    position: relative;
+    transition: background-color 0.2s ease; // Smooth background transition
+    
+    &:hover {
+      // background-color: rgba(0, 0, 0, 0.02); // Subtle background highlight on hover
+    }
+    
+    &:active {
+      cursor: grabbing;
+      // background-color: rgba(0, 0, 0, 0.05); // Slightly more visible when active
+    }
+    
+    // Prevent grabbing cursor in preview mode
+    .is-preview &,
+    .is-preview &:active {
+      cursor: default !important;
+    }
+    
+    // Add a visible drag indicator
+    &::before {
+      content: '⋮⋮';
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      color: #666; // Darker color for better visibility
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+  }
+
+
+
+.section-header {
   position: relative;
-  transition: background-color 0.2s ease; // Smooth background transition
-  
-  &:hover {
-    // background-color: rgba(0, 0, 0, 0.02); // Subtle background highlight on hover
-  }
-  
-  &:active {
-    cursor: grabbing;
-    // background-color: rgba(0, 0, 0, 0.05); // Slightly more visible when active
-  }
-  
-  // Prevent grabbing cursor in preview mode
-  .is-preview &,
-  .is-preview &:active {
-    cursor: default !important;
-  }
-  
-  // Add a visible drag indicator
-  &::before {
-    content: '⋮⋮';
-    position: absolute;
-    left: -20px;
-    top: 50%;
-    transform: translateY(-50%) rotate(90deg);
-    color: #666; // Darker color for better visibility
-    font-size: 14px;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-  }
-  
-  &:hover::before {
-    opacity: 0.9; // Higher opacity for better visibility
-  }
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(101, 105, 109, .5);
+  margin-bottom: 12px;
+  padding-bottom: 0px;
+  min-height: 36px;
+}
+
+.summary-section-title {
+  padding-bottom: 0px; /* Remove gap for underline */
+  margin-bottom: 0;
+  line-height: 1.1;
+}
+
+.section-header .section-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  gap: 6px;
+  z-index: 2;
+  transform: translateX(24px);
+  transition: opacity 180ms cubic-bezier(0.4,0,0.2,1), transform 220ms cubic-bezier(0.4,0,0.2,1);
+}
+
+.section-header:hover .section-actions {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
 }
 
 // Ensure section body content has normal cursor behavior
@@ -671,9 +705,6 @@ a{
   cursor: pointer;
   font-weight: 600;
 }
-.save-btn:hover{
-  background: #1659c5;
-}
 
 .tp-0{
   background-color: #ffffff00;
@@ -747,17 +778,14 @@ a{
 }
 
 .section-actions {
-  position: absolute;
-  top: -10px;
-  right: 0px;
+  position: relative;
+  top: 0;
+  right: 0;
   display: flex;
-  // background-color: #eeeeee8f;
-  // padding: 0.25rem 0.75rem;
   border-radius: 1000px !important;
   gap: 2px;
   opacity: 0;
-  transform: translateX(100%);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.3s ease;
   p-icon{
     border-radius: 50%;
     background-color: #eeeeee85;
@@ -1223,7 +1251,7 @@ a{
   
   .summary-section-title {
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     display: block;
   }
   

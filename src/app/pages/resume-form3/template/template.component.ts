@@ -12,7 +12,6 @@ import { GenAIService } from '../../../services/shared/genai.service';
 import { TemplatesService } from '../../../services/shared/templates.service';
 import { Injector } from '@angular/core';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-
 // Angular modules
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterModule, RouterLink } from '@angular/router';
@@ -127,6 +126,21 @@ interface SectionTemplate {
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  resetCourseworkForm: boolean = false;
+  certificationsTitles = () => this.getCertificationsSection().map(c => c.title || c.name || '');
+  isDragging: boolean = false;
+  currentDraggingSection: string = '';
+  sectionConfig: { [key: string]: any } = {};
+  // Single computed signal for added sections (for display and drag-and-drop)
+  addedSections = computed(() => {
+    // Explicitly depend on resumeForm signal for reactivity
+    const resume = this.resumeForm();
+    const sections = resume.sections || [];
+    const added = sections.filter(s => s.isAdded);
+    console.log('addedSections recomputed', added.map(s => ({section: s.section, isAdded: s.isAdded})));
+    return added;
+  });
+  hasUnsavedChanges = false;
   // --- Properties ---
   sidebarIconOnly!: Signal<boolean>;
   sectionStatus!: Signal<IsSectionPresent>;
@@ -137,32 +151,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   @Input() isPreview : boolean = false;
 
   // Pass isPreview to all section components
-  sectionInputs = {
-    isPreview: computed(() => this.isPreview)
-  };
-  currentDraggingSection: string = '';
-  isDragging : boolean = false;
-  hasUnsavedChanges = false;
-  resetCourseworkForm = false;
-  firstHalfSkills : SkillV2[] = [];
-  secondHalfSkills : SkillV2[] = [];
-  isSectionsSetCount : number = 1;
-  // Single computed signal for added sections (for display and drag-and-drop)
-  addedSections = computed(() => {
-    const sections = this.resumeForm().sections || [];
-    const added = sections.filter(s => s.isAdded);
-    console.log('addedSections recomputed', added.map(s => ({section: s.section, isAdded: s.isAdded})));
-    return added;
-  });
-
-  // Getter for drag and drop data binding
-  get dragDropSections(): SectionDesc[] {
-    return this.addedSections();
-  }
-  certificationsTitles = computed(() => this.getCertificationsSection().map(c => c.title || c.name || ''));
-  sectionConfig: { [key: string]: SectionTemplate } = {};
-
-   constructor(
+  constructor(
     private _formBuilder: FormBuilder, 
     private router : Router, 
     private cdr: ChangeDetectorRef,
@@ -188,6 +177,26 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       const changedSignal = this.userStore.getIsChangeInNewResume?.();
       const changed = typeof changedSignal === 'function' ? !!changedSignal() : false;
       this.hasUnsavedChanges = changed || this.hasUnsavedChanges; // preserve true until explicit save
+    });
+
+    // Watch for changes in addedSections and update sectionItemsCache (must be in constructor for Angular signals)
+    effect(() => {
+      this.updateSectionItemsCache();
+      this.logSectionItemsDebug();
+    });
+  }
+  // ...existing code...
+  logSectionItemsDebug() {
+    if (!this.sectionItemsCache) {
+      console.warn('[Resume1TemplateComponent] sectionItemsCache is undefined!');
+      return;
+    }
+    console.log('[Resume1TemplateComponent] sectionItemsCache:', this.sectionItemsCache);
+    console.log('[Resume1TemplateComponent] getSectionItems("PROJECT"):', this.getSectionItems('PROJECT'));
+    // Also log all section keys and their item counts
+    Object.keys(this.sectionItemsCache ?? {}).forEach(key => {
+      const arr = this.sectionItemsCache?.[key];
+      console.log(`[Resume1TemplateComponent] section '${key}' items count:`, Array.isArray(arr) ? arr.length : 'not array');
     });
   }
 
@@ -300,10 +309,31 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   // All section rendering and logic should now depend only on the sections list from the selected Resume in the store.
 
-  // Helper to get items from sections by section name
+
+  // Cache for section items to avoid infinite change detection and unify logic
+  sectionItemsCache: { [section: string]: any[] } = {};
+
+
+  // Helper to get items from sections by section name (all item-based sections use cache)
   getSectionItems(sectionName: string): any[] {
-    const section = this.addedSections().find((s: any) => s.section === sectionName);
-    return section?.items?.map((i: any) => ({ ...i.data, id: i.data?.id || i.id })) ?? [];
+    return this.sectionItemsCache[sectionName] ?? [];
+  }
+
+
+  // Update sectionItemsCache for all item-based sections whenever addedSections changes
+  updateSectionItemsCache() {
+    const cache: { [section: string]: any[] } = {};
+    for (const section of this.addedSections()) {
+      if (Array.isArray(section.items)) {
+        // Log the raw items array for debugging
+        console.log(`[updateSectionItemsCache] section '${section.section}' raw items:`, section.items);
+        // Store the raw items array for debugging (not just i.data)
+        cache[section.section] = section.items;
+      }
+    }
+    this.sectionItemsCache = cache;
+    // Log the full cache for debugging
+    console.log('[updateSectionItemsCache] sectionItemsCache:', this.sectionItemsCache);
   }
  
   private unloadHandler = (e: BeforeUnloadEvent) => {
@@ -320,6 +350,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       window.removeEventListener('beforeunload', this.unloadHandler);
     }
   }
+
 
   ngOnInit() {
     console.log('🚀🚀🚀 Resume1TemplateComponent ngOnInit STARTED 🚀🚀🚀');
@@ -346,16 +377,17 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     isSection.isAchievement = true;
     this.userStore.updateSectionStatus(isSection);
 
-    // Check if resume is mostly empty and could benefit from sample data
-    setTimeout(() => {
-      this.checkAndOfferSampleData();
-    }, 500); // Add small delay to ensure all data is initialized
-  }
 
+    // Update sectionItemsCache initially
+    this.updateSectionItemsCache();
+    this.logSectionItemsDebug();
+
+    // (effect for sectionItemsCache is now only in the constructor)
+
+  }
   // Check if resume is empty and auto-populate with sample data
   checkAndOfferSampleData(): void {
     const resume = this.resumeForm();
-    
     const contact = this.getContactSection();
     const profile = this.getProfileSummarySection();
     const education = this.getSectionItems('EDUCATION');
@@ -660,6 +692,11 @@ drop(event: CdkDragDrop<SectionDesc[]>) {
   this.onDragEnd();
 }
 
+  // Handler for cdkDropListDropped event in template
+  onSectionDrop(event: CdkDragDrop<SectionDesc[]>) {
+    this.drop(event);
+  }
+
 private animateSuccessfulDrop(targetIndex: number) {
   setTimeout(() => {
     const sections = document.querySelectorAll('.trigger-area');
@@ -697,7 +734,7 @@ private animateSuccessfulDrop(targetIndex: number) {
     return !this.hasEducationData();
   }
 
-  shouldShowButton(sectionType: string, buttonType: string): boolean {
+  shouldShowButton(sectionType: string, buttonType: string, isLast?: boolean): boolean {
     // Hide all buttons in preview mode for every section
     if (this.isPreview) {
       return false;
@@ -711,7 +748,7 @@ private animateSuccessfulDrop(targetIndex: number) {
     if (!isButtonEnabled) return false;
 
     // Define special logic for different button types
-    const buttonLogic: { [key: string]: { [key: string]: () => boolean } } = {
+    const buttonLogic: { [key: string]: { [key: string]: (isLast?: boolean) => boolean } } = {
       'edit': {
         'EDUCATION': () => false, // Individual items have edit buttons
         'WORK_EXPERIENCE': () => false,
@@ -739,12 +776,14 @@ private animateSuccessfulDrop(targetIndex: number) {
         'default': () => isButtonEnabled
       },
       'moveDown': {
-        'default': () => isButtonEnabled
+        'PROJECT': (isLast?: boolean) => false, // Project is always last, can't move down
+        'default': (isLast?: boolean) => isButtonEnabled && (!isLast)
       }
     };
-
     const logic = buttonLogic[buttonType]?.[sectionType] || buttonLogic[buttonType]?.['default'];
-    return logic ? logic() : isButtonEnabled;
+    // console.log(`Checking button visibility for section '${sectionType}', button '${buttonType}', isLast: ${isLast}`, { isButtonEnabled: isButtonEnabled, logicResult: logic ? logic(isLast) : 'N/A' });
+
+    return logic ? logic(isLast) : isButtonEnabled;
   }
 
   getSectionCssClass(sectionType: string): string {

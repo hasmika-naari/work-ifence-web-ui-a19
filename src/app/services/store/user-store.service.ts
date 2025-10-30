@@ -872,8 +872,34 @@ private clearSectionData(sectionName: string) {
   this.setResumeForm(resume);
 }
 
+
 addSection(sectionName: string) {
-  // Find the section in resumeForm.sections and set isAdded = true
+  // For PROJECT, set isAdded and items in a single update
+  if (sectionName === 'PROJECT') {
+    const staticProjectSection = require('./resume-sections').sections.find((s: any) => s.section === 'PROJECT');
+    const defaultItems = staticProjectSection && staticProjectSection.items ? [...staticProjectSection.items] : [];
+    this.state.update((state) => {
+      const updatedSections = state.selectedResume.resumeForm.sections.map(section =>
+        section.section === 'PROJECT'
+          ? { ...section, isAdded: true, items: defaultItems }
+          : section
+      );
+      return {
+        ...state,
+        selectedResume: {
+          ...state.selectedResume,
+          resumeForm: {
+            ...state.selectedResume.resumeForm,
+            sections: updatedSections
+          }
+        }
+      };
+    });
+    this.setProject(require('../resume.model').Project());
+    console.log(`Added section PROJECT to resume`);
+    return;
+  }
+  // Default: set isAdded = true
   this.state.update((state) => {
     const updatedSections = state.selectedResume.resumeForm.sections.map(section =>
       section.section === sectionName ? { ...section, isAdded: true } : section
@@ -889,10 +915,8 @@ addSection(sectionName: string) {
       }
     };
   });
-
   // Add default data based on section type
   this.addDefaultDataForSection(sectionName);
-
   console.log(`Added section ${sectionName} to resume`);
 }
 
@@ -917,9 +941,29 @@ private addDefaultDataForSection(sectionName: string) {
     case 'EDUCATION':
       // For education, just set up add mode (form will handle adding)
       break;
-    case 'PROJECT':
+    case 'PROJECT': {
+      // Find the static PROJECT section definition
+      const staticProjectSection = require('./resume-sections').sections.find((s: any) => s.section === 'PROJECT');
+      const defaultItems = staticProjectSection && staticProjectSection.items ? [...staticProjectSection.items] : [];
+      // Update the user's resumeForm.sections to ensure items is set
+      this.state.update((state) => {
+        const updatedSections = state.selectedResume.resumeForm.sections.map(section =>
+          section.section === 'PROJECT' ? { ...section, items: defaultItems } : section
+        );
+        return {
+          ...state,
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              sections: updatedSections
+            }
+          }
+        };
+      });
       this.setProject(new ResumeModel.Project());
       break;
+    }
     case 'WORK_EXPERIENCE':
       this.setExperience(new ResumeModel.Experience());
       this.updateExperienceAddMode();
