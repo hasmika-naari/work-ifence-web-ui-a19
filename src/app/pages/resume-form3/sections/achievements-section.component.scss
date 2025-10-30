@@ -1,17 +1,98 @@
+
 .section.achievements {
   padding: 1rem;
-  background: #f7f7f7;
   border-radius: 8px;
   margin-bottom: 1rem;
 }
-h3 {
+
+.achievements-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.achievement-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.5em;
+  padding: 0.2em 0 0.2em 0;
+  position: relative;
+  gap: 0.7em;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.achievement-item:hover .ach-actions {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.ach-icon {
   color: #8e44ad;
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.3em;
+  margin-right: 0.7em;
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
 }
-ul {
-  padding-left: 1.2em;
+
+.ach-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
 }
-li {
-  margin-bottom: 0.3em;
+
+.ach-title {
+  font-weight: 600;
+  color: #222;
+  font-size: 1.08em;
+  line-height: 1.2;
+  margin-bottom: 0.1em;
+  word-break: break-word;
+}
+
+.ach-org {
+  color: #555;
+  font-size: 0.98em;
+  margin-left: 0;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.ach-year {
+  color: #888;
+  font-size: 0.97em;
+  margin-left: 1em;
+  white-space: nowrap;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.ach-actions {
+  display: flex;
+  gap: 0.25em;
+  margin-left: 0.5em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  transform: translateX(12px);
+  align-items: center;
+}
+
+.ach-action-btn {
+  background: none !important;
+  border-radius: 50% !important;
+  color: #8e44ad !important;
+  font-size: 1em !important;
+  padding: 0.3em 0.4em !important;
+  border: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.ach-action-btn:hover {
+  background: #f0f0f0 !important;
+  color: #5e3370 !important;
 }

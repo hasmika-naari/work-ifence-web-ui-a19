@@ -14,20 +14,20 @@ import { ButtonModule } from 'primeng/button';
             <span class="education-item-actions" *ngIf="!isPreview">
               <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
               <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete.emit(i)"></button>
-              <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === 0" (click)="moveUp.emit(i)"></button>
-              <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === data.length - 1" (click)="moveDown.emit(i)"></button>
+              <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === 0" (click)="onMoveUp(i)"></button>
+              <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === data.length - 1" (click)="onMoveDown(i)"></button>
             </span>
             <div style="display: flex; align-items: flex-start; width: 100%;">
               <div style="flex:1; min-width:0;">
-                <div style="font-weight:600;">{{ (edu.degree && edu.field_of_study) ? (edu.degree + ' in ' + edu.field_of_study) : (edu.degree || edu.field_of_study || 'Degree and Field of Study') }}</div>
-                <div style="color:#555; font-size:14px;">{{ edu.school_name || 'School or University' }}</div>
+                <div style="font-weight:600;">{{ (edu.data?.degree && edu.data?.field_of_study) ? (edu.data.degree + ' in ' + edu.data.field_of_study) : (edu.data?.degree || edu.data?.field_of_study || 'Degree and Field of Study') }}</div>
+                <div style="color:#555; font-size:14px;">{{ edu.data?.school_name || 'School or University' }}</div>
               </div>
               <span style="margin-left:24px; text-align:right; min-width:120px;">
-                <div style="color:#888; font-size:13px;">{{ edu.school_location || 'Location' }}</div>
-                <div style="color:#888; font-size:13px;">{{ edu.graduation_date || 'Date Period' }}</div>
+                <div style="color:#888; font-size:13px;">{{ edu.data?.school_location || 'Location' }}</div>
+                <div style="color:#888; font-size:13px;">{{ edu.data?.graduation_date || 'Date Period' }}</div>
               </span>
             </div>
-            <div style="color:#888; font-size:13px; margin-left:2px;">GPA - {{ edu.gpa || 'GPA/Percentage' }}</div>
+            <div style="color:#888; font-size:13px; margin-left:2px;">GPA - {{ edu.data?.gpa || 'GPA/Percentage' }}</div>
           </div>
         </div>
       </div>
@@ -65,8 +65,8 @@ export class EducationSectionComponent {
   @Output() moveDown = new EventEmitter<number>();
   @Output() dummyEdit = new EventEmitter<any>();
 
+  // Emit dummy data for the sidenav form
   onDummyEdit() {
-    // Emit dummy data for the sidenav form
     this.dummyEdit.emit({
       degree: '',
       field_of_study: '',
@@ -75,6 +75,16 @@ export class EducationSectionComponent {
       graduation_date: '',
       gpa: ''
     });
+  }
+
+  // Move up event handler
+  onMoveUp(index: number) {
+    this.moveUp.emit(index);
+  }
+
+  // Move down event handler
+  onMoveDown(index: number) {
+    this.moveDown.emit(index);
   }
 
   // TrackBy function for performance optimization

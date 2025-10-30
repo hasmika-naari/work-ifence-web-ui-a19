@@ -17,77 +17,83 @@
         
                             <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
                                 <ul class="menu" style="padding-left: 0rem !important;">
-                                    <li (click)="showResumeTitle()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> META DATA</div>
+                                    <li (click)="showResumeTitle()"><div><span class="checkmark"><p-icon class="pi pi-tags"></p-icon></span> META DATA</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }
                                     </li>
-                                    <li (click)="showContact()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CONTACT</div>
+                                    <li (click)="showContact()"><div><span class="checkmark"><p-icon class="pi pi-id-card"></p-icon></span> CONTACT</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     @if(isSectionActive('WORK_EXPERIENCE')){
-                                    <li (click)="showWorkExperianceDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> EXPERIENCE</div>
+                                    <li (click)="showWorkExperianceDetails()"><div><span class="checkmark"><p-icon class="pi pi-briefcase"></p-icon></span> EXPERIENCE</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('PROJECT')){
-                                    <li (click)="showProjectWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> PROJECT</div>
+                                    <li (click)="showProjectWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-desktop"></p-icon></span> PROJECT</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('EDUCATION')){
-                                    <li (click)="showEducationDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> EDUCATION</div>
+                                    <li (click)="showEducationDetails()"><div><span class="checkmark"><p-icon class="pi pi-graduation-cap"></p-icon></span> EDUCATION</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('CERTIFICATIONS')){
-                                    <li (click)="showCertificationsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CERTIFICATIONS</div>
+                                    <li (click)="showCertificationsDetails()"><div><span class="checkmark"><p-icon class="pi pi-shield"></p-icon></span> CERTIFICATIONS</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('CERTIFICATIONS_BULLET_POINTS')){
-                                    <li (click)="showCertificationBulletpointsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> CERTIFICATIONS</div>
+                                    <li (click)="showCertificationBulletpointsDetails()"><div><span class="checkmark"><p-icon class="pi pi-list"></p-icon></span> CERTIFICATIONS</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('SKILLS_CATEGORY')){
-                                        <li (click)="showSkillsDetails('SKILLS_CATEGORY')"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS CATEGORY</div>
+                                        <li (click)="showSkillsDetails('SKILLS_CATEGORY')"><div><span class="checkmark"><p-icon class="pi pi-th-large"></p-icon></span> SKILLS CATEGORY</div>
                                             @if(false){
                                                 <div class="wave-point"></div>
                                             }</li>
                                     }
                                     @if(isSectionActive('RELEVANT_COURSEWORK')){
-                                    <li (click)="showCourseWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> COURSE WORK</div>
+                                    <li (click)="showCourseWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-book"></p-icon></span> COURSE WORK</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('SKILLS_BULLET_POINTS')){
-                                    <li (click)="showSkillsDetails('SKILLS_BULLET_POINTS')"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SKILLS</div>
+                                    <li (click)="showSkillsDetails('SKILLS_BULLET_POINTS')"><div><span class="checkmark"><p-icon class="pi pi-check-circle"></p-icon></span> SKILLS</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('ACHIEVEMENTS_BULLET_POINTS')){
-                                    <li (click)="showAchievementsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> ACHIEVEMENTS</div>
+                                    <li (click)="showAchievementsDetails()"><div><span class="checkmark"><p-icon class="pi pi-star"></p-icon></span> ACHIEVEMENTS</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
                                     }
                                     @if(isSectionActive('ACHIEVEMENT_WITH_DESC')){
-                                        <li (click)="showAccomplishmentsDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> ACCOMPLISHMENTS</div>
+                                        <li (click)="showAccomplishmentsDetails()"><div><span class="checkmark"><p-icon class="pi pi-trophy"></p-icon></span> ACCOMPLISHMENTS</div>
                                             @if(false){
                                                 <div class="wave-point"></div>
                                             }</li>
                                         }
                                     @if(isSectionActive('PROFILE_SUMMARY')){
-                                    <li (click)="showSummaryDetails()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> SUMMARY</div>
+                                    <li (click)="showSummaryDetails()"><div><span class="checkmark"><p-icon class="pi pi-align-left"></p-icon></span> SUMMARY</div>
+                                        @if(false){
+                                            <div class="wave-point"></div>
+                                        }</li>
+                                    }
+                                    @if(isSectionActive('PROFILE_SUMMARY_BULLETED')){
+                                    <li (click)="showSummaryDetails()"><div><span class="checkmark"><p-icon class="pi pi-list"></p-icon></span> SUMMARY (BULLETED)</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>

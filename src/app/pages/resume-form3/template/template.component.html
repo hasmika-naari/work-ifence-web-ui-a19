@@ -33,12 +33,21 @@
             (edit)="onEditProfileSummary()"
             (moveDown)="onMoveDownProfileSummary()"
           ></resume-profile-summary-section>
+          <resume-profile-summary-bulleted-section
+            *ngSwitchCase="'PROFILE_SUMMARY_BULLETED'"
+            [data]="getSectionData('PROFILE_SUMMARY_BULLETED')?.data"
+            [isPreview]="isPreview"
+            (edit)="editSectionHandler('PROFILE_SUMMARY_BULLETED', getSectionData('PROFILE_SUMMARY_BULLETED')?.data)"
+            (delete)="removeSection('PROFILE_SUMMARY_BULLETED')"
+          ></resume-profile-summary-bulleted-section>
           <resume-education-section
             *ngSwitchCase="'EDUCATION'"
             [data]="getSectionItems('EDUCATION')"
             [isPreview]="isPreview"
             (edit)="onEditEducation($event)"
             (delete)="onDeleteEducation($event)"
+            (moveUp)="onMoveUpEducation($event)"
+            (moveDown)="onMoveDownEducation($event)"
             (dummyEdit)="onEditEducation($event)"
           ></resume-education-section>
           <app-relevant-coursework-section
@@ -65,6 +74,8 @@
             [isPreview]="isPreview"
             (edit)="editExperienceItem($event)"
             (delete)="deleteExperienceItem($event)"
+            (moveUp)="onMoveUpExperience($event)"
+            (moveDown)="onMoveDownExperience($event)"
           ></resume-work-experience-section>
           <resume-project-section *ngSwitchCase="'PROJECT'" [items]="getSectionItems('PROJECT')" [isPreview]="isPreview"></resume-project-section>
           <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'" [certifications]="certificationsTitles()" [isPreview]="isPreview"></resume-certifications-section>

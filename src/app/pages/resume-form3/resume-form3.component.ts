@@ -516,6 +516,13 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
           this.showSummaryDetails();
       }
     },
+    {
+      label: 'SUMMARY (BULLETED)',
+      icon: 'pi pi-list',
+      command: () => {
+          this.showSummaryDetails();
+      }
+    },
     // {
     //   label: 'FINISH UP',
     //   icon: 'pi pi-check-circle',

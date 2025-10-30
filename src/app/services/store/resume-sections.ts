@@ -1,3 +1,4 @@
+// Removed stray PROFILE_SUMMARY and PROFILE_SUMMARY_BULLETED objects at the top of the file
 import { SectionDesc } from "./user-store";
 
 export const sections: Array<SectionDesc> = [
@@ -10,6 +11,7 @@ export const sections: Array<SectionDesc> = [
     label: 'Contact',
     title: 'Contact Information',
     editable_section_title: 'Contact',
+    icon: 'pi-id-card',
     data: {
       fname: 'John',
       lname: 'Doe',
@@ -37,13 +39,50 @@ export const sections: Array<SectionDesc> = [
     label: 'Summary',
     title: 'Profile summary',
     editable_section_title: 'Profile Summary',
+    rightImage: 'assets/images/summary-right.png',
+  icon: 'pi-align-left',
     data: {
       profile_summary: 'Experienced software engineer with 7+ years in web development, specializing in Angular and TypeScript. Proven track record in delivering scalable solutions and collaborating in agile teams.',
+      summary_bullets: [
+        'Skilled in Angular, TypeScript, and modern web technologies.',
+        'Strong background in building scalable, maintainable applications.',
+        'Excellent communicator and effective team collaborator.',
+        'Proven ability to deliver projects on time in agile environments.'
+      ],
       original_summary_html: '',
       position_highlight: '',
       skills_highlight: '',
       isDefault: true,
       isHideSelected: false
+    },
+    headerActions: { edit: true, delete: true, moveDown: true },
+    items: []
+  },
+  {
+    section: 'PROFILE_SUMMARY_BULLETED',
+    description: 'A brief summary of your skills and experience in bullet points.',
+    isAdded: false,
+    isPremium: false,
+    tags: 'summary, profile, objective, bulleted',
+    label: 'Summary (Bulleted)',
+    title: 'Profile summary',
+    editable_section_title: 'Profile Summary',
+    rightImage: 'assets/images/summary-right.png',
+  icon: 'pi-list',
+    data: {
+      profile_summary: '',
+      summary_bullets: [
+        '7+ years of experience in web development.',
+        'Expert in Angular, TypeScript, and modern JavaScript.',
+        'Strong problem-solving and debugging skills.',
+        'Excellent communicator and team player.'
+      ],
+      original_summary_html: '',
+      position_highlight: '',
+      skills_highlight: '',
+      isDefault: true,
+      isHideSelected: false,
+      format: 'bulleted'
     },
     headerActions: { edit: true, delete: true, moveDown: true },
     items: []
@@ -63,7 +102,17 @@ export const sections: Array<SectionDesc> = [
     headerActions: { edit: true, delete: true, moveDown: true, moveUp: true },
     items: [
       { id: 'skill1', data: { skill: 'Angular' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
-      { id: 'skill2', data: { skill: 'TypeScript' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } }
+      { id: 'skill2', data: { skill: 'TypeScript' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill3', data: { skill: 'RxJS' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill4', data: { skill: 'NgRx' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill5', data: { skill: 'HTML5' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill6', data: { skill: 'SCSS/SASS' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill7', data: { skill: 'Jasmine & Karma' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill8', data: { skill: 'RESTful APIs' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill9', data: { skill: 'Node.js' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill10', data: { skill: 'Git & GitHub' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill11', data: { skill: 'Agile/Scrum' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } },
+      { id: 'skill12', data: { skill: 'CI/CD (Jenkins, GitHub Actions)' }, actions: { edit: true, delete: true, moveUp: true, moveDown: true } }
     ]
   },
   {
@@ -81,12 +130,24 @@ export const sections: Array<SectionDesc> = [
       {
         id: 'exp1',
         data: {
+          position_title: 'Senior Frontend Engineer',
+          company_name: 'Acme Tech Solutions',
+          location: 'San Francisco, CA',
+          start_date: 'Feb 2022',
+          end_date: 'Present',
+          description: `Lead the design and development of scalable Angular applications for enterprise clients. Mentored a team of 5 engineers, implemented CI/CD pipelines, and improved application performance by 30%. Collaborated closely with UX/UI designers and backend teams to deliver seamless user experiences.`
+        },
+        actions: { edit: true, delete: true, moveUp: true, moveDown: true }
+      },
+      {
+        id: 'exp2',
+        data: {
           position_title: 'Software Engineer',
-          company_name: 'XYZ Corp',
-          location: 'New York, NY',
-          start_date: 'Jan 2019',
-          end_date: 'Dec 2021',
-          description: 'Developed web applications using Angular and TypeScript. Collaborated with cross-functional teams to deliver high-quality software solutions.'
+          company_name: 'BrightApps Inc.',
+          location: 'Remote',
+          start_date: 'Jun 2019',
+          end_date: 'Jan 2022',
+          description: `Developed and maintained web applications using Angular, TypeScript, and RxJS. Automated testing with Jasmine and Karma, and contributed to the migration of legacy codebases to modern frameworks. Recognized for delivering features ahead of schedule and improving code quality.`
         },
         actions: { edit: true, delete: true, moveUp: true, moveDown: true }
       }
@@ -113,6 +174,18 @@ export const sections: Array<SectionDesc> = [
           school_location: 'New York, NY',
           graduation_date: 'May 2020',
           gpa: '3.8'
+        },
+        actions: { edit: true, delete: true, moveUp: true, moveDown: true }
+      },
+      {
+        id: 'edu2',
+        data: {
+          degree: 'M.Sc. Software Engineering',
+          field_of_study: 'Software Engineering',
+          school_name: 'Stanford University',
+          school_location: 'Stanford, CA',
+          graduation_date: 'Jun 2022',
+          gpa: '3.9'
         },
         actions: { edit: true, delete: true, moveUp: true, moveDown: true }
       }

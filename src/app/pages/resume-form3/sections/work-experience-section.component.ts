@@ -16,15 +16,19 @@ import { Experience } from 'src/app/services/resume.model';
             <span class="work-experience-item-actions" *ngIf="!isPreview">
               <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
               <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete.emit(i)"></button>
+              <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm"
+                (click)="moveUp.emit(i)" [disabled]="i === 0"></button>
+              <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm"
+                (click)="moveDown.emit(i)" [disabled]="i === data.length - 1"></button>
             </span>
             <div class="job-header">
               <div>
-                <div class="job-title">{{ job.position_title || 'Position Title' }}</div>
-                <div class="company">{{ job.company_name || 'Company Name' }}</div>
+                <div class="job-title">{{ job.data?.position_title || 'Position Title' }}</div>
+                <div class="company">{{ job.data?.company_name || 'Company Name' }}</div>
               </div>
-              <div class="dates">{{ formatDate(job.start_date) }} - {{ formatDate(job.end_date) }}</div>
+              <div class="dates">{{ formatDate(job.data?.start_date) }} - {{ formatDate(job.data?.end_date) }}</div>
             </div>
-            <div class="job-description" [innerHTML]="job.description || 'Job description'"></div>
+            <div class="job-description" [innerHTML]="job.data?.description || 'Job description'"></div>
           </div>
         </div>
       </div>
@@ -38,6 +42,8 @@ export class WorkExperienceSectionComponent {
   @Input() isPreview: boolean = false;
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
+  @Output() moveUp = new EventEmitter<number>();
+  @Output() moveDown = new EventEmitter<number>();
 
   private userStore = inject(UserStoreService);
 

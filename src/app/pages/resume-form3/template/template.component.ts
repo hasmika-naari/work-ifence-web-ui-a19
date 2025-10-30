@@ -1,5 +1,3 @@
-
-
 import { sections as defaultSections } from '../../../services/store/resume-sections';
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectorRef, Signal, effect, computed, signal } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -55,13 +53,11 @@ import { AchievementsSectionComponent } from '../sections/achievements-section.c
 import { SkillsBulletPointsSectionComponent } from '../sections/skills-bullet-points-section.component';
 import { SkillsCategorySectionComponent } from '../sections/skills-category-section.component';
 import { RelevantCourseworkSectionComponent } from '../sections/relevant-coursework-section/relevant-coursework-section.component';
+import { ProfileSummaryBulletedSectionComponent } from '../sections/profile-summary-bulleted-section.component';
 
 // Other components
 import { FooterComponent } from '../../../pages/home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../../pages/landing/header-wifence/header-wifence.component';
-
-
-// ...existing code...
 
 interface SectionTemplate {
   section: string;
@@ -78,6 +74,7 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   'PROJECT',
 ];
 
+
 @Component({
   selector: 'app-resume1-template',
   templateUrl: './template.component.html',
@@ -87,7 +84,6 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
     // Angular core modules
     CommonModule,
     NgOptimizedImage,
-    
     // Angular Material modules
     MatIconModule,
     MatButtonModule,
@@ -96,16 +92,13 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
     MatStepperModule,
     MatExpansionModule,
     MatTooltipModule,
-    
     // Angular CDK modules
     DragDropModule,
-    
     // PrimeNG modules
     InputTextModule,
     ButtonModule,
     TextareaModule,
     AccordionModule,
-    
     // Section components
     ContactSectionComponent,
     ProfileSummarySectionComponent,
@@ -113,91 +106,103 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
     WorkExperienceSectionComponent,
     ProjectSectionComponent,
     CertificationsSectionComponent,
-  AchievementsSectionComponent,
+    AchievementsSectionComponent,
     SkillsBulletPointsSectionComponent,
     SkillsCategorySectionComponent,
     RelevantCourseworkSectionComponent,
-    
+    ProfileSummaryBulletedSectionComponent,
     // Other components
     FooterComponent,
     HeaderWorkIfenceComponent,
-    
     // Routing
     RouterModule,
     RouterLink,
-    
     // Forms
     ReactiveFormsModule,
     FormsModule,
-    
     // Carousel
     CarouselModule,
-    
     // Icons
     IconsModule
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
-  resetCourseworkForm: boolean = false;
-  certificationsTitles = () => this.getCertificationsSection().map(c => c.title || c.name || '');
-  isDragging: boolean = false;
-  currentDraggingSection: string = '';
-  sectionConfig: { [key: string]: any } = {};
-  // Single computed signal for added sections (for display and drag-and-drop)
-  addedSections = computed(() => {
-    // Explicitly depend on resumeForm signal for reactivity
-    const resume = this.resumeForm();
-    const sections = resume.sections || [];
-    const added = sections.filter(s => s.isAdded);
-    console.log('addedSections recomputed', added.map(s => ({section: s.section, isAdded: s.isAdded})));
-    return added;
-  });
-  hasUnsavedChanges = false;
-  // --- Properties ---
+  // Move up a work experience item
+  onMoveUpExperience(index: number) {
+    const items = this.getSectionItems('WORK_EXPERIENCE');
+    if (!items || index == null || index <= 0) return;
+    [items[index - 1], items[index]] = [items[index], items[index - 1]];
+    // Update the WORK_EXPERIENCE section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'WORK_EXPERIENCE') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+
+  // Move down a work experience item
+  onMoveDownExperience(index: number) {
+    const items = this.getSectionItems('WORK_EXPERIENCE');
+    if (!items || index == null || index >= items.length - 1) return;
+    [items[index], items[index + 1]] = [items[index + 1], items[index]];
+    // Update the WORK_EXPERIENCE section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'WORK_EXPERIENCE') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+  // --- Signals and Store Properties ---
   sidebarIconOnly!: Signal<boolean>;
   sectionStatus!: Signal<IsSectionPresent>;
   resumeForm!: Signal<Resume>;
   selectedResumeListItem!: Signal<ResumeListDataItem>;
+  addedSections = computed(() => {
+    // Explicitly depend on resumeForm signal for reactivity
+    const resume = this.resumeForm();
+    const sections = resume.sections || [];
+    const added = sections.filter((s: any) => s.isAdded);
+    return added;
+  });
+  hasUnsavedChanges = false;
+  isDragging: boolean = false;
+  currentDraggingSection: string = '';
+  sectionConfig: { [key: string]: any } = {};
+  resetCourseworkForm: boolean = false;
   @Output() editSection = new EventEmitter<any>();
   @Output() saveRequested = new EventEmitter<void>();
-  @Input() isPreview : boolean = false;
+  @Input() isPreview: boolean = false;
+  certificationsTitles = () => this.getCertificationsSection().map((c: any) => c.title || c.name || '');
+  userStore: UserStoreService;
 
-  // Pass isPreview to all section components
   constructor(
-    private _formBuilder: FormBuilder, 
-    private router : Router, 
+    private _formBuilder: FormBuilder,
+    private router: Router,
     private cdr: ChangeDetectorRef,
     public dialog: MatDialog,
-    public promptService : PromptService, 
-    public genaiService : GenAIService, 
-    public templateService : TemplatesService,
+    public promptService: PromptService,
+    public genaiService: GenAIService,
+    public templateService: TemplatesService,
     private injector: Injector,
-    private userStore: UserStoreService
+    userStore: UserStoreService
   ) {
-    console.log('🚀🚀🚀 Resume1TemplateComponent constructor invoked 🚀🚀🚀');
-    // Section and unsaved change state logic simplified: only update skills arrays as needed
-    // effect(() => {
-    //   const skills = this.getSkillsCategorySection();
-    //   if(skills?.length>0){
-    //     this.firstHalfSkills = [...skills.slice(0, Math.ceil(skills?.length/2))]
-    //     this.secondHalfSkills = [...skills.slice(Math.ceil(skills?.length/2),)]
-    //   }
-    // });
-
-    // Reflect global unsaved-change state (e.g., edits from left-side forms)
-    effect(() => {
-      const changedSignal = this.userStore.getIsChangeInNewResume?.();
-      const changed = typeof changedSignal === 'function' ? !!changedSignal() : false;
-      this.hasUnsavedChanges = changed || this.hasUnsavedChanges; // preserve true until explicit save
-    });
-
-    // Watch for changes in addedSections and update sectionItemsCache (must be in constructor for Angular signals)
-    effect(() => {
-      this.updateSectionItemsCache();
-      this.logSectionItemsDebug();
-    });
+    this.userStore = userStore;
+    // ...existing constructor logic...
   }
-  // ...existing code...
+  // ...existing properties and constructor...
+
+
+// ...existing code...
   logSectionItemsDebug() {
     if (!this.sectionItemsCache) {
       console.warn('[Resume1TemplateComponent] sectionItemsCache is undefined!');
@@ -268,6 +273,44 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     if (item) {
       this.editSectionHandler('RELEVANT_COURSEWORK', item);
     }
+  }
+
+
+
+  // Handles move up event for education item
+  onMoveUpEducation(index: number) {
+    const items = this.getSectionItems('EDUCATION');
+    if (!items || index == null || index <= 0) return;
+    [items[index - 1], items[index]] = [items[index], items[index - 1]];
+    // Update the EDUCATION section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'EDUCATION') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+
+  // Handles move down event for education item
+  onMoveDownEducation(index: number) {
+    const items = this.getSectionItems('EDUCATION');
+    if (!items || index == null || index >= items.length - 1) return;
+    [items[index], items[index + 1]] = [items[index + 1], items[index]];
+    // Update the EDUCATION section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'EDUCATION') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
   }
 
   // Handles move up event from relevant-coursework-section
@@ -644,11 +687,13 @@ formatSkills(items : string[]){
       this.userStore.setSelectedContact(contactSection);
       this.userStore.updateContact();
     }
-    else if(section == "PROFILE_SUMMARY"){
-      // For profile summary editing, set selectedSummary to the current profile summary section data
-      const profileSummarySection = this.getProfileSummarySection();
-      this.userStore.setSelectedSummary(profileSummarySection);
-      this.userStore.updateSummaryWithData(profileSummarySection);
+    else if(section == "PROFILE_SUMMARY" || section == "PROFILE_SUMMARY_BULLETED"){
+      // For both summary types, set selectedSummary to the current section data and open summary form
+      const summarySection = section === "PROFILE_SUMMARY_BULLETED"
+        ? this.getSectionData('PROFILE_SUMMARY_BULLETED')?.data
+        : this.getProfileSummarySection();
+      this.userStore.setSelectedSummary(summarySection);
+      this.userStore.updateSummaryWithData(summarySection);
     }
     else if(section == "EDUCATION"){
       this.userStore.setSelectedEducation(selectedJson);

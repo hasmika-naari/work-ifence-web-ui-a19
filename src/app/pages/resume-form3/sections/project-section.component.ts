@@ -11,7 +11,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   template: `
     <div class="section project">
       <div *ngIf="items && items.length; else noProjects">
-        <div *ngFor="let item of items; let i = index; let last = last" class="project-item" style="margin-bottom:2.5rem; padding-bottom:2rem; position:relative;">
+        <div *ngFor="let item of items; let i = index; let last = last" class="project-item" style="margin-bottom:1.5rem; position:relative;">
           <!-- Hover action buttons -->
           <span class="project-item-actions" *ngIf="!isPreview">
             <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit(i)"></button>
@@ -23,9 +23,6 @@ import { Pipe, PipeTransform } from '@angular/core';
             <div>
               <span class="project-title" style="font-size:1.15em; font-weight:600; letter-spacing:0.01em; color:#222;">
                 {{ item.data?.project_title }}
-              </span>
-              <span *ngIf="item.data?.project_link" style="margin-left:0.5em; font-size:0.95em;">
-                <a [href]="item.data?.project_link" target="_blank" style="color:#1976d2; text-decoration:underline;">[Link]</a>
               </span>
             </div>
             <div *ngIf="item.data?.role || item.data?.start_date || item.data?.end_date" style="font-size:0.98em; color:#555; text-align:right; min-width:180px;">
@@ -48,13 +45,13 @@ import { Pipe, PipeTransform } from '@angular/core';
           </div>
           <div *ngIf="item.data?.responsibilities?.length" style="margin:0.5em 0 0.5em 0;">
             <span style="font-weight:500; color:#333;">Responsibilities:</span>
-            <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; font-size:0.97em; color:#444;">
+            <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; padding-left: 1.2em; font-size:0.97em; color:#444;">
               <li *ngFor="let resp of item.data?.responsibilities">{{ resp }}</li>
             </ul>
           </div>
           <div *ngIf="item.data?.highlights?.length" style="margin:0.5em 0 0.5em 0;">
             <span style="font-weight:500; color:#333;">Highlights:</span>
-            <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; font-size:0.97em; color:#444;">
+            <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; padding-left: 1.2em; font-size:0.97em; color:#444;">
               <li *ngFor="let hl of item.data?.highlights">{{ hl }}</li>
             </ul>
           </div>

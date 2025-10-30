@@ -90,6 +90,8 @@ import { sections } from "./resume-sections";
     data?: any;
     items?: SectionItem[];
     headerActions?: SectionActionConfig;
+    icon?: string; // Optional icon for section (PrimeNG icon class)
+    rightImage?: string; // Optional right image for section (e.g., summary illustration)
   }
 
   export interface SectionActionConfig {

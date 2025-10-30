@@ -148,7 +148,10 @@ export class AddSectionComponent implements OnInit, OnDestroy {
 
   getSectionIcon(sectionType: string): string {
     const iconMap: { [key: string]: string } = {
-      'PROFILE_SUMMARY': 'pi-user',
+      'META_DATA': 'pi-tags',
+      'CONTACT': 'pi-id-card',
+      'PROFILE_SUMMARY': 'pi-align-left',
+      'PROFILE_SUMMARY_BULLETED': 'pi-list',
       'EDUCATION': 'pi-graduation-cap',
       'RELEVANT_COURSEWORK': 'pi-book',
       'SKILLS_BULLET_POINTS': 'pi-check-circle',
@@ -160,7 +163,6 @@ export class AddSectionComponent implements OnInit, OnDestroy {
       'ACHIEVEMENTS_BULLET_POINTS': 'pi-star',
       'ACHIEVEMENT_WITH_DESC': 'pi-trophy'
     };
-
     return iconMap[sectionType] || 'pi-user';
   }
 

@@ -1,0 +1,36 @@
+.profile-summary-bulleted {
+  position: relative;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  margin-bottom: 0.5rem;
+  box-shadow: none;
+  text-align: left;
+  max-width: 100%;
+  width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.summary-bullets {
+  margin: 0 0 0 1.25rem;
+  padding: 0;
+  list-style: disc inside;
+  color: #222;
+  font-size: 1.05rem;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.summary-bullets li {
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+  text-align: left;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.empty-bullets {
+  color: #888;
+  font-size: 0.98em;
+  margin-bottom: 0.5em;
+}
