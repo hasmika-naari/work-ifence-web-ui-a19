@@ -84,7 +84,7 @@
             (moveProjectUp)="onMoveUpProject($event)"
             (moveProjectDown)="onMoveDownProject($event)"
             (editProject)="editProjectItem($event)"
-            (deleteProject)="deleteProjectItem($event)"
+            (deleteProject)="onDeleteProject($event)"
           ></resume-project-section>
           <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'" [certifications]="certificationsTitles()" [isPreview]="isPreview"></resume-certifications-section>
           <resume-achievements-section *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" [achievements]="getAchievementBulletPointsSection().ach || []" [isPreview]="isPreview"></resume-achievements-section>

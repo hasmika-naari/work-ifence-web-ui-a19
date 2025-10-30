@@ -22,7 +22,7 @@ import { Pipe, PipeTransform } from '@angular/core';
           <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap;">
             <div>
               <span class="project-title" style="font-size:1.15em; font-weight:600; letter-spacing:0.01em; color:#222;">
-                {{ item.data?.project_title }}
+                {{ item.data?.project_name }}
               </span>
             </div>
             <div *ngIf="item.data?.role || item.data?.start_date || item.data?.end_date" style="font-size:0.98em; color:#555; text-align:right; min-width:180px;">
@@ -43,13 +43,25 @@ import { Pipe, PipeTransform } from '@angular/core';
           <div *ngIf="item.data?.description" style="margin:0.5em 0 0.5em 0; color:#444; font-size:0.98em;">
             {{ item.data?.description }}
           </div>
-          <div *ngIf="item.data?.responsibilities?.length" style="margin:0.5em 0 0.5em 0;">
-            <span style="font-weight:500; color:#333;">Responsibilities:</span>
+          <!-- Rich text Responsibilities -->
+          <div *ngIf="item.data?.responsibilitiesRichText" style="margin:0.5em 0 0.5em 0;">
+            <span style="font-weight:500; color:#333;">Roles & Responsibilities:</span>
+            <div [innerHTML]="item.data?.responsibilitiesRichText" style="font-size:0.97em; color:#444;"></div>
+          </div>
+          <!-- Fallback for old array -->
+          <div *ngIf="!item.data?.responsibilitiesRichText && item.data?.responsibilities?.length" style="margin:0.5em 0 0.5em 0;">
+            <span style="font-weight:500; color:#333;">Roles & Responsibilities:</span>
             <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; padding-left: 1.2em; font-size:0.97em; color:#444;">
               <li *ngFor="let resp of item.data?.responsibilities">{{ resp }}</li>
             </ul>
           </div>
-          <div *ngIf="item.data?.highlights?.length" style="margin:0.5em 0 0.5em 0;">
+          <!-- Rich text Highlights -->
+          <div *ngIf="item.data?.highlightsRichText" style="margin:0.5em 0 0.5em 0;">
+            <span style="font-weight:500; color:#333;">Highlights:</span>
+            <div [innerHTML]="item.data?.highlightsRichText" style="font-size:0.97em; color:#444;"></div>
+          </div>
+          <!-- Fallback for old array -->
+          <div *ngIf="!item.data?.highlightsRichText && item.data?.highlights?.length" style="margin:0.5em 0 0.5em 0;">
             <span style="font-weight:500; color:#333;">Highlights:</span>
             <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; padding-left: 1.2em; font-size:0.97em; color:#444;">
               <li *ngFor="let hl of item.data?.highlights">{{ hl }}</li>

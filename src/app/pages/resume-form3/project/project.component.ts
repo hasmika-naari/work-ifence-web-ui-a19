@@ -83,7 +83,9 @@ export interface ProjectData{
   ]
 })
 export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
-  editor!: Editor;
+  descriptionEditor!: Editor;
+  responsibilitiesEditor!: Editor;
+  highlightsEditor!: Editor;
    toolbar: Toolbar = [
       ['bold', 'italic'],
       ['underline', 'strike'],
@@ -97,6 +99,12 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   // Getter for description FormControl to avoid null type error in template
   get descriptionControl() {
     return this.projectForm.get('description') as FormControl;
+  }
+  get responsibilitiesRichTextControl() {
+    return this.projectForm.get('responsibilitiesRichText') as FormControl;
+  }
+  get highlightsRichTextControl() {
+    return this.projectForm.get('highlightsRichText') as FormControl;
   }
 
   resumeForm!: FormGroup;
@@ -122,9 +130,9 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
 
   selectedExperienceItem! : {id : number | null,position_title : String | null, company_name : String | null, location : String | null, start_date : String | null, end_date : String | null, description : String | null}
 
-  project_list : {id : number,project_title : String | null, project_link : String | null, technologies_used : String | null, description : String | null}[] = []
+  project_list : {id : number,project_name : String | null, project_link : String | null, technologies_used : String | null, description : String | null}[] = []
 
-  selectedProjectItem! : {id : number | null,project_title : String | null, project_link : String | null, technologies_used : String | null, description : String | null}
+  selectedProjectItem! : {id : number | null,project_name : String | null, project_link : String | null, technologies_used : String | null, description : String | null}
 
   education_list : {id : number,school_name: String | null,school_location: String | null,degree: String | null,field_of_study: String | null,gpa: String | null,graduation_year: String | null}[] = []
 
@@ -217,13 +225,15 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     certifications : [''],
   });
   projectForm = this._formBuilder.group({
-      project_title: ['', Validators.required],
+      project_name: ['', Validators.required],
       technologies_used: [''],
       project_link : ['', Validators.pattern('^https?:\\/\\/(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[a-zA-Z0-9._~-]*)*\\/?$')],
       description : ['', Validators.required],
       period: [''],
       bullet_points : [''],
-      section_title : ['Project', Validators.required]
+    responsibilitiesRichText: [''],
+    highlightsRichText: [''],
+    section_title: ['Project', Validators.required],
   });
   certifyForm = this._formBuilder.group({
       certification_name : [''],
@@ -298,8 +308,14 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
-    if (this.editor) {
-      this.editor.destroy();
+    if (this.descriptionEditor) {
+      this.descriptionEditor.destroy();
+    }
+    if (this.responsibilitiesEditor) {
+      this.responsibilitiesEditor.destroy();
+    }
+    if (this.highlightsEditor) {
+      this.highlightsEditor.destroy();
     }
   }
 
@@ -308,7 +324,9 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
 }
 
   ngOnInit() {
-    this.editor = new Editor();
+  this.descriptionEditor = new Editor();
+  this.responsibilitiesEditor = new Editor();
+  this.highlightsEditor = new Editor();
     // Debug: Log value changes to ensure editor and form control are in sync
     this.projectForm.get('description')?.valueChanges.subscribe(val => {
       console.log('description form value changed:', val);
@@ -418,29 +436,36 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
 } 
 
   setProjectValues(){
-    this.projectForm.controls['project_title'].setValue(this.selectedProject().project_name) 
-    this.projectForm.controls['project_link'].setValue(this.selectedProject().project_link)
-    this.projectForm.controls['technologies_used'].setValue(this.selectedProject().technologies_used)
-    this.projectForm.controls['period'].setValue(this.selectedProject().period)
-    this.projectForm.get('bullet_points')?.setValue(this.selectedProject().bullet_points_count);
+    const selected = this.selectedProject();
+    // Use patchValue to update all fields at once, ensuring editors are updated
+    this.projectForm.patchValue({
+      project_name: selected.project_name || '',
+      project_link: selected.project_link || '',
+      technologies_used: selected.technologies_used || '',
+      period: selected.period || '',
+      bullet_points: selected.bullet_points_count || '',
+      description: selected.description || '',
+      responsibilitiesRichText: selected.responsibilitiesRichText || '',
+      highlightsRichText: selected.highlightsRichText || '',
+    });
     let section_title;
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
       this.multipleSections().map((e : SectionDesc[])=>{
         e.map((section : SectionDesc)=>{
           if(section.section == 'PROJECT'){
-            section_title = section.editable_section_title
+            section_title = section.editable_section_title;
           }
-        })
-      })
+        });
+      });
     }
     else{
       this.sections().map((section : SectionDesc)=>{
           if(section.section == 'PROJECT'){
-            section_title = section.editable_section_title
+            section_title = section.editable_section_title;
           }
-        })
+        });
     }
-    this.projectForm.controls['section_title'].setValue(section_title??'Project')
+    this.projectForm.controls['section_title'].setValue(section_title ?? 'Project');
   }
 
   addEducationField() {
@@ -524,7 +549,7 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   saveAndContinue(){
     this.markFormGroupTouched(this.projectForm);
     let project = new Project();
-    project.project_name = this.projectForm.value.project_title ? this.projectForm.value.project_title : '';
+    project.project_name = this.projectForm.value.project_name ? this.projectForm.value.project_name : '';
     const descriptionValue = this.projectForm.value.description || '';
     if(descriptionValue.includes('data-list="bullet"')){
       const correctedHTML = descriptionValue.replace('<ol>', '<ul>').replace('</ol>', '</ul>');
@@ -536,7 +561,9 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     project.project_link = this.projectForm.value.project_link ? this.projectForm.value.project_link : '';
     project.technologies_used = this.projectForm.value.technologies_used ? this.projectForm.value.technologies_used : '';
     project.bullet_points_count = this.projectForm.value.bullet_points ? this.projectForm.value.bullet_points : '';
-    project.period = this.projectForm.value.period ? this.projectForm.value.period : '';
+  project.period = this.projectForm.value.period ? this.projectForm.value.period : '';
+  project.responsibilitiesRichText = this.projectForm.value.responsibilitiesRichText || '';
+  project.highlightsRichText = this.projectForm.value.highlightsRichText || '';
 
     // Helper to get PROJECT section items
     const getProjectSectionItems = () => {
@@ -1311,12 +1338,12 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveToProjectList(){
-    if(this.projectForm.controls['project_title']?.value){
+    if(this.projectForm.controls['project_name']?.value){
       let new_project = 
       {
         id : this.project_list.length,
-        project_title : this.projectForm.controls['project_title']?.value, 
-        project_link : this.projectForm.controls['project_link']?.value, 
+        project_name : this.projectForm.controls['project_name']?.value, 
+        project_link : this.projectForm.controls['project_link']?.value,
         technologies_used : this.projectForm.controls['technologies_used']?.value, 
         description : this.projectForm.controls['description']?.value
       }
@@ -1326,15 +1353,15 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       else{
         this.project_list.push(new_project)
       }
-      this.selectedProjectItem = {id : null,project_title : null, project_link : null, technologies_used : null, description : null}
+      this.selectedProjectItem = {id : null,project_name : null, project_link : null, technologies_used : null, description : null}
       this.projectForm.reset();
       this.projectForm.get('bullet_points')?.setValue('4');
       //this.saveAndContinue("Changes saved");
       }
   }
-
+  
   editProjectItem(project : any){
-      this.projectForm.controls['project_title'].setValue(project.project_title?project.project_title : "") 
+      this.projectForm.controls['project_name'].setValue(project.project_name?project.project_name : "") 
       this.projectForm.controls['project_link'].setValue(project.project_link?project.project_link : "")
       this.projectForm.controls['technologies_used'].setValue(project.technologies_used?project.technologies_used : "")
       this.projectForm.controls['description'].setValue(project.description?project.description : "") 

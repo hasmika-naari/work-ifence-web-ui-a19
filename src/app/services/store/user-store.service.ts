@@ -1329,7 +1329,12 @@ moveSectionDown(section: string) {
         if (section.section === 'PROJECT') {
           return {
             ...section,
-            items: section.items?.filter(item => item.data.id !== pro.id) ?? []
+            items: section.items?.filter(item => {
+              // Support both {id, data} and {id} structures
+              if (item.id && pro.id && item.id === pro.id) return false;
+              if (item.data && item.data.id && pro.id && item.data.id === pro.id) return false;
+              return true;
+            }) ?? []
           };
         }
         return section;

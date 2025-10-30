@@ -12,9 +12,9 @@
                     </small>
                 </div>
                 <div class="field">
-                    <label for="project_title">Project title <span class="required">*</span></label>
-                    <input id="project_title" type="text" pInputText #title formControlName="project_title" placeholder="Project Title">
-                    <small class="error" *ngIf="projectForm.get('project_title')?.hasError('required') && projectForm.get('project_title')?.touched">
+                    <label for="project_name">Project name <span class="required">*</span></label>
+                    <input id="project_name" type="text" pInputText #title formControlName="project_name" placeholder="Project Name">
+                    <small class="error" *ngIf="projectForm.get('project_name')?.hasError('required') && projectForm.get('project_name')?.touched">
                         Required.
                     </small>
                 </div>
@@ -106,25 +106,54 @@
                             <span>USE BOTBRO</span>
                         </button>
                     }
-                                        <div class="field">
-                                                <label>Project Description</label>
-                                                <div class="editor">
-                                                    <ngx-editor-menu [editor]="editor" [toolbar]="toolbar">
-                                                    </ngx-editor-menu>
-                                                    <ngx-editor
-                                                        [editor]="editor"
-                                                        [formControl]="descriptionControl"
-                                                        [placeholder]="'Enter project description...'"
-                                                        [spellcheck]="true"
-                                                        [minHeight]="'150px'"
-                                                        [maxHeight]="'350px'"
-                                                        style="width:100%;display:block;min-height:350px;"
-                                                    ></ngx-editor>
-                                                </div>
-                                                <small class="error" *ngIf="projectForm.get('description')?.hasError('required') && projectForm.get('description')?.touched">
-                                                    Project description is required.
-                                                </small>
-                                        </div>
+                    <div class="field">
+                        <label>Project Description</label>
+                        <div class="editor">
+                            <ngx-editor-menu [editor]="descriptionEditor" [toolbar]="toolbar"></ngx-editor-menu>
+                            <ngx-editor
+                                [editor]="descriptionEditor"
+                                formControlName="description"
+                                [placeholder]="'Enter project description...'"
+                                [spellcheck]="true"
+                                [minHeight]="'150px'"
+                                [maxHeight]="'350px'"
+                                style="width:100%;display:block;min-height:350px;"
+                            ></ngx-editor>
+                        </div>
+                        <small class="error" *ngIf="projectForm.get('description')?.hasError('required') && projectForm.get('description')?.touched">
+                            Project description is required.
+                        </small>
+                    </div>
+                    <div class="field">
+                        <label>Roles & Responsibilities</label>
+                        <div class="editor">
+                            <ngx-editor-menu [editor]="responsibilitiesEditor" [toolbar]="toolbar"></ngx-editor-menu>
+                            <ngx-editor
+                                [editor]="responsibilitiesEditor"
+                                formControlName="responsibilitiesRichText"
+                                [placeholder]="'Enter roles and responsibilities as rich text...'"
+                                [spellcheck]="true"
+                                [minHeight]="'120px'"
+                                [maxHeight]="'350px'"
+                                style="width:100%;display:block;min-height:120px;"
+                            ></ngx-editor>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Highlights</label>
+                        <div class="editor">
+                            <ngx-editor-menu [editor]="highlightsEditor" [toolbar]="toolbar"></ngx-editor-menu>
+                            <ngx-editor
+                                [editor]="highlightsEditor"
+                                formControlName="highlightsRichText"
+                                [placeholder]="'Enter highlights as rich text...'"
+                                [spellcheck]="true"
+                                [minHeight]="'120px'"
+                                [maxHeight]="'350px'"
+                                style="width:100%;display:block;min-height:120px;"
+                            ></ngx-editor>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-actions">

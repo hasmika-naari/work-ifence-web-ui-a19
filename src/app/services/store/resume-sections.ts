@@ -206,55 +206,32 @@ export const sections: Array<SectionDesc> = [
         {
           id: 'project1',
           data: {
-            project_title: 'AI-Powered Resume Builder',
+            project_name: 'AI-Powered Resume Builder',
+            description: 'Developed a full-stack AI-powered resume builder that generates personalized resume content using OpenAI. Features include customizable templates, drag-and-drop sections, PDF export, and real-time preview.',
             project_link: 'https://github.com/johndoe/ai-resume-builder',
             technologies_used: 'Angular, TypeScript, PrimeNG, Node.js, Express, MongoDB, OpenAI API',
-            description: 'Developed a full-stack AI-powered resume builder that generates personalized resume content using OpenAI. Features include customizable templates, drag-and-drop sections, PDF export, and real-time preview.',
             start_date: '2024-01',
             end_date: '2024-06',
             role: 'Full Stack Developer',
-            responsibilities: [
-              'Designed and implemented the Angular frontend with dynamic form generation and live preview.',
-              'Integrated OpenAI API for AI-generated resume summaries and bullet points.',
-              'Built RESTful APIs with Node.js and Express for user authentication and data management.',
-              'Implemented MongoDB for persistent storage of user profiles and resumes.',
-              'Enabled PDF export and print-ready formatting using server-side rendering.',
-              'Deployed the application on Azure with CI/CD pipelines.'
-            ],
-            highlights: [
-              'Reduced resume creation time by 70% for users.',
-              'Achieved 99.9% uptime post-deployment.',
-              'Adopted by 500+ users within the first month.'
-            ]
+            responsibilitiesRichText: `<ul><li>Designed and implemented the Angular frontend with dynamic form generation and live preview.</li><li>Integrated OpenAI API for AI-generated resume summaries and bullet points.</li><li>Built RESTful APIs with Node.js and Express for user authentication and data management.</li><li>Implemented MongoDB for persistent storage of user profiles and resumes.</li><li>Enabled PDF export and print-ready formatting using server-side rendering.</li><li>Deployed the application on Azure with CI/CD pipelines.</li></ul>`,
+            highlightsRichText: `<ul><li>Reduced resume creation time by 70% for users.</li><li>Achieved 99.9% uptime post-deployment.</li><li>Adopted by 500+ users within the first month.</li></ul>`
           },
           actions: { edit: true, delete: true, moveUp: true, moveDown: false }
-        }
-        ,
+        },
         {
           id: 'project2',
           data: {
-            project_title: 'E-Commerce Analytics Dashboard',
+            project_name: 'E-Commerce Analytics Dashboard',
+            description: 'Built an analytics dashboard for e-commerce businesses to visualize sales, customer behavior, and inventory trends. Included interactive charts, real-time data updates, and exportable reports.',
             project_link: 'https://github.com/johndoe/ecommerce-analytics',
             technologies_used: 'Angular, TypeScript, PrimeNG, Node.js, Express, PostgreSQL, Chart.js',
-            description: 'Built an analytics dashboard for e-commerce businesses to visualize sales, customer behavior, and inventory trends. Included interactive charts, real-time data updates, and exportable reports.',
             start_date: '2023-03',
             end_date: '2023-10',
             role: 'Frontend Engineer',
-            responsibilities: [
-              'Developed reusable Angular components for data visualization.',
-              'Integrated Chart.js for interactive and dynamic charting.',
-              'Collaborated with backend team to design RESTful APIs for analytics data.',
-              'Implemented authentication and role-based access control.',
-              'Optimized dashboard performance for large datasets.',
-              'Created exportable PDF and CSV reports.'
-            ],
-            highlights: [
-              'Enabled business users to reduce manual reporting time by 80%.',
-              'Supported 10,000+ concurrent users with real-time updates.',
-              'Recognized as a top internal tool by client stakeholders.'
-            ]
+            responsibilitiesRichText: `<ul><li>Developed reusable Angular components for data visualization.</li><li>Integrated Chart.js for interactive and dynamic charting.</li><li>Collaborated with backend team to design RESTful APIs for analytics data.</li><li>Implemented authentication and role-based access control.</li><li>Optimized dashboard performance for large datasets.</li><li>Created exportable PDF and CSV reports.</li></ul>`,
+            highlightsRichText: `<ul><li>Enabled business users to reduce manual reporting time by 80%.</li><li>Supported 10,000+ concurrent users with real-time updates.</li><li>Recognized as a top internal tool by client stakeholders.</li></ul>`
           },
-          actions: { edit: true, delete: true, moveUp: true, moveDown: true }
+          actions: { edit: true, delete: true, moveUp: true, moveDown: false }
         }
       ]
     },

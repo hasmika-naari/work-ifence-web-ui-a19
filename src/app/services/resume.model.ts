@@ -125,29 +125,32 @@ export class Education{
   }
   
   export class Project{
-    id : string
-    project_name : string;
-    project_link : string;
-    period : string;
-    description : string;
-    technologies_used : string;
-    isHideSelected : boolean
-    bullet_points_count : string;
-    original_description_html : string;
+      id : string;
+      project_name : string;
+      project_link : string;
+      period : string;
+      description : string;
+      technologies_used : string;
+      isHideSelected : boolean;
+      bullet_points_count : string;
+      original_description_html : string;
+      responsibilitiesRichText: string; // rich text for responsibilities/roles
+      highlightsRichText: string; // rich text for highlights
 
-
-    constructor(){
-      this.id = ""
-      this.project_name = ""
-      this.project_link = ""
-      this.period  = ""
-      this.description = ""
-      this.technologies_used = ""
-      this.original_description_html = ""
-      this.isHideSelected = false
-      this.bullet_points_count = "4"
+      constructor(){
+        this.id = "";
+        this.project_name = "";
+        this.project_link = "";
+        this.period  = "";
+        this.description = "";
+        this.technologies_used = "";
+        this.original_description_html = "";
+        this.isHideSelected = false;
+        this.bullet_points_count = "4";
+        this.responsibilitiesRichText = "";
+        this.highlightsRichText = "";
+      }
     }
-  }
   
   export class Experience{
     id : string;

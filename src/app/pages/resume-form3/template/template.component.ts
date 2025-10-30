@@ -127,6 +127,23 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  // Delete a project item
+  onDeleteProject(index: number): void {
+    const items = this.getSectionItems('PROJECT');
+    console.log('[onDeleteProject] items before:', items);
+    if (!items || index == null || index < 0 || index >= items.length) {
+      console.warn('[onDeleteProject] Invalid index or items:', { index, items });
+      return;
+    }
+    const projectItem = items[index];
+    console.log('[onDeleteProject] Deleting project at index', index, 'item:', projectItem);
+    this.confirmDeleteItemDialog('PROJECT', projectItem);
+    // Log after dialog (async, so may not reflect immediate state)
+    setTimeout(() => {
+      const itemsAfter = this.getSectionItems('PROJECT');
+      console.log('[onDeleteProject] items after (timeout):', itemsAfter);
+    }, 500);
+  }
   // Move up a project item
   onMoveUpProject(index: number) {
     const items = this.getSectionItems('PROJECT');
@@ -607,7 +624,13 @@ formatSkills(items : string[]){
         }
         else if(section === "PROJECT"){
           console.log(selectedJson);
-          this.userStore.deleteProject(selectedJson)
+          this.userStore.deleteProject(selectedJson);
+          // Force update of sectionItemsCache and trigger change detection
+          setTimeout(() => {
+            this.updateSectionItemsCache();
+            this.cdr.detectChanges();
+            console.log('[confirmDeleteItemDialog] Forced sectionItemsCache update after PROJECT delete:', this.getSectionItems('PROJECT'));
+          }, 0);
         }
         else if(section === "WORK_EXPERIENCE"){
           this.userStore.deleteExperience(selectedJson)
@@ -1231,7 +1254,24 @@ getSectionTitle(section : string){
 
   editProjectItem(index: number): void {
     const projects = this.getSectionItems('PROJECT');
-    const projectItem = projects[index];
+    let projectItem = projects[index];
+    // If projectItem is a wrapper with .data, pass .data to the store for editing
+    if (projectItem && projectItem.data) {
+      projectItem = { ...projectItem.data, id: projectItem.id || projectItem.data.id };
+    }
+    // If migrating from old structure, combine responsibilities/highlights into detailsRichText
+    if (!projectItem.detailsRichText) {
+      let combined = '';
+      if (Array.isArray(projectItem.responsibilities) && projectItem.responsibilities.length > 0) {
+        combined += projectItem.responsibilities.join('\n');
+      }
+      if (Array.isArray(projectItem.highlights) && projectItem.highlights.length > 0) {
+        if (combined.length > 0) combined += '\n';
+        combined += projectItem.highlights.join('\n');
+      }
+      projectItem.detailsRichText = combined;
+    }
+    this.userStore.setSelectedProject(projectItem);
     this.editSectionHandler('PROJECT', projectItem);
   }
 
