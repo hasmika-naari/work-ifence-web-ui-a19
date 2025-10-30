@@ -127,6 +127,41 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  // Move up a project item
+  onMoveUpProject(index: number) {
+    const items = this.getSectionItems('PROJECT');
+    if (!items || index == null || index <= 0) return;
+    [items[index - 1], items[index]] = [items[index], items[index - 1]];
+    // Update the PROJECT section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'PROJECT') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+
+  // Move down a project item
+  onMoveDownProject(index: number) {
+    const items = this.getSectionItems('PROJECT');
+    if (!items || index == null || index >= items.length - 1) return;
+    [items[index], items[index + 1]] = [items[index + 1], items[index]];
+    // Update the PROJECT section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'PROJECT') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
   // Move up a work experience item
   onMoveUpExperience(index: number) {
     const items = this.getSectionItems('WORK_EXPERIENCE');
