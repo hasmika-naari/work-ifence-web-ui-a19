@@ -493,7 +493,34 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     // Update sectionItemsCache initially
     this.updateSectionItemsCache();
     this.logSectionItemsDebug();
-    // (effect for sectionItemsCache is now only in the constructor)
+
+    // Make sectionItemsCache reactive to addedSections
+    if (typeof window !== 'undefined' && typeof (window as any).ngDevMode !== 'undefined') {
+      console.log('[Resume1TemplateComponent] Setting up effect for sectionItemsCache reactivity');
+    }
+    // Use a microtask to ensure signals are set up before effect
+    Promise.resolve().then(() => {
+      // If using signals, use an effect to update cache when addedSections changes
+      if (typeof (window as any).ngDevMode !== 'undefined' && typeof (window as any).ng === 'object') {
+        // Angular signals dev mode: use effect if available
+        if (typeof (window as any).ng.effect === 'function') {
+          (window as any).ng.effect(() => {
+            this.updateSectionItemsCache();
+          });
+        } else {
+          // Fallback: poll for changes (for dev/test only)
+          setInterval(() => {
+            this.updateSectionItemsCache();
+          }, 500);
+        }
+      } else {
+        // Production: use MutationObserver or manual trigger if needed
+        // For now, just update on every tick (safe for small apps)
+        setInterval(() => {
+          this.updateSectionItemsCache();
+        }, 1000);
+      }
+    });
   }
 
   /**

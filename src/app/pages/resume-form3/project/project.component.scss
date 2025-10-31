@@ -1,3 +1,41 @@
+// Small vertical gap for description separator
+.desc-separator {
+  display: block;
+  height: 0.3em;
+  margin: 0.2em 0;
+  padding: 0;
+}
+// Remove extra gap at <mark> and add small gap between description items
+.editor ngx-editor .ProseMirror mark {
+  margin: 0 !important;
+  padding: 0 0.1em;
+  background: #fff9a6;
+}
+
+.editor ngx-editor .ProseMirror p {
+  margin-bottom: 0.3em !important;
+  margin-top: 0.3em !important;
+}
+
+// Add a small gap before new description items (when added with <br> or <p>)
+.editor ngx-editor .ProseMirror br {
+  display: block;
+  margin: 0.2em 0 !important;
+  line-height: 1 !important;
+}
+// Reduce vertical gap between description items (editor content)
+.editor ngx-editor .ProseMirror p,
+.editor ngx-editor .ProseMirror br {
+  margin-top: 0.25em !important;
+  margin-bottom: 0.25em !important;
+  line-height: 1.3 !important;
+}
+
+.editor ngx-editor .ProseMirror br {
+  display: block;
+  margin: 0.1em 0 !important;
+  line-height: 1 !important;
+}
 // --- Overlay Drawer Fix (copied from summary.component.scss for consistency) ---
 .summary-ai-overlay {
   position: fixed;
@@ -16,7 +54,7 @@
 .summary-ai-drawer-shell {
   width: 32rem;
   max-width: 90vw;
-  height: 100vh;
+  height: 92vh;
   background: #fff;
   box-shadow: -2px 0 16px 0 rgba(30,41,59,0.10);
   display: flex;
@@ -64,7 +102,7 @@
   gap: 0.75rem;
   flex: 1 1 auto;
   overflow-y: auto;
-  padding-bottom: 0.25rem;
+  padding-bottom: 2.5rem; /* Add space so last item is visible above bottom edge */
 }
 .summary-ai-empty {
   display: flex;
@@ -119,6 +157,17 @@
     max-height: 1200px !important;
     overflow-y: auto !important;
     box-sizing: border-box;
+  }
+  /* Hide horizontal scrollbar for AI response items panel */
+  .ai-response-panel, .ai-response-list, .ai-response-items, .responsibilities-ai-panel, .highlights-ai-panel {
+    overflow-x: hidden !important;
+  }
+
+  /* Optionally, ensure no margin/padding causes horizontal scroll */
+  .ai-response-panel, .ai-response-list, .ai-response-items, .responsibilities-ai-panel, .highlights-ai-panel {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
   }
 
   .NgxEditor__MenuBar {
@@ -1083,21 +1132,25 @@ to {
 }
 }
 
-.ai-response-panel{
+.ai-response-panel {
   position: relative;
   padding: 15px !important;
   margin-bottom: 10px !important;
   box-shadow: none !important;
   border: 1px solid silver;
   border-radius: 10px;
-  height: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  height: auto;
+  overflow-x: hidden !important; /* Hide horizontal scrollbar for each item */
+  overflow-y: visible;
   .p-button-primary:hover {
-    background-color: transparent; /* Example primary hover color */
-    // color: #fff; /* Ensures contrast */
+    background-color: transparent;
   }
-  
+}
+
+.ai-response-dynamic {
+  min-height: unset !important;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .ai-response-panel:hover .section-actions {

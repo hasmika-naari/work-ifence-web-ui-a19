@@ -38,6 +38,7 @@ import { MessageService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { SharedNgxEditorModule } from 'src/app/shared/shared-ngx-editor.module';
 import { Editor, Toolbar } from 'ngx-editor';
+import { CalendarModule } from 'primeng/calendar';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -64,7 +65,7 @@ export interface ProjectData{
    HeaderWorkIfenceComponent,  MatStepperModule, CardModule,
    MatFormFieldModule,InputTextModule,TableModule,
    MatInputModule,ButtonModule,OverlayPanelModule,
-   MatButtonModule,AccordionModule,TextareaModule,
+   MatButtonModule,AccordionModule,TextareaModule, CalendarModule,
   MatIconModule,MatExpansionModule, MatCardModule, ToastModule, TooltipModule,
   SharedNgxEditorModule],
   templateUrl: './project.component.html',
@@ -83,6 +84,185 @@ export interface ProjectData{
   ]
 })
 export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
+  is_responsibilities_loading: boolean = false;
+  is_highlights_loading: boolean = false;
+  responsibilitiesListPoints: string[] = [];
+  highlightsListPoints: string[] = [];
+  isResponsibilitiesOpen: boolean = false;
+  isHighlightsOpen: boolean = false;
+
+  optimizeResponsibilities() {
+    let value = this.projectForm.get('responsibilitiesRichText')?.value;
+    if (typeof value !== 'string') value = '';
+    const plainText = value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim();
+    // Debug: Log when button is clicked and value
+    console.log('[BotBro] optimizeResponsibilities clicked. Value:', value, 'PlainText:', plainText);
+    // Allow BotBro to work even if empty: use a default minimal prompt
+    const useValue = plainText.length > 0 ? value : 'Generate example roles and responsibilities for a project.';
+    this.is_responsibilities_loading = true;
+    const prompt = this.promptService.testing_project_desc_prompt(useValue);
+    console.log('[BotBro] Sending prompt to AI:', prompt);
+    this.resumeService.requestOpenAI({ "prompt": prompt }).subscribe({
+      next: (res: any) => {
+        console.log('[BotBro] AI response received:', res);
+        let content = res['choices'][0]['message']['content'];
+        this.responsibilitiesListPoints = this.handleStringInput(content);
+        this.is_responsibilities_loading = false;
+        this.openResponsibilitiesPanel();
+      },
+      error: (error) => {
+        console.error('[BotBro] AI response error:', error);
+        this.is_responsibilities_loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to generate AI suggestions for responsibilities.',
+          life: 5000
+        });
+      }
+    });
+  }
+
+  optimizeHighlights() {
+    let value = this.projectForm.get('highlightsRichText')?.value;
+    if (typeof value !== 'string') value = '';
+    const plainText = value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim();
+    // Debug: Log when button is clicked and value
+    console.log('[BotBro] optimizeHighlights clicked. Value:', value, 'PlainText:', plainText);
+    // Allow BotBro to work even if empty: use a default minimal prompt
+    const useValue = plainText.length > 0 ? value : 'Generate example project highlights.';
+    this.is_highlights_loading = true;
+    const prompt = this.promptService.testing_project_desc_prompt(useValue);
+    console.log('[BotBro] Sending prompt to AI:', prompt);
+    this.resumeService.requestOpenAI({ "prompt": prompt }).subscribe({
+      next: (res: any) => {
+        console.log('[BotBro] AI response received:', res);
+        let content = res['choices'][0]['message']['content'];
+        this.highlightsListPoints = this.handleStringInput(content);
+        this.is_highlights_loading = false;
+        this.openHighlightsPanel();
+      },
+      error: (error) => {
+        console.error('[BotBro] AI response error:', error);
+        this.is_highlights_loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to generate AI suggestions for highlights.',
+          life: 5000
+        });
+      }
+    });
+  }
+
+  openResponsibilitiesPanel() {
+    this.isResponsibilitiesOpen = true;
+    // Defensive: ensure list is always an array of strings
+    if (!Array.isArray(this.responsibilitiesListPoints)) {
+      this.responsibilitiesListPoints = [];
+    } else {
+      this.responsibilitiesListPoints = this.responsibilitiesListPoints.filter(x => typeof x === 'string');
+    }
+  }
+  closeResponsibilitiesPanel() {
+    this.isResponsibilitiesOpen = false;
+    this.responsibilitiesEditingIndex = null;
+    this.responsibilitiesEditValue = '';
+  }
+  openHighlightsPanel() {
+    this.isHighlightsOpen = true;
+  }
+  closeHighlightsPanel() {
+    this.isHighlightsOpen = false;
+  }
+
+  // --- Responsibilities AI Response Actions ---
+  responsibilitiesEditingIndex: number | null = null;
+  responsibilitiesEditValue: string = '';
+  isResponsibilitiesEditing(i: number) {
+    return this.responsibilitiesEditingIndex === i;
+  }
+  editResponsibilitiesAIResponse(i: number) {
+    if (Array.isArray(this.responsibilitiesListPoints) && this.responsibilitiesListPoints[i] !== undefined) {
+      this.responsibilitiesEditingIndex = i;
+      this.responsibilitiesEditValue = this.responsibilitiesListPoints[i];
+    }
+  }
+  cancelResponsibilitiesEdit() {
+    this.responsibilitiesEditingIndex = null;
+    this.responsibilitiesEditValue = '';
+  }
+  updateResponsibilitiesPoint(i: number) {
+    if (Array.isArray(this.responsibilitiesListPoints) && this.responsibilitiesEditValue !== undefined) {
+      this.responsibilitiesListPoints[i] = this.responsibilitiesEditValue;
+    }
+    this.cancelResponsibilitiesEdit();
+  }
+  optimizeResponsibilitiesResponse(i: number) {
+    // Optionally implement optimization logic for a single point
+    // Placeholder: could call OpenAI with this.responsibilitiesListPoints[i]
+  }
+  addResponsibilitiesResponse(i: number) {
+    let current = this.projectForm.get('responsibilitiesRichText')?.value;
+    if (typeof current !== 'string') current = '';
+    const toAdd = this.responsibilitiesListPoints[i];
+    let newValue = '';
+    if (!toAdd) return;
+    if (current && current.includes('<ul>')) {
+      // Insert new <li> before </ul>
+      newValue = current.replace('</ul>', `<li>${toAdd}</li></ul>`);
+    } else if (current) {
+      // Wrap existing content and new item in <ul>
+      const cleanCurrent = current.replace(/<[^>]+>/g, '').trim();
+      if (cleanCurrent.length > 0) {
+        newValue = `<ul><li>${cleanCurrent}</li><li>${toAdd}</li></ul>`;
+      } else {
+        newValue = `<ul><li>${toAdd}</li></ul>`;
+      }
+    } else {
+      newValue = `<ul><li>${toAdd}</li></ul>`;
+    }
+    this.projectForm.get('responsibilitiesRichText')?.setValue(newValue);
+  }
+
+  // --- Highlights AI Response Actions ---
+  highlightsEditingIndex: number | null = null;
+  highlightsEditValue: string = '';
+  isHighlightsEditing(i: number) {
+    return this.highlightsEditingIndex === i;
+  }
+  editHighlightsAIResponse(i: number) {
+    this.highlightsEditingIndex = i;
+    this.highlightsEditValue = this.highlightsListPoints[i];
+  }
+  cancelHighlightsEdit() {
+    this.highlightsEditingIndex = null;
+    this.highlightsEditValue = '';
+  }
+  updateHighlightsPoint(i: number) {
+    this.highlightsListPoints[i] = this.highlightsEditValue;
+    this.cancelHighlightsEdit();
+  }
+  optimizeHighlightsResponse(i: number) {
+    // Optionally implement optimization logic for a single point
+    // Placeholder: could call OpenAI with this.highlightsListPoints[i]
+  }
+  addHighlightsResponse(i: number) {
+    let current = this.projectForm.get('highlightsRichText')?.value;
+    if (typeof current !== 'string') current = '';
+    const toAdd = this.highlightsListPoints[i];
+    let newValue = '';
+    if (current && current.includes('<ul>')) {
+      newValue = current.replace('</ul>', `<li>${toAdd}</li></ul>`);
+    } else if (current) {
+      newValue = `<ul><li>${current.replace(/<[^>]+>/g, '').trim()}</li><li>${toAdd}</li></ul>`;
+    } else {
+      newValue = `<ul><li>${toAdd}</li></ul>`;
+    }
+    this.projectForm.get('highlightsRichText')?.setValue(newValue);
+  }
+
+  // Optionally, add edit/optimize logic for responsibilities/highlights if needed, following the description pattern
   descriptionEditor!: Editor;
   responsibilitiesEditor!: Editor;
   highlightsEditor!: Editor;
@@ -231,6 +411,9 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       description : ['', Validators.required],
       period: [''],
       bullet_points : [''],
+  role: [''],
+  start_date: [null as Date | null],
+  end_date: [null as Date | null],
     responsibilitiesRichText: [''],
     highlightsRichText: [''],
     section_title: ['Project', Validators.required],
@@ -447,7 +630,33 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
       description: selected.description || '',
       responsibilitiesRichText: selected.responsibilitiesRichText || '',
       highlightsRichText: selected.highlightsRichText || '',
+      role: selected.role || '',
+      start_date: selected.start_date && selected.start_date !== '' ? parseDateFromString(selected.start_date) : null,
+      end_date: selected.end_date && selected.end_date !== '' ? parseDateFromString(selected.end_date) : null,
     });
+
+    function parseDateFromString(dateStr: string): Date | null {
+      // Accepts 'YYYY-MM' or 'YYYY/MM' or 'MM/YYYY' or 'YYYY-MM-DD' or ISO
+      if (!dateStr) return null;
+      // Try ISO first
+      const iso = Date.parse(dateStr);
+      if (!isNaN(iso)) return new Date(iso);
+      // Try MM/YYYY
+      const mmYyyy = dateStr.match(/^(\d{2})[\/-](\d{4})$/);
+      if (mmYyyy) {
+        const month = parseInt(mmYyyy[1], 10) - 1;
+        const year = parseInt(mmYyyy[2], 10);
+        return new Date(year, month, 1);
+      }
+      // Try YYYY/MM
+      const yyyyMm = dateStr.match(/^(\d{4})[\/-](\d{2})$/);
+      if (yyyyMm) {
+        const year = parseInt(yyyyMm[1], 10);
+        const month = parseInt(yyyyMm[2], 10) - 1;
+        return new Date(year, month, 1);
+      }
+      return null;
+    }
     let section_title;
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
       this.multipleSections().map((e : SectionDesc[])=>{
@@ -561,9 +770,21 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     project.project_link = this.projectForm.value.project_link ? this.projectForm.value.project_link : '';
     project.technologies_used = this.projectForm.value.technologies_used ? this.projectForm.value.technologies_used : '';
     project.bullet_points_count = this.projectForm.value.bullet_points ? this.projectForm.value.bullet_points : '';
-  project.period = this.projectForm.value.period ? this.projectForm.value.period : '';
-  project.responsibilitiesRichText = this.projectForm.value.responsibilitiesRichText || '';
-  project.highlightsRichText = this.projectForm.value.highlightsRichText || '';
+    project.period = this.projectForm.value.period ? this.projectForm.value.period : '';
+    project.responsibilitiesRichText = this.projectForm.value.responsibilitiesRichText || '';
+    project.highlightsRichText = this.projectForm.value.highlightsRichText || '';
+    // Save role and dates
+    project.role = this.projectForm.value.role ? this.projectForm.value.role : '';
+    project.start_date = this.projectForm.value.start_date ? formatDateToString(this.projectForm.value.start_date) : '';
+    project.end_date = this.projectForm.value.end_date ? formatDateToString(this.projectForm.value.end_date) : '';
+
+    function formatDateToString(date: Date): string {
+      // Format as 'YYYY-MM' for month/year picker
+      if (!(date instanceof Date)) return '';
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      return `${year}-${month}`;
+    }
 
     // Helper to get PROJECT section items
     const getProjectSectionItems = () => {
@@ -1207,20 +1428,32 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   handleStringInput(input: string): string[] {
-    try {
-      // Attempt to parse the input as JSON
-      const parsed = JSON.parse(input);
-  
-      // Check if the parsed value is an array of strings
-      if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
-        return parsed;
-      } else {
-        throw new Error('Not a valid list of strings.');
-      }
-    } catch (error) {
-      // If parsing fails or the input is plain text, handle it as plain text
-      return [input]; // Wrap plain text into an array
+    // Remove triple backticks and leading 'json' if present
+    let cleaned = input.trim();
+    if (cleaned.startsWith('```')) {
+      cleaned = cleaned.replace(/^```[a-zA-Z]*\s*/, '').replace(/```$/, '').trim();
     }
+    if (cleaned.toLowerCase().startsWith('json')) {
+      cleaned = cleaned.slice(4).trim();
+    }
+    // Try to parse as JSON array
+    try {
+      const arr = JSON.parse(cleaned);
+      if (Array.isArray(arr)) {
+        return arr.map(x => typeof x === 'string' ? x : JSON.stringify(x));
+      }
+    } catch (e) {}
+    // Remove brackets if present
+    cleaned = cleaned.replace(/^\[|\]$/g, '');
+    // Fallback: split by newlines or bullets
+    let lines = cleaned.split(/\n|\r|•|\d+\.|\-/).map(x => x.trim()).filter(x => x.length > 0);
+    // Remove any leading/trailing brackets or quotes
+    lines = lines.map(x => x.replace(/^['"\[\]]+|['"\[\]]+$/g, '').trim());
+    // If nothing found, fallback to original input as single item
+    if (lines.length === 0 && input.trim().length > 0) {
+      return [input.trim()];
+    }
+    return lines;
   }
 
   isJobDescAISuggestionsPresent() : boolean{
@@ -1337,27 +1570,85 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  saveToProjectList(){
-    if(this.projectForm.controls['project_name']?.value){
-      let new_project = 
-      {
-        id : this.project_list.length,
-        project_name : this.projectForm.controls['project_name']?.value, 
-        project_link : this.projectForm.controls['project_link']?.value,
-        technologies_used : this.projectForm.controls['technologies_used']?.value, 
-        description : this.projectForm.controls['description']?.value
+  // Track if editing an existing project
+  isEditProjectMode: boolean = false;
+  editProjectIndex: number | null = null;
+
+  // Call this when user clicks edit on a project item
+  startEditProject(index: number, project: any) {
+    this.isEditProjectMode = true;
+    this.editProjectIndex = index;
+    this.projectForm.patchValue({
+      project_name: project.project_name || '',
+      project_link: project.project_link || '',
+      technologies_used: project.technologies_used || '',
+      description: project.description || '',
+      responsibilitiesRichText: project.responsibilitiesRichText || '',
+      highlightsRichText: project.highlightsRichText || '',
+      period: project.period || '',
+      bullet_points: project.bullet_points_count || '',
+      section_title: project.section_title || 'Project',
+    });
+  }
+
+  // Getter for selected resume from store/service
+  get selectedResume() {
+    // Use the correct method name from UserStoreService
+    if (this.userStore && typeof this.userStore.getSelectedResume === 'function') {
+      return this.userStore.getSelectedResume();
+    }
+    // fallback to resumeSignalForm if not available
+    return { resumeForm: this.resumeSignalForm() };
+  }
+
+  // Save or update project in selected resume's sections
+  saveOrUpdateProject() {
+    if (this.projectForm.controls['project_name']?.value) {
+      const new_project = {
+        project_name: this.projectForm.controls['project_name']?.value,
+        project_link: this.projectForm.controls['project_link']?.value,
+        technologies_used: this.projectForm.controls['technologies_used']?.value,
+        description: this.projectForm.controls['description']?.value,
+        responsibilitiesRichText: this.projectForm.controls['responsibilitiesRichText']?.value,
+        highlightsRichText: this.projectForm.controls['highlightsRichText']?.value,
+        period: this.projectForm.controls['period']?.value,
+        bullet_points_count: this.projectForm.controls['bullet_points']?.value,
+        section_title: this.projectForm.controls['section_title']?.value || 'Project',
+      };
+
+      // Get the selected resume's project section
+      let resume: any;
+      if (this.selectedResume && typeof this.selectedResume === 'function') {
+        // If it's a signal, call it to get the value
+        resume = this.selectedResume().resumeForm;
+      } else if (this.selectedResume && 'resumeForm' in this.selectedResume) {
+        resume = this.selectedResume.resumeForm;
+      } else {
+        resume = this.resumeSignalForm();
       }
-      if(this.selectedProjectItem?.id || this.selectedProjectItem?.id === 0){
-        this.project_list = [...this.project_list.slice(0,this.selectedProjectItem.id), new_project, ...this.project_list.slice(this.selectedProjectItem.id + 1,)];
+
+      const projectSection = resume.sections.find((s: any) => s.type === 'Project');
+      if (projectSection) {
+        if (this.isEditProjectMode && this.editProjectIndex !== null) {
+          // Update existing project
+          projectSection.items[this.editProjectIndex] = { ...projectSection.items[this.editProjectIndex], ...new_project };
+        } else {
+          // Add new project
+          if (!projectSection.items) projectSection.items = [];
+          projectSection.items.push(new_project);
+        }
+        // Propagate the change to the store/service so UI updates
+        if (this.userStore && typeof this.userStore.setResumeSections === 'function') {
+          this.userStore.setResumeSections(resume.sections);
+        }
       }
-      else{
-        this.project_list.push(new_project)
-      }
-      this.selectedProjectItem = {id : null,project_name : null, project_link : null, technologies_used : null, description : null}
+
+      // Reset form and edit mode
       this.projectForm.reset();
       this.projectForm.get('bullet_points')?.setValue('4');
-      //this.saveAndContinue("Changes saved");
-      }
+      this.isEditProjectMode = false;
+      this.editProjectIndex = null;
+    }
   }
   
   editProjectItem(project : any){
@@ -1549,7 +1840,15 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
   useResponse(index: number): void {
     const response = this.projectListPoints[index];
     if (response) {
-      this.projectForm.get('description')?.setValue(response);
+      const current = this.projectForm.get('description')?.value || '';
+      let newValue = '';
+      if (current) {
+        // Add as new item with a styled separator
+        newValue = current + "<span class='desc-separator'></span>" + response;
+      } else {
+        newValue = response;
+      }
+      this.projectForm.get('description')?.setValue(newValue);
     }
   }
 }
