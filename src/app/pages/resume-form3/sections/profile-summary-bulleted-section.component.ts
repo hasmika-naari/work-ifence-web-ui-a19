@@ -8,15 +8,19 @@ import { ButtonModule } from 'primeng/button';
   imports: [CommonModule, ButtonModule],
   template: `
     <div class="section profile-summary-bulleted">
-      <div *ngIf="data?.summary_bullets?.length; else noBullets">
-        <ul class="summary-bullets">
-          <li *ngFor="let bullet of data.summary_bullets">{{ bullet }}</li>
-        </ul>
+      <div *ngIf="data?.profile_summary; else fallbackBullets">
+        <div class="summary-bullets-html" [innerHTML]="data.profile_summary"></div>
       </div>
-      <ng-template #noBullets>
-        <div class="empty-bullets">No summary bullet points added yet.</div>
+      <ng-template #fallbackBullets>
+        <div *ngIf="data?.summary_bullets?.length; else noBullets">
+          <ul class="summary-bullets">
+            <li *ngFor="let bullet of data.summary_bullets">{{ bullet }}</li>
+          </ul>
+        </div>
+        <ng-template #noBullets>
+          <div class="empty-bullets">No summary bullet points added yet.</div>
+        </ng-template>
       </ng-template>
-      <!-- Header-level edit button for bulleted summary (for direct use in section, if needed) -->
       <ng-content></ng-content>
     </div>
   `,

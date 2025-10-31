@@ -1,5 +1,6 @@
 <div class="resume-form-container summary-flex-layout">
     <div class="col-12">
+        <!-- {{sectionType}} -->
         <form [formGroup]="summaryForm" style="display: flex; flex-direction: column;">
             <!-- <div *ngIf="sectionType === 'PROFILE_SUMMARY_BULLETED'" class="summary-format-label"><i class="pi pi-list"></i> Bulleted Summary</div> -->
             <!-- <div *ngIf="sectionType === 'PROFILE_SUMMARY'" class="summary-format-label"><i class="pi pi-align-left"></i> Paragraph Summary</div> -->
@@ -42,12 +43,13 @@
                     </button>
                 </span>
             </div>
+            <!-- Always show the editor. For PROFILE_SUMMARY_BULLETED, lock to bulleted mode and hide format dropdown. -->
             <div class="editor summary-editor-field">
                 <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
                 <ngx-editor
                     [editor]="editor"
                     [formControl]="summaryForm.controls['profile_summary']"
-                    [placeholder]="'Write your professional summary here...'"
+                    [placeholder]="sectionType === 'PROFILE_SUMMARY_BULLETED' ? 'Add your summary as bullet points (use the bullet list button)' : 'Write your professional summary here...'"
                     style="width:100%;display:block;min-height:350px;"
                 ></ngx-editor>
             </div>

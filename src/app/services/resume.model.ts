@@ -266,20 +266,22 @@ export class Education{
   }
 
   export class ProfileSummary{
-    profile_summary : string
+    profile_summary : string;
     original_summary_html : string;
-    position_highlight : string
-    skills_highlight : string
-    isDefault : boolean
-    isHideSelected : boolean
+    position_highlight : string;
+    skills_highlight : string;
+    isDefault : boolean;
+    isHideSelected : boolean;
+    summary_bullets: string[];
 
     constructor(){
-      this.profile_summary = ""
-      this.position_highlight = ""
-      this.skills_highlight = ""
+      this.profile_summary = "";
+      this.position_highlight = "";
+      this.skills_highlight = "";
       this.isDefault = true;
       this.isHideSelected = false;
-      this.original_summary_html = ''
+      this.original_summary_html = '';
+      this.summary_bullets = [];
     }
   }
 

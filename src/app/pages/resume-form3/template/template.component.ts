@@ -1,3 +1,11 @@
+
+import { WorkExperienceSectionComponent } from '../sections/work-experience-section.component';
+import { ProjectSectionComponent } from '../sections/project-section.component';
+import { CertificationsSectionComponent } from '../sections/certifications-section.component';
+import { AchievementsSectionComponent } from '../sections/achievements-section.component';
+import { SkillsBulletPointsSectionComponent } from '../sections/skills-bullet-points-section.component';
+import { SkillsCategorySectionComponent } from '../sections/skills-category-section.component';
+
 import { sections as defaultSections } from '../../../services/store/resume-sections';
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectorRef, Signal, effect, computed, signal } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -46,12 +54,7 @@ import { IconsModule } from '../../../shared/icons.module';
 import { ContactSectionComponent } from '../sections/contact-section.component';
 import { ProfileSummarySectionComponent } from '../sections/profile-summary-section.component';
 import { EducationSectionComponent } from '../sections/education-section.component';
-import { WorkExperienceSectionComponent } from '../sections/work-experience-section.component';
-import { ProjectSectionComponent } from '../sections/project-section.component';
-import { CertificationsSectionComponent } from '../sections/certifications-section.component';
-import { AchievementsSectionComponent } from '../sections/achievements-section.component';
-import { SkillsBulletPointsSectionComponent } from '../sections/skills-bullet-points-section.component';
-import { SkillsCategorySectionComponent } from '../sections/skills-category-section.component';
+
 import { RelevantCourseworkSectionComponent } from '../sections/relevant-coursework-section/relevant-coursework-section.component';
 import { ProfileSummaryBulletedSectionComponent } from '../sections/profile-summary-bulleted-section.component';
 
@@ -127,6 +130,19 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+
+  // Handles profile summary bulleted section edit
+  onEditProfileSummaryBulleted() {
+    this.editSectionHandler('PROFILE_SUMMARY_BULLETED', this.getSectionData('PROFILE_SUMMARY_BULLETED')?.data);
+  }
+
+  // Handles edit event from skills by category section
+  onEditSkillsByCategory() {
+    // Get the categories array from the SKILLS_BY_CATEGORY section
+    const section = this.addedSections()?.find((s: any) => s.section === 'SKILLS_BY_CATEGORY');
+    const categories = section && section.data && Array.isArray(section.data.categories) ? section.data.categories : [];
+    this.editSectionHandler('SKILLS_BY_CATEGORY', categories);
+  }
   // Delete a project item
   onDeleteProject(index: number): void {
     const items = this.getSectionItems('PROJECT');
@@ -224,6 +240,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     const resume = this.resumeForm();
     const sections = resume.sections || [];
     const added = sections.filter((s: any) => s.isAdded);
+    console.log('[Resume1TemplateComponent] addedSections computed:', { resume, sections, added });
     return added;
   });
   hasUnsavedChanges = false;
@@ -276,7 +293,13 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     return section?.data || {};
   }
   getProfileSummarySection() {
+    // Only return PROFILE_SUMMARY section's data, never PROFILE_SUMMARY_BULLETED
     const section = this.resumeForm().sections?.find(s => s.section === 'PROFILE_SUMMARY');
+    // Defensive: if the section's data accidentally contains HTML bullets, strip them
+    if (section?.data && typeof section.data.profile_summary === 'string' && section.section === 'PROFILE_SUMMARY_BULLETED') {
+      // Should never happen, but if so, return empty
+      return {};
+    }
     return section?.data || {};
   }
   getCourseWorkSection() { const section = this.addedSections().find((s: any) => s.section === 'RELEVANT_COURSEWORK'); return section?.items?.map((i: any) => i.data) || []; }
@@ -309,67 +332,6 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Handles delete event from relevant-coursework-section
-  onDeleteCoursework(index: number) {
-    const courseworkList = this.getSectionItems('RELEVANT_COURSEWORK');
-    const item = courseworkList[index];
-    if (item) {
-      this.deleteSectionItem('RELEVANT_COURSEWORK', item);
-    }
-  }
-
-  // Handles edit event from relevant-coursework-section
-  onEditCoursework(index: number) {
-    const courseworkList = this.getSectionItems('RELEVANT_COURSEWORK');
-    const item = courseworkList[index];
-    if (item) {
-      this.editSectionHandler('RELEVANT_COURSEWORK', item);
-    }
-  }
-
-
-
-  // Handles move up event for education item
-  onMoveUpEducation(index: number) {
-    const items = this.getSectionItems('EDUCATION');
-    if (!items || index == null || index <= 0) return;
-    [items[index - 1], items[index]] = [items[index], items[index - 1]];
-    // Update the EDUCATION section in the sections array
-    const sections = this.resumeForm().sections?.map((section: any) => {
-      if (section.section === 'EDUCATION') {
-        return { ...section, items: [...items] };
-      }
-      return section;
-    }) ?? [];
-    this.userStore.setResumeSections(sections);
-    this.updateSectionItemsCache();
-    this.markDirty();
-    this.cdr.detectChanges();
-  }
-
-  // Handles move down event for education item
-  onMoveDownEducation(index: number) {
-    const items = this.getSectionItems('EDUCATION');
-    if (!items || index == null || index >= items.length - 1) return;
-    [items[index], items[index + 1]] = [items[index + 1], items[index]];
-    // Update the EDUCATION section in the sections array
-    const sections = this.resumeForm().sections?.map((section: any) => {
-      if (section.section === 'EDUCATION') {
-        return { ...section, items: [...items] };
-      }
-      return section;
-    }) ?? [];
-    this.userStore.setResumeSections(sections);
-    this.updateSectionItemsCache();
-    this.markDirty();
-    this.cdr.detectChanges();
-  }
-
-  // Handles move up event from relevant-coursework-section
-  onMoveUpCoursework(index: number) {
-    // Implementation for moving coursework up
-    console.log('Move coursework up:', index);
-  }
 
   // Handles move down event from relevant-coursework-section
   onMoveDownCoursework(index: number) {
@@ -384,6 +346,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   // Handles edit event from skills section
   onEditSkills() {
+    // Handles edit for SKILLS_BULLET_POINTS
     this.editSectionHandler('SKILLS_BULLET_POINTS', this.getSectionItems('SKILLS_BULLET_POINTS'));
   }
 
@@ -1356,3 +1319,4 @@ getSectionTitle(section : string){
   }
   
 }
+

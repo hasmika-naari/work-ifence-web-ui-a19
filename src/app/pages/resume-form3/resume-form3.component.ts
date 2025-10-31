@@ -149,6 +149,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   // --- Save/Update Handlers ---
   /**
    * Save handler for section. Updates the section data in the sections array.
+   * If saving PROFILE_SUMMARY_BULLETED, update that section only.
    */
   saveSection(sectionName: string, updatedData: any) {
     // Get the current UserResume from the store
@@ -159,7 +160,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       if (section.section === sectionName && section.items && section.items[0]) {
         const updatedItems = [...section.items];
         updatedItems[0] = { ...updatedItems[0], data: updatedData };
-        return { ...section, items: updatedItems };
+        return { ...section, items: updatedItems, isAdded: true };
       }
       return section;
     });
@@ -175,6 +176,14 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       }
     }));
     this.closePanelWindow(null);
+  }
+
+  /**
+   * Save handler specifically for PROFILE_SUMMARY_BULLETED section.
+   * Ensures only the bulleted summary section is updated.
+   */
+  saveBulletedSummary(updatedData: any) {
+    this.saveSection('PROFILE_SUMMARY_BULLETED', updatedData);
   }
 
   /**
@@ -1160,7 +1169,10 @@ hideMenu() {
       this.showContact()
     }
     else if($event.section === "PROFILE_SUMMARY"){
-      this.showSummaryDetails()
+      this.showSummaryDetails('PROFILE_SUMMARY');
+    }
+    else if($event.section === "PROFILE_SUMMARY_BULLETED"){
+      this.showSummaryDetails('PROFILE_SUMMARY_BULLETED');
     }
     else if($event.section === "EDUCATION"){
       this.showEducationDetails()
@@ -1265,7 +1277,11 @@ hideMenu() {
   summarySectionType: string = 'PROFILE_SUMMARY';
   showSummaryDetails(sectionType: string = 'PROFILE_SUMMARY') {
     this.summarySectionType = sectionType;
-    this.openPanel('summaryDetails', 'Summary');
+    if (sectionType === 'PROFILE_SUMMARY_BULLETED') {
+      this.openPanel('summaryBulletedDetails', 'Summary (Bulleted)');
+    } else {
+      this.openPanel('summaryDetails', 'Summary');
+    }
   }
 
   isSectionActive(section : string){

@@ -303,6 +303,7 @@
               <app-resume-skills [skillsValue]="skillCount" (contact)="saveContact()" [sectionName]="sectionName" *ngSwitchCase="'skillsDetails'"></app-resume-skills>
               <app-resume-achievements (contact)="saveContact()" [sectionName]="sectionName" *ngSwitchCase="'achievementsDetails'"></app-resume-achievements>
               <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" [sectionType]="summarySectionType" *ngSwitchCase="'summaryDetails'"></app-resume-summary>
+              <app-resume-summary (contact)="saveContact()" [isFormPanleClosed]="isFormPanleClosed" [sectionType]="summarySectionType" *ngSwitchCase="'summaryBulletedDetails'"></app-resume-summary>
               <app-resume-accomplishments (contact)="saveContact()" *ngSwitchCase="'accomplishments'"></app-resume-accomplishments>
               <app-add-section 
                   [addedSections]="currentSections()"

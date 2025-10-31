@@ -120,13 +120,7 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
   editor!: Editor;
   toolbar: Toolbar = [
     ['bold', 'italic'],
-    ['underline', 'strike'],
-    ['code', 'blockquote'],
-    ['ordered_list', 'bullet_list'],
-    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
-    ['link', 'image'],
-    ['text_color', 'background_color'],
-    ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ['bullet_list']
   ];
   
   summaryAIList: string[] = [];
@@ -203,7 +197,7 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
     coursework : ['']
   })
   summaryForm = this._formBuilder.group({
-  profile_summary: [''],
+    profile_summary: [''],
     position_highlight : [''],
     skills_highlight : [''],
     job_description : [''],
@@ -213,28 +207,6 @@ export class SummaryComponent implements OnInit, OnDestroy, OnChanges {
   certificationsForm = this._formBuilder.group({
     certifications : [''],
   });
-  projectForm = this._formBuilder.group({
-      project_title: [''],
-      technologies_used: [''],
-      project_link : [''],
-      description : ['']
-  });
-  certifyForm = this._formBuilder.group({
-      certification_name : [''],
-      issued_organisation : [''],
-      issued_month : [''],
-      issued_year : [''],
-      certification_link : [''],
-      description : ['']
-  })
-  achievementForm = this._formBuilder.group({
-    achievement : ['']
-  })
-
-  summaryRequestForm = this._formBuilder.group({
-    position_highlight : ['', Validators.required],
-    skills_highlight : ['', Validators.required]
-  })
 
   workHistoryList : Array<String>  | null= null
   educationGeminiResponse : Array<Education>  | null = null
@@ -328,21 +300,23 @@ openPanelWindow(){
 }
 
   ngOnInit() {
-    // Set format based on sectionType
+    // Set format and editor content based on sectionType
     if (this.sectionType === 'PROFILE_SUMMARY_BULLETED') {
       this.summaryForm.controls['format'].setValue('bulleted', { emitEvent: false });
-      // Only load summary_bullets as list, not paragraph
       const resume = this.resumeSignalForm();
       const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY_BULLETED');
-      if (section && section.data && Array.isArray(section.data.summary_bullets)) {
+      if (section && section.data && section.data.profile_summary) {
+        this.summaryForm.controls['profile_summary'].setValue(section.data.profile_summary, { emitEvent: false });
+      } else if (section && section.data && Array.isArray(section.data.summary_bullets)) {
+        // If only bullets array exists, convert to <ul><li>...</li></ul>
         const bullets = section.data.summary_bullets.map((b: string) => `<li>${b}</li>`).join('');
         this.summaryForm.controls['profile_summary'].setValue(`<ul>${bullets}</ul>`, { emitEvent: false });
       } else {
-        this.summaryForm.controls['profile_summary'].setValue('', { emitEvent: false });
+        // Default to a single empty bullet
+        this.summaryForm.controls['profile_summary'].setValue('<ul><li></li></ul>', { emitEvent: false });
       }
     } else {
       this.summaryForm.controls['format'].setValue('paragraph', { emitEvent: false });
-      // Use paragraph summary only
       const resume = this.resumeSignalForm();
       const section = resume?.sections?.find((s: any) => s.section === 'PROFILE_SUMMARY');
       if (section && section.data && section.data.profile_summary) {
@@ -456,57 +430,134 @@ openPanelWindow(){
 
     let summary = new ProfileSummary();
     let profile_summary = this.summaryForm.controls['profile_summary'].value || '';
-    if(profile_summary.includes('data-list="bullet"')){
-      const correctedHTML = profile_summary.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
-      summary.profile_summary = correctedHTML.length>0? correctedHTML.trim() : "";
+    if (this.sectionType === 'PROFILE_SUMMARY_BULLETED') {
+      // Save as HTML, force <ul> if needed
+      let html = profile_summary;
+      if (html.includes('<ol>')) {
+        html = html.replace('<ol>', '<ul>').replace('</ol>', '</ul>');
+      }
+      summary.profile_summary = html.length > 0 ? html.trim() : '';
+      summary.original_summary_html = html;
+      summary.summary_bullets = [];
+      // Debug: Log all sections before update
+      console.log('Summary Component:  [DEBUG] Sections before bulleted summary update:', JSON.parse(JSON.stringify(this.sections())));
+      // Update only the PROFILE_SUMMARY_BULLETED section
+      if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+        this.multipleSections().map((e : SectionDesc[], i: number)=>{
+          e.map((section : SectionDesc, j: number)=>{
+            if(section.section == 'PROFILE_SUMMARY_BULLETED'){
+              console.log(`Summary Component:  [DEBUG] Updating PROFILE_SUMMARY_BULLETED at multi-col index [${i}][${j}]`, section);
+              section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary';
+              section.data = summary;
+            }
+          })
+        })
+        this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+      } else {
+        this.sections().map((section : SectionDesc, idx: number)=>{
+          if(section.section == 'PROFILE_SUMMARY_BULLETED'){
+            console.log(`Summary Component:  [DEBUG] Updating PROFILE_SUMMARY_BULLETED at index [${idx}]`, section);
+            section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary';
+            section.data = summary;
+          }
+        })
+        this.userStore.setResumeSections(this.sections())
+      }
+      // Debug: Log all sections after update
+      console.log('Summary Component:  [DEBUG] Sections after bulleted summary update:', JSON.parse(JSON.stringify(this.sections())));
+    } else {
+      if(profile_summary.includes('data-list="bullet"')){
+        const correctedHTML = profile_summary.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
+        summary.profile_summary = correctedHTML.length>0? correctedHTML.trim() : "";
+      }
+      else{
+        summary.profile_summary = profile_summary.length>0? profile_summary.trim() : "";
+      }
+      summary.original_summary_html = profile_summary;
+      // Update only the PROFILE_SUMMARY section
+      if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+        this.multipleSections().map((e : SectionDesc[])=>{
+          e.map((section : SectionDesc)=>{
+            if(section.section == 'PROFILE_SUMMARY'){
+              section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary';
+              section.data = summary;
+            }
+          })
+        })
+        this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+      }
+      else{
+        this.sections().map((section : SectionDesc)=>{
+            if(section.section == 'PROFILE_SUMMARY'){
+             section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary';
+             section.data = summary;
+            }
+          })
+        this.userStore.setResumeSections(this.sections())
+      }
     }
-    else{
-      summary.profile_summary = profile_summary.length>0? profile_summary.trim() : "";
-    }
-    summary.original_summary_html = profile_summary;
     summary.position_highlight = this.summaryForm.controls['position_highlight'].value?this.summaryForm.controls['position_highlight'].value : "";
     summary.skills_highlight = this.summaryForm.controls['skills_highlight'].value?this.summaryForm.controls['skills_highlight'].value : "";
-    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
-      this.multipleSections().map((e : SectionDesc[])=>{
-        e.map((section : SectionDesc)=>{
-          if(section.section == 'PROFILE_SUMMARY'){
-            section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary'
+    if (this.sectionType === 'PROFILE_SUMMARY_BULLETED') {
+      // Only update PROFILE_SUMMARY_BULLETED section
+      if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+        this.multipleSections().map((e : SectionDesc[])=>{
+          e.map((section : SectionDesc)=>{
+            if(section.section == 'PROFILE_SUMMARY_BULLETED'){
+              section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary';
+            }
+          })
+        })
+        this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+      } else {
+        this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'PROFILE_SUMMARY_BULLETED'){
+            section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary';
           }
         })
-      })
-      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
-    }
-    else{
-      this.sections().map((section : SectionDesc)=>{
-          if(section.section == 'PROFILE_SUMMARY'){
-           section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary'
-          }
+        this.userStore.setResumeSections(this.sections())
+      }
+    } else {
+      // Only update PROFILE_SUMMARY section
+      if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+        this.multipleSections().map((e : SectionDesc[])=>{
+          e.map((section : SectionDesc)=>{
+            if(section.section == 'PROFILE_SUMMARY'){
+              section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary'
+            }
+          })
         })
-      this.userStore.setResumeSections(this.sections())
+        this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
+      }
+      else{
+        this.sections().map((section : SectionDesc)=>{
+            if(section.section == 'PROFILE_SUMMARY'){
+             section.editable_section_title = this.summaryForm.controls['section_title'].value??'Profile Summary'
+            }
+          })
+          console.log("Summary Component: setResumeSections: Updated Sections: ", this.sections());
+        this.userStore.setResumeSections(this.sections())
+      }
     }
     console.log(this.sections());
-    
-    if(profile_summary.length > 0){
-      summary.isDefault = false
-    }
-    else{
-      summary.isDefault = true
+    // Mark as default if empty
+    if ((this.sectionType === 'PROFILE_SUMMARY_BULLETED' && summary.summary_bullets.length === 0) ||
+        (this.sectionType !== 'PROFILE_SUMMARY_BULLETED' && (!summary.profile_summary || summary.profile_summary.length === 0))) {
+      summary.isDefault = true;
+    } else {
+      summary.isDefault = false;
     }
 
-
-    this.userStore.addSummary(summary);
+  // Removed addSummary(summary) to prevent overwriting PROFILE_SUMMARY with bulleted summary data
     if(!this.sectionStatus().isSummary){
       let status = this.sectionStatus()
       status.isSummary = true;
       this.userStore.updateSectionStatus(status);
     }
-    
     // Clear selectedSummary after successful save
     this.userStore.setSelectedSummary(undefined);
-    
     // Reset form change tracking after successful save
     this.captureOriginalFormValues();
-    
     // this.summaryForm.reset()
     this.closePanelWindow();
     this.contact.emit();
@@ -692,11 +743,14 @@ openPanelWindow(){
     if (this.summaryAIList && this.summaryAIList[index] && !this.addedAISummaries.has(index)) {
       const selectedResponse = this.summaryAIList[index];
       // Clean the response text
-      const cleanText = selectedResponse.replace(/(<([^>]+)>)/gi, '').replace(/\n/g, ' ');
-      // Get current HTML from the editor (form control)
-      const currentHtml = this.summaryForm.controls['profile_summary'].value || '';
-      // Append as a new paragraph
-      const newHtml = currentHtml ? currentHtml + '<p>' + cleanText + '</p>' : '<p>' + cleanText + '</p>';
+      const cleanText = selectedResponse.replace(/(<([^>]+)>)/gi, '').replace(/\n/g, ' ').trim();
+      let currentHtml = this.summaryForm.controls['profile_summary'].value || '';
+      // Ensure we have a <ul>...</ul>
+      let ulMatch = currentHtml.match(/<ul>([\s\S]*?)<\/ul>/);
+      let listItems = ulMatch ? ulMatch[1] : '';
+      // Append new bullet
+      listItems += `<li>${cleanText}</li>`;
+      const newHtml = `<ul>${listItems}</ul>`;
       this.summaryForm.controls['profile_summary'].setValue(newHtml);
       this.addedAISummaries.add(index);
     }
@@ -766,20 +820,7 @@ openPanelWindow(){
     this.router.navigateByUrl('/user/resumes');
   }
 
- 
-
-  handleGenAIResponse(step : String, selectedAIResponse : any){
-    if(step == "Summary"){
-      this.summaryForm.controls['profile_summary'].setValue(selectedAIResponse);
-    }
-    else if(step == "Achievement"){
-      if(this.achievement_genai){
-        this.achievementForm.controls['achievement'].setValue(this.achievement_genai?.join('\n'))
-      }
-    }
-    else if(step == "Project"){
-    }
-  }
+}  
 
 
 
@@ -806,7 +847,4 @@ openPanelWindow(){
 
   
 
-  logContent(): void {
-    console.log(this.summaryForm.get('profile_summary')?.value);
-  }
-}
+

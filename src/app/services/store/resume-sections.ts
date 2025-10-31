@@ -3,6 +3,35 @@ import { SectionDesc } from "./user-store";
 
 export const sections: Array<SectionDesc> = [
   {
+    section: 'SKILLS_BY_CATEGORY',
+    description: 'Showcase your skills grouped by category (e.g., Programming Languages, Frameworks, Tools).',
+    isAdded: false,
+    isPremium: false,
+    tags: 'skills, category, grouped',
+    label: 'Skills',
+    title: 'Skills',
+    editable_section_title: 'Skills',
+    icon: 'pi pi-tags',
+    data: {
+      categories: [
+        {
+          name: 'Programming Languages',
+          skills: ['TypeScript', 'JavaScript', 'Python']
+        },
+        {
+          name: 'Frameworks',
+          skills: ['Angular', 'React', 'Node.js']
+        },
+        {
+          name: 'Tools',
+          skills: ['Git', 'Docker', 'Jira']
+        }
+      ]
+    },
+    headerActions: { edit: true, delete: true, moveDown: true, moveUp: true, add: true },
+    items: []
+  },
+  {
     section: 'CONTACT',
     description: 'Your contact details and personal information.',
     isAdded: false,
@@ -68,15 +97,15 @@ export const sections: Array<SectionDesc> = [
     title: 'Profile summary',
     editable_section_title: 'Profile Summary',
     rightImage: 'assets/images/summary-right.png',
-  icon: 'pi-list',
+    icon: 'pi-list',
     data: {
-      profile_summary: '',
-      summary_bullets: [
-        '7+ years of experience in web development.',
-        'Expert in Angular, TypeScript, and modern JavaScript.',
-        'Strong problem-solving and debugging skills.',
-        'Excellent communicator and team player.'
-      ],
+      profile_summary: `<ul style="margin-left: 1.2em;">
+        <li>7+ years of experience in web development.</li>
+        <li>Expert in Angular, TypeScript, and modern JavaScript.</li>
+        <li>Strong problem-solving and debugging skills.</li>
+        <li>Excellent communicator and team player.</li>
+      </ul>`,
+      summary_bullets: [],
       original_summary_html: '',
       position_highlight: '',
       skills_highlight: '',

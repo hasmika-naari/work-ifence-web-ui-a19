@@ -19,7 +19,7 @@
             <!-- Only Move Down for first, only Move Up for last, both for others. For PROJECT, hide move down if last. -->
             <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'moveUp')" (click)="moveObjectById(section.section, section.id || '', 'up')"></button>
             <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" *ngIf="section.section !== 'PROJECT' ? shouldShowButton(section.section, 'moveDown') : !last" (click)="moveObjectById(section.section, section.id || '', 'down')"></button>
-            <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'edit')" (click)="editSectionHandler(section.section, section.section === 'PROFILE_SUMMARY' ? getProfileSummarySection() : section.section === 'EDUCATION' ? getSectionItems('EDUCATION') : section.section === 'WORK_EXPERIENCE' ? getSectionItems('WORK_EXPERIENCE') : section.section === 'PROJECT' ? getSectionItems('PROJECT') : null)"></button>
+            <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'edit')" (click)="section.section === 'PROFILE_SUMMARY_BULLETED' ? onEditProfileSummaryBulleted() : section.section === 'SKILLS_BY_CATEGORY' ? onEditSkillsByCategory() : editSectionHandler(section.section, section.section === 'PROFILE_SUMMARY' ? getProfileSummarySection() : section.section === 'EDUCATION' ? getSectionItems('EDUCATION') : section.section === 'WORK_EXPERIENCE' ? getSectionItems('WORK_EXPERIENCE') : section.section === 'PROJECT' ? getSectionItems('PROJECT') : null)"></button>
             <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'delete')" (click)="removeSection(section.section)"></button>
             <button pButton pTooltip="Add" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'add')" (click)="addSectionHandler(section.section)"></button>
           </div>
@@ -27,7 +27,7 @@
         <ng-container [ngSwitch]="section.section">
           <resume-profile-summary-section
             *ngSwitchCase="'PROFILE_SUMMARY'"
-            [data]="getProfileSummarySection()"
+            [data]="section.data"
             [isPreview]="isPreview"
             [canMoveDown]="canMoveSectionDown('PROFILE_SUMMARY')"
             (edit)="onEditProfileSummary()"
@@ -37,7 +37,7 @@
             *ngSwitchCase="'PROFILE_SUMMARY_BULLETED'"
             [data]="getSectionData('PROFILE_SUMMARY_BULLETED')?.data"
             [isPreview]="isPreview"
-            (edit)="editSectionHandler('PROFILE_SUMMARY_BULLETED', getSectionData('PROFILE_SUMMARY_BULLETED')?.data)"
+            (edit)="onEditProfileSummaryBulleted()"
             (delete)="removeSection('PROFILE_SUMMARY_BULLETED')"
           ></resume-profile-summary-bulleted-section>
           <resume-education-section
@@ -67,7 +67,11 @@
             (add)="onAddSkills()"
             (edit)="onEditSkills()"
           ></resume-skills-bullet-points-section>
-          <resume-skills-category-section *ngSwitchCase="'SKILLS_CATEGORY'" [skills]="getSkillsCategorySection()" [isPreview]="isPreview"></resume-skills-category-section>
+          <resume-skills-category-section
+            *ngSwitchCase="'SKILLS_BY_CATEGORY'"
+            [skills]="section.data?.categories || []"
+            [isPreview]="isPreview"
+          ></resume-skills-category-section>
           <resume-work-experience-section
             *ngSwitchCase="'WORK_EXPERIENCE'"
             [data]="getSectionItems('WORK_EXPERIENCE')"
