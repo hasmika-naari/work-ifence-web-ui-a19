@@ -1161,6 +1161,7 @@ hideMenu() {
   }
 
   showEditSection($event : any){
+    console.log("**************** showEditSection ******************", $event);
     if($event.section === "RESUMETITLE"){
       this.showResumeTitle()
     }
@@ -1195,8 +1196,9 @@ hideMenu() {
     else if($event.section == "ACHIEVEMENTS_BULLET_POINTS"){
       this.showAchievementsDetails()
     }
-    else if($event.section == "SKILLS_CATEGORY"){
-      this.showSkillsDetails("SKILLS_CATEGORY")
+    else if($event.section == "SKILLS_BY_CATEGORY"){
+      console.log("resume-form3.component **************** showEditSection SKILLS_BY_CATEGORY******************");
+      this.showSkillsDetails("SKILLS_BY_CATEGORY")
     }
     else if($event.section == "ACHIEVEMENT_WITH_DESC"){
       this.showAccomplishmentsDetails()

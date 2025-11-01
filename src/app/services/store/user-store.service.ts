@@ -52,7 +52,8 @@ export class UserStoreService {
         menuList: new Array<MenuListItem>(),
         sidebarIconOnly: false,
         currentTab : '',
-        selectedResume: new UserResume(),
+  selectedResume: new UserResume(),
+  selectedSkillsCategory: null,
         selectedResumeListItem: new ResumeListDataItem(),
         resumeListItems : new Array<ResumeListDataItem>(),
         filteredResumes : new Array<ResumeListDataItem>(),
@@ -118,9 +119,11 @@ export class UserStoreService {
           selectedAddress: new Address(),
           token: '', 
           selectedResume: new UserResume(),
+          selectedSkillsCategory: null,
           selectedResumeListItem: new ResumeListDataItem()
         }));
       }
+
 
 
     setResumeSections(sections : Array<SectionDesc>){
@@ -135,6 +138,17 @@ export class UserStoreService {
           }
         }
       }));
+    }
+
+    setSelectedSkillsCategory(category: any) {
+      this.state.update((state) => ({
+        ...state,
+        selectedSkillsCategory: category
+      }));
+    }
+
+    getSelectedSkillsCategory() {
+      return this.state().selectedSkillsCategory;
     }
 
     setMultipleColumnTemplateSections(list : Array<Array<SectionDesc>>){

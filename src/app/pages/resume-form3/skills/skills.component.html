@@ -1,339 +1,111 @@
-
-@if(sectionName == "SKILLS_BULLET_POINTS"){
-<div class="resume-form-container" style="overflow-y:auto;padding-bottom:50px;overflow-x: hidden;">
-    <div class="col-12">
-        <form [formGroup]="skillsForm">
-            <div class="form-row form-row--single">
-              <div class="field">
-                    <label for="section_title">Section title <span class="required">*</span></label>
-                    <input 
-                        id="section_title" 
-                        type="text" 
-                        pInputText 
-                        formControlName="section_title" 
-                        placeholder="Section Title"
-                        [matAutocomplete]="sectionAuto"
-                        (focus)="onSectionTitleFocus()"
-                        (click)="onSectionTitleFocus()"
-                        (input)="onSectionTitleInput($event)"
-                        #sectionInput>
-                    <mat-autocomplete 
-                        #sectionAuto="matAutocomplete" 
-                        class="section-autocomplete"
-                        [autoActiveFirstOption]="false">
-                        <mat-option *ngFor="let option of filteredSectionOptions | async" [value]="option">
-                            {{option}}
-                        </mat-option>
-                    </mat-autocomplete>
-                    <small class="error" *ngIf="skillsForm.get('section_title')?.hasError('required') && skillsForm.get('section_title')?.touched">
-                        Required.
-                    </small>
-                </div>
-                <div class="field" style="position: relative;">
-                    <label for="skills">Add Skills</label>
-                    <input id="skills" type="text" pInputText formControlName="skills" placeholder="Type a skill and press Enter" (keydown.enter)="addSkillBulletPoint()">
-                </div>
-                
-                <!-- Display added skills as draggable chips -->
-                <div class="form-row form-row--single" *ngIf="skillsBulletPoints && skillsBulletPoints.length > 0">
-                    <div class="field">
-                        <label>Added Skills</label>
-                        <div class="skills-chips-container" 
-                          cdkDropList 
-                          cdkDropListOrientation="mixed" 
-                          (cdkDropListDropped)="onSkillsReordered($event)">
-                            <div 
-                              *ngFor="let skill of skillsBulletPoints; let i = index"
-                              class="skill-chip"
-                              cdkDrag>
-                              <span class="skill-text">{{skill}}</span>
-                              <button 
-                                type="button"
-                                class="remove-btn"
-                                (click)="removeSkillBulletPoint(i)"
-                                title="Remove skill">
-                                <i class="pi pi-times"></i>
-                              </button>
-                              <div *cdkDragPlaceholder class="skill-chip-placeholder">
-                                {{skill}}
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button 
-                        type="button" 
-                        class="action-btn action-btn--primary" 
-                        (click)="saveAndContinue()"
-                        [disabled]="skillsForm.invalid || !hasFormChanged"
-                        [matTooltip]="getButtonTooltip()"
-                        tooltipPosition="top">
-                        <i class="pi pi-check"></i>
-                        Update Skills {{skillsForm.invalid}} 
-                    </button>
-                </div>
-            </div>
-        </form>
+<div class="resume-form-container" style="background: rgba(255,255,255,0); border-radius: 18px; box-shadow: none; padding: 2rem 1.5rem; max-width: 540px; margin: 2rem auto;">
+  <form [formGroup]="skillsForm" (ngSubmit)="$event.preventDefault()">
+    <div class="form-row form-row--single" style="margin-bottom: 1.2rem;">
+      <div class="field">
+        <label for="section_title">Section Title <span class="required">*</span></label>
+        <input id="section_title" type="text" pInputText formControlName="section_title" placeholder="e.g. Skills by Category" style="background: rgba(255,255,255,0.7);">
+      </div>
     </div>
-</div>
-}
-
-@else {
-<div class="resume-form-container" style="overflow-y:auto;padding-bottom:50px;overflow-x: hidden;">
-    <div class="col-12">
-        <form [formGroup]="skillsForm">
-            <div class="form-row form-row--single">
-              <div class="field">
-                    <label for="section_title">Section title <span class="required">*</span></label>
-                    <input 
-                        id="section_title" 
-                        type="text" 
-                        pInputText 
-                        formControlName="section_title" 
-                        placeholder="Section Title"
-                        [matAutocomplete]="sectionAuto"
-                        (focus)="onSectionTitleFocus()"
-                        (click)="onSectionTitleFocus()"
-                        (input)="onSectionTitleInput($event)"
-                        #sectionInput>
-                    <mat-autocomplete 
-                        #sectionAuto="matAutocomplete" 
-                        class="section-autocomplete"
-                        [autoActiveFirstOption]="false">
-                        <mat-option *ngFor="let option of filteredSectionOptions | async" [value]="option">
-                            {{option}}
-                        </mat-option>
-                    </mat-autocomplete>
-                    <small class="error" *ngIf="skillsForm.get('section_title')?.hasError('required') && skillsForm.get('section_title')?.touched">
-                        Required.
-                    </small>
-                </div>
-                <div class="field" style="position: relative;">
-                    <label for="skills">Skill</label>
-                    <input id="skills" type="text" pInputText formControlName="skills" placeholder="Skill" (keydown.enter)="addSkill()">
-                    <span (click)="addSkill()" *ngIf="isVisible()" 
-                          style="position: absolute; right: 12px; top: 38px; color: black; cursor: pointer; font-size: 14px; line-height: 17px; font-weight: 700;">
-                        ADD
-                    </span>
-                </div>
-                <!-- <div class="col-12 p-b-1 p-t-2"  *ngIf="fruits && fruits.length"
-                            style="border: dashed 1px silver; border-radius: 10px; ">
-                    <mat-chip-list
-                    cdkDropList class="custom-chip-list"
-                    [cdkDropListData]="fruits"
-                    (cdkDropListDropped)="drop($event)"
-                  >
-                    <mat-chip
-                      *ngFor="let fruit of fruits; let i = index"
-                      [selectable]="selectable"
-                      [removable]="removable"
-                      (click)="toggleSkill(fruit)"
-                      (removed)="remove(fruit)"
-                      cdkDrag
-                    >
-                      {{ fruit.name}} 
-                      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                      <div *cdkDragPlaceholder class="drag-placeholder">
-                        Dragging...
-                      </div>
-                    </mat-chip>
-                  </mat-chip-list>
-                </div> -->
-
-                      <div class="col-12 p-b-1 p-t-2" style="padding-left: 0;padding-right: 0;">
-                            <div cdkDropList cdkDropListOrientation="mixed" 
-                              class="example-list" (cdkDropListDropped)="drop($event)">
-                              @for (skill of fruits; track skill) {
-                                <div class="example-box" cdkDrag>
-                                  <span class="skill-text">{{skill.name || skill}}</span>
-                                  <span class="remove-icon" (click)="remove(skill)">✖</span>
-                                </div>
-                              }
-                            </div>
-                      </div>
-
-                <!-- <div class="col-12 p-b-1 p-t-2">
-                    <mat-chip-list #chipList>
-                        <mat-chip
-                          *ngFor="let fruit of fruits"
-                          [selectable]="selectable"
-                          [removable]="removable"
-                          (removed)="remove(fruit)">
-                          {{fruit}}
-                          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                        </mat-chip>
-                      </mat-chip-list>
-                </div> -->
-                <div class="col-12 p-b-1 p-t-2" *ngIf="skills.length > 0">
-                     <h3 style="margin-top: 0;
-                    color: #333;
-                    font-size: 1rem;">AI Response</h3>
-                    <mat-chip-list #chipList2>
-                        <mat-chip 
-                          *ngFor="let skill of skills"
-                          [selectableAI]="selectable"
-                          [removableAI]="false"
-                          [selected]="skill.selected"
-                          (click)="toggleSkill(skill)"
-                          [ngClass]="{ 'selected-chip': skill.selected}"
-                          (removed)="toggleSkill(skill)"
-                          cdkDrag
-                        >
-                        {{ skill.name }} <mat-icon matChipRemove *ngIf="skill.selected">cancel</mat-icon>
-                        <mat-icon matChipTrailingIcon *ngIf="!skill.selected">add</mat-icon>
-                        <div *cdkDragPlaceholder class="drag-placeholder">
-                          Dragging...
-                        </div>
-                        </mat-chip>
-                      </mat-chip-list>
-                      
-                </div>
-                
-            </div>
-        </form>
-        <div class="form-actions">
-            <button 
-                type="button" 
-                class="action-btn action-btn--primary" 
-                (click)="saveAndContinue()" 
-                [disabled]="skillsForm.invalid || (fruits && fruits.length == 0) || !hasFormChanged"
-                [matTooltip]="getButtonTooltip()"
-                tooltipPosition="top">
-                <i class="pi pi-check"></i>
-                Add to Resume
+    <ng-container *ngIf="sectionName !== 'SKILLS_BULLET_POINTS'; else bulletedSkills">
+      <div class="form-row form-row--single" style="margin-bottom: 1.2rem;">
+        <div class="field">
+          <label for="sub_title">Category <span class="required">*</span></label>
+          <input id="sub_title" type="text" pInputText formControlName="sub_title" placeholder="Category" [matAutocomplete]="categoryAuto" (input)="onCategoryInput($event)" #categoryInput style="background: rgba(255,255,255,0.7);">
+          <mat-autocomplete #categoryAuto="matAutocomplete" class="section-autocomplete" [autoActiveFirstOption]="false">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option}}</mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+      <div class="form-row form-row--single" style="margin-bottom: 1.2rem;">
+        <div class="field">
+          <label for="skills">Add Skill</label>
+          <div style="display: flex; align-items: center; width: 100%;">
+            <input id="skills" type="text" pInputText formControlName="skills" placeholder="Type a skill and press Enter" (keydown.enter)="addSkillToCategory($event)"
+              [ngClass]="['add-skill-input', skillsForm.get('skills')?.value?.trim() ? 'has-content' : '']"
+              style="background: rgba(255,255,255,0.7); flex: 1 1 auto; height: 44px; box-shadow: none; outline: none;">
+            <button *ngIf="skillsForm.get('skills')?.value?.trim()" type="button" class="add-skill-btn text-btn" (click)="addSkillToCategory($event)" style="height: 44px; width: 56px; border-radius: 0 6px 6px 0; background: rgba(255,255,255,0.7); color: #f05b45; border: 1px solid #b6c6e3; border-left: none; display: flex; align-items: center; justify-content: center; font-size: 1em; font-weight: 600; cursor: pointer; box-shadow: none; outline: none; transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, color 0.2s;">
+              Add
             </button>
+          </div>
+          <style>
+            input#skills:focus, input#section_title:focus, input#sub_title:focus {
+              box-shadow: 0 0 0 2px #e0eaff;
+              border-color: #7da7f7;
+              z-index: 2;
+            }
+            .add-skill-btn.text-btn:focus {
+              box-shadow: 0 0 0 2px #e0eaff;
+              border-color: #7da7f7;
+              z-index: 2;
+            }
+            .add-skill-btn.text-btn:hover {
+              background: #f05b45;
+              color: #fff;
+              border-color: #f05b45;
+            }
+          </style>
         </div>
+      </div>
+      <div class="form-row form-row--single">
+        <div class="field">
+          <label>Added Skills</label>
+          <div class="skills-chips-container" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onSkillsReordered($event)">
+            <ng-container *ngIf="selectedCategory && selectedCategory.skills && selectedCategory.skills.length > 0; else emptySkills">
+              <div *ngFor="let skill of selectedCategory.skills; let i = index" class="skill-chip" cdkDrag>
+                <span class="skill-text">{{skill}}</span>
+                <button type="button" class="remove-btn" (click)="removeSkill(selectedCategory, skill)" title="Remove skill">
+                  <i class="pi pi-times"></i>
+                </button>
+                <div *cdkDragPlaceholder class="skill-chip-placeholder">{{skill}}</div>
+              </div>
+            </ng-container>
+            <ng-template #emptySkills>
+              <div class="empty-skills-message" style="color: #b0b0b0; font-size: 0.98em; padding: 0.7em 0;">No skills added yet. Add skills above and drag to reorder.</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #bulletedSkills>
+      <!-- Bulleted skills form goes here -->
+      <div class="form-row form-row--single" style="margin-bottom: 1.2rem;">
+        <div class="field">
+          <label for="skills">Add Skill</label>
+          <div style="display: flex; align-items: center; width: 100%;">
+            <input id="skills" type="text" pInputText formControlName="skills" placeholder="Type a skill and press Enter" (keydown.enter)="addSkillBulletPoint()"
+              [ngClass]="['add-skill-input', skillsForm.get('skills')?.value?.trim() ? 'has-content' : '']"
+              style="background: rgba(255,255,255,0.7); flex: 1 1 auto; height: 44px; box-shadow: none; outline: none;">
+            <button *ngIf="skillsForm.get('skills')?.value?.trim()" type="button" class="add-skill-btn text-btn" (click)="addSkillBulletPoint()" style="height: 44px; width: 56px; border-radius: 0 6px 6px 0; background: rgba(255,255,255,0.7); color: #f05b45; border: 1px solid #b6c6e3; border-left: none; display: flex; align-items: center; justify-content: center; font-size: 1em; font-weight: 600; cursor: pointer; box-shadow: none; outline: none; transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, color 0.2s;">
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-row--single">
+        <div class="field">
+          <label>Added Skills</label>
+          <div class="skills-chips-container" cdkDropList cdkDropListOrientation="vertical" (cdkDropListDropped)="onSkillsReordered($event)">
+            <ng-container *ngIf="skillsBulletPoints && skillsBulletPoints.length > 0; else emptyBulletedSkills">
+              <div *ngFor="let skill of skillsBulletPoints; let i = index" class="skill-chip" cdkDrag>
+                <span class="skill-text">{{skill}}</span>
+                <button type="button" class="remove-btn" (click)="removeSkillBulletPoint(i)" title="Remove skill">
+                  <i class="pi pi-times"></i>
+                </button>
+                <div *cdkDragPlaceholder class="skill-chip-placeholder">{{skill}}</div>
+              </div>
+            </ng-container>
+            <ng-template #emptyBulletedSkills>
+              <div class="empty-skills-message" style="color: #b0b0b0; font-size: 0.98em; padding: 0.7em 0;">No skills added yet. Add skills above and drag to reorder.</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="form-actions" style="margin-top: 2rem; text-align: right;">
+      <button type="button" class="action-btn action-btn--primary" (click)="saveAndContinue()" [disabled]="skillsForm.invalid || (sectionName !== 'SKILLS_BULLET_POINTS' && (!selectedCategory || !selectedCategory.skills.length)) || (sectionName === 'SKILLS_BULLET_POINTS' && !skillsBulletPoints.length)" [matTooltip]="getButtonTooltip()" tooltipPosition="top">
+        <i class="pi pi-check"></i>
+        Save Skills
+      </button>
     </div>
-   
-   
+  </form>
 </div>
-}
-<!-- @else{
-    <div class="row h-100 pl-4 pr-4" style="overflow-y:auto;padding-bottom:50px;">
-        <div class="col-12"  >
-            <form [formGroup]="skillsForm" >
-                <div class="row wrap pl-1 pr-1">
-                  <div class="col-12 p-b-1 p-t-1 m-t-3">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>Section title</mat-label>
-                        <input matInput placeholder="Section Title" #role formControlName="section_title">
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="skillsForm.get('section_title')?.hasError('required')">
-                            Required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                    <div class="col-12 p-b-1 p-t-1">
-                        <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>Sub Title</mat-label>
-                            <input type="text"
-                                   placeholder="Pick one"
-                                   aria-label="Number"
-                                   matInput
-                                   formControlName="sub_title"
-                                   [matAutocomplete]="auto"
-                                   (input)="checkForOptions($event)">
-                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                              <mat-option *ngFor="let option of (filteredOptions | async)" [value]="option">
-                                {{option}}
-                              </mat-option>
-                            </mat-autocomplete>
-                            @if(isEditSubTitle){
-                            <span matSuffix (click)="addSubTitleV2()" *ngIf="isSuffixVisible" style="color: black;">
-                              <p style="font-size: 14px;
-                                        line-height: 17px;
-                                        font-weight: 700;
-                                        cursor: pointer;">EDIT</p>
-                            </span>
-                            }
-                            @else{
-                                <span matSuffix (click)="addSubTitleV2()" *ngIf="isSuffixVisible" style="color: black;">
-                                    <p style="font-size: 14px;
-                                              line-height: 17px;
-                                              font-weight: 700;
-                                              cursor: pointer;">ADD</p>
-                                  </span>
-                            }
-                          </mat-form-field>                          
-                    </div>
-                    <div class="col-12 p-b-1 p-t-1">
-                        <mat-form-field appearance="outline" class="w-100" >
-                            <mat-label>Skill</mat-label>
-                            <input matInput placeholder="Skill" formControlName="skillsv2">
-                            <span matSuffix (click)="addSkillV2()" *ngIf="isVisiblev2()" style="color: black;">
-                                <p style="font-size: 14px;
-                                line-height: 17px;
-                                font-weight: 700;
-                                cursor: pointer;">ADD</p>
-                            </span>
-                        </mat-form-field>
-                    </div>
-                    <div style="position: relative;left:0px;right:0px;top:0px;height:48vh;overflow-x:hidden;">
-                      @for(item of skills_v2; track item.sub_title){
-                      <div class="col-12 p-b-1 p-t-2">
-                          <div style="font-size: 1.1rem;font-weight: 500;position: relative;color: #000000c0;" class="sub-title mb-2 mt-3">{{item.sub_title}}
-                              <div class="section-actions">
-                                  <p-icon class="pi pi-pencil" title="Edit Sub-Title" (click)="editSubTitle(item)"></p-icon>
-                                  <p-icon class="pi pi-times" title="Delete Sub-Title" (click)="deleteSubTitle(item)"></p-icon>
-                                </div>
-                              </div>
-                      
-                            <div cdkDropList cdkDropListOrientation="mixed" 
-                              class="example-list" (cdkDropListDropped)="dropInList(item, $event)">
-                              @for (skill of item.skills; track skill) {
-                                <div class="example-box" cdkDrag>
-                                  <span class="skill-text">{{skill}}</span>
-                                  <span class="remove-icon" (click)="removeSkill(item, skill)">✖</span>
-                                </div>
-                              }
-                            </div>
-
-                      
-                          </div>
-                      }
-                    </div>
-                    <div class="col-12 p-b-1 p-t-2" *ngIf="skills.length > 0">
-                         <h3 style="margin-top: 0;
-                        color: #333;
-                        font-size: 1rem;">AI Response</h3>
-                        <mat-chip-list #chipList2>
-                            <mat-chip 
-                              *ngFor="let skill of skills"
-                              [selectableAI]="selectable"
-                              [removableAI]="false"
-                              [selected]="skill.selected"
-                              (click)="toggleSkill(skill)"
-                              [ngClass]="{ 'selected-chip': skill.selected}"
-                              (removed)="toggleSkill(skill)"
-                              cdkDrag
-                            >
-                            {{ skill.name }} <mat-icon matChipRemove *ngIf="skill.selected">cancel</mat-icon>
-                            <mat-icon matChipTrailingIcon *ngIf="!skill.selected">add</mat-icon>
-                            <div *cdkDragPlaceholder class="drag-placeholder">
-                              Dragging...
-                            </div>
-                            </mat-chip>
-                          </mat-chip-list>
-                          
-                    </div>
-                    
-                </div>
-            </form>
-            <div class="col-12 mt-3 text-right text-end"  >
-                <p-button label="Primary"  [raised]="true" severity="danger" size="small"
-                    (click)="saveAndContinue()"   
-                    [tooltip]="'Add to Resume Summary'"
-                    tooltipPosition="top"
-                    tooltipStyleClass="custom-tooltip">
-                        <ng-template pTemplate="content" >
-                            <p-icon class="pi pi-check" ></p-icon>
-                            Add to resume
-                        </ng-template>
-                </p-button>
-            </div>
-        </div>
-       
-       
-    </div>
-} -->

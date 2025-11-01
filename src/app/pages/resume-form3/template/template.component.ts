@@ -130,6 +130,80 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  // Handles move up event from education section
+  onMoveUpEducation(index: number) {
+    const items = this.getSectionItems('EDUCATION');
+    if (!items || index == null || index <= 0) return;
+    [items[index - 1], items[index]] = [items[index], items[index - 1]];
+    // Update the EDUCATION section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'EDUCATION') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+
+  // Handles move down event from education section
+  onMoveDownEducation(index: number) {
+    const items = this.getSectionItems('EDUCATION');
+    if (!items || index == null || index >= items.length - 1) return;
+    [items[index], items[index + 1]] = [items[index + 1], items[index]];
+    // Update the EDUCATION section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'EDUCATION') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+  // Handles edit event from relevant-coursework-section
+  onEditCoursework(indexOrData: number | Object) {
+    if (typeof indexOrData === 'number') {
+      const courseworkList = this.getSectionItems('RELEVANT_COURSEWORK');
+      const item = courseworkList[indexOrData];
+      if (item) {
+        this.editSectionHandler('RELEVANT_COURSEWORK', item);
+      }
+    } else if (indexOrData && typeof indexOrData === 'object') {
+      this.editSectionHandler('RELEVANT_COURSEWORK', indexOrData);
+    }
+  }
+
+  // Handles delete event from relevant-coursework-section
+  onDeleteCoursework(index: number) {
+    const courseworkList = this.getSectionItems('RELEVANT_COURSEWORK');
+    const item = courseworkList[index];
+    if (item) {
+      this.deleteSectionItem('RELEVANT_COURSEWORK', item);
+    }
+  }
+
+  // Handles move up event from relevant-coursework-section
+  onMoveUpCoursework(index: number) {
+    const items = this.getSectionItems('RELEVANT_COURSEWORK');
+    if (!items || index == null || index <= 0) return;
+    [items[index - 1], items[index]] = [items[index], items[index - 1]];
+    // Update the RELEVANT_COURSEWORK section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'RELEVANT_COURSEWORK') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
 
   // Handles profile summary bulleted section edit
   onEditProfileSummaryBulleted() {
@@ -138,10 +212,8 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   // Handles edit event from skills by category section
   onEditSkillsByCategory() {
-    // Get the categories array from the SKILLS_BY_CATEGORY section
-    const section = this.addedSections()?.find((s: any) => s.section === 'SKILLS_BY_CATEGORY');
-    const categories = section && section.data && Array.isArray(section.data.categories) ? section.data.categories : [];
-    this.editSectionHandler('SKILLS_BY_CATEGORY', categories);
+    // Open the skills component in the sidenav for SKILLS_BY_CATEGORY
+    this.editSectionHandler('SKILLS_BY_CATEGORY', this.getSectionItems('SKILLS_BY_CATEGORY'));
   }
   // Delete a project item
   onDeleteProject(index: number): void {
@@ -1318,5 +1390,52 @@ getSectionTitle(section : string){
     this.cdr.detectChanges();
   }
   
+  // Handles edit event from skills by category items
+onEditSkillsCategoryItem(index: number) {
+  const items = this.getSectionItems('SKILLS_BY_CATEGORY');
+  const item = items[index];
+  if (item) {
+    this.editSectionHandler('SKILLS_BY_CATEGORY', item);
+  }
 }
 
+// Move up a skills by category item
+onMoveUpSkillsCategoryItem(index: number) {
+  const items = this.getSectionItems('SKILLS_BY_CATEGORY');
+  if (!items || index == null || index <= 0) return;
+  [items[index - 1], items[index]] = [items[index], items[index - 1]];
+  this.updateSectionItems('SKILLS_BY_CATEGORY', items);
+}
+
+// Move down a skills by category item
+onMoveDownSkillsCategoryItem(index: number) {
+  const items = this.getSectionItems('SKILLS_BY_CATEGORY');
+  if (!items || index == null || index >= items.length - 1) return;
+  [items[index], items[index + 1]] = [items[index + 1], items[index]];
+  this.updateSectionItems('SKILLS_BY_CATEGORY', items);
+}
+
+// Delete a skills by category item
+onDeleteSkillsCategoryItem(index: number) {
+  const items = this.getSectionItems('SKILLS_BY_CATEGORY');
+  const item = items[index];
+  if (item) {
+    this.deleteSectionItem('SKILLS_BY_CATEGORY', item);
+  }
+}
+
+// Helper to update items for a section
+updateSectionItems(sectionKey: string, items: any[]) {
+  const sections = this.resumeForm().sections?.map((section: any) => {
+    if (section.section === sectionKey) {
+      return { ...section, items: [...items] };
+    }
+    return section;
+  }) ?? [];
+  this.userStore.setResumeSections(sections);
+  this.updateSectionItemsCache();
+  this.markDirty();
+  this.cdr.detectChanges();
+}
+
+}

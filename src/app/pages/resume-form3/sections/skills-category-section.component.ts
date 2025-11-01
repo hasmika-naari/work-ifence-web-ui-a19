@@ -1,33 +1,32 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SkillV2 } from 'src/app/services/resume.model';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'resume-skills-category-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ButtonModule],
   template: `
     <div class="section skills-category">
-      <div *ngIf="skills && skills.length; else noSkills">
-        <!-- Support both SkillV2[] and category/skills[] formats -->
-        <ng-container *ngIf="isCategoryFormat(skills); else oldFormat">
-          <div *ngFor="let category of skills" class="skills-category-block">
-            <span class="skills-category-title">{{ category.name }}:</span>
-            <span class="skills-inline-list">
-              <ng-container *ngFor="let skill of category.skills; let last = last">
-                {{ skill }}<span *ngIf="!last">, </span>
-              </ng-container>
+      <div *ngIf="items && items.length; else noSkills">
+        <div *ngFor="let item of items; let i = index" class="skills-category-block formal-block skills-category-item">
+          <div class="skills-category-item-container">
+            <span class="skills-category-item-actions" *ngIf="!isPreview">
+              <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
+              <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="deleteItem.emit(i)"></button>
+              <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" (click)="moveUp.emit(i)" [disabled]="i === 0"></button>
+              <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" (click)="moveDown.emit(i)" [disabled]="i === items.length - 1"></button>
             </span>
+            <div class="skills-category-header-row">
+              <div class="skills-category-title formal-title">{{ item.data.name }}</div>
+            </div>
+            <div class="skills-inline-list-compact">
+              <ng-container *ngFor="let skill of item.data.skills; let last = last">
+                <span>{{ skill }}</span><span *ngIf="!last">, </span>
+              </ng-container>
+            </div>
           </div>
-        </ng-container>
-        <ng-template #oldFormat>
-          <div *ngFor="let skill of skills" class="skill-category">
-            <strong>{{ skill.sub_title }}</strong>
-            <ul>
-              <li *ngFor="let s of skill.skills">{{ s }}</li>
-            </ul>
-          </div>
-        </ng-template>
+        </div>
       </div>
       <ng-template #noSkills>
         <p>No categorized skills added yet.</p>
@@ -37,11 +36,10 @@ import { SkillV2 } from 'src/app/services/resume.model';
   styleUrls: ['./skills-category-section.component.scss']
 })
 export class SkillsCategorySectionComponent {
-  @Input() skills: any[] = [];
-  @Input() isPreview: boolean = false;
-
-  isCategoryFormat(skills: any[]): boolean {
-    // If the first item has a 'name' and 'skills' array, treat as category format
-    return Array.isArray(skills) && skills.length > 0 && typeof skills[0].name === 'string' && Array.isArray(skills[0].skills);
-  }
+  @Input() items: any[] = [];
+  @Input() isPreview = false;
+  @Output() edit = new EventEmitter<number>();
+  @Output() moveUp = new EventEmitter<number>();
+  @Output() moveDown = new EventEmitter<number>();
+  @Output() deleteItem = new EventEmitter<number>();
 }

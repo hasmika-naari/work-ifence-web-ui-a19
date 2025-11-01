@@ -23,7 +23,7 @@ import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.compone
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Education, IsSectionPresent, JobDescriptionAIResponse, Resume, SkillV2, TemplateVariables } from 'src/app/services/resume.model';
+import { Education, IsSectionPresent, JobDescriptionAIResponse, Resume, SkillV2 as SkillV2Base, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -43,6 +43,9 @@ export interface Skill {
   selected: boolean;
 }
 
+// Extend SkillV2 to allow a temporary _newSkill property for UI
+type SkillV2 = SkillV2Base & { _newSkill?: string };
+
 @Component({
   selector: 'app-resume-skills',
   providers: [
@@ -61,9 +64,29 @@ export interface Skill {
     MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule, MatAutocompleteModule],
   templateUrl: './skills.component.html',
   styleUrls: ['./skills.component.scss'],
+
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
+
+
 export class SkillsComponent implements OnInit, OnDestroy {
+  /**
+   * The currently selected category for skills by category mode.
+   */
+  public selectedCategory: SkillV2 | null = null;
+  // Handles drag-and-drop reordering of skills within a category
+  dropInList(item: any, event: any): void {
+    if (!item || !item.skills) return;
+    const previousIndex = event.previousIndex;
+    const currentIndex = event.currentIndex;
+    if (previousIndex === currentIndex) return;
+    const skills = [...item.skills];
+    const [moved] = skills.splice(previousIndex, 1);
+    skills.splice(currentIndex, 0, moved);
+    item.skills = skills;
+    this.checkForFormChanges();
+    this.cdr.detectChanges();
+  }
 
   @ViewChild('sectionAuto') sectionAutocomplete!: MatAutocomplete;
 
@@ -83,7 +106,7 @@ export class SkillsComponent implements OnInit, OnDestroy {
 
   private _formBuilder: FormBuilder = inject(FormBuilder);
   private userStore: UserStoreService = inject(UserStoreService);
-  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  public cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private router: Router = inject(Router);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
@@ -202,23 +225,55 @@ export class SkillsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getAISkills();
-    console.log(this.sectionName);
-    this.skillsForm.controls['skillsv2'].disable();
-    
-    // Load data based on section name
-    if (this.sectionName === 'SKILLS_BULLET_POINTS') {
-      this.setSkillsBulletPointsValues();
-    } else if (this.sectionName === 'SKILLS_CATEGORY') {
+    // Always treat 'Skills' menu as SKILLS_BULLET_POINTS and load from selected resume
+    if (this.sectionName === 'SKILLS' || this.sectionName === 'SKILLS_BULLET_POINTS') {
+      this.sectionName = 'SKILLS_BULLET_POINTS';
+      // Find the SKILLS_BULLET_POINTS section in the selected resume
+      const resume = this.resumeSignalForm();
+      const section = resume.sections?.find((s: any) => s.section === 'SKILLS_BULLET_POINTS');
+      if (section) {
+        this.skillsBulletPoints = section.items?.map((i: any) => i.data.skill) || [];
+        this.originalSkillsBulletPoints = [...this.skillsBulletPoints];
+      } else {
+        this.skillsBulletPoints = [];
+        this.originalSkillsBulletPoints = [];
+      }
+      // Set section title
+      let section_title;
+      if(resume.template_details.template_name == 'TEMPLATE_9'){
+        this.multipleSections().map((e : SectionDesc[])=>{
+          e.map((section : SectionDesc)=>{
+            if(section.section == 'SKILLS_BULLET_POINTS'){
+              section_title = section.editable_section_title
+            }
+          })
+        })
+      }
+      else{
+        this.sections().map((section : SectionDesc)=>{
+            if(section.section == 'SKILLS_BULLET_POINTS'){
+              section_title = section.editable_section_title
+            }
+          })
+      }
+      this.skillsForm.controls['section_title'].setValidators([Validators.required]);
+      this.skillsForm.controls['section_title'].updateValueAndValidity();
+      this.skillsForm.controls['section_title'].setValue(section_title ?? 'Skills');
+      this.selectedCategory = null; // No category for bulleted mode
+    } else if (this.sectionName === 'SKILLS_CATEGORY' || this.sectionName === 'SKILLS_BY_CATEGORY') {
       this.setSkillsValues();
       this.setSkillsV2Values();
+      if (!this.selectedCategory) {
+        this.selectedCategory = { sub_title: '', skills: [], _newSkill: '' };
+      }
     }
-    
+
     // Initialize section title autocomplete
     this.filteredSectionOptions = this.skillsForm.controls['section_title'].valueChanges.pipe(
       startWith(''),
       map(value => this._filterSectionOptions(value || ''))
     );
-    
+
     this.subs.push(this.router.events.subscribe(() => {
       const currentUrl = this.router.url;
       if (currentUrl.includes('/resumes/resume')) {
@@ -295,7 +350,7 @@ export class SkillsComponent implements OnInit, OnDestroy {
       // Do not reset hasFormChanged here; let checkForFormChanges control it
     }
 
-  private checkForFormChanges(): void {
+  public checkForFormChanges(): void {
     if (this.sectionName === "SKILLS_BULLET_POINTS") {
       // Always enable the button for now
       this.hasFormChanged = true;
@@ -350,39 +405,39 @@ export class SkillsComponent implements OnInit, OnDestroy {
   setSkillsValues(): void {
     // Safely handle skill values, defaulting to an empty array
     const resume = this.resumeSignalForm();
-    const section = resume.sections?.find((s: any) => s.section === 'SKILLS_CATEGORY');
+    const section = resume.sections?.find((s: any) => s.section === this.sectionName);
     const skillValues = section?.items?.map((i: any) => i.data) || [];
     this.fruits = [...skillValues];
     let section_title;
-        if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
-          this.multipleSections().map((e : SectionDesc[])=>{
-            e.map((section : SectionDesc)=>{
-              if(section.section == this.sectionName){
-                section_title = section.editable_section_title
-              }
-            })
-          })
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == this.sectionName){
+            section_title = section.editable_section_title
+          }
+        })
+      })
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+        if(section.section == this.sectionName){
+          section_title = section.editable_section_title
         }
-        else{
-          this.sections().map((section : SectionDesc)=>{
-              if(section.section == this.sectionName){
-                section_title = section.editable_section_title
-              }
-            })
-        }
-        this.skillsForm.controls['section_title'].setValue(section_title??'Skills')
+      })
+    }
+    this.skillsForm.controls['section_title'].setValue(section_title??'Skills')
   }
   
   setSkillsV2Values(){
-    this.options = []
-      const resume = this.resumeSignalForm();
-      const section = resume.sections?.find((s: any) => s.section === 'SKILLS_CATEGORY');
-      const skillV2List = section?.items?.map((i: any) => i.data) || [];
-      skillV2List.forEach((e: any) => {
-        this.options = [...this.options, e.sub_title];
-      });
-      this.skills_v2 = [...skillV2List];
-    
+    this.options = [];
+    const resume = this.resumeSignalForm();
+    const section = resume.sections?.find((s: any) => s.section === this.sectionName);
+    const skillV2List = section?.items?.map((i: any) => i.data) || [];
+    skillV2List.forEach((e: any) => {
+      this.options = [...this.options, e.sub_title];
+    });
+    // Ensure each SkillV2 has a _newSkill property for template use
+    this.skills_v2 = skillV2List.map((cat: any) => ({ ...cat, _newSkill: '' }));
     // Capture original form values for regular skills mode
     setTimeout(() => {
       this.captureOriginalFormValues();
@@ -576,21 +631,20 @@ export class SkillsComponent implements OnInit, OnDestroy {
 
   addSubTitleV2(){
     if(this.skillsForm.controls['sub_title'].value && !this.isEditSubTitle){
-    let new_skillv2 : SkillV2 = new SkillV2();
-    new_skillv2.sub_title = this.skillsForm.controls['sub_title'].value;
-    this.skills_v2.push(new_skillv2);
-    this.options = [...this.options, this.skillsForm.controls['sub_title'].value];
-    this.skillsForm.controls['sub_title'].setValue(null);
-    this.isSuffixVisible = false;
+      let new_skillv2 : SkillV2 = { sub_title: this.skillsForm.controls['sub_title'].value, skills: [], _newSkill: '' };
+      this.skills_v2.push(new_skillv2);
+      this.options = [...this.options, this.skillsForm.controls['sub_title'].value];
+      this.selectedCategory = new_skillv2;
+      this.skillsForm.controls['sub_title'].setValue(null);
+      this.isSuffixVisible = false;
     }
     else if(this.skillsForm.controls['sub_title'].value && this.isEditSubTitle){
-      let new_skillv2 : SkillV2 = new SkillV2();
-      new_skillv2.sub_title = this.skillsForm.controls['sub_title'].value;
+      let new_skillv2 : SkillV2 = { sub_title: this.skillsForm.controls['sub_title'].value, skills: [], _newSkill: '' };
       let index = this.skills_v2.findIndex(obj => obj.sub_title == this.old_subTitle);
-      console.log(this.skills_v2, index, [...this.skills_v2.slice(0,index), new_skillv2, ...this.skills_v2.slice(index + 1,)]);
-      this.skills_v2 = [...this.skills_v2.slice(0,index), new_skillv2, ...this.skills_v2.slice(index + 1,)]
+      this.skills_v2 = [...this.skills_v2.slice(0,index), new_skillv2, ...this.skills_v2.slice(index + 1,)];
       index = this.options.findIndex(obj => obj === this.old_subTitle);
-      this.options = [...this.options.slice(0,index), new_skillv2.sub_title, ...this.options.slice(index + 1,)]
+      this.options = [...this.options.slice(0,index), new_skillv2.sub_title, ...this.options.slice(index + 1,)];
+      this.selectedCategory = new_skillv2;
       this.skillsForm.controls['sub_title'].setValue(null);
       this.isSuffixVisible = false;
       this.isEditSubTitle = false;
@@ -625,8 +679,9 @@ export class SkillsComponent implements OnInit, OnDestroy {
   }
 
   editSubTitle(item : SkillV2){
-    this.old_subTitle = item.sub_title
+    this.old_subTitle = item.sub_title;
     this.skillsForm.controls['sub_title'].setValue(item.sub_title);
+    this.selectedCategory = item; // Set selectedCategory to the edited item
     this.isEditSubTitle = true;
   }
 
@@ -699,5 +754,30 @@ export class SkillsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.captureOriginalFormValues();
     }, 100);
+  }
+
+  /**
+   * Adds a skill to the currently selected category (for SKILLS_BY_CATEGORY mode).
+   * Called from the template when user presses Enter or clicks Add.
+   */
+  addSkillToCategory(event?: Event): void {
+    event?.preventDefault();
+    const skillValue = this.skillsForm.controls['skills'].value?.trim();
+    // If no selectedCategory, create a default one
+    if (!this.selectedCategory) {
+      this.selectedCategory = { sub_title: '', skills: [], _newSkill: '' };
+    }
+    if (skillValue && this.selectedCategory) {
+      if (!this.selectedCategory.skills.includes(skillValue)) {
+        this.selectedCategory.skills.push(skillValue);
+      }
+      this.skillsForm.controls['skills'].setValue('');
+    }
+  }
+
+  // Handles input event for category autocomplete (optional, for future logic)
+  onCategoryInput(event: any): void {
+    // Optionally implement logic to filter or react to input
+    // Currently a no-op for template compatibility
   }
 }

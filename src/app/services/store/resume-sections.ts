@@ -8,28 +8,38 @@ export const sections: Array<SectionDesc> = [
     isAdded: false,
     isPremium: false,
     tags: 'skills, category, grouped',
-    label: 'Skills',
+    label: 'Skills By Category',
     title: 'Skills',
     editable_section_title: 'Skills',
     icon: 'pi pi-tags',
     data: {
-      categories: [
-        {
-          name: 'Programming Languages',
-          skills: ['TypeScript', 'JavaScript', 'Python']
-        },
-        {
-          name: 'Frameworks',
-          skills: ['Angular', 'React', 'Node.js']
-        },
-        {
-          name: 'Tools',
-          skills: ['Git', 'Docker', 'Jira']
-        }
-      ]
     },
-    headerActions: { edit: true, delete: true, moveDown: true, moveUp: true, add: true },
-    items: []
+    headerActions: { edit: true, delete: true, moveDown: true, moveUp: true, add: false },
+    items: [  
+        {
+          id: 'skillCategory1',
+          data: {
+              name: 'Programming Languages',
+              skills: ['TypeScript', 'JavaScript', 'Python']
+            },
+          actions: { edit: true, delete: true, moveUp: false, moveDown: true } 
+        },
+        {
+          id: 'skillCategory2',
+          data: {
+              name: 'Frameworks',
+              skills: ['Angular', 'React', 'Node.js']
+            },
+          actions: { edit: true, delete: true, moveUp: true, moveDown: true } 
+        },
+        {
+          id: 'skillCategory3',
+          data: {
+              name: 'Tools',
+              skills: ['Git', 'Docker', 'Jira']
+            },
+          actions: { edit: true, delete: true, moveUp: true, moveDown: false } 
+        }]
   },
   {
     section: 'CONTACT',
@@ -122,7 +132,7 @@ export const sections: Array<SectionDesc> = [
     isAdded: false,
     isPremium: false,
     tags: 'skills, bulleted',
-    label: 'Skills',
+    label: 'Skills Bulleted',
     title: 'Skills (Bulleted)',
     editable_section_title: 'Skills',
     data: {
