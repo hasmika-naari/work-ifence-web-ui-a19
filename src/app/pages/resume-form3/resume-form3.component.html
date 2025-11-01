@@ -17,86 +17,52 @@
         
                             <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
                                 <ul class="menu" style="padding-left: 0rem !important;">
-                                    <li (click)="showResumeTitle()"><div><span class="checkmark"><p-icon class="pi pi-tags"></p-icon></span> META DATA</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }
+                                    <li (click)="showResumeTitle()">
+                                        <div><span class="checkmark"><p-icon class="pi pi-tags"></p-icon></span> META DATA</div>
                                     </li>
-                                    <li (click)="showContact()"><div><span class="checkmark"><p-icon class="pi pi-id-card"></p-icon></span> CONTACT</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    @if(isSectionActive('WORK_EXPERIENCE')){
-                                    <li (click)="showWorkExperianceDetails()"><div><span class="checkmark"><p-icon class="pi pi-briefcase"></p-icon></span> EXPERIENCE</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('PROJECT')){
-                                    <li (click)="showProjectWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-desktop"></p-icon></span> PROJECT</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('EDUCATION')){
-                                    <li (click)="showEducationDetails()"><div><span class="checkmark"><p-icon class="pi pi-graduation-cap"></p-icon></span> EDUCATION</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('CERTIFICATIONS')){
-                                    <li (click)="showCertificationsDetails()"><div><span class="checkmark"><p-icon class="pi pi-shield"></p-icon></span> CERTIFICATIONS</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('CERTIFICATIONS_BULLET_POINTS')){
-                                    <li (click)="showCertificationBulletpointsDetails()"><div><span class="checkmark"><p-icon class="pi pi-list"></p-icon></span> CERTIFICATIONS</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('SKILLS_CATEGORY')){
-                                        <li (click)="showSkillsDetails('SKILLS_CATEGORY')"><div><span class="checkmark"><p-icon class="pi pi-th-large"></p-icon></span> SKILLS CATEGORY</div>
-                                            @if(false){
-                                                <div class="wave-point"></div>
-                                            }</li>
-                                    }
-                                    @if(isSectionActive('RELEVANT_COURSEWORK')){
-                                    <li (click)="showCourseWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-book"></p-icon></span> COURSE WORK</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('SKILLS_BULLET_POINTS')){
-                                    <li (click)="showSkillsDetails('SKILLS_BULLET_POINTS')"><div><span class="checkmark"><p-icon class="pi pi-check-circle"></p-icon></span> SKILLS</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('ACHIEVEMENTS_BULLET_POINTS')){
-                                    <li (click)="showAchievementsDetails()"><div><span class="checkmark"><p-icon class="pi pi-star"></p-icon></span> ACHIEVEMENTS</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('ACHIEVEMENT_WITH_DESC')){
-                                        <li (click)="showAccomplishmentsDetails()"><div><span class="checkmark"><p-icon class="pi pi-trophy"></p-icon></span> ACCOMPLISHMENTS</div>
-                                            @if(false){
-                                                <div class="wave-point"></div>
-                                            }</li>
+                                    <li (click)="showContact()">
+                                        <div><span class="checkmark"><p-icon class="pi pi-id-card"></p-icon></span> CONTACT</div>
+                                    </li>
+                                    <!-- Render menu in the order of default sections, but only for sections present in the selected resume -->
+                                    @for(section of resumeSignalForm()?.sections ?? []; track section.id ?? section.section) {
+                                        @switch(section.section) {
+                                            @case('WORK_EXPERIENCE') {
+                                                <li (click)="showWorkExperianceDetails()"><div><span class="checkmark"><p-icon class="pi pi-briefcase"></p-icon></span> EXPERIENCE</div></li>
+                                            }
+                                            @case('PROJECT') {
+                                                <li (click)="showProjectWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-desktop"></p-icon></span> PROJECT</div></li>
+                                            }
+                                            @case('EDUCATION') {
+                                                <li (click)="showEducationDetails()"><div><span class="checkmark"><p-icon class="pi pi-graduation-cap"></p-icon></span> EDUCATION</div></li>
+                                            }
+                                            @case('CERTIFICATIONS') {
+                                                <li (click)="showCertificationsDetails()"><div><span class="checkmark"><p-icon class="pi pi-shield"></p-icon></span> CERTIFICATIONS</div></li>
+                                            }
+                                            @case('CERTIFICATIONS_BULLET_POINTS') {
+                                                <li (click)="showCertificationBulletpointsDetails()"><div><span class="checkmark"><p-icon class="pi pi-list"></p-icon></span> CERTIFICATIONS</div></li>
+                                            }
+                                            @case('SKILLS_BY_CATEGORY') {
+                                                <li (click)="showSkillsDetails('SKILLS_BY_CATEGORY')"><div><span class="checkmark"><p-icon class="pi pi-th-large"></p-icon></span> SKILLS BY CATEGORY</div></li>
+                                            }
+                                            @case('RELEVANT_COURSEWORK') {
+                                                <li (click)="showCourseWorkDetails()"><div><span class="checkmark"><p-icon class="pi pi-book"></p-icon></span> COURSE WORK</div></li>
+                                            }
+                                            @case('SKILLS_BULLET_POINTS') {
+                                                <li (click)="showSkillsDetails('SKILLS_BULLET_POINTS')"><div><span class="checkmark"><p-icon class="pi pi-check-circle"></p-icon></span> SKILLS</div></li>
+                                            }
+                                            @case('ACHIEVEMENTS_BULLET_POINTS') {
+                                                <li (click)="showAchievementsDetails()"><div><span class="checkmark"><p-icon class="pi pi-star"></p-icon></span> ACHIEVEMENTS</div></li>
+                                            }
+                                            @case('ACHIEVEMENT_WITH_DESC') {
+                                                <li (click)="showAccomplishmentsDetails()"><div><span class="checkmark"><p-icon class="pi pi-trophy"></p-icon></span> ACCOMPLISHMENTS</div></li>
+                                            }
+                                            @case('PROFILE_SUMMARY') {
+                                                <li (click)="showSummaryDetails('PROFILE_SUMMARY')"><div><span class="checkmark"><p-icon class="pi pi-align-left"></p-icon></span> SUMMARY</div></li>
+                                            }
+                                            @case('PROFILE_SUMMARY_BULLETED') {
+                                                <li (click)="showSummaryDetails('PROFILE_SUMMARY_BULLETED')"><div><span class="checkmark"><p-icon class="pi pi-list"></p-icon></span> SUMMARY (BULLETED)</div></li>
+                                            }
                                         }
-                                    @if(isSectionActive('PROFILE_SUMMARY')){
-                                    <li (click)="showSummaryDetails('PROFILE_SUMMARY')"><div><span class="checkmark"><p-icon class="pi pi-align-left"></p-icon></span> SUMMARY</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
-                                    }
-                                    @if(isSectionActive('PROFILE_SUMMARY_BULLETED')){
-                                    <li (click)="showSummaryDetails('PROFILE_SUMMARY_BULLETED')"><div><span class="checkmark"><p-icon class="pi pi-list"></p-icon></span> SUMMARY (BULLETED)</div>
-                                        @if(false){
-                                            <div class="wave-point"></div>
-                                        }</li>
                                     }
                                 </ul>
                             </div>
