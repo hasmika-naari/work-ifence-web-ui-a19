@@ -508,6 +508,7 @@ export class SkillsComponent implements OnInit, OnDestroy {
       // Save/update the category and its skills in the selectedResume's SKILLS_BY_CATEGORY section
       const resume = this.resumeSignalForm();
       const section = resume.sections?.find((s: any) => s.section === 'SKILLS_BY_CATEGORY');
+      let updatedCategory = null;
       if (section && this.selectedCategory) {
         // Find the category item in section.items by id or name
         const categoryName = this.skillsForm.controls['sub_title'].value?.trim();
@@ -522,15 +523,22 @@ export class SkillsComponent implements OnInit, OnDestroy {
           if (itemToUpdate.data) {
             itemToUpdate.data.name = categoryName;
             itemToUpdate.data.skills = [...this.localSkills];
+            updatedCategory = itemToUpdate;
           }
         } else {
+          const newCat = { data: { name: categoryName, skills: [...this.localSkills] } };
           section.items = section.items || [];
-          section.items.push({ data: { name: categoryName, skills: [...this.localSkills] } });
+          section.items.push(newCat);
+          updatedCategory = newCat;
         }
         // Also update selectedCategory.data.skills so UI stays in sync
         if (this.selectedCategory.data) {
           this.selectedCategory.data.skills = [...this.localSkills];
         }
+      }
+      // Update selectedSkillsCategory in store so future edits reflect latest
+      if (updatedCategory) {
+        this.userStore.setSelectedSkillsCategory(updatedCategory);
       }
       // Update section status for regular skills
       if (!this.sectionStatus().isSkill) {
@@ -540,21 +548,29 @@ export class SkillsComponent implements OnInit, OnDestroy {
       }
       this.userStore.setResumeSections(this.sections());
     } else {
-      // Handle other skills sections
-      let skills: Skill[] = [];
-      this.skills_v2.forEach((e: any) => {
-        if (Array.isArray(e.skills)) {
-          skills = [...skills, ...e.skills]; // Safely spread only arrays
+      if (this.sectionName === 'SKILLS_BULLET_POINTS') {
+        // Update the SKILLS_BULLET_POINTS section in the selectedResume
+        this.userStore.setSkillsBulletPoints(this.skillsBulletPoints);
+        // Update section status for regular skills
+        if (!this.sectionStatus().isSkill) {
+          const status = this.sectionStatus();
+          status.isSkill = true;
+          this.userStore.updateSectionStatus(status);
         }
-      });
-
-      this.userStore.addSkillV2(this.skills_v2);
-
-      // Update section status for regular skills
-      if (!this.sectionStatus().isSkill) {
-        const status = this.sectionStatus();
-        status.isSkill = true;
-        this.userStore.updateSectionStatus(status);
+      } else {
+        // Handle other skills sections (SKILLS_V2, etc.)
+        let skills: Skill[] = [];
+        this.skills_v2.forEach((e: any) => {
+          if (Array.isArray(e.skills)) {
+            skills = [...skills, ...e.skills];
+          }
+        });
+        this.userStore.addSkillV2(this.skills_v2);
+        if (!this.sectionStatus().isSkill) {
+          const status = this.sectionStatus();
+          status.isSkill = true;
+          this.userStore.updateSectionStatus(status);
+        }
       }
     }
 
