@@ -955,7 +955,7 @@ hideMenu() {
     this.showPanelWindow = false;
     this.activePanel = null;
     this.userStore.setProject(new Project());
-    this.userStore.setCertification(new Certification());
+    this.userStore.setCertification({data: new Certification()});
     this.userStore.setEducation(new Education());
     this.userStore.setExperience(new Experience());
   }

@@ -302,7 +302,7 @@ export class ResumeTemplate10Component implements OnInit, OnDestroy {
       this.userStore.setExperience(new Experience())
     }
     else if(section === "CERTIFICATIONS"){
-      this.userStore.setCertification(new Certification());
+      this.userStore.setCertification({ data: new Certification() });
     }
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       this.userStore.setSelectedAccomplishment(new Accomplishment());

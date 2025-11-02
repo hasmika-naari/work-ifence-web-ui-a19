@@ -387,8 +387,8 @@ export class Templatesv2Service {
     return items.map((item: Certification) =>
       `<div class="course-work-section-content template1-section-content trigger-area" style="margin-top:5px;">
         <div style="display: flex;justify-content: space-between;margin:0;padding:0;" class="project-content">
-          <p style="flex: 1;text-align: left;margin: 0;padding:0;"><a href="${item.certification_link}" style="margin: 0;padding: 0;color:#000000DE">${item.certification_name}</a>, ${item.issued_organisation}</p>
-          <p style="flex: 1;text-align: right;margin:0;padding:0;">${item.issued_month} ${item.issued_year}</p>
+          <p style="flex: 1;text-align: left;margin: 0;padding:0;"><a href="${item.url}" style="margin: 0;padding: 0;color:#000000DE">${item.name}</a>, ${item.authority}</p>
+          <p style="flex: 1;text-align: right;margin:0;padding:0;">${item.date}</p>
         </div>
       </div>`
     ).join('');
@@ -414,8 +414,8 @@ export class Templatesv2Service {
         return items.map((item: Certification) =>
             `
             <div class="experience-container" style="margin-top:7px">
-                <p style="font-size: 12px;margin: 0;"><b>${item.certification_name} | ${item.issued_organisation} | ${item.issued_month} ${item.issued_year}</b></p>
-                ${item.certification_link ? `<p><a href="${item.certification_link}" target="_blank">${item.certification_link}</a></p>` : ''}
+                <p style="font-size: 12px;margin: 0;"><b>${item.name} | ${item.authority} | ${item.date}</b></p>
+                ${item.url ? `<p><a href="${item.url}" target="_blank">${item.url}</a></p>` : ''}
             </div>
             `
         ).join('');

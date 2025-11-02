@@ -1,10 +1,13 @@
+// ...existing imports...
 
+  // ...rest of the class...
 import { WorkExperienceSectionComponent } from '../sections/work-experience-section.component';
 import { ProjectSectionComponent } from '../sections/project-section.component';
 import { CertificationsSectionComponent } from '../sections/certifications-section.component';
 import { AchievementsSectionComponent } from '../sections/achievements-section.component';
 import { SkillsBulletPointsSectionComponent } from '../sections/skills-bullet-points-section.component';
 import { SkillsCategorySectionComponent } from '../sections/skills-category-section.component';
+
 
 import { sections as defaultSections } from '../../../services/store/resume-sections';
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectorRef, Signal, effect, computed, signal } from '@angular/core';
@@ -130,6 +133,41 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  // Handles move up event from certifications section
+  onMoveUpCertification(index: number) {
+    const items = this.getSectionItems('CERTIFICATIONS');
+    if (!items || index == null || index <= 0) return;
+    [items[index - 1], items[index]] = [items[index], items[index - 1]];
+    // Update the CERTIFICATIONS section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'CERTIFICATIONS') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+
+  // Handles move down event from certifications section
+  onMoveDownCertification(index: number) {
+    const items = this.getSectionItems('CERTIFICATIONS');
+    if (!items || index == null || index >= items.length - 1) return;
+    [items[index], items[index + 1]] = [items[index + 1], items[index]];
+    // Update the CERTIFICATIONS section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'CERTIFICATIONS') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
   // Handles move up event from education section
   onMoveUpEducation(index: number) {
     const items = this.getSectionItems('EDUCATION');
@@ -458,6 +496,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   // Helper to get items from sections by section name (all item-based sections use cache)
   getSectionItems(sectionName: string): any[] {
+    // if(sectionName==='CERTIFICATIONS'){
+    //   console.log('[Resume1TemplateComponent] getSectionItems called for section:', this.sectionItemsCache[sectionName]);
+    // }
     return this.sectionItemsCache[sectionName] ?? [];
   }
 
@@ -1361,7 +1402,14 @@ getSectionTitle(section : string){
   editCertificationItem(index: number): void {
     const certifications = this.getSectionItems('CERTIFICATIONS');
     const certificationItem = certifications[index];
-    this.editSectionHandler('CERTIFICATIONS', certificationItem);
+    // Always pass a new object to trigger store/effect updates
+    const certificationCopy = { ...certificationItem };
+    this.editSectionHandler('CERTIFICATIONS', certificationCopy);
+  }
+
+  // Handles edit event from certifications section (for (edit) output)
+  onEditCertification(index: number): void {
+    this.editCertificationItem(index);
   }
 
   deleteCertificationItem(index: number): void {

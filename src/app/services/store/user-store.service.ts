@@ -1,7 +1,7 @@
 import { Injectable, Signal, computed, signal, inject, Injector } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { Observable } from "rxjs";
-import { ResumeTemplateDto, SectionDesc, UserResume, UserState } from "./user-store";
+import { ResumeTemplateDto, SectionDesc, SectionItem, UserResume, UserState } from "./user-store";
 import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";
 import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
 import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, AchievementBulletPoints, IsSectionPresent, SkillV2, Accomplishment, Skill, CertificationBulletPoints, courseWork } from "../resume.model";
@@ -684,12 +684,12 @@ export class UserStoreService {
             }))
     }
 
-    updateCertificationItem(edu: Certification, index: number) {
+    updateCertificationItem(edu: SectionItem, index: number) {
       this.state.update((state) => {
         const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
           if (section.section === 'CERTIFICATIONS') {
             const items = section.items ? [...section.items] : [];
-            items[index] = { id: edu.id, data: edu };
+            items[index] = { id: edu.id, data: edu.data };
             return { ...section, items };
           }
           return section;
@@ -710,13 +710,13 @@ export class UserStoreService {
       });
     }
 
-    addCertificationItem(edu: Certification) {
+    addCertificationItem(edu: SectionItem) {
       this.state.update((state) => {
         const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
           if (section.section === 'CERTIFICATIONS') {
             return {
               ...section,
-              items: [...(section.items ?? []), { id: edu.id, data: edu }]
+              items: [...(section.items ?? []), { id: edu.id, data: edu.data }]
             };
           }
           return section;
@@ -807,7 +807,7 @@ export class UserStoreService {
         }))
       }
 
-      updateCertification(exp : Certification){
+      updateCertification(exp : SectionItem){
         this.state.update((state)=>({
           ...state,
           currentTab : 'CERTIFICATION',
@@ -1422,7 +1422,7 @@ moveSectionDown(section: string) {
         }));
       }
 
-      setCertification(cer: Certification) {
+      setCertification(cer: SectionItem) {
         this.state.update((state) => ({
           ...state,
           currentTab: 'CERTIFICATION',
@@ -1711,7 +1711,7 @@ moveSectionDown(section: string) {
         }));
       }
 
-      setSelectedCertification(cert: Certification) {
+      setSelectedCertification(cert: SectionItem) {
         this.state.update((state) => ({
           ...state,
           selectedResume: {
@@ -1822,7 +1822,7 @@ moveSectionDown(section: string) {
         return computed(()=> this.state().isMultipleColumnTemplateSelected);
       }
 
-      getSelectedCertificate() : Signal<Certification> {
+      getSelectedCertificate() : Signal<SectionItem> {
         return computed(()=> this.state().selectedResume.selectedCertification);
       }
 

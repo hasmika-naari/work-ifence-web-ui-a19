@@ -186,23 +186,23 @@ export class Education{
     }
   }
   
-  export class Certification{
-    id : string;
-    certification_name : string;
-    issued_organisation : string;
-    certification_link : string;
-    issued_month : string;
-    issued_year : string;
-    isHideSelected : boolean
+  export class Certification {
+    name: string;
+    authority: string;
+    licenseNumber: string;
+    url: string;
+    date: string;
+    description: string;
+    isHideSelected: boolean;
 
-    constructor(){
-      this.id = ""
-      this.certification_name = ""
-      this.issued_organisation = ""
-      this.certification_link = ""
-      this.issued_month = ""
-      this.issued_year = ""
-      this.isHideSelected = false
+    constructor() {
+      this.name = "";
+      this.authority = "";
+      this.licenseNumber = "";
+      this.url = "";
+      this.date = "";
+      this.description = "";
+      this.isHideSelected = false;
     }
   }
   

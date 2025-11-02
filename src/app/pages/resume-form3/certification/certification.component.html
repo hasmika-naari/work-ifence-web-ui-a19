@@ -69,30 +69,20 @@
             </div>
         </div>
 
-        <div class="form-row form-row--double">
+        <div class="form-row form-row--single">
             <div class="field">
-                <label for="issued_month">Issued Month</label>
-                <p-dropdown 
-                    id="issued_month"
-                    formControlName="issued_month"
-                    [options]="months"
-                    optionLabel="title"
-                    optionValue="title"
-                    placeholder="Select Month">
-                </p-dropdown>
-            </div>
-
-            <div class="field">
-                <label for="issued_year">Year *</label>
-                <p-dropdown 
-                    id="issued_year"
-                    formControlName="issued_year"
-                    [options]="yearOptions"
-                    placeholder="Select Year"
-                    [filter]="true"
-                    filterBy="label">
-                </p-dropdown>
-                <small class="error" *ngIf="certifyForm.get('issued_year')?.hasError('required') && (certifyForm.get('issued_year')?.dirty || certifyForm.get('issued_year')?.touched)">
+                <label for="issued_month_year">Issued Month & Year *</label>
+                <p-calendar
+                    id="issued_month_year"
+                    formControlName="issued_month_year"
+                    view="month"
+                    dateFormat="MM yy"
+                    [showIcon]="true"
+                    [yearNavigator]="true"
+                    yearRange="1950:2050"
+                    placeholder="Select Month and Year">
+                </p-calendar>
+                <small class="error" *ngIf="certifyForm.get('issued_month_year')?.hasError('required') && (certifyForm.get('issued_month_year')?.dirty || certifyForm.get('issued_month_year')?.touched)">
                     Required.
                 </small>
             </div>

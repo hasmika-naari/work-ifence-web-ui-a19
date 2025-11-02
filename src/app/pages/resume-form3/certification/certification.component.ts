@@ -1,3 +1,4 @@
+// (removed all code before first import)
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -32,7 +33,9 @@ import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { SectionDesc } from 'src/app/services/store/user-store';
+import { SectionDesc, SectionItem } from 'src/app/services/store/user-store';
+import { DatePickerModule } from 'primeng/datepicker';
+import { Calendar } from 'primeng/calendar';
 
 
 export interface DialogData {
@@ -54,8 +57,8 @@ export interface DialogData {
     HeaderWorkIfenceComponent,  MatStepperModule, MatAutocompleteModule,
     MatFormFieldModule,InputTextModule,TableModule,InputNumberModule,
     MatInputModule,ButtonModule,OverlayPanelModule,AutoCompleteModule,DropdownModule,
-    MatButtonModule,AccordionModule,TextareaModule,MatTooltipModule,
-    MatIconModule,MatExpansionModule, MatSelectModule],
+    MatButtonModule,AccordionModule,TextareaModule,MatTooltipModule, Calendar,
+    MatIconModule,MatExpansionModule, MatSelectModule, DatePickerModule],
   templateUrl: './certification.component.html',
   styleUrls: ['./certification.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -87,9 +90,9 @@ export class CertificationComponent implements OnInit, OnDestroy {
 
   selectedEducationItem! : {id : number | null,school_name: String | null,school_location: String | null,degree: String | null,field_of_study: String | null,gpa: String | null,graduation_year: String | null}
 
-  certification_list : {id : number,certification_name: String | null,issued_organisation: String | null,issued_month: String | null,issued_year: String | null,certification_link: String | null,description: String | null}[] = []
+  certification_list: SectionItem[] = [];
 
-  selectedCertificationItem! : {id : number | null,certification_name: String | null,issued_organisation: String | null,issued_month: String | null,issued_year: String | null,certification_link: String | null,description: String | null}
+  selectedCertificationItem!: SectionItem;
 
   skills_list : {id : number, skills : String | null}[] = []
 
@@ -103,7 +106,7 @@ export class CertificationComponent implements OnInit, OnDestroy {
   private userStore: UserStoreService = inject(UserStoreService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
 
-  selectedCertification : Signal<Certification> = this.userStore.getSelectedCertificate();
+  selectedCertification : Signal<SectionItem> = this.userStore.getSelectedCertificate();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
     sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
@@ -144,8 +147,8 @@ export class CertificationComponent implements OnInit, OnDestroy {
       public templateService : TemplatesService, 
       public dialog: MatDialog) {
         effect(()=>{
-          if(this.selectedCertification().id){
-            this.setCertificationValues()
+          if(this.selectedCertification() && this.selectedCertification().id){
+            this.setCertificationValues();
           }
         });
 
@@ -162,6 +165,7 @@ export class CertificationComponent implements OnInit, OnDestroy {
     position_title: [''],
     company_name: [''],
     location : [''],
+    issued_month_year: [''],
     start_date: [''],
     end_date: [''],
     description : ['']
@@ -197,8 +201,7 @@ export class CertificationComponent implements OnInit, OnDestroy {
   certifyForm = this._formBuilder.group({
       certification_name : ['', Validators.required],
       issued_organisation : ['', Validators.required],
-      issued_month : ['', Validators.required],
-      issued_year : ['', [Validators.required, Validators.pattern(/^\d{4}$/), this.yearValidator()]],
+  issued_month_year : [null as Date | null, Validators.required],
       certification_link : ['', Validators.pattern('^https?:\\/\\/(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(\\/[a-zA-Z0-9._~-]*)*\\/?$')],
       description : [''],
       section_title : ['Certifications', Validators.required]
@@ -336,9 +339,9 @@ private _filterYears(value: string): number[] {
       }
     }));
 
-    this.subs.push(this.certifyForm.controls['issued_year'].valueChanges.subscribe((value => {
-      this.yearsAllowedFiltered = this._filterYears(value || '');
-    })));
+    // this.subs.push(this.certifyForm.controls['issued_year'].valueChanges.subscribe((value => {
+    //   this.yearsAllowedFiltered = this._filterYears(value || '');
+    // })));
 
     // this.subs.push(this.routeActivated.url.subscribe(urlSegment => {
     //   const currentUrl = urlSegment.join('/');
@@ -428,12 +431,28 @@ private _filterYears(value: string): number[] {
 }
 
   setCertificationValues(){
-      this.certifyForm.controls['certification_name'].setValue(this.selectedCertification().certification_name) 
-      this.certifyForm.controls['issued_organisation'].setValue(this.selectedCertification().issued_organisation)
-      this.certifyForm.controls['issued_month'].setValue(this.selectedCertification().issued_month)
-      this.certifyForm.controls['issued_year'].setValue(this.selectedCertification().issued_year) 
-      this.certifyForm.controls['certification_link'].setValue(this.selectedCertification().certification_link)
-      let section_title;
+    const cert = this.selectedCertification();
+    console.log("Setting certification values" + JSON.stringify(cert));
+    this.certifyForm.controls['certification_name'].setValue(cert.data.name || "");
+    this.certifyForm.controls['issued_organisation'].setValue(cert.data.authority || "");
+    // Always set a Date object for the calendar
+    let dateValue: Date | null = null;
+    const dateStr = typeof cert.data.date === 'string' ? cert.data.date.trim() : '';
+    console.log("Raw cert.data.date:", cert.data.date, typeof cert.data.date);
+    if (/^\d{2}\/\d{4}$/.test(dateStr)) {
+      // MM/YYYY
+      dateValue = this.mmYYYYStringToDate(dateStr);
+    } else if (/^\d{4}-\d{2}$/.test(dateStr)) {
+      // YYYY-MM
+      const [year, month] = dateStr.split('-').map(Number);
+      if (month >= 1 && month <= 12 && year > 1900) {
+        dateValue = new Date(year, month - 1, 1);
+      }
+    }
+    console.log("Converted date value:", dateValue);
+    this.certifyForm.controls['issued_month_year'].setValue(dateValue);
+    this.certifyForm.controls['certification_link'].setValue(cert.data.url || "");
+    let section_title;
       if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
         this.multipleSections().map((e : SectionDesc[])=>{
           e.map((section : SectionDesc)=>{
@@ -564,59 +583,102 @@ private _filterYears(value: string): number[] {
   }
 
   saveAndContinue(){
+    console.log('--- saveAndContinue called ---');
     this.markFormGroupTouched(this.certifyForm);
     let cer = new Certification();
-    cer.certification_name = this.certifyForm.value.certification_name?this.certifyForm.value.certification_name : '';
-    cer.certification_link = this.certifyForm.value.certification_link?this.certifyForm.value.certification_link : '';
-    cer.issued_organisation = this.certifyForm.value.issued_organisation?this.certifyForm.value.issued_organisation : '';
-    cer.issued_month = this.certifyForm.value.issued_month?this.certifyForm.value.issued_month : '';
-    cer.issued_year = this.certifyForm.value.issued_year?this.certifyForm.value.issued_year : '';
+    cer.name = this.certifyForm.value.certification_name ? this.certifyForm.value.certification_name : '';
+    cer.url = this.certifyForm.value.certification_link ? this.certifyForm.value.certification_link : '';
+    cer.authority = this.certifyForm.value.issued_organisation ? this.certifyForm.value.issued_organisation : '';
+    // Store as MM/YYYY string
+    const issuedMonthYearValue = this.certifyForm.value.issued_month_year;
+    console.log('certifyForm.value:', this.certifyForm.value);
+    if (
+      issuedMonthYearValue &&
+      typeof issuedMonthYearValue === 'object' &&
+      issuedMonthYearValue !== null &&
+      Object.prototype.toString.call(issuedMonthYearValue) === '[object Date]'
+    ) {
+      const dateObj = issuedMonthYearValue as Date;
+      const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+      const year = dateObj.getFullYear();
+      cer.date = `${month}/${year}`;
+    } else if (typeof issuedMonthYearValue === 'string' && /^\d{2}\/\d{4}$/.test(issuedMonthYearValue)) {
+      cer.date = issuedMonthYearValue;
+    } else {
+      cer.date = '';
+    }
+    cer.description = this.certifyForm.value.description ? this.certifyForm.value.description : '';
     // Find the CERTIFICATIONS section in the sections array
     const certSectionIdx = this.sections().findIndex((section: any) => section.section === 'CERTIFICATIONS');
     let certItems = certSectionIdx !== -1 ? this.sections()[certSectionIdx].items || [] : [];
-    if(this.selectedCertification().id){
-      cer.id = this.selectedCertification().id;
-      let index = certItems.findIndex((obj: any) => obj.id === this.selectedCertification().id);
-      if (index !== -1) {
-        certItems[index] = { id: cer.id, data: cer };
-      }
-      this.sections()[certSectionIdx].items = certItems;
-      this.userStore.setResumeSections(this.sections());
-    } else {
-      cer.id = (certItems.length + 1).toString();
-      certItems.push({ id: cer.id, data: cer });
-      if (certSectionIdx !== -1) {
+    const cert = this.selectedCertification();
+    console.log('selectedCertificationItem:', cert);
+    console.log('certSectionIdx:', certSectionIdx);
+    console.log('certItems before:', JSON.stringify(certItems));
+    if (cert && cert.id != null) {
+      // Only update existing item by id, do not add new
+      const idx = certItems.findIndex((obj: any) => obj.id === cert.id);
+      console.log('Editing mode. idx:', idx, 'cert.id:', cert.id);
+      if (idx !== -1) {
+        certItems[idx] = { id: cert.id, data: cer };
         this.sections()[certSectionIdx].items = certItems;
+        console.log('About to update store with sections:', JSON.stringify(this.sections()));
         this.userStore.setResumeSections(this.sections());
+        console.log('Updated item at idx', idx, 'with', cer);
+      } else {
+        console.log('No matching id found for update, nothing changed.');
+      }
+      // Clear selectedCertificationItem after update to prevent add on next save
+      this.selectedCertificationItem = { id: null, data: {} } as any;
+    } else {
+      // Add as new only if there is no item with the same data (prevent accidental duplicate on add)
+      const alreadyExists = certItems.some((obj: any) =>
+        obj.data.name === cer.name &&
+        obj.data.url === cer.url &&
+        obj.data.authority === cer.authority &&
+        obj.data.date === cer.date &&
+        obj.data.description === cer.description
+      );
+      console.log('Adding mode. alreadyExists:', alreadyExists);
+      if (!alreadyExists) {
+        const newId = (certItems.length + 1).toString();
+        certItems.push({ id: newId, data: cer });
+        if (certSectionIdx !== -1) {
+          this.sections()[certSectionIdx].items = certItems;
+          console.log('About to update store with sections:', JSON.stringify(this.sections()));
+          this.userStore.setResumeSections(this.sections());
+        }
+        console.log('Added new item with id', newId, cer);
+      } else {
+        console.log('Duplicate detected, not adding.');
       }
     }
-    this.userStore.setCertification(new Certification());
-    this.certifyForm.reset()
-    if(!this.sectionStatus().isCertification){
-      let status = this.sectionStatus()
+    console.log('certItems after:', JSON.stringify(certItems));
+    this.userStore.setCertification({ data: new Certification() });
+    this.certifyForm.reset();
+    if (!this.sectionStatus().isCertification) {
+      let status = this.sectionStatus();
       status.isCertification = true;
       this.userStore.updateSectionStatus(status);
     }
-    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
-      this.multipleSections().map((e : SectionDesc[])=>{
-        e.map((section : SectionDesc)=>{
-          if(section.section == 'CERTIFICATIONS'){
-            section.editable_section_title = this.certifyForm.controls['section_title'].value?? 'Certifications'
+    if (this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9') {
+      this.multipleSections().map((e: SectionDesc[]) => {
+        e.map((section: SectionDesc) => {
+          if (section.section == 'CERTIFICATIONS') {
+            section.editable_section_title = this.certifyForm.controls['section_title'].value ?? 'Certifications';
           }
-        })
-      })
-      this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
-    }
-    else{
-      this.sections().map((section : SectionDesc)=>{
-          if(section.section == 'CERTIFICATIONS'){
-            section.editable_section_title = this.certifyForm.controls['section_title'].value?? 'Certifications'
-          }
-        })
-        this.userStore.setResumeSections(this.sections())
+        });
+      });
+      this.userStore.setMultipleColumnTemplateSections(this.multipleSections());
+    } else {
+      this.sections().map((section: SectionDesc) => {
+        if (section.section == 'CERTIFICATIONS') {
+          section.editable_section_title = this.certifyForm.controls['section_title'].value ?? 'Certifications';
+        }
+      });
+      this.userStore.setResumeSections(this.sections());
     }
     this.contact.emit();
-    
     // Capture new baseline after saving
     this.captureOriginalFormValues();
   }
@@ -1339,49 +1401,72 @@ private _filterYears(value: string): number[] {
     }
   }
 
-  saveToCertificationList(){
-    if(this.certifyForm.controls['certification_name']?.value){
-      let new_certification = 
-      {
-        id : this.certification_list.length,
-        certification_name : this.certifyForm.controls['certification_name']?.value, 
-        issued_organisation : this.certifyForm.controls['issued_organisation']?.value, 
-        issued_month : this.certifyForm.controls['issued_month']?.value, 
-        issued_year : this.certifyForm.controls['issued_year']?.value,
-        certification_link : this.certifyForm.controls['certification_link']?.value, 
-        description : this.certifyForm.controls['description']?.value
+  saveToCertificationList() {
+    if (this.certifyForm.controls['certification_name']?.value) {
+      const cert = new Certification();
+      cert.name = this.certifyForm.controls['certification_name']?.value || '';
+      cert.authority = this.certifyForm.controls['issued_organisation']?.value || '';
+      const issuedMonthYearValue = this.certifyForm.controls['issued_month_year']?.value;
+      if (issuedMonthYearValue && Object.prototype.toString.call(issuedMonthYearValue) === '[object Date]') {
+        cert.date = this.dateToMMYYYYString(issuedMonthYearValue);
+      } else if (typeof issuedMonthYearValue === 'string' && issuedMonthYearValue && /^\d{2}\/\d{4}$/.test(issuedMonthYearValue)) {
+        cert.date = issuedMonthYearValue;
+      } else {
+        cert.date = '';
       }
-      if(this.selectedCertificationItem?.id || this.selectedCertificationItem?.id === 0){
-        this.certification_list = [...this.certification_list.slice(0,this.selectedCertificationItem.id), new_certification, ...this.certification_list.slice(this.selectedCertificationItem.id + 1,)];
+      cert.licenseNumber = '';
+      cert.url = this.certifyForm.controls['certification_link']?.value || '';
+      cert.description = this.certifyForm.controls['description']?.value || '';
+      cert.isHideSelected = false;
+      const newSectionItem: SectionItem = {
+        id: (this.certification_list.length).toString(),
+        data: cert
+      };
+      if (this.selectedCertificationItem && this.selectedCertificationItem.id !== undefined) {
+        const idx = this.certification_list.findIndex(item => item.id === this.selectedCertificationItem.id);
+        if (idx !== -1) {
+          this.certification_list = [
+            ...this.certification_list.slice(0, idx),
+            newSectionItem,
+            ...this.certification_list.slice(idx + 1)
+          ];
+        }
+      } else {
+        this.certification_list.push(newSectionItem);
       }
-      else{
-        this.certification_list.push(new_certification)
-      }
-      this.selectedCertificationItem = {id : null,certification_name: null,issued_organisation: null,issued_month: null,issued_year: null,certification_link: null,description: null}
+      this.selectedCertificationItem = { id: undefined, data: new Certification() };
       this.certifyForm.reset();
       //this.saveAndContinue("Changes saved");
-      }
-  }
-
-  editCertificationItem(certification : any){
-      this.certifyForm.controls['certification_name'].setValue(certification.certification_name?certification.certification_name : "") 
-      this.certifyForm.controls['issued_organisation'].setValue(certification.issued_organisation?certification.issued_organisation : "")
-      this.certifyForm.controls['issued_month'].setValue(certification.issued_month?certification.issued_month : "")
-      this.certifyForm.controls['issued_year'].setValue(certification.issued_year?certification.issued_year : "") 
-      this.certifyForm.controls['certification_link'].setValue(certification.certification_link?certification.certification_link : "")
-      this.certifyForm.controls['description'].setValue(certification.description?certification.description : "") 
-      this.selectedCertificationItem = certification;
-      this.removeCertificationItem(certification);
-  }
-
-  removeCertificationItem(certification : any){
-    this.openDialog();
-    console.log(certification);
-    if(this.certification_list.length === 1){
-      this.certification_list = []
     }
-    else{
-      this.certification_list = [...this.certification_list.slice(0,certification.id), ...this.certification_list.slice(certification.id + 1,)];
+  }
+
+  editCertificationItem(item: SectionItem) {
+    const cert = item.data as Certification;
+    this.certifyForm.controls['certification_name'].setValue(cert.name || "");
+    this.certifyForm.controls['issued_organisation'].setValue(cert.authority || "");
+    // If cert.date is a MM/YYYY string, convert to Date for the form control
+    let dateValue: Date | null = null;
+    if (cert.date && typeof cert.date === 'string' && /^\d{2}\/\d{4}$/.test(cert.date)) {
+      dateValue = this.mmYYYYStringToDate(cert.date);
+    }
+    this.certifyForm.controls['issued_month_year'].setValue(dateValue);
+    this.certifyForm.controls['certification_link'].setValue(cert.url || "");
+    this.certifyForm.controls['description'].setValue(cert.description || "");
+    this.selectedCertificationItem = item;
+    this.removeCertificationItem(item);
+  }
+
+  removeCertificationItem(item: SectionItem) {
+    this.openDialog();
+    console.log(item);
+    const idx = this.certification_list.findIndex(cert => cert.id === item.id);
+    if (this.certification_list.length === 1) {
+      this.certification_list = [];
+    } else if (idx !== -1) {
+      this.certification_list = [
+        ...this.certification_list.slice(0, idx),
+        ...this.certification_list.slice(idx + 1)
+      ];
     }
   }
 
@@ -1420,4 +1505,21 @@ private _filterYears(value: string): number[] {
       this.skills_list = [...this.skills_list.slice(0,skillItem.id), ...this.skills_list.slice(skillItem.id + 1,)];
     }
   }
+
+  // Helper: Convert MM/YYYY string to Date
+private mmYYYYStringToDate(value: string): Date | null {
+  if (typeof value === 'string' && /^\d{2}\/\d{4}$/.test(value)) {
+    const [month, year] = value.split('/').map(Number);
+    return new Date(year, month - 1, 1);
+  }
+  return null;
+}
+
+// Helper: Convert Date to MM/YYYY string
+private dateToMMYYYYString(date: Date): string {
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${year}`;
+}
+
 }

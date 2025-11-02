@@ -1,3 +1,49 @@
+// PrimeNG Calendar custom styling for modern look
+.p-calendar {
+  width: 100%;
+  .p-inputtext {
+    border-radius: 10px;
+    border: 1.5px solid #e0e0e0;
+    font-size: 1rem;
+    padding: 0.75rem 1.2rem;
+    background: #fff;
+    color: #222;
+    transition: border-color 0.2s;
+    box-shadow: none;
+    &:focus {
+      border-color: #f05b4e;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(240,91,78,0.08);
+    }
+  }
+  .p-datepicker {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    border: 1.5px solid #f05b4e;
+    .p-datepicker-header {
+      background: #f8f8f8;
+      color: #f05b4e;
+      border-radius: 12px 12px 0 0;
+    }
+    .p-datepicker-title {
+      font-weight: 600;
+      color: #f05b4e;
+    }
+    .p-highlight {
+      background: #f05b4e !important;
+      color: #fff !important;
+      border-radius: 8px;
+    }
+    .p-datepicker-month, .p-datepicker-year {
+      color: #f05b4e;
+      font-weight: 500;
+    }
+  }
+  .p-inputtext::placeholder {
+    color: #bdbdbd;
+    opacity: 1;
+  }
+}
 
 // Import shared form field styling
 @import '../shared-form-styles';

@@ -285,7 +285,44 @@ export const sections: Array<SectionDesc> = [
       editable_section_title: 'Certifications',
       data: {},
       headerActions: { edit: true, delete: true, moveDown: false, moveUp: true, add: true },
-      items: []
+      items: [
+        {
+          id: 'cert1',
+          data: {
+            name: 'Certified JavaScript Developer',
+            authority: 'W3Schools',
+            licenseNumber: 'JS-2023-00123',
+            url: 'https://www.w3schools.com/cert/cert_javascript.asp',
+            date: '2023-06',
+            description: 'Credential demonstrating proficiency in JavaScript programming, DOM manipulation, and ES6+ features.'
+          },
+          actions: { edit: true, delete: true, moveUp: false, moveDown: true }
+        },
+        {
+          id: 'cert2',
+          data: {
+            name: 'AWS Certified Developer – Associate',
+            authority: 'Amazon Web Services',
+            licenseNumber: 'AWS-DEV-456789',
+            url: 'https://aws.amazon.com/certification/certified-developer-associate/',
+            date: '2022-11',
+            description: 'Certification for developing and maintaining applications on AWS, including serverless and cloud-native web apps.'
+          },
+          actions: { edit: true, delete: true, moveUp: true, moveDown: true }
+        },
+        {
+          id: 'cert3',
+          data: {
+            name: 'Professional Scrum Master I',
+            authority: 'Scrum.org',
+            licenseNumber: 'PSM1-2021-98765',
+            url: 'https://www.scrum.org/professional-scrum-certifications',
+            date: '2021-09',
+            description: 'Certification demonstrating knowledge of agile and Scrum practices for software development teams.'
+          },
+          actions: { edit: true, delete: true, moveUp: true, moveDown: false }
+        }
+      ]
     },
     {
       section: 'ACHIEVEMENTS_BULLET_POINTS',
