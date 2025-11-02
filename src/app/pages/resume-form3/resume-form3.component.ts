@@ -1,4 +1,3 @@
-
 import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -106,6 +105,13 @@ export interface DialogData {
 })
 export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked, OnChanges, AfterViewInit {
 
+
+    /**
+   * Index of the selected skills category for editing (SKILLS_BY_CATEGORY)
+   */
+  selectedSkillsCategoryIndex: number | null = null;
+
+
   // --- Section Editing State ---
   selectedSection: any = null;
   selectedSubSection: any = null;
@@ -144,6 +150,29 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
     this.selectedSection = section;
     this.selectedSubSection = this.getSubSection(section, subSectionName);
     this.openPanel(subSectionName, subSectionName); // or your panel logic
+  }
+
+  /**
+   * Handler for editing a skills category item (from SkillsCategorySectionComponent)
+   * Sets the selected category in the store for the selected resume, so the skills component can pull and display it.
+   */
+  onEditSkillsCategory(event: any) {
+    if (typeof event !== 'number') {
+      // Ignore or log unexpected events
+      return;
+    }
+    const index = event;
+    this.selectedSkillsCategoryIndex = index;
+    // Get the selected resume and the SKILLS_BY_CATEGORY section
+    const resume = this.resumeSignalForm();
+    const section = resume.sections?.find((s: any) => s.section === 'SKILLS_BY_CATEGORY');
+    if (section && section.items && section.items[index]) {
+      // Set the selected category in the store (UserStoreService)
+      this.userStore.setSelectedSkillsCategory(section.items[index].data);
+      // Open the skills editor for SKILLS_BY_CATEGORY
+      this.showSkillsDetails('SKILLS_BY_CATEGORY');
+    }
+    // If section/items/index are not valid, do not call showSkillsDetails
   }
 
   // --- Save/Update Handlers ---

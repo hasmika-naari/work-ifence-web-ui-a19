@@ -7,6 +7,7 @@
       </div>
     </div>
     <ng-container *ngIf="sectionName !== 'SKILLS_BULLET_POINTS'; else bulletedSkills">
+      <!-- categories section removed as requested -->
       <div class="form-row form-row--single" style="margin-bottom: 1.2rem;">
         <div class="field">
           <label for="sub_title">Category <span class="required">*</span></label>
@@ -50,10 +51,10 @@
         <div class="field">
           <label>Added Skills</label>
           <div class="skills-chips-container" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onSkillsReordered($event)">
-            <ng-container *ngIf="selectedCategory && selectedCategory.skills && selectedCategory.skills.length > 0; else emptySkills">
-              <div *ngFor="let skill of selectedCategory.skills; let i = index" class="skill-chip" cdkDrag>
+            <ng-container *ngIf="localSkills && localSkills.length > 0; else emptySkills">
+              <div *ngFor="let skill of localSkills; let i = index" class="skill-chip" cdkDrag>
                 <span class="skill-text">{{skill}}</span>
-                <button type="button" class="remove-btn" (click)="removeSkill(selectedCategory, skill)" title="Remove skill">
+                <button type="button" class="remove-btn" (click)="removeSkill(i)" title="Remove skill">
                   <i class="pi pi-times"></i>
                 </button>
                 <div *cdkDragPlaceholder class="skill-chip-placeholder">{{skill}}</div>
@@ -102,7 +103,8 @@
       </div>
     </ng-template>
     <div class="form-actions" style="margin-top: 2rem; text-align: right;">
-      <button type="button" class="action-btn action-btn--primary" (click)="saveAndContinue()" [disabled]="skillsForm.invalid || (sectionName !== 'SKILLS_BULLET_POINTS' && (!selectedCategory || !selectedCategory.skills.length)) || (sectionName === 'SKILLS_BULLET_POINTS' && !skillsBulletPoints.length)" [matTooltip]="getButtonTooltip()" tooltipPosition="top">
+  <button type="button" class="action-btn action-btn--primary" (click)="saveAndContinue()" 
+    [disabled]="skillsForm.invalid || (sectionName !== 'SKILLS_BULLET_POINTS' && (!selectedCategory?.data?.skills?.length)) || (sectionName === 'SKILLS_BULLET_POINTS' && !skillsBulletPoints.length)" [matTooltip]="getButtonTooltip()" tooltipPosition="top">
         <i class="pi pi-check"></i>
         Save Skills
       </button>

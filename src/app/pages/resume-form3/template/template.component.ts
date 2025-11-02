@@ -842,6 +842,15 @@ formatSkills(items : string[]){
     else if(section === "ACHIEVEMENT_WITH_DESC"){
       this.userStore.setSelectedAccomplishment(selectedJson)
     }
+    else if(section === "SKILLS_BY_CATEGORY"){
+      // Set the selected skills category in the store for editing
+      this.userStore.setSelectedSkillsCategory(selectedJson);
+    }
+    else if(section === "SKILLS_BULLET_POINTS"){
+      // Optionally, set selected skill bullet points if you have a setter
+      // this.userStore.setSelectedSkillsBulletPoints(selectedJson);
+      // (If not needed, you can skip this)
+    }
     this.markDirty();
     this.editSection.emit({section : section})
   }
@@ -1393,6 +1402,7 @@ getSectionTitle(section : string){
   // Handles edit event from skills by category items
 onEditSkillsCategoryItem(index: number) {
   const items = this.getSectionItems('SKILLS_BY_CATEGORY');
+  console.log('onEditSkillsCategoryItem called with index:', index, 'items:', items);
   const item = items[index];
   if (item) {
     this.editSectionHandler('SKILLS_BY_CATEGORY', item);

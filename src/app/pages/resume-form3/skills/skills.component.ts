@@ -33,7 +33,6 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { CdkDragDrop, CdkDragEnter, CdkDragExit, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SectionDesc } from 'src/app/services/store/user-store';
 
-
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
 }
@@ -67,27 +66,18 @@ type SkillV2 = SkillV2Base & { _newSkill?: string };
 
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
-
-
 export class SkillsComponent implements OnInit, OnDestroy {
+  /**
+   * Index of the selected category to edit (for SKILLS_BY_CATEGORY mode)
+   */
+  @Input() selectedCategoryIndex: number | null = null;
   /**
    * The currently selected category for skills by category mode.
    */
-  public selectedCategory: SkillV2 | null = null;
-  // Handles drag-and-drop reordering of skills within a category
-  dropInList(item: any, event: any): void {
-    if (!item || !item.skills) return;
-    const previousIndex = event.previousIndex;
-    const currentIndex = event.currentIndex;
-    if (previousIndex === currentIndex) return;
-    const skills = [...item.skills];
-    const [moved] = skills.splice(previousIndex, 1);
-    skills.splice(currentIndex, 0, moved);
-    item.skills = skills;
-    this.checkForFormChanges();
-    this.cdr.detectChanges();
-  }
-
+  public selectedCategory: any | null = null;
+  /**
+   * Index of the selected category to edit (for SKILLS_BY_CATEGORY mode)
+   */
   @ViewChild('sectionAuto') sectionAutocomplete!: MatAutocomplete;
 
   // Skills bullet points properties
@@ -146,13 +136,17 @@ export class SkillsComponent implements OnInit, OnDestroy {
 
   subs: Array<Subscription> = [];
 
-
   skillsForm = this._formBuilder.group({
     skills: [''],
     sub_title : [''],
     skillsv2 : [''],
     section_title : ['Skills', Validators.required]
   });
+
+  /**
+   * Local array to hold skills for SKILLS_BY_CATEGORY mode before saving to store.
+   */
+  localSkills: string[] = [];
 
   // Skill section suggestions
   sectionOptions: string[] = [
@@ -263,9 +257,32 @@ export class SkillsComponent implements OnInit, OnDestroy {
     } else if (this.sectionName === 'SKILLS_CATEGORY' || this.sectionName === 'SKILLS_BY_CATEGORY') {
       this.setSkillsValues();
       this.setSkillsV2Values();
-      if (!this.selectedCategory) {
+      // If an index is provided, load that category for editing from the store
+      const selectedCategory = this.userStore.getSelectedSkillsCategory && this.userStore.getSelectedSkillsCategory();
+      if (selectedCategory) {
+        this.selectedCategory = selectedCategory;
+        // Prefer data.name if present, fallback to sub_title
+        const categoryName = selectedCategory.data?.name || selectedCategory.sub_title || '';
+        this.skillsForm.controls['sub_title'].setValue(categoryName);
+        // Always re-initialize localSkills from the selectedCategory when editing
+        this.localSkills = Array.isArray(selectedCategory.data?.skills)
+          ? [...selectedCategory.data.skills]
+          : [];
+      } else if (this.selectedCategoryIndex !== null && this.skills_v2 && this.skills_v2[this.selectedCategoryIndex]) {
+        this.selectedCategory = this.skills_v2[this.selectedCategoryIndex];
+        const categoryName = this.selectedCategory.data?.name || this.selectedCategory.sub_title || '';
+        this.skillsForm.controls['sub_title'].setValue(categoryName);
+        this.localSkills = Array.isArray(this.selectedCategory.data?.skills)
+          ? [...this.selectedCategory.data.skills]
+          : [];
+      } else {
+        // Always start with a new/empty category when loading from menu
         this.selectedCategory = { sub_title: '', skills: [], _newSkill: '' };
+        this.skillsForm.controls['sub_title'].setValue('');
+        this.localSkills = [];
       }
+      // Log the selectedCategory for debugging
+      console.log('[SkillsComponent] selectedCategory after init:', this.selectedCategory);
     }
 
     // Initialize section title autocomplete
@@ -304,8 +321,10 @@ export class SkillsComponent implements OnInit, OnDestroy {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    // Filter out undefined/null options before calling toLowerCase
+    return this.options
+      .filter(option => typeof option === 'string')
+      .filter(option => option.toLowerCase().includes(filterValue));
   }
 
   private _filterSectionOptions(value: string): string[] {
@@ -315,11 +334,12 @@ export class SkillsComponent implements OnInit, OnDestroy {
       console.log('Returning all options:', this.sectionOptions);
       return [...this.sectionOptions]; // Return a copy of all options
     }
-    
+
     const filterValue = value.toLowerCase().trim();
-    const filtered = this.sectionOptions.filter(option => 
-      option.toLowerCase().includes(filterValue)
-    );
+    // Filter out undefined/null options before calling toLowerCase
+    const filtered = this.sectionOptions
+      .filter(option => typeof option === 'string')
+      .filter(option => option.toLowerCase().includes(filterValue));
     console.log('Filtered options:', filtered);
     return filtered;
   }
@@ -354,6 +374,14 @@ export class SkillsComponent implements OnInit, OnDestroy {
     if (this.sectionName === "SKILLS_BULLET_POINTS") {
       // Always enable the button for now
       this.hasFormChanged = true;
+    } else if (this.sectionName === 'SKILLS_BY_CATEGORY') {
+      // Enable only if category has value, at least one skill, and skills changed
+      const categoryValue = this.skillsForm.controls['sub_title'].value?.trim();
+      // Prefer selectedCategory.data.skills if present, else fallback
+      const skillsArr = this.selectedCategory?.data?.skills || this.selectedCategory?.skills || [];
+      const originalSkillsArr = this.originalFruits || [];
+      const skillsChanged = JSON.stringify(skillsArr) !== JSON.stringify(originalSkillsArr);
+      this.hasFormChanged = !!categoryValue && skillsArr.length > 0 && skillsChanged;
     } else {
       const sectionTitleChanged = this.skillsForm.controls['section_title'].value !== this.originalFormValues.section_title;
       const fruitsChanged = JSON.stringify(this.fruits) !== JSON.stringify(this.originalFruits);
@@ -476,16 +504,41 @@ export class SkillsComponent implements OnInit, OnDestroy {
   saveAndContinue(): void {
     this.markFormGroupTouched(this.skillsForm);
 
-    if (this.sectionName == "SKILLS_BULLET_POINTS") {
-      // Save skills bullet points
-      this.userStore.setSkillsBulletPoints(this.skillsBulletPoints);
-
-      // Update section status
-      if (!this.sectionStatus().isSkillsBulletPoints) {
+    if (this.sectionName === 'SKILLS_BY_CATEGORY' && this.selectedCategory) {
+      // Save/update the category and its skills in the selectedResume's SKILLS_BY_CATEGORY section
+      const resume = this.resumeSignalForm();
+      const section = resume.sections?.find((s: any) => s.section === 'SKILLS_BY_CATEGORY');
+      if (section && this.selectedCategory) {
+        // Find the category item in section.items by id or name
+        const categoryName = this.skillsForm.controls['sub_title'].value?.trim();
+        // Always use localSkills for saving
+        let itemToUpdate = section.items?.find((item: any) => {
+          if (item.data?.id && this.selectedCategory.data?.id) {
+            return item.data.id === this.selectedCategory.data.id;
+          }
+          return (item.data?.name || item.data?.sub_title) === (this.selectedCategory.data?.name || this.selectedCategory.sub_title);
+        });
+        if (itemToUpdate) {
+          if (itemToUpdate.data) {
+            itemToUpdate.data.name = categoryName;
+            itemToUpdate.data.skills = [...this.localSkills];
+          }
+        } else {
+          section.items = section.items || [];
+          section.items.push({ data: { name: categoryName, skills: [...this.localSkills] } });
+        }
+        // Also update selectedCategory.data.skills so UI stays in sync
+        if (this.selectedCategory.data) {
+          this.selectedCategory.data.skills = [...this.localSkills];
+        }
+      }
+      // Update section status for regular skills
+      if (!this.sectionStatus().isSkill) {
         const status = this.sectionStatus();
-        status.isSkillsBulletPoints = true;
+        status.isSkill = true;
         this.userStore.updateSectionStatus(status);
       }
+      this.userStore.setResumeSections(this.sections());
     } else {
       // Handle other skills sections
       let skills: Skill[] = [];
@@ -763,15 +816,13 @@ export class SkillsComponent implements OnInit, OnDestroy {
   addSkillToCategory(event?: Event): void {
     event?.preventDefault();
     const skillValue = this.skillsForm.controls['skills'].value?.trim();
-    // If no selectedCategory, create a default one
-    if (!this.selectedCategory) {
-      this.selectedCategory = { sub_title: '', skills: [], _newSkill: '' };
-    }
-    if (skillValue && this.selectedCategory) {
-      if (!this.selectedCategory.skills.includes(skillValue)) {
-        this.selectedCategory.skills.push(skillValue);
+    if (this.sectionName === 'SKILLS_BY_CATEGORY') {
+      if (skillValue && !this.localSkills.includes(skillValue)) {
+        this.localSkills.push(skillValue);
+        this.skillsForm.controls['skills'].setValue('');
       }
-      this.skillsForm.controls['skills'].setValue('');
+    } else {
+      // ...existing logic for other section types...
     }
   }
 
