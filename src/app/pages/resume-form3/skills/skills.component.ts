@@ -656,9 +656,18 @@ export class SkillsComponent implements OnInit, OnDestroy {
       this.skillsForm.controls['skills'].setValue(null);
     }
 
-  removeSkill(item: any, skill: string) {
-    item.skills = item.skills.filter((s: any) => s !== skill);
-  }  
+
+  removeSkill(index: number): void {
+    if (Array.isArray(this.localSkills) && index > -1 && index < this.localSkills.length) {
+      this.localSkills = [
+        ...this.localSkills.slice(0, index),
+        ...this.localSkills.slice(index + 1)
+      ];
+      this.skillsForm.markAsDirty();
+      this.checkForFormChanges?.();
+      this.cdr.detectChanges?.();
+    }
+  }
 
   remove(fruit: Skill): void {
     const index = this.fruits.indexOf(fruit);
