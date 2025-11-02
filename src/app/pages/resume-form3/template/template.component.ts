@@ -133,6 +133,10 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  // Handles delete event from certifications section (for (delete) output)
+  onDeleteCertification(index: number): void {
+    this.deleteCertificationItem(index);
+  }
   // Handles move up event from certifications section
   onMoveUpCertification(index: number) {
     const items = this.getSectionItems('CERTIFICATIONS');

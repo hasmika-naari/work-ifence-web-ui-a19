@@ -1373,9 +1373,37 @@ moveSectionDown(section: string) {
     // ...refactored above...
   }
 
-      deleteCertification(exp : Certification){
-    // ...refactored above...
-  }
+      deleteCertification(exp : SectionItem){
+        this.state.update((state) => {
+          const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+            if (section.section === 'CERTIFICATIONS') {
+              return {
+                ...section,
+                items: section.items?.filter(item => {
+                  // Support both {id, data} and {id} structures
+                  if (item.id && exp.id && item.id === exp.id) return false;
+                  if (item.data && item.data.id && exp.id && item.data.id === exp.id) return false;
+                  return true;
+                }) ?? []
+              };
+            }
+            return section;
+          });
+          return {
+            ...state,
+            currentTab: '',
+            isEdit: false,
+            isChangeInNewResume: true,
+            selectedResume: {
+              ...state.selectedResume,
+              resumeForm: {
+                ...state.selectedResume.resumeForm,
+                sections: updatedSections
+              }
+            }
+          };
+        });
+      }
 
       deleteAccomplishment(exp : Accomplishment){
     this.state.update((state) => {

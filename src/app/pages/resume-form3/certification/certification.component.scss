@@ -1,3 +1,38 @@
+// Compact calendar input wrapper for seamless look
+.calendar-input-wrapper {
+  display: flex;
+  align-items: center;
+  max-width: 220px;
+  .p-calendar {
+    width: 100%;
+    .p-inputtext {
+      border-radius: 4px 0 0 4px !important;
+      border-right: none !important;
+      min-width: 120px;
+      width: 120px;
+      box-shadow: none;
+    }
+    .p-inputtext:focus {
+      z-index: 2;
+    }
+    .p-datepicker-trigger {
+      border-radius: 0 4px 4px 0 !important;
+      border-left: 1px solid #e0e0e0 !important;
+      background: #fff;
+      margin-left: -4px;
+      height: 38px;
+      width: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .p-inputtext, .p-datepicker-trigger {
+      border: 1.5px solid #e0e0e0;
+      height: 38px;
+    }
+  }
+}
 // PrimeNG Calendar custom styling for modern look
 .p-calendar {
   width: 100%;

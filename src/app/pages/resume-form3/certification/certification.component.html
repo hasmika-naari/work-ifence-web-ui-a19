@@ -72,16 +72,21 @@
         <div class="form-row form-row--single">
             <div class="field">
                 <label for="issued_month_year">Issued Month & Year *</label>
-                <p-calendar
-                    id="issued_month_year"
-                    formControlName="issued_month_year"
-                    view="month"
-                    dateFormat="MM yy"
-                    [showIcon]="true"
-                    [yearNavigator]="true"
-                    yearRange="1950:2050"
-                    placeholder="Select Month and Year">
-                </p-calendar>
+                <div class="calendar-input-wrapper">
+                  <p-calendar
+                      id="issued_month_year"
+                      formControlName="issued_month_year"
+                      view="month"
+                      dateFormat="MM yy"
+                      [showIcon]="true"
+                      [yearNavigator]="true"
+                      yearRange="1950:2050"
+                      placeholder="Select Month and Year"
+                      [inputStyle]="{width: '160px', minWidth: '120px', borderRight: 'none', borderRadius: '4px 0 0 4px'}"
+                      [style]="{width: 'auto'}"
+                      panelStyleClass="calendar-panel-custom"
+                  ></p-calendar>
+                </div>
                 <small class="error" *ngIf="certifyForm.get('issued_month_year')?.hasError('required') && (certifyForm.get('issued_month_year')?.dirty || certifyForm.get('issued_month_year')?.touched)">
                     Required.
                 </small>
