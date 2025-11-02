@@ -420,7 +420,10 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   getSkillsCategorySection() { const section = this.addedSections().find((s: any) => s.section === 'SKILLS_CATEGORY'); return section?.items?.map((i: any) => i.data) || []; }
   getSkillsBulletPointsSection() { const section = this.addedSections().find((s: any) => s.section === 'SKILLS_BULLET_POINTS'); return section?.items?.map((i: any) => i.data.skill) || []; }
   getAccomplishmentSection() { const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENT_WITH_DESC'); return section?.items?.map((i: any) => i.data) || []; }
-  getAchievementBulletPointsSection() { const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENTS_BULLET_POINTS'); return section?.items?.[0]?.data || {}; }
+  getAchievementBulletPointsSection() {
+    const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENTS_BULLET_POINTS');
+    return section?.items || [];
+  }
   getCertificationBulletPointsSection() { const section = this.addedSections().find((s: any) => s.section === 'CERTIFICATIONS_BULLET_POINTS'); return section?.items?.[0]?.data || {}; }
   getCertificationsSection() { const section = this.addedSections().find((s: any) => s.section === 'CERTIFICATIONS'); return section?.items?.map((i: any) => i.data) || []; }
 
@@ -1116,7 +1119,7 @@ private animateSuccessfulDrop(targetIndex: number) {
     const certification = this.getSectionItems('CERTIFICATIONS');
     const skills = this.getSectionItems('SKILLS_CATEGORY');
     // For achievements and coursework, fallback to empty array if not found
-  const achievements = (this.getAchievementBulletPointsSection()?.ach?.length) || 0;
+  const achievements = this.getAchievementBulletPointsSection().length || 0;
   const coursework = (this.getCourseWorkSection()?.length) || 0;
     console.log('📊 Current Resume Data Status:', {
       contact: {
@@ -1238,13 +1241,13 @@ return data?.length==0
   }
 
   isAchievementDefaultData(){
-    const ach = this.getAchievementBulletPointsSection();
-    return ach?.ach == null || ach?.ach?.length == 0 || ach?.ach == undefined;
+  const ach = this.getAchievementBulletPointsSection();
+  return !ach || ach.length === 0;
   }
 
   hasAchievements(): boolean {
-    const ach = this.getAchievementBulletPointsSection();
-    return !!(ach?.ach && ach.ach.trim().length > 0);
+  const ach = this.getAchievementBulletPointsSection();
+  return Array.isArray(ach) && ach.length > 0;
   }
 
   isCertificationDefaultData(){

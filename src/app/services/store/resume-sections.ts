@@ -335,6 +335,34 @@ export const sections: Array<SectionDesc> = [
       editable_section_title: 'Achievements',
       data: {},
       headerActions: { edit: true, delete: true, moveDown: false, moveUp: true },
-      items: []
+      items: [
+        {
+          id: 'achievement1',
+          data: {
+            title: 'Received Employee of the Year award',
+            organization: 'Acme Corp',
+            year: '2023'
+          },
+          actions: { edit: true, delete: true, moveUp: false, moveDown: true }
+        },
+        {
+          id: 'achievement2',
+          data: {
+            title: 'Published 3 research papers in top journals',
+            organization: 'International Science Association',
+            year: '2022'
+          },
+          actions: { edit: true, delete: true, moveUp: true, moveDown: true }
+        },
+        {
+          id: 'achievement3',
+          data: {
+            title: 'Led a team to win a national hackathon',
+            organization: 'National Coding League',
+            year: '2021'
+          },
+          actions: { edit: true, delete: true, moveUp: true, moveDown: false }
+        }
+      ]
     }
   ];
