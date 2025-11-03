@@ -4,13 +4,23 @@
     <div class="preview-page preview-resume-renderer-page preview-browser-resume-page preview-browserResumePage">
       <div class="preview-top-actions">
         <p-button 
-          icon="pi pi-download" 
+          icon="pi pi-file-pdf" 
           [rounded]="true" 
           [text]="true" 
-          severity="success"
-          pTooltip="Download Resume"
+          severity="danger"
+          pTooltip="Download as PDF"
           tooltipPosition="bottom"
-          (onClick)="onDownloadHandler()"
+          (onClick)="onDownloadHandler('pdf')"
+        ></p-button>
+        <p-button 
+          icon="pi pi-file-word" 
+          [rounded]="true" 
+          [text]="true" 
+          severity="info"
+          [style]="{ 'margin-left': '8px' }"
+          pTooltip="Download as Word"
+          tooltipPosition="bottom"
+          (onClick)="onDownloadHandler('word')"
         ></p-button>
       </div>
       @if(selectedTemplateName == 'TEMPLATE_1'){
@@ -48,12 +58,21 @@
 
   <div class="preview-actions">
     <p-button 
-      icon="pi pi-download" 
-      label="Download"
+      icon="pi pi-file-pdf" 
+      label="Download PDF"
       [rounded]="false"
       [text]="false"
-      severity="primary"
-      (onClick)="onDownloadHandler()"
+      severity="danger"
+      (onClick)="onDownloadHandler('pdf')"
+    ></p-button>
+    <p-button 
+      icon="pi pi-file-word" 
+      label="Download Word"
+      [rounded]="false"
+      [text]="false"
+      severity="info"
+      [style]="{ 'margin-left': '8px' }"
+      (onClick)="onDownloadHandler('word')"
     ></p-button>
   </div>
 </div>

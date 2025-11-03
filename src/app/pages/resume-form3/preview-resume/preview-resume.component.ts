@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, inject, Input } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -51,6 +52,13 @@ import { ResumeTemplate10Component } from '../template10/template10.component';
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class PreviewResumeComponent implements OnInit, OnDestroy {
+  constructor(private router: Router, private messageService: MessageService) {
+    // Prefer @Input if provided; otherwise use dialog data if available
+    this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
+    this.themeToggleSubscription = this.themeService.isToggled$.subscribe(isToggled => {
+      this.isToggled = isToggled;
+    });
+  }
 
   isUserNameCheckInProgress = false;
   isToggled = false;
@@ -59,20 +67,13 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
 
 
   @Input() templateName: string | undefined;
-  @Output() download = new EventEmitter<void>();
+  @Output() download = new EventEmitter<'pdf' | 'word'>();
   @Output() close = new EventEmitter<void>();
 
   public dialogRef: MatDialogRef<PreviewResumeComponent> | null = inject(MatDialogRef<PreviewResumeComponent>, { optional: true });
   public themeService: ThemeCustomizerService = inject(ThemeCustomizerService);
   public data: DialogData | undefined = inject(MAT_DIALOG_DATA, { optional: true });
 
-    constructor(private router: Router) {
-  // Prefer @Input if provided; otherwise use dialog data if available
-  this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
-      this.themeToggleSubscription = this.themeService.isToggled$.subscribe(isToggled => {
-        this.isToggled = isToggled;
-      });
-    }
     ngOnDestroy(): void {
       if (this.themeToggleSubscription) {
         this.themeToggleSubscription.unsubscribe();
@@ -91,11 +92,23 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDownloadHandler(){
-    if (this.dialogRef) {
-      this.dialogRef.close({event : 'DOWNLOAD'});
-    } else {
-      this.download.emit();
+
+  onDownloadHandler(format: 'pdf' | 'word' = 'pdf') {
+    try {
+      if (this.dialogRef) {
+        this.dialogRef.close({ event: 'DOWNLOAD', format });
+      } else {
+        this.download.emit(format);
+      }
+    } catch (error: any) {
+      // Always show error toast at top-right
+      this.messageService.add({
+        key: 'global',
+        severity: 'error',
+        summary: 'Download Error',
+        detail: error?.message || error?.toString() || 'An error occurred during download.',
+        life: 7000
+      });
     }
   }
 

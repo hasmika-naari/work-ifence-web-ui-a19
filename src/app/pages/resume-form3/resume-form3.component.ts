@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -334,7 +335,9 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       public templateService : Templatesv2Service, 
       public dialog: MatDialog,
       public resumeService : ResumeService,
-      public pdfToImageService : PdfToImageService) {
+      public pdfToImageService : PdfToImageService,
+      public messageService: MessageService
+    ) {
         const filteredSections = this.staticSections.filter((s: SectionDesc) => s.section !== 'SKILLS_CATEGORY');
         this.userStore.setResumeSections(filteredSections);
       }
@@ -1966,8 +1969,15 @@ hideMenu() {
     }
   }
 
-  openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action);
+
+  openSnackBar(message: string, action: string = '') {
+    this.messageService.add({
+      key: 'global',
+      severity: 'info',
+      summary: action || 'Info',
+      detail: message,
+      life: 5000
+    });
   }
 
   getUnHideElements(){

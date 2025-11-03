@@ -27,13 +27,21 @@ import { LoadingScreenComponent } from './loading-screen/loading-screen.componen
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ScrollPositionDirective } from './scroll-position.directive';
+import { ToastModule } from 'primeng/toast';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { ErrorHandler } from '@angular/core';
+import { GlobalErrorHandler } from './services/global-error-handler';
 @Component({
     selector: 'app-root',
     imports: [RouterOutlet, RouterModule, CommonModule, LoadingScreenComponent,
-      SidebarComponent, HeaderComponent, FooterComponent, LoadingBarModule, ScrollPositionDirective],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss',
+      SidebarComponent, HeaderComponent, FooterComponent, LoadingBarModule, ScrollPositionDirective, ToastModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [ 
+      MessageService,
+      { provide: ErrorHandler, useClass: GlobalErrorHandler },
       {
         provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
         useValue: {
