@@ -59,10 +59,11 @@
                 type="button" 
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()"
-                matTooltip="Add to Resume"
+                [disabled]="!accomplishmentForm.get('section_title')?.value || !accomplishmentForm.get('acplsmnt')?.value || is_achievement_loading"
+                matTooltip="Save to Resume"
                 tooltipPosition="top">
                 <i class="pi pi-check"></i>
-                Add to Resume
+                Save to Resume
             </button>
         </div>
     </form>

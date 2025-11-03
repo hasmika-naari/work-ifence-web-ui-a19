@@ -116,7 +116,7 @@ import { sections } from "./resume-sections";
     selectedProject :Project = new Project();
     selectedEducation : Education = new Education();
     selectedCertification : SectionItem = { data: null };
-    selectedAccomplishment : Accomplishment = new Accomplishment();
+    selectedAccomplishment : SectionItem = { data: null };
     selectedCourseWork : courseWork = new courseWork();
     selectedSkill?: any;
     selectedSkillCategory?: any;

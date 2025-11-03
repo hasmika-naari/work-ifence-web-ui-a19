@@ -537,8 +537,8 @@ export class ResumeTemplate9Component implements OnInit, OnDestroy {
     else if(section === "CERTIFICATIONS"){
       this.userStore.setCertification({ data: new Certification() });
     }
-    else if(section === "ACHIEVEMENT_WITH_DESC"){
-      this.userStore.setSelectedAccomplishment( new Accomplishment());
+    else if(section === "ACHIEVEMENTS_BULLET_POINTS"){
+      this.userStore.setSelectedAccomplishment({ data: new Accomplishment() });
     }
     
     this.editSection.emit({section : section})

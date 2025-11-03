@@ -1,3 +1,5 @@
+    // ...existing code...
+
 import { Injectable, Signal, computed, signal, inject, Injector } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { Observable } from "rxjs";
@@ -105,7 +107,7 @@ export class UserStoreService {
         // Update both resumeForm.profileSummary and sections data
         this.setSummary(summary);
       }
-    }
+  }
 
        resetStore() {
         this.state.update((state) => ({
@@ -674,6 +676,7 @@ export class UserStoreService {
       });
     }
 
+
     addAchievement(ach : AchievementBulletPoints){
         this.state.update((state)=>({
             ...state,
@@ -682,6 +685,33 @@ export class UserStoreService {
             isChangeInNewResume : true,
             selectedResume : {...state.selectedResume , resumeForm : {...state.selectedResume.resumeForm , achievementBulletPoints : ach} }
             }))
+    }
+
+    updateAchievementItem(ach: AchievementBulletPoints, index: number) {
+      this.state.update((state) => {
+        const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+          if (section.section === 'ACHIEVEMENTS_BULLET_POINTS') {
+            const items = section.items ? [...section.items] : [];
+            const id = 'ach_' + Date.now();
+            items[index] = { id, data: ach };
+            return { ...section, items };
+          }
+          return section;
+        });
+        return {
+          ...state,
+          currentTab: 'ACHIEVEMENT',
+          isEdit: false,
+          isChangeInNewResume: true,
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              sections: updatedSections
+            }
+          }
+        };
+      });
     }
 
     updateCertificationItem(edu: SectionItem, index: number) {
@@ -710,6 +740,40 @@ export class UserStoreService {
       });
     }
 
+    /**
+     * Delete an achievement from ACHIEVEMENTS_BULLET_POINTS section by id or index
+     */
+    deleteAchievementItem(achievement: any, index?: number) {
+      this.state.update((state) => {
+        const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
+          if (section.section === 'ACHIEVEMENTS_BULLET_POINTS') {
+            let items = section.items ? [...section.items] : [];
+            if (achievement && achievement.id) {
+              items = items.filter(item => item.id !== achievement.id && (!item.data || item.data.id !== achievement.id));
+            } else if (typeof index === 'number') {
+              items.splice(index, 1);
+            }
+            return { ...section, items };
+          }
+          return section;
+        });
+        return {
+          ...state,
+          currentTab: '',
+          isEdit: false,
+          isChangeInNewResume: true,
+          selectedResume: {
+            ...state.selectedResume,
+            resumeForm: {
+              ...state.selectedResume.resumeForm,
+              sections: updatedSections
+            }
+          }
+        };
+      });
+    }
+    
+  
     addCertificationItem(edu: SectionItem) {
       this.state.update((state) => {
         const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
@@ -1697,7 +1761,7 @@ moveSectionDown(section: string) {
         }));
       }
 
-      setSelectedAccomplishment(accom: Accomplishment) {
+      setSelectedAccomplishment(accom: SectionItem) {
         this.state.update((state) => ({
           ...state,
           selectedResume: {
@@ -1809,7 +1873,7 @@ moveSectionDown(section: string) {
         return computed(()=> this.state().selectedResume.selectedProject);
       }
 
-      getSelectedAccomplishment() : Signal<Accomplishment> {
+      getSelectedAccomplishment() : Signal<SectionItem> {
         return computed(()=> this.state().selectedResume.selectedAccomplishment);
       }
 

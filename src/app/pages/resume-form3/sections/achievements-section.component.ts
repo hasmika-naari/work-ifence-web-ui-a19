@@ -20,8 +20,8 @@ import { ButtonModule } from 'primeng/button';
           <span class="ach-actions" *ngIf="!isPreview">
             <button class="p-button-rounded p-button-text p-button-sm" pButton pTooltip="Edit" icon="pi pi-pencil" (click)="edit.emit(i)"></button>
             <button class="p-button-rounded p-button-text p-button-sm" pButton pTooltip="Delete" icon="pi pi-trash" (click)="delete.emit(i)"></button>
-            <button class="p-button-rounded p-button-text p-button-sm" pButton pTooltip="Move Up" icon="pi pi-arrow-up" (click)="moveItemUp.emit(i)"></button>
-            <button class="p-button-rounded p-button-text p-button-sm" pButton pTooltip="Move Down" icon="pi pi-arrow-down" (click)="moveItemDown.emit(i)"></button>
+            <button class="p-button-rounded p-button-text p-button-sm" pButton pTooltip="Move Up" icon="pi pi-arrow-up" (click)="moveItemUp.emit(i)" [disabled]="i === 0"></button>
+            <button class="p-button-rounded p-button-text p-button-sm" pButton pTooltip="Move Down" icon="pi pi-arrow-down" (click)="moveItemDown.emit(i)" [disabled]="i === achievements.length - 1"></button>
           </span>
         </li>
       </ul>
@@ -40,7 +40,7 @@ export class AchievementsSectionComponent {
   @Output() moveDown = new EventEmitter<void>();
 
   // Per-item actions
-  @Output() edit = new EventEmitter<number>();
+  @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<number>();
   @Output() moveItemUp = new EventEmitter<number>();
   @Output() moveItemDown = new EventEmitter<number>();

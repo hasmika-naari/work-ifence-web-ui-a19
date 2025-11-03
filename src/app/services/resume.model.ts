@@ -331,12 +331,18 @@ export class Education{
   }
 
   export class AchievementBulletPoints{
-    ach : string;
-    original_html_achievement : string;
-    isDefault : boolean = true
+    title: string;
+    organization: string;
+    year: string;
+    ach?: string; // legacy or description
+    original_html_achievement?: string;
+    isDefault: boolean = true;
     constructor(){
-      this.ach = ""
-      this.original_html_achievement =""
+      this.title = '';
+      this.organization = '';
+      this.year = '';
+      this.ach = '';
+      this.original_html_achievement = '';
     }
   }
 

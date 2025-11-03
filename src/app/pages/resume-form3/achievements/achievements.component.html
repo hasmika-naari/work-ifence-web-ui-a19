@@ -18,10 +18,28 @@
             </div>
         </div>
 
-        <div class="form-row form-row--single experiance-description">
+
+        <div class="form-row form-row--single">
             <div class="field">
-                <label for="description">Achievements</label>
-                <div id="editorContainer" #editorContainer></div>
+                <label for="title">Achievement Title *</label>
+                <input id="title" type="text" pInputText formControlName="title" placeholder="e.g., Received Employee of the Year award" />
+                <small class="error" *ngIf="achievementsForm.get('title')?.hasError('required') && (achievementsForm.get('title')?.dirty || achievementsForm.get('title')?.touched)">Required.</small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single">
+            <div class="field">
+                <label for="organization">Organization *</label>
+                <input id="organization" type="text" pInputText formControlName="organization" placeholder="e.g., Acme Corp" />
+                <small class="error" *ngIf="achievementsForm.get('organization')?.hasError('required') && (achievementsForm.get('organization')?.dirty || achievementsForm.get('organization')?.touched)">Required.</small>
+            </div>
+        </div>
+
+        <div class="form-row form-row--single" [hidden]="false">
+            <div class="field">
+                <label for="year">Year *</label>
+                <p-datePicker id="year" formControlName="year" view="year" dateFormat="yy" [showIcon]="true" [yearNavigator]="true" yearRange="1950:2050" placeholder="Select Year"></p-datePicker>
+                <small class="error" *ngIf="achievementsForm.get('year')?.hasError('required') && (achievementsForm.get('year')?.dirty || achievementsForm.get('year')?.touched)">Required.</small>
             </div>
         </div>
 
@@ -31,10 +49,10 @@
                 class="action-btn action-btn--primary" 
                 (click)="saveAndContinue()"
                 [disabled]="achievementsForm.invalid || !hasFormChanged"
-                [matTooltip]="getButtonTooltip()"
+                [matTooltip]="getButtonTooltip() || 'Save to Resume'"
                 tooltipPosition="top">
                 <i class="pi pi-check"></i>
-                Add to Resume
+                Save to Resume
             </button>
         </div>
     </form>

@@ -30,7 +30,8 @@ import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent } 
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import Quill from 'quill';
-import { SectionDesc } from 'src/app/services/store/user-store';
+import { SectionDesc, SectionItem } from 'src/app/services/store/user-store';
+import { S } from 'node_modules/@fullcalendar/core/internal-common';
 
 
 
@@ -73,7 +74,7 @@ export class AccomplishmentsComponent implements OnInit, OnDestroy {
   // sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
-  selectedAccomplishment : Signal<Accomplishment> = this.userStore.getSelectedAccomplishment();
+  selectedAccomplishment : Signal<SectionItem> = this.userStore.getSelectedAccomplishment();
     sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
     multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
 
@@ -130,10 +131,10 @@ export class AccomplishmentsComponent implements OnInit, OnDestroy {
   }
 
 setAccomplishments(){
-  this.accomplishmentForm.controls['acplsmnt'].setValue(this.selectedAccomplishment().accomplisment);
-  this.accomplishmentForm.controls['date'].setValue(this.selectedAccomplishment().date);
+  this.accomplishmentForm.controls['acplsmnt'].setValue(this.selectedAccomplishment().data.accomplisment);
+  this.accomplishmentForm.controls['date'].setValue(this.selectedAccomplishment().data.date);
   if(this.editor?.clipboard){
-    this.editor.clipboard.dangerouslyPasteHTML(this.selectedAccomplishment().original_html_description);
+    this.editor.clipboard.dangerouslyPasteHTML(this.selectedAccomplishment().data.original_html_description);
   }
   let section_title;
   if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
@@ -170,6 +171,7 @@ setSkillsCategory(){
     let des = this.getEditorData();
       console.log(des);
       let accom = new Accomplishment();
+      let secItem: SectionItem = { id: '', data: null };
       if(des.includes('data-list="bullet"')){
         const correctedHTML = des.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
         accom.description = correctedHTML.length>0? correctedHTML : "";
@@ -192,22 +194,24 @@ setSkillsCategory(){
     const accSectionIdx = this.sections().findIndex((section: any) => section.section === 'ACHIEVEMENT_WITH_DESC');
     let accItems = accSectionIdx !== -1 ? this.sections()[accSectionIdx].items || [] : [];
     if(this.selectedAccomplishment().id){
-      accom.id = this.selectedAccomplishment().id;
+      secItem.id = this.selectedAccomplishment().id;
+      secItem.data = accom;
       let index = accItems.findIndex((obj: any) => obj.id === this.selectedAccomplishment().id);
       if (index !== -1) {
-        accItems[index] = { id: accom.id, data: accom };
+        accItems[index] = { id: secItem.id, data: secItem.data };
       }
       this.sections()[accSectionIdx].items = accItems;
       this.userStore.setResumeSections(this.sections());
     } else {
-      accom.id = (accItems.length + 1).toString();
-      accItems.push({ id: accom.id, data: accom });
+      secItem.id = (accItems.length + 1).toString();
+      secItem.data = accom;
+      accItems.push(secItem);
       if (accSectionIdx !== -1) {
         this.sections()[accSectionIdx].items = accItems;
         this.userStore.setResumeSections(this.sections());
       }
     }
-    this.userStore.setSelectedAccomplishment(new Accomplishment());
+    this.userStore.setSelectedAccomplishment({ data: new Accomplishment() });
     this.accomplishmentForm.reset()
     if(!this.sectionStatus().isAccomplishments){
       let status = this.sectionStatus()

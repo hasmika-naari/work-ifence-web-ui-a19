@@ -32,6 +32,8 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import Quill from 'quill';
 import { SectionDesc } from 'src/app/services/store/user-store';
+import { Calendar } from 'primeng/calendar';
+import { DatePicker } from 'primeng/datepicker';
 
 
 
@@ -53,7 +55,7 @@ export interface DialogData {
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
     MatInputModule,ButtonModule,OverlayPanelModule,MatTooltipModule,
-    MatButtonModule,AccordionModule,TextareaModule,
+    MatButtonModule,AccordionModule,TextareaModule, Calendar, DatePicker,
     MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule],
   templateUrl: './achievements.component.html',
   styleUrls: ['./achievements.component.scss'],
@@ -83,13 +85,15 @@ export class AchievementsComponent implements OnInit, OnDestroy {
 
   outLineButton = true;
   @Output() contact = new EventEmitter();
-  @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
+  @ViewChild('editorContainer', { static: true }) editorContainer?: ElementRef;
   @Input() sectionName : string = '';
 
   achievementsForm = this._formBuilder.group({
-    'achievements' : new FormControl(''),
-    'section_title' : new FormControl('', Validators.required)
-  })
+    title: new FormControl('', Validators.required),
+    organization: new FormControl('', Validators.required),
+    year: new FormControl('', Validators.required),
+    section_title: new FormControl('', Validators.required)
+  });
 
   // Form change detection properties
   private originalFormValues: any = {};
@@ -164,40 +168,42 @@ export class AchievementsComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.achievementsForm.controls['section_title'].setValue(this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'? 'Achievements' : 'Certifications')
-  
+    this.achievementsForm.controls['section_title'].setValue(this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'? 'Achievements' : 'Certifications');
+    this.achievementsForm.enable();
+    this.setupFormChangeDetection();
   }
 
 
 
-setAchievements(){
-  if(this.editor?.clipboard){
+  setAchievements() {
     // Find the ACHIEVEMENTS_BULLET_POINTS section and get its first item's data
     const achSection = this.sections().find((section: any) => section.section === 'ACHIEVEMENTS_BULLET_POINTS');
     const achItem = achSection?.items && achSection.items.length > 0 ? achSection.items[0].data : null;
-    if(achItem && achItem.original_html_achievement) {
-      this.editor.clipboard.dangerouslyPasteHTML(achItem.original_html_achievement);
+    if (achItem) {
+      this.achievementsForm.patchValue({
+        title: achItem.title || '',
+        organization: achItem.organization || '',
+        year: achItem.year || '',
+      });
     }
-  }
-  let section_title;
-    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
-      this.multipleSections().map((e : SectionDesc[])=>{
-        e.map((section : SectionDesc)=>{
-          if(section.section == 'ACHIEVEMENTS_BULLET_POINTS'){
+    let section_title;
+    if (this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9') {
+      this.multipleSections().map((e: SectionDesc[]) => {
+        e.map((section: SectionDesc) => {
+          if (section.section == 'ACHIEVEMENTS_BULLET_POINTS') {
             section_title = section.editable_section_title
           }
         })
       })
+    } else {
+      this.sections().map((section: SectionDesc) => {
+        if (section.section == 'ACHIEVEMENTS_BULLET_POINTS') {
+          section_title = section.editable_section_title
+        }
+      })
     }
-    else{
-      this.sections().map((section : SectionDesc)=>{
-          if(section.section == 'ACHIEVEMENTS_BULLET_POINTS'){
-            section_title = section.editable_section_title
-          }
-        })
-    }
-    this.achievementsForm.controls['section_title'].setValue(section_title??'Achievements')
-}
+    this.achievementsForm.controls['section_title'].setValue(section_title ?? 'Achievements');
+  }
 
 setCertification(){
   if(this.editor?.clipboard){
@@ -236,48 +242,65 @@ setCertification(){
 
 
   saveAndContinue(){
-    let des = this.getEditorData();
-    console.log(des);
-    if(this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'){
-      let achievement = new AchievementBulletPoints();
-    if(des.includes('data-list="bullet"')){
-      const correctedHTML = des.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
-      achievement.ach = correctedHTML.length>0? correctedHTML : "";
-    }
-    else{
-      achievement.ach = des.length>0? des : "";
-    }
-    achievement.original_html_achievement = des;
-    if(des.length > 0){
-      achievement.isDefault = false
-    }
-    else{
-      achievement.isDefault = true
-    }
-    this.userStore.addAchievement(achievement);
-    if(!this.sectionStatus().isAchievement){
-      let status = this.sectionStatus()
-      status.isAchievement = true;
-      this.userStore.updateSectionStatus(status);
-    }
-    }
-    else if(this.sectionName == 'CERTIFICATIONS_BULLET_POINTS'){
-      let certification = new CertificationBulletPoints();
-    if(des.includes('data-list="bullet"')){
-      const correctedHTML = des.replace('<ol>', '<ul>').replace("</ol>", '</ul>');
-      certification.point = correctedHTML.length>0? correctedHTML : "";
-    }
-    else{
-      certification.point = des.length>0? des : "";
-    }
-    certification.original_html_content = des;
-    if(des.length > 0){
-      certification.isDefault = false
-    }
-    else{
-      certification.isDefault = true
-    }
-    this.userStore.addCertificationBulletPoints(certification);
+  if(this.sectionName == 'ACHIEVEMENTS_BULLET_POINTS'){
+      // Read form fields
+      const formValue = this.achievementsForm.value;
+
+  let achievement = new AchievementBulletPoints();
+      achievement.title = formValue.title || '';
+      achievement.organization = formValue.organization || '';
+      // If year is a Date object, extract year as string
+      if (formValue.year && typeof formValue.year === 'object' && typeof (formValue.year as Date).getFullYear === 'function') {
+        achievement.year = String((formValue.year as Date).getFullYear());
+      } else if (typeof formValue.year === 'string') {
+        achievement.year = formValue.year;
+      } else {
+        achievement.year = '';
+      }
+  achievement.isDefault = !formValue.title;
+
+      // Find the section and items
+      const achSection = this.sections().find((section: any) => section.section === 'ACHIEVEMENTS_BULLET_POINTS');
+      let items = achSection?.items ? [...achSection.items] : [];
+
+      // Check if editing (has selected index or id)
+      let editIndex = -1;
+      if (items.length > 0) {
+        // Try to find by id or just update first for now
+        editIndex = 0;
+      }
+
+      let sectionItem;
+      if (editIndex >= 0) {
+        // Update existing
+        sectionItem = { ...items[editIndex], data: achievement };
+        items[editIndex] = sectionItem;
+      } else {
+        // Add new
+        sectionItem = { id: 'ach_' + Date.now(), data: achievement };
+        items.push(sectionItem);
+      }
+
+      // LOG: Show what is being sent to the store
+      console.log('Achievement to store:', achievement);
+      console.log('Section item:', sectionItem);
+      console.log('All items:', items);
+
+      // Update the section's items and store
+      const updatedSections = this.sections().map((section: any) => {
+        if (section.section === 'ACHIEVEMENTS_BULLET_POINTS') {
+          return { ...section, items };
+        }
+        return section;
+      });
+      console.log('Updated sections:', updatedSections);
+      this.userStore.setResumeSections(updatedSections);
+
+      if(!this.sectionStatus().isAchievement){
+        let status = this.sectionStatus()
+        status.isAchievement = true;
+        this.userStore.updateSectionStatus(status);
+      }
     }
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
           this.multipleSections().map((e : SectionDesc[])=>{
@@ -322,7 +345,7 @@ setCertification(){
   
 
   async ngAfterViewInit(): Promise<void> {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.editorContainer?.nativeElement) {
       const Quill = (await import('quill')).default; // Dynamically import Quill
 
       this.editor = new Quill(this.editorContainer.nativeElement, {
@@ -340,19 +363,7 @@ setCertification(){
         },
       });
 
-      // Sync editor achievements with FormControl
-      this.editor.on('text-change', () => {
-        this.achievementsForm.get('achievements')?.setValue(this.editor.root.innerHTML, { emitEvent: false });
-        // Check for changes when editor content changes
-        this.checkForFormChanges();
-      });
-
-      // Sync FormControl value changes with Quill
-      this.achievementsForm.get('achievements')?.valueChanges.subscribe((value) => {
-        if (this.editor.root.innerHTML !== value) {
-          this.editor.root.innerHTML = value || '';
-        }
-      });
+      // If you want to keep the Quill editor for a description field, add a new field and sync here. Otherwise, remove this block.
 
       // Setup form change detection after editor is ready
       this.setupFormChangeDetection();
@@ -382,6 +393,7 @@ setCertification(){
   }
 
   getEditorData(){
+    if (!this.editor) return '';
     return this.editor.root.innerHTML;
   }
   

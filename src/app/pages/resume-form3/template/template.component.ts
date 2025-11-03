@@ -1,6 +1,4 @@
 // ...existing imports...
-
-  // ...rest of the class...
 import { WorkExperienceSectionComponent } from '../sections/work-experience-section.component';
 import { ProjectSectionComponent } from '../sections/project-section.component';
 import { CertificationsSectionComponent } from '../sections/certifications-section.component';
@@ -133,6 +131,59 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  // Handles move up event from achievements section
+  onMoveUpAchievement(index: number): void {
+    const items = this.getSectionItems('ACHIEVEMENTS_BULLET_POINTS');
+    if (!items || index == null || index <= 0) return;
+    [items[index - 1], items[index]] = [items[index], items[index - 1]];
+    // Update the ACHIEVEMENTS_BULLET_POINTS section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'ACHIEVEMENTS_BULLET_POINTS') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+
+  // Handles move down event from achievements section
+  onMoveDownAchievement(index: number): void {
+    const items = this.getSectionItems('ACHIEVEMENTS_BULLET_POINTS');
+    if (!items || index == null || index >= items.length - 1) return;
+    [items[index], items[index + 1]] = [items[index + 1], items[index]];
+    // Update the ACHIEVEMENTS_BULLET_POINTS section in the sections array
+    const sections = this.resumeForm().sections?.map((section: any) => {
+      if (section.section === 'ACHIEVEMENTS_BULLET_POINTS') {
+        return { ...section, items: [...items] };
+      }
+      return section;
+    }) ?? [];
+    this.userStore.setResumeSections(sections);
+    this.updateSectionItemsCache();
+    this.markDirty();
+    this.cdr.detectChanges();
+  }
+  // Handles delete event from achievements section (for (delete) output)
+  onDeleteAchievement(index: number): void {
+    const achievements = this.getSectionItems('ACHIEVEMENTS_BULLET_POINTS');
+    const achievementItem = achievements[index];
+    this.confirmDeleteItemDialog('ACHIEVEMENTS_BULLET_POINTS', achievementItem);
+  }
+  // Handles edit event from achievements section (for (edit) output)
+  onEditAchievement(index: number): void {
+    const achievements = this.getSectionItems('ACHIEVEMENTS_BULLET_POINTS');
+    console.log('Editing achievement at index:', index);
+    const achievementItem = achievements[index];
+    console.log('Achievement item:', achievementItem);
+    if (achievementItem) {
+      // Always pass a new object to trigger store/effect updates
+      const achievementCopy = { ...achievementItem };
+      this.editSectionHandler('ACHIEVEMENTS_BULLET_POINTS', achievementCopy);
+    }
+  }
   // Handles delete event from certifications section (for (delete) output)
   onDeleteCertification(index: number): void {
     this.deleteCertificationItem(index);
@@ -748,8 +799,15 @@ formatSkills(items : string[]){
         else if(section === "CERTIFICATIONS"){
           this.userStore.deleteCertification(selectedJson)
         }
-        else if(section == 'ACHIEVEMENT_WITH_DESC'){
+        else if(section === 'ACHIEVEMENT_WITH_DESC'){
           this.userStore.deleteAccomplishment(selectedJson)
+        }
+        else if(section === 'ACHIEVEMENTS_BULLET_POINTS'){
+          this.userStore.deleteAchievementItem(selectedJson);
+          setTimeout(() => {
+            this.updateSectionItemsCache();
+            this.cdr.detectChanges();
+          }, 0);
         }
         this.markDirty();
       }
@@ -887,7 +945,7 @@ formatSkills(items : string[]){
       this.userStore.setSelectedCertification(selectedJson);
       this.userStore.updateCertification(selectedJson)
     }
-    else if(section === "ACHIEVEMENT_WITH_DESC"){
+    else if(section === "ACHIEVEMENTS_BULLET_POINTS"){
       this.userStore.setSelectedAccomplishment(selectedJson)
     }
     else if(section === "SKILLS_BY_CATEGORY"){
