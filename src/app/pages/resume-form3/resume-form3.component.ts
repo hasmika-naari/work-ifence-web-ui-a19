@@ -660,6 +660,20 @@ ngAfterViewInit(): void {
     this.currentSections = this.userStore.getCurrentSections();
     this.browser = isPlatformBrowser(this.platformId);
     
+    // Subscribe to loading bar state to reset isDisabled when loading stops
+    // This handles cases where interceptor stops the loading bar on HTTP 500 errors
+    this.subs.push(
+      this.loadingBar.value$.subscribe((value) => {
+        // When loading bar reaches 0 (stopped) and isDisabled is true, reset it
+        if (value === 0 && this.isDisabled) {
+          // Small delay to ensure loading bar animation completes
+          setTimeout(() => {
+            this.isDisabled = false;
+          }, 100);
+        }
+      })
+    );
+    
     if(isPlatformBrowser(this.platformId)){
       setTimeout(() => {
       // this.sidenavService.toggleCollapsed();
@@ -1957,6 +1971,16 @@ hideMenu() {
             this.userStore.setFilteredResumes([...this.resumeDataItemList()])
           })
           this.router.navigateByUrl('/user/resumes');
+        }, (error) => {
+          this.isActionInProgress = false;
+          this.isDisabled = false;
+          this.loadingBar.complete();
+          const element = document.getElementById("actions-disable");
+          if(element != null){
+            element.style.zIndex = "-1000";
+            element.style.display = "none";
+          }
+          this.showToast('error', 'Error', 'Failed to save resume. Please try again.');
         });
       }else{
         request.id = this.selectedResumeListItem().id;
@@ -1979,6 +2003,16 @@ hideMenu() {
             this.userStore.setFilteredResumes([...this.resumeDataItemList()])
           })
           this.router.navigateByUrl('/user/resumes');
+        }, (error) => {
+          this.isActionInProgress = false;
+          this.isDisabled = false;
+          this.loadingBar.complete();
+          const element = document.getElementById("actions-disable");
+          if(element != null){
+            element.style.zIndex = "-1000";
+            element.style.display = "none";
+          }
+          this.showToast('error', 'Error', 'Failed to update resume. Please try again.');
         });
       }
     }
@@ -2034,6 +2068,7 @@ hideMenu() {
     if(this.isResumeValid()){
       this.isActionInProgress = true;
       this.isDisabled = true;
+      this.loadingBar.start();
       const element = document.getElementById("actions-disable");
       if(element != null){
         element.style.zIndex = "1000";
@@ -2094,6 +2129,7 @@ hideMenu() {
           document.body.removeChild(link);
           this.isActionInProgress = false;
           this.isDisabled = false;
+          this.loadingBar.complete();
           const element = document.getElementById("actions-disable");
           if(element != null){
             element.style.zIndex = "-1000";

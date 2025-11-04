@@ -70,19 +70,21 @@
                                 <div  class="ToolboxDesktop-module_separator"></div>
                             <div class="resume-toobar-menu" [ngClass]="{'disabled': isDisabled}">
                                 <ul class="menu" style="padding-left: 0rem !important;">
-                                    <li (click)="showJobDescription()"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> JOB DESCRIPTION</div>
+                                    <li (click)="!isDisabled && showJobDescription()" [style.pointer-events]="isDisabled ? 'none' : 'auto'" [style.opacity]="isDisabled ? 0.5 : 1"><div><span class="checkmark"><p-icon class="pi pi-check-circle "></p-icon></span> JOB DESCRIPTION</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
-                                    <li (click)="addSection()"><div><span class="checkmark"><p-icon class="pi pi-plus"></p-icon></span> ADD SECTION</div>
+                                    <li (click)="!isDisabled && addSection()" [style.pointer-events]="isDisabled ? 'none' : 'auto'" [style.opacity]="isDisabled ? 0.5 : 1"><div><span class="checkmark"><p-icon class="pi pi-plus"></p-icon></span> ADD SECTION</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
-                                    <li (click)="showResumeTemplates()"><div><span class="checkmark"><p-icon class="pi pi-file-o "></p-icon></span> TEMPLATE'S</div>
+                                    <li (click)="!isDisabled && showResumeTemplates()" [style.pointer-events]="isDisabled ? 'none' : 'auto'" [style.opacity]="isDisabled ? 0.5 : 1"><div><span class="checkmark"><p-icon class="pi pi-file-o "></p-icon></span> TEMPLATE'S</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
-                                    <li (click)="saveResume()"
+                                    <li (click)="!isDisabled && saveResume()"
+                                        [style.pointer-events]="isDisabled ? 'none' : 'auto'" 
+                                        [style.opacity]="isDisabled ? 0.5 : 1"
                                         [ngClass]="{'action-highlight': isChangeInNewResume(), 'action-pulse': isChangeInNewResume()}"
                                         matTooltip="You have unsaved changes. Click to save."
                                         matTooltipPosition="right"
@@ -91,7 +93,9 @@
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
-                                    <li (click)="saveAndDownload()"
+                                    <li (click)="!isDisabled && saveAndDownload()"
+                                        [style.pointer-events]="isDisabled ? 'none' : 'auto'" 
+                                        [style.opacity]="isDisabled ? 0.5 : 1"
                                         [ngClass]="{'action-highlight': isChangeInNewResume(), 'action-pulse': isChangeInNewResume()}"
                                         matTooltip="You have unsaved changes. Save & download."
                                         matTooltipPosition="right"
@@ -125,6 +129,7 @@
                                         <span class="pp-inline-message" severity="info">{{resumeSignalForm()?.access_level ?? 'Private'}}</span> 
                                         <p-button icon="pi pi-pencil"   
                                             [rounded]="true" [text]="true" severity="success"
+                                            [disabled]="isDisabled"
                                         (click)="showResumeTitle()" />
                                         <!-- <button pButton class="p-panel-header-icon p-link" (click)="showResumeTitle()">
                                             <span class="pi pi-pencil"></span>
@@ -246,6 +251,7 @@
                   [rounded]="true" 
                   [text]="true" 
                   severity="danger"
+                  [disabled]="isDisabled"
                   (onClick)="closePanelWindow($event)" 
               />
           </div>
@@ -308,6 +314,7 @@
                   [rounded]="true" 
                   [text]="true" 
                   severity="danger"
+                  [disabled]="isDisabled"
                   (onClick)="closePreview()" 
               />
           </div>
