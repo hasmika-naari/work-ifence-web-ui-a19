@@ -9,8 +9,11 @@
     <div class="d-md-flex align-items-center justify-content-between">
         <div class="header-left-side d-flex align-items-center"></div>
         <div class="header-right-side d-flex align-items-center" style="margin-left:auto;">
-            <button mat-icon-button (click)="openMenuSidenav.emit()" aria-label="Open menu options">
-                <mat-icon>apps</mat-icon>
+            <button mat-icon-button matTooltip="Home" (click)="goHome()" aria-label="Go to Home">
+                <mat-icon>home</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="Profile / Account" (click)="openMenuSidenav.emit()" aria-label="Open account options">
+                <mat-icon>person</mat-icon>
             </button>
         </div>
     </div>

@@ -1,4 +1,5 @@
 import { MessageService } from 'primeng/api';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -62,7 +63,6 @@ import { DiscardDialogComponent } from './discard-dialog/discard-dialog.componen
 import { AchievementsComponent } from './achievements/achievements.component';
 import { JobDescriptionComponent } from './job-description/job-description.component';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { PanelModule } from 'primeng/panel';
 import { ChipModule } from 'primeng/chip';
@@ -105,6 +105,7 @@ export interface DialogData {
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked, OnChanges, AfterViewInit {
+
 
 
     /**
@@ -268,7 +269,6 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   custom_fileName : string = ''
   // Right-side preview drawer visibility
   previewDrawerOpen: boolean = false;
-  private _snackBar = inject(MatSnackBar);
   isExpanded = false; // Controls the expandable/collapsible section
   isFormPanleClosed : boolean = true;
 
@@ -323,6 +323,9 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   formLabel = 'Contact';
   isActionInProgress =  false;
   loadingMenu = true;
+
+  hasLocalResumeChanges = false;
+
   constructor(
       private router : Router, 
       private cdr: ChangeDetectorRef,
@@ -336,11 +339,22 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       public dialog: MatDialog,
       public resumeService : ResumeService,
       public pdfToImageService : PdfToImageService,
-      public messageService: MessageService
+  public messageService: MessageService,
+  private loadingBar: LoadingBarService
     ) {
-        const filteredSections = this.staticSections.filter((s: SectionDesc) => s.section !== 'SKILLS_CATEGORY');
-        this.userStore.setResumeSections(filteredSections);
+        // const filteredSections = this.staticSections.filter((s: SectionDesc) => s.section !== 'SKILLS_CATEGORY');
+        // this.userStore.setResumeSections(filteredSections);
       }
+
+  // Call this method on any edit to the resume (form, section, etc)
+  markResumeChanged() {
+    this.hasLocalResumeChanges = true;
+  }
+
+  // Call this after saving
+  clearResumeChanged() {
+    this.hasLocalResumeChanges = false;
+  }
 
   
     // Getter to provide contact section data for the drawer/component
@@ -1890,6 +1904,7 @@ hideMenu() {
     if(this.isResumeValid()){
       this.isActionInProgress = true;
       this.isDisabled = true;
+      this.loadingBar.start();
       const element = document.getElementById("actions-disable");
       if(element != null){
         element.style.zIndex = "1000";
@@ -1928,12 +1943,14 @@ hideMenu() {
         this.resumeService.saveResume(request).subscribe((e : ResumeListDataItem) => {
           this.isActionInProgress = false;
           this.isDisabled = false;
+          this.loadingBar.complete();
           const element = document.getElementById("actions-disable");
           if(element != null){
             element.style.zIndex = "-1000";
             element.style.display = "none";
           }
           this.userStore.setIsChangeInNewResume(false);
+          this.clearResumeChanged();
           this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
             e.imageBytes = bytes;
             this.userStore.addResumeDataListItem(e);
@@ -1948,6 +1965,7 @@ hideMenu() {
           
           this.isActionInProgress = false;
           this.isDisabled = false;
+          this.loadingBar.complete();
           const element = document.getElementById("actions-disable");
           if(element != null){
             element.style.zIndex = "-1000";
@@ -1971,11 +1989,16 @@ hideMenu() {
 
 
   openSnackBar(message: string, action: string = '') {
+    // Deprecated: use showToast instead
+    this.showToast('info', action || 'Info', message);
+  }
+
+  showToast(severity: 'success' | 'info' | 'warn' | 'error', summary: string, detail: string) {
     this.messageService.add({
       key: 'global',
-      severity: 'info',
-      summary: action || 'Info',
-      detail: message,
+      severity,
+      summary,
+      detail,
       life: 5000
     });
   }
@@ -2007,79 +2030,65 @@ hideMenu() {
 
   saveAndDownload(){
     if(this.isResumeValid()){
-    this.isActionInProgress = true;
-    this.isDisabled = true;
-    const element = document.getElementById("actions-disable");
-    if(element != null){
-      element.style.zIndex = "1000";
-      element.style.display = "none";
-    }
-    let request = new JobResumeRequest();
-    request.title = this.resumeSignalForm().title;
-    request.category = this.resumeSignalForm().resume_category;
-    request.roleCategory = this.resumeSignalForm().role_category;
-    this.accessCategories.map((e)=>{
-      if(e.access_description == this.resumeSignalForm().access_level){
-        request.access = e.access_category
+      this.isActionInProgress = true;
+      this.isDisabled = true;
+      const element = document.getElementById("actions-disable");
+      if(element != null){
+        element.style.zIndex = "1000";
+        element.style.display = "none";
       }
-    })
-    request.description = "Resume Description"
-    this.custom_fileName = this.resumeSignalForm().title.replace(/\s+/g, "")+ this.appUtilService.generateUniqueString() + '.pdf';
-    request.old_documentUrl =this.selectedResumeListItem().documentUrl;
-    request.current_documentUrl = this.userAccount().login + "/wif-resume/" +  this.custom_fileName
-    let resumeData : Resume = this.resumeSignalForm()
-    resumeData.sections = this.currentSections()
-    resumeData.multipleSections = this.multipleSections()
-    request.resumeJson = JSON.stringify(resumeData);
-    request.status = this.resumeSignalForm().isActive?"ACTIVE":"IN_ACTIVE";
-    request.isPrimary = this.resumeSignalForm().isPrimary;
-    request.lastUpdatedDate = Date.now().toString();
-    request.lastUsedFor = "";
-    request.templateId = this.resumeSignalForm().template_details.id.toString();
-    request.ownerId = this.userAccount().id;
-    request.old_filename = this.selectedResumeListItem().fileName;
-    request.current_filename = this.custom_fileName;
-    request.htmlcontent = this.templateService.getFormatedResumeHTMLText(this.resumeSignalForm().template_details.template_name, this.getUnHideElements());
-    request.username = this.userAccount().login;
-    console.log(request.htmlcontent);
-    if(!this.selectedResumeListItem().id){
-      request.createdDate = Date.now().toString();
-    }else{
-    request.id = this.selectedResumeListItem().id;
-    request.createdDate = this.selectedResumeListItem().createdDate;
-    }
-    this.resumeService.saveAndDownloadResume(request).subscribe((response : any)=>{
+      let request = new JobResumeRequest();
+      request.title = this.resumeSignalForm().title;
+      request.category = this.resumeSignalForm().resume_category;
+      request.roleCategory = this.resumeSignalForm().role_category;
+      this.accessCategories.map((e)=>{
+        if(e.access_description == this.resumeSignalForm().access_level){
+          request.access = e.access_category
+        }
+      })
+      request.description = "Resume Description"
+      this.custom_fileName = this.resumeSignalForm().title.replace(/\s+/g, "")+ this.appUtilService.generateUniqueString() + '.pdf';
+      request.old_documentUrl =this.selectedResumeListItem().documentUrl;
+      request.current_documentUrl = this.userAccount().login + "/wif-resume/" +  this.custom_fileName
+      let resumeData : Resume = this.resumeSignalForm()
+      resumeData.sections = this.currentSections()
+      resumeData.multipleSections = this.multipleSections()
+      request.resumeJson = JSON.stringify(resumeData);
+      request.status = this.resumeSignalForm().isActive?"ACTIVE":"IN_ACTIVE";
+      request.isPrimary = this.resumeSignalForm().isPrimary;
+      request.lastUpdatedDate = Date.now().toString();
+      request.lastUsedFor = "";
+      request.templateId = this.resumeSignalForm().template_details.id.toString();
+      request.ownerId = this.userAccount().id;
+      request.old_filename = this.selectedResumeListItem().fileName;
+      request.current_filename = this.custom_fileName;
+      request.htmlcontent = this.templateService.getFormatedResumeHTMLText(this.resumeSignalForm().template_details.template_name, this.getUnHideElements());
+      request.username = this.userAccount().login;
+      console.log(request.htmlcontent);
+      if(!this.selectedResumeListItem().id){
+        request.createdDate = Date.now().toString();
+      }else{
+        request.id = this.selectedResumeListItem().id;
+        request.createdDate = this.selectedResumeListItem().createdDate;
+      }
+      this.resumeService.saveAndDownloadResume(request).subscribe({
+        next: (response: any) => {
+          this.clearResumeChanged();
           const fileContent = response.file; // byte array
           const resume_response = response.metadata; // JSON object
-
           const byteCharacters = atob(fileContent);
           const byteNumbers = new Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
           }
           const byteArray = new Uint8Array(byteNumbers);
-
           var blob = new Blob([byteArray], { type: 'application/pdf' });
-
-          // Create a data URL from the Blob
           var dataUrl = URL.createObjectURL(blob);
-
-          // Create a link element
           var link = document.createElement('a');
-
-          // Set the href attribute with the data URL
           link.href = dataUrl;
-
-          // Set the download attribute with the desired file name
           link.download =  this.custom_fileName;
-
-          // Append the link to the document
           document.body.appendChild(link);
-
-          // Trigger a click event on the link to initiate the download
           link.click();
-
-          // Remove the link from the document
           document.body.removeChild(link);
           this.isActionInProgress = false;
           this.isDisabled = false;
@@ -2105,13 +2114,22 @@ hideMenu() {
             })
           }
           this.router.navigateByUrl('/user/resumes');
-      })
+        },
+        error: (err) => {
+          this.isActionInProgress = false;
+          this.isDisabled = false;
+          this.loadingBar.complete();
+          const element = document.getElementById("actions-disable");
+          if(element != null){
+            element.style.zIndex = "-1000";
+            element.style.display = "none";
+          }
+          this.showToast('error', 'Error', 'Failed to save and download resume. Please try again.');
+        }
+      });
+    } else {
+      this.showToast('error', 'Error', 'Please complete all required fields in the Meta Data form.');
     }
-      else{
-        this.openSnackBar("Please complete all required fields in the Meta Data form.", "Close");
-      }
-
-
   }
 
   confirmDiscardAction(): void {

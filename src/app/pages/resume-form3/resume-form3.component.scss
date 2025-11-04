@@ -1,3 +1,25 @@
+.resume-toobar-menu ul.menu li {
+  background: #fff;
+  color: #222;
+  transition: background 0.2s, color 0.2s;
+}
+
+.resume-toobar-menu ul.menu li.action-highlight {
+  background: #e6f4ff; /* soft blue */
+  border: none;
+  border-radius: 0;
+  padding: 6px 10px;
+  box-shadow: 0 0 0 0 rgba(22, 119, 255, 0.35);
+}
+
+.resume-toobar-menu ul.menu li.action-highlight:hover {
+  background: #dbefff;
+}
+
+.resume-toobar-menu ul.menu li.action-highlight div, 
+.resume-toobar-menu ul.menu li.action-highlight div .pi {
+  color: #0958d9 !important;
+}
 .resume-data-label{
   font-size: small;
   color: gray;

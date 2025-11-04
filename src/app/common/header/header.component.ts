@@ -58,6 +58,10 @@ export class HeaderComponent {
     }
 
     
+    goHome() {
+        this.router.navigate(['/']);
+    }
+    
 
     logoutHandler($event: any){
         this.storageService.removeItem("userName");

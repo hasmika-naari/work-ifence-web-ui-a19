@@ -14,6 +14,9 @@ import { BrowserModule, provideClientHydration, withHttpTransferCacheOptions } f
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
 import { HttpRequestInterceptor, httpInterceptorProviders } from './services/auth.interceptor';
+import { GlobalErrorInterceptor } from './services/global-error.interceptor';
+import { MessageService } from 'primeng/api';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {VERSION as CDK_VERSION} from '@angular/cdk';
 import {VERSION as MAT_VERSION, MatNativeDateModule} from '@angular/material/core';
@@ -55,7 +58,9 @@ export class AppRouteReuseStrategy implements BaseRouteReuseStrategy {
 
 
 export const appConfig: ApplicationConfig = {
-  providers: [ 
+  providers: [
+    MessageService,
+    LoadingBarService,
     {provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy},
     
     provideZoneChangeDetection({ eventCoalescing: true }), 
@@ -68,9 +73,14 @@ export const appConfig: ApplicationConfig = {
     withFetch(),
     withInterceptorsFromDi()),
     {
-      provide:HTTP_INTERCEPTORS,
-      useClass:HttpRequestInterceptor,
-      multi:true
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: GlobalErrorInterceptor,
+      multi: true
     },
   importProvidersFrom([BrowserModule, 
       BrowserAnimationsModule, 
