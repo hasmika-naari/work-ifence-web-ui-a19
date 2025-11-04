@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, inject, Input } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Optional, Output, Signal, inject, Input } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -52,7 +52,7 @@ import { ResumeTemplate10Component } from '../template10/template10.component';
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class PreviewResumeComponent implements OnInit, OnDestroy {
-  constructor(private router: Router, private messageService: MessageService) {
+  constructor(private router: Router, @Optional() private messageService: MessageService) {
     // Prefer @Input if provided; otherwise use dialog data if available
     this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
     this.themeToggleSubscription = this.themeService.isToggled$.subscribe(isToggled => {
@@ -102,13 +102,15 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
       }
     } catch (error: any) {
       // Always show error toast at top-right
-      this.messageService.add({
-        key: 'global',
-        severity: 'error',
-        summary: 'Download Error',
-        detail: error?.message || error?.toString() || 'An error occurred during download.',
-        life: 7000
-      });
+      if (this.messageService) {
+        this.messageService.add({
+          key: 'global',
+          severity: 'error',
+          summary: 'Download Error',
+          detail: error?.message || error?.toString() || 'An error occurred during download.',
+          life: 7000
+        });
+      }
     }
   }
 

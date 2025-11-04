@@ -1,7 +1,7 @@
 import { MessageService } from 'primeng/api';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, Optional, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -339,7 +339,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
       public dialog: MatDialog,
       public resumeService : ResumeService,
       public pdfToImageService : PdfToImageService,
-  public messageService: MessageService,
+  @Optional() public messageService: MessageService,
   private loadingBar: LoadingBarService
     ) {
         // const filteredSections = this.staticSections.filter((s: SectionDesc) => s.section !== 'SKILLS_CATEGORY');
@@ -1994,13 +1994,15 @@ hideMenu() {
   }
 
   showToast(severity: 'success' | 'info' | 'warn' | 'error', summary: string, detail: string) {
-    this.messageService.add({
-      key: 'global',
-      severity,
-      summary,
-      detail,
-      life: 5000
-    });
+    if (this.messageService) {
+      this.messageService.add({
+        key: 'global',
+        severity,
+        summary,
+        detail,
+        life: 5000
+      });
+    }
   }
 
   getUnHideElements(){

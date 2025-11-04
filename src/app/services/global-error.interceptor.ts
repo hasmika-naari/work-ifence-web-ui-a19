@@ -17,8 +17,6 @@ export class GlobalErrorInterceptor implements HttpInterceptor {
   loadingBar = inject(LoadingBarService);
   messageService = inject(MessageService);
 
-  // Do not inject services in constructor; use inject() inside intercept()
-
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   
     return next.handle(req).pipe(

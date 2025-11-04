@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Optional, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -45,8 +45,7 @@ export interface DialogData {
     {
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: {displayDefaultIndicatorType: false},
-    },
-    MessageService
+    }
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
@@ -121,7 +120,7 @@ export class JobDescriptionComponent implements OnInit, OnDestroy {
       public templateService : TemplatesService, 
       public dialog: MatDialog,
       public resumeService : ResumeService,
-      private messageService: MessageService) {
+      @Optional() private messageService: MessageService) {
         effect(()=>{
           this.setSummaryValues()
         })
@@ -664,23 +663,27 @@ export class JobDescriptionComponent implements OnInit, OnDestroy {
     
     // Validate that there's content to optimize
     if (!profileSummaryValue || profileSummaryValue.trim().length === 0) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'Please enter a job description before using BotBro AI optimization.',
-        life: 4000
-      });
+      if (this.messageService) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Please enter a job description before using BotBro AI optimization.',
+          life: 4000
+        });
+      }
       return;
     }
 
     // Check minimum content length
     if (profileSummaryValue.trim().length < 10) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'Please provide a more detailed job description for better AI optimization.',
-        life: 4000
-      });
+      if (this.messageService) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Please provide a more detailed job description for better AI optimization.',
+          life: 4000
+        });
+      }
       return;
     }
 
@@ -701,24 +704,28 @@ export class JobDescriptionComponent implements OnInit, OnDestroy {
           this.is_summary_loading = false;
           
           // Show success message
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Job description analyzed successfully! AI insights have been generated.',
-            life: 3000
-          });
+          if (this.messageService) {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Job description analyzed successfully! AI insights have been generated.',
+              life: 3000
+            });
+          }
           
           this.contact.emit();
         } catch (parseError) {
           console.error('Error parsing AI response:', parseError);
           this.is_summary_loading = false;
           
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to process AI response. Please try again.',
-            life: 5000
-          });
+          if (this.messageService) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to process AI response. Please try again.',
+              life: 5000
+            });
+          }
         }
       },
       error: (error) => {
@@ -738,12 +745,14 @@ export class JobDescriptionComponent implements OnInit, OnDestroy {
           errorMessage = 'Server error. Our team has been notified. Please try again later.';
         }
         
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: errorMessage,
-          life: 5000
-        });
+        if (this.messageService) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: errorMessage,
+            life: 5000
+          });
+        }
       }
     });
   }
