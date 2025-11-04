@@ -34,6 +34,7 @@ import { ResumeTemplate9Component } from '../template9/template9.component';
 import { ResumeTemplate10Component } from '../template10/template10.component';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { ToastModule } from 'primeng/toast';
 
 
 @Component({
@@ -42,7 +43,7 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
      NgOptimizedImage,FooterComponent,
     CarouselModule,ReactiveFormsModule, FormsModule, 
-    HeaderWorkIfenceComponent,  MatStepperModule,
+    HeaderWorkIfenceComponent,  MatStepperModule, ToastModule,
     MatFormFieldModule,InputTextModule, MatDialogModule,
     MatInputModule,ButtonModule,ConfirmDialogComponent,
     MatButtonModule,AccordionModule,TextareaModule,TooltipModule,
@@ -54,17 +55,9 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class PreviewResumeComponent implements OnInit, OnDestroy {
-  constructor(
-    private router: Router, 
-    @Optional() private messageService: MessageService,
-    private loadingBar: LoadingBarService
-  ) {
-    // Prefer @Input if provided; otherwise use dialog data if available
-    this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
-    this.themeToggleSubscription = this.themeService.isToggled$.subscribe(isToggled => {
-      this.isToggled = isToggled;
-    });
-  }
+  private loadingBar = inject(LoadingBarService, { optional: true });
+  private messageService = inject(MessageService, { optional: true });
+  private router = inject(Router, { optional: true });
 
   isUserNameCheckInProgress = false;
   isToggled = false;
@@ -82,6 +75,16 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
   public themeService: ThemeCustomizerService = inject(ThemeCustomizerService);
   public data: DialogData | undefined = inject(MAT_DIALOG_DATA, { optional: true });
 
+  constructor(
+  ) {
+    // Prefer @Input if provided; otherwise use dialog data if available
+    this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
+    this.themeToggleSubscription = this.themeService.isToggled$.subscribe(isToggled => {
+      this.isToggled = isToggled;
+    });
+  }
+
+
     ngOnDestroy(): void {
       if (this.themeToggleSubscription) {
         this.themeToggleSubscription.unsubscribe();
@@ -97,13 +100,15 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
       this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
       
       // Subscribe to loading bar to auto-reset isDownloading flag
-      this.loadingBarSubscription = this.loadingBar.value$.subscribe(value => {
-        if (value === 0 && this.isDownloading) {
-          setTimeout(() => {
-            this.isDownloading = false;
-          }, 100);
-        }
-      });
+      if (this.loadingBar) {
+        this.loadingBarSubscription = this.loadingBar.value$.subscribe(value => {
+          if (value === 0 && this.isDownloading) {
+            setTimeout(() => {
+              this.isDownloading = false;
+            }, 100);
+          }
+        });
+      }
   }
 
   onConfirmHandler(){
@@ -116,7 +121,9 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
   onDownloadHandler(format: 'pdf' | 'word' = 'pdf') {
     try {
       this.isDownloading = true;
-      this.loadingBar.start();
+      if (this.loadingBar) {
+        this.loadingBar.start();
+      }
       
       if (this.dialogRef) {
         this.dialogRef.close({ event: 'DOWNLOAD', format });
@@ -125,7 +132,9 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
       }
     } catch (error: any) {
       this.isDownloading = false;
-      this.loadingBar.complete();
+      if (this.loadingBar) {
+        this.loadingBar.complete();
+      }
       
       // Always show error toast at top-right
       if (this.messageService) {

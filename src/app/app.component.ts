@@ -31,7 +31,7 @@ import { ToastModule } from 'primeng/toast';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ErrorHandler } from '@angular/core';
 import { GlobalErrorHandler } from './services/global-error-handler';
-// import { MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 @Component({
     selector: 'app-root',
     imports: [RouterOutlet, RouterModule, CommonModule, LoadingScreenComponent,
@@ -40,6 +40,7 @@ import { GlobalErrorHandler } from './services/global-error-handler';
   styleUrl: './app.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [ 
+      MessageService,
       { provide: ErrorHandler, useClass: GlobalErrorHandler },
       {
         provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
