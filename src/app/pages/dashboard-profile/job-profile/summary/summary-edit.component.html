@@ -27,7 +27,9 @@
       <button pButton type="submit" label="Save" [disabled]="form.invalid || saving"></button>
     </div>
 
-    <p-progressBar *ngIf="saving" mode="indeterminate" styleClass="mt-2"></p-progressBar>
+    @if (saving) {
+      <p-progressBar mode="indeterminate" styleClass="mt-2"></p-progressBar>
+    }
   </form>
 
   <p-sidebar
@@ -37,7 +39,7 @@
     [blockScroll]="true"
     [baseZIndex]="1100"
     styleClass="ai-sidebar"
-  >
+    >
     <div class="ai-drawer">
       <div class="ai-header">
         <h3>AI Summary Assistant</h3>
@@ -60,26 +62,32 @@
         </div>
       </form>
 
-      <p-progressBar *ngIf="aiGenerating" mode="indeterminate" styleClass="mt-3"></p-progressBar>
-      <p class="ai-error" *ngIf="aiError">{{ aiError }}</p>
+      @if (aiGenerating) {
+        <p-progressBar mode="indeterminate" styleClass="mt-3"></p-progressBar>
+      }
+      @if (aiError) {
+        <p class="ai-error">{{ aiError }}</p>
+      }
 
-      <div class="ai-result" *ngIf="aiForm.controls['generated'].value">
-        <div class="result-header">
-          <label for="aiGenerated">Preview &amp; edit</label>
-          <button pButton type="button" class="p-button-text" icon="pi pi-refresh" (click)="resetGenerated()" [disabled]="aiGenerating"></button>
+      @if (aiForm.controls['generated'].value) {
+        <div class="ai-result">
+          <div class="result-header">
+            <label for="aiGenerated">Preview &amp; edit</label>
+            <button pButton type="button" class="p-button-text" icon="pi pi-refresh" (click)="resetGenerated()" [disabled]="aiGenerating"></button>
+          </div>
+          <p-editor formControlName="generated" [style]="{ height: '26rem' }"></p-editor>
+          <div class="ai-result-actions">
+            <button
+              pButton
+              type="button"
+              label="Add to Summary"
+              icon="pi pi-download"
+              class="p-button-success"
+              (click)="applyGeneratedSummary()"
+            ></button>
+          </div>
         </div>
-        <p-editor formControlName="generated" [style]="{ height: '26rem' }"></p-editor>
-        <div class="ai-result-actions">
-          <button
-            pButton
-            type="button"
-            label="Add to Summary"
-            icon="pi pi-download"
-            class="p-button-success"
-            (click)="applyGeneratedSummary()"
-          ></button>
-        </div>
-      </div>
+      }
     </div>
   </p-sidebar>
 </div>

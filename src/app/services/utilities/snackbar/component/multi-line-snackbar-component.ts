@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
     Component, OnInit, OnChanges, 
   } from '@angular/core';
@@ -6,7 +6,7 @@ import {
 
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
     selector: 'yea-multi-line-snack-bar-component',
     templateUrl: './multi-line-snackbar-component.html',
     styleUrls: ['./multi-line-snackbar-component.scss']

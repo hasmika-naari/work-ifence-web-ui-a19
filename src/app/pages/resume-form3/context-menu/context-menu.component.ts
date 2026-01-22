@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,7 +12,7 @@ import { TemplatesService } from 'src/app/services/shared/templates.service';
 @Component({
   selector: 'app-resume-context-menu',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule],
+  imports: [RouterLink, RouterOutlet, RouterModule],
   templateUrl: './context-menu.component.html',
   styleUrls: ['./context-menu.component.scss'],
 })

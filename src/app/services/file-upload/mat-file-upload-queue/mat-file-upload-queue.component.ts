@@ -15,7 +15,7 @@ import { HttpHeaders, HttpParams } from "@angular/common/http";
 import { startWith } from "rxjs/operators";
 import { MatFileUploadQueueService } from "./mat-file-upload-queue.service";
 import { MatFileUploadComponent } from "../mat-file-upload/mat-file-upload.component";
-import { CommonModule } from "@angular/common";
+
 import { BytesPipe } from "../bytes/bytes.pipe";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatCardModule } from "@angular/material/card";
@@ -26,13 +26,12 @@ import { MatButtonModule } from "@angular/material/button";
   selector: "mat-file-upload-queue",
   standalone: true,
   imports: [
-    CommonModule,
     BytesPipe,
     MatProgressBarModule,
     MatIconModule,
     MatCardModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
   templateUrl: "./mat-file-upload-queue.component.html",
   styleUrls: ["./mat-file-upload-queue.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,

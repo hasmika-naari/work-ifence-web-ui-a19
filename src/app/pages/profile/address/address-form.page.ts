@@ -4,7 +4,7 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription, Subject, startWith, map } from 'rxjs';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Account, BioProfile, LoginProfile, Profile } from 'src/app/services/profile.model';
 import { AppUtilService } from 'src/app/services/app.util.service';
 import { Address } from 'src/app/services/contact.model';
@@ -28,9 +28,7 @@ import { ConfirmDialogComponent } from '../../resume-form3/confirm-dialog/confir
 @Component({
   selector: 'address-profile-form',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule,
-            MatCardModule, MatSelectModule, MatAutocompleteModule,
-          FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatProgressBarModule],
+  imports: [RouterLink, RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule, MatCardModule, MatSelectModule, MatAutocompleteModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatProgressBarModule],
   templateUrl: './address-form.page.html',
   styleUrls: ['./address-form.page.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

@@ -1,61 +1,63 @@
 <div class="resume-form-container">
-    <form [formGroup]="courseWorkForm">
-        
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="section_title">Section Title *</label>
-                <input 
-                    id="section_title" 
-                    type="text" 
-                    pInputText 
-                    #role 
-                    formControlName="section_title" 
-                    placeholder="Enter section title"
-                />
-                <small class="error" *ngIf="courseWorkForm.get('section_title')?.hasError('required') && (courseWorkForm.get('section_title')?.dirty || courseWorkForm.get('section_title')?.touched)">
-                    Required.
-                </small>
-            </div>
+  <form [formGroup]="courseWorkForm">
+
+    <div class="form-row form-row--single">
+      <div class="field">
+        <label for="section_title">Section Title *</label>
+        <input
+          id="section_title"
+          type="text"
+          pInputText
+          #role
+          formControlName="section_title"
+          placeholder="Enter section title"
+          />
+          @if (courseWorkForm.get('section_title')?.hasError('required') && (courseWorkForm.get('section_title')?.dirty || courseWorkForm.get('section_title')?.touched)) {
+            <small class="error">
+              Required.
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="form-row form-row--single">
+        <div class="field">
+          <label for="coursework">Course Name</label>
+          <input
+            id="coursework"
+            type="text"
+            pInputText
+            formControlName="coursework"
+            placeholder="Enter course name"
+            />
+          </div>
         </div>
 
         <div class="form-row form-row--single">
-            <div class="field">
-                <label for="coursework">Course Name</label>
-                <input 
-                    id="coursework" 
-                    type="text" 
-                    pInputText 
-                    formControlName="coursework" 
-                    placeholder="Enter course name"
-                />
+          <div class="field">
+            <label for="institution">Institution/Organization</label>
+            <input
+              id="institution"
+              type="text"
+              pInputText
+              formControlName="institution"
+              placeholder="Enter institution or organization"
+              />
             </div>
-        </div>
-
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="institution">Institution/Organization</label>
-                <input 
-                    id="institution" 
-                    type="text" 
-                    pInputText 
-                    formControlName="institution" 
-                    placeholder="Enter institution or organization"
-                />
-            </div>
-        </div>
+          </div>
 
 
-        <div class="form-actions">
-            <button 
-                type="button" 
-                class="action-btn action-btn--primary" 
-                (click)="saveAndContinue()"
-                [disabled]="courseWorkForm.invalid || !courseWorkForm.get('section_title')?.value || !courseWorkForm.get('coursework')?.value || !courseWorkForm.get('institution')?.value || (!hasFormChanged && !isEditMode) || (isEditMode && !isFormDirty())"
-                [matTooltip]="getButtonTooltip()"
-                tooltipPosition="top">
-                <i class="pi" [ngClass]="isEditMode ? 'pi-check' : 'pi-check'"></i>
-                {{isEditMode ? 'Update Course Work' : 'Add Course Work'}}
+          <div class="form-actions">
+            <button
+              type="button"
+              class="action-btn action-btn--primary"
+              (click)="saveAndContinue()"
+              [disabled]="courseWorkForm.invalid || !courseWorkForm.get('section_title')?.value || !courseWorkForm.get('coursework')?.value || !courseWorkForm.get('institution')?.value || (!hasFormChanged && !isEditMode) || (isEditMode && !isFormDirty())"
+              [matTooltip]="getButtonTooltip()"
+              tooltipPosition="top">
+              <i class="pi" [ngClass]="isEditMode ? 'pi-check' : 'pi-check'"></i>
+              {{isEditMode ? 'Update Course Work' : 'Add Course Work'}}
             </button>
-        </div>
-    </form>
-</div>
+          </div>
+        </form>
+      </div>

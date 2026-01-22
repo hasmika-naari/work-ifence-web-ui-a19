@@ -1,114 +1,122 @@
 
 <div class="row pl-4 pr-4" style="height: 80% !important; min-width: 420px; max-width: 520px;">
-    <div class="col-12"  >
-        <form [formGroup]="bioForm" class="bio-form" novalidate>
-            <section class="profile-overview-card">
-                <div class="profile-overview">
-                    <div class="profile-avatar-wrapper">
-                        <span class="avatar-ring"></span>
-                        <img class="profile-avatar" [src]="getImageBase64()" alt="Profile avatar" />
-                        <button type="button" class="avatar-upload-trigger" (click)="imageUpload.click()" title="Upload a new photo">
-                            <i class="pi pi-camera"></i>
-                        </button>
-                    </div>
-                    <div class="profile-overview-body">
-                        <h3>Refresh your profile picture</h3>
-                        <p>Choose a clear, centered photo. We recommend a square image for the best result.</p>
-                        <div class="upload-actions">
-                            <input
-                                type="file"
-                                class="upload-input"
-                                (change)="onFileSelected($event)"
-                                #imageUpload
-                                accept="image/*"
-                            />
-                            <button type="button" class="action-chip" (click)="imageUpload.click()">
-                                <i class="pi pi-upload"></i>
-                                Change picture
-                            </button>
-                            <span class="upload-hint">PNG or JPG · Max 5&nbsp;MB</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
+  <div class="col-12"  >
+    <form [formGroup]="bioForm" class="bio-form" novalidate>
+      <section class="profile-overview-card">
+        <div class="profile-overview">
+          <div class="profile-avatar-wrapper">
+            <span class="avatar-ring"></span>
+            <img class="profile-avatar" [src]="getImageBase64()" alt="Profile avatar" />
+            <button type="button" class="avatar-upload-trigger" (click)="imageUpload.click()" title="Upload a new photo">
+              <i class="pi pi-camera"></i>
+            </button>
+          </div>
+          <div class="profile-overview-body">
+            <h3>Refresh your profile picture</h3>
+            <p>Choose a clear, centered photo. We recommend a square image for the best result.</p>
+            <div class="upload-actions">
+              <input
+                type="file"
+                class="upload-input"
+                (change)="onFileSelected($event)"
+                #imageUpload
+                accept="image/*"
+                />
+                <button type="button" class="action-chip" (click)="imageUpload.click()">
+                  <i class="pi pi-upload"></i>
+                  Change picture
+                </button>
+                <span class="upload-hint">PNG or JPG · Max 5&nbsp;MB</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-            <div class="form-row form-row--double">
-                <div class="field">
-                    <label for="first_name">First Name *</label>
-                    <input
-                        id="first_name"
-                        pInputText
-                        formControlName="first_name"
-                        placeholder="Enter first name"
-                    />
-                    <small class="error" *ngIf="bioForm.get('first_name')?.hasError('required') && (bioForm.get('first_name')?.dirty || bioForm.get('first_name')?.touched)">
-                        Required.
-                    </small>
-                </div>
+        <div class="form-row form-row--double">
+          <div class="field">
+            <label for="first_name">First Name *</label>
+            <input
+              id="first_name"
+              pInputText
+              formControlName="first_name"
+              placeholder="Enter first name"
+              />
+              @if (bioForm.get('first_name')?.hasError('required') && (bioForm.get('first_name')?.dirty || bioForm.get('first_name')?.touched)) {
+                <small class="error">
+                  Required.
+                </small>
+              }
+            </div>
 
-                <div class="field">
-                    <label for="last_name">Last Name *</label>
-                    <input
-                        id="last_name"
-                        pInputText
-                        formControlName="last_name"
-                        placeholder="Enter last name"
-                    />
-                    <small class="error" *ngIf="bioForm.get('last_name')?.hasError('required') && (bioForm.get('last_name')?.dirty || bioForm.get('last_name')?.touched)">
-                        Required.
-                    </small>
-                </div>
+            <div class="field">
+              <label for="last_name">Last Name *</label>
+              <input
+                id="last_name"
+                pInputText
+                formControlName="last_name"
+                placeholder="Enter last name"
+                />
+                @if (bioForm.get('last_name')?.hasError('required') && (bioForm.get('last_name')?.dirty || bioForm.get('last_name')?.touched)) {
+                  <small class="error">
+                    Required.
+                  </small>
+                }
+              </div>
             </div>
 
             <div class="form-row form-row--double">
-                <div class="field">
-                    <label for="dob-input">Date of Birth *</label>
-                    <p-calendar
-                        formControlName="dob"
-                        [maxDate]="max_Date"
-                        dateFormat="yy-mm-dd"
-                        inputId="dob-input"
-                        placeholder="YYYY-MM-DD"
-                    ></p-calendar>
-                    <small class="error" *ngIf="bioForm.get('dob')?.hasError('required') && (bioForm.get('dob')?.dirty || bioForm.get('dob')?.touched)">
-                        Required.
-                    </small>
-                </div>
+              <div class="field">
+                <label for="dob-input">Date of Birth *</label>
+                <p-calendar
+                  formControlName="dob"
+                  [maxDate]="max_Date"
+                  dateFormat="yy-mm-dd"
+                  inputId="dob-input"
+                  placeholder="YYYY-MM-DD"
+                ></p-calendar>
+                @if (bioForm.get('dob')?.hasError('required') && (bioForm.get('dob')?.dirty || bioForm.get('dob')?.touched)) {
+                  <small class="error">
+                    Required.
+                  </small>
+                }
+              </div>
 
-                <div class="field">
-                    <label for="gender-input">Gender *</label>
-                    <p-autoComplete
-                        formControlName="gender"
-                        [suggestions]="genders"
-                        (completeMethod)="filterGender($event)"
-                        field="label"
-                        [forceSelection]="true"
-                        inputId="gender-input"
-                        (onFocus)="onGenderFocus()"
-                        (onSelect)="onGenderSelect()"
-                        #genderAuto
-                    ></p-autoComplete>
-                    <small class="error" *ngIf="bioForm.get('gender')?.hasError('required') && (bioForm.get('gender')?.dirty || bioForm.get('gender')?.touched)">
-                        Required.
-                    </small>
-                </div>
+              <div class="field">
+                <label for="gender-input">Gender *</label>
+                <p-autoComplete
+                  formControlName="gender"
+                  [suggestions]="genders"
+                  (completeMethod)="filterGender($event)"
+                  field="label"
+                  [forceSelection]="true"
+                  inputId="gender-input"
+                  (onFocus)="onGenderFocus()"
+                  (onSelect)="onGenderSelect()"
+                  #genderAuto
+                ></p-autoComplete>
+                @if (bioForm.get('gender')?.hasError('required') && (bioForm.get('gender')?.dirty || bioForm.get('gender')?.touched)) {
+                  <small class="error">
+                    Required.
+                  </small>
+                }
+              </div>
             </div>
 
             <div class="form-actions">
-                <button type="button" class="action-btn action-btn--ghost" (click)="cancelEdit()">
-                    Cancel
-                </button>
-                <button
-                    type="button"
-                    class="action-btn action-btn--primary"
-                    (click)="saveBioForm()"
-                    [disabled]="bioForm.invalid"
+              <button type="button" class="action-btn action-btn--ghost" (click)="cancelEdit()">
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="action-btn action-btn--primary"
+                (click)="saveBioForm()"
+                [disabled]="bioForm.invalid"
                 >
-                    <i class="pi pi-check"></i>
-                    Save profile
-                </button>
+                <i class="pi pi-check"></i>
+                Save profile
+              </button>
             </div>
-        </form>
-       
-    </div>
-</div>
+          </form>
+
+        </div>
+      </div>

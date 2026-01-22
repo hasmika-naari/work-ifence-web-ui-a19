@@ -1,72 +1,78 @@
 <div class="resume-form-container summary-flex-layout">
-    <div class="col-12">
-        <!-- {{sectionType}} -->
-        <form [formGroup]="summaryForm" style="display: flex; flex-direction: column;">
-            <!-- <div *ngIf="sectionType === 'PROFILE_SUMMARY_BULLETED'" class="summary-format-label"><i class="pi pi-list"></i> Bulleted Summary</div> -->
-            <!-- <div *ngIf="sectionType === 'PROFILE_SUMMARY'" class="summary-format-label"><i class="pi pi-align-left"></i> Paragraph Summary</div> -->
-            <div class="form-row form-row--single summary-section-row">
-                <div class="field section-title-field">
-                    <label for="section_title">Section title <span class="required">*</span></label>
-                    <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
-                    <small class="error" *ngIf="summaryForm.get('section_title')?.hasError('required') && summaryForm.get('section_title')?.touched">
-                        Required.
-                    </small>
-                </div>
-                <!-- Summary Format hidden for now -->
-                <div class="field" style="display:none">
-                    <label for="summaryFormat">Summary Format</label>
-                    <p-dropdown id="summaryFormat" formControlName="format"
+  <div class="col-12">
+    <!-- {{sectionType}} -->
+    <form [formGroup]="summaryForm" style="display: flex; flex-direction: column;">
+      <!-- <div *ngIf="sectionType === 'PROFILE_SUMMARY_BULLETED'" class="summary-format-label"><i class="pi pi-list"></i> Bulleted Summary</div> -->
+      <!-- <div *ngIf="sectionType === 'PROFILE_SUMMARY'" class="summary-format-label"><i class="pi pi-align-left"></i> Paragraph Summary</div> -->
+      <div class="form-row form-row--single summary-section-row">
+        <div class="field section-title-field">
+          <label for="section_title">Section title <span class="required">*</span></label>
+          <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
+          @if (summaryForm.get('section_title')?.hasError('required') && summaryForm.get('section_title')?.touched) {
+            <small class="error">
+              Required.
+            </small>
+          }
+        </div>
+        <!-- Summary Format hidden for now -->
+        <div class="field" style="display:none">
+          <label for="summaryFormat">Summary Format</label>
+          <p-dropdown id="summaryFormat" formControlName="format"
                         [options]="[
                             { label: 'Paragraph', value: 'paragraph' },
                             { label: 'Bulleted', value: 'bulleted' }
                         ]"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Select Format"
-                        styleClass="p-inputtext summary-format-dropdown"
-                        [size]="'small'"
-                    ></p-dropdown>
-                </div>
-            </div>
-            <div class="summary-label-row">
-                <label>Summary</label>
-                <span >
-                    <button class="d-flex ai-btn" (click)="optimizeText()" *ngIf="!is_summary_loading">
-                        <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon> USE BOTBRO
-                    </button>
-                    <button class="d-flex ai-btn" disabled *ngIf="is_summary_loading">
-                        <div class="progress-container">
-                            <div class="progress-bar"></div>
-                            <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
-                        </div>
-                        USE BOTBRO
-                    </button>
-                </span>
-            </div>
-            <!-- Always show the editor. For PROFILE_SUMMARY_BULLETED, lock to bulleted mode and hide format dropdown. -->
-            <div class="editor summary-editor-field">
-                <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
-                <ngx-editor
-                    [editor]="editor"
-                    [formControl]="summaryForm.controls['profile_summary']"
-                    [placeholder]="sectionType === 'PROFILE_SUMMARY_BULLETED' ? 'Add your summary as bullet points (use the bullet list button)' : 'Write your professional summary here...'"
-                    style="width:100%;display:block;min-height:350px;"
-                ></ngx-editor>
-            </div>
-            <div class="form-actions summary-actions-row" >
-                <button 
-                    type="button" 
-                    class="action-btn summary-save-btn summary-save-btn--light" 
-                    (click)="saveAndContinue()" 
-                    [disabled]="!hasFormChanged || isButtonDisabled || is_summary_loading || summaryForm.invalid"
-                    [title]="getButtonTooltip()"
-                >
-                    <i class="pi pi-check"></i>
-                    {{ hasFormChanged ? 'Update Resume' : 'Add to Resume' }}
-                </button>
-            </div>
-        </form>
-    </div>
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select Format"
+            styleClass="p-inputtext summary-format-dropdown"
+            [size]="'small'"
+          ></p-dropdown>
+        </div>
+      </div>
+      <div class="summary-label-row">
+        <label>Summary</label>
+        <span >
+          @if (!is_summary_loading) {
+            <button class="d-flex ai-btn" (click)="optimizeText()">
+              <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon> USE BOTBRO
+            </button>
+          }
+          @if (is_summary_loading) {
+            <button class="d-flex ai-btn" disabled>
+              <div class="progress-container">
+                <div class="progress-bar"></div>
+                <p-icon class="pi pi-sparkles pi-sparkles-pos"></p-icon>
+              </div>
+              USE BOTBRO
+            </button>
+          }
+        </span>
+      </div>
+      <!-- Always show the editor. For PROFILE_SUMMARY_BULLETED, lock to bulleted mode and hide format dropdown. -->
+      <div class="editor summary-editor-field">
+        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          [formControl]="summaryForm.controls['profile_summary']"
+          [placeholder]="sectionType === 'PROFILE_SUMMARY_BULLETED' ? 'Add your summary as bullet points (use the bullet list button)' : 'Write your professional summary here...'"
+          style="width:100%;display:block;min-height:350px;"
+        ></ngx-editor>
+      </div>
+      <div class="form-actions summary-actions-row" >
+        <button
+          type="button"
+          class="action-btn summary-save-btn summary-save-btn--light"
+          (click)="saveAndContinue()"
+          [disabled]="!hasFormChanged || isButtonDisabled || is_summary_loading || summaryForm.invalid"
+          [title]="getButtonTooltip()"
+          >
+          <i class="pi pi-check"></i>
+          {{ hasFormChanged ? 'Update Resume' : 'Add to Resume' }}
+        </button>
+      </div>
+    </form>
+  </div>
 
 </div>
 
@@ -75,39 +81,45 @@
 
 
 <!-- Pure animated AI overlay drawer -->
-<div 
-    class="summary-ai-overlay" 
-    *ngIf="isOpen " 
-    [@slideInOut] 
+@if (isOpen ) {
+  <div
+    class="summary-ai-overlay"
+    [@slideInOut]
     (click)="closePanelWindow()"
->
+    >
     <div class="summary-ai-drawer-shell" (click)="$event.stopPropagation()">
-        <header class="summary-ai-header">
-            <div class="summary-ai-title-group">
-                <h2>AI Assistance</h2>
-                <p>Summary Suggestions</p>
-            </div>
-            <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closePanelWindow()">
-                <i class="pi pi-times"></i>
-            </button>
-        </header>
-        <section class="summary-ai-stack">
-            <div *ngIf="summaryAIList && summaryAIList.length > 0">
-                <mat-card class="ai-response-panel" *ngFor="let summary of summaryAIList; let i = index">
-                    <div class="section-actions">
-                        <ng-container *ngIf="!addedAISummaries.has(i); else checkmark">
-                            <p-icon class="pi pi-plus" title="Use This Response" (click)="useSummaryResponse(i)"></p-icon>
-                        </ng-container>
-                        <ng-template #checkmark>
-                            <p-icon class="pi pi-check" style="color: green;" title="Already Added"></p-icon>
-                        </ng-template>
-                    </div>
-                    <p>{{ summary }}</p>
-                </mat-card>
-            </div>
-            <div *ngIf="!summaryAIList || summaryAIList.length === 0" class="summary-ai-empty">
-                <span>No AI suggestions available yet.</span>
-            </div>
-        </section>
+      <header class="summary-ai-header">
+        <div class="summary-ai-title-group">
+          <h2>AI Assistance</h2>
+          <p>Summary Suggestions</p>
+        </div>
+        <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closePanelWindow()">
+          <i class="pi pi-times"></i>
+        </button>
+      </header>
+      <section class="summary-ai-stack">
+        @if (summaryAIList && summaryAIList.length > 0) {
+          <div>
+            @for (summary of summaryAIList; track summary; let i = $index) {
+              <mat-card class="ai-response-panel">
+                <div class="section-actions">
+                  @if (!addedAISummaries.has(i)) {
+                    <p-icon class="pi pi-plus" title="Use This Response" (click)="useSummaryResponse(i)"></p-icon>
+                  } @else {
+                    <p-icon class="pi pi-check" style="color: green;" title="Already Added"></p-icon>
+                  }
+                </div>
+                <p>{{ summary }}</p>
+              </mat-card>
+            }
+          </div>
+        }
+        @if (!summaryAIList || summaryAIList.length === 0) {
+          <div class="summary-ai-empty">
+            <span>No AI suggestions available yet.</span>
+          </div>
+        }
+      </section>
     </div>
-</div>
+  </div>
+}

@@ -6,11 +6,11 @@ import { MatInputModule } from '@angular/material/input';
 import { RouterLink, Router } from '@angular/router';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { NgIf } from '@angular/common';
+
 
 @Component({
     selector: 'app-sign-in',
-    imports: [RouterLink, MatButton, MatIconButton, FormsModule, MatFormFieldModule, MatInputModule, FeathericonsModule, MatCheckboxModule, ReactiveFormsModule, NgIf],
+    imports: [RouterLink, MatButton, MatIconButton, FormsModule, MatFormFieldModule, MatInputModule, FeathericonsModule, MatCheckboxModule, ReactiveFormsModule],
     templateUrl: './sign-in.component.html',
     styleUrl: './sign-in.component.scss'
 })

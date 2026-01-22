@@ -1,43 +1,45 @@
 <div class="container">
-    <div class="section-title glossy-section">
-        <span class="sub-title">Simple Process</span>
-        <div class="title-container">
-            <h2>How It Works</h2>
-            <div class="title-underline"></div>
-        </div>
+  <div class="section-title glossy-section">
+    <span class="sub-title">Simple Process</span>
+    <div class="title-container">
+      <h2>How It Works</h2>
+      <div class="title-underline"></div>
     </div>
-    
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="process-flow">
-                <div class="process-line"></div>
-                <div class="row">
-                    <div *ngFor="let step of steps; let i = index" class="col-md-6">
-                        <div class="process-item" [class.even]="i % 2 !== 0" [class.odd]="i % 2 === 0">
-                            <div class="process-card card glossy-card">
-                                <div class="process-number">
-                                    <span>{{step.number}}</span>
-                                </div>
-                                <div class="process-icon">
-                                    <i class="material-icons">{{step.icon}}</i>
-                                </div>
-                                <h3>{{step.title}}</h3>
-                                <p>{{step.description}}</p>
-                            </div>
-                        </div>
-                    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="process-flow">
+        <div class="process-line"></div>
+        <div class="row">
+          @for (step of steps; track step; let i = $index) {
+            <div class="col-md-6">
+              <div class="process-item" [class.even]="i % 2 !== 0" [class.odd]="i % 2 === 0">
+                <div class="process-card card glossy-card">
+                  <div class="process-number">
+                    <span>{{step.number}}</span>
+                  </div>
+                  <div class="process-icon">
+                    <i class="material-icons">{{step.icon}}</i>
+                  </div>
+                  <h3>{{step.title}}</h3>
+                  <p>{{step.description}}</p>
                 </div>
+              </div>
             </div>
+          }
         </div>
+      </div>
     </div>
-    
-    <div class="row justify-content-center mt-5">
-        <div class="col-lg-8 text-center">
-            <div class="process-cta">
-                <h3>Ready to transform your job search?</h3>
-                <p>Get started today and see the difference our tools can make in your career journey.</p>
-                <a href="#" class="get-started-btn">Get Started Now</a>
-            </div>
-        </div>
+  </div>
+
+  <div class="row justify-content-center mt-5">
+    <div class="col-lg-8 text-center">
+      <div class="process-cta">
+        <h3>Ready to transform your job search?</h3>
+        <p>Get started today and see the difference our tools can make in your career journey.</p>
+        <a href="#" class="get-started-btn">Get Started Now</a>
+      </div>
     </div>
+  </div>
 </div>

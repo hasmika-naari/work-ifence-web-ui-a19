@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Component, Inject, Signal, inject} from '@angular/core';
 import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule } from 'ngx-owl-carousel-o';
@@ -35,13 +35,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
-    CarouselModule,ReactiveFormsModule, FormsModule, 
-    HeaderWorkIfenceComponent,
-    MatFormFieldModule,MatAutocompleteModule,
-    MatButtonModule,
-    MatIconModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatFormFieldModule, MatAutocompleteModule, MatButtonModule, MatIconModule],
   templateUrl: './resume-list-dialog.component.html',
   styleUrls: ['./resume-list-dialog.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

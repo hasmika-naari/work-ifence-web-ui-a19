@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ChipModule } from 'primeng/chip';
 import { ButtonModule } from 'primeng/button';
@@ -11,7 +11,7 @@ export interface SkillDisplaySection extends SkillV2 {
 @Component({
   selector: 'skills-profile-display',
   standalone: true,
-  imports: [CommonModule, ChipModule, ButtonModule],
+  imports: [ChipModule, ButtonModule],
   templateUrl: './skills-profile-display.component.html',
   styleUrls: ['./skills-profile-display.component.scss']
 })

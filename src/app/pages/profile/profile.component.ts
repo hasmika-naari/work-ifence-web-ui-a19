@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, Component, Input, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,11 +25,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule,
-    MatIconModule,PanelModule,ButtonModule, MatTabsModule, MatSidenavModule,
-          FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
-          AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, AddressFormEditorComponent,
-        MatProgressBarModule],
+  imports: [RouterLink, RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule, MatIconModule, PanelModule, ButtonModule, MatTabsModule, MatSidenavModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, AddressFormEditorComponent, MatProgressBarModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })

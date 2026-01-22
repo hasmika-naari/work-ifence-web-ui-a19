@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, inject, Signal, AfterViewInit, PLATFORM_I
           Output, EventEmitter, effect, OnChanges, SimpleChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuModule } from 'primeng/menu';
@@ -47,17 +47,7 @@ interface Option {
 @Component({
     selector: 'app-resume-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, RouterModule, 
-        StyleClassModule,
-        NgOptimizedImage, MenuModule, ChartModule, FormsModule,
-        ChartModule, ReactiveFormsModule,
-        MenuModule,DividerModule, MatFormFieldModule, MatInputModule,
-        TableModule,DialogModule,InputTextModule, MatProgressBarModule,
-        StyleClassModule,ResumeList2Component,
-        PanelMenuModule,ResumeFormTabbedComponent,ResumeForm2Component,
-        ButtonModule,TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, 
-        MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule
-        ],
+    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule],
     templateUrl: './dashboard-resume.component.html',
     styleUrl : './dashboard-resume.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

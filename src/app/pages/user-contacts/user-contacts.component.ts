@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,7 +9,7 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'user-contacts',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, MatMenuModule, MatPaginatorModule, MatTableModule, NgIf ],
+  imports: [MatCardModule, MatButtonModule, MatMenuModule, MatPaginatorModule, MatTableModule],
   templateUrl: './user-contacts.component.html',
   styleUrls: ['./user-contacts.component.scss']
 })

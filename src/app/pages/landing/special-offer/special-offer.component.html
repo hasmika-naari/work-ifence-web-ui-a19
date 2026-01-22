@@ -1,72 +1,76 @@
 <div class="container">
-    <div class="section-title glossy-section">
-        <span class="sub-title">Limited Time Offer</span>
-        <div class="title-container">
-            <h2>Start Your Career Journey Today</h2>
-            <div class="title-underline"></div>
-        </div>
+  <div class="section-title glossy-section">
+    <span class="sub-title">Limited Time Offer</span>
+    <div class="title-container">
+      <h2>Start Your Career Journey Today</h2>
+      <div class="title-underline"></div>
     </div>
-    
-    <div class="row align-items-stretch">
-        <div class="col-lg-6">
-            <div class="offer-content">
-                <div class="offer-badge">
-                    <span>Early Adopter Special</span>
-                </div>
-                <h2>Get Started For Free</h2>
-                <p class="offer-description">
-                    We're offering a special early access program for our first users. Join now and get essential
-                    career tools at no cost, with the option to upgrade for premium AI features when you need them.
-                </p>
-                
-                <div class="benefits-list">
-                    <h4>What's Included:</h4>
-                    <ul>
-                        <li *ngFor="let benefit of benefits">
-                            <i class="material-icons">check_circle</i>
-                            <span>{{benefit}}</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="offer-actions">
-                    <a href="#" class="btn-primary">Create Free Account</a>
-                    <div class="offer-guarantee">
-                        <i class="material-icons">verified</i>
-                        <span>No credit card required</span>
-                    </div>
-                </div>
-            </div>
+  </div>
+
+  <div class="row align-items-stretch">
+    <div class="col-lg-6">
+      <div class="offer-content">
+        <div class="offer-badge">
+          <span>Early Adopter Special</span>
         </div>
-        <div class="col-lg-6">
-            <div class="premium-upgrade-card">
-                <div class="premium-badge">
-                    <span>Coming Soon</span>
-                </div>
-                <h2>Premium AI Features</h2>
-                <p class="premium-description">
-                    We're working on advanced AI features to supercharge your job search experience. 
-                    Stay tuned for these premium capabilities coming in the near future.
-                </p>
-                
-                <div class="premium-benefits-list">
-                    <h4>Future Premium Features:</h4>
-                    <ul>
-                        <li *ngFor="let benefit of premiumBenefits">
-                            <i class="material-icons">stars</i>
-                            <span>{{benefit}}</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="premium-actions">
-                    <a href="#" class="btn-secondary">Join Waitlist</a>
-                    <div class="premium-guarantee">
-                        <i class="material-icons">verified</i>
-                        <span>Coming Soon</span>
-                    </div>
-                </div>
-            </div>
+        <h2>Get Started For Free</h2>
+        <p class="offer-description">
+          We're offering a special early access program for our first users. Join now and get essential
+          career tools at no cost, with the option to upgrade for premium AI features when you need them.
+        </p>
+
+        <div class="benefits-list">
+          <h4>What's Included:</h4>
+          <ul>
+            @for (benefit of benefits; track benefit) {
+              <li>
+                <i class="material-icons">check_circle</i>
+                <span>{{benefit}}</span>
+              </li>
+            }
+          </ul>
         </div>
+
+        <div class="offer-actions">
+          <a href="#" class="btn-primary">Create Free Account</a>
+          <div class="offer-guarantee">
+            <i class="material-icons">verified</i>
+            <span>No credit card required</span>
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="col-lg-6">
+      <div class="premium-upgrade-card">
+        <div class="premium-badge">
+          <span>Coming Soon</span>
+        </div>
+        <h2>Premium AI Features</h2>
+        <p class="premium-description">
+          We're working on advanced AI features to supercharge your job search experience.
+          Stay tuned for these premium capabilities coming in the near future.
+        </p>
+
+        <div class="premium-benefits-list">
+          <h4>Future Premium Features:</h4>
+          <ul>
+            @for (benefit of premiumBenefits; track benefit) {
+              <li>
+                <i class="material-icons">stars</i>
+                <span>{{benefit}}</span>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <div class="premium-actions">
+          <a href="#" class="btn-secondary">Join Waitlist</a>
+          <div class="premium-guarantee">
+            <i class="material-icons">verified</i>
+            <span>Coming Soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

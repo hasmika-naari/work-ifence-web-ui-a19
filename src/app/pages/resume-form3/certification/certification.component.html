@@ -1,109 +1,121 @@
 <div class="resume-form-container">
-    <form [formGroup]="certifyForm">
-        
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="section_title">Section Title *</label>
-                <input 
-                    id="section_title" 
-                    type="text" 
-                    pInputText 
-                    #role 
-                    formControlName="section_title" 
-                    placeholder="e.g., Certifications"
-                />
-                <small class="error" *ngIf="certifyForm.get('section_title')?.hasError('required') && (certifyForm.get('section_title')?.dirty || certifyForm.get('section_title')?.touched)">
-                    Required.
-                </small>
-            </div>
+  <form [formGroup]="certifyForm">
+
+    <div class="form-row form-row--single">
+      <div class="field">
+        <label for="section_title">Section Title *</label>
+        <input
+          id="section_title"
+          type="text"
+          pInputText
+          #role
+          formControlName="section_title"
+          placeholder="e.g., Certifications"
+          />
+          @if (certifyForm.get('section_title')?.hasError('required') && (certifyForm.get('section_title')?.dirty || certifyForm.get('section_title')?.touched)) {
+            <small class="error">
+              Required.
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="form-row form-row--single">
+        <div class="field">
+          <label for="certification_name">Certification Name *</label>
+          <input
+            id="certification_name"
+            type="text"
+            pInputText
+            formControlName="certification_name"
+            placeholder="e.g., AWS Certified Solutions Architect"
+            />
+            @if (certifyForm.get('certification_name')?.hasError('required') && (certifyForm.get('certification_name')?.dirty || certifyForm.get('certification_name')?.touched)) {
+              <small class="error">
+                Required.
+              </small>
+            }
+          </div>
         </div>
 
         <div class="form-row form-row--single">
-            <div class="field">
-                <label for="certification_name">Certification Name *</label>
-                <input 
-                    id="certification_name" 
-                    type="text" 
-                    pInputText 
-                    formControlName="certification_name" 
-                    placeholder="e.g., AWS Certified Solutions Architect"
-                />
-                <small class="error" *ngIf="certifyForm.get('certification_name')?.hasError('required') && (certifyForm.get('certification_name')?.dirty || certifyForm.get('certification_name')?.touched)">
-                    Required.
+          <div class="field">
+            <label for="issued_organisation">Issued Organisation *</label>
+            <input
+              id="issued_organisation"
+              type="text"
+              pInputText
+              formControlName="issued_organisation"
+              placeholder="e.g., Amazon Web Services"
+              />
+              @if (certifyForm.get('issued_organisation')?.hasError('required') && (certifyForm.get('issued_organisation')?.dirty || certifyForm.get('issued_organisation')?.touched)) {
+                <small class="error">
+                  Required.
                 </small>
+              }
             </div>
-        </div>
+          </div>
 
-        <div class="form-row form-row--single">
+          <div class="form-row form-row--single">
             <div class="field">
-                <label for="issued_organisation">Issued Organisation *</label>
-                <input 
-                    id="issued_organisation" 
-                    type="text" 
-                    pInputText 
-                    formControlName="issued_organisation" 
-                    placeholder="e.g., Amazon Web Services"
+              <label for="certification_link">Certification Link</label>
+              <input
+                id="certification_link"
+                type="url"
+                pInputText
+                formControlName="certification_link"
+                placeholder="https://..."
                 />
-                <small class="error" *ngIf="certifyForm.get('issued_organisation')?.hasError('required') && (certifyForm.get('issued_organisation')?.dirty || certifyForm.get('issued_organisation')?.touched)">
+                @if (certifyForm.get('certification_link')?.hasError('required') && (certifyForm.get('certification_link')?.dirty || certifyForm.get('certification_link')?.touched)) {
+                  <small class="error">
                     Required.
-                </small>
-            </div>
-        </div>
-
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="certification_link">Certification Link</label>
-                <input 
-                    id="certification_link" 
-                    type="url" 
-                    pInputText 
-                    formControlName="certification_link" 
-                    placeholder="https://..."
-                />
-                <small class="error" *ngIf="certifyForm.get('certification_link')?.hasError('required') && (certifyForm.get('certification_link')?.dirty || certifyForm.get('certification_link')?.touched)">
-                    Required.
-                </small>
-                <small class="error" *ngIf="certifyForm.get('certification_link')?.hasError('pattern') && (certifyForm.get('certification_link')?.dirty || certifyForm.get('certification_link')?.touched)">
+                  </small>
+                }
+                @if (certifyForm.get('certification_link')?.hasError('pattern') && (certifyForm.get('certification_link')?.dirty || certifyForm.get('certification_link')?.touched)) {
+                  <small class="error">
                     Please enter a valid link.
-                </small>
+                  </small>
+                }
+              </div>
             </div>
-        </div>
 
-        <div class="form-row form-row--single">
-            <div class="field">
+            <div class="form-row form-row--single">
+              <div class="field">
                 <label for="issued_month_year">Issued Month & Year *</label>
                 <div class="calendar-input-wrapper">
                   <p-calendar
-                      id="issued_month_year"
-                      formControlName="issued_month_year"
-                      view="month"
-                      dateFormat="MM yy"
-                      [showIcon]="true"
-                      [yearNavigator]="true"
-                      yearRange="1950:2050"
-                      placeholder="Select Month and Year"
-                      [inputStyle]="{width: '160px', minWidth: '120px', borderRight: 'none', borderRadius: '4px 0 0 4px'}"
-                      [style]="{width: 'auto'}"
-                      panelStyleClass="calendar-panel-custom"
+                    id="issued_month_year"
+                    formControlName="issued_month_year"
+                    view="month"
+                    dateFormat="MM yy"
+                    [showIcon]="true"
+                    [yearNavigator]="true"
+                    yearRange="1950:2050"
+                    placeholder="Select Month and Year"
+                    [inputStyle]="{width: '160px', minWidth: '120px', borderRight: 'none', borderRadius: '4px 0 0 4px'}"
+                    [style]="{width: 'auto'}"
+                    panelStyleClass="calendar-panel-custom"
                   ></p-calendar>
                 </div>
-                <small class="error" *ngIf="certifyForm.get('issued_month_year')?.hasError('required') && (certifyForm.get('issued_month_year')?.dirty || certifyForm.get('issued_month_year')?.touched)">
+                @if (certifyForm.get('issued_month_year')?.hasError('required') && (certifyForm.get('issued_month_year')?.dirty || certifyForm.get('issued_month_year')?.touched)) {
+                  <small class="error">
                     Required.
-                </small>
+                  </small>
+                }
+              </div>
             </div>
-        </div>
 
-        <div class="form-actions">
-            <button 
-                type="button" 
-                class="action-btn action-btn--primary" 
-                (click)="saveAndContinue()" 
+            <div class="form-actions">
+              <button
+                type="button"
+                class="action-btn action-btn--primary"
+                (click)="saveAndContinue()"
                 [disabled]="certifyForm.invalid || !hasFormChanged"
                 [matTooltip]="getButtonTooltip()"
                 tooltipPosition="top">
                 <i class="pi pi-check"></i>
                 Add to Resume
-            </button>
+              </button>
+            </div>
+          </form>
         </div>
-    </form>
-</div>

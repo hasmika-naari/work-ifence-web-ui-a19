@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, inject, Input, HostListener } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -24,7 +24,7 @@ import { sections } from 'src/app/services/store/resume-sections';
 @Component({
   selector: 'app-add-section',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, ButtonModule, MatButtonModule, MatIconModule, SafeHtmlCachePipe],
+  imports: [RouterModule, MatCardModule, ButtonModule, MatButtonModule, MatIconModule, SafeHtmlCachePipe],
   templateUrl: './add-section.component.html',
   styleUrls: ['./add-section.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

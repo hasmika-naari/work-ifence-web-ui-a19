@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
@@ -64,14 +64,36 @@ export interface SummaryData{
   ],
   standalone: true,
   imports: [
-    CommonModule, RouterLink, RouterOutlet, RouterModule,
-    NgOptimizedImage, FooterComponent, DropdownModule,
-    CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule,
-    MatFormFieldModule, InputTextModule, TableModule, TooltipModule, MatCardModule, IconsModule,
-    RippleModule, MatButtonModule, AccordionModule, TextareaModule, ToastModule, MatTooltipModule,
-     ProgressSpinnerModule, MatIconModule, MatExpansionModule, OverlayPanelModule, PanelModule,
-      SharedNgxEditorModule
-  ],
+    RouterLink,
+    RouterOutlet,
+    RouterModule,
+    NgOptimizedImage,
+    FooterComponent,
+    DropdownModule,
+    CarouselModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HeaderWorkIfenceComponent,
+    MatStepperModule,
+    MatFormFieldModule,
+    InputTextModule,
+    TableModule,
+    TooltipModule,
+    MatCardModule,
+    IconsModule,
+    RippleModule,
+    MatButtonModule,
+    AccordionModule,
+    TextareaModule,
+    ToastModule,
+    MatTooltipModule,
+    ProgressSpinnerModule,
+    MatIconModule,
+    MatExpansionModule,
+    OverlayPanelModule,
+    PanelModule,
+    SharedNgxEditorModule
+],
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

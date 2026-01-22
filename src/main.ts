@@ -1,3 +1,4 @@
+import { provideZoneChangeDetection } from "@angular/core";
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
@@ -17,7 +18,7 @@ if (typeof global === 'undefined' && typeof window !== 'undefined') {
   bootstrapApplication(AppComponent, {
     ...appConfig,  // Spread appConfig
     providers: [
-      ...appConfig.providers!, // Ensure existing providers are included
+      provideZoneChangeDetection(),...appConfig.providers!, // Ensure existing providers are included
       typeof window !== 'undefined' ? provideAnimations() : provideNoopAnimations()
     ]
   })

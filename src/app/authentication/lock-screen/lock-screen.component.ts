@@ -5,12 +5,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgIf } from '@angular/common';
+
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
 
 @Component({
     selector: 'app-lock-screen',
-    imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatCheckboxModule, ReactiveFormsModule, NgIf, FeathericonsModule],
+    imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatCheckboxModule, ReactiveFormsModule, FeathericonsModule],
     templateUrl: './lock-screen.component.html',
     styleUrl: './lock-screen.component.scss'
 })

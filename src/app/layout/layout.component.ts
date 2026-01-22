@@ -8,7 +8,7 @@ import { ThemeService } from '../../@navan/services/theme.service';
 import { ActivatedRoute, NavigationCancel, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { checkRouterChildsData } from '../../@navan/utils/check-router-childs-data';
 import { MatDrawerMode, MatSidenavModule } from '@angular/material/sidenav';
-import { CommonModule, isPlatformBrowser, LocationStrategy, PathLocationStrategy , Location} from '@angular/common';
+import { CommonModule, isPlatformBrowser, LocationStrategy, PathLocationStrategy, Location } from '@angular/common';
 import { SidebarComponent } from '../common/sidebar/sidebar.component';
 import { HeaderComponent } from '../common/header/header.component';
 import { FooterComponent } from '../common/footer/footer.component';

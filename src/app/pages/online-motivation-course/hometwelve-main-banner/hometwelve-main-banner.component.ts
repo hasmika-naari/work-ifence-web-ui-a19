@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NgIf } from '@angular/common';
+
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 @Component({
     selector: 'app-hometwelve-main-banner',
     standalone: true,
-    imports: [RouterLink, NgIf, CarouselModule, MatButtonModule, MatIconModule, HometwoCoursesComponent ],
+    imports: [RouterLink, CarouselModule, MatButtonModule, MatIconModule, HometwoCoursesComponent],
     templateUrl: './hometwelve-main-banner.component.html',
     styleUrls: ['./hometwelve-main-banner.component.scss']
 })

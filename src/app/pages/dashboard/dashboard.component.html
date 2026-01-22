@@ -1,5 +1,5 @@
 <!-- <fury-page [fxLayoutGap]="gap"  fxLayout="column"> -->
-  <div class="dashboard-wrapper">
+<div class="dashboard-wrapper">
   <div class="dashboard">
     <div class="welcome-container">
       <h1 class="welcome-message">
@@ -12,17 +12,19 @@
           <span class="section-subtitle" >Stats</span>
         </div>
         <div class="stats-container">
-          <div class="stat-card" *ngFor="let stat of stats">
-            <div class="stat-header">
-              <span class="stat-title">{{ stat.title }}</span>
-              <i class="{{ stat.icon }}" [style.color]="stat.color"></i>
+          @for (stat of stats; track stat) {
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">{{ stat.title }}</span>
+                <i class="{{ stat.icon }}" [style.color]="stat.color"></i>
+              </div>
+              <div class="stat-body">
+                <span class="stat-value">{{ stat.value }}</span>
+                <span class="stat-sub">{{ stat.sub }}</span>
+              </div>
+              <div class="stat-footer" [style.background]="stat.color"></div>
             </div>
-            <div class="stat-body">
-              <span class="stat-value">{{ stat.value }}</span>
-              <span class="stat-sub">{{ stat.sub }}</span>
-            </div>
-            <div class="stat-footer" [style.background]="stat.color"></div>
-          </div>
+          }
         </div>
       </section>
       <section class="mt-5">
@@ -30,8 +32,9 @@
           <span class="section-subtitle mb-3" >WorkIfence Tools</span>
         </div>
         <div class="tools-container">
-          <div class="tools-card  radius-8" *ngFor="let tool of tools" (click)="goToSelectedPage($event,tool)">
-            <!-- <div class="tools-card-icon">
+          @for (tool of tools; track tool) {
+            <div class="tools-card  radius-8" (click)="goToSelectedPage($event,tool)">
+              <!-- <div class="tools-card-icon">
               <img [src]="tool.icon" alt="{{ tool.title }} icon" />
             </div> -->
             <div class="tools-card-content">
@@ -41,7 +44,8 @@
               <p style="font-size: 12px;line-height: 1rem;font-weight: 400;--tw-text-opacity: 1;color: rgb(68 76 88 1)">{{ tool.description }}</p>
             </div>
           </div>
-        </div>
+        }
+      </div>
     </section>
     <section class="mt-5">
       <div class="mb-3">
@@ -89,8 +93,8 @@
         </div>
       </div>
     </section>
-    </div>
   </div>
+</div>
 <!-- </fury-page> -->
 
 

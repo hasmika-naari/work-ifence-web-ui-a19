@@ -1,135 +1,147 @@
 <div class="row pl-4 pr-4" style="height: 80% !important;">
-    <ng-container *ngIf="isActionInProgress">
-        <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
-    </ng-container>
-    <div class="col-12">
-        <form [formGroup]="addressForm" class="address-form" novalidate>
-            <div class="form-row">
-                <div class="field">
-                    <label for="address_name">Address Name *</label>
-                    <input
-                        id="address_name"
-                        pInputText
-                        formControlName="address_name"
-                        placeholder="Home, Office, etc."
-                    />
-                    <small class="error" *ngIf="addressForm.get('address_name')?.hasError('required') && (addressForm.get('address_name')?.dirty || addressForm.get('address_name')?.touched)">
-                        Required.
-                    </small>
-                </div>
+  @if (isActionInProgress) {
+    <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+  }
+  <div class="col-12">
+    <form [formGroup]="addressForm" class="address-form" novalidate>
+      <div class="form-row">
+        <div class="field">
+          <label for="address_name">Address Name *</label>
+          <input
+            id="address_name"
+            pInputText
+            formControlName="address_name"
+            placeholder="Home, Office, etc."
+            />
+            @if (addressForm.get('address_name')?.hasError('required') && (addressForm.get('address_name')?.dirty || addressForm.get('address_name')?.touched)) {
+              <small class="error">
+                Required.
+              </small>
+            }
+          </div>
+        </div>
+
+        <div class="form-row form-row--double">
+          <div class="field">
+            <label for="address_line1">Address Line 1 *</label>
+            <input
+              id="address_line1"
+              pInputText
+              formControlName="address_line1"
+              placeholder="Street, building number"
+              />
+              @if (addressForm.get('address_line1')?.hasError('required') && (addressForm.get('address_line1')?.dirty || addressForm.get('address_line1')?.touched)) {
+                <small class="error">
+                  Required.
+                </small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="address_line2">Address Line 2</label>
+              <input
+                id="address_line2"
+                pInputText
+                formControlName="address_line2"
+                placeholder="Apartment, suite, etc."
+                />
+              </div>
             </div>
 
             <div class="form-row form-row--double">
-                <div class="field">
-                    <label for="address_line1">Address Line 1 *</label>
-                    <input
-                        id="address_line1"
-                        pInputText
-                        formControlName="address_line1"
-                        placeholder="Street, building number"
-                    />
-                    <small class="error" *ngIf="addressForm.get('address_line1')?.hasError('required') && (addressForm.get('address_line1')?.dirty || addressForm.get('address_line1')?.touched)">
-                        Required.
+              <div class="field">
+                <label for="city">City *</label>
+                <input
+                  id="city"
+                  pInputText
+                  formControlName="city"
+                  placeholder="City"
+                  />
+                  @if (addressForm.get('city')?.hasError('required') && (addressForm.get('city')?.dirty || addressForm.get('city')?.touched)) {
+                    <small class="error">
+                      Required.
                     </small>
+                  }
                 </div>
 
                 <div class="field">
-                    <label for="address_line2">Address Line 2</label>
-                    <input
-                        id="address_line2"
-                        pInputText
-                        formControlName="address_line2"
-                        placeholder="Apartment, suite, etc."
+                  <label for="zipcode">Zipcode *</label>
+                  <input
+                    id="zipcode"
+                    pInputText
+                    formControlName="zipcode"
+                    placeholder="Postal code"
                     />
-                </div>
-            </div>
-
-            <div class="form-row form-row--double">
-                <div class="field">
-                    <label for="city">City *</label>
-                    <input
-                        id="city"
-                        pInputText
-                        formControlName="city"
-                        placeholder="City"
-                    />
-                    <small class="error" *ngIf="addressForm.get('city')?.hasError('required') && (addressForm.get('city')?.dirty || addressForm.get('city')?.touched)">
+                    @if (addressForm.get('zipcode')?.hasError('required') && (addressForm.get('zipcode')?.dirty || addressForm.get('zipcode')?.touched)) {
+                      <small class="error">
                         Required.
-                    </small>
+                      </small>
+                    }
+                  </div>
                 </div>
 
-                <div class="field">
-                    <label for="zipcode">Zipcode *</label>
-                    <input
-                        id="zipcode"
-                        pInputText
-                        formControlName="zipcode"
-                        placeholder="Postal code"
-                    />
-                    <small class="error" *ngIf="addressForm.get('zipcode')?.hasError('required') && (addressForm.get('zipcode')?.dirty || addressForm.get('zipcode')?.touched)">
-                        Required.
-                    </small>
-                </div>
-            </div>
-
-            <div class="form-row form-row--double">
-                <div class="field field--autocomplete">
+                <div class="form-row form-row--double">
+                  <div class="field field--autocomplete">
                     <label for="country-input">Country *</label>
                     <p-autoComplete
-                        formControlName="country"
-                        [suggestions]="filteredCountries"
-                        (completeMethod)="filterCountry($event)"
-                        (onFocus)="onCountryFocus()"
-                        (onSelect)="onCountrySelect()"
-                        field="label"
-                        [forceSelection]="true"
-                        inputId="country-input"
-                        #countryAuto
-                        class="w-100"
-                        autocomplete="off"
-                        placeholder="Select country"
+                      formControlName="country"
+                      [suggestions]="filteredCountries"
+                      (completeMethod)="filterCountry($event)"
+                      (onFocus)="onCountryFocus()"
+                      (onSelect)="onCountrySelect()"
+                      field="label"
+                      [forceSelection]="true"
+                      inputId="country-input"
+                      #countryAuto
+                      class="w-100"
+                      autocomplete="off"
+                      placeholder="Select country"
                     ></p-autoComplete>
-                    <small class="error" *ngIf="addressForm.get('country')?.hasError('required') && (addressForm.get('country')?.dirty || addressForm.get('country')?.touched)">
+                    @if (addressForm.get('country')?.hasError('required') && (addressForm.get('country')?.dirty || addressForm.get('country')?.touched)) {
+                      <small class="error">
                         Required.
-                    </small>
-                </div>
+                      </small>
+                    }
+                  </div>
 
-                <div class="field field--autocomplete">
+                  <div class="field field--autocomplete">
                     <label for="state-input">State *</label>
                     <p-autoComplete
-                        formControlName="state"
-                        [suggestions]="filteredStates"
-                        (completeMethod)="filterState($event)"
-                        (onFocus)="onStateFocus()"
-                        (onSelect)="onStateSelect()"
-                        field="label"
-                        [forceSelection]="true"
-                        inputId="state-input"
-                        #stateAuto
-                        class="w-100"
-                        autocomplete="off"
-                        placeholder="Select state"
+                      formControlName="state"
+                      [suggestions]="filteredStates"
+                      (completeMethod)="filterState($event)"
+                      (onFocus)="onStateFocus()"
+                      (onSelect)="onStateSelect()"
+                      field="label"
+                      [forceSelection]="true"
+                      inputId="state-input"
+                      #stateAuto
+                      class="w-100"
+                      autocomplete="off"
+                      placeholder="Select state"
                     ></p-autoComplete>
-                    <small class="error" *ngIf="addressForm.get('state')?.hasError('required') && (addressForm.get('state')?.dirty || addressForm.get('state')?.touched)">
+                    @if (addressForm.get('state')?.hasError('required') && (addressForm.get('state')?.dirty || addressForm.get('state')?.touched)) {
+                      <small class="error">
                         Required.
-                    </small>
+                      </small>
+                    }
+                  </div>
                 </div>
-            </div>
 
-            <div class="form-actions">
-                <button type="button" class="action-btn action-btn--ghost" (click)="closeEditor()">
+                <div class="form-actions">
+                  <button type="button" class="action-btn action-btn--ghost" (click)="closeEditor()">
                     Cancel
-                </button>
-                <button
+                  </button>
+                  <button
                     type="button"
                     class="action-btn action-btn--primary"
                     (click)="saveAddressForm()"
                     [disabled]="addressForm.invalid"
-                >
+                    >
                     <i class="pi pi-check"></i>
                     Save address
-                </button>
+                  </button>
+                </div>
+              </form>
             </div>
-        </form>
-    </div>
-</div>
+          </div>

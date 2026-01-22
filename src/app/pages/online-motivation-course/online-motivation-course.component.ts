@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, PLATFORM_ID, inject, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { CommonModule, Location, isPlatformBrowser } from '@angular/common';
+import { Location, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -28,28 +28,26 @@ import { TrendingCategoriesComponent } from '../../common2/trending-categories/t
     selector: 'app-online-motivation-course',
     standalone: true,
     imports: [
-        CommonModule,
-        RouterLink,
-        CarouselModule,
-        MatIconModule,
-        IconsModule,
-        // Components
-        PartnerStyleOneComponent,
-        HometwelveBlogComponent,
-        HeaderWorkIfenceComponent,
-        DiscoverEdnuvComponent,
-        InstructorsStyleFourComponent,
-        OurGrowthComponent,
-        HometwelveCoursesComponent,
-        HometwelveAboutComponent,
-        TrendingCategoriesComponent,
-        HometwoCoursesComponent,
-        BoxesComponent,
-        FooterWorkifenceComponent,
-        HometwelvePopularCoursesComponent,
-        HometwelveMainBannerComponent,
-        HeaderStyleSevenComponent
-    ],
+    RouterLink,
+    CarouselModule,
+    MatIconModule,
+    IconsModule,
+    PartnerStyleOneComponent,
+    HometwelveBlogComponent,
+    HeaderWorkIfenceComponent,
+    DiscoverEdnuvComponent,
+    InstructorsStyleFourComponent,
+    OurGrowthComponent,
+    HometwelveCoursesComponent,
+    HometwelveAboutComponent,
+    TrendingCategoriesComponent,
+    HometwoCoursesComponent,
+    BoxesComponent,
+    FooterWorkifenceComponent,
+    HometwelvePopularCoursesComponent,
+    HometwelveMainBannerComponent,
+    HeaderStyleSevenComponent
+],
     templateUrl: './online-motivation-course.component.html',
     styleUrl: './online-motivation-course.component.scss'
 })

@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
+import { NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, inject, AfterViewInit, ViewChild, ElementRef, OnDestroy, HostListener } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -15,8 +15,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
 @Component({
   selector: 'app-about-us-u',
   standalone: true,
-  imports: [CommonModule, RouterLink, LanguageSubscribeComponent,
-      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
+  imports: [RouterLink, LanguageSubscribeComponent, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
   templateUrl: './about-us-u.component.html',
   styleUrls: ['./about-us-u.component.scss']
 })

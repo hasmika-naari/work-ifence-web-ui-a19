@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { AfterRenderPhase, Component, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, afterNextRender, inject } from '@angular/core';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { Category } from '../../../services/bee-compete.model';
@@ -6,7 +6,7 @@ import { Category } from '../../../services/bee-compete.model';
 @Component({
   selector: 'app-bee-compete-categories',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, CarouselModule],
+  imports: [NgOptimizedImage, CarouselModule],
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss']
 })

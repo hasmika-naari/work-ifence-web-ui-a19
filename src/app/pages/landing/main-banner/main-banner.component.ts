@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { ThemeCustomizerService } from '../../../services/theme-customizer/theme-customizer.service';
@@ -6,7 +6,7 @@ import { ThemeCustomizerService } from '../../../services/theme-customizer/theme
 @Component({
   selector: 'app-main-banner',
   standalone: true,
-    imports: [CommonModule, NgOptimizedImage, CarouselModule],
+    imports: [NgOptimizedImage, CarouselModule],
   templateUrl: './main-banner.component.html',
   styleUrls: ['./main-banner.component.scss']
 })

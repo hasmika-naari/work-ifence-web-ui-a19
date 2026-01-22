@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import * as _ from 'lodash';
@@ -14,8 +14,7 @@ import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-w
 @Component({
   selector: 'resources-page',
   standalone: true,
-  imports: [CommonModule, RouterLink,LanguageSubscribeComponent,
-      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
+  imports: [RouterLink, LanguageSubscribeComponent, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
   templateUrl: './resources-page.component.html',
   styleUrls: ['./resources-page.component.scss']
 })

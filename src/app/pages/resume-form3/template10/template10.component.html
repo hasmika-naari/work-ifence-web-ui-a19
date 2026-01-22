@@ -1,49 +1,49 @@
 <div class="container" cdkDropList [cdkDropListData]="sections" (cdkDropListDropped)="drop($event)">
-    <!-- Header Section -->
-    <div class="header">
-  <div class="name">{{getContactSection().fname + ' ' + getContactSection().lname}}</div>
-        <div class="contact">
-  @if(getContactSection().address?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'" style="padding-left: 0;">{{getContactSection().address}}</p>
-        } 
-  @if(getContactSection().phone_number?.length > 0 && getContactSection().address?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
-        }
-  @if(getContactSection().phone_number?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">{{getContactSection().phone_number}}</p>
-        }
-  @if(getContactSection().email?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
-        }
-  @if(getContactSection().email?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">{{getContactSection().email}}</p>
-        }
-  @if(getContactSection().linkedIn_profile?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
-        }
-  @if(getContactSection().linkedIn_profile?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{getContactSection().linkedIn_profile}}" target="_blank" style="color: #39A5B7; text-decoration: none;">{{getContactSection().linkedIn_profile_display_name}}</a></p>
-        }
-  @if(getContactSection().github_profile?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>   
-        }
-  @if(getContactSection().github_profile?.length > 0){
-  <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{getContactSection().github_profile}}" target="_blank" style="color: #39A5B7; text-decoration: none;">{{getContactSection().github_profile_display_name}}</a></p>
-        }
-        </div>
-        @if(!isPreview){
-          <div class="section-actions">
-  @if(getContactSection().isDefaultData){
-        <div class="wif-tooltip" data-direction="bottom">
-          <div class="wif-tooltip__initiator">
-            <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CONTACT')"></p-icon>
-          </div>
-          <div class="wif-tooltip__item">
-            Add Contact
-          </div>
-        </div>
+  <!-- Header Section -->
+  <div class="header">
+    <div class="name">{{getContactSection().fname + ' ' + getContactSection().lname}}</div>
+    <div class="contact">
+      @if(getContactSection().address?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'" style="padding-left: 0;">{{getContactSection().address}}</p>
       }
-      @else{
+      @if(getContactSection().phone_number?.length > 0 && getContactSection().address?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>
+      }
+      @if(getContactSection().phone_number?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">{{getContactSection().phone_number}}</p>
+      }
+      @if(getContactSection().email?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>
+      }
+      @if(getContactSection().email?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">{{getContactSection().email}}</p>
+      }
+      @if(getContactSection().linkedIn_profile?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>
+      }
+      @if(getContactSection().linkedIn_profile?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{getContactSection().linkedIn_profile}}" target="_blank" style="color: #39A5B7; text-decoration: none;">{{getContactSection().linkedIn_profile_display_name}}</a></p>
+      }
+      @if(getContactSection().github_profile?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'">|</p>
+      }
+      @if(getContactSection().github_profile?.length > 0){
+        <p [ngClass]="getContactSection().isDefaultData?'opacity-half' : 'opacity-full'"><a href="{{getContactSection().github_profile}}" target="_blank" style="color: #39A5B7; text-decoration: none;">{{getContactSection().github_profile_display_name}}</a></p>
+      }
+    </div>
+    @if(!isPreview){
+      <div class="section-actions">
+        @if(getContactSection().isDefaultData){
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('CONTACT')"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Add Contact
+            </div>
+          </div>
+        }
+        @else{
         <div class="wif-tooltip" data-direction="bottom">
           <div class="wif-tooltip__initiator">
             <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('CONTACT', null)"></p-icon>
@@ -54,26 +54,27 @@
         </div>
       }
       <!-- <div class="wif-tooltip" data-direction="bottom">
-        <div class="wif-tooltip__initiator">
-          <p-icon class="pi pi-times" title="" (click)="removeSection('CONTACT')"></p-icon>
-        </div>
-        <div class="wif-tooltip__item">
-          Remove Contact
-        </div>
-      </div> -->
-    </div>
-  }
-    </div>
+      <div class="wif-tooltip__initiator">
+        <p-icon class="pi pi-times" title="" (click)="removeSection('CONTACT')"></p-icon>
+      </div>
+      <div class="wif-tooltip__item">
+        Remove Contact
+      </div>
+    </div> -->
+  </div>
+}
+</div>
 
-     <ng-container *ngFor="let section of sections">
+@for (section of sections; track section) {
   @if(getSectionItems('PROFILE_SUMMARY')[0]?.profile_summary?.length > 0){
-      <div class="section" style="position: relative;" cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
+    @if (section === 'PROFILE_SUMMARY') {
+      <div class="section" style="position: relative;" cdkDrag>
         <span class="section-title">{{getSectionTitle(section)}}
           @if(!isPreview){
             <div class="section-actions">
               <div class="wif-tooltip" data-direction="bottom">
                 <div class="wif-tooltip__initiator">
-                   <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('PROFILE_SUMMARY', null)"></p-icon>
+                  <p-icon class="pi pi-pencil" title="" (click)="editSectionHandler('PROFILE_SUMMARY', null)"></p-icon>
                 </div>
                 <div class="wif-tooltip__item">
                   Edit Summary
@@ -90,87 +91,90 @@
             </div>
           }
         </span>
-  <div [innerHTML]="getSectionItems('PROFILE_SUMMARY')[0]?.profile_summary" class="project-content">
+        <div [innerHTML]="getSectionItems('PROFILE_SUMMARY')[0]?.profile_summary" class="project-content">
         </div>
-          <!-- <p class="resume-summary-text" [ngClass]="resumeForm().profileSummary.isDefault?'opacity-half' : 'opacity-full'">{{resumeForm().profileSummary.profile_summary}}</p> -->
+        <!-- <p class="resume-summary-text" [ngClass]="resumeForm().profileSummary.isDefault?'opacity-half' : 'opacity-full'">{{resumeForm().profileSummary.profile_summary}}</p> -->
       </div>
     }
-    @else{
-      <div class="section" style="position: relative;" cdkDrag *ngIf="section === 'PROFILE_SUMMARY'">
-        <span class="section-title">{{getSectionTitle(section)}}
-          @if(!isPreview){
-            <div class="section-actions">
-              <div class="wif-tooltip" data-direction="bottom">
-                <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('PROFILE_SUMMARY')"></p-icon>
-                </div>
-                <div class="wif-tooltip__item">
-                  Add Summary
-                </div>
+  }
+  @else{
+  @if (section === 'PROFILE_SUMMARY') {
+    <div class="section" style="position: relative;" cdkDrag>
+      <span class="section-title">{{getSectionTitle(section)}}
+        @if(!isPreview){
+          <div class="section-actions">
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('PROFILE_SUMMARY')"></p-icon>
               </div>
-              <div class="wif-tooltip" data-direction="bottom">
-                <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-times" title="" (click)="removeSection('PROFILE_SUMMARY')"></p-icon>
-                </div>
-                <div class="wif-tooltip__item">
-                  Remove summary section
-                </div>
+              <div class="wif-tooltip__item">
+                Add Summary
               </div>
             </div>
-          }
-        </span>
-          <p class="project-content opacity-half">Briefly explian why you're a great fit for the role - use the AI assistant to tailor this summary for each job posting.</p>
-          
-      </div>
-    }
-
-    <!-- Education Section -->
-  @if(getSectionItems('EDUCATION').length > 0){
-    <div class="section education" style="position: relative;" cdkDrag *ngIf="section === 'EDUCATION'">
-        <div class="section-title" style="position: relative;">{{getSectionTitle(section)}}
-          @if(!isPreview){
-            <div class="section-actions">
-              <div class="wif-tooltip" data-direction="bottom">
-                <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
-                </div>
-                <div class="wif-tooltip__item">
-                  Add Education
-                </div>
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-times" title="" (click)="removeSection('PROFILE_SUMMARY')"></p-icon>
               </div>
-              <div class="wif-tooltip" data-direction="bottom">
-                <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
-                </div>
-                <div class="wif-tooltip__item">
-                  Remove education section
-                </div>
+              <div class="wif-tooltip__item">
+                Remove summary section
               </div>
+            </div>
           </div>
         }
-        </div>
-  <div *ngFor="let item of getSectionItems('EDUCATION')">
-            <div class="education-p">
+      </span>
+      <p class="project-content opacity-half">Briefly explian why you're a great fit for the role - use the AI assistant to tailor this summary for each job posting.</p>
+    </div>
+  }
+}
+<!-- Education Section -->
+@if(getSectionItems('EDUCATION').length > 0){
+  @if (section === 'EDUCATION') {
+    <div class="section education" style="position: relative;" cdkDrag>
+      <div class="section-title" style="position: relative;">{{getSectionTitle(section)}}
+        @if(!isPreview){
+          <div class="section-actions">
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Add Education
+              </div>
+            </div>
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Remove education section
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      @for (item of getSectionItems('EDUCATION'); track item) {
+        <div>
+          <div class="education-p">
             @if(item.degree.length > 0){
-                <p style="padding-left: 0;"><b>{{item.degree}}</b></p>
+              <p style="padding-left: 0;"><b>{{item.degree}}</b></p>
             }
             @if(item.degree.length > 0 && item.school_name.length > 0){
-                <p>|</p>
+              <p>|</p>
             }
             @if(item.school_name.length > 0){
-                <p><b>{{item.school_name}}</b></p>
+              <p><b>{{item.school_name}}</b></p>
             }
             @if(item.graduation_date.length > 0){
-                <p>|</p>
+              <p>|</p>
             }
             @if(item.graduation_date.length > 0){
-                <p><b>{{item.graduation_date}}</b></p>
+              <p><b>{{item.graduation_date}}</b></p>
             }
             @if(item.gpa.length > 0){
-                <p>|</p>
+              <p>|</p>
             }
             @if(item.gpa.length > 0){
-                <p><b>{{item.gpa}} GPA</b></p>
+              <p><b>{{item.gpa}} GPA</b></p>
             }
             @if(!isPreview){
               <div class="sub-items-actions" >
@@ -193,18 +197,247 @@
                   </div>
                 }
                 @else{
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('EDUCATION', item)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Show Education
+                  </div>
+                </div>
+              }
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-angle-up icon" title="" (click)="moveObjectById('EDUCATION', item.id, 'up')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move Up
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('EDUCATION', item.id, 'down')"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Move Down
+                </div>
+              </div>
+              <div class="wif-tooltip" data-direction="bottom">
+                <div class="wif-tooltip__initiator">
+                  <p-icon class="pi pi-times icon" title="" (click)="confirmDeleteItemDialog('EDUCATION', item)"></p-icon>
+                </div>
+                <div class="wif-tooltip__item">
+                  Remove Education
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}
+}
+@else{
+@if (section === 'EDUCATION') {
+  <div class="section education default-education" style="position: relative;" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}</div>
+    <p class="opacity-half education-p" style="padding-left: 0;font-size: 14px;"><b>Degree | University | Period | GPA</b></p>
+    @if(!isPreview){
+      <div class="section-actions">
+        <div class="wif-tooltip" data-direction="bottom">
+          <div class="wif-tooltip__initiator">
+            <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
+          </div>
+          <div class="wif-tooltip__item">
+            Add Education
+          </div>
+        </div>
+        <div class="wif-tooltip" data-direction="bottom">
+          <div class="wif-tooltip__initiator">
+            <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
+          </div>
+          <div class="wif-tooltip__item">
+            Remove education section
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
+}
+<!-- Skills Section -->
+@if(isSkillsCategoryDefault()){
+  @if (section === 'SKILLS_CATEGORY') {
+    <div class="section skills" style="position: relative;" cdkDrag>
+      <div class="section-title">{{getSectionTitle(section)}}
+      </div>
+      <div class="skills-content">
+        <ul class="skill-category">
+          @for(item of firstHalfSkills; track item){
+            <li><span>{{item.sub_title}}:</span> {{formatSkills(item.skills)}}</li>
+          }
+        </ul>
+        <ul class="skill-category">
+          @for(item of secondHalfSkills; track item){
+            <li><span>{{item.sub_title}}:</span> {{formatSkills(item.skills)}}</li>
+          }
+        </ul>
+      </div>
+      @if(!isPreview){
+        <div class="section-actions">
+          @if(isSkillsCategoryDefault()){
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Add Skills
+              </div>
+            </div>
+          }
+          @else{
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_CATEGORY', null)"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Edit Skills
+            </div>
+          </div>
+        }
+        <div class="wif-tooltip" data-direction="bottom">
+          <div class="wif-tooltip__initiator">
+            <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_CATEGORY')"></p-icon>
+          </div>
+          <div class="wif-tooltip__item">
+            Remove skills section
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
+}
+@else{
+@if (section === 'SKILLS_CATEGORY') {
+  <div class="section skills default-skills" style="position: relative;" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}</div>
+    <div class="skills-content opacity-half">
+      <ul class="skill-category">
+        <li><span>Programming:</span> Python, SQL, Java, JavaScript</li>
+        <li><span>Data Analysis:</span> Advanced Excel, SPSS, Pandas, NumPy, Matplotlib, Seaborn, Data Wrangling</li>
+        <li><span>Visualization:</span> Microsoft Power BI, Tableau Desktop, Tableau Prep, D3.JS, Splunk</li>
+      </ul>
+      <ul class="skill-category">
+        <li><span>Machine Learning:</span> Scikit-learn</li>
+        <li><span>Web:</span> Django, Flask, Spring Boot, React, Angular</li>
+        <li><span>Soft Skills:</span> Collaboration, Adaptability, Communication, Teamwork, Problem-Solving, Analytical Thinking</li>
+      </ul>
+    </div>
+    @if(!isPreview){
+      <div class="section-actions">
+        @if(getSectionItems('SKILLS_CATEGORY').length == 0){
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Add Skills
+            </div>
+          </div>
+        }
+        @else{
+        <div class="wif-tooltip" data-direction="bottom">
+          <div class="wif-tooltip__initiator">
+            <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_CATEGORY', null)"></p-icon>
+          </div>
+          <div class="wif-tooltip__item">
+            Edit Skills
+          </div>
+        </div>
+      }
+      <div class="wif-tooltip" data-direction="bottom">
+        <div class="wif-tooltip__initiator">
+          <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_CATEGORY')"></p-icon>
+        </div>
+        <div class="wif-tooltip__item">
+          Remove skills section
+        </div>
+      </div>
+    </div>
+  }
+</div>
+}
+}
+@if(!isAccomplishmentDefaultData()){
+  @if (section === 'ACHIEVEMENT_WITH_DESC') {
+    <div class="section education" style="position: relative;" cdkDrag>
+      <div class="section-title">{{getSectionTitle(section)}}
+        @if(!isPreview){
+          <div class="section-actions">
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Add Accomplishment
+              </div>
+            </div>
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENT_WITH_DESC')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Remove accomplishments section
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      @for (item of getSectionItems('ACHIEVEMENT_WITH_DESC'); track item) {
+        <div>
+          @if (!isPreview || !item.isHideSelected) {
+            <div class="experience-container" [class]="getDivClass(item)">
+              <div style="display: flex;">
+                <p style="flex: 1;text-align: left;margin: 0;font-size: 14px;color: #000;"><b>{{item.accomplisment}}</b></p>
+                <p style="text-align: right;font-size: 14px;">{{item.date}}</p>
+              </div>
+              <div [innerHTML]="item.description" class="project-content"></div>
+              @if(!isPreview){
+                <div class="sub-items-actions">
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('EDUCATION', item)"></p-icon>
+                      <p-icon class="pi pi-pencil icon" title="Edit accomplishment" (click)="editSectionHandler('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Show Education
+                      Edit Accomplishment
+                    </div>
+                  </div>
+                  @if(!item.isHideSelected){
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-eye icon" title="Show accomplishment" (click)="hideSectionElement('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Hide Accomplishment
+                      </div>
+                    </div>
+                  }
+                  @else{
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-eye-slash icon" title="Hide accomplishment" (click)="unHideSectionElement('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Show Accomplishment
                     </div>
                   </div>
                 }
+                <!-- <p-icon class="pi pi-eye-slash icon" title="Hide"></p-icon> -->
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-angle-up icon" title="" (click)="moveObjectById('EDUCATION', item.id, 'up')"></p-icon>
+                    <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('ACHIEVEMENT_WITH_DESC', item.id, 'up')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Move Up
@@ -212,7 +445,7 @@
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('EDUCATION', item.id, 'down')"></p-icon>
+                    <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('ACHIEVEMENT_WITH_DESC', item.id, 'down')"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
                     Move Down
@@ -220,827 +453,638 @@
                 </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times icon" title="" (click)="confirmDeleteItemDialog('EDUCATION', item)"></p-icon>
+                    <p-icon class="pi pi-times icon" title="Delete accomplishment" (click)="confirmDeleteItemDialog('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
                   </div>
                   <div class="wif-tooltip__item">
-                    Remove Education
+                    Remove Accomplishment
                   </div>
                 </div>
               </div>
             }
-        </div>
-    </div>
-    </div>
+          </div>
+        }
+      </div>
     }
-    @else{
-        <div class="section education default-education" style="position: relative;" cdkDrag *ngIf="section === 'EDUCATION'">
-            <div class="section-title">{{getSectionTitle(section)}}</div>
-            <p class="opacity-half education-p" style="padding-left: 0;font-size: 14px;"><b>Degree | University | Period | GPA</b></p>
-            @if(!isPreview){
-              <div class="section-actions">
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="" (click)="addSectionHandler('EDUCATION')"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Add Education
-                  </div>
-                </div>
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times" title="" (click)="removeSection('EDUCATION')"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Remove education section
-                  </div>
-                </div>
+  </div>
+}
+}
+@else{
+@if (section === 'ACHIEVEMENT_WITH_DESC') {
+  <div class="section experince trigger-area" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}
+      @if(!isPreview){
+        <div class="section-actions">
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"></p-icon>
             </div>
-          }
+            <div class="wif-tooltip__item">
+              Add Accomplishment
+            </div>
+          </div>
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENT_WITH_DESC')"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Remove accomplishments section
+            </div>
+          </div>
         </div>
-    }
-
-    <!-- Skills Section -->
-     @if(isSkillsCategoryDefault()){
-    <div class="section skills" style="position: relative;" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
-        <div class="section-title">{{getSectionTitle(section)}}
-        </div>
-        <div class="skills-content">
-            <ul class="skill-category">
-                @for(item of firstHalfSkills; track item){
-                    <li><span>{{item.sub_title}}:</span> {{formatSkills(item.skills)}}</li>
-                }
-            </ul>
-            <ul class="skill-category">
-                @for(item of secondHalfSkills; track item){
-                  <li><span>{{item.sub_title}}:</span> {{formatSkills(item.skills)}}</li>
-                }
-            </ul>
-        </div>
+      }
+    </div>
+    <div style="display: flex;">
+      <p style="flex: 1;text-align: left;margin: 0;font-size: 14px;color: #000;" class="opacity-half"><b>Title</b></p>
+      <p style="text-align: right;font-size: 14px;"class="opacity-half">Date</p>
+    </div>
+    <p style="font-size: 14px;" class="opacity-half">Highlight your accomplishments, using numbers if possible.</p>
+  </div>
+}
+}
+@if(getSectionItems('WORK_EXPERIENCE').length > 0){
+  @if (section === 'WORK_EXPERIENCE') {
+    <div class="section experince trigger-area" cdkDrag>
+      <div class="section-title">{{getSectionTitle(section)}}
         @if(!isPreview){
           <div class="section-actions">
-            @if(isSkillsCategoryDefault()){
-              <div class="wif-tooltip" data-direction="bottom">
-                <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
-                </div>
-                <div class="wif-tooltip__item">
-                  Add Skills
-                </div>
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('WORK_EXPERIENCE')"></p-icon>
               </div>
-            }
-            @else{
-              <div class="wif-tooltip" data-direction="bottom">
-                <div class="wif-tooltip__initiator">
-                  <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_CATEGORY', null)"></p-icon>
-                </div>
-                <div class="wif-tooltip__item">
-                  Edit Skills
-                </div>
+              <div class="wif-tooltip__item">
+                Add Experience
               </div>
-            }
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_CATEGORY')"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Remove skills section
-                  </div>
-                </div>
-              </div>
-            }
-    </div>
-    }
-    @else{
-        <div class="section skills default-skills" style="position: relative;" cdkDrag *ngIf="section === 'SKILLS_CATEGORY'">
-            <div class="section-title">{{getSectionTitle(section)}}</div>
-            <div class="skills-content opacity-half">
-                <ul class="skill-category">
-                    <li><span>Programming:</span> Python, SQL, Java, JavaScript</li>
-                    <li><span>Data Analysis:</span> Advanced Excel, SPSS, Pandas, NumPy, Matplotlib, Seaborn, Data Wrangling</li>
-                    <li><span>Visualization:</span> Microsoft Power BI, Tableau Desktop, Tableau Prep, D3.JS, Splunk</li>
-                </ul>
-                <ul class="skill-category">
-                    <li><span>Machine Learning:</span> Scikit-learn</li>
-                    <li><span>Web:</span> Django, Flask, Spring Boot, React, Angular</li>
-                    <li><span>Soft Skills:</span> Collaboration, Adaptability, Communication, Teamwork, Problem-Solving, Analytical Thinking</li>
-                </ul>
             </div>
-            @if(!isPreview){
-              <div class="section-actions">
-              @if(getSectionItems('SKILLS_CATEGORY').length == 0){
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-times" title="Delete" (click)="removeSection('WORK_EXPERIENCE')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Remove experience section
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      @for (item of getSectionItems('WORK_EXPERIENCE'); track item) {
+        <div>
+          @if (!isPreview || !item.isHideSelected) {
+            <div class="experience-container" [class]="getDivClass(item)">
+              <p style="font-size: 14px;margin: 0;"><b>{{item.position_title}} | {{item.company_name}} | {{item.start_date}} - {{item.end_date}}</b></p>
+              <div [innerHTML]="item.description" class="project-content"></div>
+              @if(!isPreview){
+                <div class="sub-items-actions">
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_CATEGORY')"></p-icon>
+                      <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('WORK_EXPERIENCE', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Add Skills
+                      Edit Experience
                     </div>
                   </div>
-                }
-                @else{
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_CATEGORY', null)"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Edit Skills
-                    </div>
-                  </div>
-                }
+                  @if(!item.isHideSelected){
                     <div class="wif-tooltip" data-direction="bottom">
                       <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_CATEGORY')"></p-icon>
+                        <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('WORK_EXPERIENCE', item)"></p-icon>
                       </div>
                       <div class="wif-tooltip__item">
-                        Remove skills section
+                        Hide Experience
                       </div>
-                    </div>
-                  </div>
-                }
-        </div>
-    }
-
-    @if(!isAccomplishmentDefaultData()){
-        <div class="section education" style="position: relative;" cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add Accomplishment
-                    </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENT_WITH_DESC')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove accomplishments section 
-                    </div>
-                  </div>
-            </div>
-          }
-            </div>
-            <div *ngFor="let item of getSectionItems('ACHIEVEMENT_WITH_DESC')">
-              <div class="experience-container" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
-                <div style="display: flex;">
-                    <p style="flex: 1;text-align: left;margin: 0;font-size: 14px;color: #000;"><b>{{item.accomplisment}}</b></p>
-                    <p style="text-align: right;font-size: 14px;">{{item.date}}</p>
-                </div>
-                <div [innerHTML]="item.description" class="project-content"></div>
-                @if(!isPreview){
-                    <div class="sub-items-actions">
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-pencil icon" title="Edit accomplishment" (click)="editSectionHandler('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                          Edit Accomplishment 
-                        </div>
-                      </div>
-                      
-                      @if(!item.isHideSelected){
-                        <div class="wif-tooltip" data-direction="bottom">
-                          <div class="wif-tooltip__initiator">
-                            <p-icon class="pi pi-eye icon" title="Show accomplishment" (click)="hideSectionElement('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
-                          </div>
-                          <div class="wif-tooltip__item">
-                            Hide Accomplishment 
-                          </div>
-                        </div>
-                        
-                      }
-                      @else{
-                        <div class="wif-tooltip" data-direction="bottom">
-                          <div class="wif-tooltip__initiator">
-                            <p-icon class="pi pi-eye-slash icon" title="Hide accomplishment" (click)="unHideSectionElement('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
-                          </div>
-                          <div class="wif-tooltip__item">
-                          Show Accomplishment 
-                          </div>
-                        </div>
-                        
-                      }
-                      <!-- <p-icon class="pi pi-eye-slash icon" title="Hide"></p-icon> -->
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('ACHIEVEMENT_WITH_DESC', item.id, 'up')"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                        Move Up
-                        </div>
-                      </div>
-
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('ACHIEVEMENT_WITH_DESC', item.id, 'down')"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                        Move Down
-                        </div>
-                      </div>
-
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-times icon" title="Delete accomplishment" (click)="confirmDeleteItemDialog('ACHIEVEMENT_WITH_DESC', item)"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                        Remove Accomplishment 
-                        </div>
-                      </div>
-
                     </div>
                   }
-            </div>
-            </div>
-        </div>
-        }
-      @else{
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENT_WITH_DESC'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
+                  @else{
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"></p-icon>
+                      <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('WORK_EXPERIENCE', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Add Accomplishment
-                    </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENT_WITH_DESC')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove accomplishments section 
-                    </div>
-                  </div>
-            </div>
-          }
-            </div>
-            <div style="display: flex;">
-                <p style="flex: 1;text-align: left;margin: 0;font-size: 14px;color: #000;" class="opacity-half"><b>Title</b></p>
-                <p style="text-align: right;font-size: 14px;"class="opacity-half">Date</p>
-            </div>
-            <p style="font-size: 14px;" class="opacity-half">Highlight your accomplishments, using numbers if possible.</p>
-        </div>
-      }
-  @if(getSectionItems('WORK_EXPERIENCE').length > 0){
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('WORK_EXPERIENCE')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add Experience
-                    </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('WORK_EXPERIENCE')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove experience section
-                    </div>
-                  </div>
-            </div>
-          }
-            </div>
-            <div *ngFor="let item of getSectionItems('WORK_EXPERIENCE')">
-              <div class="experience-container" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
-                <p style="font-size: 14px;margin: 0;"><b>{{item.position_title}} | {{item.company_name}} | {{item.start_date}} - {{item.end_date}}</b></p>
-                <div [innerHTML]="item.description" class="project-content"></div>
-                @if(!isPreview){
-                  <div class="sub-items-actions">
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('WORK_EXPERIENCE', item)"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Edit Experience
-                      </div>
-                    </div>
-                    @if(!item.isHideSelected){
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('WORK_EXPERIENCE', item)"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                          Hide Experience
-                        </div>
-                      </div>
-                    }
-                    @else{
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('WORK_EXPERIENCE', item)"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                          Show Experience
-                        </div>
-                      </div>
-                    }
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('WORK_EXPERIENCE', item.id, 'up')"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Move Up
-                      </div>
-                    </div>
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('WORK_EXPERIENCE', item.id, 'down')"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Move Down
-                      </div>
-                    </div>
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('WORK_EXPERIENCE', item)"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Remove Experience
-                      </div>
+                      Show Experience
                     </div>
                   </div>
                 }
-        </div>
-        </div>
-        </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('WORK_EXPERIENCE', item.id, 'up')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Up
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('WORK_EXPERIENCE', item.id, 'down')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Down
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('WORK_EXPERIENCE', item)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Remove Experience
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
         }
-      @else{
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'WORK_EXPERIENCE'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('WORK_EXPERIENCE')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add Experience
-                    </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('WORK_EXPERIENCE')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove experience section
-                    </div>
-                  </div>
+      </div>
+    }
+  </div>
+}
+}
+@else{
+@if (section === 'WORK_EXPERIENCE') {
+  <div class="section experince trigger-area" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}
+      @if(!isPreview){
+        <div class="section-actions">
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('WORK_EXPERIENCE')"></p-icon>
             </div>
-          }
+            <div class="wif-tooltip__item">
+              Add Experience
             </div>
-            <div style="display: flex;flex-direction: column;">
-                <p style="font-size: 14px;margin: 0;" class="opacity-half"><b>Title | Company Name | Period</b></p>
-                <ul>
-                    <li class="opacity-half">Highlight your accomplishments, using numbers if possible.</li> 
-                  </ul>
+          </div>
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-times" title="Delete" (click)="removeSection('WORK_EXPERIENCE')"></p-icon>
             </div>
+            <div class="wif-tooltip__item">
+              Remove experience section
+            </div>
+          </div>
         </div>
       }
-  @if(getSectionItems('CERTIFICATIONS').length > 0){
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add certification
-                    </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove certifications section
-                    </div>
-                  </div>
+    </div>
+    <div style="display: flex;flex-direction: column;">
+      <p style="font-size: 14px;margin: 0;" class="opacity-half"><b>Title | Company Name | Period</b></p>
+      <ul>
+        <li class="opacity-half">Highlight your accomplishments, using numbers if possible.</li>
+      </ul>
+    </div>
+  </div>
+}
+}
+@if(getSectionItems('CERTIFICATIONS').length > 0){
+  @if (section === 'CERTIFICATIONS') {
+    <div class="section experince trigger-area" cdkDrag>
+      <div class="section-title">{{getSectionTitle(section)}}
+        @if(!isPreview){
+          <div class="section-actions">
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Add certification
+              </div>
             </div>
-          }
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Remove certifications section
+              </div>
             </div>
-            <div *ngFor="let item of getSectionItems('CERTIFICATIONS')">
-              <div class="experience-container" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
-                <p [class]="getDivClass(item)" style="margin: 0;padding: 0;">
-                    <span><a href="{{item.certification_link}}" target="_blank">{{item.certification_name}}</a>, {{item.issued_organisation}}</span>
-                    <span style="float: right;">{{item.issued_month}} {{item.issued_year}}</span>
-                </p>
-                @if(!isPreview){
-                  <div class="sub-items-actions">
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('CERTIFICATIONS', item)"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Edit certification
-                      </div>
-                    </div>
-                    @if(!item.isHideSelected){
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('CERTIFICATIONS', item)"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                          Hide certification
-                        </div>
-                      </div>
-                    }
-                    @else{
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('CERTIFICATIONS', item)"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                          Show certification
-                        </div>
-                      </div>
-                    }
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('CERTIFICATIONS', item.id, 'up')"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Move Up
-                      </div>
-                    </div>
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('CERTIFICATIONS', item.id, 'down')"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Move Down
-                      </div>
-                    </div>
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('CERTIFICATIONS', item)"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Remove certification
-                      </div>
-                    </div>
-                  </div>
-                }
-        </div>
-        </div>
-        </div>
+          </div>
         }
-      @else{
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS'">
-            <div class="section-title">{{getSectionTitle(section)}}
+      </div>
+      @for (item of getSectionItems('CERTIFICATIONS'); track item) {
+        <div>
+          @if (!isPreview || !item.isHideSelected) {
+            <div class="experience-container" [class]="getDivClass(item)">
+              <p [class]="getDivClass(item)" style="margin: 0;padding: 0;">
+                <span><a href="{{item.certification_link}}" target="_blank">{{item.certification_name}}</a>, {{item.issued_organisation}}</span>
+                <span style="float: right;">{{item.issued_month}} {{item.issued_year}}</span>
+              </p>
               @if(!isPreview){
-                <div class="section-actions">
+                <div class="sub-items-actions">
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add certification
-                    </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove certifications section
-                    </div>
-                  </div>
-            </div>
-          }
-            </div>
-            <div style="display: flex;flex-direction: column;">
-                  <div>
-                            <p style="margin: 0;" class="opacity-half">
-                            <span><a href="#" target="_blank">Certificate Name</a>, Which institution issued the certificate?</span>
-                            <span style="float: right;">Date</span>
-                            </p>
-                          </div>
-            </div>
-        </div>
-      }
-      
-     @if(!isCertificationDefaultData()){
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS_BULLET_POINTS'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('CERTIFICATIONS_BULLET_POINTS', null)"></p-icon>
+                      <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('CERTIFICATIONS', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
                       Edit certification
                     </div>
                   </div>
+                  @if(!item.isHideSelected){
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-eye icon" title="" (click)="hideSectionElement('CERTIFICATIONS', item)"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Hide certification
+                      </div>
+                    </div>
+                  }
+                  @else{
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
+                      <p-icon class="pi pi-eye-slash icon" title="" (click)="unHideSectionElement('CERTIFICATIONS', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Remove certifications section
+                      Show certification
                     </div>
                   </div>
-            </div>
-          }
-            </div>
-            <div>
-              <div class="experience-container">
-                <div [innerHTML]="getCertificationBulletPointsSection().point" class="project-content"></div>
-            </div>
-            </div>
-            </div>
+                }
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('CERTIFICATIONS', item.id, 'up')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Up
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-down icon" title="" (click)="moveObjectById('CERTIFICATIONS', item.id, 'down')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Down
+                  </div>
+                </div>
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('CERTIFICATIONS', item)"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Remove certification
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
         }
-      @else{
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'CERTIFICATIONS_BULLET_POINTS'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add certification
-                    </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove certifications section
-                    </div>
-                  </div>
+      </div>
+    }
+  </div>
+}
+}
+@else{
+@if (section === 'CERTIFICATIONS') {
+  <div class="section experince trigger-area" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}
+      @if(!isPreview){
+        <div class="section-actions">
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS')"></p-icon>
             </div>
-          }
+            <div class="wif-tooltip__item">
+              Add certification
             </div>
-            <div style="display: flex;flex-direction: column;">
-               <ul>
-                <li class="opacity-half"><a href="#">Certificate Name</a>, Which institution issued the certificate?</li>
-              </ul>
+          </div>
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS')"></p-icon>
             </div>
+            <div class="wif-tooltip__item">
+              Remove certifications section
+            </div>
+          </div>
         </div>
       }
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'SKILLS_BULLET_POINTS'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-            <div class="section-actions">
-              @if(getSectionItems('SKILLS_BULLET_POINTS').length == 0){
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_BULLET_POINTS')"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Add skills
-                  </div>
-                </div>
-              }
-              @else{
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_BULLET_POINTS', null)"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Edit skills
-                  </div>
-                </div>
-              }
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_BULLET_POINTS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove skills section
-                    </div>
-                  </div>
-                </div>
-              }
+    </div>
+    <div style="display: flex;flex-direction: column;">
+      <div>
+        <p style="margin: 0;" class="opacity-half">
+          <span><a href="#" target="_blank">Certificate Name</a>, Which institution issued the certificate?</span>
+          <span style="float: right;">Date</span>
+        </p>
+      </div>
+    </div>
+  </div>
+}
+}
+@if(!isCertificationDefaultData()){
+  @if (section === 'CERTIFICATIONS_BULLET_POINTS') {
+    <div class="section experince trigger-area" cdkDrag>
+      <div class="section-title">{{getSectionTitle(section)}}
+        @if(!isPreview){
+          <div class="section-actions">
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('CERTIFICATIONS_BULLET_POINTS', null)"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Edit certification
+              </div>
             </div>
-            <div>
-              <div class="experience-container" style="margin-left: 0;">
-                @if(getSectionItems('SKILLS_BULLET_POINTS').length == 0){
-                <p class="opacity-half">Your Skills</p>
-                }
-                @else{
-                <ul class="course-work-list">
-                  <li *ngFor="let item of getSectionItems('SKILLS_CATEGORY'); let i = index" class="custom-li">
-                  <span>{{ item.name || item }}</span>
-                  <span class="bullet" *ngIf=" i != (getSectionItems('SKILLS_CATEGORY').length-1)">•</span>
-                  </li>
-                </ul>
-                }
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Remove certifications section
+              </div>
             </div>
-            </div>
-            </div>
-      <div class="section experince trigger-area" cdkDrag *ngIf="section === 'RELEVANT_COURSEWORK'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-            <div class="section-actions">
-            @if(getSectionItems('RELEVANT_COURSEWORK').length == 0){
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('RELEVANT_COURSEWORK')"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Add coursework
-                  </div>
-                </div>
-              }
-              @else{
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('RELEVANT_COURSEWORK', null)"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Edit coursework
-                  </div>
-                </div>
-              }
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('RELEVANT_COURSEWORK')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove coursework section
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-            <div>
-              <div class="experience-container" style="margin-left: 0;">
-                @if(getSectionItems('RELEVANT_COURSEWORK').length == 0){
-                <p class="opacity-half">Your Course Work</p>
-                }
-                @else{
-                <ul class="course-work-list">
-                  <li *ngFor="let item of getSectionItems('RELEVANT_COURSEWORK'); let i = index" class="custom-li">
-                  <span>{{ item }}</span>
-                   <span class="bullet" *ngIf=" i != (getSectionItems('RELEVANT_COURSEWORK').length-1)">•</span>
-                  </li>
-                </ul>
-                }
-            </div>
-            </div>
-            </div>
-       @if(!isAchievementDefaultData()){
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                     <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS_BULLET_POINTS', null)"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Edit achievement
-                  </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove achievements section
-                    </div>
-                  </div>
-            </div>
-          }
-            </div>
-            <div>
-              <div class="experience-container">
-                <div [innerHTML]="getAchievementBulletPointsSection().ach" class="project-content"></div>
-            </div>
-            </div>
-            </div>
+          </div>
         }
-      @else{
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'ACHIEVEMENTS_BULLET_POINTS'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add achievement
-                    </div>
-                  </div>
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Remove achievements section
-                    </div>
-                  </div>
+      </div>
+      <div>
+        <div class="experience-container">
+          <div [innerHTML]="getCertificationBulletPointsSection().point" class="project-content"></div>
+        </div>
+      </div>
+    </div>
+  }
+}
+@else{
+@if (section === 'CERTIFICATIONS_BULLET_POINTS') {
+  <div class="section experince trigger-area" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}
+      @if(!isPreview){
+        <div class="section-actions">
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
             </div>
-          }
+            <div class="wif-tooltip__item">
+              Add certification
             </div>
-            <div style="display: flex;flex-direction: column;">
-               <ul>
-                <li class="opacity-half">Describe what you did and the impact it had.</li>
-              </ul>
+          </div>
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-times" title="Delete" (click)="removeSection('CERTIFICATIONS_BULLET_POINTS')"></p-icon>
             </div>
+            <div class="wif-tooltip__item">
+              Remove certifications section
+            </div>
+          </div>
         </div>
       }
-      @if(getSectionItems('PROJECT').length > 0){
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add Project
-                    </div>
-                </div>
-            
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Remove project section
-                  </div>
+    </div>
+    <div style="display: flex;flex-direction: column;">
+      <ul>
+        <li class="opacity-half"><a href="#">Certificate Name</a>, Which institution issued the certificate?</li>
+      </ul>
+    </div>
+  </div>
+}
+}
+@if (section === 'SKILLS_BULLET_POINTS') {
+  <div class="section experince trigger-area" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}
+      @if(!isPreview){
+        <div class="section-actions">
+          @if(getSectionItems('SKILLS_BULLET_POINTS').length == 0){
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('SKILLS_BULLET_POINTS')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Add skills
               </div>
             </div>
           }
+          @else{
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('SKILLS_BULLET_POINTS', null)"></p-icon>
             </div>
-            <div *ngFor="let item of getSectionItems('PROJECT')">
-              <div class="experience-container" *ngIf="!isPreview || !item.isHideSelected" [class]="getDivClass(item)">
-                <p style="font-size: 14px;margin: 0;"><b>{{item.project_name}} | {{item.period}}</b></p>
-                <div [innerHTML]="item.description" class="project-content"></div>
-                @if(!isPreview){
-                  <div class="sub-items-actions">
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('PROJECT', item)"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Edit Project
-                      </div>
-                  </div>
-                    
-                    @if(!item.isHideSelected){
-                        <div class="wif-tooltip" data-direction="bottom">
-                          <div class="wif-tooltip__initiator">
-                            <p-icon class="pi pi-eye icon" title="Show" (click)="hideSectionElement('PROJECT', item)"></p-icon>
-                          </div>
-                          <div class="wif-tooltip__item">
-                            Hide Project
-                          </div>
-                      </div>
-                      
-                    }
-                    @else{
-                      <div class="wif-tooltip" data-direction="bottom">
-                        <div class="wif-tooltip__initiator">
-                          <p-icon class="pi pi-eye-slash icon" title="Hide" (click)="unHideSectionElement('PROJECT', item)"></p-icon>
-                        </div>
-                        <div class="wif-tooltip__item">
-                          Show Project
-                        </div>
-                    </div>
-                      
-                    }
-                    <!-- <p-icon class="pi pi-eye-slash icon" title="Hide"></p-icon> -->
-                    <div class="wif-tooltip" data-direction="bottom">
-                      <div class="wif-tooltip__initiator">
-                        <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('PROJECT', item.id, 'up')"></p-icon>
-                      </div>
-                      <div class="wif-tooltip__item">
-                        Move Up
-                      </div>
-                  </div>
-  
+            <div class="wif-tooltip__item">
+              Edit skills
+            </div>
+          </div>
+        }
+        <div class="wif-tooltip" data-direction="bottom">
+          <div class="wif-tooltip__initiator">
+            <p-icon class="pi pi-times" title="Delete" (click)="removeSection('SKILLS_BULLET_POINTS')"></p-icon>
+          </div>
+          <div class="wif-tooltip__item">
+            Remove skills section
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div>
+    <div class="experience-container" style="margin-left: 0;">
+      @if(getSectionItems('SKILLS_BULLET_POINTS').length == 0){
+        <p class="opacity-half">Your Skills</p>
+      }
+      @else{
+      <ul class="course-work-list">
+        @for (item of getSectionItems('SKILLS_CATEGORY'); track item; let i = $index) {
+          <li class="custom-li">
+            <span>{{ item.name || item }}</span>
+            @if ( i != (getSectionItems('SKILLS_CATEGORY').length-1)) {
+              <span class="bullet">•</span>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>
+</div>
+}
+@if (section === 'RELEVANT_COURSEWORK') {
+  <div class="section experince trigger-area" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}
+      @if(!isPreview){
+        <div class="section-actions">
+          @if(getSectionItems('RELEVANT_COURSEWORK').length == 0){
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('RELEVANT_COURSEWORK')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Add coursework
+              </div>
+            </div>
+          }
+          @else{
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('RELEVANT_COURSEWORK', null)"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Edit coursework
+            </div>
+          </div>
+        }
+        <div class="wif-tooltip" data-direction="bottom">
+          <div class="wif-tooltip__initiator">
+            <p-icon class="pi pi-times" title="Delete" (click)="removeSection('RELEVANT_COURSEWORK')"></p-icon>
+          </div>
+          <div class="wif-tooltip__item">
+            Remove coursework section
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div>
+    <div class="experience-container" style="margin-left: 0;">
+      @if(getSectionItems('RELEVANT_COURSEWORK').length == 0){
+        <p class="opacity-half">Your Course Work</p>
+      }
+      @else{
+      <ul class="course-work-list">
+        @for (item of getSectionItems('RELEVANT_COURSEWORK'); track item; let i = $index) {
+          <li class="custom-li">
+            <span>{{ item }}</span>
+            @if ( i != (getSectionItems('RELEVANT_COURSEWORK').length-1)) {
+              <span class="bullet">•</span>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>
+</div>
+}
+@if(!isAchievementDefaultData()){
+  @if (section === 'ACHIEVEMENTS_BULLET_POINTS') {
+    <div class="section experince trigger-area" cdkDrag>
+      <div class="section-title">{{getSectionTitle(section)}}
+        @if(!isPreview){
+          <div class="section-actions">
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-pencil" title="Edit" (click)="editSectionHandler('ACHIEVEMENTS_BULLET_POINTS', null)"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Edit achievement
+              </div>
+            </div>
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Remove achievements section
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div>
+        <div class="experience-container">
+          <div [innerHTML]="getAchievementBulletPointsSection().ach" class="project-content"></div>
+        </div>
+      </div>
+    </div>
+  }
+}
+@else{
+@if (section === 'ACHIEVEMENTS_BULLET_POINTS') {
+  <div class="section experince trigger-area" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}
+      @if(!isPreview){
+        <div class="section-actions">
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Add achievement
+            </div>
+          </div>
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-times" title="Delete" (click)="removeSection('ACHIEVEMENTS_BULLET_POINTS')"></p-icon>
+            </div>
+            <div class="wif-tooltip__item">
+              Remove achievements section
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div style="display: flex;flex-direction: column;">
+      <ul>
+        <li class="opacity-half">Describe what you did and the impact it had.</li>
+      </ul>
+    </div>
+  </div>
+}
+}
+@if(getSectionItems('PROJECT').length > 0){
+  @if (section === 'PROJECT') {
+    <div class="section experince trigger-area" cdkDrag>
+      <div class="section-title">{{getSectionTitle(section)}}
+        @if(!isPreview){
+          <div class="section-actions">
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Add Project
+              </div>
+            </div>
+            <div class="wif-tooltip" data-direction="bottom">
+              <div class="wif-tooltip__initiator">
+                <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
+              </div>
+              <div class="wif-tooltip__item">
+                Remove project section
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      @for (item of getSectionItems('PROJECT'); track item) {
+        <div>
+          @if (!isPreview || !item.isHideSelected) {
+            <div class="experience-container" [class]="getDivClass(item)">
+              <p style="font-size: 14px;margin: 0;"><b>{{item.project_name}} | {{item.period}}</b></p>
+              <div [innerHTML]="item.description" class="project-content"></div>
+              @if(!isPreview){
+                <div class="sub-items-actions">
                   <div class="wif-tooltip" data-direction="bottom">
                     <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('PROJECT', item.id, 'down')"></p-icon>
+                      <p-icon class="pi pi-pencil icon" title="Edit" (click)="editSectionHandler('PROJECT', item)"></p-icon>
                     </div>
                     <div class="wif-tooltip__item">
-                      Move Down
+                      Edit Project
                     </div>
+                  </div>
+                  @if(!item.isHideSelected){
+                    <div class="wif-tooltip" data-direction="bottom">
+                      <div class="wif-tooltip__initiator">
+                        <p-icon class="pi pi-eye icon" title="Show" (click)="hideSectionElement('PROJECT', item)"></p-icon>
+                      </div>
+                      <div class="wif-tooltip__item">
+                        Hide Project
+                      </div>
+                    </div>
+                  }
+                  @else{
+                  <div class="wif-tooltip" data-direction="bottom">
+                    <div class="wif-tooltip__initiator">
+                      <p-icon class="pi pi-eye-slash icon" title="Hide" (click)="unHideSectionElement('PROJECT', item)"></p-icon>
+                    </div>
+                    <div class="wif-tooltip__item">
+                      Show Project
+                    </div>
+                  </div>
+                }
+                <!-- <p-icon class="pi pi-eye-slash icon" title="Hide"></p-icon> -->
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-up icon" title="Up" (click)="moveObjectById('PROJECT', item.id, 'up')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Up
+                  </div>
                 </div>
-  
+                <div class="wif-tooltip" data-direction="bottom">
+                  <div class="wif-tooltip__initiator">
+                    <p-icon class="pi pi-angle-down icon" title="Down" (click)="moveObjectById('PROJECT', item.id, 'down')"></p-icon>
+                  </div>
+                  <div class="wif-tooltip__item">
+                    Move Down
+                  </div>
+                </div>
                 <div class="wif-tooltip" data-direction="bottom">
                   <div class="wif-tooltip__initiator">
                     <p-icon class="pi pi-times icon" title="Delete" (click)="confirmDeleteItemDialog('PROJECT', item)"></p-icon>
@@ -1048,48 +1092,49 @@
                   <div class="wif-tooltip__item">
                     Remove Project
                   </div>
-              </div>
-                   
-                    
-                    
-                  </div>
-                }
-        </div>
-            </div>
-        </div>
-        }
-      @else{
-        <div class="section experince trigger-area" cdkDrag *ngIf="section === 'PROJECT'">
-            <div class="section-title">{{getSectionTitle(section)}}
-              @if(!isPreview){
-                <div class="section-actions">
-                  <div class="wif-tooltip" data-direction="bottom">
-                    <div class="wif-tooltip__initiator">
-                      <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
-                    </div>
-                    <div class="wif-tooltip__item">
-                      Add Project
-                    </div>
                 </div>
-            
-                <div class="wif-tooltip" data-direction="bottom">
-                  <div class="wif-tooltip__initiator">
-                    <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
-                  </div>
-                  <div class="wif-tooltip__item">
-                    Remove project section
-                  </div>
               </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
+}
+@else{
+@if (section === 'PROJECT') {
+  <div class="section experince trigger-area" cdkDrag>
+    <div class="section-title">{{getSectionTitle(section)}}
+      @if(!isPreview){
+        <div class="section-actions">
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-plus" title="Add" (click)="addSectionHandler('PROJECT')"></p-icon>
             </div>
-          }
+            <div class="wif-tooltip__item">
+              Add Project
             </div>
-            <div style="display: flex;flex-direction: column;">
-                <p style="font-size: 14px;margin: 0;" class="opacity-half"><b>Project Title | Period</b></p>
-                <ul>
-                    <li class="opacity-half">What was a successful outcome of your work? (e.g. Optimized model performance, reducing processing time by 20%)</li> 
-                  </ul>
+          </div>
+          <div class="wif-tooltip" data-direction="bottom">
+            <div class="wif-tooltip__initiator">
+              <p-icon class="pi pi-times" title="Delete" (click)="removeSection('PROJECT')"></p-icon>
             </div>
+            <div class="wif-tooltip__item">
+              Remove project section
+            </div>
+          </div>
         </div>
       }
-    </ng-container>
+    </div>
+    <div style="display: flex;flex-direction: column;">
+      <p style="font-size: 14px;margin: 0;" class="opacity-half"><b>Project Title | Period</b></p>
+      <ul>
+        <li class="opacity-half">What was a successful outcome of your work? (e.g. Optimized model performance, reducing processing time by 20%)</li>
+      </ul>
+    </div>
+  </div>
+}
+}
+}
 </div>

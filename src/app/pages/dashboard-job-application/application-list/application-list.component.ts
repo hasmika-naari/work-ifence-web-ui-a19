@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { ApplicationListDataItem, ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { ResumeService } from 'src/app/services/resume.service';
@@ -36,30 +36,29 @@ import { WorkIfenceDataService } from 'src/app/services/work-ifence-data.service
     templateUrl: './application-list.component.html',
     standalone: true,
     imports: [
-        CommonModule, 
-        RouterLink, 
-        RouterOutlet, 
-        RouterModule,
-        FormsModule,
-        DataViewModule,
-        PickListModule,
-        OrderListModule,
-        InputTextModule,
-        DropdownModule,
-        RatingModule,
-        ButtonModule,
-        MenuModule,
-        MatMenuModule,
-        MatIconModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        CheckboxModule,
-        MatListModule,
-        MatProgressBarModule,
-        ConfirmDialogComponent,
-        MatCheckbox,
-        MatCheckboxModule
-    ]
+    RouterLink,
+    RouterOutlet,
+    RouterModule,
+    FormsModule,
+    DataViewModule,
+    PickListModule,
+    OrderListModule,
+    InputTextModule,
+    DropdownModule,
+    RatingModule,
+    ButtonModule,
+    MenuModule,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    CheckboxModule,
+    MatListModule,
+    MatProgressBarModule,
+    ConfirmDialogComponent,
+    MatCheckbox,
+    MatCheckboxModule
+]
 })
 export class ApplicationListComponent implements OnInit, OnChanges, OnDestroy {
 

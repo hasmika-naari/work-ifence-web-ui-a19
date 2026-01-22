@@ -1,5 +1,5 @@
 
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { ElementRef, ViewChild } from '@angular/core';
 import { AutoComplete, AutoCompleteModule } from 'primeng/autocomplete';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Signal, SimpleChanges, effect, inject } from '@angular/core';
@@ -55,17 +55,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
-    CarouselModule,ReactiveFormsModule, FormsModule, 
-    HeaderWorkIfenceComponent,  MatStepperModule,
-    MatFormFieldModule,InputTextModule,TableModule,
-    MatCheckboxModule, MatAutocompleteModule,AutoCompleteModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,
-    MatButtonModule,AccordionModule,TextareaModule,
-  MatIconModule,MatExpansionModule, MatSelectModule, MatDatepickerModule,
-  CalendarModule, DropdownModule, FloatLabelModule,InputIconModule,IconFieldModule
-  ],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, MatAutocompleteModule, AutoCompleteModule, MatInputModule, ButtonModule, OverlayPanelModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule, MatSelectModule, MatDatepickerModule, CalendarModule, DropdownModule, FloatLabelModule, InputIconModule, IconFieldModule],
   templateUrl: './bio-form-editor.component.html',
   styleUrls: ['./bio-form-editor.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

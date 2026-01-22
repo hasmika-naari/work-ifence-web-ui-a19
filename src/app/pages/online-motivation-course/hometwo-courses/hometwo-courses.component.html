@@ -1,14 +1,14 @@
 <section
   class="courses-area pb-75 pt-50"
   [class.dark-courses-area]="themeService.isDark()"
->
+  >
   <div >
     <div
       class="section-title d-flex justify-content-between align-items-center"
       animateOnScroll
       animationClass="animate__fadeInDown"
       animationDelay="0.1s"
-    >
+      >
       <div class="text-start">
         <span class="sub-title d-block">Discover</span>
         <h2 class="mb-0">Popular Courses</h2>
@@ -20,7 +20,7 @@
       animateOnScroll
       animationClass="animate__fadeIn"
       animationDelay="0.3s"
-    >
+      >
       <li class="nav-tab" [ngClass]="{ 'active': currentTab === 'tab2' }">
         <span (click)="switchTab($event, 'tab2')">Technology (02)</span>
       </li>
@@ -45,126 +45,129 @@
           (click)="switchTab($event, 'tab1')"
           routerLink="/central/course-central/courses"
           >All Courses</span
-        >
-      </li>
-    </ul>
+          >
+        </li>
+      </ul>
 
-    <div class="tabs-container">
-      <ng-container *ngFor="let tab of ['tab1','tab2','tab3','tab4','tab5','tab6','tab7']">
-        <div class="pane" *ngIf="currentTab === tab">
-          <div class="row" animateOnScroll animationClass="animate__fadeIn" animationDelay="0.1s">
-            <div
-              class="col-3 col-xs-2 col-lg-3 col-md-2"
-              *ngFor="let course of getCoursesForTab(tab)"
-            >
-             <div class="single-courses-box mb-25">
-                <div class="courses-image">
-                    <a routerLink="/single-course" class="d-block">
-                        <img [src]="course.image"  alt="image"></a>
-                    <div class="courses-tag">
-                        <a routerLink="/" class="d-block">{{course.subject}}</a>
-                    </div>
-                </div>
-                <div class="courses-content">
-                    <div class="course-author d-flex align-items-center">
-                        <img [src]="course.instructorImage"  class="rounded-circle mr-2" alt="image">
-                        <span>{{course.instructor}}</span>
-                    </div>
-                    <h3><a routerLink="/single-course" class="d-inline-block">
-                        {{course.title}}
-                    </a></h3>
-                    <div class="courses-rating">
-                        <div class="review-stars-rated">
-                            <i class='bx bxs-star'></i>
-                            <i class='bx bxs-star'></i>
-                            <i class='bx bxs-star'></i>
-                            <i class='bx bxs-star'></i>
-                            <i class='bx bxs-star-half'></i>
-                        </div>
-                        <div class="rating-total">
-                            4.5 (2 rating)
-                        </div>
-                    </div>
-                </div>
-        <div class="courses-box-footer">
-          <ul>
-          <li class="footer-actions">
-            <button mat-icon-button (click)="share(course)" aria-label="Share"><mat-icon>share</mat-icon></button>
-            <button mat-icon-button (click)="viewDetails(course)" aria-label="Details"><mat-icon>info</mat-icon></button>
-            <button mat-icon-button (click)="goToCourse(course)" aria-label="Open"><mat-icon>open_in_new</mat-icon></button>
-          </li>
-          <li class="courses-price">FREE</li>
-          </ul>
-        </div>
-            </div>
-              <!-- <div
-                class="single-courses-box mb-25"
-                animateOnScroll
-                animationClass="animate__fadeInUp"
-                animationDelay="0.2s"
-              >
-                <div class="courses-image">
-                  <img [src]="course.image" alt="image" class="img-fluid" />
-                </div>
-                <div class="courses-content">
+      <div class="tabs-container">
+        @for (tab of ['tab1','tab2','tab3','tab4','tab5','tab6','tab7']; track tab) {
+          @if (currentTab === tab) {
+            <div class="pane">
+              <div class="row" animateOnScroll animationClass="animate__fadeIn" animationDelay="0.1s">
+                @for (course of getCoursesForTab(tab); track course) {
                   <div
-                    class="d-flex justify-content-between align-items-center mb-2"
-                  >
-                    <div class="author">
-                      <img
-                        [src]="course.instructorImage"
-                        alt="author"
-                        class="rounded-circle me-2"
-                        width="30"
-                        height="30"
-                      />
-                      <span>{{ course.instructor }}</span>
-                    </div>
-                    <div class="rating">
-                      <i class="fas fa-star text-warning"></i>
-                      <span>{{ course.rating }}</span>
-                      ({{ course.reviewsCount }} reviews)
-                    </div>
-                  </div>
-                  <h3 class="course-title">
-                    <a [routerLink]="['/course', course.slug]">{{ course.title }}</a>
-                  </h3>
-                  <p class="course-desc">{{ course.shortDescription }}</p>
-                  <div
-                    class="d-flex justify-content-between align-items-center mt-3"
-                  >
-                    <span class="students-count">
-                      <i class="fas fa-user-graduate me-1"></i>
-                      {{ course.students }} students
-                    </span>
-                    <div class="dropdown">
-                      <button
-                        class="btn btn-sm btn-light border-0"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                    class="col-3 col-xs-2 col-lg-3 col-md-2"
+                    >
+                    <div class="single-courses-box mb-25">
+                      <div class="courses-image">
+                        <a routerLink="/single-course" class="d-block">
+                          <img [src]="course.image"  alt="image"></a>
+                          <div class="courses-tag">
+                            <a routerLink="/" class="d-block">{{course.subject}}</a>
+                          </div>
+                        </div>
+                        <div class="courses-content">
+                          <div class="course-author d-flex align-items-center">
+                            <img [src]="course.instructorImage"  class="rounded-circle mr-2" alt="image">
+                            <span>{{course.instructor}}</span>
+                          </div>
+                          <h3><a routerLink="/single-course" class="d-inline-block">
+                            {{course.title}}
+                          </a></h3>
+                          <div class="courses-rating">
+                            <div class="review-stars-rated">
+                              <i class='bx bxs-star'></i>
+                              <i class='bx bxs-star'></i>
+                              <i class='bx bxs-star'></i>
+                              <i class='bx bxs-star'></i>
+                              <i class='bx bxs-star-half'></i>
+                            </div>
+                            <div class="rating-total">
+                              4.5 (2 rating)
+                            </div>
+                          </div>
+                        </div>
+                        <div class="courses-box-footer">
+                          <ul>
+                            <li class="footer-actions">
+                              <button mat-icon-button (click)="share(course)" aria-label="Share"><mat-icon>share</mat-icon></button>
+                              <button mat-icon-button (click)="viewDetails(course)" aria-label="Details"><mat-icon>info</mat-icon></button>
+                              <button mat-icon-button (click)="goToCourse(course)" aria-label="Open"><mat-icon>open_in_new</mat-icon></button>
+                            </li>
+                            <li class="courses-price">FREE</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <!-- <div
+                      class="single-courses-box mb-25"
+                      animateOnScroll
+                      animationClass="animate__fadeInUp"
+                      animationDelay="0.2s"
                       >
-                        <i class="fas fa-ellipsis-v"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Bookmark</a></li>
-                        <li><a class="dropdown-item" href="#">Share</a></li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            [routerLink]="['/course', course.slug]"
-                            >View Details</a
+                      <div class="courses-image">
+                        <img [src]="course.image" alt="image" class="img-fluid" />
+                      </div>
+                      <div class="courses-content">
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-2"
                           >
-                        </li>
-                      </ul>
-                    </div>
+                          <div class="author">
+                            <img
+                              [src]="course.instructorImage"
+                              alt="author"
+                              class="rounded-circle me-2"
+                              width="30"
+                              height="30"
+                              />
+                              <span>{{ course.instructor }}</span>
+                            </div>
+                            <div class="rating">
+                              <i class="fas fa-star text-warning"></i>
+                              <span>{{ course.rating }}</span>
+                              ({{ course.reviewsCount }} reviews)
+                            </div>
+                          </div>
+                          <h3 class="course-title">
+                            <a [routerLink]="['/course', course.slug]">{{ course.title }}</a>
+                          </h3>
+                          <p class="course-desc">{{ course.shortDescription }}</p>
+                          <div
+                            class="d-flex justify-content-between align-items-center mt-3"
+                            >
+                            <span class="students-count">
+                              <i class="fas fa-user-graduate me-1"></i>
+                              {{ course.students }} students
+                            </span>
+                            <div class="dropdown">
+                              <button
+                                class="btn btn-sm btn-light border-0"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                >
+                                <i class="fas fa-ellipsis-v"></i>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">Bookmark</a></li>
+                                <li><a class="dropdown-item" href="#">Share</a></li>
+                                <li>
+                                  <a
+                                    class="dropdown-item"
+                                    [routerLink]="['/course', course.slug]"
+                                    >View Details</a
+                                    >
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div> -->
+                      </div>
+                    }
                   </div>
                 </div>
-              </div> -->
-            </div>
+              }
+            }
           </div>
         </div>
-      </ng-container>
-    </div>
-  </div>
-</section>
+      </section>

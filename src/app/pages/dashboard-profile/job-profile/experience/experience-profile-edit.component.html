@@ -1,60 +1,66 @@
 <div class="experience-editor">
   <!-- <div class="editor-context" *ngIf="isEditing">
-    <span class="subtitle">Updating entry {{ (editingIndex ?? 0) + 1 }}</span> -->
-    <!-- <button
-      pButton
-      type="button"
-      icon="pi pi-plus"
-      class="p-button-rounded p-button-text"
-      title="Add another experience"
-      (click)="newExperience()"
-    ></button> -->
-  <!-- </div> -->
+  <span class="subtitle">Updating entry {{ (editingIndex ?? 0) + 1 }}</span> -->
+  <!-- <button
+  pButton
+  type="button"
+  icon="pi pi-plus"
+  class="p-button-rounded p-button-text"
+  title="Add another experience"
+  (click)="newExperience()"
+></button> -->
+<!-- </div> -->
 
-  <form [formGroup]="form" class="experience-form" (ngSubmit)="submitExperience()">
-    <div class="form-row form-row--single">
-      <div class="field">
-        <label for="title">Title *</label>
-        <input id="title" pInputText formControlName="title" placeholder="Senior Software Engineer" />
-        <small class="error" *ngIf="form.controls['title'].invalid && form.controls['title'].touched">
+<form [formGroup]="form" class="experience-form" (ngSubmit)="submitExperience()">
+  <div class="form-row form-row--single">
+    <div class="field">
+      <label for="title">Title *</label>
+      <input id="title" pInputText formControlName="title" placeholder="Senior Software Engineer" />
+      @if (form.controls['title'].invalid && form.controls['title'].touched) {
+        <small class="error">
           Title is required.
         </small>
-      </div>
+      }
+    </div>
+  </div>
+
+  <div class="form-row form-row--double">
+    <div class="field">
+      <label for="company">Company</label>
+      <input id="company" pInputText formControlName="companyName" placeholder="Acme Corp" />
     </div>
 
-    <div class="form-row form-row--double">
-      <div class="field">
-        <label for="company">Company</label>
-        <input id="company" pInputText formControlName="companyName" placeholder="Acme Corp" />
-      </div>
-
-      <div class="field">
-        <label for="location">Location</label>
-        <input id="location" pInputText formControlName="location" placeholder="Hyderabad, India" />
-      </div>
+    <div class="field">
+      <label for="location">Location</label>
+      <input id="location" pInputText formControlName="location" placeholder="Hyderabad, India" />
     </div>
+  </div>
 
-    <div class="form-row form-row--quad">
-      <div class="field">
-        <label>Start Month *</label>
-        <p-dropdown formControlName="startMonth" [options]="months" placeholder="Select month"></p-dropdown>
-        <small class="error" *ngIf="form.controls['startMonth'].invalid && form.controls['startMonth'].touched">
+  <div class="form-row form-row--quad">
+    <div class="field">
+      <label>Start Month *</label>
+      <p-dropdown formControlName="startMonth" [options]="months" placeholder="Select month"></p-dropdown>
+      @if (form.controls['startMonth'].invalid && form.controls['startMonth'].touched) {
+        <small class="error">
           Start month is required.
         </small>
-      </div>
+      }
+    </div>
 
-      <div class="field">
-        <label for="startYear">Start Year *</label>
-        <input
-          id="startYear"
-          pInputText
-          formControlName="startYear"
-          placeholder="2020"
-          maxlength="4"
+    <div class="field">
+      <label for="startYear">Start Year *</label>
+      <input
+        id="startYear"
+        pInputText
+        formControlName="startYear"
+        placeholder="2020"
+        maxlength="4"
         />
-        <small class="error" *ngIf="form.controls['startYear'].invalid && form.controls['startYear'].touched">
-          Enter a valid year.
-        </small>
+        @if (form.controls['startYear'].invalid && form.controls['startYear'].touched) {
+          <small class="error">
+            Enter a valid year.
+          </small>
+        }
       </div>
 
       <div class="field">
@@ -78,16 +84,17 @@
         <label for="keySkillsInput">Key Skills Used</label>
         <mat-form-field appearance="outline" class="skills-chip-field">
           <mat-chip-grid #chipGrid aria-label="Key skills">
-            <mat-chip-row
-              *ngFor="let skill of keySkillsControl.value; let i = index"
-              [removable]="true"
-              (removed)="removeSkill(i)"
-            >
-              {{ skill }}
-              <button matChipRemove type="button" aria-label="Remove skill">
-                <mat-icon>close</mat-icon>
-              </button>
-            </mat-chip-row>
+            @for (skill of keySkillsControl.value; track skill; let i = $index) {
+              <mat-chip-row
+                [removable]="true"
+                (removed)="removeSkill(i)"
+                >
+                {{ skill }}
+                <button matChipRemove type="button" aria-label="Remove skill">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-chip-row>
+            }
           </mat-chip-grid>
           <input
             id="keySkillsInput"
@@ -97,149 +104,158 @@
             [matChipInputAddOnBlur]="true"
             matInput
             (matChipInputTokenEnd)="addSkill($event)"
-          />
-        </mat-form-field>
-        <small class="hint">Press Enter or comma to add each skill.</small>
+            />
+          </mat-form-field>
+          <small class="hint">Press Enter or comma to add each skill.</small>
+        </div>
       </div>
-    </div>
 
-    <div class="field field--responsibilities">
-      <div class="field-heading">
-        <label for="responsibilities">Roles &amp; Responsibilities *</label>
+      <div class="field field--responsibilities">
+        <div class="field-heading">
+          <label for="responsibilities">Roles &amp; Responsibilities *</label>
+          <button
+            pButton
+            type="button"
+            class="p-button-text ai-button"
+            icon="pi pi-bolt"
+            label="AI Assist"
+            (click)="openAiAssist()"
+          ></button>
+        </div>
+        <p-editor
+          formControlName="responsibilities"
+          [style]="{ height: '24rem' }"
+          styleClass="responsibilities-editor"
+          placeholder="Describe the role impact, key wins, and notable projects"
+        ></p-editor>
+        @if (form.controls['responsibilities'].invalid && form.controls['responsibilities'].touched) {
+          <small
+            class="error"
+            >
+            Roles and responsibilities are required.
+          </small>
+        }
+      </div>
+
+      <div class="form-actions">
         <button
           pButton
           type="button"
-          class="p-button-text ai-button"
-          icon="pi pi-bolt"
-          label="AI Assist"
-          (click)="openAiAssist()"
+          label="Reset"
+          class="p-button-secondary"
+          (click)="resetForm()"
+          [disabled]="form.pristine"
+        ></button>
+        <span class="spacer"></span>
+        <button pButton type="button" label="Cancel" class="p-button-text" (click)="cancel()"></button>
+        <button
+          pButton
+          type="submit"
+          [label]="isEditing ? 'Update Experience' : 'Save Experience'"
+          [disabled]="form.invalid"
         ></button>
       </div>
-      <p-editor
-        formControlName="responsibilities"
-        [style]="{ height: '24rem' }"
-        styleClass="responsibilities-editor"
-        placeholder="Describe the role impact, key wins, and notable projects"
-      ></p-editor>
-      <small
-        class="error"
-        *ngIf="form.controls['responsibilities'].invalid && form.controls['responsibilities'].touched"
+    </form>
+
+    <p-drawer
+      [(visible)]="aiDrawerVisible"
+      position="right"
+      [modal]="true"
+      [style]="{ width: '32rem', 'max-width': '90vw' }"
+      [dismissible]="false"
+      [closeOnEscape]="!isGenerating"
+      [closable]="!isGenerating"
+      (onHide)="closeAiAssist()"
+      contentStyleClass="ai-assist-drawer"
       >
-        Roles and responsibilities are required.
-      </small>
-    </div>
+      <div class="ai-assist-shell">
+        <header class="ai-header">
+          <div class="ai-title-group">
+            <h2>AI Assistance</h2>
+            <p>Roles &amp; Responsibilities</p>
+          </div>
+        </header>
 
-    <div class="form-actions">
-      <button
-        pButton
-        type="button"
-        label="Reset"
-        class="p-button-secondary"
-        (click)="resetForm()"
-        [disabled]="form.pristine"
-      ></button>
-      <span class="spacer"></span>
-      <button pButton type="button" label="Cancel" class="p-button-text" (click)="cancel()"></button>
-      <button
-        pButton
-        type="submit"
-        [label]="isEditing ? 'Update Experience' : 'Save Experience'"
-        [disabled]="form.invalid"
-      ></button>
-    </div>
-  </form>
-
-  <p-drawer
-    [(visible)]="aiDrawerVisible"
-    position="right"
-    [modal]="true"
-    [style]="{ width: '32rem', 'max-width': '90vw' }"
-    [dismissible]="false"
-    [closeOnEscape]="!isGenerating"
-    [closable]="!isGenerating"
-    (onHide)="closeAiAssist()"
-    contentStyleClass="ai-assist-drawer"
-  >
-    <div class="ai-assist-shell">
-      <header class="ai-header">
-        <div class="ai-title-group">
-          <h2>AI Assistance</h2>
-          <p>Roles &amp; Responsibilities</p>
-        </div>
-      </header>
-
-      <section class="ai-stack">
-        <form class="ai-prompt" (ngSubmit)="generateResponsibilitiesFromAi()">
-          <label for="aiPrompt">Tell the assistant what to highlight</label>
-          <div class="prompt-surface">
-            <div class="prompt-body">
-              <span class="prompt-icon"><i class="pi pi-sparkles"></i></span>
-              <textarea
-                id="aiPrompt"
-                rows="4"
-                [formControl]="aiPromptControl"
-                placeholder="e.g. Staff engineer scaling web platform and mentoring frontend guild"
-                [disabled]="isGenerating"
-              ></textarea>
+        <section class="ai-stack">
+          <form class="ai-prompt" (ngSubmit)="generateResponsibilitiesFromAi()">
+            <label for="aiPrompt">Tell the assistant what to highlight</label>
+            <div class="prompt-surface">
+              <div class="prompt-body">
+                <span class="prompt-icon"><i class="pi pi-sparkles"></i></span>
+                <textarea
+                  id="aiPrompt"
+                  rows="4"
+                  [formControl]="aiPromptControl"
+                  placeholder="e.g. Staff engineer scaling web platform and mentoring frontend guild"
+                  [disabled]="isGenerating"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                class="prompt-submit"
+                title="Generate with AI"
+                aria-label="Generate with AI"
+                [class.loading]="isGenerating"
+                [disabled]="isGenerating || !aiPromptControl.value?.trim()"
+                >
+                <i
+                  class="pi"
+                  [ngClass]="isGenerating ? 'pi-spinner pi-spin' : 'pi-send'"
+                ></i>
+                @if (isGenerating) {
+                  <span class="progress-track"></span>
+                }
+              </button>
             </div>
-            <button
-              type="submit"
-              class="prompt-submit"
-              title="Generate with AI"
-              aria-label="Generate with AI"
-              [class.loading]="isGenerating"
-              [disabled]="isGenerating || !aiPromptControl.value?.trim()"
-            >
-              <i
-                class="pi"
-                [ngClass]="isGenerating ? 'pi-spinner pi-spin' : 'pi-send'"
-              ></i>
-              <span class="progress-track" *ngIf="isGenerating"></span>
-            </button>
-          </div>
-        </form>
+          </form>
 
-        <div class="ai-feedback">
-          <div class="ai-progress" *ngIf="isGenerating">
-            <p-progressBar mode="indeterminate"></p-progressBar>
-            <span>Thinking through tailored responsibilities…</span>
+          <div class="ai-feedback">
+            @if (isGenerating) {
+              <div class="ai-progress">
+                <p-progressBar mode="indeterminate"></p-progressBar>
+                <span>Thinking through tailored responsibilities…</span>
+              </div>
+            }
+            @if (aiError) {
+              <div class="ai-error">{{ aiError }}</div>
+            }
           </div>
-          <div class="ai-error" *ngIf="aiError">{{ aiError }}</div>
-        </div>
 
-        <div class="ai-response" [class.ai-response--empty]="!aiResponseControl.value">
-          <div class="response-header">
-            <h3>Edit the assistant's draft</h3>
-            <button pButton type="button" icon="pi pi-refresh" class="p-button-text" (click)="resetAiResponse()" [disabled]="!aiResponseControl.value || isGenerating"></button>
-          </div>
-          <div class="response-editor-wrapper">
-            <p-editor [formControl]="aiResponseControl" [style]="{ height: '18rem' }"></p-editor>
-            <div class="response-placeholder" *ngIf="!aiResponseControl.value && !isGenerating">
-              <span>The assistant's response will appear here.</span>
+          <div class="ai-response" [class.ai-response--empty]="!aiResponseControl.value">
+            <div class="response-header">
+              <h3>Edit the assistant's draft</h3>
+              <button pButton type="button" icon="pi pi-refresh" class="p-button-text" (click)="resetAiResponse()" [disabled]="!aiResponseControl.value || isGenerating"></button>
+            </div>
+            <div class="response-editor-wrapper">
+              <p-editor [formControl]="aiResponseControl" [style]="{ height: '18rem' }"></p-editor>
+              @if (!aiResponseControl.value && !isGenerating) {
+                <div class="response-placeholder">
+                  <span>The assistant's response will appear here.</span>
+                </div>
+              }
+            </div>
+            <div class="response-actions">
+              <button
+                pButton
+                type="button"
+                label="Add to Roles &amp; Responsibilities"
+                icon="pi pi-plus-circle"
+                class="p-button-success"
+                (click)="applyAiResponse('append')"
+                [disabled]="!aiResponseControl.value"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Replace Roles &amp; Responsibilities"
+                icon="pi pi-sync"
+                class="p-button-warning p-button-outlined"
+                (click)="applyAiResponse('replace')"
+                [disabled]="!aiResponseControl.value"
+              ></button>
             </div>
           </div>
-          <div class="response-actions">
-            <button
-              pButton
-              type="button"
-              label="Add to Roles &amp; Responsibilities"
-              icon="pi pi-plus-circle"
-              class="p-button-success"
-              (click)="applyAiResponse('append')"
-              [disabled]="!aiResponseControl.value"
-            ></button>
-            <button
-              pButton
-              type="button"
-              label="Replace Roles &amp; Responsibilities"
-              icon="pi pi-sync"
-              class="p-button-warning p-button-outlined"
-              (click)="applyAiResponse('replace')"
-              [disabled]="!aiResponseControl.value"
-            ></button>
-          </div>
-        </div>
-      </section>
-    </div>
-  </p-drawer>
-</div>
+        </section>
+      </div>
+    </p-drawer>
+  </div>

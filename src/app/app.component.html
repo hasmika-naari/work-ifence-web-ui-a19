@@ -1,21 +1,23 @@
 <p-toast key="global" position="top-right" [preventOpenDuplicates]="false" [preventDuplicates]="false"></p-toast>
 <div
-    [ngClass]="{'blank-page': router.url === '/authentication' || router.url === '/authentication/sign-up' || router.url === '/authentication/forgot-password' || router.url === '/authentication/reset-password' || router.url === '/authentication/lock-screen' || router.url === '/authentication/logout' || router.url === '/authentication/confirm-email'}"
-    [class.dark-theme]="toggleService.isDark()"
->
-    <!-- Sidebar -->
-    <!-- <app-sidebar /> -->
-    <app-loading-screen *ngIf="isLoading" [ngClass]="{'fade-out': !isLoading}"></app-loading-screen>
-    <ngx-loading-bar></ngx-loading-bar>
-    <!-- Main Content -->
-    <div
-        class="main-content transition d-flex flex-column"
-        [ngClass]="{'active': isToggled, 'fade-in': !isLoading}"
-        style="background:#fff;color:#2d3a4a;box-shadow:0 4px 32px 0 rgba(34,41,70,0.08);border-radius:0px;"
+  [ngClass]="{'blank-page': router.url === '/authentication' || router.url === '/authentication/sign-up' || router.url === '/authentication/forgot-password' || router.url === '/authentication/reset-password' || router.url === '/authentication/lock-screen' || router.url === '/authentication/logout' || router.url === '/authentication/confirm-email'}"
+  [class.dark-theme]="toggleService.isDark()"
+  >
+  <!-- Sidebar -->
+  <!-- <app-sidebar /> -->
+  @if (isLoading) {
+    <app-loading-screen [ngClass]="{'fade-out': !isLoading}"></app-loading-screen>
+  }
+  <ngx-loading-bar></ngx-loading-bar>
+  <!-- Main Content -->
+  <div
+    class="main-content transition d-flex flex-column"
+    [ngClass]="{'active': isToggled, 'fade-in': !isLoading}"
+    style="background:#fff;color:#2d3a4a;box-shadow:0 4px 32px 0 rgba(34,41,70,0.08);border-radius:0px;"
     >
-        <router-outlet />
-        <div class="flex-grow-1"></div>
-        <!-- <app-footer /> -->
-    </div>
+    <router-outlet />
+    <div class="flex-grow-1"></div>
+    <!-- <app-footer /> -->
+  </div>
 
 </div>

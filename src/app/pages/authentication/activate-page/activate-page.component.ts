@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -21,20 +21,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 @Component({
   selector: 'app-activate',
   standalone: true,
-  imports: [CommonModule, RouterModule, 
-    MatIconModule,
-    MatCardModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    FormsModule,
-    ButtonModule,
-    InputTextModule,
-    ReactiveFormsModule,
-    HeaderWorkIfenceComponent,
-    FooterWorkifenceComponent],
+  imports: [RouterModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, MatIconModule, MatSelectModule, FormsModule, ButtonModule, InputTextModule, ReactiveFormsModule, HeaderWorkIfenceComponent, FooterWorkifenceComponent],
   templateUrl: './activate-page.component.html',
 })
 export class ActivatePageComponent {

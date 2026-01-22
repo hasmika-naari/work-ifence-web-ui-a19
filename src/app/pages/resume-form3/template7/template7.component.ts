@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -29,13 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-resume-template7',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
-    CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
-    MatFormFieldModule,InputTextModule, MatTooltipModule,
-    MatInputModule,ButtonModule,ConfirmDialogComponent,
-    MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, MatTooltipModule, MatInputModule, ButtonModule, ConfirmDialogComponent, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule],
   templateUrl: './template7.component.html',
   styleUrls: ['./template7.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

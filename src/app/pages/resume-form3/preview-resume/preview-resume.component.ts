@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Optional, Output, Signal, inject, Input } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -40,16 +40,7 @@ import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-preview-resume',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
-    CarouselModule,ReactiveFormsModule, FormsModule, 
-    HeaderWorkIfenceComponent,  MatStepperModule, ToastModule,
-    MatFormFieldModule,InputTextModule, MatDialogModule,
-    MatInputModule,ButtonModule,ConfirmDialogComponent,
-    MatButtonModule,AccordionModule,TextareaModule,TooltipModule,
-    MatIconModule,MatExpansionModule, Resume1TemplateComponent, ResumeTemplate2Component, ResumeTemplate3Component,
-    ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, ResumeTemplate9Component
-    , ResumeTemplate10Component, LoadingBarModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, ToastModule, MatFormFieldModule, InputTextModule, MatDialogModule, MatInputModule, ButtonModule, ConfirmDialogComponent, MatButtonModule, AccordionModule, TextareaModule, TooltipModule, MatIconModule, MatExpansionModule, Resume1TemplateComponent, ResumeTemplate2Component, ResumeTemplate3Component, ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, ResumeTemplate9Component, ResumeTemplate10Component, LoadingBarModule],
   templateUrl: './preview-resume.component.html',
   styleUrls: ['./preview-resume.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

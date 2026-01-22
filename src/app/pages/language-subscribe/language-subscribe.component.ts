@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { YeaSnackBarService } from 'src/app/services/utilities/snackbar';
@@ -13,7 +13,7 @@ import { EmailSubscription } from 'src/app/services/bee-compete.model';
 @Component({
   selector: 'app-language-subscribe1',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatProgressBarModule, ReactiveFormsModule],
+  imports: [RouterModule, MatProgressBarModule, ReactiveFormsModule],
   templateUrl: './language-subscribe.component.html',
   styleUrls: ['./language-subscribe.component.scss']
 })

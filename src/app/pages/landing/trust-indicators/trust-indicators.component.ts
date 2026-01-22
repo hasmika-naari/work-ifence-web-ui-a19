@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-trust-indicators',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './trust-indicators.component.html',
   styleUrls: ['./trust-indicators.component.scss']
 })

@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { Location } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, Signal, ViewChild, inject, AfterViewInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -41,10 +41,7 @@ export interface Subject {
 @Component({
   selector: 'latest-openings-page',
   standalone: true,
-  imports: [CommonModule, RouterLink,LanguageSubscribeComponent, MatIconModule, MatSidenavModule, IconsModule,
-      MatSelectModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule,
-      MatButtonModule,JobOpeningsComponent,NgxPaginationModule, MatCardModule, MatProgressBarModule,
-      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
+  imports: [RouterLink, LanguageSubscribeComponent, MatIconModule, MatSidenavModule, IconsModule, MatSelectModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule, JobOpeningsComponent, NgxPaginationModule, MatCardModule, MatProgressBarModule, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
   templateUrl: './latest-openings-page.component.html',
   styleUrls: ['./latest-openings-page.component.scss']
 })

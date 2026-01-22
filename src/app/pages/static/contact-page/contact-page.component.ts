@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, Signal, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -27,12 +27,25 @@ import { IconsModule } from 'src/app/shared/icons.module';
   selector: 'app-contact',
   standalone: true,
   imports: [
-            CommonModule, RouterLink,LanguageSubscribeComponent, MatFormFieldModule,
-            ReactiveFormsModule, NgOptimizedImage, HeaderWorkIfenceComponent,
-            MatSelectModule, MatProgressBarModule, MatCardModule, FormsModule,
-            FooterComponent, FooterWorkifenceComponent, MatSnackBarModule, IconsModule,
-            MatInputModule, MatButtonModule, ContactFormComponent, MatDialogModule
-          ],
+    RouterLink,
+    LanguageSubscribeComponent,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    NgOptimizedImage,
+    HeaderWorkIfenceComponent,
+    MatSelectModule,
+    MatProgressBarModule,
+    MatCardModule,
+    FormsModule,
+    FooterComponent,
+    FooterWorkifenceComponent,
+    MatSnackBarModule,
+    IconsModule,
+    MatInputModule,
+    MatButtonModule,
+    ContactFormComponent,
+    MatDialogModule
+],
   templateUrl: './contact-page.component.html',
   styleUrls: ['./contact-page.component.scss']
 })

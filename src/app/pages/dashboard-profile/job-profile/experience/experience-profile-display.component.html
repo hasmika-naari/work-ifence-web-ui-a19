@@ -8,90 +8,103 @@
     </div>
   </div>
 
-  <div class="profile-details" *ngIf="hasExperiences; else emptyState">
-    <div class="experience-item" *ngFor="let exp of experiences; index as index">
-      <article class="experience-card">
-        <div class="experience-header">
-          <div class="experience-heading">
-            <h3>{{ exp.title }}</h3>
-            <p class="company" *ngIf="exp.companyName">&#64; {{ exp.companyName }}</p>
-          </div>
-          <div class="header-meta">
-            <div class="period" *ngIf="buildDateRange(exp)">
-              <i class="pi pi-calendar"></i>
-              <span>{{ buildDateRange(exp) }}</span>
+  @if (hasExperiences) {
+    <div class="profile-details">
+      @for (exp of experiences; track exp; let index = $index) {
+        <div class="experience-item">
+          <article class="experience-card">
+            <div class="experience-header">
+              <div class="experience-heading">
+                <h3>{{ exp.title }}</h3>
+                @if (exp.companyName) {
+                  <p class="company">&#64; {{ exp.companyName }}</p>
+                }
+              </div>
+              <div class="header-meta">
+                @if (buildDateRange(exp)) {
+                  <div class="period">
+                    <i class="pi pi-calendar"></i>
+                    <span>{{ buildDateRange(exp) }}</span>
+                  </div>
+                }
+                @if (exp.location) {
+                  <p class="location">
+                    <i class="pi pi-map-marker"></i>
+                    <span>{{ exp.location }}</span>
+                  </p>
+                }
+              </div>
             </div>
-            <p class="location" *ngIf="exp.location">
-              <i class="pi pi-map-marker"></i>
-              <span>{{ exp.location }}</span>
-            </p>
-          </div>
+            @if (splitKeySkills(exp.keySkills).length) {
+              <div class="meta">
+                <span class="meta-item">
+                  <i class="pi pi-star"></i>
+                  <span class="skills">
+                    @for (skill of splitKeySkills(exp.keySkills); track skill) {
+                      <span class="skill-pill">{{ skill }}</span>
+                    }
+                  </span>
+                </span>
+              </div>
+            }
+            @if (exp.responsibilities) {
+              <div class="responsibilities">
+                <div class="responsibilities-header">
+                  <span class="label">Roles &amp; Responsibilities</span>
+                  <span class="divider"></span>
+                </div>
+                <div class="responsibilities-content" [innerHTML]="formatResponsibilities(exp.responsibilities)"></div>
+              </div>
+            }
+            <footer class="experience-actions">
+              <button
+                class="card-action-btn move-btn"
+                type="button"
+                title="Move experience up"
+                [attr.aria-label]="'Move ' + (exp.title || 'experience') + ' up'"
+                [disabled]="!canMoveUp(index)"
+                (click)="triggerMove(index, 'up')"
+                >
+                <span class="pi pi-arrow-up"></span>
+              </button>
+              <button
+                class="card-action-btn move-btn"
+                type="button"
+                title="Move experience down"
+                [attr.aria-label]="'Move ' + (exp.title || 'experience') + ' down'"
+                [disabled]="!canMoveDown(index)"
+                (click)="triggerMove(index, 'down')"
+                >
+                <span class="pi pi-arrow-down"></span>
+              </button>
+              <button
+                class="card-action-btn edit-btn"
+                type="button"
+                title="Edit experience"
+                [attr.aria-label]="'Edit ' + (exp.title || 'experience')"
+                (click)="triggerEdit(index)"
+                >
+                <span class="pi pi-pencil"></span>
+              </button>
+              <button
+                class="card-action-btn remove-btn"
+                type="button"
+                title="Remove experience"
+                [attr.aria-label]="'Remove ' + (exp.title || 'experience')"
+                [disabled]="!canRemove(index)"
+                (click)="triggerRemove(index)"
+                >
+                <span class="pi pi-trash"></span>
+              </button>
+            </footer>
+          </article>
         </div>
-
-        <div class="meta" *ngIf="splitKeySkills(exp.keySkills).length">
-          <span class="meta-item">
-            <i class="pi pi-star"></i>
-            <span class="skills">
-              <span class="skill-pill" *ngFor="let skill of splitKeySkills(exp.keySkills)">{{ skill }}</span>
-            </span>
-          </span>
-        </div>
-
-        <div class="responsibilities" *ngIf="exp.responsibilities">
-          <div class="responsibilities-header">
-            <span class="label">Roles &amp; Responsibilities</span>
-            <span class="divider"></span>
-          </div>
-          <div class="responsibilities-content" [innerHTML]="formatResponsibilities(exp.responsibilities)"></div>
-        </div>
-        <footer class="experience-actions">
-          <button
-            class="card-action-btn move-btn"
-            type="button"
-            title="Move experience up"
-            [attr.aria-label]="'Move ' + (exp.title || 'experience') + ' up'"
-            [disabled]="!canMoveUp(index)"
-            (click)="triggerMove(index, 'up')"
-          >
-            <span class="pi pi-arrow-up"></span>
-          </button>
-          <button
-            class="card-action-btn move-btn"
-            type="button"
-            title="Move experience down"
-            [attr.aria-label]="'Move ' + (exp.title || 'experience') + ' down'"
-            [disabled]="!canMoveDown(index)"
-            (click)="triggerMove(index, 'down')"
-          >
-            <span class="pi pi-arrow-down"></span>
-          </button>
-          <button
-            class="card-action-btn edit-btn"
-            type="button"
-            title="Edit experience"
-            [attr.aria-label]="'Edit ' + (exp.title || 'experience')"
-            (click)="triggerEdit(index)"
-          >
-            <span class="pi pi-pencil"></span>
-          </button>
-          <button
-            class="card-action-btn remove-btn"
-            type="button"
-            title="Remove experience"
-            [attr.aria-label]="'Remove ' + (exp.title || 'experience')"
-            [disabled]="!canRemove(index)"
-            (click)="triggerRemove(index)"
-          >
-            <span class="pi pi-trash"></span>
-          </button>
-        </footer>
-      </article>
+      }
     </div>
-  </div>
-
-  <ng-template #emptyState>
+  } @else {
     <div class="profile-details empty">
       <p>No experience added yet. Use the plus button to capture your work history.</p>
     </div>
-  </ng-template>
+  }
+
 </section>

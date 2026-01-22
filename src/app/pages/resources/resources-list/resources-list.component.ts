@@ -1,4 +1,4 @@
-import { CommonModule, NgIf, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,9 +15,7 @@ import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-
 
 @Component({
     selector: 'app-resources-list',
-    imports: [CommonModule, RouterLink,NgOptimizedImage,  FooterWorkifenceComponent,
-        HeaderWorkIfenceComponent, 
-        ResumeOptiFlowStepsComponent, ResumeOptiFlowSteps2Component],
+    imports: [RouterLink, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, ResumeOptiFlowStepsComponent, ResumeOptiFlowSteps2Component],
     templateUrl: './resources-list.component.html',
     styleUrl: './resources-list.component.scss'
 })

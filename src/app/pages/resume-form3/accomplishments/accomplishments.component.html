@@ -1,70 +1,74 @@
 <div class="resume-form-container">
-    <form [formGroup]="accomplishmentForm">
-        
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="section_title">Section Title *</label>
-                <input 
-                    id="section_title" 
-                    type="text" 
-                    pInputText 
-                    #role 
-                    formControlName="section_title" 
-                    placeholder="e.g., Accomplishments"
-                />
-                <small class="error" *ngIf="accomplishmentForm.get('section_title')?.hasError('required') && (accomplishmentForm.get('section_title')?.dirty || accomplishmentForm.get('section_title')?.touched)">
-                    Required.
-                </small>
-            </div>
+  <form [formGroup]="accomplishmentForm">
+
+    <div class="form-row form-row--single">
+      <div class="field">
+        <label for="section_title">Section Title *</label>
+        <input
+          id="section_title"
+          type="text"
+          pInputText
+          #role
+          formControlName="section_title"
+          placeholder="e.g., Accomplishments"
+          />
+          @if (accomplishmentForm.get('section_title')?.hasError('required') && (accomplishmentForm.get('section_title')?.dirty || accomplishmentForm.get('section_title')?.touched)) {
+            <small class="error">
+              Required.
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="form-row form-row--single">
+        <div class="field">
+          <label for="acplsmnt">Accomplishment *</label>
+          <input
+            id="acplsmnt"
+            type="text"
+            pInputText
+            formControlName="acplsmnt"
+            placeholder="Enter accomplishment title"
+            />
+            @if (accomplishmentForm.get('acplsmnt')?.hasError('required') && (accomplishmentForm.get('acplsmnt')?.dirty || accomplishmentForm.get('acplsmnt')?.touched)) {
+              <small class="error">
+                Required.
+              </small>
+            }
+          </div>
         </div>
 
         <div class="form-row form-row--single">
-            <div class="field">
-                <label for="acplsmnt">Accomplishment *</label>
-                <input 
-                    id="acplsmnt" 
-                    type="text" 
-                    pInputText 
-                    formControlName="acplsmnt" 
-                    placeholder="Enter accomplishment title"
-                />
-                <small class="error" *ngIf="accomplishmentForm.get('acplsmnt')?.hasError('required') && (accomplishmentForm.get('acplsmnt')?.dirty || accomplishmentForm.get('acplsmnt')?.touched)">
-                    Required.
-                </small>
+          <div class="field">
+            <label for="date">Date</label>
+            <input
+              id="date"
+              type="text"
+              pInputText
+              formControlName="date"
+              placeholder="e.g., January 2024"
+              />
             </div>
-        </div>
+          </div>
 
-        <div class="form-row form-row--single">
+          <div class="form-row form-row--single quill-editor-div">
             <div class="field">
-                <label for="date">Date</label>
-                <input 
-                    id="date" 
-                    type="text" 
-                    pInputText 
-                    formControlName="date" 
-                    placeholder="e.g., January 2024"
-                />
+              <label>Description</label>
+              <div #editorContainer style="height: 250px; color: black;"></div>
             </div>
-        </div>
+          </div>
 
-        <div class="form-row form-row--single quill-editor-div">
-            <div class="field">
-                <label>Description</label>
-                <div #editorContainer style="height: 250px; color: black;"></div>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button 
-                type="button" 
-                class="action-btn action-btn--primary" 
-                (click)="saveAndContinue()"
-                [disabled]="!accomplishmentForm.get('section_title')?.value || !accomplishmentForm.get('acplsmnt')?.value || is_achievement_loading"
-                matTooltip="Save to Resume"
-                tooltipPosition="top">
-                <i class="pi pi-check"></i>
-                Save to Resume
+          <div class="form-actions">
+            <button
+              type="button"
+              class="action-btn action-btn--primary"
+              (click)="saveAndContinue()"
+              [disabled]="!accomplishmentForm.get('section_title')?.value || !accomplishmentForm.get('acplsmnt')?.value || is_achievement_loading"
+              matTooltip="Save to Resume"
+              tooltipPosition="top">
+              <i class="pi pi-check"></i>
+              Save to Resume
             </button>
-        </div>
-    </form>
-</div>
+          </div>
+        </form>
+      </div>

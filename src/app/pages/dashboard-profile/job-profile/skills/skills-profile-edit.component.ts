@@ -1,5 +1,5 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -10,7 +10,7 @@ import { SkillsSuggestionService } from './skills-suggestion.service';
 @Component({
   selector: 'skills-profile-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, AutoCompleteModule, DragDropModule],
+  imports: [ReactiveFormsModule, ButtonModule, AutoCompleteModule, DragDropModule],
   templateUrl: './skills-profile-edit.component.html',
   styleUrls: ['./skills-profile-edit.component.scss']
 })

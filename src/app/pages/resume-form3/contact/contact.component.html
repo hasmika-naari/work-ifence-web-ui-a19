@@ -1,166 +1,182 @@
 
 <div class="resume-form-container">
-    <form [formGroup]="contactForm" class="resume-form">
-        
-        <div class="form-row form-row--double">
-            <div class="field">
-                <label for="fname">First Name *</label>
-                <input 
-                    id="fname" 
-                    type="text" 
-                    pInputText 
-                    formControlName="fname" 
-                    placeholder="Enter first name"
-                />
-                <small class="error" *ngIf="contactForm.get('fname')?.hasError('pattern') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)">
-                    Please enter a valid name.
-                </small>
-                <small class="error" *ngIf="contactForm.get('fname')?.hasError('required') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)">
-                    Required.
-                </small>
-            </div>
+  <form [formGroup]="contactForm" class="resume-form">
 
-            <div class="field">
-                <label for="lname">Last Name *</label>
-                <input 
-                    id="lname" 
-                    type="text" 
-                    pInputText 
-                    formControlName="lname" 
-                    placeholder="Enter last name"
-                />
-                <small class="error" *ngIf="contactForm.get('lname')?.hasError('pattern') && (contactForm.get('lname')?.dirty || contactForm.get('lname')?.touched)">
-                    Please enter a valid name.
-                </small>
-                <small class="error" *ngIf="contactForm.get('lname')?.hasError('required') && (contactForm.get('lname')?.dirty || contactForm.get('lname')?.touched)">
-                    Required.
-                </small>
-            </div>
+    <div class="form-row form-row--double">
+      <div class="field">
+        <label for="fname">First Name *</label>
+        <input
+          id="fname"
+          type="text"
+          pInputText
+          formControlName="fname"
+          placeholder="Enter first name"
+          />
+          @if (contactForm.get('fname')?.hasError('pattern') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)) {
+            <small class="error">
+              Please enter a valid name.
+            </small>
+          }
+          @if (contactForm.get('fname')?.hasError('required') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)) {
+            <small class="error">
+              Required.
+            </small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="lname">Last Name *</label>
+          <input
+            id="lname"
+            type="text"
+            pInputText
+            formControlName="lname"
+            placeholder="Enter last name"
+            />
+            @if (contactForm.get('lname')?.hasError('pattern') && (contactForm.get('lname')?.dirty || contactForm.get('lname')?.touched)) {
+              <small class="error">
+                Please enter a valid name.
+              </small>
+            }
+            @if (contactForm.get('lname')?.hasError('required') && (contactForm.get('lname')?.dirty || contactForm.get('lname')?.touched)) {
+              <small class="error">
+                Required.
+              </small>
+            }
+          </div>
         </div>
 
         <div class="form-row form-row--single">
-            <div class="field">
-                <label for="subTitle">Sub Title/Role</label>
-                <input 
-                    id="subTitle" 
-                    type="text" 
-                    pInputText 
-                    formControlName="subTitle" 
-                    placeholder="e.g., Senior Software Engineer"
-                />
+          <div class="field">
+            <label for="subTitle">Sub Title/Role</label>
+            <input
+              id="subTitle"
+              type="text"
+              pInputText
+              formControlName="subTitle"
+              placeholder="e.g., Senior Software Engineer"
+              />
             </div>
-        </div>
+          </div>
 
-        <div class="form-row form-row--single">
+          <div class="form-row form-row--single">
             <div class="field">
-                <label for="address">Address</label>
-                <input 
-                    id="address" 
-                    type="text" 
-                    pInputText 
-                    formControlName="address" 
-                    placeholder="Enter your address"
+              <label for="address">Address</label>
+              <input
+                id="address"
+                type="text"
+                pInputText
+                formControlName="address"
+                placeholder="Enter your address"
                 />
+              </div>
             </div>
-        </div>
 
-        <div class="form-row form-row--single">
-            <div class="field">
+            <div class="form-row form-row--single">
+              <div class="field">
                 <label for="phone_number">Phone Number</label>
-                <input 
-                    id="phone_number" 
-                    type="text" 
-                    pInputText 
-                    formControlName="phone_number" 
-                    placeholder="Enter phone number"
-                />
-                <small class="error" *ngIf="contactForm.get('phone_number')?.hasError('pattern') && (contactForm.get('phone_number')?.dirty || contactForm.get('phone_number')?.touched)">
-                    Please enter a valid phone number.
-                </small>
-            </div>
-        </div>
+                <input
+                  id="phone_number"
+                  type="text"
+                  pInputText
+                  formControlName="phone_number"
+                  placeholder="Enter phone number"
+                  />
+                  @if (contactForm.get('phone_number')?.hasError('pattern') && (contactForm.get('phone_number')?.dirty || contactForm.get('phone_number')?.touched)) {
+                    <small class="error">
+                      Please enter a valid phone number.
+                    </small>
+                  }
+                </div>
+              </div>
 
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="email_address">Email Address *</label>
-                <input 
-                    id="email_address" 
-                    type="email" 
-                    pInputText 
-                    formControlName="email_address" 
+              <div class="form-row form-row--single">
+                <div class="field">
+                  <label for="email_address">Email Address *</label>
+                  <input
+                    id="email_address"
+                    type="email"
+                    pInputText
+                    formControlName="email_address"
                     placeholder="your.email@example.com"
-                />
-                <small class="error" *ngIf="contactForm.get('email_address')?.hasError('pattern') && (contactForm.get('email_address')?.dirty || contactForm.get('email_address')?.touched)">
-                    Please enter a valid email address.
-                </small>
-            </div>
-        </div>
+                    />
+                    @if (contactForm.get('email_address')?.hasError('pattern') && (contactForm.get('email_address')?.dirty || contactForm.get('email_address')?.touched)) {
+                      <small class="error">
+                        Please enter a valid email address.
+                      </small>
+                    }
+                  </div>
+                </div>
 
-        <div class="form-row form-row--double">
-            <div class="field">
-                <label for="github_display">GitHub Display Name</label>
-                <input 
-                    id="github_display" 
-                    type="text" 
-                    pInputText 
-                    formControlName="github_profile_display_name" 
-                    placeholder="e.g., @username"
-                />
-            </div>
+                <div class="form-row form-row--double">
+                  <div class="field">
+                    <label for="github_display">GitHub Display Name</label>
+                    <input
+                      id="github_display"
+                      type="text"
+                      pInputText
+                      formControlName="github_profile_display_name"
+                      placeholder="e.g., @username"
+                      />
+                    </div>
 
-            <div class="field">
-                <label for="github_profile">GitHub URL</label>
-                <input 
-                    id="github_profile" 
-                    type="url" 
-                    pInputText 
-                    formControlName="github_profile" 
-                    placeholder="https://github.com/username"
-                />
-                <small class="error" *ngIf="contactForm.get('github_profile')?.hasError('pattern') && (contactForm.get('github_profile')?.dirty || contactForm.get('github_profile')?.touched)">
-                    Please enter a valid GitHub link.
-                </small>
-            </div>
-        </div>
+                    <div class="field">
+                      <label for="github_profile">GitHub URL</label>
+                      <input
+                        id="github_profile"
+                        type="url"
+                        pInputText
+                        formControlName="github_profile"
+                        placeholder="https://github.com/username"
+                        />
+                        @if (contactForm.get('github_profile')?.hasError('pattern') && (contactForm.get('github_profile')?.dirty || contactForm.get('github_profile')?.touched)) {
+                          <small class="error">
+                            Please enter a valid GitHub link.
+                          </small>
+                        }
+                      </div>
+                    </div>
 
-        <div class="form-row form-row--double">
-            <div class="field">
-                <label for="linkedin_display">LinkedIn Display Name</label>
-                <input 
-                    id="linkedin_display" 
-                    type="text" 
-                    pInputText 
-                    formControlName="linkedIn_profile_display_name" 
-                    placeholder="e.g., John Doe"
-                />
-            </div>
+                    <div class="form-row form-row--double">
+                      <div class="field">
+                        <label for="linkedin_display">LinkedIn Display Name</label>
+                        <input
+                          id="linkedin_display"
+                          type="text"
+                          pInputText
+                          formControlName="linkedIn_profile_display_name"
+                          placeholder="e.g., John Doe"
+                          />
+                        </div>
 
-            <div class="field">
-                <label for="linkedIn_profile">LinkedIn URL</label>
-                <input 
-                    id="linkedIn_profile" 
-                    type="url" 
-                    pInputText 
-                    formControlName="linkedIn_profile" 
-                    placeholder="https://linkedin.com/in/username"
-                />
-                <small class="error" *ngIf="contactForm.get('linkedIn_profile')?.hasError('pattern') && (contactForm.get('linkedIn_profile')?.dirty || contactForm.get('linkedIn_profile')?.touched)">
-                    Please enter a valid LinkedIn link.
-                </small>
-            </div>
-        </div>
+                        <div class="field">
+                          <label for="linkedIn_profile">LinkedIn URL</label>
+                          <input
+                            id="linkedIn_profile"
+                            type="url"
+                            pInputText
+                            formControlName="linkedIn_profile"
+                            placeholder="https://linkedin.com/in/username"
+                            />
+                            @if (contactForm.get('linkedIn_profile')?.hasError('pattern') && (contactForm.get('linkedIn_profile')?.dirty || contactForm.get('linkedIn_profile')?.touched)) {
+                              <small class="error">
+                                Please enter a valid LinkedIn link.
+                              </small>
+                            }
+                          </div>
+                        </div>
 
-        <div class="form-actions">
-            <button 
-                type="button" 
-                class="action-btn action-btn--primary" 
-                (click)="saveAndContinue(null)" 
-                [disabled]="contactForm.invalid || !hasFormChanged"
-                [title]="getButtonTooltip()"
-            >
-                <i class="pi pi-check"></i>
-                {{ hasFormChanged ? 'Update Resume' : 'Add to Resume' }}
-            </button>
-        </div>
-    </form>
-</div>
+                        <div class="form-actions">
+                          <button
+                            type="button"
+                            class="action-btn action-btn--primary"
+                            (click)="saveAndContinue(null)"
+                            [disabled]="contactForm.invalid || !hasFormChanged"
+                            [title]="getButtonTooltip()"
+                            >
+                            <i class="pi pi-check"></i>
+                            {{ hasFormChanged ? 'Update Resume' : 'Add to Resume' }}
+                          </button>
+                        </div>
+                      </form>
+                    </div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, Signal, AfterViewInit, PLATFORM_ID, CUSTOM_ELEMENTS_SCHEMA, ViewEncapsulation,effect, AfterContentChecked, AfterContentInit, ChangeDetectorRef } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuModule } from 'primeng/menu';
@@ -49,16 +49,7 @@ interface Option {
 @Component({
     selector: 'dashboard-job-application',
     standalone: true,
-    imports: [CommonModule, RouterLink, RouterModule, 
-        StyleClassModule,AutoCompleteModule,
-        NgOptimizedImage, MenuModule, ChartModule, FormsModule,
-        ChartModule, ReactiveFormsModule,
-        MenuModule,DividerModule, MatFormFieldModule, MatInputModule,
-        TableModule,DialogModule,InputTextModule, MatProgressBarModule,
-        StyleClassModule,ResumeList2Component, MatCardModule,
-        PanelMenuModule,ResumeFormTabbedComponent,ResumeForm2Component,DragDropModule ,
-        ButtonModule,TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent,
-         MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule],
+    imports: [RouterLink, RouterModule, StyleClassModule, AutoCompleteModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, MatCardModule, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, DragDropModule, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule],
     templateUrl: './dashboard-job-application.component.html',
     styleUrls: ['./dashboard-job-application.component.scss'],
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

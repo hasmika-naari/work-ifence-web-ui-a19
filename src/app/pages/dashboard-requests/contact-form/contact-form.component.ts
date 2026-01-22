@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, Inject, Input, OnInit, Output, Signal, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -25,12 +25,23 @@ import { Account } from 'src/app/services/profile.model';
   selector: 'app-contact-form',
   standalone: true,
   imports: [
-            CommonModule, RouterLink,LanguageSubscribeComponent, MatFormFieldModule,
-            ReactiveFormsModule, NgOptimizedImage, HeaderWorkIfenceComponent,
-            MatSelectModule, MatProgressBarModule, MatCardModule, FormsModule,
-            FooterComponent, FooterWorkifenceComponent, MatSnackBarModule,
-            MatInputModule, MatButtonModule, MatOptionModule
-          ],
+    RouterLink,
+    LanguageSubscribeComponent,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    NgOptimizedImage,
+    HeaderWorkIfenceComponent,
+    MatSelectModule,
+    MatProgressBarModule,
+    MatCardModule,
+    FormsModule,
+    FooterComponent,
+    FooterWorkifenceComponent,
+    MatSnackBarModule,
+    MatInputModule,
+    MatButtonModule,
+    MatOptionModule
+],
   templateUrl: './contact-form.component.html',
   styleUrls: ['./contact-form.component.scss']
 })

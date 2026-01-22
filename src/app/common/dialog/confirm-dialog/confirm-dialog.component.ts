@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
@@ -10,15 +10,7 @@ import { RouterModule } from '@angular/router';
   selector: 'app-confirm-dialog-2',
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.scss'],
-  imports: [CommonModule, RouterModule, MatIconModule,
-      MatButtonModule,
-      MatIconModule,
-      MatDialogTitle,
-      MatDialogContent,
-      MatDialogActions,
-      MatDialogClose,
-      MatProgressSpinnerModule,
-    ],
+  imports: [RouterModule, MatIconModule, MatButtonModule, MatIconModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatProgressSpinnerModule],
 })
 export class ConfirmDialogComponent2 {
   constructor(

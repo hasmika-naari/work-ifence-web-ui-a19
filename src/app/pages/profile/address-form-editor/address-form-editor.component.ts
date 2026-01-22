@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -51,15 +51,7 @@ export interface Country {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
-    CarouselModule,ReactiveFormsModule, FormsModule, 
-    HeaderWorkIfenceComponent,  MatStepperModule,
-    MatFormFieldModule,InputTextModule,TableModule,
-    MatCheckboxModule, MatAutocompleteModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,
-    MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule, MatSelectModule, MatDatepickerModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, MatAutocompleteModule, MatInputModule, ButtonModule, OverlayPanelModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule, MatSelectModule, MatDatepickerModule],
   templateUrl: './address-form-editor.component.html',
   styleUrls: ['./address-form-editor.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

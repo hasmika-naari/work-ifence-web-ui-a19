@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ResumeOptiFlowStepsComponent } from './resume-opti-flow-steps/resume-opti-flow-steps.component';
@@ -11,10 +11,13 @@ import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-w
     selector: 'dashboard-intro',
     standalone: true,
   imports: [
-            CommonModule, RouterLink,NgOptimizedImage,  FooterWorkifenceComponent,
-            HeaderWorkIfenceComponent, 
-            ResumeOptiFlowStepsComponent, ResumeOptiFlowSteps2Component
-          ],
+    RouterLink,
+    NgOptimizedImage,
+    FooterWorkifenceComponent,
+    HeaderWorkIfenceComponent,
+    ResumeOptiFlowStepsComponent,
+    ResumeOptiFlowSteps2Component
+],
     templateUrl: './dashboard-intro.component.html',
     styleUrls: ['./dashboard-intro.component.scss']
 })

@@ -1,4 +1,4 @@
-import { CommonModule, Location, NgOptimizedImage, isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { Location, NgOptimizedImage, isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -28,10 +28,7 @@ import { WINDOW } from 'src/app/services/window.token';
 @Component({
     selector: 'app-opening-details-page',
     standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-    NgOptimizedImage, HeaderWorkIfenceComponent,FooterWorkifenceComponent, IconsModule,
-    CarouselModule,MatButtonModule, MatChipsModule, MatIconModule, 
-    MatMenuModule, MatCardModule, MatProgressBarModule, MatTooltipModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, HeaderWorkIfenceComponent, FooterWorkifenceComponent, IconsModule, CarouselModule, MatButtonModule, MatChipsModule, MatIconModule, MatMenuModule, MatCardModule, MatProgressBarModule, MatTooltipModule],
     templateUrl: './opening-details-page.component.html',
     styleUrls: ['./opening-details-page.component.scss']
 })

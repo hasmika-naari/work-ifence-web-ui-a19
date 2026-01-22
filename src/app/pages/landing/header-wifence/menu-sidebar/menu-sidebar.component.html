@@ -1,100 +1,106 @@
 <!-- Start Menu Sidebar Modal -->
 <div class="menu-sidebar-modal" [ngClass]="{'sidebar-open': menuSidebarOpen}">
-    <!-- Close button -->
-    <button class="sidebar-close-btn" (click)="closeMenuSidebar.emit()" aria-label="Close Menu">
-        <lucide-icon name="x"></lucide-icon>
-    </button>
+  <!-- Close button -->
+  <button class="sidebar-close-btn" (click)="closeMenuSidebar.emit()" aria-label="Close Menu">
+    <lucide-icon name="x"></lucide-icon>
+  </button>
 
-    <!-- Sidebar content -->
-    <div class="sidebar-content">
-        <div class="sidebar-header">
-            <h2 class="sidebar-title"><a routerLink="/">
-                <img src="assets/img/black-logo.png" alt="logo" class="sidebar-logo">
-            </a></h2>
-        </div>
-
-        <div class="sidebar-body">
-            <!-- Main Navigation Menu -->
-            <div class="sidebar-widget">
-                <h3 class="title">Main Menu</h3>
-                <ul class="menu-nav-list">
-                    @for (item of menuItems; track item.id) {
-                        <li class="sidebar-nav-item" [class.has-dropdown]="item.menuItems && item.menuItems.length > 0">
-                            <a [routerLink]="item.route" routerLinkActive="active" class="sidebar-nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
-                                @if(item.icon && item.route !== '/sign-in') {
-                                    <lucide-icon [name]="item.icon"></lucide-icon>
-                                }
-                                @if(item.route !== '/sign-in') {
-                                    <span>{{ item.parent }}</span>
-                                }
-                                @if (item.menuItems && item.menuItems.length > 0) {
-                                    <lucide-icon name="chevron-down" class="dropdown-indicator"></lucide-icon>
-                                }
-                            </a>
-                            @if (item.menuItems && item.menuItems.length > 0) {
-                                <ul class="submenu-list">
-                                    @for (subItem of item.menuItems; track subItem.id) {
-                                        <li class="submenu-item">
-                                            <a [routerLink]="subItem.route" class="submenu-link">
-                                                <lucide-icon name="corner-down-right"></lucide-icon>
-                                                {{ subItem.title }}
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                        </li>
-                    }
-                </ul>
-            </div>
-
-            <!-- Additional Links -->
-            <div class="sidebar-widget">
-                <h3 class="title">Quick Links</h3>
-                <ul>
-                    <li *ngIf="!userAccount"><a routerLink="/sign-in"><lucide-icon name="log-in"></lucide-icon> Login</a></li>
-                    <li *ngIf="!userAccount"><a routerLink="/sign-up"><lucide-icon name="user-plus"></lucide-icon> Register</a></li>
-                    <li *ngIf="userAccount"><a (click)="logout()" style="cursor: pointer;"><lucide-icon name="log-out"></lucide-icon> Logout</a></li>
-                    <li><a routerLink="/faq"><lucide-icon name="help-circle"></lucide-icon> FAQs</a></li>
-                </ul>
-            </div>
-
-            <!-- Support Links -->
-            <div class="sidebar-widget">
-                <h3 class="title">Support</h3>
-                <ul class="support-link">
-                    <li><a [routerLink]="['/privacy']"><lucide-icon name="shield"></lucide-icon> Privacy Policy</a></li>
-                    <li><a [routerLink]="['/terms']"><lucide-icon name="file-text"></lucide-icon> Terms of Service</a></li>
-                    <li><a [routerLink]="['/contact-us']"><lucide-icon name="message-circle"></lucide-icon> Contact Us</a></li>
-                </ul>
-            </div>
-
-            <!-- Social Links -->
-            <div class="sidebar-widget">
-                <h3 class="title">Connect With Us</h3>
-                <ul class="social-list">
-                    <li>
-                        <a href="#" target="_blank" aria-label="Facebook">
-                            <lucide-icon name="facebook"></lucide-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" target="_blank" aria-label="Twitter">
-                            <lucide-icon name="x"></lucide-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" target="_blank" aria-label="LinkedIn">
-                            <lucide-icon name="linkedin"></lucide-icon>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" target="_blank" aria-label="Instagram">
-                            <lucide-icon name="instagram"></lucide-icon>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <!-- Sidebar content -->
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <h2 class="sidebar-title"><a routerLink="/">
+        <img src="assets/img/black-logo.png" alt="logo" class="sidebar-logo">
+      </a></h2>
     </div>
+
+    <div class="sidebar-body">
+      <!-- Main Navigation Menu -->
+      <div class="sidebar-widget">
+        <h3 class="title">Main Menu</h3>
+        <ul class="menu-nav-list">
+          @for (item of menuItems; track item.id) {
+            <li class="sidebar-nav-item" [class.has-dropdown]="item.menuItems && item.menuItems.length > 0">
+              <a [routerLink]="item.route" routerLinkActive="active" class="sidebar-nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
+                @if(item.icon && item.route !== '/sign-in') {
+                  <lucide-icon [name]="item.icon"></lucide-icon>
+                }
+                @if(item.route !== '/sign-in') {
+                  <span>{{ item.parent }}</span>
+                }
+                @if (item.menuItems && item.menuItems.length > 0) {
+                  <lucide-icon name="chevron-down" class="dropdown-indicator"></lucide-icon>
+                }
+              </a>
+              @if (item.menuItems && item.menuItems.length > 0) {
+                <ul class="submenu-list">
+                  @for (subItem of item.menuItems; track subItem.id) {
+                    <li class="submenu-item">
+                      <a [routerLink]="subItem.route" class="submenu-link">
+                        <lucide-icon name="corner-down-right"></lucide-icon>
+                        {{ subItem.title }}
+                      </a>
+                    </li>
+                  }
+                </ul>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Additional Links -->
+      <div class="sidebar-widget">
+        <h3 class="title">Quick Links</h3>
+        <ul>
+          @if (!userAccount) {
+            <li><a routerLink="/sign-in"><lucide-icon name="log-in"></lucide-icon> Login</a></li>
+          }
+          @if (!userAccount) {
+            <li><a routerLink="/sign-up"><lucide-icon name="user-plus"></lucide-icon> Register</a></li>
+          }
+          @if (userAccount) {
+            <li><a (click)="logout()" style="cursor: pointer;"><lucide-icon name="log-out"></lucide-icon> Logout</a></li>
+          }
+          <li><a routerLink="/faq"><lucide-icon name="help-circle"></lucide-icon> FAQs</a></li>
+        </ul>
+      </div>
+
+      <!-- Support Links -->
+      <div class="sidebar-widget">
+        <h3 class="title">Support</h3>
+        <ul class="support-link">
+          <li><a [routerLink]="['/privacy']"><lucide-icon name="shield"></lucide-icon> Privacy Policy</a></li>
+          <li><a [routerLink]="['/terms']"><lucide-icon name="file-text"></lucide-icon> Terms of Service</a></li>
+          <li><a [routerLink]="['/contact-us']"><lucide-icon name="message-circle"></lucide-icon> Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Social Links -->
+      <div class="sidebar-widget">
+        <h3 class="title">Connect With Us</h3>
+        <ul class="social-list">
+          <li>
+            <a href="#" target="_blank" aria-label="Facebook">
+              <lucide-icon name="facebook"></lucide-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#" target="_blank" aria-label="Twitter">
+              <lucide-icon name="x"></lucide-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#" target="_blank" aria-label="LinkedIn">
+              <lucide-icon name="linkedin"></lucide-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#" target="_blank" aria-label="Instagram">
+              <lucide-icon name="instagram"></lucide-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>

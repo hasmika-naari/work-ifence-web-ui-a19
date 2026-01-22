@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ButtonModule } from 'primeng/button';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Experience } from 'src/app/services/resume.model';
@@ -7,33 +7,39 @@ import { Experience } from 'src/app/services/resume.model';
 @Component({
   selector: 'resume-work-experience-section',
   standalone: true,
-  imports: [CommonModule, ButtonModule],
+  imports: [ButtonModule],
   template: `
     <div class="section work-experience">
-      <div *ngIf="data && data.length" class="work-experience-list">
-        <div *ngFor="let job of data; let i = index; trackBy: trackByExperienceId" class="work-experience-item">
-          <div class="work-experience-item-container">
-            <span class="work-experience-item-actions" *ngIf="!isPreview">
-              <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
-              <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete.emit(i)"></button>
-              <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm"
-                (click)="moveUp.emit(i)" [disabled]="i === 0"></button>
-              <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm"
-                (click)="moveDown.emit(i)" [disabled]="i === data.length - 1"></button>
-            </span>
-            <div class="job-header">
-              <div>
-                <div class="job-title">{{ job.data?.position_title || 'Position Title' }}</div>
-                <div class="company">{{ job.data?.company_name || 'Company Name' }}</div>
+      @if (data && data.length) {
+        <div class="work-experience-list">
+          @for (job of data; track trackByExperienceId(i, job); let i = $index) {
+            <div class="work-experience-item">
+              <div class="work-experience-item-container">
+                @if (!isPreview) {
+                  <span class="work-experience-item-actions">
+                    <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
+                    <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" (click)="delete.emit(i)"></button>
+                    <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm"
+                    (click)="moveUp.emit(i)" [disabled]="i === 0"></button>
+                    <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm"
+                    (click)="moveDown.emit(i)" [disabled]="i === data.length - 1"></button>
+                  </span>
+                }
+                <div class="job-header">
+                  <div>
+                    <div class="job-title">{{ job.data?.position_title || 'Position Title' }}</div>
+                    <div class="company">{{ job.data?.company_name || 'Company Name' }}</div>
+                  </div>
+                  <div class="dates">{{ formatDate(job.data?.start_date) }} - {{ formatDate(job.data?.end_date) }}</div>
+                </div>
+                <div class="job-description" [innerHTML]="job.data?.description || 'Job description'"></div>
               </div>
-              <div class="dates">{{ formatDate(job.data?.start_date) }} - {{ formatDate(job.data?.end_date) }}</div>
             </div>
-            <div class="job-description" [innerHTML]="job.data?.description || 'Job description'"></div>
-          </div>
+          }
         </div>
-      </div>
+      }
     </div>
-  `,
+    `,
   styleUrls: ['./work-experience-section.component.scss']
 })
 

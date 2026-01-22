@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -20,7 +20,7 @@ export interface ExperienceProfileItem {
 @Component({
   selector: 'experience-profile-display',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule],
+  imports: [CardModule, ButtonModule],
   templateUrl: './experience-profile-display.component.html',
   styleUrls: ['./experience-profile-display.component.scss']
 })

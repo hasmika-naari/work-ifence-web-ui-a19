@@ -1,5 +1,5 @@
 
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, 
         FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -41,32 +41,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, RouterModule, 
-    MatIconModule,  
-    MatCardModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    FormsModule,
-    OverlayPanelModule,
-    OverlayModule,
-    InputTextModule,
-    ButtonModule,
-    SidebarModule,
-    CheckboxModule,
-    BadgeModule,
-    PasswordModule,
-    RadioButtonModule,
-    InputSwitchModule,
-    RippleModule,
-    RouterModule,
-    IconsModule,
-    MatProgressBarModule,
-    ReactiveFormsModule,
-    HeaderWorkIfenceComponent,
-    FooterWorkifenceComponent,
-    WifProgressDisplayComponent
-  ],
+  imports: [RouterModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, FormsModule, OverlayPanelModule, OverlayModule, InputTextModule, ButtonModule, SidebarModule, CheckboxModule, BadgeModule, PasswordModule, RadioButtonModule, InputSwitchModule, RippleModule, RouterModule, IconsModule, MatProgressBarModule, ReactiveFormsModule, HeaderWorkIfenceComponent, FooterWorkifenceComponent, WifProgressDisplayComponent],
   templateUrl: './login-page.component.html',
   styleUrl : './login-page.component.scss'
 })

@@ -1,104 +1,110 @@
 
 
 <mat-sidenav-container class="profile-sidenav-container" autosize style="height: 100vh;">
-                                <mat-sidenav #rightEditSidenav position="end" mode="over" [opened]="!hidePanelWindow" [disableClose]="true" style="width: 420px; background: #fff; box-shadow: -2px 0 16px rgba(0,0,0,0.07);">
-                                        <div class="sidenav-header" style="display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem 1rem 1.5rem; border-bottom: 1px solid #eee;">
-                                                <div class="sidenav-title" style="font-size: 1.2rem; font-weight: 600; color: var(--mainColor);">{{formLabel}}</div>
-                                                <button mat-icon-button (click)="closePanelWindow($event)" aria-label="Close">
-                                                        <mat-icon>close</mat-icon>
-                                                </button>
-                                        </div>
-                                        <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
-                                                <ng-container *ngIf="showBioFormEditor">
-                                                        <app-bio-form-editor [formClosed]="formClosed" (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()"></app-bio-form-editor>
-                                                </ng-container>
-                                                <ng-container *ngIf="showLoginFormEditor">
-                                                        <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()"></app-login-form-editor>
-                                                </ng-container>
-                                                <ng-container *ngIf="showAddressFormEditor">
-                                                        <app-address-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()"></app-address-form-editor>
-                                                </ng-container>
-                                        </div>
-                                </mat-sidenav>
-        <mat-sidenav-content style="height: 100vh; overflow-y: auto;">
-                <div class="profile-tabs-container">
-                                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-                                        <mat-tab label="Bio Profile">
-                                                <ng-template mat-tab-label>
-                                                        <span class="tab-label"><mat-icon>person</mat-icon> Bio Profile</span>
-                                                </ng-template>
-                                                <div class="tab-content glass-bg">
-                                                        <div class="container-fluid">
-                                                                <div class="p-right-column" >
-                                                                        <div class="resume-editor-content-box center-block mt-2">
-                                                                                <div class="resume-editor-wrapper feedback-wrapper relative">
-                                                                                        <div class="resume-renderer center-resume">
-                                                                                                <mat-progress-bar *ngIf="isActionInProgress" style="position: absolute; top: 0px;left: 0px;right: 0px;" mode="indeterminate"></mat-progress-bar>
-                                                                                                <section class="user-profile-container" style="padding: 0;border: 0;">
-                                                                                                        <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
-                                                                                                </section>
-                                                                                        </div>
-                                                                                </div>
-                                                                        </div>
-                                                                </div>
-                                                        </div>
-                                                </div>
-                                        </mat-tab>
-                                        <mat-tab label="Login Profile">
-                                                <ng-template mat-tab-label>
-                                                        <span class="tab-label"><mat-icon>lock</mat-icon> Login Profile</span>
-                                                </ng-template>
-                                                <div class="tab-content glass-bg">
-                                                        <div class="container-fluid">
-                                                                <div class="p-right-column" >
-                                                                        <div class="resume-editor-content-box center-block mt-2">
-                                                                                <div class="resume-editor-wrapper feedback-wrapper relative">
-                                                                                        <div class="resume-renderer center-resume">
-                                                                                                <mat-progress-bar *ngIf="isActionInProgress" style="position: absolute; top: 0px;left: 0px;right: 0px;" mode="indeterminate"></mat-progress-bar>
-                                                                                                <section class="user-profile-container" style="padding: 0;border: 0;">
-                                                                                                        <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
-                                                                                                </section>
-                                                                                        </div>
-                                                                                </div>
-                                                                        </div>
-                                                                </div>
-                                                        </div>
-                                                </div>
-                                        </mat-tab>
-                                        <mat-tab label="Academic Profile">
-                                                <ng-template mat-tab-label>
-                                                        <span class="tab-label"><mat-icon>school</mat-icon> Academic Profile</span>
-                                                </ng-template>
-                                                <div class="tab-content glass-bg">
-                                                        <div class="academic-profile-placeholder">
-                                                                <mat-icon>school</mat-icon> Academic profile details will be added here.
-                                                        </div>
-                                                </div>
-                                        </mat-tab>
-                                        <mat-tab label="Job Profile">
-                                                <ng-template mat-tab-label>
-                                                        <span class="tab-label"><mat-icon>work</mat-icon> Job Profile</span>
-                                                </ng-template>
-                                                <div class="tab-content glass-bg">
-                                                        <div class="container-fluid">
-                                                                <div class="p-right-column" >
-                                                                        <div class="resume-editor-content-box center-block mt-2">
-                                                                                <div class="resume-editor-wrapper feedback-wrapper relative">
-                                                                                        <div class="resume-renderer center-resume">
-                                                                                                <mat-progress-bar *ngIf="isActionInProgress" style="position: absolute; top: 0px;left: 0px;right: 0px;" mode="indeterminate"></mat-progress-bar>
-                                                                                                <section class="user-profile-container" style="padding: 0;border: 0;">
-                                                                                                        <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
-                                                                                                </section>
-                                                                                        </div>
-                                                                                </div>
-                                                                        </div>
-                                                                </div>
-                                                        </div>
-                                                </div>
-                                        </mat-tab>
-                                </mat-tab-group>
+  <mat-sidenav #rightEditSidenav position="end" mode="over" [opened]="!hidePanelWindow" [disableClose]="true" style="width: 420px; background: #fff; box-shadow: -2px 0 16px rgba(0,0,0,0.07);">
+    <div class="sidenav-header" style="display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem 1rem 1.5rem; border-bottom: 1px solid #eee;">
+      <div class="sidenav-title" style="font-size: 1.2rem; font-weight: 600; color: var(--mainColor);">{{formLabel}}</div>
+      <button mat-icon-button (click)="closePanelWindow($event)" aria-label="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
+      @if (showBioFormEditor) {
+        <app-bio-form-editor [formClosed]="formClosed" (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()"></app-bio-form-editor>
+      }
+      @if (showLoginFormEditor) {
+        <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()"></app-login-form-editor>
+      }
+      @if (showAddressFormEditor) {
+        <app-address-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()"></app-address-form-editor>
+      }
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content style="height: 100vh; overflow-y: auto;">
+    <div class="profile-tabs-container">
+      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+        <mat-tab label="Bio Profile">
+          <ng-template mat-tab-label>
+            <span class="tab-label"><mat-icon>person</mat-icon> Bio Profile</span>
+          </ng-template>
+          <div class="tab-content glass-bg">
+            <div class="container-fluid">
+              <div class="p-right-column" >
+                <div class="resume-editor-content-box center-block mt-2">
+                  <div class="resume-editor-wrapper feedback-wrapper relative">
+                    <div class="resume-renderer center-resume">
+                      @if (isActionInProgress) {
+                        <mat-progress-bar style="position: absolute; top: 0px;left: 0px;right: 0px;" mode="indeterminate"></mat-progress-bar>
+                      }
+                      <section class="user-profile-container" style="padding: 0;border: 0;">
+                        <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
+                      </section>
+                    </div>
+                  </div>
                 </div>
-        </mat-sidenav-content>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Login Profile">
+          <ng-template mat-tab-label>
+            <span class="tab-label"><mat-icon>lock</mat-icon> Login Profile</span>
+          </ng-template>
+          <div class="tab-content glass-bg">
+            <div class="container-fluid">
+              <div class="p-right-column" >
+                <div class="resume-editor-content-box center-block mt-2">
+                  <div class="resume-editor-wrapper feedback-wrapper relative">
+                    <div class="resume-renderer center-resume">
+                      @if (isActionInProgress) {
+                        <mat-progress-bar style="position: absolute; top: 0px;left: 0px;right: 0px;" mode="indeterminate"></mat-progress-bar>
+                      }
+                      <section class="user-profile-container" style="padding: 0;border: 0;">
+                        <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Academic Profile">
+          <ng-template mat-tab-label>
+            <span class="tab-label"><mat-icon>school</mat-icon> Academic Profile</span>
+          </ng-template>
+          <div class="tab-content glass-bg">
+            <div class="academic-profile-placeholder">
+              <mat-icon>school</mat-icon> Academic profile details will be added here.
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Job Profile">
+          <ng-template mat-tab-label>
+            <span class="tab-label"><mat-icon>work</mat-icon> Job Profile</span>
+          </ng-template>
+          <div class="tab-content glass-bg">
+            <div class="container-fluid">
+              <div class="p-right-column" >
+                <div class="resume-editor-content-box center-block mt-2">
+                  <div class="resume-editor-wrapper feedback-wrapper relative">
+                    <div class="resume-renderer center-resume">
+                      @if (isActionInProgress) {
+                        <mat-progress-bar style="position: absolute; top: 0px;left: 0px;right: 0px;" mode="indeterminate"></mat-progress-bar>
+                      }
+                      <section class="user-profile-container" style="padding: 0;border: 0;">
+                        <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </mat-sidenav-content>
 </mat-sidenav-container>
 
 
@@ -108,52 +114,52 @@
 
 
 <!-- <div class="resume-container" >
-    <div class="left-column  animated-div" style="width: 500px;" [class.hide]="hidePanelWindow" [class.show]="!hidePanelWindow">
-        <div class="ToolboxPanel-module_panelContainer shadow-hover bg-surface " 
-                style="max-width: 475px; height: 89vh;"  >
-        <div class="scrollbar-container full-width ToolboxPanel-module_panelContainerHeight" style="height: auto;">
-        <div class="scrollhost-container">
-                    <div class="history-buttons m-top-1 p-t-1 text-right">
-                        <div class="h7 text-center">{{formLabel}}</div>
+<div class="left-column  animated-div" style="width: 500px;" [class.hide]="hidePanelWindow" [class.show]="!hidePanelWindow">
+  <div class="ToolboxPanel-module_panelContainer shadow-hover bg-surface "
+    style="max-width: 475px; height: 89vh;"  >
+    <div class="scrollbar-container full-width ToolboxPanel-module_panelContainerHeight" style="height: auto;">
+      <div class="scrollhost-container">
+        <div class="history-buttons m-top-1 p-t-1 text-right">
+          <div class="h7 text-center">{{formLabel}}</div>
                         <button class="border-rounded animation-fade-in m-inline-2 
                             HistoryArrowButtons-module_arrowContainer d-flex" (click)="closePanelWindow($event)">
-                            <i class="pi pi-times"></i>
-                        </button>
-                    </div>
-                    <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showLoginFormEditor"></app-login-form-editor>
-                    <app-bio-form-editor [formClosed]="formClosed" (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showBioFormEditor"></app-bio-form-editor>
-                    <app-address-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showAddressFormEditor"></app-address-form-editor>
-            </div>
+            <i class="pi pi-times"></i>
+          </button>
         </div>
-        </div>
-    </div>
-    <div class="right-column animated-div" [class.expand-animation]="hidePanelWindow" 
-            [class.contract-animation]="!hidePanelWindow">
-      <div class="centered-content">
-          <div class="resume-editor-content-box center-block mt-2">
-                
-                 <div class="resume-editor-wrapper feedback-wrapper relative">
-                     <div class="resume-renderer center-resume">
-                            <div>
-                                <mat-progress-bar *ngIf="isActionInProgress" style="position: absolute; top: 0px;left: 0px;right: 0px;" 
-                                        mode="indeterminate"></mat-progress-bar>
-                    <section class="user-profile-container" style="padding: 0;border: 0;">
-                            <div class="row">
-                                <div class="col-12">
-                                    <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
-                                </div>
-                                <div class="col-12">
-                                    <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
-                                </div>
-                                <div class="col-12">
-                                    <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
-                                </div>
-                            </div>
-                    </section>
-                        </div>
-                     </div>
-                 </div>
-          </div>
+        <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showLoginFormEditor"></app-login-form-editor>
+        <app-bio-form-editor [formClosed]="formClosed" (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showBioFormEditor"></app-bio-form-editor>
+        <app-address-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" *ngIf="showAddressFormEditor"></app-address-form-editor>
       </div>
     </div>
-  </div> -->
+  </div>
+</div>
+<div class="right-column animated-div" [class.expand-animation]="hidePanelWindow"
+  [class.contract-animation]="!hidePanelWindow">
+  <div class="centered-content">
+    <div class="resume-editor-content-box center-block mt-2">
+
+      <div class="resume-editor-wrapper feedback-wrapper relative">
+        <div class="resume-renderer center-resume">
+          <div>
+            <mat-progress-bar *ngIf="isActionInProgress" style="position: absolute; top: 0px;left: 0px;right: 0px;"
+            mode="indeterminate"></mat-progress-bar>
+            <section class="user-profile-container" style="padding: 0;border: 0;">
+              <div class="row">
+                <div class="col-12">
+                  <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
+                </div>
+                <div class="col-12">
+                  <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
+                </div>
+                <div class="col-12">
+                  <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div> -->

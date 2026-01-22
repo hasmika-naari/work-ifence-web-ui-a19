@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ResumeOptiFlowStepsComponent } from './resume-opti-flow-steps/resume-opti-flow-steps.component';
@@ -12,10 +12,13 @@ import { DeviceDetectorService } from 'ngx-device-detector';
     selector: 'resume-manager-intro',
     standalone: true,
   imports: [
-            CommonModule, RouterLink,NgOptimizedImage,  FooterWorkifenceComponent,
-            HeaderWorkIfenceComponent, 
-            ResumeOptiFlowStepsComponent, ResumeOptiFlowSteps2Component
-          ],
+    RouterLink,
+    NgOptimizedImage,
+    FooterWorkifenceComponent,
+    HeaderWorkIfenceComponent,
+    ResumeOptiFlowStepsComponent,
+    ResumeOptiFlowSteps2Component
+],
     templateUrl: './resume-manager-intro.component.html',
     styleUrls: ['./resume-manager-intro.component.scss']
 })

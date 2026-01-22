@@ -1,25 +1,26 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { SkillV2 } from 'src/app/services/resume.model';
 
 @Component({
   selector: 'resume-skills-bullet-points-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="section skills-bullet-points">
-      <div class="skills-list" *ngIf="allSkills.length; else noSkills">
-        <ul class="skills-bullets">
-          <ng-container *ngFor="let skill of allSkills">
-            <li>{{ skill }}</li>
-          </ng-container>
-        </ul>
-      </div>
-      <ng-template #noSkills>
+      @if (allSkills.length) {
+        <div class="skills-list">
+          <ul class="skills-bullets">
+            @for (skill of allSkills; track skill) {
+              <li>{{ skill }}</li>
+            }
+          </ul>
+        </div>
+      } @else {
         <div class="no-skills">No skills added yet. Click <i class='pi pi-plus'></i> to add your skills.</div>
-      </ng-template>
+      }
     </div>
-  `,
+    `,
   styleUrls: ['./skills-bullet-points-section.component.scss']
 })
 export class SkillsBulletPointsSectionComponent {

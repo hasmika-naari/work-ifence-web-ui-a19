@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser, isPlatformServer, Location } from '@angular/common';
+import { NgOptimizedImage, isPlatformBrowser, isPlatformServer, Location } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -28,10 +28,7 @@ import { WINDOW } from 'src/app/services/window.token';
 @Component({
     selector: 'app-openings-list',
     standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,NgxPaginationModule,
-     NgOptimizedImage, HeaderWorkIfenceComponent,FooterWorkifenceComponent,WorkOpeningsComponent,
-    CarouselModule,MatButtonModule, MatChipsModule, MatIconModule, 
-    MatMenuModule,MatCardModule, MatProgressBarModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgxPaginationModule, NgOptimizedImage, HeaderWorkIfenceComponent, FooterWorkifenceComponent, WorkOpeningsComponent, CarouselModule, MatButtonModule, MatChipsModule, MatIconModule, MatMenuModule, MatCardModule, MatProgressBarModule],
     templateUrl: './list-page.component.html',
     styleUrls: ['./list-page.component.scss']
 })

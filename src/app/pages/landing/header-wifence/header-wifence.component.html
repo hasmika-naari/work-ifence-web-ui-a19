@@ -1,95 +1,99 @@
 <!-- Header -->
 <header class="header header-area" [ngClass]="{'header-glossy': isSticky, 'header-color-white': true}">
-    <div class="navbar-area">
-        <div class="navbar-style-three">
-            <div class="container-fluid">
-                <div class="navbar navbar-expand-lg">
-                    <a class="navbar-brand" routerLink="/">
-                        <img src="assets/img/black-logo.png" alt="logo" class="logo-dark">
-                        <img src="assets/img/logo.png" alt="logo" class="logo-light">
-                    </a>
+  <div class="navbar-area">
+    <div class="navbar-style-three">
+      <div class="container-fluid">
+        <div class="navbar navbar-expand-lg">
+          <a class="navbar-brand" routerLink="/">
+            <img src="assets/img/black-logo.png" alt="logo" class="logo-dark">
+            <img src="assets/img/logo.png" alt="logo" class="logo-light">
+          </a>
 
-                    <!-- Desktop menu - only show on desktop -->
-                    <div id="mainNav" class="collapse navbar-collapse flex-menu" [class.show]="isMenuOpen() && !isMobile && !isTablet">
-                        <ul class="navbar-nav main-nav">
-                            @for (item of menuListStore(); track item.id) {
-                                <li class="nav-item" [class.dropdown]="item.menuItems && item.menuItems.length > 0">
-                                    <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
-                                        @if(item.icon && item.route !== '/sign-in') {
-                                            <lucide-icon [name]="item.icon"></lucide-icon>
-                                        }
-                                        @if(item.route !== '/sign-in') {
-                                            {{ item.parent }}
-                                        }
-                                        @if (item.menuItems && item.menuItems.length > 0) {
-                                            <lucide-icon name="chevron-down" class="dropdown-indicator"></lucide-icon>
-                                        }
-                                    </a>
-                                    @if (item.menuItems && item.menuItems.length > 0) {
-                                        <ul class="dropdown-menu">
-                                            @for (subItem of item.menuItems; track subItem.id) {
-                                                <li class="nav-item">
-                                                    <a [routerLink]="subItem.route" class="nav-link">{{ subItem.title }}</a>
-                                                </li>
-                                            }
-                                        </ul>
-                                    }
-                                </li>
-                            }
-                        </ul>
-                    </div>
+          <!-- Desktop menu - only show on desktop -->
+          <div id="mainNav" class="collapse navbar-collapse flex-menu" [class.show]="isMenuOpen() && !isMobile && !isTablet">
+            <ul class="navbar-nav main-nav">
+              @for (item of menuListStore(); track item.id) {
+                <li class="nav-item" [class.dropdown]="item.menuItems && item.menuItems.length > 0">
+                  <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
+                    @if(item.icon && item.route !== '/sign-in') {
+                      <lucide-icon [name]="item.icon"></lucide-icon>
+                    }
+                    @if(item.route !== '/sign-in') {
+                      {{ item.parent }}
+                    }
+                    @if (item.menuItems && item.menuItems.length > 0) {
+                      <lucide-icon name="chevron-down" class="dropdown-indicator"></lucide-icon>
+                    }
+                  </a>
+                  @if (item.menuItems && item.menuItems.length > 0) {
+                    <ul class="dropdown-menu">
+                      @for (subItem of item.menuItems; track subItem.id) {
+                        <li class="nav-item">
+                          <a [routerLink]="subItem.route" class="nav-link">{{ subItem.title }}</a>
+                        </li>
+                      }
+                    </ul>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
 
-                    <div class="others-option">
-                        <a routerLink="/notifications" class="icon-link" aria-label="Notifications">
-                            <lucide-icon name="bell"></lucide-icon>
-                        </a>
-                        
-                        <!-- Always show progress spinner until auth state is determined -->
-                        @if(isAutoLoggingIn || authStateUndetermined) {
-                            <span class="avatar-trigger no-underline">
-                                <span class="avatar-bg login-progress-container" title="Checking login status...">
-                                    <mat-spinner [diameter]="32" [strokeWidth]="3" color="primary"></mat-spinner>
-                                </span>
-                            </span>
-                        } @else if(isLoggedIn()) {
-                            <!-- Show avatar once logged in -->
-                            <span class="avatar-trigger no-underline" (click)="openSidebar()">
-                                <span class="avatar-bg">
-                                    <img *ngIf="userAccount?.profileImage" [src]="userAccount.profileImage" alt="Avatar" class="header-avatar" />
-                                    <lucide-icon *ngIf="!userAccount?.profileImage" name="user"></lucide-icon>
-                                </span>
-                            </span>
-                        } @else {
-                            <!-- Show login icon when not logged in -->
-                            <a routerLink="/sign-in" class="icon-link" aria-label="Sign In">
-                                <lucide-icon name="log-in"></lucide-icon>
-                            </a>
-                        }
-                        <button class="navbar-toggler menu-trigger" type="button" aria-label="Toggle Menu" aria-controls="mainNav" 
-                            [attr.aria-expanded]="isMenuOpen()" 
-                            [class.active]="menuSidebarOpen"
-                            (click)="toggleMenu()">
-                            <lucide-icon name="menu"></lucide-icon>
-                        </button>
-                        <!-- Debug info for sidebar -->
-                        <div style="display: none;">Sidebar open: {{sidebarOpen}}</div>
-                        <app-saas-sidebar 
-                            [userAccount]="userAccount" 
-                            [sidebarOpen]="sidebarOpen"
-                            (closeSidebar)="closeSidebar()">
-                        </app-saas-sidebar>
-                        
-                        <!-- Menu Sidebar for Mobile Navigation -->
-                        <app-menu-sidebar
-                            [menuItems]="menuListStore()"
-                            [menuSidebarOpen]="menuSidebarOpen"
-                            [userAccount]="userAccount"
-                            (closeMenuSidebar)="closeMenuSidebar()">
-                        </app-menu-sidebar>
-                    </div>
-                </div>
-            </div>
+          <div class="others-option">
+            <a routerLink="/notifications" class="icon-link" aria-label="Notifications">
+              <lucide-icon name="bell"></lucide-icon>
+            </a>
+
+            <!-- Always show progress spinner until auth state is determined -->
+            @if(isAutoLoggingIn || authStateUndetermined) {
+              <span class="avatar-trigger no-underline">
+                <span class="avatar-bg login-progress-container" title="Checking login status...">
+                  <mat-spinner [diameter]="32" [strokeWidth]="3" color="primary"></mat-spinner>
+                </span>
+              </span>
+            } @else if(isLoggedIn()) {
+              <!-- Show avatar once logged in -->
+              <span class="avatar-trigger no-underline" (click)="openSidebar()">
+                <span class="avatar-bg">
+                  @if (userAccount?.profileImage) {
+                    <img [src]="userAccount.profileImage" alt="Avatar" class="header-avatar" />
+                  }
+                  @if (!userAccount?.profileImage) {
+                    <lucide-icon name="user"></lucide-icon>
+                  }
+                </span>
+              </span>
+            } @else {
+              <!-- Show login icon when not logged in -->
+              <a routerLink="/sign-in" class="icon-link" aria-label="Sign In">
+                <lucide-icon name="log-in"></lucide-icon>
+              </a>
+            }
+            <button class="navbar-toggler menu-trigger" type="button" aria-label="Toggle Menu" aria-controls="mainNav"
+              [attr.aria-expanded]="isMenuOpen()"
+              [class.active]="menuSidebarOpen"
+              (click)="toggleMenu()">
+              <lucide-icon name="menu"></lucide-icon>
+            </button>
+            <!-- Debug info for sidebar -->
+            <div style="display: none;">Sidebar open: {{sidebarOpen}}</div>
+            <app-saas-sidebar
+              [userAccount]="userAccount"
+              [sidebarOpen]="sidebarOpen"
+              (closeSidebar)="closeSidebar()">
+            </app-saas-sidebar>
+
+            <!-- Menu Sidebar for Mobile Navigation -->
+            <app-menu-sidebar
+              [menuItems]="menuListStore()"
+              [menuSidebarOpen]="menuSidebarOpen"
+              [userAccount]="userAccount"
+              (closeMenuSidebar)="closeMenuSidebar()">
+            </app-menu-sidebar>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
 </header>

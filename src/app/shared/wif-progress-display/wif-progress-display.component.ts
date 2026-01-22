@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
@@ -8,8 +8,7 @@ import moment from 'moment';
 @Component({
   selector: 'wif-progress-display',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, MatDividerModule, MatListModule,
-  MatProgressBarModule],
+  imports: [MatTabsModule, MatDividerModule, MatListModule, MatProgressBarModule],
   templateUrl: './wif-progress-display.component.html',
   styleUrls: ['./wif-progress-display.component.scss']
 })

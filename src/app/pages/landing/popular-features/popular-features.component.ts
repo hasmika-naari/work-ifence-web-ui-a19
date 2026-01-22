@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { AfterViewInit, Component, Inject, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CarouselModule } from 'ngx-owl-carousel-o';
@@ -10,7 +10,7 @@ import AOS from 'aos';
 @Component({
     selector: 'app-popular-features',
     standalone: true,
-    imports: [CommonModule, NgOptimizedImage, CarouselModule, NgxPaginationModule],
+    imports: [NgOptimizedImage, CarouselModule, NgxPaginationModule],
     templateUrl: './popular-features.component.html',
     styleUrls: ['./popular-features.component.scss']
 })

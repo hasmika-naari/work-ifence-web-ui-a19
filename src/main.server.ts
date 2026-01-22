@@ -1,4 +1,5 @@
-import { bootstrapApplication } from '@angular/platform-browser';
+import { provideZoneChangeDetection } from "@angular/core";
+import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { config } from './app/app.config.server';
 import { provideAnimations, provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -10,11 +11,11 @@ global['document'] = global['document'] || {
 };
 
 
-const bootstrap = () => bootstrapApplication(AppComponent, {
+const bootstrap = (context: BootstrapContext) => bootstrapApplication(AppComponent, {
   ...config,
   providers: [
-    typeof window !== 'undefined' ? provideAnimations() : provideNoopAnimations()
+    provideZoneChangeDetection(),typeof window !== 'undefined' ? provideAnimations() : provideNoopAnimations()
   ]
-});
+}, context);
 
 export default bootstrap;

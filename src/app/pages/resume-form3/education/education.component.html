@@ -1,137 +1,153 @@
 <div class="resume-form-container">
-    <form [formGroup]="educationForm">
-        
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="section_title">Section Title *</label>
-                <input 
-                    id="section_title" 
-                    type="text" 
-                    pInputText 
-                    #role 
-                    formControlName="section_title" 
-                    placeholder="e.g., Education"
-                />
-                <small class="error" *ngIf="educationForm.get('section_title')?.hasError('required') && (educationForm.get('section_title')?.dirty || educationForm.get('section_title')?.touched)">
-                    Required.
-                </small>
-            </div>
+  <form [formGroup]="educationForm">
+
+    <div class="form-row form-row--single">
+      <div class="field">
+        <label for="section_title">Section Title *</label>
+        <input
+          id="section_title"
+          type="text"
+          pInputText
+          #role
+          formControlName="section_title"
+          placeholder="e.g., Education"
+          />
+          @if (educationForm.get('section_title')?.hasError('required') && (educationForm.get('section_title')?.dirty || educationForm.get('section_title')?.touched)) {
+            <small class="error">
+              Required.
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="form-row form-row--single">
+        <div class="field">
+          <label for="school_name">University Name *</label>
+          <input
+            id="school_name"
+            type="text"
+            pInputText
+            formControlName="school_name"
+            placeholder="e.g., Stanford University"
+            />
+            @if (educationForm.get('school_name')?.hasError('required') && (educationForm.get('school_name')?.dirty || educationForm.get('school_name')?.touched)) {
+              <small class="error">
+                Required.
+              </small>
+            }
+          </div>
         </div>
 
         <div class="form-row form-row--single">
-            <div class="field">
-                <label for="school_name">University Name *</label>
-                <input 
-                    id="school_name" 
-                    type="text" 
-                    pInputText 
-                    formControlName="school_name" 
-                    placeholder="e.g., Stanford University"
-                />
-                <small class="error" *ngIf="educationForm.get('school_name')?.hasError('required') && (educationForm.get('school_name')?.dirty || educationForm.get('school_name')?.touched)">
-                    Required.
+          <div class="field">
+            <label for="school_location">University Location *</label>
+            <input
+              id="school_location"
+              type="text"
+              pInputText
+              formControlName="school_location"
+              placeholder="e.g., Stanford, CA"
+              />
+              @if (educationForm.get('school_location')?.hasError('required') && (educationForm.get('school_location')?.dirty || educationForm.get('school_location')?.touched)) {
+                <small class="error">
+                  Required.
                 </small>
+              }
             </div>
-        </div>
+          </div>
 
-        <div class="form-row form-row--single">
+          <div class="form-row form-row--single">
             <div class="field">
-                <label for="school_location">University Location *</label>
-                <input 
-                    id="school_location" 
-                    type="text" 
-                    pInputText 
-                    formControlName="school_location" 
-                    placeholder="e.g., Stanford, CA"
+              <label for="degree">Degree *</label>
+              <input
+                id="degree"
+                type="text"
+                pInputText
+                formControlName="degree"
+                placeholder="e.g., Bachelor of Science"
                 />
-                <small class="error" *ngIf="educationForm.get('school_location')?.hasError('required') && (educationForm.get('school_location')?.dirty || educationForm.get('school_location')?.touched)">
+                @if (educationForm.get('degree')?.hasError('required') && (educationForm.get('degree')?.dirty || educationForm.get('degree')?.touched)) {
+                  <small class="error">
                     Required.
-                </small>
+                  </small>
+                }
+              </div>
             </div>
-        </div>
 
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="degree">Degree *</label>
-                <input 
-                    id="degree" 
-                    type="text" 
-                    pInputText 
-                    formControlName="degree" 
-                    placeholder="e.g., Bachelor of Science"
-                />
-                <small class="error" *ngIf="educationForm.get('degree')?.hasError('required') && (educationForm.get('degree')?.dirty || educationForm.get('degree')?.touched)">
-                    Required.
-                </small>
-            </div>
-        </div>
-
-        @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
-        <div class="form-row form-row--single">
-            <div class="field">
-                <label for="field_of_study">Branch / Field of Study *</label>
-                <input 
-                    id="field_of_study" 
-                    type="text" 
-                    pInputText 
-                    formControlName="field_of_study" 
+            @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
+              <div class="form-row form-row--single">
+                <div class="field">
+                  <label for="field_of_study">Branch / Field of Study *</label>
+                  <input
+                    id="field_of_study"
+                    type="text"
+                    pInputText
+                    formControlName="field_of_study"
                     placeholder="e.g., Computer Science"
-                />
-                <small class="error" *ngIf="educationForm.get('field_of_study')?.hasError('required') && (educationForm.get('field_of_study')?.dirty || educationForm.get('field_of_study')?.touched)">
-                    Required.
-                </small>
-            </div>
-        </div>
-        }
+                    />
+                    @if (educationForm.get('field_of_study')?.hasError('required') && (educationForm.get('field_of_study')?.dirty || educationForm.get('field_of_study')?.touched)) {
+                      <small class="error">
+                        Required.
+                      </small>
+                    }
+                  </div>
+                </div>
+              }
 
-        <div class="form-row form-row--double">
-            <div class="field">
-                <label for="gpa">GPA / Percentage *</label>
-                <input 
-                    id="gpa" 
-                    type="text" 
-                    pInputText 
-                    formControlName="gpa" 
+              <div class="form-row form-row--double">
+                <div class="field">
+                  <label for="gpa">GPA / Percentage *</label>
+                  <input
+                    id="gpa"
+                    type="text"
+                    pInputText
+                    formControlName="gpa"
                     placeholder="e.g., 3.8 or 85%"
-                />
-                <small class="error" *ngIf="educationForm.get('gpa')?.hasError('pattern') && (educationForm.get('gpa')?.dirty || educationForm.get('gpa')?.touched)">
-                    Please enter a valid GPA.
-                </small>
-                <small class="error" *ngIf="educationForm.get('gpa')?.hasError('required') && (educationForm.get('gpa')?.dirty || educationForm.get('gpa')?.touched)">
-                    Required.
-                </small>
-            </div>
+                    />
+                    @if (educationForm.get('gpa')?.hasError('pattern') && (educationForm.get('gpa')?.dirty || educationForm.get('gpa')?.touched)) {
+                      <small class="error">
+                        Please enter a valid GPA.
+                      </small>
+                    }
+                    @if (educationForm.get('gpa')?.hasError('required') && (educationForm.get('gpa')?.dirty || educationForm.get('gpa')?.touched)) {
+                      <small class="error">
+                        Required.
+                      </small>
+                    }
+                  </div>
 
-            <div class="field">
-                <label for="graduation_year">Graduation Date *</label>
-                <p-calendar 
-                    inputId="graduation_year"
-                    formControlName="graduation_year"
-                    view="month" 
-                    dateFormat="mm/yy"
-                    [maxDate]="today"
-                    [showIcon]="true"
-                    iconDisplay="input"
-                    placeholder="MM/YYYY"
-                    [readonlyInput]="true">
-                </p-calendar>
-                <small class="error" *ngIf="educationForm.get('graduation_year')?.hasError('required') && (educationForm.get('graduation_year')?.dirty || educationForm.get('graduation_year')?.touched)">
-                    Required.
-                </small>
-            </div>
-        </div>
+                  <div class="field">
+                    <label for="graduation_year">Graduation Date *</label>
+                    <p-calendar
+                      inputId="graduation_year"
+                      formControlName="graduation_year"
+                      view="month"
+                      dateFormat="mm/yy"
+                      [maxDate]="today"
+                      [showIcon]="true"
+                      iconDisplay="input"
+                      placeholder="MM/YYYY"
+                      [readonlyInput]="true">
+                    </p-calendar>
+                    @if (educationForm.get('graduation_year')?.hasError('required') && (educationForm.get('graduation_year')?.dirty || educationForm.get('graduation_year')?.touched)) {
+                      <small class="error">
+                        Required.
+                      </small>
+                    }
+                  </div>
+                </div>
 
-        <div class="form-actions">
-            <button 
-                type="button" 
-                class="action-btn action-btn--primary" 
-                (click)="saveAndContinue()" 
-                [disabled]="educationForm.invalid || !educationForm.touched"
-                [title]="educationForm.invalid ? 'Please fix form errors before saving' : 'Click to save changes to your resume'"
-            >
-                <i class="pi pi-check"></i>
-                Add to Resume
-            </button>
-        </div>
-    </form>
-</div>
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="action-btn action-btn--primary"
+                    (click)="saveAndContinue()"
+                    [disabled]="educationForm.invalid || !educationForm.touched"
+                    [title]="educationForm.invalid ? 'Please fix form errors before saving' : 'Click to save changes to your resume'"
+                    >
+                    <i class="pi pi-check"></i>
+                    Add to Resume
+                  </button>
+                </div>
+              </form>
+            </div>

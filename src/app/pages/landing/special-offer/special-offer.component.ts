@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-special-offer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './special-offer.component.html',
   styleUrls: ['./special-offer.component.scss']
 })

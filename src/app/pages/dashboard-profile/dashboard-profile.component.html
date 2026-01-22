@@ -1,152 +1,152 @@
 <div class="job-tracker" style="height: 92vh;">
-    <div class="resume-container">
-  <h1 class="title" style="padding-left: 20px;">Profile Manager</h1>
-       <p-drawer header="Left Drawer" [(visible)]="visible1" position="left">
-          <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-              et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat.
-          </p>
-      </p-drawer>
+  <div class="resume-container">
+    <h1 class="title" style="padding-left: 20px;">Profile Manager</h1>
+    <p-drawer header="Left Drawer" [(visible)]="visible1" position="left">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat.
+      </p>
+    </p-drawer>
 
 
-            <p-drawer
-                [(visible)]="visible2"
-                position="right"
-                (onHide)="closeFormEditor()"
-                [style]="{ width: summaryDrawerWidth, 'min-width': summaryDrawerMinWidth, 'max-width': summaryDrawerMaxWidth }"
-                [header]="drawerTitle || undefined"
-            >
-                <ng-container *ngIf="showBioFormEditor">
-                    <app-bio-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" (formClosed)="closeFormEditor()"></app-bio-form-editor>
-                </ng-container>
-                <ng-container *ngIf="showLoginFormEditor">
-                    <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" (formClosed)="closeFormEditor()"></app-login-form-editor>
-                </ng-container>
-                <ng-container *ngIf="showAddressFormEditor">
-                    <app-address-form-editor 
-                        [isActionInProgress]="isActionInProgress"
-                        (actionInProgress)="actionInProgressStarts()" 
-                        (formSaved)="saveForm()" 
-                        (formClosed)="closeFormEditor()">
-                    </app-address-form-editor>
-                </ng-container>
-                <ng-container *ngIf="showSummaryFormEditor">
-                    <summary-profile-edit
-                        [summary]="profileSummaryHtml"
-                        (saveSummary)="onSummarySaved($event)"
-                        (close)="closeFormEditor()">
-                    </summary-profile-edit>
-                </ng-container>
-                <ng-container *ngIf="showSkillsFormEditor">
-                    <skills-profile-edit
-                        [skillSection]="skillDraft"
-                        (saveSkill)="onSkillSectionSaved($event)"
-                        (close)="closeFormEditor()">
-                    </skills-profile-edit>
-                </ng-container>
-                <ng-container *ngIf="showExperienceFormEditor">
-                    <experience-profile-edit
-                        [experience]="experienceDraft"
-                        [isEditing]="experienceEditingIndex !== null"
-                        [editingIndex]="experienceEditingIndex"
-                        (saveExperience)="onExperienceSaved($event)"
-                        (createNewExperience)="startExperienceCreation()"
-                        (close)="closeFormEditor()"
-                    ></experience-profile-edit>
-                </ng-container>
-            </p-drawer>
+    <p-drawer
+      [(visible)]="visible2"
+      position="right"
+      (onHide)="closeFormEditor()"
+      [style]="{ width: summaryDrawerWidth, 'min-width': summaryDrawerMinWidth, 'max-width': summaryDrawerMaxWidth }"
+      [header]="drawerTitle || undefined"
+      >
+      @if (showBioFormEditor) {
+        <app-bio-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" (formClosed)="closeFormEditor()"></app-bio-form-editor>
+      }
+      @if (showLoginFormEditor) {
+        <app-login-form-editor (actionInProgress)="actionInProgressStarts()" (formSaved)="saveForm()" (formClosed)="closeFormEditor()"></app-login-form-editor>
+      }
+      @if (showAddressFormEditor) {
+        <app-address-form-editor
+          [isActionInProgress]="isActionInProgress"
+          (actionInProgress)="actionInProgressStarts()"
+          (formSaved)="saveForm()"
+          (formClosed)="closeFormEditor()">
+        </app-address-form-editor>
+      }
+      @if (showSummaryFormEditor) {
+        <summary-profile-edit
+          [summary]="profileSummaryHtml"
+          (saveSummary)="onSummarySaved($event)"
+          (close)="closeFormEditor()">
+        </summary-profile-edit>
+      }
+      @if (showSkillsFormEditor) {
+        <skills-profile-edit
+          [skillSection]="skillDraft"
+          (saveSkill)="onSkillSectionSaved($event)"
+          (close)="closeFormEditor()">
+        </skills-profile-edit>
+      }
+      @if (showExperienceFormEditor) {
+        <experience-profile-edit
+          [experience]="experienceDraft"
+          [isEditing]="experienceEditingIndex !== null"
+          [editingIndex]="experienceEditingIndex"
+          (saveExperience)="onExperienceSaved($event)"
+          (createNewExperience)="startExperienceCreation()"
+          (close)="closeFormEditor()"
+        ></experience-profile-edit>
+      }
+    </p-drawer>
 
     <p-drawer header="Top Drawer" [(visible)]="visible3" position="top" [style]="{ height: 'auto' }">
-          <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-              et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat.
-          </p>
-      </p-drawer>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat.
+      </p>
+    </p-drawer>
 
     <p-drawer header="Bottom Drawer" [(visible)]="visible4" position="bottom" [style]="{ height: 'auto' }">
-          <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-              et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat.
-          </p>
-      </p-drawer>
-        <div class="flex gap-2 justify-center" style="padding-left: 20px; padding-right: 20px;margin-top: 10px; margin-bottom: 10px; height: calc(92vh - 60px);">
-            <div style="height: 100%; width: 100%; display: flex; flex-direction: column;">
-                <div style="flex: 1 1 0; min-height: 0; display: flex; flex-direction: column;">
-                    <div style="flex: 1 1 0; min-height: 0;">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat.
+      </p>
+    </p-drawer>
+    <div class="flex gap-2 justify-center" style="padding-left: 20px; padding-right: 20px;margin-top: 10px; margin-bottom: 10px; height: calc(92vh - 60px);">
+      <div style="height: 100%; width: 100%; display: flex; flex-direction: column;">
+        <div style="flex: 1 1 0; min-height: 0; display: flex; flex-direction: column;">
+          <div style="flex: 1 1 0; min-height: 0;">
             <p-tabs value="0" style="height: 100%; display: flex; flex-direction: column;">
               <p-tablist>
-                  <ng-template #previcon>
-                      <i class="pi pi-minus"></i>
-                  </ng-template>
-                  <p-tab value="0" class="flex items-center !gap-2">
-                      <i class="pi pi-user-edit"></i>
-                      <span class="font-bold whitespace-nowrap">Account Info</span>
-                  </p-tab>
-                  <p-tab value="1" class="flex items-center !gap-2">
-                      <i class="pi pi-briefcase"></i>
-                      <span class="font-bold whitespace-nowrap">Job Profile</span>
-                  </p-tab>
-                  <p-tab value="2" class="flex items-center !gap-2">
-                      <i class="pi pi-book"></i>
-                      <span class="font-bold whitespace-nowrap">Status info</span>
-                  </p-tab>
-                  <!-- <p-tab value="3" class="flex items-center !gap-2">
-                      <i class="pi pi-briefcase"></i>
-                      <span class="font-bold whitespace-nowrap">Job Profile</span>
-                  </p-tab> -->
-                  <ng-template #nexticon>
-                      <i class="pi pi-plus"></i>
-                  </ng-template>
-              </p-tablist>
-              <p-tabpanels style="height: 100%;">
-                  <p-tabpanel value="0">
-                      <div class="tab-panel-content account-info-content">
-                          <section class="mb-4">
-                          <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
-                          </section>
-                          <section class="mb-4" style="margin-top: 20px;"> 
-                          <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
-                          </section>
-                          <section class="mb-4" style="margin-top: 20px;">
-                          <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
-                          </section>
+                <ng-template #previcon>
+                  <i class="pi pi-minus"></i>
+                </ng-template>
+                <p-tab value="0" class="flex items-center !gap-2">
+                  <i class="pi pi-user-edit"></i>
+                  <span class="font-bold whitespace-nowrap">Account Info</span>
+                </p-tab>
+                <p-tab value="1" class="flex items-center !gap-2">
+                  <i class="pi pi-briefcase"></i>
+                  <span class="font-bold whitespace-nowrap">Job Profile</span>
+                </p-tab>
+                <p-tab value="2" class="flex items-center !gap-2">
+                  <i class="pi pi-book"></i>
+                  <span class="font-bold whitespace-nowrap">Status info</span>
+                </p-tab>
+                <!-- <p-tab value="3" class="flex items-center !gap-2">
+                <i class="pi pi-briefcase"></i>
+                <span class="font-bold whitespace-nowrap">Job Profile</span>
+              </p-tab> -->
+              <ng-template #nexticon>
+                <i class="pi pi-plus"></i>
+              </ng-template>
+            </p-tablist>
+            <p-tabpanels style="height: 100%;">
+              <p-tabpanel value="0">
+                <div class="tab-panel-content account-info-content">
+                  <section class="mb-4">
+                    <bio-profile-form (editBio)="showBioFormEditorWindow()"></bio-profile-form>
+                  </section>
+                  <section class="mb-4" style="margin-top: 20px;">
+                    <login-profile-form (editLogin)="showLoginFormEditorWindow()"></login-profile-form>
+                  </section>
+                  <section class="mb-4" style="margin-top: 20px;">
+                    <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
+                  </section>
 
-                      </div>
-                  </p-tabpanel>
-               <p-tabpanel value="1">
-                   <div class="tab-panel-content job-profile-content">
-                       <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
-                       <skills-profile-display
-                           [skills]="profileSkills"
-                           (addSkillSection)="startSkillSectionCreation()"
-                           (editSkillSection)="startSkillSectionEdit($event)"
-                           (removeSkillSection)="onSkillSectionRemoved($event)"
-                           (moveSkillSection)="onSkillSectionMoved($event)"
-                       ></skills-profile-display>
-                                         <experience-profile-display
-                                             [experiences]="profileExperiences"
-                                             (addExperience)="startExperienceCreation()"
-                                             (editExperience)="startExperienceEdit($event)"
-                                             (removeExperience)="onExperienceRemoved($event)"
-                                             (moveExperience)="onExperienceMoved($event)"
-                                         ></experience-profile-display>
-                   </div>
-                  </p-tabpanel>
-                  <p-tabpanel value="2">
-                      <!-- Academic Profile form goes here if available -->
-                      <p class="m-0">Academic Profile content goes here.</p>
-                  </p-tabpanel>
-                  <!-- <p-tabpanel value="3" style="height: 100%; overflow-y: auto;">
-                      <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
-                  </p-tabpanel> -->
-              </p-tabpanels>
-            </p-tabs>
-          </div>
-        </div>
+                </div>
+              </p-tabpanel>
+              <p-tabpanel value="1">
+                <div class="tab-panel-content job-profile-content">
+                  <summary-profile-display [summary]="profileSummaryHtml" (editSummary)="showSummaryFormEditorWindow()"></summary-profile-display>
+                  <skills-profile-display
+                    [skills]="profileSkills"
+                    (addSkillSection)="startSkillSectionCreation()"
+                    (editSkillSection)="startSkillSectionEdit($event)"
+                    (removeSkillSection)="onSkillSectionRemoved($event)"
+                    (moveSkillSection)="onSkillSectionMoved($event)"
+                  ></skills-profile-display>
+                  <experience-profile-display
+                    [experiences]="profileExperiences"
+                    (addExperience)="startExperienceCreation()"
+                    (editExperience)="startExperienceEdit($event)"
+                    (removeExperience)="onExperienceRemoved($event)"
+                    (moveExperience)="onExperienceMoved($event)"
+                  ></experience-profile-display>
+                </div>
+              </p-tabpanel>
+              <p-tabpanel value="2">
+                <!-- Academic Profile form goes here if available -->
+                <p class="m-0">Academic Profile content goes here.</p>
+              </p-tabpanel>
+              <!-- <p-tabpanel value="3" style="height: 100%; overflow-y: auto;">
+              <address-profile-form (editAddress)="showAddressFormEditorWindow()"></address-profile-form>
+            </p-tabpanel> -->
+          </p-tabpanels>
+        </p-tabs>
       </div>
     </div>
-    </div>
+  </div>
+</div>
+</div>
 </div>

@@ -1,395 +1,426 @@
 <div class="resume-form-container" style="overflow-y:auto;padding-bottom:50px;">
-    <p-toast position="top-center" [preventOpenDuplicates]="true" [preventDuplicates]="true"></p-toast>
-    
-    <div class="col-12"  >
-        <form [formGroup]="projectForm" >
-            <div class="form-row form-row--single">
-                <div class="field">
-                    <label for="section_title">Section title <span class="required">*</span></label>
-                    <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
-                    <small class="error" *ngIf="projectForm.get('section_title')?.hasError('required') && projectForm.get('section_title')?.touched">
-                        Required.
-                    </small>
-                </div>
-                <div class="field">
-                    <label for="project_name">Project name <span class="required">*</span></label>
-                    <input id="project_name" type="text" pInputText #title formControlName="project_name" placeholder="Project Name">
-                    <small class="error" *ngIf="projectForm.get('project_name')?.hasError('required') && projectForm.get('project_name')?.touched">
-                        Required.
-                    </small>
-                </div>
-                <div class="field">
-                    <label for="project_link">Project Link</label>
-                    <input id="project_link" type="text" pInputText formControlName="project_link" placeholder="Project Link">
-                    <small class="error" *ngIf="projectForm.get('project_link')?.hasError('pattern') && projectForm.get('project_link')?.touched">
-                        Please enter a valid link.
-                    </small>
-                </div>
-                <div class="field">
-                    <label for="role">Role</label>
-                    <input id="role" type="text" pInputText formControlName="role" placeholder="Role">
-                </div>
-                                <div class="field">
-                                    <div style="display: flex; gap: 1rem; width: 100%;">
-                                        <div style="flex: 1; display: flex; flex-direction: column;">
-                                            <label for="start_date" style="margin-bottom: 4px;">Start Date</label>
-                                                                    <div style="width: 100%">
-                                                                        <p-calendar id="start_date" formControlName="start_date" view="month" dateFormat="mm/yy" [showIcon]="true" [yearNavigator]="true" yearRange="1990:2050" [monthNavigator]="true" placeholder="Start Month/Year"></p-calendar>
-                                                                    </div>
-                                        </div>
-                                        <div style="flex: 1; display: flex; flex-direction: column;">
-                                            <label for="end_date" style="margin-bottom: 4px;">End Date</label>
-                                                                    <div style="width: 100%">
-                                                                        <p-calendar id="end_date" formControlName="end_date" view="month" dateFormat="mm/yy" [showIcon]="true" [yearNavigator]="true" yearRange="1990:2050" [monthNavigator]="true" placeholder="End Month/Year"></p-calendar>
-                                                                    </div>
-                                        </div>
-                                    </div>
-                                </div>
-                @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
-                <div class="field">
-                    <label for="technologies_used">Technologies Used</label>
-                    <input id="technologies_used" type="text" pInputText formControlName="technologies_used" placeholder="Enter comma separated values (e.g. Angular, Node.js, MongoDB)">
-                </div>
-                }
-                @else{
-                    <div class="field">
-                        <label for="period">Period</label>
-                        <input id="period" type="text" pInputText formControlName="period" placeholder="Period">
-                    </div>
-                }
-                <!-- <div class="col-12 p-b-1 p-t-2">
-                    <mat-form-field appearance="outline" class="w-100" >
-                        <mat-label>No.of Bullet Points</mat-label>
-                        <input matInput placeholder="Number of Bullet Points" formControlName="bullet_points">
-                    </mat-form-field>
-                   
-                </div> -->
-                <!-- <div class="col-12 p-0 m=0">
-                    @if(!is_projects_loading){
-                        <button [class.use-ai-btn]="descri.value.length && title.value.length" [class.use-ai-btn-disabled]="!descri.value.length || !title.value.length" 
-                           class="d-flex" style="float: right;" (click)="optimizeProject()" 
-                            [disabled]="isProjectsSkipped || !descri.value.length || !title.value.length">
-                              <i class="pi pi-reddit" style="font-size: medium;"></i>  Use AI Writer
-                        </button>
-                       
-                    }
-                    @if(is_projects_loading){
-                        <button class="use-ai-btn d-flex" style="float: right;">
-                           
-                            <div class="progress-container">
-                                <div class="progress-bar"></div>
-                                <i class="pi pi-reddit pi-reddit-pos" ></i>
-                              </div>
-                        </button>
-                    }
-                </div> -->
+  <p-toast position="top-center" [preventOpenDuplicates]="true" [preventDuplicates]="true"></p-toast>
 
-                <!-- <div class="col-12 m-0" style="padding-right: 10.5px;">
-                    @if(!is_projects_loading){
-                        <button
-                           class="d-flex ai-btn" (click)="optimizeProject()" >
-                              <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
-                        </button>
-                    }
-                    @if(is_projects_loading){
-                        <button class="use-ai-btn d-flex" style="float: right;">
-                            <div class="progress-container">
-                                <div class="progress-bar"></div>
-                                <i class="pi pi-reddit pi-reddit-pos" ></i>
-                              </div>
-                        </button>
-                    }
-                </div> -->
-
-                <div class="form-row form-row--single project-description" style="position: relative;">
-                    @if(!is_projects_loading){
-                        <button matTooltip="Use BOTbro AI & Optimize" 
-                            class="d-flex ai-btn" 
-                            type="button"
-                            (click)="optimizeProject()" 
-                            style="position: absolute; top: -15px; right: 0px; z-index: 100;">
-                            <p-icon class="pi pi-sparkles" style="font-size: medium; margin-right: 5px; color: white;"></p-icon>
-                            USE BOTBRO
-                        </button>
-                    }
-                    @if(is_projects_loading){
-                        <button matTooltip="Use BOTbro AI & Optimize"
-                            class="d-flex ai-btn"
-                            type="button"
-                            style="position: absolute; top: -15px; right: 0px; z-index: 100;">
-                            <span class="use-ai-btn d-flex">
-                                <div class="progress-container">
-                                    <div class="progress-bar"></div>
-                                    <i class="pi pi-sparkles pi-sparkles-pos"></i>
-                                </div>
-                            </span>
-                            <span>USE BOTBRO</span>
-                        </button>
-                    }
-                    <div class="field">
-                        <label>Project Description</label>
-                        <div class="editor">
-                            <ngx-editor-menu [editor]="descriptionEditor" [toolbar]="toolbar"></ngx-editor-menu>
-                            <ngx-editor
-                                [editor]="descriptionEditor"
-                                formControlName="description"
-                                [placeholder]="'Enter project description...'"
-                                [spellcheck]="true"
-                                [minHeight]="'150px'"
-                                [maxHeight]="'350px'"
-                                style="width:100%;display:block;min-height:350px;"
-                            ></ngx-editor>
-                        </div>
-                        <small class="error" *ngIf="projectForm.get('description')?.hasError('required') && projectForm.get('description')?.touched">
-                            Project description is required.
-                        </small>
-                    </div>
-                    <div class="field">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                            <label style="margin-bottom: 0;">Roles & Responsibilities</label>
-                            <span>
-                                @if(!is_responsibilities_loading){
-                                    <button matTooltip="Use BOTbro AI & Optimize"
-                                        class="d-flex ai-btn"
-                                        type="button"
-                                        (click)="optimizeResponsibilities()">
-                                        <p-icon class="pi pi-sparkles" style="font-size: medium; margin-right: 5px; color: white;"></p-icon>
-                                        USE BOTBRO
-                                    </button>
-                                }
-                                @if(is_responsibilities_loading){
-                                    <button matTooltip="Use BOTbro AI & Optimize"
-                                        class="d-flex ai-btn"
-                                        type="button">
-                                        <span class="use-ai-btn d-flex">
-                                            <div class="progress-container">
-                                                <div class="progress-bar"></div>
-                                                <i class="pi pi-sparkles pi-sparkles-pos"></i>
-                                            </div>
-                                        </span>
-                                        <span>USE BOTBRO</span>
-                                    </button>
-                                }
-                            </span>
-                        </div>
-                        <div class="editor">
-                            <ngx-editor-menu [editor]="responsibilitiesEditor" [toolbar]="toolbar"></ngx-editor-menu>
-                            <ngx-editor
-                                [editor]="responsibilitiesEditor"
-                                formControlName="responsibilitiesRichText"
-                                [placeholder]="'Enter roles and responsibilities as rich text...'"
-                                [spellcheck]="true"
-                                [minHeight]="'120px'"
-                                [maxHeight]="'350px'"
-                                style="width:100%;display:block;min-height:120px;"
-                            ></ngx-editor>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                            <label style="margin-bottom: 0;">Highlights</label>
-                            <span>
-                                @if(!is_highlights_loading){
-                                    <button matTooltip="Use BOTbro AI & Optimize"
-                                        class="d-flex ai-btn"
-                                        type="button"
-                                        (click)="optimizeHighlights()">
-                                        <p-icon class="pi pi-sparkles" style="font-size: medium; margin-right: 5px; color: white;"></p-icon>
-                                        USE BOTBRO
-                                    </button>
-                                }
-                                @if(is_highlights_loading){
-                                    <button matTooltip="Use BOTbro AI & Optimize"
-                                        class="d-flex ai-btn"
-                                        type="button">
-                                        <span class="use-ai-btn d-flex">
-                                            <div class="progress-container">
-                                                <div class="progress-bar"></div>
-                                                <i class="pi pi-sparkles pi-sparkles-pos"></i>
-                                            </div>
-                                        </span>
-                                        <span>USE BOTBRO</span>
-                                    </button>
-                                }
-                            </span>
-                        </div>
-                        <div class="editor">
-                            <ngx-editor-menu [editor]="highlightsEditor" [toolbar]="toolbar"></ngx-editor-menu>
-                            <ngx-editor
-                                [editor]="highlightsEditor"
-                                formControlName="highlightsRichText"
-                                [placeholder]="'Enter highlights as rich text...'"
-                                [spellcheck]="true"
-                                [minHeight]="'120px'"
-                                [maxHeight]="'350px'"
-                                style="width:100%;display:block;min-height:120px;"
-                            ></ngx-editor>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button 
-                        type="button" 
-                        class="action-btn action-btn--primary" 
-                        (click)="saveAndContinue()" 
-                        [disabled]="projectForm.invalid"
-                        matTooltip="Add to Resume"
-                        tooltipPosition="top">
-                        <i class="pi pi-check"></i>
-                        Add to Resume
-                    </button>
-                </div>
+  <div class="col-12"  >
+    <form [formGroup]="projectForm" >
+      <div class="form-row form-row--single">
+        <div class="field">
+          <label for="section_title">Section title <span class="required">*</span></label>
+          <input id="section_title" type="text" pInputText #role formControlName="section_title" placeholder="Section Title">
+          @if (projectForm.get('section_title')?.hasError('required') && projectForm.get('section_title')?.touched) {
+            <small class="error">
+              Required.
+            </small>
+          }
+        </div>
+        <div class="field">
+          <label for="project_name">Project name <span class="required">*</span></label>
+          <input id="project_name" type="text" pInputText #title formControlName="project_name" placeholder="Project Name">
+          @if (projectForm.get('project_name')?.hasError('required') && projectForm.get('project_name')?.touched) {
+            <small class="error">
+              Required.
+            </small>
+          }
+        </div>
+        <div class="field">
+          <label for="project_link">Project Link</label>
+          <input id="project_link" type="text" pInputText formControlName="project_link" placeholder="Project Link">
+          @if (projectForm.get('project_link')?.hasError('pattern') && projectForm.get('project_link')?.touched) {
+            <small class="error">
+              Please enter a valid link.
+            </small>
+          }
+        </div>
+        <div class="field">
+          <label for="role">Role</label>
+          <input id="role" type="text" pInputText formControlName="role" placeholder="Role">
+        </div>
+        <div class="field">
+          <div style="display: flex; gap: 1rem; width: 100%;">
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <label for="start_date" style="margin-bottom: 4px;">Start Date</label>
+              <div style="width: 100%">
+                <p-calendar id="start_date" formControlName="start_date" view="month" dateFormat="mm/yy" [showIcon]="true" [yearNavigator]="true" yearRange="1990:2050" [monthNavigator]="true" placeholder="Start Month/Year"></p-calendar>
+              </div>
             </div>
-        </form>
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <label for="end_date" style="margin-bottom: 4px;">End Date</label>
+              <div style="width: 100%">
+                <p-calendar id="end_date" formControlName="end_date" view="month" dateFormat="mm/yy" [showIcon]="true" [yearNavigator]="true" yearRange="1990:2050" [monthNavigator]="true" placeholder="End Month/Year"></p-calendar>
+              </div>
+            </div>
+          </div>
+        </div>
+        @if(resumeSignalForm().template_details.template_name != 'TEMPLATE_10'){
+          <div class="field">
+            <label for="technologies_used">Technologies Used</label>
+            <input id="technologies_used" type="text" pInputText formControlName="technologies_used" placeholder="Enter comma separated values (e.g. Angular, Node.js, MongoDB)">
+          </div>
+        }
+        @else{
+        <div class="field">
+          <label for="period">Period</label>
+          <input id="period" type="text" pInputText formControlName="period" placeholder="Period">
+        </div>
+      }
+      <!-- <div class="col-12 p-b-1 p-t-2">
+      <mat-form-field appearance="outline" class="w-100" >
+        <mat-label>No.of Bullet Points</mat-label>
+        <input matInput placeholder="Number of Bullet Points" formControlName="bullet_points">
+      </mat-form-field>
+
+    </div> -->
+    <!-- <div class="col-12 p-0 m=0">
+    @if(!is_projects_loading){
+      <button [class.use-ai-btn]="descri.value.length && title.value.length" [class.use-ai-btn-disabled]="!descri.value.length || !title.value.length"
+        class="d-flex" style="float: right;" (click)="optimizeProject()"
+        [disabled]="isProjectsSkipped || !descri.value.length || !title.value.length">
+        <i class="pi pi-reddit" style="font-size: medium;"></i>  Use AI Writer
+      </button>
+
+    }
+    @if(is_projects_loading){
+      <button class="use-ai-btn d-flex" style="float: right;">
+
+        <div class="progress-container">
+          <div class="progress-bar"></div>
+          <i class="pi pi-reddit pi-reddit-pos" ></i>
+        </div>
+      </button>
+    }
+  </div> -->
+
+  <!-- <div class="col-12 m-0" style="padding-right: 10.5px;">
+  @if(!is_projects_loading){
+    <button
+      class="d-flex ai-btn" (click)="optimizeProject()" >
+      <p-icon class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></p-icon>  USE BOTBRO
+    </button>
+  }
+  @if(is_projects_loading){
+    <button class="use-ai-btn d-flex" style="float: right;">
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+        <i class="pi pi-reddit pi-reddit-pos" ></i>
+      </div>
+    </button>
+  }
+</div> -->
+
+<div class="form-row form-row--single project-description" style="position: relative;">
+  @if(!is_projects_loading){
+    <button matTooltip="Use BOTbro AI & Optimize"
+      class="d-flex ai-btn"
+      type="button"
+      (click)="optimizeProject()"
+      style="position: absolute; top: -15px; right: 0px; z-index: 100;">
+      <p-icon class="pi pi-sparkles" style="font-size: medium; margin-right: 5px; color: white;"></p-icon>
+      USE BOTBRO
+    </button>
+  }
+  @if(is_projects_loading){
+    <button matTooltip="Use BOTbro AI & Optimize"
+      class="d-flex ai-btn"
+      type="button"
+      style="position: absolute; top: -15px; right: 0px; z-index: 100;">
+      <span class="use-ai-btn d-flex">
+        <div class="progress-container">
+          <div class="progress-bar"></div>
+          <i class="pi pi-sparkles pi-sparkles-pos"></i>
+        </div>
+      </span>
+      <span>USE BOTBRO</span>
+    </button>
+  }
+  <div class="field">
+    <label>Project Description</label>
+    <div class="editor">
+      <ngx-editor-menu [editor]="descriptionEditor" [toolbar]="toolbar"></ngx-editor-menu>
+      <ngx-editor
+        [editor]="descriptionEditor"
+        formControlName="description"
+        [placeholder]="'Enter project description...'"
+        [spellcheck]="true"
+        [minHeight]="'150px'"
+        [maxHeight]="'350px'"
+        style="width:100%;display:block;min-height:350px;"
+      ></ngx-editor>
     </div>
+    @if (projectForm.get('description')?.hasError('required') && projectForm.get('description')?.touched) {
+      <small class="error">
+        Project description is required.
+      </small>
+    }
+  </div>
+  <div class="field">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+      <label style="margin-bottom: 0;">Roles & Responsibilities</label>
+      <span>
+        @if(!is_responsibilities_loading){
+          <button matTooltip="Use BOTbro AI & Optimize"
+            class="d-flex ai-btn"
+            type="button"
+            (click)="optimizeResponsibilities()">
+            <p-icon class="pi pi-sparkles" style="font-size: medium; margin-right: 5px; color: white;"></p-icon>
+            USE BOTBRO
+          </button>
+        }
+        @if(is_responsibilities_loading){
+          <button matTooltip="Use BOTbro AI & Optimize"
+            class="d-flex ai-btn"
+            type="button">
+            <span class="use-ai-btn d-flex">
+              <div class="progress-container">
+                <div class="progress-bar"></div>
+                <i class="pi pi-sparkles pi-sparkles-pos"></i>
+              </div>
+            </span>
+            <span>USE BOTBRO</span>
+          </button>
+        }
+      </span>
+    </div>
+    <div class="editor">
+      <ngx-editor-menu [editor]="responsibilitiesEditor" [toolbar]="toolbar"></ngx-editor-menu>
+      <ngx-editor
+        [editor]="responsibilitiesEditor"
+        formControlName="responsibilitiesRichText"
+        [placeholder]="'Enter roles and responsibilities as rich text...'"
+        [spellcheck]="true"
+        [minHeight]="'120px'"
+        [maxHeight]="'350px'"
+        style="width:100%;display:block;min-height:120px;"
+      ></ngx-editor>
+    </div>
+  </div>
+  <div class="field">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+      <label style="margin-bottom: 0;">Highlights</label>
+      <span>
+        @if(!is_highlights_loading){
+          <button matTooltip="Use BOTbro AI & Optimize"
+            class="d-flex ai-btn"
+            type="button"
+            (click)="optimizeHighlights()">
+            <p-icon class="pi pi-sparkles" style="font-size: medium; margin-right: 5px; color: white;"></p-icon>
+            USE BOTBRO
+          </button>
+        }
+        @if(is_highlights_loading){
+          <button matTooltip="Use BOTbro AI & Optimize"
+            class="d-flex ai-btn"
+            type="button">
+            <span class="use-ai-btn d-flex">
+              <div class="progress-container">
+                <div class="progress-bar"></div>
+                <i class="pi pi-sparkles pi-sparkles-pos"></i>
+              </div>
+            </span>
+            <span>USE BOTBRO</span>
+          </button>
+        }
+      </span>
+    </div>
+    <div class="editor">
+      <ngx-editor-menu [editor]="highlightsEditor" [toolbar]="toolbar"></ngx-editor-menu>
+      <ngx-editor
+        [editor]="highlightsEditor"
+        formControlName="highlightsRichText"
+        [placeholder]="'Enter highlights as rich text...'"
+        [spellcheck]="true"
+        [minHeight]="'120px'"
+        [maxHeight]="'350px'"
+        style="width:100%;display:block;min-height:120px;"
+      ></ngx-editor>
+    </div>
+  </div>
+</div>
+
+<div class="form-actions">
+  <button
+    type="button"
+    class="action-btn action-btn--primary"
+    (click)="saveAndContinue()"
+    [disabled]="projectForm.invalid"
+    matTooltip="Add to Resume"
+    tooltipPosition="top">
+    <i class="pi pi-check"></i>
+    Add to Resume
+  </button>
+</div>
+</div>
+</form>
+</div>
 </div>
 
 <!-- Overlay for Project Description AI Suggestions -->
-<div 
-    class="summary-ai-overlay" 
-    *ngIf="isOpen" 
-    [@slideInOut] 
+@if (isOpen) {
+  <div
+    class="summary-ai-overlay"
+    [@slideInOut]
     (click)="$event.stopPropagation()"
     style="z-index: 2000;"
->
+    >
     <div class="summary-ai-drawer-shell">
-        <header class="summary-ai-header">
-            <div class="summary-ai-title-group">
-                <h2>AI Assistance</h2>
-                <p>Project Suggestions</p>
-            </div>
-            <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closePanelWindow()">
-                <i class="pi pi-times"></i>
-            </button>
-        </header>
-        <section class="summary-ai-stack">
-            <div *ngIf="projectListPoints && projectListPoints.length > 0">
-                <mat-card class="ai-response-panel" *ngFor="let project of projectListPoints; let i = index">
-                    <div class="section-actions" *ngIf="i !== optimize_index">
-                        <p-icon class="pi pi-pencil" title="Edit" (click)="editAIResponse(i)"></p-icon>
-                        <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Use BotBro" (click)="optimizeResponse(i)"></p-icon>
-                        <p-icon class="pi pi-plus" title="Use This Response" (click)="useResponse(i)"></p-icon>
-                    </div>
-                    <ng-container *ngIf="i !== optimize_index">
-                        <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
-                    </ng-container>
-                    <ng-container *ngIf="i === optimize_index && action_taken !== 'EDIT'">
-                        <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
-                    </ng-container>
-                    <ng-container *ngIf="i === optimize_index && action_taken === 'OPTIMIZE'">
-                        <div class="spinner-overlay">
-                            <div class="spinner"></div>
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="i === optimize_index && action_taken === 'EDIT'">
-                        <mat-form-field appearance="outline">
-                            <textarea matInput [formControl]="aiResponsePoint"></textarea>
-                        </mat-form-field>
-                        <div style="display: flex;justify-content: space-between;align-items: center;">
-                            <button mat-button color="warn" (click)="cancelPoint(i)">Cancel</button>
-                            <button mat-stroked-button color="primary" (click)="updatePoint(i)">Update</button>
-                        </div>
-                    </ng-container>
-                </mat-card>
-            </div>
-            <div *ngIf="!projectListPoints || projectListPoints.length === 0" class="summary-ai-empty">
-                <span>No AI suggestions available yet.</span>
-            </div>
-        </section>
+      <header class="summary-ai-header">
+        <div class="summary-ai-title-group">
+          <h2>AI Assistance</h2>
+          <p>Project Suggestions</p>
+        </div>
+        <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closePanelWindow()">
+          <i class="pi pi-times"></i>
+        </button>
+      </header>
+      <section class="summary-ai-stack">
+        @if (projectListPoints && projectListPoints.length > 0) {
+          <div>
+            @for (project of projectListPoints; track project; let i = $index) {
+              <mat-card class="ai-response-panel">
+                @if (i !== optimize_index) {
+                  <div class="section-actions">
+                    <p-icon class="pi pi-pencil" title="Edit" (click)="editAIResponse(i)"></p-icon>
+                    <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Use BotBro" (click)="optimizeResponse(i)"></p-icon>
+                    <p-icon class="pi pi-plus" title="Use This Response" (click)="useResponse(i)"></p-icon>
+                  </div>
+                }
+                @if (i !== optimize_index) {
+                  <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
+                }
+                @if (i === optimize_index && action_taken !== 'EDIT') {
+                  <p [ngClass]="i == optimize_index? 'spinner-wrapper' : ''">{{ project }}</p>
+                }
+                @if (i === optimize_index && action_taken === 'OPTIMIZE') {
+                  <div class="spinner-overlay">
+                    <div class="spinner"></div>
+                  </div>
+                }
+                @if (i === optimize_index && action_taken === 'EDIT') {
+                  <mat-form-field appearance="outline">
+                    <textarea matInput [formControl]="aiResponsePoint"></textarea>
+                  </mat-form-field>
+                  <div style="display: flex;justify-content: space-between;align-items: center;">
+                    <button mat-button color="warn" (click)="cancelPoint(i)">Cancel</button>
+                    <button mat-stroked-button color="primary" (click)="updatePoint(i)">Update</button>
+                  </div>
+                }
+              </mat-card>
+            }
+          </div>
+        }
+        @if (!projectListPoints || projectListPoints.length === 0) {
+          <div class="summary-ai-empty">
+            <span>No AI suggestions available yet.</span>
+          </div>
+        }
+      </section>
     </div>
-</div>
+  </div>
+}
 
 <!-- Overlay for Responsibilities AI Suggestions -->
-<div 
-    class="summary-ai-overlay" 
-    *ngIf="isResponsibilitiesOpen" 
-    [@slideInOut] 
+@if (isResponsibilitiesOpen) {
+  <div
+    class="summary-ai-overlay"
+    [@slideInOut]
     (click)="$event.stopPropagation()"
     style="z-index: 2000;"
->
+    >
     <div class="summary-ai-drawer-shell">
-        <header class="summary-ai-header">
-            <div class="summary-ai-title-group">
-                <h2>AI Assistance</h2>
-                <p>Roles & Responsibilities Suggestions</p>
-            </div>
-            <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closeResponsibilitiesPanel()">
-                <i class="pi pi-times"></i>
-            </button>
-        </header>
-        <section class="summary-ai-stack">
-            <div *ngIf="responsibilitiesListPoints && responsibilitiesListPoints.length > 0">
-                <mat-card class="ai-response-panel ai-response-dynamic" *ngFor="let resp of responsibilitiesListPoints; let i = index">
-                    <div class="section-actions">
-                        <p-icon class="pi pi-pencil" title="Edit" (click)="editResponsibilitiesAIResponse(i)"></p-icon>
-                        <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Optimize" (click)="optimizeResponsibilitiesResponse(i)"></p-icon>
-                        <p-icon class="pi pi-plus" title="Add This Response" (click)="addResponsibilitiesResponse(i)"></p-icon>
-                    </div>
-                    <ng-container *ngIf="!isResponsibilitiesEditing(i)">
-                        <p>{{ resp }}</p>
-                    </ng-container>
-                    <ng-container *ngIf="isResponsibilitiesEditing(i)">
-                        <mat-form-field appearance="outline">
-                            <textarea matInput [(ngModel)]="responsibilitiesEditValue" rows="3"></textarea>
-                        </mat-form-field>
-                        <div style="display: flex;justify-content: space-between;align-items: center;">
-                            <button mat-button color="warn" (click)="cancelResponsibilitiesEdit()">Cancel</button>
-                            <button mat-stroked-button color="primary" (click)="updateResponsibilitiesPoint(i)">Update</button>
-                        </div>
-                    </ng-container>
-                </mat-card>
-            </div>
-            <div *ngIf="!responsibilitiesListPoints || responsibilitiesListPoints.length === 0" class="summary-ai-empty">
-                <span>No AI suggestions available yet.</span>
-            </div>
-        </section>
+      <header class="summary-ai-header">
+        <div class="summary-ai-title-group">
+          <h2>AI Assistance</h2>
+          <p>Roles & Responsibilities Suggestions</p>
+        </div>
+        <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closeResponsibilitiesPanel()">
+          <i class="pi pi-times"></i>
+        </button>
+      </header>
+      <section class="summary-ai-stack">
+        @if (responsibilitiesListPoints && responsibilitiesListPoints.length > 0) {
+          <div>
+            @for (resp of responsibilitiesListPoints; track resp; let i = $index) {
+              <mat-card class="ai-response-panel ai-response-dynamic">
+                <div class="section-actions">
+                  <p-icon class="pi pi-pencil" title="Edit" (click)="editResponsibilitiesAIResponse(i)"></p-icon>
+                  <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Optimize" (click)="optimizeResponsibilitiesResponse(i)"></p-icon>
+                  <p-icon class="pi pi-plus" title="Add This Response" (click)="addResponsibilitiesResponse(i)"></p-icon>
+                </div>
+                @if (!isResponsibilitiesEditing(i)) {
+                  <p>{{ resp }}</p>
+                }
+                @if (isResponsibilitiesEditing(i)) {
+                  <mat-form-field appearance="outline">
+                    <textarea matInput [(ngModel)]="responsibilitiesEditValue" rows="3"></textarea>
+                  </mat-form-field>
+                  <div style="display: flex;justify-content: space-between;align-items: center;">
+                    <button mat-button color="warn" (click)="cancelResponsibilitiesEdit()">Cancel</button>
+                    <button mat-stroked-button color="primary" (click)="updateResponsibilitiesPoint(i)">Update</button>
+                  </div>
+                }
+              </mat-card>
+            }
+          </div>
+        }
+        @if (!responsibilitiesListPoints || responsibilitiesListPoints.length === 0) {
+          <div class="summary-ai-empty">
+            <span>No AI suggestions available yet.</span>
+          </div>
+        }
+      </section>
     </div>
-</div>
+  </div>
+}
 
 <!-- Overlay for Highlights AI Suggestions -->
-<div 
-    class="summary-ai-overlay" 
-    *ngIf="isHighlightsOpen" 
-    [@slideInOut] 
+@if (isHighlightsOpen) {
+  <div
+    class="summary-ai-overlay"
+    [@slideInOut]
     (click)="$event.stopPropagation()"
     style="z-index: 2000;"
->
+    >
     <div class="summary-ai-drawer-shell">
-        <header class="summary-ai-header">
-            <div class="summary-ai-title-group">
-                <h2>AI Assistance</h2>
-                <p>Highlights Suggestions</p>
-            </div>
-            <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closeHighlightsPanel()">
-                <i class="pi pi-times"></i>
-            </button>
-        </header>
-        <section class="summary-ai-stack">
-            <div *ngIf="highlightsListPoints && highlightsListPoints.length > 0">
-                <mat-card class="ai-response-panel ai-response-dynamic" *ngFor="let high of highlightsListPoints; let i = index">
-                    <div class="section-actions">
-                        <p-icon class="pi pi-pencil" title="Edit" (click)="editHighlightsAIResponse(i)"></p-icon>
-                        <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Optimize" (click)="optimizeHighlightsResponse(i)"></p-icon>
-                        <p-icon class="pi pi-plus" title="Add This Response" (click)="addHighlightsResponse(i)"></p-icon>
-                    </div>
-                    <ng-container *ngIf="!isHighlightsEditing(i)">
-                        <p>{{ high }}</p>
-                    </ng-container>
-                    <ng-container *ngIf="isHighlightsEditing(i)">
-                        <mat-form-field appearance="outline">
-                            <textarea matInput [(ngModel)]="highlightsEditValue" rows="3"></textarea>
-                        </mat-form-field>
-                        <div style="display: flex;justify-content: space-between;align-items: center;">
-                            <button mat-button color="warn" (click)="cancelHighlightsEdit()">Cancel</button>
-                            <button mat-stroked-button color="primary" (click)="updateHighlightsPoint(i)">Update</button>
-                        </div>
-                    </ng-container>
-                </mat-card>
-            </div>
-            <div *ngIf="!highlightsListPoints || highlightsListPoints.length === 0" class="summary-ai-empty">
-                <span>No AI suggestions available yet.</span>
-            </div>
-        </section>
+      <header class="summary-ai-header">
+        <div class="summary-ai-title-group">
+          <h2>AI Assistance</h2>
+          <p>Highlights Suggestions</p>
+        </div>
+        <button type="button" class="p-button-rounded p-button-text close-btn" (click)="closeHighlightsPanel()">
+          <i class="pi pi-times"></i>
+        </button>
+      </header>
+      <section class="summary-ai-stack">
+        @if (highlightsListPoints && highlightsListPoints.length > 0) {
+          <div>
+            @for (high of highlightsListPoints; track high; let i = $index) {
+              <mat-card class="ai-response-panel ai-response-dynamic">
+                <div class="section-actions">
+                  <p-icon class="pi pi-pencil" title="Edit" (click)="editHighlightsAIResponse(i)"></p-icon>
+                  <p-icon class="pi pi-sparkles pi-sparkles-pos" title="Optimize" (click)="optimizeHighlightsResponse(i)"></p-icon>
+                  <p-icon class="pi pi-plus" title="Add This Response" (click)="addHighlightsResponse(i)"></p-icon>
+                </div>
+                @if (!isHighlightsEditing(i)) {
+                  <p>{{ high }}</p>
+                }
+                @if (isHighlightsEditing(i)) {
+                  <mat-form-field appearance="outline">
+                    <textarea matInput [(ngModel)]="highlightsEditValue" rows="3"></textarea>
+                  </mat-form-field>
+                  <div style="display: flex;justify-content: space-between;align-items: center;">
+                    <button mat-button color="warn" (click)="cancelHighlightsEdit()">Cancel</button>
+                    <button mat-stroked-button color="primary" (click)="updateHighlightsPoint(i)">Update</button>
+                  </div>
+                }
+              </mat-card>
+            }
+          </div>
+        }
+        @if (!highlightsListPoints || highlightsListPoints.length === 0) {
+          <div class="summary-ai-empty">
+            <span>No AI suggestions available yet.</span>
+          </div>
+        }
+      </section>
     </div>
-</div>
+  </div>
+}

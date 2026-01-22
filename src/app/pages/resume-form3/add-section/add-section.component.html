@@ -1,14 +1,14 @@
 <!-- <div class="add-section-panel" [class.panel-visible]="isVisible" role="complementary" aria-label="Add Section Panel">
-  <div class="panel-content" role="main" aria-labelledby="panel-title">
-    <div class="panel-header">
-      <h3 class="panel-title" id="panel-title">Choose a section to add to your resume</h3>
-    </div>
-     -->
-    <div class="add-section-form-container">
-      <div class="card-grid" role="list">
-        <mat-card 
-          class="custom-card" 
-          *ngFor="let item of sections; trackBy: trackBySection" 
+<div class="panel-content" role="main" aria-labelledby="panel-title">
+  <div class="panel-header">
+    <h3 class="panel-title" id="panel-title">Choose a section to add to your resume</h3>
+  </div>
+  -->
+  <div class="add-section-form-container">
+    <div class="card-grid" role="list">
+      @for (item of sections; track trackBySection($index, item)) {
+        <mat-card
+          class="custom-card"
           role="listitem"
           (click)="addSection(item)"
           (keydown)="onOverlayKeydown($event, item)"
@@ -16,29 +16,29 @@
           [class.is-added]="isSectionAdded(item)"
           [class.is-added]="isSectionAdded(item)"
           [attr.aria-label]="isSectionAdded(item) ? item.label + ' section is already added' : 'Add ' + item.label + ' section'">
-          
           <div class="image-container">
             <div class="card-background"></div>
-            
             <div class="icon-corner">
               <i [class]="'pi ' + getSectionIcon(item.section)"></i>
             </div>
-    
-            <div class="status-corner" *ngIf="isSectionAdded(item)">
-              <i class="pi pi-check-circle"></i>
-            </div>
-    
-            <div class="add-icon-overlay" *ngIf="!isSectionAdded(item)">
-              <i class="pi pi-plus"></i>
-            </div>
-            
+            @if (isSectionAdded(item)) {
+              <div class="status-corner">
+                <i class="pi pi-check-circle"></i>
+              </div>
+            }
+            @if (!isSectionAdded(item)) {
+              <div class="add-icon-overlay">
+                <i class="pi pi-plus"></i>
+              </div>
+            }
             <div class="info-overlay">
               <h3 class="card-title">{{ item.label }}</h3>
               <p class="card-description">{{ item.description }}</p>
             </div>
           </div>
         </mat-card>
-      </div>
+      }
     </div>
-  <!-- </div>
+  </div>
+<!-- </div>
 </div> -->

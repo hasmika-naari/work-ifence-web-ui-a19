@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -41,35 +41,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule,
-    MatIconModule,
-    MatCardModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    DropdownModule,
-    FormsModule,
-    MultiSelectModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    HeaderWorkIfenceComponent,
-    FooterWorkifenceComponent,
-    OverlayPanelModule,
-    OverlayModule,
-    InputTextModule,
-    ButtonModule,
-    SidebarModule,
-    CheckboxModule,
-    BadgeModule,
-    PasswordModule,
-    RadioButtonModule,
-    InputSwitchModule,
-    RippleModule,
-    RouterModule,
-    IconsModule,
-  MatProgressBarModule],
+  imports: [RouterModule, MatIconModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, MatIconModule, MatSelectModule, DropdownModule, FormsModule, MultiSelectModule, MatProgressSpinnerModule, ReactiveFormsModule, HeaderWorkIfenceComponent, FooterWorkifenceComponent, OverlayPanelModule, OverlayModule, InputTextModule, ButtonModule, SidebarModule, CheckboxModule, BadgeModule, PasswordModule, RadioButtonModule, InputSwitchModule, RippleModule, RouterModule, IconsModule, MatProgressBarModule],
   templateUrl: './register-page.component.html',
   styleUrls: ['./register-page.component.scss']
 })

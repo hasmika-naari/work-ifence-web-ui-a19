@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { NgOptimizedImage, isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, TransferState, inject, makeStateKey, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -40,15 +40,7 @@ import { CareerResourcesComponent } from './career-resources/career-resources.co
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, NgOptimizedImage, HeaderWorkIfenceComponent,
-    MainBannerComponent,NgxPaginationModule,HomefourteenMainBannerComponent,
-    CategoriesComponent,FooterWorkifenceComponent,OurDashboardDemoComponent,
-    MatButtonModule, MatChipsModule, MatIconModule, 
-    MatMenuModule,PopularFeaturesComponent, ActiveJobsComponent, ActiveCollegeJobsComponent,
-    MatCardModule, MatProgressBarModule, FeedbackStyleTwoComponent,
-    TrustIndicatorsComponent, HowItWorksComponent, SpecialOfferComponent,
-    PartnersComponent, CareerResourcesComponent
-     ],
+  imports: [RouterLink, RouterOutlet, NgOptimizedImage, HeaderWorkIfenceComponent, MainBannerComponent, NgxPaginationModule, HomefourteenMainBannerComponent, CategoriesComponent, FooterWorkifenceComponent, OurDashboardDemoComponent, MatButtonModule, MatChipsModule, MatIconModule, MatMenuModule, PopularFeaturesComponent, ActiveJobsComponent, ActiveCollegeJobsComponent, MatCardModule, MatProgressBarModule, FeedbackStyleTwoComponent, TrustIndicatorsComponent, HowItWorksComponent, SpecialOfferComponent, PartnersComponent, CareerResourcesComponent],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })

@@ -1,66 +1,68 @@
 <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
 <div class="page-full-section" #pageSection>
-    <div #sentinel></div>
+  <div #sentinel></div>
   <!-- <button class="refresh-gradient-btn" (click)="setRandomGradientBackground()" style="position:fixed;top:16px;right:16px;z-index:1000;background:#fff;border-radius:8px;padding:8px 16px;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:pointer;">Refresh Background</button> -->
-  <app-homefourteen-main-banner 
+  <app-homefourteen-main-banner
     class="main-banner-area"
     [gradient]="randomGradientStyle">
   </app-homefourteen-main-banner>
   <section class="pt-50">
-      <app-popular-features></app-popular-features>
+    <app-popular-features></app-popular-features>
   </section>
-  
+
   <section class="pt-70 pb-50">
     <app-trust-indicators></app-trust-indicators>
   </section>
-  
+
   <section class="pt-70 pb-70 bg-light-section">
     <app-how-it-works></app-how-it-works>
   </section>
-  
+
   <div class="courses-categories-area pt-50">
-      <app-our-dashboard-demo></app-our-dashboard-demo>
+    <app-our-dashboard-demo></app-our-dashboard-demo>
   </div>
-  
+
   <section class="pt-70 pb-70">
     <app-special-offer></app-special-offer>
   </section>
-  
-  <!-- @if (config.country === 'usa') {
-    <div class="courses-categories-area pt-50">
-      <app-active-college-jobs></app-active-college-jobs>
-    </div>
-  }
-  <div class="courses-categories-area pt-50">
-    <app-active-jobs></app-active-jobs>
-  </div> -->
 
-  <div class="testimonials-area pt-100 pb-100 mb-50 bg-light-section" *ngIf="browser">
+  <!-- @if (config.country === 'usa') {
+  <div class="courses-categories-area pt-50">
+    <app-active-college-jobs></app-active-college-jobs>
+  </div>
+}
+<div class="courses-categories-area pt-50">
+  <app-active-jobs></app-active-jobs>
+</div> -->
+
+@if (browser) {
+  <div class="testimonials-area pt-100 pb-100 mb-50 bg-light-section">
     <div class="container">
-        <div class="section-title">
-            <span class="sub-title">Testimonials</span>
-            <h2>What Our Users Say</h2>
-        </div>
-        <app-feedback-style-two />
+      <div class="section-title">
+        <span class="sub-title">Testimonials</span>
+        <h2>What Our Users Say</h2>
+      </div>
+      <app-feedback-style-two />
     </div>
   </div>
-  
-  <section class="pt-70 pb-70">
-    <app-partners></app-partners>
-  </section>
-  
-  <section class="pt-70 pb-70 bg-light-section">
-    <app-career-resources></app-career-resources>
-  </section>
+}
 
-    <!-- @defer (on timer(2s)) { -->
-      <app-work-ifence-footer></app-work-ifence-footer>
-    <!-- } @placeholder (minimum 2000ms) {
-      <h1>become Partner</h1>
-    } @loading {
-      <span>Loading...</span>
-    } @error {
-      <span>Something went wrong :(</span>
-    } -->
+<section class="pt-70 pb-70">
+  <app-partners></app-partners>
+</section>
+
+<section class="pt-70 pb-70 bg-light-section">
+  <app-career-resources></app-career-resources>
+</section>
+
+<!-- @defer (on timer(2s)) { -->
+<app-work-ifence-footer></app-work-ifence-footer>
+<!-- } @placeholder (minimum 2000ms) {
+<h1>become Partner</h1>
+} @loading {
+<span>Loading...</span>
+} @error {
+<span>Something went wrong :(</span>
+} -->
 
 </div>

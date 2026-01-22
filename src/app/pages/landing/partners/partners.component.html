@@ -1,69 +1,75 @@
 <div class="container">
-    <div class="section-title glossy-section">
-        <span class="sub-title">Our Network</span>
-        <div class="title-container">
-            <h2>Partners & Integrations</h2>
-            <div class="title-underline"></div>
-        </div>
+  <div class="section-title glossy-section">
+    <span class="sub-title">Our Network</span>
+    <div class="title-container">
+      <h2>Partners & Integrations</h2>
+      <div class="title-underline"></div>
     </div>
-    
-    <div class="row justify-content-center">
-        <div class="col-lg-12">
-            <div class="partners-intro text-center">
-                <p>
-                    We've partnered with industry leaders and integrated with popular services
-                    to provide you with a seamless career management experience.
-                </p>
-            </div>
-        </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-12">
+      <div class="partners-intro text-center">
+        <p>
+          We've partnered with industry leaders and integrated with popular services
+          to provide you with a seamless career management experience.
+        </p>
+      </div>
     </div>
-    
-    <div class="row justify-content-center">
-        <div class="col-lg-12">
-            <div class="partners-wrapper">
-                <div class="partners-carousel">
-                    <div class="partners-track">
-                        <div *ngFor="let partner of partners" class="partner-item">
-                            <img [src]="partner.logo" [alt]="partner.name">
-                        </div>
-                        <!-- Duplicate items for seamless looping -->
-                        <div *ngFor="let partner of partners" class="partner-item">
-                            <img [src]="partner.logo" [alt]="partner.name">
-                        </div>
-                    </div>
-                </div>
-            </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-12">
+      <div class="partners-wrapper">
+        <div class="partners-carousel">
+          <div class="partners-track">
+            @for (partner of partners; track partner) {
+              <div class="partner-item">
+                <img [src]="partner.logo" [alt]="partner.name">
+              </div>
+            }
+            <!-- Duplicate items for seamless looping -->
+            @for (partner of partners; track partner) {
+              <div class="partner-item">
+                <img [src]="partner.logo" [alt]="partner.name">
+              </div>
+            }
+          </div>
         </div>
+      </div>
     </div>
-    
-    <div class="row justify-content-center mt-5">
-        <div class="col-lg-12">
-            <div class="section-subtitle text-center">
-                <h3>Powerful Integrations</h3>
-                <p>Connect with the tools you already use</p>
+  </div>
+
+  <div class="row justify-content-center mt-5">
+    <div class="col-lg-12">
+      <div class="section-subtitle text-center">
+        <h3>Powerful Integrations</h3>
+        <p>Connect with the tools you already use</p>
+      </div>
+      <div class="row mt-4">
+        @for (integration of integrations; track integration) {
+          <div class="col-lg-3 col-md-6">
+            <div class="integration-card card glossy-card">
+              <div class="integration-icon" [ngClass]="integration.colorType === 'secondary' ? 'secondary-icon' : 'primary-icon'">
+                <i class="material-icons">{{integration.icon}}</i>
+              </div>
+              <h4>{{integration.name}}</h4>
+              <p>{{integration.description}}</p>
+              <a href="#" class="connect-btn" [ngClass]="integration.colorType === 'secondary' ? 'secondary-btn' : 'primary-btn'">Connect</a>
             </div>
-            <div class="row mt-4">
-                <div *ngFor="let integration of integrations" class="col-lg-3 col-md-6">
-                    <div class="integration-card card glossy-card">
-                        <div class="integration-icon" [ngClass]="integration.colorType === 'secondary' ? 'secondary-icon' : 'primary-icon'">
-                            <i class="material-icons">{{integration.icon}}</i>
-                        </div>
-                        <h4>{{integration.name}}</h4>
-                        <p>{{integration.description}}</p>
-                        <a href="#" class="connect-btn" [ngClass]="integration.colorType === 'secondary' ? 'secondary-btn' : 'primary-btn'">Connect</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+          </div>
+        }
+      </div>
     </div>
-    
-    <div class="row justify-content-center mt-5">
-        <div class="col-lg-8">
-            <div class="integration-cta text-center">
-                <h3>Want to integrate with your favorite tool?</h3>
-                <p>We're constantly adding new integrations. Let us know what you'd like to see next!</p>
-                <a href="#" class="suggestion-btn">Suggest Integration</a>
-            </div>
-        </div>
+  </div>
+
+  <div class="row justify-content-center mt-5">
+    <div class="col-lg-8">
+      <div class="integration-cta text-center">
+        <h3>Want to integrate with your favorite tool?</h3>
+        <p>We're constantly adding new integrations. Let us know what you'd like to see next!</p>
+        <a href="#" class="suggestion-btn">Suggest Integration</a>
+      </div>
     </div>
+  </div>
 </div>

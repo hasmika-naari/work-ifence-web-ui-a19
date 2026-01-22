@@ -1,197 +1,234 @@
 
 <div class="row pl-4 pr-4" style="height: 80% !important; border-radius: 20px;">
-    <div class="col-12">
-        <form [formGroup]="loginForm" class="login-form" novalidate>
-            <div class="form-row form-row--double">
-                <div class="field">
-                    <label for="username">Username</label>
-                    <input
-                        id="username"
-                        pInputText
-                        formControlName="username"
-                        placeholder="Enter username"
-                    />
-                    <small class="error" *ngIf="loginForm.get('username')?.hasError('required') && (loginForm.get('username')?.dirty || loginForm.get('username')?.touched)">
-                        Required.
-                    </small>
-                </div>
+  <div class="col-12">
+    <form [formGroup]="loginForm" class="login-form" novalidate>
+      <div class="form-row form-row--double">
+        <div class="field">
+          <label for="username">Username</label>
+          <input
+            id="username"
+            pInputText
+            formControlName="username"
+            placeholder="Enter username"
+            />
+            @if (loginForm.get('username')?.hasError('required') && (loginForm.get('username')?.dirty || loginForm.get('username')?.touched)) {
+              <small class="error">
+                Required.
+              </small>
+            }
+          </div>
 
-                <div class="field">
-                    <label for="password">Password</label>
-                    <input
-                        id="password"
-                        type="password"
-                        pInputText
-                        formControlName="password"
-                        placeholder="Enter password"
-                    />
-                    <small class="error" *ngIf="loginForm.get('password')?.hasError('required') && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)">
-                        Required.
-                    </small>
-                </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              pInputText
+              formControlName="password"
+              placeholder="Enter password"
+              />
+              @if (loginForm.get('password')?.hasError('required') && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
+                <small class="error">
+                  Required.
+                </small>
+              }
             </div>
+          </div>
 
-            <div class="form-row form-row--double">
-                <div class="field field--material">
-                    <label for="phone_number">Phone Number</label>
-                    <mat-form-field appearance="outline" class="w-100">
-                        <input
-                            id="phone_number"
-                            matInput
-                            placeholder="Phone Number"
-                            formControlName="phone_number"
-                        />
-                        <mat-icon
-                            matSuffix
-                            matTooltip="Update Phone Number"
-                            *ngIf="!phoneUpdateInProgress && phoneUpdateRequired && !loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)"
-                            class="show-green save-icon"
-                            (click)="patchLoginForm()"
+          <div class="form-row form-row--double">
+            <div class="field field--material">
+              <label for="phone_number">Phone Number</label>
+              <mat-form-field appearance="outline" class="w-100">
+                <input
+                  id="phone_number"
+                  matInput
+                  placeholder="Phone Number"
+                  formControlName="phone_number"
+                  />
+                  @if (!phoneUpdateInProgress && phoneUpdateRequired && !loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)) {
+                    <mat-icon
+                      matSuffix
+                      matTooltip="Update Phone Number"
+                      class="show-green save-icon"
+                      (click)="patchLoginForm()"
+                      >
+                      save
+                    </mat-icon>
+                  }
+                  @if ((!phoneUpdateInProgress && loginForm.get('phone_number')?.hasError('pattern') && (!loginForm.get('phone_number')?.dirty || !loginForm.get('phone_number')?.touched)) || (!phoneUpdateInProgress && loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched))) {
+                    <mat-icon
+                      matSuffix
+                      class="show-silver save-icon"
+                      >
+                      save
+                    </mat-icon>
+                  }
+                  @if (phoneUpdateInProgress) {
+                    <mat-progress-spinner
+                      matSuffix
+                      mode="indeterminate"
+                      color="warn"
+                      [diameter]="'25'"
+                      class="field-spinner"
+                    ></mat-progress-spinner>
+                  }
+                  @if (loginForm.get('phone_number')?.hasError('required') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)) {
+                    <mat-error class="ng-dirty ng-invalid">
+                      Required.
+                    </mat-error>
+                  }
+                  @if (loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)) {
+                    <mat-error class="ng-dirty ng-invalid">
+                      Please enter a valid phone number
+                    </mat-error>
+                  }
+                  @if (phoneNumberUpdateSuccess) {
+                    <mat-hint class="show-green">Phone Number Updated Successfully!!</mat-hint>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="field field--material">
+                <label for="email">Email</label>
+                <mat-form-field appearance="outline" class="w-100">
+                  <input
+                    id="email"
+                    matInput
+                    placeholder="Email"
+                    formControlName="email"
+                    />
+                    @if (!emailUpdateInProgress && emailValidationRequired && !loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched) && !showCancelOption) {
+                      <mat-icon
+                        matSuffix
+                        matTooltip="Update Email"
+                        class="show-green save-icon"
+                        (click)="updateEmail($event)"
                         >
-                            save
-                        </mat-icon>
-                        <mat-icon
-                            matSuffix
-                            *ngIf="(!phoneUpdateInProgress && loginForm.get('phone_number')?.hasError('pattern') && (!loginForm.get('phone_number')?.dirty || !loginForm.get('phone_number')?.touched)) || (!phoneUpdateInProgress && loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched))"
-                            class="show-silver save-icon"
+                        save
+                      </mat-icon>
+                    }
+                    @if ((!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (!loginForm.get('email')?.dirty || !loginForm.get('email')?.touched)) || ((!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) && !showCancelOption)) {
+                      <mat-icon
+                        matSuffix
+                        class="show-silver save-icon"
                         >
-                            save
-                        </mat-icon>
-                        <mat-progress-spinner
-                            matSuffix
-                            mode="indeterminate"
-                            color="warn"
-                            [diameter]="'25'"
-                            class="field-spinner"
-                            *ngIf="phoneUpdateInProgress"
-                        ></mat-progress-spinner>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('phone_number')?.hasError('required') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)">
-                            Required.
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('phone_number')?.hasError('pattern') && (loginForm.get('phone_number')?.dirty || loginForm.get('phone_number')?.touched)">
-                            Please enter a valid phone number
-                        </mat-error>
-                        <mat-hint class="show-green" *ngIf="phoneNumberUpdateSuccess">Phone Number Updated Successfully!!</mat-hint>
-                    </mat-form-field>
+                        save
+                      </mat-icon>
+                    }
+                    @if (emailUpdateInProgress) {
+                      <mat-progress-spinner
+                        matSuffix
+                        mode="indeterminate"
+                        color="warn"
+                        [diameter]="'25'"
+                        class="field-spinner"
+                      ></mat-progress-spinner>
+                    }
+                    @if (showCancelOption && !emailUpdateInProgress) {
+                      <mat-icon
+                        matSuffix
+                        matTooltip="Cancel Email Update"
+                        (click)="cancelEmailUpdate()"
+                        class="show-orangered save-icon"
+                        >
+                        close
+                      </mat-icon>
+                    }
+                    @if (loginForm.get('email')?.hasError('required') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) {
+                      <mat-error class="ng-dirty ng-invalid">
+                        Required.
+                      </mat-error>
+                    }
+                    @if (loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) {
+                      <mat-error class="ng-dirty ng-invalid">
+                        Please enter a valid email address
+                      </mat-error>
+                    }
+                    @if (emailUpdateError) {
+                      <mat-hint>{{ emailUpdateErrorMessage }}</mat-hint>
+                    }
+                    @if (emailUpdateSuccess) {
+                      <mat-hint class="show-green">Email Updated Successfully!!</mat-hint>
+                    }
+                  </mat-form-field>
                 </div>
+              </div>
 
-                <div class="field field--material">
-                    <label for="email">Email</label>
-                    <mat-form-field appearance="outline" class="w-100">
-                        <input
-                            id="email"
-                            matInput
-                            placeholder="Email"
-                            formControlName="email"
-                        />
-                        <mat-icon
-                            matSuffix
-                            matTooltip="Update Email"
-                            *ngIf="!emailUpdateInProgress && emailValidationRequired && !loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched) && !showCancelOption"
-                            class="show-green save-icon"
-                            (click)="updateEmail($event)"
-                        >
-                            save
-                        </mat-icon>
-                        <mat-icon
-                            matSuffix
-                            *ngIf="(!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (!loginForm.get('email')?.dirty || !loginForm.get('email')?.touched)) || ((!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) && !showCancelOption)"
-                            class="show-silver save-icon"
-                        >
-                            save
-                        </mat-icon>
-                        <mat-progress-spinner
-                            matSuffix
-                            mode="indeterminate"
-                            color="warn"
-                            [diameter]="'25'"
-                            class="field-spinner"
-                            *ngIf="emailUpdateInProgress"
-                        ></mat-progress-spinner>
-                        <mat-icon
-                            matSuffix
-                            matTooltip="Cancel Email Update"
-                            (click)="cancelEmailUpdate()"
-                            *ngIf="showCancelOption && !emailUpdateInProgress"
-                            class="show-orangered save-icon"
-                        >
-                            close
-                        </mat-icon>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('email')?.hasError('required') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
-                            Required.
-                        </mat-error>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('email')?.hasError('pattern') && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
-                            Please enter a valid email address
-                        </mat-error>
-                        <mat-hint *ngIf="emailUpdateError">{{ emailUpdateErrorMessage }}</mat-hint>
-                        <mat-hint class="show-green" *ngIf="emailUpdateSuccess">Email Updated Successfully!!</mat-hint>
-                    </mat-form-field>
-                </div>
-            </div>
-
-            <div class="form-row" *ngIf="emailValidationCodeSubmiRequired">
-                <div class="field field--material">
+              @if (emailValidationCodeSubmiRequired) {
+                <div class="form-row">
+                  <div class="field field--material">
                     <label for="validation-code">Validation Code</label>
-                    <mat-form-field
+                    @if (emailValidationRequired) {
+                      <mat-form-field
                         appearance="outline"
                         class="w-100"
-                        *ngIf="emailValidationRequired"
-                    >
+                        >
                         <input
-                            id="validation-code"
-                            matInput
-                            placeholder="Enter validation code"
-                            #acCode
-                            formControlName="validate_code"
-                        />
-                        <mat-icon
-                            matSuffix
-                            matTooltip="Submit Activation Code"
-                            *ngIf="!emailAcodeUpdateInProgress && acCode.value && !emailAcodeUpdateInProgress && emailValidationRequired && !loginForm.get('validate_code')?.hasError('pattern') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched)"
-                            class="show-green save-icon"
-                            (click)="submitActivationCode()"
-                        >
-                            check
-                        </mat-icon>
-                        <mat-icon
-                            matSuffix
-                            *ngIf="emailAcodeUpdateInProgress || !acCode.value || (!emailAcodeUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (!loginForm.get('validate_code')?.dirty || !loginForm.get('validate_code')?.touched)) || (!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched))"
-                            class="show-silver save-icon"
-                        >
-                            check
-                        </mat-icon>
-                        <mat-progress-spinner
-                            matSuffix
-                            mode="indeterminate"
-                            color="warn"
-                            [diameter]="'25'"
-                            class="field-spinner"
-                            *ngIf="emailAcodeUpdateInProgress"
-                        ></mat-progress-spinner>
-                        <mat-error class="ng-dirty ng-invalid" *ngIf="loginForm.get('validate_code')?.hasError('required') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched)">
-                            Required
-                        </mat-error>
-                        <mat-hint class="show-green" *ngIf="emailValidationRequired && !invalidActivationCode">
-                            Please check email for activation code
-                        </mat-hint>
-                        <mat-hint class="show-orangered" *ngIf="emailValidationRequired && invalidActivationCode">
-                            Invalid activation code submitted
-                        </mat-hint>
-                    </mat-form-field>
-                </div>
-            </div>
+                          id="validation-code"
+                          matInput
+                          placeholder="Enter validation code"
+                          #acCode
+                          formControlName="validate_code"
+                          />
+                          @if (!emailAcodeUpdateInProgress && acCode.value && !emailAcodeUpdateInProgress && emailValidationRequired && !loginForm.get('validate_code')?.hasError('pattern') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched)) {
+                            <mat-icon
+                              matSuffix
+                              matTooltip="Submit Activation Code"
+                              class="show-green save-icon"
+                              (click)="submitActivationCode()"
+                              >
+                              check
+                            </mat-icon>
+                          }
+                          @if (emailAcodeUpdateInProgress || !acCode.value || (!emailAcodeUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (!loginForm.get('validate_code')?.dirty || !loginForm.get('validate_code')?.touched)) || (!emailUpdateInProgress && loginForm.get('email')?.hasError('pattern') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched))) {
+                            <mat-icon
+                              matSuffix
+                              class="show-silver save-icon"
+                              >
+                              check
+                            </mat-icon>
+                          }
+                          @if (emailAcodeUpdateInProgress) {
+                            <mat-progress-spinner
+                              matSuffix
+                              mode="indeterminate"
+                              color="warn"
+                              [diameter]="'25'"
+                              class="field-spinner"
+                            ></mat-progress-spinner>
+                          }
+                          @if (loginForm.get('validate_code')?.hasError('required') && (loginForm.get('validate_code')?.dirty || loginForm.get('validate_code')?.touched)) {
+                            <mat-error class="ng-dirty ng-invalid">
+                              Required
+                            </mat-error>
+                          }
+                          @if (emailValidationRequired && !invalidActivationCode) {
+                            <mat-hint class="show-green">
+                              Please check email for activation code
+                            </mat-hint>
+                          }
+                          @if (emailValidationRequired && invalidActivationCode) {
+                            <mat-hint class="show-orangered">
+                              Invalid activation code submitted
+                            </mat-hint>
+                          }
+                        </mat-form-field>
+                      }
+                    </div>
+                  </div>
+                }
 
-            <div class="form-actions">
-                <button
+                <div class="form-actions">
+                  <button
                     type="button"
                     class="action-btn action-btn--primary"
                     (click)="saveLoginForm()"
                     [disabled]="loginForm.invalid"
-                >
+                    >
                     <i class="pi pi-check"></i>
                     Save profile
-                </button>
+                  </button>
+                </div>
+              </form>
             </div>
-        </form>
-    </div>
-</div>
+          </div>

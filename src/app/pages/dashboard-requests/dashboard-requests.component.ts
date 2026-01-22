@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, Signal, CUSTOM_ELEMENTS_SCHEMA, effect } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuModule } from 'primeng/menu';
@@ -43,17 +43,7 @@ interface Option {
     selector: 'app-requests-dashboard',
     standalone: true,
   
-    imports: [CommonModule, RouterLink, RouterModule, 
-        StyleClassModule,
-        NgOptimizedImage, MenuModule, ChartModule, FormsModule,
-        ChartModule, ReactiveFormsModule,
-        MenuModule,DividerModule, MatFormFieldModule, MatInputModule,
-        TableModule,DialogModule,InputTextModule, MatProgressBarModule,
-        StyleClassModule,RequestsListComponent,
-        PanelMenuModule, MatDialogModule,
-        ButtonModule,TemplatesPageComponent, ApplicationListComponent, 
-        MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule
-        ],
+    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, RequestsListComponent, PanelMenuModule, MatDialogModule, ButtonModule, TemplatesPageComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule],
     templateUrl: './dashboard-requests.component.html',
     styleUrl : './dashboard-requests.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

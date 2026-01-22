@@ -1,117 +1,127 @@
 <div class="metadata-form">
-    <form [formGroup]="resumeTitleForm" class="metadata-simple">
-        <header class="metadata-simple__header">
-            <div>
-                <h2>Resume Information</h2>
-                <p>Configure your resume basics and visibility settings</p>
-            </div>
-        </header>
+  <form [formGroup]="resumeTitleForm" class="metadata-simple">
+    <header class="metadata-simple__header">
+      <div>
+        <h2>Resume Information</h2>
+        <p>Configure your resume basics and visibility settings</p>
+      </div>
+    </header>
 
-        <div class="form-content">
-            <div class="form-grid">
-                <div class="field-group field-group--full">
-                    <label for="title">Resume Title <span class="required">*</span></label>
-                    <input
-                        id="title"
-                        type="text"
-                        pInputText
-                        formControlName="title"
-                        placeholder="Enter a descriptive title for this resume" />
-                    <small class="error" *ngIf="resumeTitleForm.get('title')?.hasError('required') && resumeTitleForm.get('title')?.touched">
-                        Title is required
-                    </small>
-                    <small class="error" *ngIf="resumeTitleForm.get('title')?.errors?.['maxlength']">
-                        Title cannot exceed 64 characters
-                    </small>
-                </div>
+    <div class="form-content">
+      <div class="form-grid">
+        <div class="field-group field-group--full">
+          <label for="title">Resume Title <span class="required">*</span></label>
+          <input
+            id="title"
+            type="text"
+            pInputText
+            formControlName="title"
+            placeholder="Enter a descriptive title for this resume" />
+            @if (resumeTitleForm.get('title')?.hasError('required') && resumeTitleForm.get('title')?.touched) {
+              <small class="error">
+                Title is required
+              </small>
+            }
+            @if (resumeTitleForm.get('title')?.errors?.['maxlength']) {
+              <small class="error">
+                Title cannot exceed 64 characters
+              </small>
+            }
+          </div>
 
-                <div class="field-group">
-                    <label for="roleLevel">Role Focus <span class="required">*</span></label>
-                    <p-autoComplete
-                        #roleAuto
-                        id="roleLevel"
-                        formControlName="roleLevel"
-                        [suggestions]="filteredRoles"
-                        (completeMethod)="filterRole($event)"
-                        (onSelect)="onRoleSelect($event)"
-                        field="role_level_desc"
-                        [dropdown]="true"
-                        [forceSelection]="true"
-                        [minLength]="0"
-                        size="large"
-                        placeholder="Select your role"
-                        styleClass="field-control"
-                        panelStyleClass="dropdown-panel">
-                    </p-autoComplete>
-                    <small class="error" *ngIf="resumeTitleForm.get('roleLevel')?.hasError('required') && resumeTitleForm.get('roleLevel')?.touched">
-                        Role focus is required
-                    </small>
-                </div>
+          <div class="field-group">
+            <label for="roleLevel">Role Focus <span class="required">*</span></label>
+            <p-autoComplete
+              #roleAuto
+              id="roleLevel"
+              formControlName="roleLevel"
+              [suggestions]="filteredRoles"
+              (completeMethod)="filterRole($event)"
+              (onSelect)="onRoleSelect($event)"
+              field="role_level_desc"
+              [dropdown]="true"
+              [forceSelection]="true"
+              [minLength]="0"
+              size="large"
+              placeholder="Select your role"
+              styleClass="field-control"
+              panelStyleClass="dropdown-panel">
+            </p-autoComplete>
+            @if (resumeTitleForm.get('roleLevel')?.hasError('required') && resumeTitleForm.get('roleLevel')?.touched) {
+              <small class="error">
+                Role focus is required
+              </small>
+            }
+          </div>
 
-                <div class="field-group">
-                    <label for="category">Category <span class="required">*</span></label>
-                    <p-autoComplete
-                        #categoryAuto
-                        id="category"
-                        formControlName="category"
-                        [suggestions]="filteredCategories"
-                        (completeMethod)="filterCategory($event)"
-                        (onSelect)="onCategorySelect($event)"
-                        field="sub_category"
-                        [dropdown]="true"
-                        [forceSelection]="true"
-                        [minLength]="0"
-                        size="large"
-                        placeholder="Select category"
-                        styleClass="field-control"
-                        panelStyleClass="dropdown-panel">
-                    </p-autoComplete>
-                    <small class="error" *ngIf="resumeTitleForm.get('category')?.hasError('required') && resumeTitleForm.get('category')?.touched">
-                        Category is required
-                    </small>
-                </div>
+          <div class="field-group">
+            <label for="category">Category <span class="required">*</span></label>
+            <p-autoComplete
+              #categoryAuto
+              id="category"
+              formControlName="category"
+              [suggestions]="filteredCategories"
+              (completeMethod)="filterCategory($event)"
+              (onSelect)="onCategorySelect($event)"
+              field="sub_category"
+              [dropdown]="true"
+              [forceSelection]="true"
+              [minLength]="0"
+              size="large"
+              placeholder="Select category"
+              styleClass="field-control"
+              panelStyleClass="dropdown-panel">
+            </p-autoComplete>
+            @if (resumeTitleForm.get('category')?.hasError('required') && resumeTitleForm.get('category')?.touched) {
+              <small class="error">
+                Category is required
+              </small>
+            }
+          </div>
 
-                <div class="field-group">
-                    <label for="access">Access Level <span class="required">*</span></label>
-                    <p-dropdown
-                        id="access"
-                        formControlName="access"
-                        [options]="accessCategories"
-                        optionLabel="access_description"
-                        optionValue="access_description"
-                        placeholder="Select access level"
-                        size="large"
-                        styleClass="field-control"
-                        panelStyleClass="dropdown-panel">
-                    </p-dropdown>
-                    <small class="error" *ngIf="resumeTitleForm.get('access')?.hasError('required') && resumeTitleForm.get('access')?.touched">
-                        Access level is required
-                    </small>
-                </div>
-            </div>
-
-            <div class="checkbox-section">
-                <div class="checkbox-group">
-                    <mat-checkbox formControlName="isPrimary">
-                        Set as primary resume
-                    </mat-checkbox>
-                </div>
-                <div class="checkbox-group">
-                    <mat-checkbox formControlName="isActive">
-                        Make visible to recruiters
-                    </mat-checkbox>
-                </div>
-            </div>
-
-            <footer class="form-footer">
-                <p-button
-                    label="Save Changes"
-                    icon="pi pi-check"
-                    (click)="saveAndContinue(null)"
-                    [disabled]="resumeTitleForm.invalid"
-                    styleClass="save-button-primary">
-                </p-button>
-            </footer>
+          <div class="field-group">
+            <label for="access">Access Level <span class="required">*</span></label>
+            <p-dropdown
+              id="access"
+              formControlName="access"
+              [options]="accessCategories"
+              optionLabel="access_description"
+              optionValue="access_description"
+              placeholder="Select access level"
+              size="large"
+              styleClass="field-control"
+              panelStyleClass="dropdown-panel">
+            </p-dropdown>
+            @if (resumeTitleForm.get('access')?.hasError('required') && resumeTitleForm.get('access')?.touched) {
+              <small class="error">
+                Access level is required
+              </small>
+            }
+          </div>
         </div>
+
+        <div class="checkbox-section">
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="isPrimary">
+              Set as primary resume
+            </mat-checkbox>
+          </div>
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="isActive">
+              Make visible to recruiters
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <footer class="form-footer">
+          <p-button
+            label="Save Changes"
+            icon="pi pi-check"
+            (click)="saveAndContinue(null)"
+            [disabled]="resumeTitleForm.invalid"
+            styleClass="save-button-primary">
+          </p-button>
+        </footer>
+      </div>
     </form>
-</div>
+  </div>

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ButtonModule } from 'primeng/button';
 import { EditorModule } from 'primeng/editor';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { CommonModule } from '@angular/common';
+
 import { SidebarModule } from 'primeng/sidebar';
 import { InputTextarea } from 'primeng/inputtextarea';
 import { SummaryAiService } from './summary-ai.service';
@@ -13,14 +13,13 @@ import { Subscription } from 'rxjs';
   selector: 'summary-profile-edit',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     ButtonModule,
     EditorModule,
     ProgressBarModule,
     SidebarModule,
     InputTextarea
-  ],
+],
   templateUrl: './summary-edit.component.html',
   styleUrls: ['./summary-edit.component.scss']
 })

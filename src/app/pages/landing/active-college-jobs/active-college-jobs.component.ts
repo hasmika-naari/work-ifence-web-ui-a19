@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,9 +22,7 @@ import { ThemeCustomizerService } from '../../../services/theme-customizer/theme
 @Component({
     selector: 'app-active-college-jobs',
     standalone: true,
-    imports: [CommonModule, NgOptimizedImage, CarouselModule, MatButtonModule,
-    MatFormFieldModule, MatCardModule, MatTooltipModule, RouterLink,MessageModule,AvatarModule,
-    NgxPaginationModule, MatIconModule, MatProgressBarModule],
+    imports: [NgOptimizedImage, CarouselModule, MatButtonModule, MatFormFieldModule, MatCardModule, MatTooltipModule, RouterLink, MessageModule, AvatarModule, NgxPaginationModule, MatIconModule, MatProgressBarModule],
     templateUrl: './active-college-jobs.component.html',
     styleUrls: ['./active-college-jobs.component.scss']
 })

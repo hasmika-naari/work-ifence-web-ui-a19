@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, inject, Signal, AfterViewInit, PLATFORM_I
           Output, EventEmitter, effect, OnChanges, SimpleChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuModule } from 'primeng/menu';
@@ -81,22 +81,7 @@ const DEFAULT_SKILL_SECTIONS: SkillDisplaySection[] = [
 @Component({
     selector: 'app-profile-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterLink, RouterModule, 
-        StyleClassModule,
-        NgOptimizedImage, MenuModule, ChartModule, FormsModule,
-        ChartModule, ReactiveFormsModule,
-        MenuModule,DividerModule, MatFormFieldModule, MatInputModule,
-        TableModule,DialogModule,InputTextModule, MatProgressBarModule,
-        StyleClassModule,ResumeList2Component,SummaryProfileDisplayComponent,
-        PanelMenuModule,ResumeFormTabbedComponent,ResumeForm2Component,
-        ButtonModule,TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, 
-        MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule,
-        AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, 
-  AddressFormEditorComponent, SummaryProfileFormPage, SummaryProfileEditComponent,
-  SkillsProfileDisplayComponent, SkillsProfileEditComponent,
-  ExperienceProfileDisplayComponent, ExperienceProfileEditComponent,
-        DrawerModule,TabsModule, BadgeModule, AvatarModule
-        ],
+    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, SummaryProfileDisplayComponent, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule, AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, AddressFormEditorComponent, SummaryProfileFormPage, SummaryProfileEditComponent, SkillsProfileDisplayComponent, SkillsProfileEditComponent, ExperienceProfileDisplayComponent, ExperienceProfileEditComponent, DrawerModule, TabsModule, BadgeModule, AvatarModule],
     templateUrl: './dashboard-profile.component.html',
     styleUrl : './dashboard-profile.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

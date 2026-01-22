@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, PLATFORM_ID, Signal, effect, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import * as moment from 'moment';
@@ -13,7 +13,7 @@ import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.
 @Component({
   selector: 'fury-dashboard',
   standalone: true,
-  imports: [CommonModule ,RouterOutlet, MatCardModule ],
+  imports: [RouterOutlet, MatCardModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

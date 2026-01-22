@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Component, EventEmitter, OnDestroy, OnInit, Optional, Output, Signal, effect, inject, PLATFORM_ID, Inject, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,13 +16,12 @@ import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
   selector: 'app-resume-job-description',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     DropdownModule,
     ToastModule,
     NgxEditorModule
-  ],
+],
   templateUrl: './job-description.component.html',
   styleUrls: ['./job-description.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

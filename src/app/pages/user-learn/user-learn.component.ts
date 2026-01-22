@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import * as moment from 'moment';

@@ -1,57 +1,63 @@
 <section class="register-page-full-section">
   <div class="content-wrapper">
     <div class="container-fluid justify-content-center align-items-center bg-light-primary"
-         [class.blank-layout-container]="!isMobile"
-         [class.blank-layout-container-mobile]="isMobile">
+      [class.blank-layout-container]="!isMobile"
+      [class.blank-layout-container-mobile]="isMobile">
       <div class="position-relative row w-100 justify-content-center">
         <div class="col-12 d-flex align-items-center">
           <div class="register-main-container">
             <!-- Info Panel (Left) -->
-            <div class="register-info-panel" *ngIf="!isMobile" style="position: relative;">
-              <a class="nav-button home-button" [routerLink]="['/']" style="position: absolute; top: 18px; left: 18px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
-                <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                <span style="margin-left: 8px;">Home</span>
-              </a>
-              <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="position: absolute; top: 18px; left: 110px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
-                <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                <span style="margin-left: 8px;">Sign Up</span>
-              </a>
-              <div class="logo">
-                <img src="assets/img/black-logo.png" alt="Work Ifence" >
+            @if (!isMobile) {
+              <div class="register-info-panel" style="position: relative;">
+                <a class="nav-button home-button" [routerLink]="['/']" style="position: absolute; top: 18px; left: 18px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                  <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                  <span style="margin-left: 8px;">Home</span>
+                </a>
+                <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="position: absolute; top: 18px; left: 110px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                  <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                  <span style="margin-left: 8px;">Sign Up</span>
+                </a>
+                <div class="logo">
+                  <img src="assets/img/black-logo.png" alt="Work Ifence" >
+                </div>
+                <h1>Join Work Ifence <span style="font-weight:400; white-space:nowrap;">and unlock your career</span></h1>
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
+                <div class="features">
+                  <span><i class="material-icons">description</i> Build resumes tailored to job requirements</span>
+                  <span><i class="material-icons">work</i> Discover jobs that match your profile</span>
+                  <span><i class="material-icons">school</i> Find resources to grow your skills</span>
+                  <span><i class="material-icons">assignment</i> Manage all your job applications in one place</span>
+                  <span><i class="material-icons">group</i> Connect closely with recruiters</span>
+                </div>
               </div>
-              <h1>Join Work Ifence <span style="font-weight:400; white-space:nowrap;">and unlock your career</span></h1>
-              <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
-              <div class="features">
-                <span><i class="material-icons">description</i> Build resumes tailored to job requirements</span>
-                <span><i class="material-icons">work</i> Discover jobs that match your profile</span>
-                <span><i class="material-icons">school</i> Find resources to grow your skills</span>
-                <span><i class="material-icons">assignment</i> Manage all your job applications in one place</span>
-                <span><i class="material-icons">group</i> Connect closely with recruiters</span>
-              </div>
-            </div>
+            }
             <!-- Register Form Panel (Right) -->
             <div class="register-form-panel">
-              <div class="mobile-header" *ngIf="isMobile" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 6px; margin-bottom: 0; width: 100%; padding-left: 12px; padding-top: 16px;">
-                <div style="display: flex; flex-direction: row; align-items: center;">
-                  <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
-                    <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                    <span style="margin-left: 8px;">Home</span>
-                  </a>
-                  <a class="nav-button signin-button" [routerLink]="['/sign-in']" style="margin-left: 6px; white-space: nowrap;">
-                    <lucide-icon name="log-in" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                    <span style="margin-left: 8px;">Sign In</span>
-                  </a>
+              @if (isMobile) {
+                <div class="mobile-header" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 6px; margin-bottom: 0; width: 100%; padding-left: 12px; padding-top: 16px;">
+                  <div style="display: flex; flex-direction: row; align-items: center;">
+                    <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
+                      <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                      <span style="margin-left: 8px;">Home</span>
+                    </a>
+                    <a class="nav-button signin-button" [routerLink]="['/sign-in']" style="margin-left: 6px; white-space: nowrap;">
+                      <lucide-icon name="log-in" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                      <span style="margin-left: 8px;">Sign In</span>
+                    </a>
+                  </div>
+                  <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
                 </div>
-                <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
-              </div>
-              <div class="logo" *ngIf="isMobile" style="margin: 12px 0 8px 0; text-align: left;">
-                <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
-              </div>
+              }
+              @if (isMobile) {
+                <div class="logo" style="margin: 12px 0 8px 0; text-align: left;">
+                  <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
+                </div>
+              }
               <div class="form-title">Create your <b>Work Ifence</b> account</div>
               <div class="social-btn-row" style="display:flex;gap:12px;width:100%;margin-bottom:18px;">
                 <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
                   <span style="margin-right:8px;">Sign Up With</span>
-                  
+
                   <span class="google-icon" style="display:inline-block;vertical-align:middle;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
                       <g>
@@ -67,7 +73,7 @@
                 <div style="width:2px;background:#e0e0e0;border-radius:2px;margin:0 2px;"></div>
                 <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
                   <span style="margin-right:8px;">Sign Up With</span>
-                  
+
                   <span class="linkedin-icon" style="display:inline-block;vertical-align:middle;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
                       <g>
@@ -85,17 +91,29 @@
                     <mat-label>First Name</mat-label>
                     <mat-icon matPrefix>person</mat-icon>
                     <input matInput placeholder="First Name" formControlName="firstName">
-                    <mat-error *ngIf="registerForm3.get('firstName')?.hasError('required')">First Name is required</mat-error>
-                    <mat-error *ngIf="registerForm3.get('firstName')?.hasError('pattern')">Only letters, spaces, hyphens, and apostrophes allowed</mat-error>
-                    <mat-error *ngIf="registerForm3.get('firstName')?.hasError('maxLength')">Max 32 characters</mat-error>
+                    @if (registerForm3.get('firstName')?.hasError('required')) {
+                      <mat-error>First Name is required</mat-error>
+                    }
+                    @if (registerForm3.get('firstName')?.hasError('pattern')) {
+                      <mat-error>Only letters, spaces, hyphens, and apostrophes allowed</mat-error>
+                    }
+                    @if (registerForm3.get('firstName')?.hasError('maxLength')) {
+                      <mat-error>Max 32 characters</mat-error>
+                    }
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="form-col">
                     <mat-label>Last Name</mat-label>
                     <mat-icon matPrefix>person</mat-icon>
                     <input matInput placeholder="Last Name" formControlName="lastName">
-                    <mat-error *ngIf="registerForm3.get('lastName')?.hasError('required')">Last Name is required</mat-error>
-                    <mat-error *ngIf="registerForm3.get('lastName')?.hasError('pattern')">Only letters, spaces, hyphens, and apostrophes allowed</mat-error>
-                    <mat-error *ngIf="registerForm3.get('lastName')?.hasError('maxLength')">Max 32 characters</mat-error>
+                    @if (registerForm3.get('lastName')?.hasError('required')) {
+                      <mat-error>Last Name is required</mat-error>
+                    }
+                    @if (registerForm3.get('lastName')?.hasError('pattern')) {
+                      <mat-error>Only letters, spaces, hyphens, and apostrophes allowed</mat-error>
+                    }
+                    @if (registerForm3.get('lastName')?.hasError('maxLength')) {
+                      <mat-error>Max 32 characters</mat-error>
+                    }
                   </mat-form-field>
                 </div>
                 <div class="form-row">
@@ -103,17 +121,29 @@
                     <mat-label>User Name</mat-label>
                     <mat-icon matPrefix>account_circle</mat-icon>
                     <input matInput placeholder="User Name" formControlName="userName">
-                    <mat-error *ngIf="registerForm3.get('userName')?.hasError('required')">User Name is required</mat-error>
-                    <mat-error *ngIf="registerForm3.get('userName')?.hasError('minLength')">Min 4 characters</mat-error>
-                    <mat-error *ngIf="registerForm3.get('userName')?.hasError('maxLength')">Max 32 characters</mat-error>
-                    <mat-error *ngIf="registerForm3.get('userName')?.hasError('pattern')">Only letters, numbers, dots, underscores, and hyphens allowed</mat-error>
+                    @if (registerForm3.get('userName')?.hasError('required')) {
+                      <mat-error>User Name is required</mat-error>
+                    }
+                    @if (registerForm3.get('userName')?.hasError('minLength')) {
+                      <mat-error>Min 4 characters</mat-error>
+                    }
+                    @if (registerForm3.get('userName')?.hasError('maxLength')) {
+                      <mat-error>Max 32 characters</mat-error>
+                    }
+                    @if (registerForm3.get('userName')?.hasError('pattern')) {
+                      <mat-error>Only letters, numbers, dots, underscores, and hyphens allowed</mat-error>
+                    }
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="form-col">
                     <mat-label>Email</mat-label>
                     <mat-icon matPrefix>mail_outline</mat-icon>
                     <input matInput placeholder="Email" formControlName="email">
-                    <mat-error *ngIf="registerForm3.get('email')?.hasError('required')">Email is required</mat-error>
-                    <mat-error *ngIf="registerForm3.get('email')?.hasError('email')">Invalid email address</mat-error>
+                    @if (registerForm3.get('email')?.hasError('required')) {
+                      <mat-error>Email is required</mat-error>
+                    }
+                    @if (registerForm3.get('email')?.hasError('email')) {
+                      <mat-error>Invalid email address</mat-error>
+                    }
                   </mat-form-field>
                 </div>
                 <div class="form-row">
@@ -124,10 +154,18 @@
                     <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" tabindex="-1">
                       <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
-                    <mat-error *ngIf="registerForm3.get('password')?.hasError('required')">Password is required</mat-error>
-                    <mat-error *ngIf="registerForm3.get('password')?.hasError('minLength')">Min 8 characters</mat-error>
-                    <mat-error *ngIf="registerForm3.get('password')?.hasError('maxLength')">Max 30 characters</mat-error>
-                    <mat-error *ngIf="registerForm3.get('password')?.hasError('pattern')">Password must contain uppercase, lowercase, number, and special character</mat-error>
+                    @if (registerForm3.get('password')?.hasError('required')) {
+                      <mat-error>Password is required</mat-error>
+                    }
+                    @if (registerForm3.get('password')?.hasError('minLength')) {
+                      <mat-error>Min 8 characters</mat-error>
+                    }
+                    @if (registerForm3.get('password')?.hasError('maxLength')) {
+                      <mat-error>Max 30 characters</mat-error>
+                    }
+                    @if (registerForm3.get('password')?.hasError('pattern')) {
+                      <mat-error>Password must contain uppercase, lowercase, number, and special character</mat-error>
+                    }
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="form-col">
                     <mat-label>Confirm Password</mat-label>
@@ -136,8 +174,12 @@
                     <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword" tabindex="-1">
                       <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
-                    <mat-error *ngIf="registerForm3.get('confirmPassword')?.hasError('required')">Confirm Password is required</mat-error>
-                    <mat-error *ngIf="registerForm3.hasError('match')">Passwords do not match</mat-error>
+                    @if (registerForm3.get('confirmPassword')?.hasError('required')) {
+                      <mat-error>Confirm Password is required</mat-error>
+                    }
+                    @if (registerForm3.hasError('match')) {
+                      <mat-error>Passwords do not match</mat-error>
+                    }
                   </mat-form-field>
                 </div>
                 <mat-checkbox formControlName="agreeTerms" color="primary">I agree to the Terms of Service and Privacy Policy</mat-checkbox>

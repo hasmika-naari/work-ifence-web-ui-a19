@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -9,8 +9,8 @@ import { ServiceRequestItem } from 'src/app/services/store/app-store.model';
   selector: 'app-contact-dialog',
   standalone: true,
   imports: [
-            CommonModule, ContactFormComponent
-          ],
+    ContactFormComponent
+],
   templateUrl: './contact-dialog.component.html',
   styleUrls: ['./contact-dialog.component.scss']
 })

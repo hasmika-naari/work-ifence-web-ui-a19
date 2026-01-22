@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ThemeCustomizerService } from '../../../common2/theme-customizer/theme-customizer.service';
-import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 @Component({
     selector: 'app-hometwo-courses',
     standalone: true,
-    imports: [CommonModule, NgClass, RouterLink, NgIf, MatButtonModule, MatMenuModule, MatIconModule, AnimateOnScrollDirective],
+    imports: [CommonModule, NgClass, RouterLink, MatButtonModule, MatMenuModule, MatIconModule, AnimateOnScrollDirective],
     templateUrl: './hometwo-courses.component.html',
     styleUrls: ['./hometwo-courses.component.scss']
 })

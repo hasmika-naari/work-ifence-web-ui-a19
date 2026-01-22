@@ -1,95 +1,96 @@
 <div class="course-central-wrapper">
-    <div class="course-area" [class.dark-course-area]="themeService.isDark()">
-        <div class="main-content" #pageSection>
-            <div #sentinel style="position: absolute; top: 0; height: 1px; width: 1px;"></div>
-            <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
+  <div class="course-area" [class.dark-course-area]="themeService.isDark()">
+    <div class="main-content" #pageSection>
+      <div #sentinel style="position: absolute; top: 0; height: 1px; width: 1px;"></div>
+      <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
 
-            <div class="content-max">
-                <div class="story-content">
-                    <div class="modern-title-section nav-buttons-row">
-                        <div class="navigation-buttons">
-                            <a class="nav-button home-button" [routerLink]="['/']">
-                                <lucide-icon name="home"></lucide-icon>
-                                Home
-                            </a>
-                            <span class="nav-separator" aria-hidden="true">|</span>
-                            <a class="nav-button back-button" (click)="goBack($event)">
-                                <lucide-icon name="undo2"></lucide-icon>
-                                Back
-                            </a>
-                            <!-- <span class="nav-separator" aria-hidden="true">|</span>
-                            <a class="nav-button" [routerLink]="['/central/job-central']">
-                                <lucide-icon name="undo2"></lucide-icon>
-                                Job Central
-                            </a> -->
-                        </div>
-                    </div>
-
-                    <!-- Loading State -->
-                    <div *ngIf="actionInProgress" class="loading-container">
-                        <div class="loading-content">
-                            <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
-                            <div class="loading-message">Loading job details...</div>
-                        </div>
-                    </div>
-
-                    <!-- Job Content - Hidden during loading -->
-                    <div *ngIf="!actionInProgress" class="job-content">
-                        <div class="job-header">
-                            <div class="job-title-block">
-                                <div class="eyebrow">Job title</div>
-                                <h1 class="job-title" [innerHtml]="selectedJob.name"></h1>
-                                <div class="job-submeta">
-                                    <div class="stat date">
-                                        <div class="value">{{convertDateFormat(selectedJob.pubdate)}}</div>
-                                        <div class="label">Date Posted</div>
-                                    </div>
-                                    <div class="stat region">
-                                        <div class="value">{{selectedJob.region}}</div>
-                                        <div class="label">Location</div>
-                                    </div>
-                                    <div class="stat jobtype">
-                                        <div class="value">{{selectedJob.jobtype}}</div>
-                                        <div class="label">Job Type</div>
-                                    </div>
-                                    <div class="stat company">
-                                        <div class="value">{{selectedJob.company}}</div>
-                                        <div class="label">Company</div>
-                                    </div>
-                                </div>
-                                <!-- Go to Job Site button - Top -->
-                                <button 
-                                    class="job-site-button job-site-button-top"
-                                    (click)="gotoJobSiteLink($event, selectedJob)"
-                                    matTooltip="Apply directly on company's website"
-                                    matTooltipPosition="below">
-                                    <lucide-icon name="external-link"></lucide-icon>
-                                    Go to Job Site
-                                </button>
-                            </div>
-                        </div>
-
-
-                        <div class="row job-body">
-                            <div class="col-lg-12" [innerHtml]="selectedJob.description"></div>
-                        </div>
-                        
-                        <!-- Go to Job Site button - Bottom -->
-                        <div class="job-actions-bottom">
-                            <button 
-                                class="job-site-button job-site-button-bottom"
-                                (click)="gotoJobSiteLink($event, selectedJob)"
-                                matTooltip="Apply directly on company's website"
-                                matTooltipPosition="above">
-                                <lucide-icon name="external-link"></lucide-icon>
-                                Go to Job Site
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <app-work-ifence-footer class="page-footer"></app-work-ifence-footer>
+      <div class="content-max">
+        <div class="story-content">
+          <div class="modern-title-section nav-buttons-row">
+            <div class="navigation-buttons">
+              <a class="nav-button home-button" [routerLink]="['/']">
+                <lucide-icon name="home"></lucide-icon>
+                Home
+              </a>
+              <span class="nav-separator" aria-hidden="true">|</span>
+              <a class="nav-button back-button" (click)="goBack($event)">
+                <lucide-icon name="undo2"></lucide-icon>
+                Back
+              </a>
+              <!-- <span class="nav-separator" aria-hidden="true">|</span>
+              <a class="nav-button" [routerLink]="['/central/job-central']">
+                <lucide-icon name="undo2"></lucide-icon>
+                Job Central
+              </a> -->
             </div>
+          </div>
 
+          <!-- Loading State -->
+          @if (actionInProgress) {
+            <div class="loading-container">
+              <div class="loading-content">
+                <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
+                <div class="loading-message">Loading job details...</div>
+              </div>
+            </div>
+          }
+
+          <!-- Job Content - Hidden during loading -->
+          @if (!actionInProgress) {
+            <div class="job-content">
+              <div class="job-header">
+                <div class="job-title-block">
+                  <div class="eyebrow">Job title</div>
+                  <h1 class="job-title" [innerHtml]="selectedJob.name"></h1>
+                  <div class="job-submeta">
+                    <div class="stat date">
+                      <div class="value">{{convertDateFormat(selectedJob.pubdate)}}</div>
+                      <div class="label">Date Posted</div>
+                    </div>
+                    <div class="stat region">
+                      <div class="value">{{selectedJob.region}}</div>
+                      <div class="label">Location</div>
+                    </div>
+                    <div class="stat jobtype">
+                      <div class="value">{{selectedJob.jobtype}}</div>
+                      <div class="label">Job Type</div>
+                    </div>
+                    <div class="stat company">
+                      <div class="value">{{selectedJob.company}}</div>
+                      <div class="label">Company</div>
+                    </div>
+                  </div>
+                  <!-- Go to Job Site button - Top -->
+                  <button
+                    class="job-site-button job-site-button-top"
+                    (click)="gotoJobSiteLink($event, selectedJob)"
+                    matTooltip="Apply directly on company's website"
+                    matTooltipPosition="below">
+                    <lucide-icon name="external-link"></lucide-icon>
+                    Go to Job Site
+                  </button>
+                </div>
+              </div>
+              <div class="row job-body">
+                <div class="col-lg-12" [innerHtml]="selectedJob.description"></div>
+              </div>
+              <!-- Go to Job Site button - Bottom -->
+              <div class="job-actions-bottom">
+                <button
+                  class="job-site-button job-site-button-bottom"
+                  (click)="gotoJobSiteLink($event, selectedJob)"
+                  matTooltip="Apply directly on company's website"
+                  matTooltipPosition="above">
+                  <lucide-icon name="external-link"></lucide-icon>
+                  Go to Job Site
+                </button>
+              </div>
+            </div>
+          }
         </div>
+        <app-work-ifence-footer class="page-footer"></app-work-ifence-footer>
+      </div>
+
     </div>
+  </div>
 </div>

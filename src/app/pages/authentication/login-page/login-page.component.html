@@ -4,53 +4,59 @@
   <!-- Main Content -->
   <div class="content-wrapper">
     <div class="container-fluid justify-content-center align-items-center bg-light-primary"
-         [class.blank-layout-container]="!isMobile"
-         [class.blank-layout-container-mobile]="isMobile">
+      [class.blank-layout-container]="!isMobile"
+      [class.blank-layout-container-mobile]="isMobile">
       <div class="position-relative row w-100 justify-content-center">
         <div class="col-12 d-flex align-items-center">
           <div class="login-main-container">
             <!-- Info Panel (Left) -->
-            <div class="login-info-panel" *ngIf="!isMobile" style="position: relative;">
-              <a class="nav-button home-button" [routerLink]="['/']" style="position: absolute; top: 18px; left: 18px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
-                <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                <span style="margin-left: 8px;">Home</span>
-              </a>
-              <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="position: absolute; top: 18px; left: 110px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
-                <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                <span style="margin-left: 8px;">Sign Up</span>
-              </a>
-              <div class="logo">
-                <img src="assets/img/black-logo.png" alt="Work Ifence" >
+            @if (!isMobile) {
+              <div class="login-info-panel" style="position: relative;">
+                <a class="nav-button home-button" [routerLink]="['/']" style="position: absolute; top: 18px; left: 18px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                  <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                  <span style="margin-left: 8px;">Home</span>
+                </a>
+                <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="position: absolute; top: 18px; left: 110px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                  <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                  <span style="margin-left: 8px;">Sign Up</span>
+                </a>
+                <div class="logo">
+                  <img src="assets/img/black-logo.png" alt="Work Ifence" >
+                </div>
+                <h1>Unlock Your Career Potential <span style="font-weight:400; white-space:nowrap;">with Work Ifence</span></h1>
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
+                <div class="features">
+                  <span><i class="material-icons">description</i> Build resumes tailored to job requirements</span>
+                  <span><i class="material-icons">work</i> Discover jobs that match your profile</span>
+                  <span><i class="material-icons">school</i> Find resources to grow your skills</span>
+                  <span><i class="material-icons">assignment</i> Manage all your job applications in one place</span>
+                  <span><i class="material-icons">group</i> Connect closely with recruiters</span>
+                </div>
               </div>
-              <h1>Unlock Your Career Potential <span style="font-weight:400; white-space:nowrap;">with Work Ifence</span></h1>
-              <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
-              <div class="features">
-                <span><i class="material-icons">description</i> Build resumes tailored to job requirements</span>
-                <span><i class="material-icons">work</i> Discover jobs that match your profile</span>
-                <span><i class="material-icons">school</i> Find resources to grow your skills</span>
-                <span><i class="material-icons">assignment</i> Manage all your job applications in one place</span>
-                <span><i class="material-icons">group</i> Connect closely with recruiters</span>
-              </div>
-            </div>
+            }
             <!-- Login Form Panel (Right) -->
             <div class="login-form-panel">
-              <div class="mobile-header" *ngIf="isMobile" >
-                <div style="display: flex; flex-direction: row; align-items: center;">
-                  <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
-                    <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                    <span style="margin-left: 8px;">Home</span>
-                  </a>
-                  <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="margin-left: 6px; white-space: nowrap;">
-                    <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                    <span style="margin-left: 8px;">Sign Up</span>
-                  </a>
-                  <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
+              @if (isMobile) {
+                <div class="mobile-header" >
+                  <div style="display: flex; flex-direction: row; align-items: center;">
+                    <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
+                      <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                      <span style="margin-left: 8px;">Home</span>
+                    </a>
+                    <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="margin-left: 6px; white-space: nowrap;">
+                      <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                      <span style="margin-left: 8px;">Sign Up</span>
+                    </a>
+                    <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
+                  </div>
+                  <div class="mobile-header-separator"></div>
                 </div>
-                <div class="mobile-header-separator"></div>
-              </div>
-              <div class="logo" *ngIf="isMobile" style="margin: 12px 0 8px 0; text-align: left;">
-                <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
-              </div>
+              }
+              @if (isMobile) {
+                <div class="logo" style="margin: 12px 0 8px 0; text-align: left;">
+                  <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
+                </div>
+              }
               <div class="form-title">Welcome to <b>Work Ifence</b></div>
               <div class="social-btn-row" style="display:flex;gap:12px;width:100%;margin-bottom:18px;">
                 <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
@@ -96,10 +102,12 @@
                   </mat-form-field>
                   <mat-checkbox formControlName="remember" color="primary">I want to receive updates from Work Ifence about latest job offers</mat-checkbox>
                   <button class="login-btn enabled-button" type="submit" [disabled]="isLoading || loginForm.invalid">
-                    <ng-container *ngIf="!isLoading">SIGN IN</ng-container>
-                    <ng-container *ngIf="isLoading">
+                    @if (!isLoading) {
+                      SIGN IN
+                    }
+                    @if (isLoading) {
                       <mat-progress-bar mode="indeterminate" color="primary" style="height:4px;border-radius:4px;"></mat-progress-bar>
-                    </ng-container>
+                    }
                   </button>
                 </form>
               </form>

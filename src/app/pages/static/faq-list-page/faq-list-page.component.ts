@@ -11,7 +11,7 @@ import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { CommonModule, isPlatformBrowser, NgOptimizedImage, Location } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage, Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
   // FAQSection interface definition
@@ -28,8 +28,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 @Component({
   selector: 'app-faq-list-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, LanguageSubscribeComponent, MatExpansionModule,
-      NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
+  imports: [RouterLink, LanguageSubscribeComponent, MatExpansionModule, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
   templateUrl: './faq-list-page.component.html',
   styleUrls: ['./faq-list-page.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
