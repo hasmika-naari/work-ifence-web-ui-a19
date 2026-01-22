@@ -4,7 +4,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
-import { ActivatedRouteSnapshot, BaseRouteReuseStrategy, DetachedRouteHandle, PreloadAllModules, RouteReuseStrategy, provideRouter, 
+import { ActivatedRouteSnapshot, BaseRouteReuseStrategy, PreloadAllModules, RouteReuseStrategy, provideRouter, 
         withComponentInputBinding, 
         withInMemoryScrolling, withPreloading, withRouterConfig, 
         withViewTransitions } from '@angular/router';
@@ -37,22 +37,10 @@ import {
 console.info('Angular CDK version', CDK_VERSION.full);
 console.info('Angular Material version', MAT_VERSION.full);
 
-export class AppRouteReuseStrategy implements BaseRouteReuseStrategy {
-  shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return false;
-  }
-  store(route: ActivatedRouteSnapshot, detachedTree: DetachedRouteHandle): void {
-    throw new Error('Method not implemented.');
-  }
-  shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    return false;
-  }
-  retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
-    return null;
-  }
-  public shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+export class AppRouteReuseStrategy extends BaseRouteReuseStrategy {
+  public override shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
     // console.log('Check For Shoudl Reuse Route -- ' + future.routeConfig?.path + '====' + curr.routeConfig?.path + "---" + future.data['reuseComponent']) ;
-    return future.data['reuseComponent'];
+    return !!future.data?.['reuseComponent'];
   }
 }
 

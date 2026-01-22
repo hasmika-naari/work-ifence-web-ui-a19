@@ -2,7 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Component, EventEmitter, OnDestroy, OnInit, Optional, Output, Signal, effect, inject, PLATFORM_ID, Inject, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
   imports: [
     ReactiveFormsModule,
     FormsModule,
-    DropdownModule,
+    SelectModule,
     ToastModule,
     NgxEditorModule
 ],

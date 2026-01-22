@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, map, startWith } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Resume, ResumeContact } from 'src/app/services/resume.model';
@@ -50,7 +50,7 @@ export interface DialogData {
     HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
     MatCheckboxModule, MatAutocompleteModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,
+    MatInputModule,ButtonModule,PopoverModule,
     MatButtonModule,AccordionModule,
     MatIconModule,MatExpansionModule, MatSelectModule, MatDatepickerModule],
   templateUrl: './feedback.component.html',

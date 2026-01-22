@@ -17,7 +17,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { map, Observable, startWith, Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
@@ -32,7 +32,6 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import Quill from 'quill';
 import { SectionDesc } from 'src/app/services/store/user-store';
-import { Calendar } from 'primeng/calendar';
 import { DatePicker } from 'primeng/datepicker';
 
 
@@ -50,7 +49,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatInputModule, ButtonModule, OverlayPanelModule, MatTooltipModule, MatButtonModule, AccordionModule, TextareaModule, Calendar, DatePicker, MatIconModule, MatExpansionModule, MatAutocompleteModule, MatChipsModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatInputModule, ButtonModule, PopoverModule, MatTooltipModule, MatButtonModule, AccordionModule, TextareaModule, DatePicker, MatIconModule, MatExpansionModule, MatAutocompleteModule, MatChipsModule],
   templateUrl: './achievements.component.html',
   styleUrls: ['./achievements.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

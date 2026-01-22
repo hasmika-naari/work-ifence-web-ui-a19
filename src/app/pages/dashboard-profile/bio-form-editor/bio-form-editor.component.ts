@@ -19,7 +19,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, map, startWith } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { JobApplication, JobApplicationDetails, Resume, ResumeContact } from 'src/app/services/resume.model';
@@ -33,8 +33,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { FooterComponent } from 'src/app/pages/home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from 'src/app/pages/landing/header-wifence/header-wifence.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
+import { DatePickerModule } from 'primeng/datepicker';
+import { SelectModule } from 'primeng/select';
 import moment from 'moment';
 import { Account, BioProfile, LoginProfile } from 'src/app/services/profile.model';
 import { ResumeService } from 'src/app/services/resume.service';
@@ -55,7 +55,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, MatAutocompleteModule, AutoCompleteModule, MatInputModule, ButtonModule, OverlayPanelModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule, MatSelectModule, MatDatepickerModule, CalendarModule, DropdownModule, FloatLabelModule, InputIconModule, IconFieldModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, MatAutocompleteModule, AutoCompleteModule, MatInputModule, ButtonModule, PopoverModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule, MatSelectModule, MatDatepickerModule, DatePickerModule, SelectModule, FloatLabelModule, InputIconModule, IconFieldModule],
   templateUrl: './bio-form-editor.component.html',
   styleUrls: ['./bio-form-editor.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

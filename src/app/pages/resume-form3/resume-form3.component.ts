@@ -19,7 +19,7 @@ import { ButtonModule } from 'primeng/button';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { Popover, PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -66,7 +66,6 @@ import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { PanelModule } from 'primeng/panel';
 import { ChipModule } from 'primeng/chip';
-import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import { DrawerModule } from 'primeng/drawer';
 import { ResumeTemplate9Component } from './template9/template9.component';
@@ -91,10 +90,10 @@ export interface DialogData {
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule, PanelModule,ChipModule,DrawerModule,
-     NgOptimizedImage,FooterComponent, MatDialogModule, MatProgressBarModule,MessageModule,MessagesModule,
+     NgOptimizedImage,FooterComponent, MatDialogModule, MatProgressBarModule,MessageModule,
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  
     MatStepperModule, MatFormFieldModule,InputTextModule,TableModule, MenuModule,Resume1TemplateComponent,
-    MatInputModule,ButtonModule,OverlayPanelModule,ResumeContactComponent,ContextMenuComponent,
+    MatInputModule,ButtonModule,PopoverModule,ResumeContactComponent,ContextMenuComponent,
     MatButtonModule,AccordionModule,TextareaModule,CertificationComponent,CourseWorkComponent,
     EducationComponent,ProjectComponent,SkillsComponent,SummaryComponent,ProgressBarModule, MatTooltipModule,
     MatIconModule,MatExpansionModule, ExperianceComponent, ResumeTitleComponent, ResumeTemplateListComponent, ResumeTemplate2Component,ResumeTemplate3Component, PreviewResumeComponent
@@ -845,7 +844,7 @@ ngAfterViewInit(): void {
     return this.certificationForm.get('certification_fields') as FormArray;
   }
 
-  onRowSelect(event: TableRowSelectEvent, op: OverlayPanel) {
+  onRowSelect(event: TableRowSelectEvent, op: any) {
     // this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event.data.name });
     op.hide();
 }

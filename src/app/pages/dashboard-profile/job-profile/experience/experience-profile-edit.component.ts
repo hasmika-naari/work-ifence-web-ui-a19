@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { DrawerModule } from 'primeng/drawer';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -41,7 +41,7 @@ const MONTH_OPTIONS = [
     ButtonModule,
     InputTextModule,
     CheckboxModule,
-    DropdownModule,
+    SelectModule,
     DrawerModule,
     ProgressBarModule,
     EditorModule,

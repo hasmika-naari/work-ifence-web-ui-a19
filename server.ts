@@ -1,5 +1,6 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { renderApplication } from '@angular/platform-server';
+import { isMainModule } from '@angular/ssr/node';
 import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
@@ -86,4 +87,6 @@ function run(): void {
   });
 }
 
-run();
+if (isMainModule(import.meta.url)) {
+  run();
+}

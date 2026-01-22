@@ -14,7 +14,6 @@ import { UserStoreService } from '../../../services/store/user-store.service';
 import { Account, WifRole } from '../../../services/profile.model';
 import { MenuListItem } from '../../../services/bee-compete.model';
 import { ThemeCustomizerService } from '../../../services/theme-customizer/theme-customizer.service';
-import AOS from 'aos';
 import { LayoutService } from 'src/app/layout/layout.service';
 import { Subscription } from 'rxjs';
 import { IconsModule } from 'src/app/shared/icons.module';
@@ -80,6 +79,8 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     private observer: IntersectionObserver | undefined;
     private stickySubscription: Subscription;
 
+    private aosInitialized = false;
+
     ngAfterViewInit() {
                 if (isPlatformBrowser(this.platformId)) {
                     // Check initial scroll position
@@ -110,8 +111,18 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
                         this.isSticky = currentYOffset > 100;
                         this.cdr.markForCheck();
                     }, 100);
+
+                    if (!this.aosInitialized) {
+                        this.aosInitialized = true;
+                        void (async () => {
+                            const mod: any = await import('aos');
+                            const aos: any = mod?.default ?? mod;
+                            if (typeof aos?.init === 'function') {
+                                aos.init();
+                            }
+                        })();
+                    }
                 }
-                AOS.init();
     }
 
     userAccount: any = this.userStore.getUserAccount();

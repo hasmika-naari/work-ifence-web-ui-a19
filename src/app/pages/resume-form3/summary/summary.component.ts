@@ -19,7 +19,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { PanelModule } from 'primeng/panel';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
@@ -38,7 +38,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 // Removed Quill import
 import { MatCardModule } from '@angular/material/card';
 import { SectionDesc } from 'src/app/services/store/user-store';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { Editor, Toolbar } from 'ngx-editor';
 import { SharedNgxEditorModule } from 'src/app/shared/shared-ngx-editor.module';
 import { IconsModule } from 'src/app/shared/icons.module';
@@ -69,7 +69,7 @@ export interface SummaryData{
     RouterModule,
     NgOptimizedImage,
     FooterComponent,
-    DropdownModule,
+    SelectModule,
     CarouselModule,
     ReactiveFormsModule,
     FormsModule,
@@ -90,7 +90,7 @@ export interface SummaryData{
     ProgressSpinnerModule,
     MatIconModule,
     MatExpansionModule,
-    OverlayPanelModule,
+    PopoverModule,
     PanelModule,
     SharedNgxEditorModule
 ],
@@ -374,7 +374,7 @@ openPanelWindow(){
         }
   }
 
-  onRowSelect(event: TableRowSelectEvent, op: OverlayPanel) {
+  onRowSelect(event: TableRowSelectEvent, op: any) {
     // this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event.data.name });
     op.hide();
 }

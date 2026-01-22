@@ -1,11 +1,10 @@
-import { NgOptimizedImage } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit, inject } from '@angular/core';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ThemeCustomizerService } from '../../../services/theme-customizer/theme-customizer.service';
 import { WINDOW } from '../../../services/window.token';
-import AOS from 'aos';
 
 @Component({
     selector: 'app-popular-features',
@@ -24,6 +23,7 @@ export class PopularFeaturesComponent implements OnInit, AfterViewInit {
     maxSize = 5;
     autoHide= false;
     private router: Router = inject(Router);
+    private platformId: object = inject(PLATFORM_ID);
     
     constructor(
         @Inject(WINDOW) private window: Window,
@@ -43,9 +43,11 @@ export class PopularFeaturesComponent implements OnInit, AfterViewInit {
     public onPageChanged(event: any){
         this.page = event;
         // this.getAllProducts(); 
-        // if (isPlatformBrowser(this.platformId)) {
-          this.window.scrollTo(0, document.documentElement.clientHeight - 50);
-        // } 
+                if (!isPlatformBrowser(this.platformId)) {
+                    return;
+                }
+
+                this.window.scrollTo(0, document.documentElement.clientHeight - 50);
       }
 
     public showResumeOptimizer($event: any){
@@ -60,8 +62,13 @@ export class PopularFeaturesComponent implements OnInit, AfterViewInit {
         this.router.navigateByUrl('/job-app-manager-intro');
     }
 
-    ngAfterViewInit() {
-        // AOS.refresh(); // Ensures AOS scans new elements
+    async ngAfterViewInit() {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
+
+        const aosModule = await import('aos');
+        const AOS = aosModule.default;
         AOS.init();
     }
 

@@ -34,7 +34,7 @@ import moment from 'moment';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { JobApplicationStatus } from 'src/app/services/store/resume.model';
 import { MatSelectModule } from '@angular/material/select';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { ConfirmDialogComponent } from '../resume-form3/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
@@ -49,7 +49,7 @@ interface Option {
 @Component({
     selector: 'dashboard-job-application',
     standalone: true,
-    imports: [RouterLink, RouterModule, StyleClassModule, AutoCompleteModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, MatCardModule, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, DragDropModule, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule],
+  imports: [RouterLink, RouterModule, StyleClassModule, AutoCompleteModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, MatCardModule, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, DragDropModule, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule],
     templateUrl: './dashboard-job-application.component.html',
     styleUrls: ['./dashboard-job-application.component.scss'],
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

@@ -12,11 +12,11 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
-import {CalendarModule} from 'primeng/calendar'
+import { DatePickerModule } from 'primeng/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import * as _moment from 'moment';
@@ -53,9 +53,9 @@ const moment = _rollupMoment || _moment;
     MatListModule,CurrencyFormatterModule,
    CarouselModule,FlexLayoutModule,ReactiveFormsModule, FormsModule, 
    HeaderWorkIfenceComponent,  MatStepperModule,MatDatepickerModule,
-   MatFormFieldModule,InputTextModule,TableModule,CalendarModule,
-   MatInputModule,ButtonModule,OverlayPanelModule, MatTooltipModule,
-   MatButtonModule,AccordionModule,InputTextareaModule,
+  MatFormFieldModule,InputTextModule,TableModule,DatePickerModule,
+  MatInputModule,ButtonModule,PopoverModule, MatTooltipModule,
+  MatButtonModule,AccordionModule,TextareaModule,
    MatIconModule,MatExpansionModule, MatCheckboxModule, MatSelectModule, RoundsFormDialogComponent,FeedbackFormDialogComponent,
    EmployerContactDialogComponent, NgxCurrencyDirective],
   templateUrl: './application-form-fields.component.html',

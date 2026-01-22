@@ -18,7 +18,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, map, startWith } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { JobApplication, JobApplicationDetails, Resume, ResumeContact } from 'src/app/services/resume.model';
@@ -57,7 +57,7 @@ export interface DialogData {
     HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
     MatCheckboxModule, MatAutocompleteModule,MatProgressSpinnerModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,MatTooltipModule,
+    MatInputModule,ButtonModule,PopoverModule,MatTooltipModule,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule, MatSelectModule, MatDatepickerModule],
   templateUrl: './login-form-editor.component.html',

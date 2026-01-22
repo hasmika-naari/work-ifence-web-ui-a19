@@ -16,13 +16,13 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
-import {CalendarModule} from 'primeng/calendar';
-import {DropdownModule} from 'primeng/dropdown';
+import { DatePickerModule } from 'primeng/datepicker';
+import { SelectModule } from 'primeng/select';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
@@ -88,8 +88,8 @@ export interface WorkData{
      NgOptimizedImage,FooterComponent, MatTooltipModule,
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule,MatDatepickerModule,
-    MatFormFieldModule,InputTextModule,TableModule,CalendarModule,DropdownModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,PanelModule,
+    MatFormFieldModule,InputTextModule,TableModule,DatePickerModule,SelectModule,
+    MatInputModule,ButtonModule,PopoverModule,PanelModule,
     MatButtonModule,AccordionModule,TextareaModule,TooltipModule,
   SharedNgxEditorModule, FormsModule,
     MatIconModule,MatExpansionModule, MatCheckboxModule, MatCardModule, ProgressSpinnerModule, ToastModule, EditorModule],
@@ -563,7 +563,7 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
   //   return this.certificationForm.get('certification_fields') as FormArray;
   // }
 
-  onRowSelect(event: TableRowSelectEvent, op: OverlayPanel) {
+  onRowSelect(event: TableRowSelectEvent, op: any) {
     // this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event.data.name });
     op.hide();
 }

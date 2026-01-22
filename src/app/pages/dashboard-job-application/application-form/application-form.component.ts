@@ -13,12 +13,12 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -94,8 +94,8 @@ export interface DialogData {
      NgOptimizedImage,FooterComponent, MatDialogModule, MatProgressBarModule,
     CarouselModule,FlexLayoutModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  
     MatStepperModule, MatFormFieldModule,InputTextModule,TableModule, MenuModule,Resume1TemplateComponent,
-    MatInputModule,ButtonModule,OverlayPanelModule,ResumeContactComponent,ContextMenuComponent,
-    MatButtonModule,AccordionModule,InputTextareaModule,CertificationComponent,CourseWorkComponent,
+    MatInputModule,ButtonModule,PopoverModule,ResumeContactComponent,ContextMenuComponent,
+    MatButtonModule,AccordionModule,TextareaModule,CertificationComponent,CourseWorkComponent,
     EducationComponent,ProjectComponent,SkillsComponent,SummaryComponent,ProgressBarModule, MatTooltipModule,
     MatIconModule,MatExpansionModule, ExperianceComponent, ResumeTitleComponent, ResumeTemplateListComponent, ResumeTemplate2Component,ResumeTemplate3Component
   , ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, DiscardDialogComponent, AchievementsComponent,
@@ -599,7 +599,7 @@ ngAfterViewInit(): void {
     return this.certificationForm.get('certification_fields') as FormArray;
   }
 
-  onRowSelect(event: TableRowSelectEvent, op: OverlayPanel) {
+  onRowSelect(event: TableRowSelectEvent, op: any) {
     // this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event.data.name });
     op.hide();
 }

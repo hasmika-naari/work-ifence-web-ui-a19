@@ -4,8 +4,8 @@ import { ButtonModule } from 'primeng/button';
 import { EditorModule } from 'primeng/editor';
 import { ProgressBarModule } from 'primeng/progressbar';
 
-import { SidebarModule } from 'primeng/sidebar';
-import { InputTextarea } from 'primeng/inputtextarea';
+import { DrawerModule } from 'primeng/drawer';
+import { TextareaModule } from 'primeng/textarea';
 import { SummaryAiService } from './summary-ai.service';
 import { Subscription } from 'rxjs';
 
@@ -17,8 +17,8 @@ import { Subscription } from 'rxjs';
     ButtonModule,
     EditorModule,
     ProgressBarModule,
-    SidebarModule,
-    InputTextarea
+    DrawerModule,
+    TextareaModule
 ],
   templateUrl: './summary-edit.component.html',
   styleUrls: ['./summary-edit.component.scss']

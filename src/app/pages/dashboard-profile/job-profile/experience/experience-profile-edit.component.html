@@ -39,7 +39,7 @@
   <div class="form-row form-row--quad">
     <div class="field">
       <label>Start Month *</label>
-      <p-dropdown formControlName="startMonth" [options]="months" placeholder="Select month"></p-dropdown>
+      <p-select formControlName="startMonth" [options]="months" placeholder="Select month"></p-select>
       @if (form.controls['startMonth'].invalid && form.controls['startMonth'].touched) {
         <small class="error">
           Start month is required.
@@ -65,7 +65,7 @@
 
       <div class="field">
         <label>End Month</label>
-        <p-dropdown formControlName="endMonth" [options]="months" placeholder="Select month"></p-dropdown>
+        <p-select formControlName="endMonth" [options]="months" placeholder="Select month"></p-select>
       </div>
 
       <div class="field">

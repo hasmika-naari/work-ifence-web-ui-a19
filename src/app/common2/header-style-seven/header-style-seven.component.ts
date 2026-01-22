@@ -13,7 +13,7 @@ import { NgClass } from '@angular/common';
 export class HeaderStyleSevenComponent {
 
     isSticky: boolean = false;
-    @HostListener('window:scroll', ['$event'])
+    @HostListener('window:scroll')
     checkScroll() {
         const scrollPosition = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
         if (scrollPosition >= 50) {

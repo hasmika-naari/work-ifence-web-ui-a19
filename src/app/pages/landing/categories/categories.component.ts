@@ -1,5 +1,5 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterRenderPhase, Component, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, afterNextRender, inject } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, afterNextRender, inject } from '@angular/core';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { Category } from '../../../services/bee-compete.model';
 
@@ -45,14 +45,14 @@ export class CategoriesComponent implements OnInit, OnChanges {
     constructor(
 
 	) {
-		
-        afterNextRender(() => {
-			// if(isPlatformBrowser(this.platformId)){
-				this.browser = true;
-				let showNav = false;
-				if(this.desktop){
-					showNav = true;
+		afterNextRender({
+			write: () => {
+				if (!isPlatformBrowser(this.platformId)) {
+					return;
 				}
+
+				this.browser = true;
+				const showNav = !!this.desktop;
 				this.categoriesSlides = {
 					loop: true,
 					nav: showNav,
@@ -78,9 +78,9 @@ export class CategoriesComponent implements OnInit, OnChanges {
 							items: 4
 						}
 					}
-				}
-			// }
-		   },{phase: AfterRenderPhase.Write})
+				};
+			}
+		});
 	 }
 
     ngOnInit(): void {

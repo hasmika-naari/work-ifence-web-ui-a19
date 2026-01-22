@@ -17,7 +17,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
@@ -50,7 +50,7 @@ export interface DialogData {
     CarouselModule,ReactiveFormsModule, FormsModule, 
     HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,
+    MatInputModule,ButtonModule,PopoverModule,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule, MatTooltipModule],
   templateUrl: './course-work.component.html',

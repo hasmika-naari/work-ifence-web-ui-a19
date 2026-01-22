@@ -10,12 +10,12 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { AccordionModule, AccordionTab } from 'primeng/accordion';
+import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { Popover, PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -39,7 +39,6 @@ import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { PanelModule } from 'primeng/panel';
-import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { DiscardDialogComponent } from '../../resume-form3/discard-dialog/discard-dialog.component';
@@ -67,10 +66,10 @@ export interface DialogData {
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule, PanelModule,
-     NgOptimizedImage, MatDialogModule, MatProgressBarModule,MessageModule,MessagesModule,
+     NgOptimizedImage, MatDialogModule, MatProgressBarModule,MessageModule,
     CarouselModule,ReactiveFormsModule, FormsModule,   
     MatStepperModule, MatFormFieldModule,InputTextModule,TableModule, MenuModule, 
-    MatInputModule,ButtonModule,OverlayPanelModule, MatButtonModule,AccordionModule,
+    MatInputModule,ButtonModule,PopoverModule, MatButtonModule,AccordionModule,
     ProgressBarModule, MatTooltipModule, MatIconModule,MatExpansionModule,  MatExpansionModule,
     ApplicationsTabComponent, ClientComponent, FeedbackComponent, VendorComponent, RoundsComponent ],
   templateUrl: './application-form3.component.html',

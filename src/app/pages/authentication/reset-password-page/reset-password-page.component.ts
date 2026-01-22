@@ -18,16 +18,16 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { OverlayModule } from 'primeng/overlay';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 import { CheckboxModule } from 'primeng/checkbox';
 import { BadgeModule } from 'primeng/badge';
 import { PasswordModule } from 'primeng/password';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { RippleModule } from 'primeng/ripple';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
@@ -42,16 +42,16 @@ import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-w
     MatCheckboxModule,
     MatButtonModule,
     FormsModule,
-    OverlayPanelModule,
+    PopoverModule,
     OverlayModule,
     InputTextModule,
     ButtonModule,
-    SidebarModule,
+    DrawerModule,
     CheckboxModule,
     BadgeModule,
     PasswordModule,
     RadioButtonModule,
-    InputSwitchModule,
+    ToggleSwitchModule,
     RippleModule,
     RouterModule,
     ReactiveFormsModule,

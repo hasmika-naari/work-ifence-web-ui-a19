@@ -4,7 +4,7 @@ import { DataViewModule } from 'primeng/dataview';
 import { PickListModule } from 'primeng/picklist';
 import { OrderListModule } from 'primeng/orderlist';
 import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { RatingModule } from 'primeng/rating';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
@@ -47,7 +47,7 @@ import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
         PickListModule,
         OrderListModule,
         InputTextModule,
-        DropdownModule,
+        SelectModule,
         RatingModule,
         ButtonModule,
         MenuModule,

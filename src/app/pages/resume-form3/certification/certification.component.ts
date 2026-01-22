@@ -18,12 +18,12 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
@@ -35,7 +35,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SectionDesc, SectionItem } from 'src/app/services/store/user-store';
 import { DatePickerModule } from 'primeng/datepicker';
-import { Calendar } from 'primeng/calendar';
+import { DatePicker } from 'primeng/datepicker';
 
 
 export interface DialogData {
@@ -51,7 +51,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatAutocompleteModule, MatFormFieldModule, InputTextModule, TableModule, InputNumberModule, MatInputModule, ButtonModule, OverlayPanelModule, AutoCompleteModule, DropdownModule, MatButtonModule, AccordionModule, TextareaModule, MatTooltipModule, Calendar, MatIconModule, MatExpansionModule, MatSelectModule, DatePickerModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatAutocompleteModule, MatFormFieldModule, InputTextModule, TableModule, InputNumberModule, MatInputModule, ButtonModule, PopoverModule, AutoCompleteModule, SelectModule, MatButtonModule, AccordionModule, TextareaModule, MatTooltipModule, DatePicker, MatIconModule, MatExpansionModule, MatSelectModule, DatePickerModule],
   templateUrl: './certification.component.html',
   styleUrls: ['./certification.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -418,7 +418,7 @@ private _filterYears(value: string): number[] {
     return this.certificationForm.get('certification_fields') as FormArray;
   }
 
-  onRowSelect(event: TableRowSelectEvent, op: OverlayPanel) {
+  onRowSelect(event: TableRowSelectEvent, op: any) {
     // this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event.data.name });
     op.hide();
 }

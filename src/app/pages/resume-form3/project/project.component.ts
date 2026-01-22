@@ -20,7 +20,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
@@ -38,7 +38,7 @@ import { MessageService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { SharedNgxEditorModule } from 'src/app/shared/shared-ngx-editor.module';
 import { Editor, Toolbar } from 'ngx-editor';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -64,8 +64,8 @@ export interface ProjectData{
    CarouselModule,ReactiveFormsModule, FormsModule, 
    HeaderWorkIfenceComponent,  MatStepperModule, CardModule,
    MatFormFieldModule,InputTextModule,TableModule,
-   MatInputModule,ButtonModule,OverlayPanelModule,
-   MatButtonModule,AccordionModule,TextareaModule, CalendarModule,
+  MatInputModule,ButtonModule,PopoverModule,
+  MatButtonModule,AccordionModule,TextareaModule, DatePickerModule,
   MatIconModule,MatExpansionModule, MatCardModule, ToastModule, TooltipModule,
   SharedNgxEditorModule],
   templateUrl: './project.component.html',
@@ -613,7 +613,7 @@ export class ProjectComponent implements OnInit, OnDestroy, OnChanges {
     return this.certificationForm.get('certification_fields') as FormArray;
   }
 
-  onRowSelect(event: TableRowSelectEvent, op: OverlayPanel) {
+  onRowSelect(event: TableRowSelectEvent, op: any) {
     // this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event.data.name });
     op.hide();
 } 

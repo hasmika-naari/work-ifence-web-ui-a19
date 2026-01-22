@@ -16,7 +16,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, map, startWith } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
@@ -30,7 +30,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ResumeAccess, ResumeCategory, ResumeRoleLevel } from 'src/app/services/store/resume.model';
 import { MatSelectModule } from '@angular/material/select';
 import { AutoComplete, AutoCompleteModule } from 'primeng/autocomplete';
-import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 
 
 export interface DialogData {
@@ -46,7 +46,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, AutoCompleteModule, DropdownModule, MatInputModule, ButtonModule, OverlayPanelModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, AutoCompleteModule, SelectModule, MatInputModule, ButtonModule, PopoverModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule],
   templateUrl: './resume-title.component.html',
   styleUrls: ['./resume-title.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -78,7 +78,7 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
   filteredRoles : Array<any> = [];
   @ViewChild('roleAuto') roleAuto?: AutoComplete;
   @ViewChild('categoryAuto') categoryAuto?: AutoComplete;
-  @ViewChild('accessDropdown') accessDropdown?: Dropdown;
+  @ViewChild('accessDropdown') accessDropdown?: any;
   
   categories: Array<ResumeCategory> = [
     {

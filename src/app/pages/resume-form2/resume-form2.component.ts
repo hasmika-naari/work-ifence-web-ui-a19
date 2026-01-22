@@ -12,12 +12,12 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AccordionModule } from 'primeng/accordion';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextarea } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { FooterComponent } from '../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../landing/header-wifence/header-wifence.component';
@@ -46,9 +46,9 @@ export interface DialogData {
     CarouselModule,ReactiveFormsModule, FormsModule, 
       HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,
+    MatInputModule,ButtonModule,PopoverModule,
     MatButtonModule,AccordionModule,InputTextModule,
-    MatIconModule,MatExpansionModule],
+    MatIconModule,MatExpansionModule, TextareaModule],
   templateUrl: './resume-form2.component.html',
   styleUrls: ['./resume-form2.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -314,7 +314,7 @@ export class ResumeForm2Component implements OnInit, OnDestroy {
     return this.certificationForm.get('certification_fields') as FormArray;
   }
 
-  onRowSelect(event: TableRowSelectEvent, op: OverlayPanel) {
+  onRowSelect(event: TableRowSelectEvent, op: any) {
     // this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event.data.name });
     op.hide();
 }

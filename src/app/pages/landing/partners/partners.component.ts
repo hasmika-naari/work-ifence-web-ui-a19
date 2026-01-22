@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-partners',
@@ -9,6 +9,11 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./partners.component.scss']
 })
 export class PartnersComponent implements OnInit, AfterViewInit {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: object,
+    @Inject(DOCUMENT) private document: Document
+  ) {}
+
   // Partners list
   partners = [
     { name: 'Company 1', logo: '/images/partner/partner1.png' },
@@ -41,11 +46,15 @@ export class PartnersComponent implements OnInit, AfterViewInit {
   }
 
   private adjustCarouselSpeed(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     // Optional: Adjust animation speed based on screen width
-    const partners = document.querySelectorAll('.partner-item');
+    const partners = this.document.querySelectorAll('.partner-item');
     if (partners.length > 0) {
       // The animation speed could be adjusted based on the number of partners
-      const track = document.querySelector('.partners-track') as HTMLElement;
+      const track = this.document.querySelector('.partners-track') as HTMLElement;
       if (track) {
         // Optional dynamic speed adjustment
         const speed = Math.min(30, Math.max(15, partners.length * 2));

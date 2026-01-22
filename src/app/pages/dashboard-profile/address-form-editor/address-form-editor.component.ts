@@ -20,7 +20,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, map, startWith } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { JobApplication, JobApplicationDetails, Resume, ResumeContact } from 'src/app/services/resume.model';
@@ -42,7 +42,7 @@ import { Address } from 'src/app/services/contact.model';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { AutoComplete, AutoCompleteModule } from 'primeng/autocomplete';
 
 export interface Country {
@@ -59,7 +59,7 @@ export interface Country {
     },
   ],
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, MatAutocompleteModule, AutoCompleteModule, MatInputModule, ButtonModule, OverlayPanelModule, MatButtonModule, AccordionModule, TextareaModule, InputIconModule, IconFieldModule, FloatLabelModule, DropdownModule, MatIconModule, MatExpansionModule, MatSelectModule, MatDatepickerModule],
+  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, MatAutocompleteModule, AutoCompleteModule, MatInputModule, ButtonModule, PopoverModule, MatButtonModule, AccordionModule, TextareaModule, InputIconModule, IconFieldModule, FloatLabelModule, SelectModule, MatIconModule, MatExpansionModule, MatSelectModule, MatDatepickerModule],
   templateUrl: './address-form-editor.component.html',
   styleUrls: ['./address-form-editor.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

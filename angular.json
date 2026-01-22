@@ -75,7 +75,10 @@
               "node_modules/wowjs/dist/wow.js"
             ],
             "server": "src/main.server.ts",
-            "prerender": true,
+            "prerender": {
+              "routesFile": "prerender-routes.txt",
+              "discoverRoutes": false
+            },
             "ssr": {
               "entry": "server.ts"
             }
@@ -103,6 +106,12 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "development-ssr": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "prerender": false
             }
           },
           "defaultConfiguration": "production"
@@ -144,7 +153,7 @@
           "builder": "@nguniversal/builders:ssr-dev-server",
           "configurations": {
             "development": {
-              "browserTarget": "workifence:build:development",
+              "browserTarget": "workifence:build:development-ssr",
               "serverTarget": "workifence:server:development"
             },
             "production": {

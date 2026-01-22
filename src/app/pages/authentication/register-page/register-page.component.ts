@@ -12,17 +12,17 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Subscription } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 import { BadgeModule } from 'primeng/badge';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CheckboxModule } from 'primeng/checkbox';
 import { PasswordModule } from 'primeng/password';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { RippleModule } from 'primeng/ripple';
 import { OverlayModule } from 'primeng/overlay';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { ButtonModule } from 'primeng/button';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
@@ -41,7 +41,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterModule, MatIconModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, MatIconModule, MatSelectModule, DropdownModule, FormsModule, MultiSelectModule, MatProgressSpinnerModule, ReactiveFormsModule, HeaderWorkIfenceComponent, FooterWorkifenceComponent, OverlayPanelModule, OverlayModule, InputTextModule, ButtonModule, SidebarModule, CheckboxModule, BadgeModule, PasswordModule, RadioButtonModule, InputSwitchModule, RippleModule, RouterModule, IconsModule, MatProgressBarModule],
+  imports: [RouterModule, MatIconModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, MatIconModule, MatSelectModule, SelectModule, FormsModule, MultiSelectModule, MatProgressSpinnerModule, ReactiveFormsModule, HeaderWorkIfenceComponent, FooterWorkifenceComponent, PopoverModule, OverlayModule, InputTextModule, ButtonModule, DrawerModule, CheckboxModule, BadgeModule, PasswordModule, RadioButtonModule, ToggleSwitchModule, RippleModule, RouterModule, IconsModule, MatProgressBarModule],
   templateUrl: './register-page.component.html',
   styleUrls: ['./register-page.component.scss']
 })

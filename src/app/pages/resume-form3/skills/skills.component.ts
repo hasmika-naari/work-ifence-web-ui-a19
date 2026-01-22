@@ -17,7 +17,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MatDialog } from '@angular/material/dialog';
 import { map, Observable, startWith, Subscription } from 'rxjs';
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { FooterComponent } from '../../home-page-one/footer/footer.component';
@@ -58,7 +58,7 @@ type SkillV2 = SkillV2Base & { _newSkill?: string };
      NgOptimizedImage,FooterComponent,
     CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule, DragDropModule,
-    MatInputModule,ButtonModule,OverlayPanelModule,MatTooltipModule,
+    MatInputModule,ButtonModule,PopoverModule,MatTooltipModule,
     MatButtonModule,AccordionModule,TextareaModule,
     MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule, MatAutocompleteModule],
   templateUrl: './skills.component.html',

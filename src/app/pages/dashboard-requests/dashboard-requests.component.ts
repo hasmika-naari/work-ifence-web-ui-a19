@@ -23,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Account } from 'src/app/services/profile.model';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSelectModule } from '@angular/material/select';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { ApplicationListComponent } from '../dashboard-job-application/application-list/application-list.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RequestsListComponent } from './request-list/request-list.component';
@@ -43,7 +43,7 @@ interface Option {
     selector: 'app-requests-dashboard',
     standalone: true,
   
-    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, RequestsListComponent, PanelMenuModule, MatDialogModule, ButtonModule, TemplatesPageComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule],
+  imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, RequestsListComponent, PanelMenuModule, MatDialogModule, ButtonModule, TemplatesPageComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule],
     templateUrl: './dashboard-requests.component.html',
     styleUrl : './dashboard-requests.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

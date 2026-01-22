@@ -137,7 +137,7 @@
             <div class="col-7 pt-0" >
               <div class="row">
                 <div class="col-12 pt-0">
-                  <p-overlayPanel #opExp [style]="{ width: '850px' }" [showCloseIcon]="true">
+                  <p-popover #opExp [style]="{ width: '850px' }">
                     <ng-template pTemplate="content">
                       <form [formGroup]="experienceForm" >
                         <div class="row wrap">
@@ -197,7 +197,7 @@
                         </div>
                       </form>
                     </ng-template>
-                  </p-overlayPanel>
+                  </p-popover>
                   <p-button (click)="opExp.toggle($event)" icon="pi pi-plus" label="Add Experience"></p-button>
                 </div>
                 <div class="col-12 pt-0" style="overflow-y: auto;height:57vh;">
@@ -304,7 +304,7 @@
             <div class="col-7 pt-0" style="height: 57vh;">
               <div class="row">
                 <div class="col-12 pt-0">
-                  <p-overlayPanel #opProj [style]="{ width: '850px' }" [showCloseIcon]="true">
+                  <p-popover #opProj [style]="{ width: '850px' }">
                     <ng-template pTemplate="content">
                       <form [formGroup]="projectForm">
                         <div class="row wrap">
@@ -405,7 +405,7 @@
               </div> -->
             </form>
           </ng-template>
-        </p-overlayPanel>
+                  </p-popover>
         <p-button (click)="opProj.toggle($event)" icon="pi pi-plus" label="Add Project"></p-button>
       </div>
       <div class="col-12 pt-0" style="overflow-y: auto;height:57vh;">
@@ -512,7 +512,7 @@
       <div class="col-7 pt-0" style="height: 57vh;">
         <div class="row">
           <div class="col-12 pt-0">
-            <p-overlayPanel #opEdu [style]="{ width: '850px' }" [showCloseIcon]="true">
+            <p-popover #opEdu [style]="{ width: '850px' }">
               <ng-template pTemplate="content">
                 <form [formGroup]="educationForm" >
                   <div class="row wrap">
@@ -587,7 +587,7 @@
               </div> -->
             </form>
           </ng-template>
-        </p-overlayPanel>
+            </p-popover>
         <p-button (click)="opEdu.toggle($event)" icon="pi pi-plus" label="Add Education"></p-button>
       </div>
       <div class="col-12 pt-0" style="overflow-y: auto;height:57vh;">
@@ -694,7 +694,7 @@
       <div class="col-7 pt-0" style="height: 57vh;">
         <div class="row">
           <div class="col-12 pt-0">
-            <p-overlayPanel #opCerti [style]="{ width: '850px' }" [showCloseIcon]="true">
+            <p-popover #opCerti [style]="{ width: '850px' }">
               <ng-template pTemplate="content">
                 <form [formGroup]="certifyForm" style="padding: 10px;display: flex;">
                   <div class="column flex-wrap" style="flex-basis: 70%;">
@@ -769,7 +769,7 @@
             </div>
           </form>
         </ng-template>
-      </p-overlayPanel>
+            </p-popover>
       <p-button (click)="opCerti.toggle($event)" icon="pi pi-plus" label="Add Certification"></p-button>
     </div>
     <div class="col-12 pt-0" style="overflow-y: auto;height:57vh;">

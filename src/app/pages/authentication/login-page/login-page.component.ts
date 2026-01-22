@@ -11,16 +11,16 @@ import { MatInputModule } from '@angular/material/input';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 import { OverlayModule } from 'primeng/overlay';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 import { CheckboxModule } from 'primeng/checkbox';
 import { BadgeModule } from 'primeng/badge';
 import { PasswordModule } from 'primeng/password';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { RippleModule } from 'primeng/ripple';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
@@ -41,7 +41,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, FormsModule, OverlayPanelModule, OverlayModule, InputTextModule, ButtonModule, SidebarModule, CheckboxModule, BadgeModule, PasswordModule, RadioButtonModule, InputSwitchModule, RippleModule, RouterModule, IconsModule, MatProgressBarModule, ReactiveFormsModule, HeaderWorkIfenceComponent, FooterWorkifenceComponent, WifProgressDisplayComponent],
+  imports: [RouterModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, FormsModule, PopoverModule, OverlayModule, InputTextModule, ButtonModule, DrawerModule, CheckboxModule, BadgeModule, PasswordModule, RadioButtonModule, ToggleSwitchModule, RippleModule, RouterModule, IconsModule, MatProgressBarModule, ReactiveFormsModule, HeaderWorkIfenceComponent, FooterWorkifenceComponent, WifProgressDisplayComponent],
   templateUrl: './login-page.component.html',
   styleUrl : './login-page.component.scss'
 })

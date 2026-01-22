@@ -33,7 +33,7 @@ import moment from 'moment';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { JobApplicationStatus } from 'src/app/services/store/resume.model';
 import { MatSelectModule } from '@angular/material/select';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { ApplicationListComponent } from '../dashboard-job-application/application-list/application-list.component';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
 import { MatProgressBar, MatProgressBarModule } from '@angular/material/progress-bar';
@@ -47,7 +47,7 @@ interface Option {
 @Component({
     selector: 'app-resume-dashboard',
     standalone: true,
-    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, DropdownModule],
+    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule],
     templateUrl: './dashboard-resume.component.html',
     styleUrl : './dashboard-resume.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

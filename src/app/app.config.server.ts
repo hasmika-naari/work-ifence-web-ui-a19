@@ -1,10 +1,8 @@
 import { provideServerRendering } from '@angular/ssr';
-import { mergeApplicationConfig, ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
 import { appConfig } from './app.config';
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
-import { CarouselModule } from 'ngx-owl-carousel-o';
-import { BrowserModule } from '@angular/platform-browser';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import {VERSION as CDK_VERSION} from '@angular/cdk';
 import {VERSION as MAT_VERSION, MatNativeDateModule} from '@angular/material/core';
 
@@ -13,10 +11,9 @@ console.info('Server: Angular Material version', MAT_VERSION.full);
 
 const serverConfig: ApplicationConfig = {
   providers: [
-    provideServerRendering(),   provideHttpClient(withFetch(), withInterceptorsFromDi()),
-    importProvidersFrom([BrowserModule, BrowserAnimationsModule, CarouselModule, 
-     ]),
-     provideAnimations()
+    provideServerRendering(),
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
+    provideNoopAnimations()
   ]
 };
 
