@@ -3,7 +3,7 @@
         <form [formGroup]="summaryForm">
             <div class="form-row form-row--single">
                 <div class="field">
-                    <label for="experience">Experience in years</label>
+                    <label for="experience">Experience In Years</label>
                     <p-dropdown 
                         id="experience" 
                         formControlName="experience_level"
@@ -11,57 +11,43 @@
                         placeholder="Select Experience Level"
                         optionLabel="label"
                         optionValue="value"
-                        [style]="{'width': '100%'}"
+                        styleClass="compact-dropdown"
                         [showClear]="false">
                     </p-dropdown>
                 </div>
                 <div class="field editor-wrapper">
-                    <label for="profile_summary">Job Description</label>
+                    <div class="label-with-action">
+                        <label for="profile_summary">Job Description</label>
+                        <div class="botbro-action">
+                            @if(!is_summary_loading){
+                                <button type="button" class="botbro-btn" (click)="optimizeText()">
+                                    <i class="pi pi-sparkles"></i>
+                                    <span>MATCH</span>
+                                </button>
+                            }
+                            @if(is_summary_loading){
+                                <button type="button" class="botbro-btn botbro-btn--loading">
+                                    <div class="progress-container">
+                                        <div class="progress-bar"></div>
+                                        <span>PROCESSING...</span>
+                                    </div>
+                                </button>
+                            }
+                        </div>
+                    </div>
                     <div class="editor-container">
-                        <p-editor 
-                            id="profile_summary" 
-                            formControlName="profile_summary" 
-                            [style]="{'height':'320px'}"
-                            placeholder="Enter job description here...">
-                            <ng-template pTemplate="header">
-                                <span class="ql-formats">
-                                    <button type="button" class="ql-bold" aria-label="Bold"></button>
-                                    <button type="button" class="ql-italic" aria-label="Italic"></button>
-                                    <button type="button" class="ql-underline" aria-label="Underline"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <select class="ql-header">
-                                        <option selected></option>
-                                        <option value="1"></option>
-                                        <option value="2"></option>
-                                        <option value="3"></option>
-                                        <option value="4"></option>
-                                        <option value="5"></option>
-                                        <option value="6"></option>
-                                    </select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
-                                    <button type="button" class="ql-list" value="bullet" aria-label="Unordered List"></button>
-                                </span>
-                                <span class="ql-formats ai-button-container">
-                                    @if(!is_summary_loading){
-                                        <button type="button" class="d-flex ai-btn" (click)="optimizeText()">
-                                           <i class="pi pi-sparkles" style="font-size: medium;margin-right: 5px;"></i>  
-                                           USE BOTBRO
-                                        </button>
-                                    }
-                                    @if(is_summary_loading){
-                                        <button type="button" class="use-ai-btn d-flex">
-                                            <div class="progress-container">
-                                                <div class="progress-bar"></div>
-                                                <i class="pi pi-reddit pi-reddit-pos"></i>
-                                            </div>
-                                        </button>
-                                    }
-                                </span>
-                            </ng-template>
-                        </p-editor>
+                        <div class="NgxEditor__Wrapper">
+                            <ngx-editor-menu 
+                                [editor]="editor!" 
+                                [toolbar]="toolbar">
+                            </ngx-editor-menu>
+                            <ngx-editor 
+                                [editor]="editor!" 
+                                formControlName="profile_summary"
+                                [placeholder]="'Enter job description here...'"
+                                [spellcheck]="true">
+                            </ngx-editor>
+                        </div>
                     </div>
                     <small class="hint-text">Note: Use Job description to find skills and ATS keywords.</small>
                 </div>
