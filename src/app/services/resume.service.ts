@@ -268,6 +268,41 @@ export class ResumeService {
       .pipe(catchError(this.handleError));
   }
 
+  uploadExternalResume(userName: string, file: File) {
+    let baseUrl = this.appConstants.BASE_API_URL;
+    if (isPlatformBrowser(this.platformId)) {
+      baseUrl = '';
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('userName', userName);
+
+    const queryUrl = baseUrl + this.appConstants.UPLOAD_EXTERNAL_RESUME;
+    return this.httpClient.post(queryUrl, formData)
+      .pipe(catchError(this.handleError));
+  }
+
+  uploadExternalResumeText(userName: string, resumeText: string) {
+    let baseUrl = this.appConstants.BASE_API_URL;
+    if (isPlatformBrowser(this.platformId)) {
+      baseUrl = '';
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    const body = {
+      userName: userName,
+      resumeText: resumeText
+    };
+
+    const queryUrl = baseUrl + this.appConstants.UPLOAD_EXTERNAL_RESUME_TEXT;
+    return this.httpClient.post(queryUrl, body, { headers: headers })
+      .pipe(catchError(this.handleError));
+  }
+
   deleteApplicationResume(keyname : string){
     let baseUrl = this.appConstants.BASE_API_URL;
     if(isPlatformBrowser(this.platformId)){
