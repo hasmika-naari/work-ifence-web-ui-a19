@@ -8,6 +8,7 @@ import { TemplatesService } from 'src/app/services/shared/templates.service';
 import { ResumeTemplate } from 'src/app/services/bee-compete.model';
 import { ResumeTemplateDto } from 'src/app/services/store/user-store';
 import { Resume } from 'src/app/services/resume.model';
+import { PlanGateService } from 'src/app/resume-portal/services/plan-gate.service';
 
 
 export interface DialogData {
@@ -27,6 +28,7 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
   imageBase64: String | null = null; // Define a class property to store the image bytes
 
   private userStore: UserStoreService = inject(UserStoreService);
+  private planGate: PlanGateService = inject(PlanGateService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeForm : Signal<Resume> = this.userStore.getResumeForm();
 
@@ -134,6 +136,9 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
   }
 
   selectTemplateHandler($event: any, template: ResumeTemplate){
+    if (!this.planGate.enforceOrUpgrade(this.planGate.canUseTemplate(template.id), 'Free plan can only use free templates.')) {
+      return;
+    }
     this.userStore.updateResumeTemplate(template);
     if(template.template_name != 'TEMPLATE_9'){
       this.userStore.emptyMultipleColumnTemplateSections()

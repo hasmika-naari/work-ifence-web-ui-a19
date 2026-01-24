@@ -3,9 +3,11 @@ import { FormsModule, FormBuilder, FormGroup, ReactiveFormsModule, Validators } 
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { RouterLink, Router } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { UserStoreService } from 'src/app/services/store/user-store.service';
 
 
 @Component({
@@ -19,6 +21,9 @@ export class SignInComponent {
     constructor(
         private fb: FormBuilder,
         private router: Router,
+        private route: ActivatedRoute,
+        private localStorageService: LocalStorageService,
+        private userStore: UserStoreService,
     ) {
         this.authForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
@@ -33,6 +38,16 @@ export class SignInComponent {
     authForm: FormGroup;
     onSubmit() {
         if (this.authForm.valid) {
+            // Mark authenticated for guards & portal gating.
+            this.userStore.setUserLoginStatus(true);
+            this.localStorageService.setItem('authenticated', { notoken: 'token' });
+
+            const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+            if (returnUrl && returnUrl.startsWith('/')) {
+                this.router.navigateByUrl(returnUrl);
+                return;
+            }
+
             this.router.navigate(['/']);
         } else {
             console.log('Form is invalid. Please check the fields.');

@@ -5,6 +5,7 @@ import { FeathericonsModule } from '../../icons/feathericons/feathericons.module
 
 @Component({
     selector: 'app-pricing-page',
+    standalone: true,
     imports: [MatCardModule, MatButtonModule, FeathericonsModule],
     templateUrl: './pricing-page.component.html',
     styleUrl: './pricing-page.component.scss'

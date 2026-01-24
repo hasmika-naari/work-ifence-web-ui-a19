@@ -207,6 +207,23 @@ export const routes: Routes = [
             import('./pages/intro/job-app-manager-intro/job-app-manager-intro.component')
                 .then(m => m.JobAppManagerIntroComponent), data: {reuseComponent: true, breadcrumb: 'Job Application Optimizer' }
     },
+    {
+        path: 'resume-portal',
+        children: [
+            {
+                path: '',
+                redirectTo: 'templates',
+                pathMatch: 'full'
+            },
+            {
+                path: 'templates',
+                loadComponent: () =>
+                    import('./resume-portal/pages/template-gallery-page.component')
+                        .then(m => m.TemplateGalleryPageComponent),
+                data: { reuseComponent: false, breadcrumb: 'Resume Portal' }
+            },
+        ]
+    },
       {
         path: 'central', 
         children: [
@@ -401,6 +418,18 @@ export const routes: Routes = [
                 .then(m => m.TrainingOptionsPageComponent), data: {reuseComponent: true, breadcrumb: 'Training Options' }
     },
     {
+        path: 'pricing',
+        loadComponent: () =>
+            import('./pages/pricing-page/pricing-page.component')
+                .then(m => m.PricingPageComponent),
+        data: { reuseComponent: true, breadcrumb: 'Pricing' }
+    },
+    {
+        path: 'resumes/resume',
+        redirectTo: 'user/resumes/resume',
+        pathMatch: 'full'
+    },
+    {
         path: 'user', 
         canActivate: [AuthGuardService],
         loadComponent: () => import('./layout/layout.component').then(m => m.LayoutComponent),
@@ -423,6 +452,14 @@ export const routes: Routes = [
                     import('./pages/resume-form3/resume-form3.component')
                         .then(m => m.ResumeForm3Component), 
                         data: {reuseComponent: true, breadcrumb: 'Resume' },
+            },
+            {
+                path: 'resumes/:resumeId/builder',
+                canDeactivate: [pendingChangesGuard],
+                loadComponent: () =>
+                    import('./resume-portal/pages/resume-builder-shell.component')
+                        .then(m => m.ResumeBuilderShellComponent),
+                data: { reuseComponent: true, breadcrumb: 'Resume Builder' },
             },
             {   
                 path: 'job-applications', 

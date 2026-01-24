@@ -75,6 +75,7 @@ import { AddSectionComponent } from './add-section/add-section.component';
 import * as _ from 'lodash'
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
+import { PlanGateService, FREE_TEMPLATE_ID } from 'src/app/resume-portal/services/plan-gate.service';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -296,6 +297,8 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   selectedSkillItem! : {id : number | null, skills : String | null}
 
   private userStore: UserStoreService = inject(UserStoreService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private planGate: PlanGateService = inject(PlanGateService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   private platformId: object =  inject(PLATFORM_ID);
   private _formBuilder: FormBuilder =  inject(FormBuilder);
@@ -658,6 +661,27 @@ ngAfterViewInit(): void {
   ngOnInit() {
     this.currentSections = this.userStore.getCurrentSections();
     this.browser = isPlatformBrowser(this.platformId);
+
+    // If templateId is provided (from Resume Portal), initialize builder state.
+    const templateIdParam = this.route.snapshot.queryParamMap.get('templateId');
+    const templateId = templateIdParam ? Number(templateIdParam) : NaN;
+    if (Number.isFinite(templateId) && templateId > 0) {
+      const canUse = this.planGate.canUseTemplate(templateId);
+      if (!canUse && this.browser) {
+        this.planGate.enforceOrUpgrade(false, 'This template requires an upgrade.');
+      }
+
+      const resolvedTemplateId = canUse ? templateId : FREE_TEMPLATE_ID;
+
+      const resume = new Resume();
+      const resumeTemplate = new ResumeTemplate();
+      resumeTemplate.id = resolvedTemplateId;
+      resumeTemplate.template_name = `TEMPLATE_${resolvedTemplateId}`;
+      resume.template_details = resumeTemplate;
+
+      this.userStore.setResumeForm(resume);
+      this.userStore.updateSelectedResumeListItem(new ResumeListDataItem());
+    }
     
     // Subscribe to loading bar state to reset isDisabled when loading stops
     // This handles cases where interceptor stops the loading bar on HTTP 500 errors

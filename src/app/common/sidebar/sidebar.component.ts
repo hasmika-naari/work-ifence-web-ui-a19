@@ -41,8 +41,10 @@ export class SidebarComponent {
         });
 
         effect(() => {
-            let aRole = this.userActiveRole().role;
-            if(this.userActiveRole().role === 'ROLE_ADMIN'){
+            const activeRole = this.userActiveRole();
+            const role = activeRole?.role;
+
+            if(role === 'ROLE_ADMIN'){
                 this.menuList = [
                     {
                         title: 'Dashboard',
@@ -74,7 +76,7 @@ export class SidebarComponent {
                     }
                     
                 ];
-            }else if(this.userActiveRole().role === 'ROLE_USER'){
+            }else if(role === 'ROLE_USER'){
                 this.menuList = [
                     {
                         title: 'Dashboard',

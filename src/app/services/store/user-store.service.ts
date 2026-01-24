@@ -194,10 +194,10 @@ export class UserStoreService {
         }));
       }
 
-      updateActiveRole(role: WifRole) {
+      updateActiveRole(role: WifRole | undefined | null) {
         this.state.update((state) => ({
           ...state,
-          activeRole: role
+          activeRole: role ?? new WifRole()
         }));
       }
 

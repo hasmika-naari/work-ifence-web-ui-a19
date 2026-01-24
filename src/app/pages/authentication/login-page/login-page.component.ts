@@ -8,7 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { PopoverModule } from 'primeng/popover';
@@ -80,6 +80,7 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
   public themeService: ThemeCustomizerService = inject(ThemeCustomizerService);
   private snackBarService: YeaSnackBarService  = inject(YeaSnackBarService);
   private router: Router = inject(Router);
+  private route: ActivatedRoute = inject(ActivatedRoute);
   private localStorageService: LocalStorageService  = inject(LocalStorageService);
   private constantService: AppConstantsService  = inject(AppConstantsService);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -272,15 +273,23 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                       console.log('account: ' + account.id);
                       this.userStore.updateAccount(account);
                       let roles: Array<WifRole> = [];
-                      account.authorities.forEach(authr => {
+                      (account.authorities ?? []).forEach(authr => {
                         if(authr === 'ROLE_ADMIN'){
                           roles.push({title:'App Admin',role:authr, url: '/user/dashboard-admin' });
                         }else if(authr === 'ROLE_USER'){
                           roles.push({title:'Member',role:authr, url: '/user/dashboard' });
                         }
                       });
+
+                      // Defensive default: some accounts may not have authorities populated.
+                      if (roles.length === 0) {
+                        roles.push({ title: 'Member', role: 'ROLE_USER', url: '/user/dashboard' });
+                      }
+
                       this.userStore.updateRoles(roles);
-                      this.userStore.updateActiveRole(roles[0]);
+                      const adminRole = roles.find(r => r.role === 'ROLE_ADMIN');
+                      const userRole = roles.find(r => r.role === 'ROLE_USER') ?? roles[0];
+                      this.userStore.updateActiveRole(userRole);
 
                       this.authService.getLoginProfile(account.login).subscribe(
                         (profile)=>{
@@ -297,10 +306,21 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                                   this.userStore.updateBioProfile(bioProfile);
                                   debugger;
                                   if(this.hasRoleAdmin(account.authorities)){
-                                    this.userStore.updateActiveRole(roles[1]);
-                                    this.router.navigate(['/user/dashboard-admin']);
+                                    this.userStore.updateActiveRole(adminRole ?? roles[0]);
+                                    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+                                    if (returnUrl && returnUrl.startsWith('/')) {
+                                      this.router.navigateByUrl(returnUrl);
+                                    } else {
+                                      this.router.navigate(['/user/dashboard-admin']);
+                                    }
                                   }else{
-                                    this.router.navigate(['/user/dashboard']);
+                                    this.userStore.updateActiveRole(userRole);
+                                    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+                                    if (returnUrl && returnUrl.startsWith('/')) {
+                                      this.router.navigateByUrl(returnUrl);
+                                    } else {
+                                      this.router.navigate(['/user/dashboard']);
+                                    }
                                   }
                                 }
                                 // bioProfile: 

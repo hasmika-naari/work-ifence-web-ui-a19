@@ -87,7 +87,7 @@ export class AppComponent implements OnInit, AfterViewInit{
         {
           id: '3',
           parent: 'Resume Portal',
-          route: '/central/resume-portal',
+          route: '/resume-portal/templates',
           icon: 'file-text',
           menuItems:[]
         },

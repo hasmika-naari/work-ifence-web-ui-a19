@@ -1,0 +1,19 @@
+/* Keep styling minimal and consistent with Material */
+:host {
+	display: block;
+}
+
+mat-dialog-content {
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+h2[mat-dialog-title] {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+h2[mat-dialog-title] mat-icon {
+	color: #f59e0b; /* amber */
+}
