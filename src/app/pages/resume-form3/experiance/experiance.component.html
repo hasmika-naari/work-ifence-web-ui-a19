@@ -87,7 +87,7 @@
             <div class="form-row form-row--double">
               <div class="field">
                 <label for="start_date">Start Date *</label>
-                <p-calendar
+                <p-datePicker
                   inputId="start_date"
                   formControlName="start_date"
                   view="month"
@@ -97,7 +97,7 @@
                   iconDisplay="input"
                   placeholder="MM/YYYY"
                   [readonlyInput]="true">
-                </p-calendar>
+                </p-datePicker>
                 @if (experienceForm.get('start_date')?.hasError('required') && (experienceForm.get('start_date')?.dirty || experienceForm.get('start_date')?.touched)) {
                   <small class="error">
                     Required.
@@ -107,7 +107,7 @@
 
               <div class="field">
                 <label for="end_date">End Date *</label>
-                <p-calendar
+                <p-datePicker
                   inputId="end_date"
                   formControlName="end_date"
                   view="month"
@@ -118,7 +118,7 @@
                   placeholder="MM/YYYY"
                   [readonlyInput]="true"
                   [disabled]="!!experienceForm.get('isCurrentlyWorkHere')?.value">
-                </p-calendar>
+                </p-datePicker>
                 @if (experienceForm.get('end_date')?.hasError('required') && (experienceForm.get('end_date')?.dirty || experienceForm.get('end_date')?.touched)) {
                   <small class="error">
                     Required.

@@ -239,8 +239,9 @@
   box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.18);
 }
 
-// PrimeNG Calendar styling for consistency
-:host ::ng-deep .p-calendar {
+// PrimeNG DatePicker/Calendar styling for consistency
+:host ::ng-deep .p-calendar,
+:host ::ng-deep .p-datepicker {
   width: 100%;
   
   .p-inputtext {
@@ -288,7 +289,9 @@
 
 // Disabled calendar styling
 :host ::ng-deep .p-calendar.p-disabled .p-inputtext,
-:host ::ng-deep .p-calendar .p-inputtext:disabled {
+:host ::ng-deep .p-calendar .p-inputtext:disabled,
+:host ::ng-deep .p-datepicker.p-disabled .p-inputtext,
+:host ::ng-deep .p-datepicker .p-inputtext:disabled {
   background-color: #f2f2f2 !important;
   cursor: not-allowed;
   opacity: 0.6;

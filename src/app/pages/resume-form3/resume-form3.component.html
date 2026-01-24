@@ -242,6 +242,9 @@
       [style]="{'width': '35vw', 'min-width': '450px', 'max-width': '600px'}"
       [showCloseIcon]="false"
       [blockScroll]="true"
+      [modal]="false"
+      appendTo="body"
+      [baseZIndex]="25000"
   >
       <ng-template pTemplate="header">
           <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
@@ -305,6 +308,9 @@
       [style]="{'width': 'min(1100px, 85vw)', 'min-width': '320px'}"
       [showCloseIcon]="false"
       [blockScroll]="true"
+      [dismissableMask]="false"
+      appendTo="body"
+      [baseZIndex]="25000"
   >
       <ng-template pTemplate="header">
           <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
