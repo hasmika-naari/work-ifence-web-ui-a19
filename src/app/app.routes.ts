@@ -494,7 +494,7 @@ export const routes: Routes = [
             },
             {   
                 path: 'dashboard', 
-                loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent), 
+                loadComponent: () => import('./pages/dashboard/dashboard-shell.component').then(m => m.DashboardShellComponent), 
                 data: { breadcrumb: 'Employee Dashboard' } 
             },
             {   

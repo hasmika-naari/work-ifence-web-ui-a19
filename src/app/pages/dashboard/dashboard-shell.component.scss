@@ -1,0 +1,32 @@
+.dashboard-shell-toggle {
+  position: sticky;
+  top: 65px;
+  z-index: 5;
+  display: inline-flex;
+  gap: 8px;
+  margin: 12px 24px 0 24px;
+  padding: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.toggle-btn {
+  appearance: none;
+  border: 1px solid rgba(240, 91, 78, 0.2);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+}
+
+.toggle-btn.active {
+  background: rgba(240, 91, 78, 0.12);
+  border-color: rgba(240, 91, 78, 0.35);
+  color: #f05b4e;
+}

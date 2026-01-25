@@ -1,0 +1,23 @@
+@if (canShowEnterprise()) {
+  <div class="dashboard-shell-toggle">
+    <button
+      type="button"
+      class="toggle-btn"
+      [class.active]="ctx() === 'PERSONAL'"
+      (click)="setPersonal()"
+    >
+      Personal
+    </button>
+
+    <button
+      type="button"
+      class="toggle-btn"
+      [class.active]="ctx() === 'ENTERPRISE'"
+      (click)="setEnterprise()"
+    >
+      Enterprise
+    </button>
+  </div>
+}
+
+<fury-dashboard></fury-dashboard>

@@ -22,6 +22,7 @@ import { WifRole } from '../services/profile.model';
 import { ActiveRoleService } from '../services/active-role.service';
 import { AccessFacadeService } from '../facades/access-facade.service';
 import { AccessMeDto } from '../models/access-me.model';
+import { DashboardContextService } from '../services/dashboard-context.service';
 
 @Component({
   selector: 'wif-layout',
@@ -45,6 +46,7 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly userStore: UserStoreService = inject(UserStoreService);
   private readonly activeRoleService: ActiveRoleService = inject(ActiveRoleService);
   private readonly accessFacade: AccessFacadeService = inject(AccessFacadeService);
+  private readonly dashboardContext: DashboardContextService = inject(DashboardContextService);
 
   userRoles = computed(() => this.buildRoles(this.accessFacade.accessMeSignal()));
   userActiveRole = computed(() => this.activeRoleService.getActiveRole()());
@@ -77,6 +79,14 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const title = (role?.title ?? '').toLowerCase();
     const isPlatformAdmin = title.includes('platform admin') || role?.role === 'PLATFORM_ADMIN' || role?.role === 'ROLE_ADMIN';
+
+    // Update UI-only dashboard context when switching roles
+    if (role?.role === 'PERSONAL') {
+      this.dashboardContext.setPersonal();
+    } else if (role?.role === 'ENTERPRISE_ADMIN' || role?.role === 'ENTERPRISE_EMPLOYEE') {
+      this.dashboardContext.setEnterprise();
+    }
+
     this.router.navigateByUrl(isPlatformAdmin ? '/user/dashboard-admin' : '/user/dashboard');
     this.menuSidenavOpened = false;
   }
@@ -122,18 +132,18 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
       return [{ title: 'Platform Admin', role: 'PLATFORM_ADMIN', url: '/user/dashboard-admin' }];
     }
 
+    const roles: WifRole[] = [{ title: 'Personal', role: 'PERSONAL', url: '/user/dashboard' }];
+
     if (mode === 'ENTERPRISE_ADMIN') {
-      return [
+      roles.push(
         { title: 'Enterprise Admin', role: 'ENTERPRISE_ADMIN', url: '/user/dashboard' },
         { title: 'Employee', role: 'ENTERPRISE_EMPLOYEE', url: '/user/dashboard' },
-      ];
+      );
+    } else if (mode === 'ENTERPRISE_EMPLOYEE') {
+      roles.push({ title: 'Employee', role: 'ENTERPRISE_EMPLOYEE', url: '/user/dashboard' });
     }
 
-    if (mode === 'ENTERPRISE_EMPLOYEE') {
-      return [{ title: 'Employee', role: 'ENTERPRISE_EMPLOYEE', url: '/user/dashboard' }];
-    }
-
-    return [{ title: 'Personal', role: 'PERSONAL', url: '/user/dashboard' }];
+    return roles;
   }
 
   ngOnInit() {
