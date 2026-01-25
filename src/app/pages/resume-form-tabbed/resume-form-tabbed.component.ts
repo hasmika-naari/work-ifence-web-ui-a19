@@ -1,6 +1,6 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -10,8 +10,6 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { FooterComponent } from '../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../landing/header-wifence/header-wifence.component';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -26,10 +24,9 @@ import { Education, TemplateVariables } from 'src/app/services/resume.model';
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
+  imports: [CommonModule, RouterModule,
     CarouselModule,ReactiveFormsModule, FormsModule, 
-      HeaderWorkIfenceComponent,  MatStepperModule,
+    MatStepperModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,

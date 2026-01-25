@@ -10,6 +10,7 @@ import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { AccessMeDto } from 'src/app/models/access-me.model';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
 import { ActiveRoleService } from 'src/app/services/active-role.service';
+import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
 
 @Component({
   selector: 'fury-dashboard',
@@ -36,6 +37,7 @@ export class DashboardComponent {
   private snackBar: MatSnackBar = inject(MatSnackBar);
   private dashboardContext: DashboardContextService = inject(DashboardContextService);
   private activeRoleService: ActiveRoleService = inject(ActiveRoleService);
+  private upgradeRouter: UpgradeRouterService = inject(UpgradeRouterService);
 
   bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   vm$ = this.dashboardFacade.vm$;
@@ -102,6 +104,26 @@ export class DashboardComponent {
         title: 'Manage Requests',
         description: 'Review and manage employee requests',
         route: '/user/requests',
+        enabled: true,
+        disabledMessage: '',
+      });
+
+      base.push({
+        key: 'enterprise-org',
+        icon: 'assets/jobtrackerai-icon.png',
+        title: 'Enterprise Org',
+        description: 'Manage enterprise profile and settings',
+        route: '/user/enterprise/org',
+        enabled: true,
+        disabledMessage: '',
+      });
+
+      base.push({
+        key: 'enterprise-members',
+        icon: 'assets/jobtrackerai-icon.png',
+        title: 'Enterprise Members',
+        description: 'Invite and manage enterprise members',
+        route: '/user/enterprise/members',
         enabled: true,
         disabledMessage: '',
       });
@@ -242,7 +264,7 @@ export class DashboardComponent {
     this.snackBar.open(tool.disabledMessage || 'Upgrade required', 'View plans', {
       duration: 2500,
     });
-    this.routerService.navigate(['/pricing']);
+    this.upgradeRouter.goToPricingForContext(this.dashboardCtx());
   }
 
 

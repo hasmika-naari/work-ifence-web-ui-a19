@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -29,8 +29,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { JobApplicationStatus, JobMode, JobType, ResumeAccess, ResumeCategory, ResumeRoleLevel } from 'src/app/services/store/resume.model';
 import { MatSelectModule } from '@angular/material/select';
-import { FooterComponent } from 'src/app/pages/home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from 'src/app/pages/landing/header-wifence/header-wifence.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import moment from 'moment';
 import { Account, LoginProfile } from 'src/app/services/profile.model';
@@ -52,9 +50,8 @@ export interface DialogData {
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
     CarouselModule,ReactiveFormsModule, FormsModule, 
-    HeaderWorkIfenceComponent,  MatStepperModule,
+    MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
     MatCheckboxModule, MatAutocompleteModule,MatProgressSpinnerModule,
     MatInputModule,ButtonModule,PopoverModule,MatTooltipModule,

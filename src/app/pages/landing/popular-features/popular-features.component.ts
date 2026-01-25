@@ -63,7 +63,11 @@ export class PopularFeaturesComponent implements OnInit, AfterViewInit {
     }
 
     async ngAfterViewInit() {
-        if (!isPlatformBrowser(this.platformId)) {
+        const isNodeRuntime =
+            typeof (globalThis as any).process !== 'undefined' &&
+            !!(globalThis as any).process?.versions?.node;
+
+        if (!isPlatformBrowser(this.platformId) || isNodeRuntime) {
             return;
         }
 

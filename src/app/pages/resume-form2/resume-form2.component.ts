@@ -1,6 +1,6 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, OnDestroy, OnInit, Signal, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -19,8 +19,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
-import { FooterComponent } from '../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
@@ -41,10 +39,9 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
+  imports: [CommonModule, RouterModule,
     CarouselModule,ReactiveFormsModule, FormsModule, 
-      HeaderWorkIfenceComponent,  MatStepperModule,
+    MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule,
     MatInputModule,ButtonModule,PopoverModule,
     MatButtonModule,AccordionModule,InputTextModule,

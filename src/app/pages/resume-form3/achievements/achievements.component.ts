@@ -1,6 +1,6 @@
-import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Signal, ViewChild, effect, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -20,8 +20,6 @@ import { map, Observable, startWith, Subscription } from 'rxjs';
 import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { AchievementBulletPoints, Education, IsSectionPresent, CertificationBulletPoints, Resume, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
@@ -49,7 +47,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatInputModule, ButtonModule, PopoverModule, MatTooltipModule, MatButtonModule, AccordionModule, TextareaModule, DatePicker, MatIconModule, MatExpansionModule, MatAutocompleteModule, MatChipsModule],
+  imports: [RouterModule, CarouselModule, ReactiveFormsModule, FormsModule, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatInputModule, ButtonModule, PopoverModule, MatTooltipModule, MatButtonModule, AccordionModule, TextareaModule, DatePicker, MatIconModule, MatExpansionModule, MatAutocompleteModule, MatChipsModule],
   templateUrl: './achievements.component.html',
   styleUrls: ['./achievements.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

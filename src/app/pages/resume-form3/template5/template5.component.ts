@@ -1,6 +1,5 @@
-import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -28,7 +27,7 @@ import { TemplatesService } from 'src/app/services/shared/templates.service';
 @Component({
   selector: 'app-resume-template5',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, CarouselModule, ReactiveFormsModule, FormsModule, MatStepperModule, MatFormFieldModule, InputTextModule, MatInputModule, ButtonModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule],
+  imports: [CarouselModule, ReactiveFormsModule, FormsModule, MatStepperModule, MatFormFieldModule, InputTextModule, MatInputModule, ButtonModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule],
   templateUrl: './template5.component.html',
   styleUrls: ['./template5.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

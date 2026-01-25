@@ -22,8 +22,8 @@
           <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
             <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
               @for (role of userRoles(); track role) {
-                <li class="position-relative transition fw-medium cursor-pointer" [class.active-role]="userActiveRole()?.title && role?.title && userActiveRole()?.title === role.title" (click)="switchDashboard($event, role)">
-                  <lucide-icon name="LayoutDashboard" size="24"></lucide-icon> {{role?.title}}
+                <li class="position-relative transition fw-medium cursor-pointer" [class.active-role]="userActiveRole().role === role.role" (click)="switchDashboard($event, role)">
+                  <lucide-icon name="LayoutDashboard" size="24"></lucide-icon> {{ role.title }}
                 </li>
               }
             </ul>

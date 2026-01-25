@@ -1,7 +1,6 @@
-import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, 
           OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
-import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
@@ -18,7 +17,7 @@ export interface DialogData {
 @Component({
   selector: 'app-resume-template-list',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage],
+  imports: [RouterModule],
   templateUrl: './resume-template-list.component.html',
   styleUrls: ['./resume-template-list.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

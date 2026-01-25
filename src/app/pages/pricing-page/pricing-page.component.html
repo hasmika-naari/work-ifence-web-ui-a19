@@ -1,198 +1,180 @@
-<div class="row">
-    <div class="col-md-6 col-xxl-4 col-xxxl-3">
-        <mat-card
-            class="workifence-card pricing-card mb-25 bg-white border-none d-block"
-        >
-            <mat-card-content>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3>
-                            Basic Plan
-                        </h3>
-                        <p class="text-black">
-                            A simple start for everyone
-                        </p>
-                    </div>
-                    <div>
-                        <img src="images/icons/shield.svg" alt="icon">
-                    </div>
-                </div>
-                <div class="price lh-1 fw-semibold">
-                    $50/ <span class="fs-14 text-body fw-normal">per month</span>
-                </div>
-                <button type="button" mat-button>
-                    By This Plan
-                </button>
-                <ul class="features-list mb-0 p-0 list-unstyled">
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Access to essential Angular 19 functionalities.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Limited usage or usage for a single user.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Basic customer support through email or chat.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Response within a specified time frame.
-                    </li>
-                    <li class="position-relative text-black close">
-                        <i-feather name="x"></i-feather>
-                        Limited storage space for user data.
-                    </li>
-                </ul>
-            </mat-card-content>
-        </mat-card>
+<div class="workifence-card bg-white border-none d-block p-20 mb-25">
+    <div class="d-flex align-items-center justify-content-between flex-wrap">
+        <div>
+            <h2 class="mb-0">Pricing</h2>
+            <p class="text-body mb-0">Choose the plan that fits your needs.</p>
+        </div>
+        <div class="d-flex align-items-center gap-10 mt-10">
+            @if (isUpgrading()) {
+                <mat-progress-spinner diameter="22" mode="indeterminate"></mat-progress-spinner>
+            }
+            @if (currentPlanCode()) {
+                <mat-chip-set>
+                    <mat-chip color="primary" selected>Current: {{ currentPlanCode() }}</mat-chip>
+                </mat-chip-set>
+            }
+        </div>
     </div>
-    <div class="col-md-6 col-xxl-4 col-xxxl-3">
-        <mat-card
-            class="workifence-card pricing-card mb-25 bg-white border-none d-block"
-        >
-            <mat-card-content>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3>
-                            Standard Plan
-                        </h3>
-                        <p class="text-black">
-                            A simple start for everyone
-                        </p>
+
+    <mat-tab-group
+        class="mt-20"
+        [selectedIndex]="selectedTabIndex()"
+        (selectedIndexChange)="onTabIndexChange($event)"
+    >
+        <mat-tab label="Individual Plans">
+            <div class="row mt-15">
+                @for (plan of sortedPlans(individualPlans()); track plan.code ?? $index) {
+                    <div class="col-md-6 col-xxl-4 col-xxxl-3">
+                        <mat-card class="workifence-card pricing-card mb-25 bg-white border-none d-block">
+                            <mat-card-content>
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div>
+                                        <h3 class="mb-0">{{ plan.marketingTitle || plan.name || plan.code || 'Plan' }}</h3>
+                                        <p class="text-body mb-0">{{ plan.marketingSubtitle || '' }}</p>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-end gap-6">
+                                        @if ((plan.trialDays ?? 0) > 0) {
+                                            <mat-chip-set>
+                                                <mat-chip color="accent" selected>{{ plan.trialDays }}-day trial</mat-chip>
+                                            </mat-chip-set>
+                                        }
+                                        @if (isCurrentPlan(plan)) {
+                                            <mat-chip-set>
+                                                <mat-chip color="primary" selected>Current</mat-chip>
+                                            </mat-chip-set>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="price lh-1 fw-semibold mt-15">
+                                    {{ formatPrice(plan) }}
+                                    <span class="fs-14 text-body fw-normal">/ {{ intervalLabel(plan) }}</span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    mat-button
+                                    [disabled]="isUpgrading() || (isLoggedIn() && isCurrentPlan(plan))"
+                                    (click)="onSelectPlan('INDIVIDUAL', plan)"
+                                >
+                                    {{ ctaLabel(plan) }}
+                                </button>
+
+                                <ul class="features-list mb-0 p-0 list-unstyled">
+                                    <li class="position-relative text-black">
+                                        <i-feather name="check"></i-feather>
+                                        Resume limit: {{ plan.resumeLimit ?? '—' }}
+                                    </li>
+                                    <li class="position-relative text-black">
+                                        <i-feather name="check"></i-feather>
+                                        Templates: {{ (plan.templateAccessLevel ?? 'BASIC') }}
+                                    </li>
+                                    <li class="position-relative text-black" [class.close]="!plan.jobTrackingEnabled">
+                                        <i-feather [name]="plan.jobTrackingEnabled ? 'check' : 'x'"></i-feather>
+                                        Job tracking
+                                    </li>
+                                    <li class="position-relative text-black" [class.close]="!plan.courseCentralEnabled">
+                                        <i-feather [name]="plan.courseCentralEnabled ? 'check' : 'x'"></i-feather>
+                                        Course central
+                                    </li>
+                                    <li class="position-relative text-black" [class.close]="!plan.alertsEnabled">
+                                        <i-feather [name]="plan.alertsEnabled ? 'check' : 'x'"></i-feather>
+                                        Alerts
+                                    </li>
+                                </ul>
+                            </mat-card-content>
+                        </mat-card>
                     </div>
-                    <div>
-                        <img src="images/icons/shield.svg" alt="icon">
+                }
+
+                @if (individualPlans().length === 0) {
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-10 text-body">
+                            <mat-progress-spinner diameter="22" mode="indeterminate"></mat-progress-spinner>
+                            <span>Loading plans…</span>
+                        </div>
                     </div>
-                </div>
-                <div class="price lh-1 fw-semibold">
-                    $120/ <span class="fs-14 text-body fw-normal">per month</span>
-                </div>
-                <button type="button" mat-button>
-                    By This Plan
-                </button>
-                <ul class="features-list mb-0 p-0 list-unstyled">
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        More advanced features than the basic plan.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Expanded capabilities for increased productivity.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Faster response times.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Access to a dedicated support channel.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Access to in-depth analytics and reporting tools.
-                    </li>
-                </ul>
-            </mat-card-content>
-        </mat-card>
-    </div>
-    <div class="col-md-6 col-xxl-4 col-xxxl-3">
-        <mat-card
-            class="workifence-card pricing-card mb-25 bg-white border-none d-block"
-        >
-            <mat-card-content>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3>
-                            Premium Plan
-                        </h3>
-                        <p class="text-black">
-                            A simple start for everyone
-                        </p>
+                }
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Enterprise Plans">
+            <div class="row mt-15">
+                @for (plan of sortedPlans(enterprisePlans()); track plan.code ?? $index) {
+                    <div class="col-md-6 col-xxl-4 col-xxxl-3">
+                        <mat-card class="workifence-card pricing-card mb-25 bg-white border-none d-block">
+                            <mat-card-content>
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div>
+                                        <h3 class="mb-0">{{ plan.marketingTitle || plan.name || plan.code || 'Plan' }}</h3>
+                                        <p class="text-body mb-0">{{ plan.marketingSubtitle || '' }}</p>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-end gap-6">
+                                        @if ((plan.trialDays ?? 0) > 0) {
+                                            <mat-chip-set>
+                                                <mat-chip color="accent" selected>{{ plan.trialDays }}-day trial</mat-chip>
+                                            </mat-chip-set>
+                                        }
+                                        @if (isCurrentPlan(plan)) {
+                                            <mat-chip-set>
+                                                <mat-chip color="primary" selected>Current</mat-chip>
+                                            </mat-chip-set>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="price lh-1 fw-semibold mt-15">
+                                    {{ formatPrice(plan) }}
+                                    <span class="fs-14 text-body fw-normal">/ {{ intervalLabel(plan) }}</span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    mat-button
+                                    [disabled]="isUpgrading() || (isLoggedIn() && isCurrentPlan(plan))"
+                                    (click)="onSelectPlan('ENTERPRISE', plan)"
+                                >
+                                    {{ ctaLabel(plan) }}
+                                </button>
+
+                                <ul class="features-list mb-0 p-0 list-unstyled">
+                                    <li class="position-relative text-black">
+                                        <i-feather name="check"></i-feather>
+                                        Seats: {{ plan.enterpriseUsersLimit ?? '—' }}
+                                    </li>
+                                    <li class="position-relative text-black">
+                                        <i-feather name="check"></i-feather>
+                                        Storage: {{ plan.storageLimitMb ?? '—' }} MB
+                                    </li>
+                                    <li class="position-relative text-black" [class.close]="!plan.jobTrackingEnabled">
+                                        <i-feather [name]="plan.jobTrackingEnabled ? 'check' : 'x'"></i-feather>
+                                        Job tracking
+                                    </li>
+                                    <li class="position-relative text-black" [class.close]="!plan.alertsEnabled">
+                                        <i-feather [name]="plan.alertsEnabled ? 'check' : 'x'"></i-feather>
+                                        Alerts
+                                    </li>
+                                </ul>
+                            </mat-card-content>
+                        </mat-card>
                     </div>
-                    <div>
-                        <img src="images/icons/shield.svg" alt="icon">
+                }
+
+                @if (enterprisePlans().length === 0) {
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-10 text-body">
+                            <mat-progress-spinner diameter="22" mode="indeterminate"></mat-progress-spinner>
+                            <span>Loading enterprise plans…</span>
+                        </div>
                     </div>
-                </div>
-                <div class="price lh-1 fw-semibold">
-                    $189/ <span class="fs-14 text-body fw-normal">per month</span>
-                </div>
-                <button type="button" mat-button>
-                    By This Plan
-                </button>
-                <ul class="features-list mb-0 p-0 list-unstyled">
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Includes all features from the standard plan.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        No restrictions on data storage.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Tailored solutions to meet specific needs.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Advanced security measures to protect sensitive data.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Compatibility with a wide range of third-party apps and services.
-                    </li>
-                </ul>
-            </mat-card-content>
-        </mat-card>
-    </div>
-    <div class="col-md-6 col-xxl-4 col-xxxl-3">
-        <mat-card
-            class="workifence-card pricing-card mb-25 bg-white border-none d-block"
-        >
-            <mat-card-content>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3>
-                            Additional Considerations
-                        </h3>
-                        <p class="text-black">
-                            A simple start for everyone
-                        </p>
-                    </div>
-                    <div>
-                        <img src="images/icons/shield.svg" alt="icon">
-                    </div>
-                </div>
-                <div class="price lh-1 fw-semibold">
-                    Free <span class="fs-14 text-body fw-normal">per month</span>
-                </div>
-                <button type="button" mat-button>
-                    By This Plan
-                </button>
-                <ul class="features-list mb-0 p-0 list-unstyled">
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Offer a free trial period for users to experience the product/service.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Provide a discount for customers who choose to pay annually.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Clearly outline how the pricing scales as the user's needs grow.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Clearly communicate any additional fees or charges.
-                    </li>
-                    <li class="position-relative text-black">
-                        <i-feather name="check"></i-feather>
-                        Limited storage space for user data.
-                    </li>
-                </ul>
-            </mat-card-content>
-        </mat-card>
-    </div>
+                }
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+
+    @if (!isLoggedIn()) {
+        <div class="mt-15 text-body">
+            Sign in to start a trial or upgrade your plan.
+        </div>
+    }
 </div>

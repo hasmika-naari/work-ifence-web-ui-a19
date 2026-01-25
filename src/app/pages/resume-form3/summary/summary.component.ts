@@ -1,7 +1,7 @@
-import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -23,8 +23,6 @@ import { PopoverModule } from 'primeng/popover';
 import { PanelModule } from 'primeng/panel';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Education, IsSectionPresent, JobDescriptionAIResponse, ProfileSummary, Resume, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
@@ -64,16 +62,11 @@ export interface SummaryData{
   ],
   standalone: true,
   imports: [
-    RouterLink,
-    RouterOutlet,
     RouterModule,
-    NgOptimizedImage,
-    FooterComponent,
     SelectModule,
     CarouselModule,
     ReactiveFormsModule,
     FormsModule,
-    HeaderWorkIfenceComponent,
     MatStepperModule,
     MatFormFieldModule,
     InputTextModule,

@@ -1,0 +1,87 @@
+@if (vm$ | async; as vm) {
+  <div class="page">
+    <mat-card class="card">
+      <mat-card-title>Organization Profile</mat-card-title>
+      <mat-card-subtitle>Manage your enterprise profile</mat-card-subtitle>
+
+      <mat-card-content>
+        @if (vm.loading) {
+          <div class="loading">
+            <mat-spinner diameter="28"></mat-spinner>
+            <span>Loading…</span>
+          </div>
+        }
+
+        @if (vm.error) {
+          <div class="error">{{ vm.error }}</div>
+        }
+
+        @if (!vm.loading && vm.profile) {
+          @if (!editing()) {
+            <div class="grid">
+              <div class="row"><span class="label">Name</span><span class="value">{{ vm.profile.name || '-' }}</span></div>
+              <div class="row"><span class="label">Description</span><span class="value">{{ vm.profile.description || '-' }}</span></div>
+              <div class="row"><span class="label">Email</span><span class="value">{{ vm.profile.emailId || '-' }}</span></div>
+              <div class="row"><span class="label">Phone</span><span class="value">{{ vm.profile.contactPh || '-' }}</span></div>
+              <div class="row"><span class="label">Website</span><span class="value">{{ vm.profile.website || '-' }}</span></div>
+              <div class="row"><span class="label">LinkedIn</span><span class="value">{{ vm.profile.linkedin || '-' }}</span></div>
+              <div class="row"><span class="label">Setup Status</span><span class="value">{{ vm.profile.setupStatus || '-' }}</span></div>
+            </div>
+          } @else {
+            <form [formGroup]="form" class="form">
+              <div class="form-grid">
+                <mat-form-field appearance="outline">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Contact Email</mat-label>
+                  <input matInput formControlName="emailId" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput rows="3" formControlName="description"></textarea>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Phone</mat-label>
+                  <input matInput formControlName="contactPh" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Image URL</mat-label>
+                  <input matInput formControlName="imageUrl" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Website</mat-label>
+                  <input matInput formControlName="website" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>LinkedIn</mat-label>
+                  <input matInput formControlName="linkedin" />
+                </mat-form-field>
+              </div>
+            </form>
+          }
+        }
+      </mat-card-content>
+
+      @if (!vm.loading && vm.profile) {
+        <mat-card-actions align="end">
+          @if (!editing()) {
+            <button mat-stroked-button color="primary" (click)="enterEdit(vm.profile)">Edit</button>
+          } @else {
+            <button mat-button (click)="cancelEdit()" [disabled]="saving()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="save(vm.profile)" [disabled]="saving()">
+              @if (saving()) { Saving… } @else { Save }
+            </button>
+          }
+        </mat-card-actions>
+      }
+    </mat-card>
+  </div>
+}

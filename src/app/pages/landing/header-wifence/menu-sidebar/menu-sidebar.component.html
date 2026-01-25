@@ -20,7 +20,7 @@
         <ul class="menu-nav-list">
           @for (item of menuItems; track item.id) {
             <li class="sidebar-nav-item" [class.has-dropdown]="item.menuItems && item.menuItems.length > 0">
-              <a [routerLink]="item.route" routerLinkActive="active" class="sidebar-nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
+              <a [routerLink]="item.route" routerLinkActive="active" class="sidebar-nav-link" [attr.aria-haspopup]="item.menuItems.length > 0 ? 'true' : null">
                 @if(item.icon && item.route !== '/sign-in') {
                   <lucide-icon [name]="item.icon"></lucide-icon>
                 }

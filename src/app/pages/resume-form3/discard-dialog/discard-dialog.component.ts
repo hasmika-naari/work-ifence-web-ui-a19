@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 
 export interface DialogData {
@@ -16,7 +16,7 @@ export interface DialogData {
 @Component({
   selector: 'app-discard-dialog',
   standalone: true,
-  imports: [RouterModule, MatIconModule, MatIconModule, MatButtonModule, MatIconModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatProgressSpinnerModule],
+  imports: [RouterModule, MatIconModule, MatIconModule, MatButtonModule, MatIconModule, MatDialogContent, MatDialogActions, MatProgressSpinnerModule],
   templateUrl: './discard-dialog.component.html',
   styleUrl : './discard-dialog.component.scss'
 })

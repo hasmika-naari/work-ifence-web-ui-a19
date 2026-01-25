@@ -18,7 +18,7 @@
                 <h3>{{ section.sub_title }}</h3>
               </div>
               <div class="skills-card-body">
-                @if (section.skills?.length) {
+                @if (section.skills.length) {
                   <div class="chip-wrap">
                     @for (skill of section.skills; track skill) {
                       <p-chip [label]="skill"></p-chip>

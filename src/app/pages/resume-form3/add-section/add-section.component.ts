@@ -15,7 +15,6 @@ import { MatCardModule } from '@angular/material/card';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Resume } from 'src/app/services/resume.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { SafeHtmlCachePipe } from './safe-html-cache.pipe';
 import { SectionDesc } from 'src/app/services/store/user-store';
 import { sections } from 'src/app/services/store/resume-sections';
 
@@ -24,7 +23,7 @@ import { sections } from 'src/app/services/store/resume-sections';
 @Component({
   selector: 'app-add-section',
   standalone: true,
-  imports: [RouterModule, MatCardModule, ButtonModule, MatButtonModule, MatIconModule, SafeHtmlCachePipe],
+  imports: [RouterModule, MatCardModule, ButtonModule, MatButtonModule, MatIconModule],
   templateUrl: './add-section.component.html',
   styleUrls: ['./add-section.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

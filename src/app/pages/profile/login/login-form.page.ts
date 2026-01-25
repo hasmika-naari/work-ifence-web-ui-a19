@@ -8,7 +8,7 @@ import { Location } from '@angular/common';
 import { Account, BioProfile, LoginProfile, Profile } from 'src/app/services/profile.model';
 import { AppUtilService } from 'src/app/services/app.util.service';
 import { LoginProfileUpdateRequest } from 'src/app/services/signup.model';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
@@ -24,7 +24,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 @Component({
   selector: 'login-profile-form',
   standalone: true,
-  imports: [RouterLink, RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule, MatIconModule, MatCardModule, MatProgressBarModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+  imports: [RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule, MatIconModule, MatCardModule, MatProgressBarModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './login-form.page.html',
   styleUrls: ['./login-form.page.scss'],
 })

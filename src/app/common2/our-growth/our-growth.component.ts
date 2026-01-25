@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { ThemeCustomizerService } from '../theme-customizer/theme-customizer.service';
-import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-our-growth',
     standalone: true,
-    imports: [RouterLink],
+    imports: [],
     templateUrl: './our-growth.component.html',
     styleUrls: ['./our-growth.component.scss']
 })

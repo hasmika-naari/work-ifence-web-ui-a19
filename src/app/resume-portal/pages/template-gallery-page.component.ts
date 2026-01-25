@@ -22,9 +22,13 @@ import { Router, RouterModule } from '@angular/router';
 import { HeaderWorkIfenceComponent } from 'src/app/pages/landing/header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from 'src/app/pages/landing/footer-wifence/footer-wifence.component';
 import { IconsModule } from 'src/app/shared/icons.module';
+import { LockedOverlayComponent } from 'src/app/shared/components/locked-overlay/locked-overlay.component';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { PortalTemplate, ResumePortalStore } from '../store/resume-portal.store';
 import { TemplatePreviewDialogComponent } from '../components/template-preview-dialog.component';
+import { ResumeTemplateVm } from '../models/resume-template.model';
+import { ResumeLimitService } from '../services/resume-limit.service';
+import { TemplateAccessService } from '../services/template-access.service';
 
 @Component({
   selector: 'app-resume-template-gallery-page',
@@ -39,6 +43,7 @@ import { TemplatePreviewDialogComponent } from '../components/template-preview-d
     MatChipsModule,
     MatIconModule,
     MatSidenavModule,
+    LockedOverlayComponent,
   ],
   template: `
     <div class="course-central-wrapper">
@@ -159,44 +164,58 @@ import { TemplatePreviewDialogComponent } from '../components/template-preview-d
                     </div>
 
                     <div class="rp-templates">
-                      @for (tpl of filteredTemplates(); track tpl.id) {
+                        @for (item of gatedTemplates(); track item.tpl.id) {
                         <div
                           class="rp-template"
                           >
                           <div class="rp-preview">
                             <div
                               class="rp-preview-bg"
-                              [style.backgroundImage]="tpl.previewImageUrl ? 'url(' + tpl.previewImageUrl + ')' : 'none'"
+                                [style.backgroundImage]="item.tpl.previewImageUrl ? 'url(' + item.tpl.previewImageUrl + ')' : 'none'"
                               role="img"
-                              [attr.aria-label]="tpl.name">
+                                [attr.aria-label]="item.tpl.name">
                             </div>
+
+                              @if (!item.allowed) {
+                                <span class="rp-locked-badge" aria-label="Locked">
+                                  <i class="pi pi-lock"></i>
+                                  {{ item.overlayTitle }}
+                                </span>
+                              }
 
                             <div class="rp-hover" aria-hidden="true">
                               <div class="rp-hover-inner">
-                                @if (tpl.isPremium) {
-                                  <div class="rp-hover-note">
-                                    <div class="rp-hover-note-title">Premium template</div>
-                                    <div class="rp-hover-note-sub">Upgrade your account to use this.</div>
-                                  </div>
-                                }
+                                  @if (!item.allowed) {
+                                    <div class="rp-hover-note">
+                                      <div class="rp-hover-note-title">{{ item.overlayTitle }}</div>
+                                      <div class="rp-hover-note-sub">{{ item.overlayMessage }}</div>
+                                    </div>
+                                  }
 
                                 <button
                                   mat-flat-button
                                   color="primary"
                                   type="button"
                                   class="rp-cta"
-                                  [disabled]="tpl.isPremium"
-                                  (click)="onTemplateCtaClick($event, tpl)">
+                                    (click)="onTemplateCtaClick($event, item.tpl)">
                                   Use this template
                                 </button>
                               </div>
                             </div>
 
-                            @if (tpl.isPremium) {
+                              @if (item.tpl.isPremium) {
                               <span class="rp-premium-ribbon" aria-hidden="true"></span>
                             }
+
+                              @if (!item.allowed) {
+                                <app-locked-overlay
+                                  [title]="item.overlayTitle"
+                                  [message]="item.overlayMessage"
+                                  [actionLabel]="item.actionLabel"
+                                  (actionClick)="onLockedActionClick(item)" />
+                              }
                           </div>
-                          <div class="rp-caption">{{ tpl.name | uppercase }}</div>
+                            <div class="rp-caption">{{ item.tpl.name | uppercase }}</div>
                         </div>
                       }
                     </div>
@@ -702,6 +721,28 @@ import { TemplatePreviewDialogComponent } from '../components/template-preview-d
         opacity: 0.92;
       }
 
+      .rp-locked-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 900;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: rgba(0, 0, 0, 0.72);
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      .rp-locked-badge i {
+        font-size: 12px;
+      }
+
       .rp-template:hover .rp-hover,
       .rp-template:focus-within .rp-hover {
         opacity: 1;
@@ -773,6 +814,8 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
   private router = inject(Router);
   private location = inject(Location);
   readonly themeService = inject(ThemeCustomizerService);
+  private templateAccess = inject(TemplateAccessService);
+  private resumeLimit = inject(ResumeLimitService);
 
   @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
   @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
@@ -791,6 +834,25 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
       return templates;
     }
     return templates.filter(t => t.category === category);
+  });
+
+  readonly gatedTemplates = computed(() => {
+    return this.filteredTemplates().map(tpl => {
+      const vm = this.toVm(tpl);
+      const gate = this.templateAccess.canUseTemplate(vm);
+      const overlayTitle = gate.reason === 'LOGIN_REQUIRED' ? 'Sign in required' : 'Premium template';
+      const overlayMessage = this.templateAccess.explainReason(gate.reason);
+      const actionLabel = gate.reason === 'LOGIN_REQUIRED' ? 'Sign in' : 'Upgrade';
+      return {
+        tpl,
+        vm,
+        allowed: gate.allowed,
+        reason: gate.reason,
+        overlayTitle,
+        overlayMessage,
+        actionLabel,
+      };
+    });
   });
 
   async ngOnInit(): Promise<void> {
@@ -924,12 +986,49 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
     event.preventDefault();
     event.stopPropagation();
 
-    if (tpl.isPremium) {
-      void this.router.navigateByUrl('/pricing');
+    const vm = this.toVm(tpl);
+    const access = this.templateAccess.canUseTemplate(vm);
+    if (!access.allowed) {
+      this.templateAccess.handleDenied(access.reason, this.builderReturnUrlForTemplate(tpl));
       return;
     }
 
-    this.store.createResumeDefault();
+    const limit = this.resumeLimit.canCreateResume();
+    if (!limit.allowed) {
+      if (limit.reason === 'LOGIN_REQUIRED') {
+        this.templateAccess.handleDenied('LOGIN_REQUIRED', this.builderReturnUrlForTemplate(tpl));
+      } else {
+        this.resumeLimit.handleLimitDenied();
+      }
+      return;
+    }
+
+    this.store.createResumeFromTemplate(tpl.id);
+  }
+
+  onLockedActionClick(item: { tpl: PortalTemplate; reason?: string }): void {
+    if (item.reason === 'LOGIN_REQUIRED') {
+      this.templateAccess.handleDenied('LOGIN_REQUIRED', this.builderReturnUrlForTemplate(item.tpl));
+      return;
+    }
+
+    this.templateAccess.handleDenied('UPGRADE_REQUIRED', this.builderReturnUrlForTemplate(item.tpl));
+  }
+
+  private builderReturnUrlForTemplate(tpl: PortalTemplate): string {
+    return `/user/resumes/resume?templateId=${encodeURIComponent(String(tpl.id))}`;
+  }
+
+  private toVm(tpl: PortalTemplate): ResumeTemplateVm {
+    // Exactly one BASIC template is allowed on free: the default (id=1 in current catalog).
+    const isDefault = tpl.id === 1;
+    return {
+      id: String(tpl.id),
+      title: tpl.name,
+      category: isDefault ? 'BASIC' : 'PREMIUM',
+      previewUrl: tpl.previewImageUrl,
+      isDefault,
+    };
   }
 
   uploadResume(): void {

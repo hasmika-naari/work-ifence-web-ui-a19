@@ -1,6 +1,6 @@
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -23,8 +23,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
 import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Education, Experience, IsSectionPresent, JobDescriptionAIResponse, Resume, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
@@ -84,10 +82,10 @@ export interface WorkData{
     MessageService
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent, MatTooltipModule,
+  imports: [CommonModule, RouterModule,
+    MatTooltipModule,
     CarouselModule,ReactiveFormsModule, FormsModule, 
-    HeaderWorkIfenceComponent,  MatStepperModule,MatDatepickerModule,
+    MatStepperModule,MatDatepickerModule,
     MatFormFieldModule,InputTextModule,TableModule,DatePickerModule,SelectModule,
     MatInputModule,ButtonModule,PopoverModule,PanelModule,
     MatButtonModule,AccordionModule,TextareaModule,TooltipModule,

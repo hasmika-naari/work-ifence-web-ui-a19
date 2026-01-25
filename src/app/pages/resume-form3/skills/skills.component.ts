@@ -1,6 +1,6 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { AfterContentChecked, AfterContentInit, AfterViewChecked, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, Signal, SimpleChanges, ViewChild, effect, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -20,8 +20,6 @@ import { map, Observable, startWith, Subscription } from 'rxjs';
 import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.component';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Education, IsSectionPresent, JobDescriptionAIResponse, Resume, SkillV2 as SkillV2Base, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
@@ -54,13 +52,12 @@ type SkillV2 = SkillV2Base & { _newSkill?: string };
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
-    CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  MatStepperModule,
+  imports: [CommonModule, RouterModule,
+    CarouselModule,ReactiveFormsModule, FormsModule, MatStepperModule,
     MatFormFieldModule,InputTextModule,TableModule, DragDropModule,
     MatInputModule,ButtonModule,PopoverModule,MatTooltipModule,
     MatButtonModule,AccordionModule,TextareaModule,
-    MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule, MatAutocompleteModule],
+    MatIconModule,MatExpansionModule, MatAutocompleteModule, MatChipsModule],
   templateUrl: './skills.component.html',
   styleUrls: ['./skills.component.scss'],
 

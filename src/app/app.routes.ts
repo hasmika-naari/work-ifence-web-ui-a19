@@ -163,6 +163,7 @@ import { LogoutComponent } from './authentication/logout/logout.component';
 // import { MoreChartsComponent } from './apexcharts/more-charts/more-charts.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { pendingChangesGuard } from './guards/pending-changes.guard';
+import { accessGuard } from './guards/access.guard';
 
 export const routes: Routes = [
     {
@@ -501,6 +502,43 @@ export const routes: Routes = [
                 path: 'dashboard-admin', 
                 loadComponent: () => import('./pages/dashboard-app-admin/dashboard-app-admin.component').then(m => m.DashboardAppAdminComponent), 
                 data: { breadcrumb: 'Employee Dashboard' } 
+            },
+            {
+                path: 'enterprise',
+                children: [
+                    { path: '', redirectTo: 'org', pathMatch: 'full' },
+                    {
+                        path: 'org',
+                        canActivate: [accessGuard],
+                        loadComponent: () =>
+                            import('./pages/enterprise/org/enterprise-org-page.component')
+                                .then(m => m.EnterpriseOrgPageComponent),
+                        data: { breadcrumb: 'Enterprise Org', requireAuth: true, requireMode: 'ENTERPRISE', requireEnterpriseAdmin: true }
+                    },
+                    {
+                        path: 'members',
+                        canActivate: [accessGuard],
+                        loadComponent: () =>
+                            import('./pages/enterprise/members/enterprise-members-page.component')
+                                .then(m => m.EnterpriseMembersPageComponent),
+                        data: { breadcrumb: 'Enterprise Members', requireAuth: true, requireMode: 'ENTERPRISE', requireEnterpriseAdmin: true }
+                    },
+                    {
+                        path: 'subscription',
+                        canActivate: [accessGuard],
+                        loadComponent: () =>
+                            import('./pages/subscription/subscription-page.component')
+                                .then(m => m.SubscriptionPageComponent),
+                        data: { breadcrumb: 'Enterprise Subscription', requireAuth: true, requireMode: 'ENTERPRISE' }
+                    },
+                ]
+            },
+            {
+                path: 'subscription',
+                loadComponent: () =>
+                    import('./pages/subscription/subscription-page.component')
+                        .then(m => m.SubscriptionPageComponent),
+                data: { breadcrumb: 'Subscription' }
             },
             {
                 path: 'profile',

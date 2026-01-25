@@ -196,7 +196,7 @@
                 title="Generate with AI"
                 aria-label="Generate with AI"
                 [class.loading]="isGenerating"
-                [disabled]="isGenerating || !aiPromptControl.value?.trim()"
+                [disabled]="isGenerating || !aiPromptControl.value.trim()"
                 >
                 <i
                   class="pi"

@@ -1,0 +1,12 @@
+<div class="locked-overlay" role="note" aria-label="Locked content overlay">
+  <div class="locked-overlay__card">
+    <div class="locked-overlay__icon" aria-hidden="true">
+      <i class="pi pi-lock"></i>
+    </div>
+    <div class="locked-overlay__title">{{ title }}</div>
+    <div class="locked-overlay__message">{{ message }}</div>
+    <button mat-stroked-button color="primary" type="button" (click)="actionClick.emit()">
+      {{ actionLabel }}
+    </button>
+  </div>
+</div>

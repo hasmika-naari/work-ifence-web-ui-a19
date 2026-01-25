@@ -1,8 +1,8 @@
 import { MessageService } from 'primeng/api';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, Optional, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -31,11 +31,8 @@ import { SummaryComponent } from './summary/summary.component';
 import { SkillsComponent } from './skills/skills.component';
 import { ProjectComponent } from './project/project.component';
 import { EducationComponent } from './education/education.component';
-import { ContextMenuComponent } from './context-menu/context-menu.component';
 import { Resume1TemplateComponent } from './template/template.component';
 import { PreviewResumeComponent } from './preview-resume/preview-resume.component';
-import { FooterComponent } from '../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../landing/header-wifence/header-wifence.component';
 import { Certification, Education, Experience, JobDescriptionAIResponse, JobResume, JobResumeRequest, Project, Resume, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
 import { GenAIService } from 'src/app/services/shared/genai.service';
@@ -76,6 +73,9 @@ import * as _ from 'lodash'
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { PlanGateService, FREE_TEMPLATE_ID } from 'src/app/resume-portal/services/plan-gate.service';
+import { TemplateAccessService } from 'src/app/resume-portal/services/template-access.service';
+import { ResumeLimitService } from 'src/app/resume-portal/services/resume-limit.service';
+import { ResumeTemplateVm } from 'src/app/resume-portal/models/resume-template.model';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -90,15 +90,15 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule, PanelModule,ChipModule,DrawerModule,
-     NgOptimizedImage,FooterComponent, MatDialogModule, MatProgressBarModule,MessageModule,
-    CarouselModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  
+  imports: [CommonModule, RouterModule, PanelModule,ChipModule,DrawerModule,
+    MatDialogModule, MatProgressBarModule,MessageModule,
+    CarouselModule,ReactiveFormsModule, FormsModule,  
     MatStepperModule, MatFormFieldModule,InputTextModule,TableModule, MenuModule,Resume1TemplateComponent,
-    MatInputModule,ButtonModule,PopoverModule,ResumeContactComponent,ContextMenuComponent,
+    MatInputModule,ButtonModule,PopoverModule,ResumeContactComponent,
     MatButtonModule,AccordionModule,TextareaModule,CertificationComponent,CourseWorkComponent,
     EducationComponent,ProjectComponent,SkillsComponent,SummaryComponent,ProgressBarModule, MatTooltipModule,
     MatIconModule,MatExpansionModule, ExperianceComponent, ResumeTitleComponent, ResumeTemplateListComponent, ResumeTemplate2Component,ResumeTemplate3Component, PreviewResumeComponent
-  , ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, DiscardDialogComponent, AchievementsComponent,
+  , ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, AchievementsComponent,
   JobDescriptionComponent, MatExpansionModule, ResumeTemplate9Component, ResumeTemplate10Component, AccomplishmentsComponent, AddSectionComponent],
   templateUrl: './resume-form3.component.html',
   styleUrls: ['./resume-form3.component.scss'],
@@ -299,6 +299,8 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   private userStore: UserStoreService = inject(UserStoreService);
   private route: ActivatedRoute = inject(ActivatedRoute);
   private planGate: PlanGateService = inject(PlanGateService);
+  private templateAccess: TemplateAccessService = inject(TemplateAccessService);
+  private resumeLimit: ResumeLimitService = inject(ResumeLimitService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   private platformId: object =  inject(PLATFORM_ID);
   private _formBuilder: FormBuilder =  inject(FormBuilder);
@@ -666,12 +668,31 @@ ngAfterViewInit(): void {
     const templateIdParam = this.route.snapshot.queryParamMap.get('templateId');
     const templateId = templateIdParam ? Number(templateIdParam) : NaN;
     if (Number.isFinite(templateId) && templateId > 0) {
-      const canUse = this.planGate.canUseTemplate(templateId);
-      if (!canUse && this.browser) {
-        this.planGate.enforceOrUpgrade(false, 'This template requires an upgrade.');
+      const vm: ResumeTemplateVm = {
+        id: String(templateId),
+        title: `Template ${templateId}`,
+        category: templateId === FREE_TEMPLATE_ID ? 'BASIC' : 'PREMIUM',
+        isDefault: templateId === FREE_TEMPLATE_ID,
+      };
+
+      const gate = this.templateAccess.canUseTemplate(vm);
+      if (!gate.allowed) {
+        this.openSnackBar(this.templateAccess.explainReason(gate.reason), 'View plans');
+        this.templateAccess.handleDenied(gate.reason, this.router.url);
+        return;
       }
 
-      const resolvedTemplateId = canUse ? templateId : FREE_TEMPLATE_ID;
+      const limit = this.resumeLimit.canCreateResume();
+      if (!limit.allowed) {
+        if (limit.reason === 'LOGIN_REQUIRED') {
+          this.templateAccess.handleDenied('LOGIN_REQUIRED', this.router.url);
+        } else {
+          this.resumeLimit.handleLimitDenied();
+        }
+        return;
+      }
+
+      const resolvedTemplateId = templateId;
 
       const resume = new Resume();
       const resumeTemplate = new ResumeTemplate();

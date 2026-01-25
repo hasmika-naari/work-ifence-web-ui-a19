@@ -1,7 +1,6 @@
 // (removed all code before first import)
-import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -24,8 +23,6 @@ import { DeleteDialogComponent } from '../../delete-dialog/delete-dialog.compone
 import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Certification, Education, IsSectionPresent, Resume, TemplateVariables } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
@@ -35,7 +32,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SectionDesc, SectionItem } from 'src/app/services/store/user-store';
 import { DatePickerModule } from 'primeng/datepicker';
-import { DatePicker } from 'primeng/datepicker';
 
 
 export interface DialogData {
@@ -51,7 +47,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatAutocompleteModule, MatFormFieldModule, InputTextModule, TableModule, InputNumberModule, MatInputModule, ButtonModule, PopoverModule, AutoCompleteModule, SelectModule, MatButtonModule, AccordionModule, TextareaModule, MatTooltipModule, DatePicker, MatIconModule, MatExpansionModule, MatSelectModule, DatePickerModule],
+  imports: [RouterModule, CarouselModule, ReactiveFormsModule, FormsModule, MatStepperModule, MatAutocompleteModule, MatFormFieldModule, InputTextModule, TableModule, InputNumberModule, MatInputModule, ButtonModule, PopoverModule, AutoCompleteModule, SelectModule, MatButtonModule, AccordionModule, TextareaModule, MatTooltipModule, MatIconModule, MatExpansionModule, MatSelectModule, DatePickerModule],
   templateUrl: './certification.component.html',
   styleUrls: ['./certification.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

@@ -4,9 +4,11 @@ import { Resume } from 'src/app/services/resume.model';
 import { ResumeTemplate } from 'src/app/services/bee-compete.model';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { AuthGateService } from '../services/auth-gate.service';
-import { PlanGateService, FREE_TEMPLATE_ID } from '../services/plan-gate.service';
+import { FREE_TEMPLATE_ID } from '../services/plan-gate.service';
 import { ResumePortalApiService } from '../services/resume-portal-api.service';
+import { ResumeLimitService } from '../services/resume-limit.service';
+import { TemplateAccessService } from '../services/template-access.service';
+import { ResumeTemplateVm } from '../models/resume-template.model';
 
 export type PortalTemplate = {
   id: number;
@@ -20,15 +22,14 @@ export type PortalTemplate = {
 @Injectable({ providedIn: 'root' })
 export class ResumePortalStore {
   private userStore = inject(UserStoreService);
-  private authGate = inject(AuthGateService);
-  private planGate = inject(PlanGateService);
+  private templateAccess = inject(TemplateAccessService);
+  private resumeLimit = inject(ResumeLimitService);
   private api = inject(ResumePortalApiService);
   private router = inject(Router);
 
   private loadingMyResumes = signal(false);
 
   readonly isLoggedIn = computed(() => this.userStore.state().isUserLoggedIn);
-  readonly planType = computed(() => this.planGate.getPlanType());
 
   readonly templates = signal<PortalTemplate[]>([
     {
@@ -119,13 +120,19 @@ export class ResumePortalStore {
     // Include templateId so the builder can initialize correctly after login.
     const builderUrl = `/user/resumes/resume?templateId=${encodeURIComponent(String(FREE_TEMPLATE_ID))}`;
 
-    // If not logged in, show login screen, then land directly on builder.
-    if (!this.authGate.requireLoginOrRedirect(builderUrl)) {
+    const access = this.templateAccess.canUseTemplate(this.toVm(FREE_TEMPLATE_ID));
+    if (!access.allowed) {
+      this.templateAccess.handleDenied(access.reason, builderUrl);
       return;
     }
 
-    const existingCount = this.myResumes()?.length ?? 0;
-    if (!this.planGate.enforceOrUpgrade(this.planGate.canCreateResume(existingCount), 'Free plan allows only one resume.')) {
+    const limit = this.resumeLimit.canCreateResume();
+    if (!limit.allowed) {
+      if (limit.reason === 'LOGIN_REQUIRED') {
+        this.templateAccess.handleDenied('LOGIN_REQUIRED', builderUrl);
+      } else {
+        this.resumeLimit.handleLimitDenied();
+      }
       return;
     }
 
@@ -140,17 +147,19 @@ export class ResumePortalStore {
   createResumeFromTemplate(templateId: number): void {
     const builderUrl = `/user/resumes/resume?templateId=${encodeURIComponent(String(templateId))}`;
 
-    // If not logged in, show login screen, then land directly on builder.
-    if (!this.authGate.requireLoginOrRedirect(builderUrl)) {
+    const access = this.templateAccess.canUseTemplate(this.toVm(templateId));
+    if (!access.allowed) {
+      this.templateAccess.handleDenied(access.reason, builderUrl);
       return;
     }
 
-    const existingCount = this.myResumes()?.length ?? 0;
-    if (!this.planGate.enforceOrUpgrade(this.planGate.canCreateResume(existingCount), 'Free plan allows only one resume.')) {
-      return;
-    }
-
-    if (!this.planGate.enforceOrUpgrade(this.planGate.canUseTemplate(templateId), 'This template requires an upgrade.')) {
+    const limit = this.resumeLimit.canCreateResume();
+    if (!limit.allowed) {
+      if (limit.reason === 'LOGIN_REQUIRED') {
+        this.templateAccess.handleDenied('LOGIN_REQUIRED', builderUrl);
+      } else {
+        this.resumeLimit.handleLimitDenied();
+      }
       return;
     }
 
@@ -158,5 +167,17 @@ export class ResumePortalStore {
     void this.router.navigate(['/user/resumes/resume'], {
       queryParams: { templateId },
     });
+  }
+
+  private toVm(templateId: number): ResumeTemplateVm {
+    const isDefault = templateId === FREE_TEMPLATE_ID;
+    const tpl = this.templates().find(t => t.id === templateId);
+    return {
+      id: String(templateId),
+      title: tpl?.name ?? `Template ${templateId}`,
+      category: isDefault ? 'BASIC' : 'PREMIUM',
+      previewUrl: tpl?.previewImageUrl,
+      isDefault,
+    };
   }
 }

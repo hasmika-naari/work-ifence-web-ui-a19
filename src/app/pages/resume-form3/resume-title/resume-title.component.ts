@@ -1,6 +1,5 @@
-import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, ViewChild, effect, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -18,8 +17,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription, map, startWith } from 'rxjs';
 import { PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { IsSectionPresent, Resume, ResumeContact } from 'src/app/services/resume.model';
 import { PromptService } from 'src/app/services/shared/prompt.service';
@@ -46,7 +43,7 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, AutoCompleteModule, SelectModule, MatInputModule, ButtonModule, PopoverModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule],
+  imports: [RouterModule, CarouselModule, ReactiveFormsModule, FormsModule, MatStepperModule, MatFormFieldModule, InputTextModule, TableModule, MatCheckboxModule, AutoCompleteModule, SelectModule, MatInputModule, ButtonModule, PopoverModule, MatButtonModule, AccordionModule, TextareaModule, MatIconModule, MatExpansionModule],
   templateUrl: './resume-title.component.html',
   styleUrls: ['./resume-title.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

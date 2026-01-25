@@ -153,12 +153,18 @@ export class AppComponent implements OnInit, AfterViewInit{
     async ngOnInit(){
         this.userStore.updateMenuList(this.menuList);
 
-        if(isPlatformBrowser(this.platformId)){
-          import('aos').then(AOS => {
-            AOS.default.init({
-              duration: 1000,  // Animation duration (in milliseconds)
-              once: false,       // Ensures animation happens only once
-              easing: 'ease-in-out' // Animation style
+        // NOTE: Angular prerender can execute in Node with a DOM-like environment.
+        // Some libraries (e.g. AOS) still break in Node even if platformId looks like "browser".
+        const isNodeRuntime =
+          typeof (globalThis as any).process !== 'undefined' &&
+          !!(globalThis as any).process?.versions?.node;
+
+        if (isPlatformBrowser(this.platformId) && !isNodeRuntime) {
+          import('aos').then((AOS) => {
+            (AOS as any).default?.init?.({
+              duration: 1000, // Animation duration (in milliseconds)
+              once: false, // Ensures animation happens only once
+              easing: 'ease-in-out', // Animation style
             });
           });
         

@@ -268,6 +268,9 @@ export class LandingComponent implements OnInit, AfterViewInit {
 
   
   gotToShop(dealUrl: any){
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     this.window.open(dealUrl);
   }
 
@@ -281,9 +284,10 @@ export class LandingComponent implements OnInit, AfterViewInit {
   public onPageChanged(event: any){
   this.page = event;
     // this.getAllProducts(); 
-    // if (isPlatformBrowser(this.platformId)) {
-      this.window.scrollTo(0, document.documentElement.clientHeight - 50);
-    // } 
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    this.window.scrollTo(0, document.documentElement.clientHeight - 50);
   }
   public changeSorting(sort: any){
     ;
@@ -299,8 +303,10 @@ export class LandingComponent implements OnInit, AfterViewInit {
       this.dailyCompetations = [...this.competations];
     }
     ;
-    this.window.scrollTo(0, document.documentElement.clientHeight - 50);
-        this.setRandomGradientBackground();
+    if (isPlatformBrowser(this.platformId)) {
+      this.window.scrollTo(0, document.documentElement.clientHeight - 50);
+      this.setRandomGradientBackground();
+    }
   }
   public openProductDialog(deal: CompetationDataItem){   
   this._localStorageService.setItem('selectedDealKey', deal);

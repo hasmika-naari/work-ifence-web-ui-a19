@@ -23,8 +23,8 @@ import { TemplatesService } from '../../../services/shared/templates.service';
 import { Injector } from '@angular/core';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 // Angular modules
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { RouterModule, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 // Angular Material modules
@@ -60,8 +60,6 @@ import { RelevantCourseworkSectionComponent } from '../sections/relevant-coursew
 import { ProfileSummaryBulletedSectionComponent } from '../sections/profile-summary-bulleted-section.component';
 
 // Other components
-import { FooterComponent } from '../../../pages/home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../../pages/landing/header-wifence/header-wifence.component';
 
 interface SectionTemplate {
   section: string;
@@ -87,7 +85,6 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   imports: [
     // Angular core modules
     CommonModule,
-    NgOptimizedImage,
     // Angular Material modules
     MatIconModule,
     MatButtonModule,
@@ -116,11 +113,8 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
     RelevantCourseworkSectionComponent,
     ProfileSummaryBulletedSectionComponent,
     // Other components
-    FooterComponent,
-    HeaderWorkIfenceComponent,
     // Routing
     RouterModule,
-    RouterLink,
     // Forms
     ReactiveFormsModule,
     FormsModule,

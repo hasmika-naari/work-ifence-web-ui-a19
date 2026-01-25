@@ -6,7 +6,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { Profile } from 'src/app/services/profile.model';
 import { AddressFormPage } from './address/address-form.page';
 import { BioProfileFormPage } from './bio/bio-form.page';
@@ -25,7 +25,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterLink, RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule, MatIconModule, PanelModule, ButtonModule, MatTabsModule, MatSidenavModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, AddressFormEditorComponent, MatProgressBarModule],
+  imports: [RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule, MatIconModule, PanelModule, ButtonModule, MatTabsModule, MatSidenavModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, AddressFormPage, BioProfileFormPage, LoginProfileFormPage, LoginFormEditorComponent, BioFormEditorComponent, AddressFormEditorComponent, MatProgressBarModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })

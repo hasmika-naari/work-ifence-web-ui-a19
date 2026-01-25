@@ -1,7 +1,6 @@
 import { MessageService } from 'primeng/api';
-import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Optional, Output, Signal, inject, Input } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -17,10 +16,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { ConfirmDialogComponent, DialogData } from '../confirm-dialog/confirm-dialog.component';
+import { DialogData } from '../confirm-dialog/confirm-dialog.component';
 import { Resume1TemplateComponent } from '../template/template.component';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { ResumeTemplate2Component } from '../template2/template2.component';
 import { ResumeTemplate3Component } from '../template3/template3.component';
@@ -40,7 +37,7 @@ import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-preview-resume',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent, MatStepperModule, ToastModule, MatFormFieldModule, InputTextModule, MatDialogModule, MatInputModule, ButtonModule, ConfirmDialogComponent, MatButtonModule, AccordionModule, TextareaModule, TooltipModule, MatIconModule, MatExpansionModule, Resume1TemplateComponent, ResumeTemplate2Component, ResumeTemplate3Component, ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, ResumeTemplate9Component, ResumeTemplate10Component, LoadingBarModule],
+  imports: [RouterModule, CarouselModule, ReactiveFormsModule, FormsModule, MatStepperModule, ToastModule, MatFormFieldModule, InputTextModule, MatDialogModule, MatInputModule, ButtonModule, MatButtonModule, AccordionModule, TextareaModule, TooltipModule, MatIconModule, MatExpansionModule, Resume1TemplateComponent, ResumeTemplate2Component, ResumeTemplate3Component, ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, ResumeTemplate9Component, ResumeTemplate10Component, LoadingBarModule],
   templateUrl: './preview-resume.component.html',
   styleUrls: ['./preview-resume.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

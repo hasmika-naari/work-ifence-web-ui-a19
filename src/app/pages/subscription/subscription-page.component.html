@@ -1,0 +1,58 @@
+<div class="subscription-page">
+  <mat-card class="workifence-card bg-white border-none d-block">
+    <mat-card-content>
+      <div class="d-flex align-items-start justify-content-between flex-wrap">
+        <div>
+          <h2 class="mb-5">
+            {{ scope() === 'ENTERPRISE' ? 'Enterprise Subscription' : 'My Subscription' }}
+          </h2>
+          <div class="text-body">
+            Plan:
+            <strong>{{ currentPlan()?.marketingTitle || currentPlan()?.name || subscription()?.planCode || 'FREE' }}</strong>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-10 mt-10">
+          <mat-chip-set>
+            <mat-chip color="primary" selected>{{ statusLabel() }}</mat-chip>
+            @if (subscription()?.planCode) {
+              <mat-chip selected>{{ subscription()?.planCode }}</mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+      </div>
+
+      @if (trialDaysRemaining() !== null) {
+        <div class="mt-15">
+          <mat-chip-set>
+            <mat-chip color="accent" selected>
+              Trial ends in {{ trialDaysRemaining() }} day{{ trialDaysRemaining() === 1 ? '' : 's' }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      }
+
+      <mat-divider class="mt-15 mb-15"></mat-divider>
+
+      <h3 class="mb-10">Entitlements</h3>
+      <ul class="entitlements">
+        <li><strong>Resume limit:</strong> {{ entitlements()?.resumeLimit ?? '—' }}</li>
+        <li><strong>Template access:</strong> {{ entitlements()?.templateAccessLevel ?? 'BASIC' }}</li>
+        <li><strong>Job tracking:</strong> {{ entitlements()?.jobTrackingEnabled ? 'Enabled' : 'Not enabled' }}</li>
+        <li><strong>Course central:</strong> {{ entitlements()?.courseCentralEnabled ? 'Enabled' : 'Not enabled' }}</li>
+        <li><strong>Alerts:</strong> {{ entitlements()?.alertsEnabled ? 'Enabled' : 'Not enabled' }}</li>
+        @if (scope() === 'ENTERPRISE') {
+          <li><strong>Seats:</strong> {{ entitlements()?.enterpriseUsersLimit ?? '—' }}</li>
+        }
+        <li><strong>Storage:</strong> {{ entitlements()?.storageLimitMb ?? '—' }} MB</li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-10 mt-15">
+        <button type="button" mat-raised-button color="primary" (click)="goToUpgrade()">
+          Upgrade
+        </button>
+        <a mat-button [routerLink]="['/user/dashboard']">Back to dashboard</a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

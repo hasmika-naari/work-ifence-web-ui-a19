@@ -82,7 +82,11 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     private aosInitialized = false;
 
     ngAfterViewInit() {
-                if (isPlatformBrowser(this.platformId)) {
+                const isNodeRuntime =
+                    typeof (globalThis as any).process !== 'undefined' &&
+                    !!(globalThis as any).process?.versions?.node;
+
+                if (isPlatformBrowser(this.platformId) && !isNodeRuntime) {
                     // Check initial scroll position
                     const initialYOffset = window.scrollY || window.pageYOffset;
                     this.isSticky = initialYOffset > 100;
