@@ -8,6 +8,7 @@
             "jasmine"
         ]
     },
+    "exclude": [],
     "include": [
         "src/**/*.spec.ts",
         "src/**/*.d.ts"

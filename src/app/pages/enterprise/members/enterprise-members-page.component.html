@@ -18,14 +18,20 @@
             <button
               mat-flat-button
               color="primary"
-              (click)="openInvite(vm.page?.totalElements || (vm.page?.content?.length || 0))"
-              [disabled]="entLimit() != null && (vm.page?.totalElements || 0) >= (entLimit() || 0)"
-              [title]="entLimit() != null && (vm.page?.totalElements || 0) >= (entLimit() || 0) ? 'Seat limit reached, upgrade' : ''"
+              (click)="openInvite(vm.usedSeats || 0, vm.seatLimit)"
+              [disabled]="vm.seatsFull"
+              [title]="vm.seatsTooltip || ''"
             >
               <mat-icon>person_add</mat-icon>
               Invite member
             </button>
           </div>
+
+          @if (vm.seatLimit != null) {
+            <div class="muted" style="margin-top: 8px;">
+              Seats used: {{ vm.usedSeats }} / {{ vm.seatLimit }}
+            </div>
+          }
 
           <div class="table-wrap">
             <table mat-table [dataSource]="vm.page?.content || []" class="mat-elevation-z0">

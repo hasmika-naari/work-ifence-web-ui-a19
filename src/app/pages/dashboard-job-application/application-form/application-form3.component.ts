@@ -1,6 +1,6 @@
-import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -51,6 +51,9 @@ import { ClientComponent } from './client/client.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { VendorComponent } from './vendor/vendor.component';
 import { RoundsComponent } from './rounds/rounds.component';
+import { AccessFacadeService } from 'src/app/facades/access-facade.service';
+import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
+import { LockedCalloutComponent } from 'src/app/shared/components/locked-callout/locked-callout.component';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -65,13 +68,37 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule, PanelModule,
-     NgOptimizedImage, MatDialogModule, MatProgressBarModule,MessageModule,
-    CarouselModule,ReactiveFormsModule, FormsModule,   
-    MatStepperModule, MatFormFieldModule,InputTextModule,TableModule, MenuModule, 
-    MatInputModule,ButtonModule,PopoverModule, MatButtonModule,AccordionModule,
-    ProgressBarModule, MatTooltipModule, MatIconModule,MatExpansionModule,  MatExpansionModule,
-    ApplicationsTabComponent, ClientComponent, FeedbackComponent, VendorComponent, RoundsComponent ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    PanelModule,
+    MatDialogModule,
+    MatProgressBarModule,
+    MessageModule,
+    CarouselModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    InputTextModule,
+    TableModule,
+    MenuModule,
+    MatInputModule,
+    ButtonModule,
+    PopoverModule,
+    MatButtonModule,
+    AccordionModule,
+    ProgressBarModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatExpansionModule,
+    ApplicationsTabComponent,
+    ClientComponent,
+    FeedbackComponent,
+    VendorComponent,
+    RoundsComponent,
+    LockedCalloutComponent,
+  ],
   templateUrl: './application-form3.component.html',
   styleUrls: ['./application-form3.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -98,6 +125,11 @@ export class ApplicationForm3Component implements OnInit, OnDestroy, AfterViewCh
   isLeftColumnVisible = false; 
 
   private userStore: UserStoreService = inject(UserStoreService);
+  private readonly accessFacade = inject(AccessFacadeService);
+  private readonly upgradeRouter = inject(UpgradeRouterService);
+
+  readonly canUseJobTracking = computed(() => this.accessFacade.can('JOB_TRACKING'));
+  readonly jobTrackingLockMessage = computed(() => this.accessFacade.denyMessage('JOB_TRACKING'));
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   private platformId: object =  inject(PLATFORM_ID);
   private _snackBar = inject(MatSnackBar);
@@ -957,6 +989,10 @@ ngAfterViewInit(): void {
       else{
         this.openSnackBar("Please complete all required fields in the application form.", "Close");
       }
+    }
+
+    goToPricing(): void {
+      this.upgradeRouter.goToPricingForContext('PERSONAL');
     }
 
       deleteVendorContact(event : any){

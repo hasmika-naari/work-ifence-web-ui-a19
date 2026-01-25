@@ -1,4 +1,13 @@
-<div class="job-tracker-wrapper">
+<app-locked-callout
+  *ngIf="!canUseJobTracking()"
+  title="Job Application Manager"
+  [message]="jobTrackingLockMessage()"
+  actionLabel="Upgrade"
+  icon="lock"
+  (actionClick)="goToPricing()"
+/>
+
+<div class="job-tracker-wrapper" *ngIf="canUseJobTracking()">
   <div class="job-tracker">
     <div class="toolbar">
       <h1 class="title">Job Applications Tracker</h1>

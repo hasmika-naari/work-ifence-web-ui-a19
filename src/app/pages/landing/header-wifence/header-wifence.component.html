@@ -40,9 +40,11 @@
           </div>
 
           <div class="others-option">
-            <a routerLink="/notifications" class="icon-link" aria-label="Notifications">
-              <lucide-icon name="bell"></lucide-icon>
-            </a>
+            @if (canUseAlerts()) {
+              <a routerLink="/notifications" class="icon-link" aria-label="Notifications">
+                <lucide-icon name="bell"></lucide-icon>
+              </a>
+            }
 
             <!-- Always show progress spinner until auth state is determined -->
             @if(isAutoLoggingIn || authStateUndetermined) {

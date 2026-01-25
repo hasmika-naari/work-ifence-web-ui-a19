@@ -2,6 +2,7 @@
 
 import { Injectable, Signal, computed, signal, inject, Injector } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
+declare const require: any;
 import { Observable } from "rxjs";
 import { ResumeTemplateDto, SectionDesc, SectionItem, UserResume, UserState } from "./user-store";
 import { Account, BioProfile, LoginProfile, WifRole } from "../profile.model";

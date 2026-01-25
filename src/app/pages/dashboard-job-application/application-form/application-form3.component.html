@@ -1,4 +1,13 @@
-<div class="container-fluid">
+<app-locked-callout
+  *ngIf="!canUseJobTracking()"
+  title="Job Application Manager"
+  [message]="jobTrackingLockMessage()"
+  actionLabel="Upgrade"
+  icon="lock"
+  (actionClick)="goToPricing()"
+/>
+
+<div class="container-fluid" *ngIf="canUseJobTracking()">
   <div class="left-column"
     [ngClass]="{ 'expanded': !hidePanelWindow, 'collapsed': hidePanelWindow }" >
     <div  class="sticky-left-toolbox">

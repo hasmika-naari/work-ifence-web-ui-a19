@@ -8,8 +8,9 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, combineLatest, of } from 'rxjs';
 import { catchError, distinctUntilChanged, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { expand, reduce } from 'rxjs/operators';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
 import { EnterpriseApiService, EnterpriseRelationDto, PageDto } from 'src/app/services/enterprise-api.service';
@@ -53,19 +54,57 @@ export class EnterpriseMembersPageComponent {
 
   readonly displayedColumns = ['userName', 'email', 'role', 'membershipStatus', 'startDate', 'invitedBy', 'actions'];
 
+  private isSeatUsed(status?: string): boolean {
+    const s = (status ?? '').toString().toUpperCase();
+    return s === 'ACTIVE' || s === 'INVITED';
+  }
+
+  private fetchAllRelations$(enterpriseId: string) {
+    const size = 200;
+    return this.enterpriseApi.listRelations(enterpriseId, 0, size).pipe(
+      expand((res) => {
+        const page = res.number ?? 0;
+        const total = res.totalElements ?? 0;
+        const nextPage = page + 1;
+        const loaded = nextPage * size;
+        if (loaded >= total) return EMPTY;
+        return this.enterpriseApi.listRelations(enterpriseId, nextPage, size);
+      }),
+      map((res) => res.content ?? []),
+      reduce((acc, content) => acc.concat(content), [] as EnterpriseRelationDto[])
+    );
+  }
+
   readonly vm$ = combineLatest([
     this.accessFacade.accessMe$.pipe(
-      map((me) => me?.enterpriseId ?? ''),
-      filter((id) => !!id),
-      distinctUntilChanged()
+      filter((me) => !!me?.enterpriseId),
+      distinctUntilChanged((a, b) => (a?.enterpriseId ?? '') === (b?.enterpriseId ?? ''))
     ),
     this.page$,
     this.refresh$,
   ]).pipe(
-    map(([enterpriseId, pageState]) => ({ enterpriseId, page: pageState.page, size: pageState.size })),
-    switchMap(({ enterpriseId, page, size }) =>
-      this.enterpriseApi.listRelations(enterpriseId, page, size).pipe(
-        map((res) => ({ loading: false, page: res })),
+    map(([me, pageState]) => ({ me, enterpriseId: me?.enterpriseId ?? '', page: pageState.page, size: pageState.size })),
+    switchMap(({ me, enterpriseId, page, size }) => {
+      const limit = me?.entitlements?.enterpriseUsersLimit;
+
+      return combineLatest([
+        this.enterpriseApi.listRelations(enterpriseId, page, size),
+        this.fetchAllRelations$(enterpriseId).pipe(catchError(() => of([] as EnterpriseRelationDto[]))),
+      ]).pipe(
+        map(([paged, all]) => {
+          const usedSeats = all.filter((r) => this.isSeatUsed(r.membershipStatus)).length;
+          const seatsFull = typeof limit === 'number' ? usedSeats >= limit : false;
+          const seatsTooltip = seatsFull ? 'Seat limit reached, upgrade to invite more members.' : '';
+
+          return {
+            loading: false,
+            page: paged,
+            usedSeats,
+            seatsFull,
+            seatsTooltip,
+            seatLimit: limit,
+          };
+        }),
         catchError((err) => {
           const parsed = parseBackendError(err);
           const msg = toFriendlyErrorMessage(parsed);
@@ -76,11 +115,15 @@ export class EnterpriseMembersPageComponent {
             loading: false,
             error: msg,
             page: { content: [], totalElements: 0, number: page, size } as PageDto<EnterpriseRelationDto>,
+            usedSeats: 0,
+            seatsFull: false,
+            seatsTooltip: '',
+            seatLimit: limit,
           });
         }),
         startWith({ loading: true } as any)
-      )
-    ),
+      );
+    }),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
@@ -95,11 +138,10 @@ export class EnterpriseMembersPageComponent {
     this.refresh$.next();
   }
 
-  openInvite(currentTotal: number) {
+  openInvite(usedSeats: number, limit?: number) {
     this.dashboardContext.setEnterprise();
 
-    const limit = this.entLimit();
-    if (typeof limit === 'number' && currentTotal >= limit) {
+    if (typeof limit === 'number' && usedSeats >= limit) {
       this.snackBar.open('Seat limit reached, upgrade to invite more members.', 'OK', { duration: 3500 });
       void this.router.navigate(['/pricing'], { queryParams: { scope: 'enterprise' } });
       return;

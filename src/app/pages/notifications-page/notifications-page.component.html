@@ -1,5 +1,14 @@
+@if (!canUseAlerts()) {
+    <app-locked-callout
+        title="Alerts & Notifications"
+        [message]="alertsLockMessage()"
+        actionLabel="Upgrade"
+        icon="notifications_off"
+        (actionClick)="goToPricing()"
+    />
+} @else {
 <mat-card
-    class="workifence-card notifications-card mb-25 bg-white border-none d-block"
+        class="workifence-card notifications-card mb-25 bg-white border-none d-block"
 >
     <mat-card-header>
         <mat-card-title>
@@ -93,3 +102,4 @@
         </ul>
     </mat-card-content>
 </mat-card>
+}

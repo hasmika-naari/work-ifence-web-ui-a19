@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, inject, Signal, AfterViewInit, PLATFORM_ID, CUSTOM_ELEMENTS_SCHEMA, ViewEncapsulation,effect, AfterContentChecked, AfterContentInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Signal, AfterViewInit, PLATFORM_ID, CUSTOM_ELEMENTS_SCHEMA, ViewEncapsulation,effect, AfterContentChecked, AfterContentInit, ChangeDetectorRef, computed } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuModule } from 'primeng/menu';
 import { ChartModule } from 'primeng/chart';
@@ -40,6 +40,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { AccessFacadeService } from 'src/app/facades/access-facade.service';
+import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
+import { LockedCalloutComponent } from 'src/app/shared/components/locked-callout/locked-callout.component';
 
 interface Option {
   name : string;
@@ -49,7 +52,7 @@ interface Option {
 @Component({
     selector: 'dashboard-job-application',
     standalone: true,
-  imports: [RouterLink, RouterModule, StyleClassModule, AutoCompleteModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, MatCardModule, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, DragDropModule, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule],
+  imports: [CommonModule, RouterModule, StyleClassModule, AutoCompleteModule, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, MatCardModule, PanelMenuModule, DragDropModule, ButtonModule, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule, LockedCalloutComponent],
     templateUrl: './dashboard-job-application.component.html',
     styleUrls: ['./dashboard-job-application.component.scss'],
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -166,6 +169,11 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
 
 
   private userStore: UserStoreService = inject(UserStoreService);
+  private readonly accessFacade = inject(AccessFacadeService);
+  private readonly upgradeRouter = inject(UpgradeRouterService);
+
+  readonly canUseJobTracking = computed(() => this.accessFacade.can('JOB_TRACKING'));
+  readonly jobTrackingLockMessage = computed(() => this.accessFacade.denyMessage('JOB_TRACKING'));
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   private platformId: object =  inject(PLATFORM_ID);
   private cdr: ChangeDetectorRef =  inject(ChangeDetectorRef);
@@ -195,6 +203,10 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
         this.loadJobApplicationData()
       }
     })
+  }
+
+  goToPricing(): void {
+    this.upgradeRouter.goToPricingForContext('PERSONAL');
   }
 
   ngOnInit() {

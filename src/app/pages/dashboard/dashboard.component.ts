@@ -5,12 +5,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { BioProfile } from 'src/app/services/profile.model';
-import { DashboardFacadeService } from 'src/app/facades/dashboard-facade.service';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
-import { AccessMeDto } from 'src/app/models/access-me.model';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
 import { ActiveRoleService } from 'src/app/services/active-role.service';
 import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
+import { DashboardSummaryFacadeService } from 'src/app/facades/dashboard-summary-facade.service';
 
 @Component({
   selector: 'fury-dashboard',
@@ -32,30 +31,44 @@ export class DashboardComponent {
 
   private routerService: Router =  inject(Router);
   private userStore: UserStoreService =  inject(UserStoreService);
-  private dashboardFacade: DashboardFacadeService = inject(DashboardFacadeService);
   private accessFacade: AccessFacadeService = inject(AccessFacadeService);
   private snackBar: MatSnackBar = inject(MatSnackBar);
   private dashboardContext: DashboardContextService = inject(DashboardContextService);
   private activeRoleService: ActiveRoleService = inject(ActiveRoleService);
   private upgradeRouter: UpgradeRouterService = inject(UpgradeRouterService);
+  private dashboardSummaryFacade: DashboardSummaryFacadeService = inject(DashboardSummaryFacadeService);
 
   bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
-  vm$ = this.dashboardFacade.vm$;
   accessMe = this.accessFacade.accessMeSignal;
   dashboardCtx = this.dashboardContext.context;
   activeRole = computed(() => this.activeRoleService.getActiveRole()());
   isEnterpriseAdminView = computed(() => this.dashboardCtx() === 'ENTERPRISE' && this.activeRole()?.role === 'ENTERPRISE_ADMIN');
 
+  summaryVm = this.dashboardSummaryFacade.currentSummaryVmSignal;
+  summaryLoading = computed(() => this.summaryVm().summary === null);
+  lastUpdatedText = computed(() => {
+    const vm = this.summaryVm();
+    const raw = vm.summary?.lastUpdated;
+    if (!raw) return '';
+    const date = new Date(raw);
+    if (Number.isNaN(date.getTime())) return '';
+    return `Last updated: ${date.toLocaleString()}`;
+  });
+
   toolsVm = computed(() => this.buildTools());
-  statsVm = computed(() => this.buildStats(this.accessMe()));
+  statsVm = computed(() => this.buildStats());
 
   private buildTools() {
     const lockedMsg = 'Upgrade to access this feature';
 
     const resumeBuild = this.accessFacade.buildToolAccess('RESUME_BUILD');
-    const jobAppCreate = this.accessFacade.buildToolAccess('JOB_APP_CREATE');
+    const jobAppCreate = this.accessFacade.can('JOB_TRACKING')
+      ? { enabled: true }
+      : { enabled: false, reason: this.accessFacade.denyMessage('JOB_TRACKING') };
     const resumeManage = this.accessFacade.buildToolAccess('RESUME_MANAGE');
-    const jobAppManage = this.accessFacade.buildToolAccess('JOB_APP_MANAGE');
+    const jobAppManage = this.accessFacade.can('JOB_TRACKING')
+      ? { enabled: true }
+      : { enabled: false, reason: this.accessFacade.denyMessage('JOB_TRACKING') };
 
     const base = [
       {
@@ -131,126 +144,92 @@ export class DashboardComponent {
 
     return base;
   }
-  buildStats(me: AccessMeDto) {
-    const ctx = this.dashboardCtx();
-    const resumeCount = me.counts?.resumeCount ?? 0;
-    const jobApplicationCount = me.counts?.jobApplicationCount ?? 0;
-    const ongoingApplicationsCount = me.counts?.ongoingApplicationsCount ?? 0;
-    const offeredCount = me.counts?.offeredCount ?? 0;
-    const rejectedApplicationsCount = me.counts?.rejectedApplicationsCount ?? 0;
+  buildStats() {
+    const vm = this.summaryVm();
 
-    if (ctx === 'ENTERPRISE') {
-      const enterpriseRole = (me?.enterpriseRole ?? (this.isEnterpriseAdminView() ? 'ADMIN' : 'EMPLOYEE')) as string;
-      const enterpriseId = (me?.enterpriseId ?? '') as string;
-
-      const enterpriseStats = [
+    if (vm.type === 'ENTERPRISE') {
+      const s = vm.summary ?? {};
+      return [
         {
-          title: 'Enterprise Role',
-          value: String(enterpriseRole || 'Employee'),
-          sub: '',
-          color: '#f05b4e',
-          icon: 'pi pi-briefcase',
-        },
-      ];
-
-      if (enterpriseId) {
-        enterpriseStats.push({
-          title: 'Enterprise ID',
-          value: enterpriseId.length > 10 ? `${enterpriseId.slice(0, 6)}…${enterpriseId.slice(-4)}` : enterpriseId,
-          sub: '',
-          color: '#4285F4',
-          icon: 'pi pi-building',
-        });
-      }
-
-      if (this.isEnterpriseAdminView()) {
-        enterpriseStats.push({
-          title: 'Admin Shortcuts',
-          value: 'Enabled',
+          title: 'Active Members',
+          value: String(s.membersActive ?? 0),
           sub: '',
           color: '#34A853',
-          icon: 'pi pi-shield',
-        });
-      }
-
-      // Keep personal productivity stats visible in enterprise context as well.
-      return [
-        ...enterpriseStats,
-        {
-          title: 'Resumes Created',
-          value: String(resumeCount),
-          sub: '',
-          color: '#4285F4',
-          icon: 'pi pi-file',
+          icon: 'pi pi-users',
         },
         {
-          title: 'Applications Sent',
-          value: String(jobApplicationCount),
+          title: 'Invited',
+          value: String(s.membersInvited ?? 0),
+          sub: '',
+          color: '#4285F4',
+          icon: 'pi pi-user-plus',
+        },
+        {
+          title: 'Job Applications',
+          value: String(s.jobApplicationsTotal ?? 0),
           sub: '',
           color: '#9C27B0',
-          icon: 'pi pi-send',
+          icon: 'pi pi-briefcase',
         },
         {
-          title: 'Ongoing Applications',
-          value: String(ongoingApplicationsCount),
+          title: 'Open Roles',
+          value: String(s.openRolesCount ?? 0),
           sub: '',
           color: '#FBBC05',
-          icon: 'pi pi-clock',
+          icon: 'pi pi-sitemap',
         },
         {
-          title: 'Offered',
-          value: String(offeredCount),
-          sub: '',
-          color: '#34A853',
-          icon: 'pi pi-thumbs-up',
-        },
-        {
-          title: 'Rejected Applications',
-          value: String(rejectedApplicationsCount),
+          title: 'Service Requests',
+          value: String(s.serviceRequestsOpen ?? 0),
           sub: '',
           color: '#EA4335',
-          icon: 'pi pi-thumbs-down',
+          icon: 'pi pi-inbox',
         },
       ];
     }
 
+    const s = vm.summary ?? {};
     return [
       {
         title: 'Resumes Created',
-        value: String(resumeCount),
+        value: String(s.resumeCount ?? 0),
         sub: '',
         color: '#4285F4',
         icon: 'pi pi-file',
       },
       {
         title: 'Applications Sent',
-        value: String(jobApplicationCount),
+        value: String(s.jobApplicationCount ?? 0),
         sub: '',
         color: '#9C27B0',
         icon: 'pi pi-send',
       },
       {
         title: 'Ongoing Applications',
-        value: String(ongoingApplicationsCount),
+        value: String(s.ongoingApplications ?? 0),
         sub: '',
         color: '#FBBC05',
         icon: 'pi pi-clock',
       },
       {
         title: 'Offered',
-        value: String(offeredCount),
+        value: String(s.offeredCount ?? 0),
         sub: '',
         color: '#34A853',
         icon: 'pi pi-thumbs-up',
       },
       {
-        title: 'Rejected Applications',
-        value: String(rejectedApplicationsCount),
+        title: 'Rejected',
+        value: String(s.rejectedCount ?? 0),
         sub: '',
         color: '#EA4335',
         icon: 'pi pi-thumbs-down',
       },
     ];
+  }
+
+  reloadSummary(): void {
+    this.dashboardSummaryFacade.reload();
   }
 
 

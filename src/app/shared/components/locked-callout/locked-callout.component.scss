@@ -1,0 +1,31 @@
+.locked-callout {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.title {
+  font-weight: 600;
+}
+
+.message {
+  opacity: 0.85;
+}
+
+.actions {
+  margin-left: auto;
+}

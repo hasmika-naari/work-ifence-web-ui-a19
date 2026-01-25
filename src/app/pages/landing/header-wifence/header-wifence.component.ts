@@ -1,6 +1,6 @@
     // Use correct signal for login state
-import { CommonModule, NgOptimizedImage, isPlatformBrowser, Location, ViewportScroller } from '@angular/common';
-import { Component, OnInit, ElementRef, inject, Input, PLATFORM_ID, Inject, AfterViewInit, AfterViewChecked, OnDestroy, Renderer2, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, isPlatformBrowser, Location, ViewportScroller } from '@angular/common';
+import { Component, OnInit, ElementRef, computed, inject, Input, PLATFORM_ID, Inject, AfterViewInit, AfterViewChecked, OnDestroy, Renderer2, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { SaasSidebarComponent } from './sidebar/sidebar.component';
@@ -17,13 +17,13 @@ import { ThemeCustomizerService } from '../../../services/theme-customizer/theme
 import { LayoutService } from 'src/app/layout/layout.service';
 import { Subscription } from 'rxjs';
 import { IconsModule } from 'src/app/shared/icons.module';
+import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 
 @Component({
     selector: 'app-header-wifence',
     standalone: true,
     imports: [
         CommonModule, 
-        NgOptimizedImage, 
         RouterModule,
         RouterLink, 
         NgbModule, 
@@ -64,6 +64,9 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
     private storageService: LocalStorageService = inject(LocalStorageService);
     private userStore: UserStoreService = inject(UserStoreService);
+    private accessFacade: AccessFacadeService = inject(AccessFacadeService);
+
+    readonly canUseAlerts = computed(() => this.accessFacade.can('ALERTS'));
 
     private router:Router =  inject(Router);
     private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);

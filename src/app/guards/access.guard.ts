@@ -6,23 +6,27 @@ import { isPlatformBrowser } from '@angular/common';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { entitlementDenyReason, isEntitled, type EntitlementKey } from 'src/app/utils/entitlements';
+import type { FeatureKey, FeaturePricingScope } from 'src/app/models/feature-key.model';
 
 export interface AccessGuardData {
   requireAuth?: boolean;
   requireMode?: 'ENTERPRISE' | 'PERSONAL' | 'ADMIN';
   requireEnterpriseAdmin?: boolean;
   requireEntitlement?: EntitlementKey;
+  requireFeature?: FeatureKey;
+  pricingScope?: FeaturePricingScope;
 }
 
 function show(snackBar: MatSnackBar, message: string) {
   snackBar.open(message, 'OK', { duration: 3200 });
 }
 
-function navigatePricing(router: Router, scope?: 'enterprise' | 'personal') {
-  if (scope) {
-    void router.navigate(['/pricing'], { queryParams: { scope } });
+function navigatePricing(router: Router, scope?: FeaturePricingScope) {
+  if (scope === 'enterprise') {
+    void router.navigate(['/pricing'], { queryParams: { scope: 'enterprise' } });
     return;
   }
+  // individual: default pricing tab
   void router.navigateByUrl('/pricing');
 }
 
@@ -80,7 +84,16 @@ export const accessGuard: CanActivateFn = (
       if (data.requireEntitlement) {
         if (!isEntitled(me, data.requireEntitlement)) {
           show(snackBar, entitlementDenyReason(data.requireEntitlement));
-          navigatePricing(router, isEnterprise ? 'enterprise' : 'personal');
+          navigatePricing(router, data.pricingScope ?? (isEnterprise ? 'enterprise' : 'individual'));
+          return false;
+        }
+      }
+
+      if (data.requireFeature) {
+        if (!accessFacade.require(data.requireFeature, me)) {
+          const reason = accessFacade.lastDeniedReason();
+          show(snackBar, reason?.message ?? 'Upgrade required');
+          navigatePricing(router, data.pricingScope ?? reason?.pricingScope ?? (isEnterprise ? 'enterprise' : 'individual'));
           return false;
         }
       }

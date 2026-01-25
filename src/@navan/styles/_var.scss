@@ -1,5 +1,5 @@
-@import "@angular/material/core/style/variables";
-@import "@angular/material/core/theming/palette";
+// NOTE: Avoid deep Angular Material Sass imports here.
+// Newer Angular tooling enforces package export boundaries which can break these paths.
 
 /**
   General

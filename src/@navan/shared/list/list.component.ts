@@ -21,13 +21,13 @@ import { ListColumn } from './list-column.model';
 })
 export class ListComponent implements AfterViewInit {
 
-  @Input() name: string;
-  @Input() columns: ListColumn[];
+  @Input() name!: string;
+  @Input() columns!: ListColumn[];
 
-  @ViewChild('filter') filter: ElementRef;
+  @ViewChild('filter') filter!: ElementRef<HTMLInputElement>;
   @Output() filterChange = new EventEmitter<string>();
 
-  @Input() hideHeader: boolean;
+  @Input() hideHeader = false;
 
   constructor(private readonly cd: ChangeDetectorRef) {
   }
@@ -43,7 +43,7 @@ export class ListComponent implements AfterViewInit {
     }
   }
 
-  toggleColumnVisibility(column, event) {
+  toggleColumnVisibility(column: ListColumn, event: Event): void {
     event.stopPropagation();
     event.stopImmediatePropagation();
     column.visible = !column.visible;

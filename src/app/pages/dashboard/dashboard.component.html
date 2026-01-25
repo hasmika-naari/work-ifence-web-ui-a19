@@ -7,17 +7,31 @@
       </h1>
       <p class="subtitle">Let’s manage your journey to dream job with Workifence!</p>
 
-      @if (vm$ | async; as vm) {
-        @if (vm.loading) {
-          <div class="mb-3 muted">Loading dashboard…</div>
-        }
-        @if (vm.error) {
-          <div class="mb-3 muted">{{ vm.error }}</div>
-        }
-
       <section>
         <div class="mb-3">
-          <span class="section-subtitle" >Stats</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <div>
+              <span class="section-subtitle">Stats</span>
+              @if (lastUpdatedText()) {
+                <div class="muted" style="margin-top:4px;">{{ lastUpdatedText() }}</div>
+              }
+            </div>
+
+            <button
+              type="button"
+              class="upgrade-badge"
+              (click)="reloadSummary()"
+              [disabled]="summaryLoading()"
+              style="cursor:pointer;border:none;"
+            >
+              <i class="pi pi-refresh"></i>
+              Refresh
+            </button>
+          </div>
+
+          @if (summaryLoading()) {
+            <div class="mb-3 muted" style="margin-top:8px;">Loading stats…</div>
+          }
         </div>
         <div class="stats-container">
           @for (stat of statsVm(); track stat.title) {
@@ -64,8 +78,6 @@
           }
         </div>
       </section>
-
-      }
     <section class="mt-5">
       <div class="mb-3">
         <span class="section-subtitle mt-5 mb-3" >Resources</span>

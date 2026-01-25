@@ -426,6 +426,14 @@ export const routes: Routes = [
         data: { reuseComponent: true, breadcrumb: 'Pricing' }
     },
     {
+        path: 'notifications',
+        canActivate: [accessGuard],
+        loadComponent: () =>
+            import('./pages/notifications-page/notifications-page.component')
+                .then(m => m.NotificationsPageComponent),
+        data: { reuseComponent: true, breadcrumb: 'Notifications', requireAuth: true, requireFeature: 'ALERTS', pricingScope: 'individual' }
+    },
+    {
         path: 'resumes/resume',
         redirectTo: 'user/resumes/resume',
         pathMatch: 'full'
@@ -464,14 +472,16 @@ export const routes: Routes = [
             },
             {   
                 path: 'job-applications', 
+                canActivate: [accessGuard],
                 loadComponent: () => import('./pages/dashboard-job-application/dashboard-job-application.component').then(m => m.DashboardJobApplicationComponent), 
-                data: { breadcrumb: 'Job Applications' } 
+                data: { breadcrumb: 'Job Applications', requireAuth: true, requireFeature: 'JOB_TRACKING', pricingScope: 'individual' } 
             },
             {
                 path: 'job-applications/application',
+                canActivate: [accessGuard],
                 loadComponent: () => 
                     import('./pages/dashboard-job-application/application-form/application-form3.component')
-                        .then(m => m.ApplicationForm3Component), data: {reuseComponent: true, breadcrumb: 'Application' },
+                        .then(m => m.ApplicationForm3Component), data: {reuseComponent: true, breadcrumb: 'Application', requireAuth: true, requireFeature: 'JOB_TRACKING', pricingScope: 'individual' },
             },
             {   
                 path: 'requests', 
