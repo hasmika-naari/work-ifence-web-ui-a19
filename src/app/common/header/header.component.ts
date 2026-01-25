@@ -5,7 +5,7 @@ import { DatePipe, isPlatformBrowser, NgClass } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToggleService } from './toggle.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Account, BioProfile, WifRole } from 'src/app/services/profile.model';
@@ -16,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, RouterLink, NgClass, MatDividerModule, MatIconModule],
+    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, NgClass, MatDividerModule, MatIconModule],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss',
     providers: [
@@ -71,10 +71,5 @@ export class HeaderComponent {
     
        this.userStore.resetStore();
         this.router.navigateByUrl("/");
-    }
-
-    switchDashboard($event:any, role: WifRole){
-        this.userStore.updateActiveRole(role);
-        this.router.navigateByUrl(role.url);
     }
 }

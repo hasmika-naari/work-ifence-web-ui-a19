@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject, AfterViewInit, computed, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject, AfterViewInit, computed, effect, signal } from '@angular/core';
 
 interface LayoutRole { title: string; [key: string]: any; }
 import { SidebarDirective } from '../../@navan/shared/sidebar/sidebar.directive';
@@ -11,18 +11,22 @@ import { MatDrawerMode, MatSidenavModule } from '@angular/material/sidenav';
 import { CommonModule, isPlatformBrowser, LocationStrategy, PathLocationStrategy, Location } from '@angular/common';
 import { SidebarComponent } from '../common/sidebar/sidebar.component';
 import { HeaderComponent } from '../common/header/header.component';
-import { FooterComponent } from '../common/footer/footer.component';
 import { ToggleService } from '../common/header/toggle.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { stubFalse } from 'lodash';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { IconsModule } from '../shared/icons.module';
+import { UserStoreService } from '../services/store/user-store.service';
+import { WifRole } from '../services/profile.model';
+import { ActiveRoleService } from '../services/active-role.service';
+import { AccessFacadeService } from '../facades/access-facade.service';
+import { AccessMeDto } from '../models/access-me.model';
 
 @Component({
   selector: 'wif-layout',
   standalone: true,
-   imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, MatSidenavModule,
+   imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, MatSidenavModule,
      MatIconModule, MatDividerModule, IconsModule],
    providers: [
     Location, 
@@ -36,25 +40,45 @@ import { IconsModule } from '../shared/icons.module';
 })
 export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   menuSidenavOpened = false;
-  
-  // Use signals to handle async ViewChild initialization
-  private headerComponentSignal = signal<HeaderComponent | undefined>(undefined);
-  userRoles = computed(() => this.headerComponentSignal()?.userRoles?.() || []);
-  userActiveRole = computed(() => {
-    const role = this.headerComponentSignal()?.userActiveRole?.();
-    return role && typeof role.title === 'string' ? role : null;
-  });
-  
-  @ViewChild(HeaderComponent) set headerComponent(component: HeaderComponent | undefined) {
-    this.headerComponentSignal.set(component);
+
+  // Use signals for role menu (single source: ActiveRoleService -> UserStore)
+  private readonly userStore: UserStoreService = inject(UserStoreService);
+  private readonly activeRoleService: ActiveRoleService = inject(ActiveRoleService);
+  private readonly accessFacade: AccessFacadeService = inject(AccessFacadeService);
+
+  userRoles = computed(() => this.buildRoles(this.accessFacade.accessMeSignal()));
+  userActiveRole = computed(() => this.activeRoleService.getActiveRole()());
+
+  constructor(
+    private themeService: ThemeService,
+    public route: ActivatedRoute,
+    public router: Router
+  ) {
+    // Keep the legacy role store in sync (for active role highlighting + persistence via ActiveRoleService)
+    effect(() => {
+      const roles = this.userRoles();
+      const current = this.userStore.getUserRoles()();
+
+      const currentKey = (current ?? []).map((r) => r.role).join('|');
+      const nextKey = (roles ?? []).map((r) => r.role).join('|');
+      if (currentKey !== nextKey) {
+        this.userStore.updateRoles(roles);
+      }
+    });
+
+    this.toggleService.isToggled$.subscribe(isToggled => {
+      this.isToggled = isToggled;
+    });
   }
-  // Proxy for dashboard switching
-  switchDashboard($event: any, role: any) {
-    const headerComponent = this.headerComponentSignal();
-    if (headerComponent && headerComponent.switchDashboard) {
-      headerComponent.switchDashboard($event, role);
-      this.menuSidenavOpened = false;
-    }
+
+  // Role switching happens ONLY here (layout role menu)
+  switchDashboard($event: any, role: WifRole) {
+    this.activeRoleService.setActiveRole(role);
+
+    const title = (role?.title ?? '').toLowerCase();
+    const isPlatformAdmin = title.includes('platform admin') || role?.role === 'PLATFORM_ADMIN' || role?.role === 'ROLE_ADMIN';
+    this.router.navigateByUrl(isPlatformAdmin ? '/user/dashboard-admin' : '/user/dashboard');
+    this.menuSidenavOpened = false;
   }
 
   // Proxy for logout
@@ -64,6 +88,12 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
       headerComponent.logoutHandler($event);
       this.menuSidenavOpened = false;
     }
+  }
+
+  // Keep this for logout proxy only.
+  private headerComponentSignal = signal<HeaderComponent | undefined>(undefined);
+  @ViewChild(HeaderComponent) set headerComponent(component: HeaderComponent | undefined) {
+    this.headerComponentSignal.set(component);
   }
   @ViewChild('headerSentinel', { static: false }) headerSentinel!: ElementRef;
   public isSticky: boolean = false;
@@ -85,14 +115,25 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   public locationService: Location =  inject(Location);
   public location: any;
 
-  constructor(
-    private themeService: ThemeService,
-    public route: ActivatedRoute,
-    public router: Router
-  ) {
-    this.toggleService.isToggled$.subscribe(isToggled => {
-      this.isToggled = isToggled;
-    });
+  private buildRoles(me: AccessMeDto): WifRole[] {
+    const mode = (me?.mode ?? 'PERSONAL').toString();
+
+    if (mode === 'ADMIN') {
+      return [{ title: 'Platform Admin', role: 'PLATFORM_ADMIN', url: '/user/dashboard-admin' }];
+    }
+
+    if (mode === 'ENTERPRISE_ADMIN') {
+      return [
+        { title: 'Enterprise Admin', role: 'ENTERPRISE_ADMIN', url: '/user/dashboard' },
+        { title: 'Employee', role: 'ENTERPRISE_EMPLOYEE', url: '/user/dashboard' },
+      ];
+    }
+
+    if (mode === 'ENTERPRISE_EMPLOYEE') {
+      return [{ title: 'Employee', role: 'ENTERPRISE_EMPLOYEE', url: '/user/dashboard' }];
+    }
+
+    return [{ title: 'Personal', role: 'PERSONAL', url: '/user/dashboard' }];
   }
 
   ngOnInit() {

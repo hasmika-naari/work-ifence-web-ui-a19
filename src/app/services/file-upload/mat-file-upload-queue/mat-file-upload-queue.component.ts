@@ -15,8 +15,6 @@ import { HttpHeaders, HttpParams } from "@angular/common/http";
 import { startWith } from "rxjs/operators";
 import { MatFileUploadQueueService } from "./mat-file-upload-queue.service";
 import { MatFileUploadComponent } from "../mat-file-upload/mat-file-upload.component";
-
-import { BytesPipe } from "../bytes/bytes.pipe";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
@@ -26,7 +24,6 @@ import { MatButtonModule } from "@angular/material/button";
   selector: "mat-file-upload-queue",
   standalone: true,
   imports: [
-    BytesPipe,
     MatProgressBarModule,
     MatIconModule,
     MatCardModule,

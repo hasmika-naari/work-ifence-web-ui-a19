@@ -1,9 +1,7 @@
-import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import * as _ from 'lodash';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { LanguageSubscribeComponent } from '../../language-subscribe/language-subscribe.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { Category } from 'src/app/services/ifence.model';
 import { PCategory } from 'src/app/services/bee-compete.model';
@@ -14,7 +12,7 @@ import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-w
 @Component({
   selector: 'tech-talks-page',
   standalone: true,
-  imports: [RouterLink, LanguageSubscribeComponent, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
+  imports: [FooterWorkifenceComponent, HeaderWorkIfenceComponent],
   templateUrl: './tech-talks-page.component.html',
   styleUrls: ['./tech-talks-page.component.scss']
 })

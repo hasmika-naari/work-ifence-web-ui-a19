@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, PLATFORM_ID, Signal, effect, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, PLATFORM_ID, Signal, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { Observable, ReplaySubject, Subscription } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
@@ -13,7 +13,7 @@ import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.
 @Component({
   selector: 'db-app-admin',
   standalone: true,
-  imports: [RouterOutlet, MatCardModule],
+  imports: [MatCardModule],
   templateUrl: './dashboard-app-admin.component.html',
   styleUrls: ['./dashboard-app-admin.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -61,12 +61,6 @@ export class DashboardAppAdminComponent implements OnInit, AfterViewInit {
     //     DashboardComponent.isInitialLoad = false;
     //   }
     // }
-
-     effect(() => {
-        let aRoles = this.userRoles();
-          this.userStore.updateActiveRole(aRoles[1]);
-        });
-
   }
 
   col(colAmount: number) {

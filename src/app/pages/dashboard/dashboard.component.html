@@ -7,12 +7,20 @@
       </h1>
       <p class="subtitle">Let’s manage your journey to dream job with Workifence!</p>
 
+      @if (vm$ | async; as vm) {
+        @if (vm.loading) {
+          <div class="mb-3 muted">Loading dashboard…</div>
+        }
+        @if (vm.error) {
+          <div class="mb-3 muted">{{ vm.error }}</div>
+        }
+
       <section>
         <div class="mb-3">
           <span class="section-subtitle" >Stats</span>
         </div>
         <div class="stats-container">
-          @for (stat of stats; track stat) {
+          @for (stat of statsVm(); track stat.title) {
             <div class="stat-card">
               <div class="stat-header">
                 <span class="stat-title">{{ stat.title }}</span>
@@ -27,26 +35,37 @@
           }
         </div>
       </section>
+
       <section class="mt-5">
         <div class="mb-3">
           <span class="section-subtitle mb-3" >WorkIfence Tools</span>
         </div>
         <div class="tools-container">
-          @for (tool of tools; track tool) {
-            <div class="tools-card  radius-8" (click)="goToSelectedPage($event,tool)">
-              <!-- <div class="tools-card-icon">
-              <img [src]="tool.icon" alt="{{ tool.title }} icon" />
-            </div> -->
-            <div class="tools-card-content">
-              <h1 style="font-size: 14px;line-height: 1.25rem;font-weight: bold;gap: .75rem;display: flex;justify-content: flex-start;align-items: center;">{{ tool.title }}
-                <p-icon class="pi pi-arrow-right"></p-icon>
-              </h1>
-              <p style="font-size: 12px;line-height: 1rem;font-weight: 400;--tw-text-opacity: 1;color: rgb(68 76 88 1)">{{ tool.description }}</p>
+          @for (tool of toolsVm(); track tool.key) {
+            <div
+              class="tools-card radius-8"
+              [class.tools-card-disabled]="!tool.enabled"
+              (click)="onToolClick(tool)"
+              role="button"
+              tabindex="0"
+            >
+              <div class="tools-card-content">
+                <h1 style="font-size: 14px;line-height: 1.25rem;font-weight: bold;gap: .75rem;display: flex;justify-content: flex-start;align-items: center;">
+                  {{ tool.title }}
+                  @if (!tool.enabled) {
+                    <span class="upgrade-badge"><i class="pi pi-lock"></i> Upgrade</span>
+                  } @else {
+                    <p-icon class="pi pi-arrow-right"></p-icon>
+                  }
+                </h1>
+                <p style="font-size: 12px;line-height: 1rem;font-weight: 400;--tw-text-opacity: 1;color: rgb(68 76 88 1)">{{ tool.description }}</p>
+              </div>
             </div>
-          </div>
-        }
-      </div>
-    </section>
+          }
+        </div>
+      </section>
+
+      }
     <section class="mt-5">
       <div class="mb-3">
         <span class="section-subtitle mt-5 mb-3" >Resources</span>

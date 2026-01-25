@@ -1,9 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import * as _ from 'lodash';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { LanguageSubscribeComponent } from '../../language-subscribe/language-subscribe.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { Category } from 'src/app/services/ifence.model';
 import { PCategory } from 'src/app/services/bee-compete.model';
@@ -14,7 +12,7 @@ import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-w
 @Component({
   selector: 'training-options-page',
   standalone: true,
-  imports: [RouterLink, LanguageSubscribeComponent, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
+  imports: [FooterWorkifenceComponent, HeaderWorkIfenceComponent],
   templateUrl: './training-options-page.component.html',
   styleUrls: ['./training-options-page.component.scss']
 })

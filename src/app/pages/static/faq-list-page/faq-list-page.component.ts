@@ -2,7 +2,6 @@ import { Component, Inject, OnInit, PLATFORM_ID, inject, AfterViewInit, ViewChil
 import { Router, RouterLink } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import * as _ from 'lodash';
-import { LanguageSubscribeComponent } from '../../language-subscribe/language-subscribe.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { Category } from 'src/app/services/ifence.model';
 import { PCategory } from 'src/app/services/bee-compete.model';
@@ -11,7 +10,7 @@ import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { isPlatformBrowser, NgOptimizedImage, Location } from '@angular/common';
+import { isPlatformBrowser, Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
   // FAQSection interface definition
@@ -28,7 +27,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 @Component({
   selector: 'app-faq-list-page',
   standalone: true,
-  imports: [RouterLink, LanguageSubscribeComponent, MatExpansionModule, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
+  imports: [RouterLink, MatExpansionModule, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
   templateUrl: './faq-list-page.component.html',
   styleUrls: ['./faq-list-page.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

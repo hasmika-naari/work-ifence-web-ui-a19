@@ -1,9 +1,8 @@
-import { NgOptimizedImage, isPlatformBrowser, Location } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, inject, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { isPlatformBrowser, Location } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, inject, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import * as _ from 'lodash';
-import { LanguageSubscribeComponent } from '../../language-subscribe/language-subscribe.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { Category } from 'src/app/services/ifence.model';
 import { PCategory } from 'src/app/services/bee-compete.model';
@@ -15,7 +14,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
 @Component({
   selector: 'app-terms-page',
   standalone: true,
-  imports: [RouterLink, LanguageSubscribeComponent, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
+  imports: [RouterLink, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
   templateUrl: './terms-page.component.html',
   styleUrls: ['./terms-page.component.scss']
 })

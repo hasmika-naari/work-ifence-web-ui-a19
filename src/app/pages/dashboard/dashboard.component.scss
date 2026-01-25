@@ -97,6 +97,34 @@
     // box-shadow: rgba(77, 77, 77, 0.16) 0px -2px 0px 0px inset !important;
 }
 
+  .tools-card.tools-card-disabled,
+  .tools-card.disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+    filter: grayscale(0.25);
+  }
+
+  .tools-card.tools-card-disabled:hover,
+  .tools-card.disabled:hover {
+    transform: none;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    box-shadow: none;
+  }
+
+  .upgrade-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(240, 91, 78, 0.12);
+    color: #f05b4e;
+    border: 1px solid rgba(240, 91, 78, 0.3);
+    margin-left: 6px;
+  }
+
 .tools-card:hover {
     transform: translateY(-5px);
     background-color: #f8f8f8;

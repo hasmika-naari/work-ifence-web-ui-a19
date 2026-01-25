@@ -1,10 +1,9 @@
-import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Location } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, Signal, ViewChild, inject, AfterViewInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import * as _ from 'lodash';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { LanguageSubscribeComponent } from '../../language-subscribe/language-subscribe.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
 import { Category, JobFeedItem } from 'src/app/services/ifence.model';
 import { Competitionsorting, MenuListItem, PCategory } from 'src/app/services/bee-compete.model';
@@ -25,7 +24,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { JobOpeningsComponent } from './job-openings/job-openings.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -41,7 +39,7 @@ export interface Subject {
 @Component({
   selector: 'latest-openings-page',
   standalone: true,
-  imports: [RouterLink, LanguageSubscribeComponent, MatIconModule, MatSidenavModule, IconsModule, MatSelectModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule, JobOpeningsComponent, NgxPaginationModule, MatCardModule, MatProgressBarModule, NgOptimizedImage, FooterWorkifenceComponent, HeaderWorkIfenceComponent, IconsModule],
+  imports: [RouterLink, MatIconModule, MatSidenavModule, IconsModule, MatSelectModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule, NgxPaginationModule, MatCardModule, MatProgressBarModule, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
   templateUrl: './latest-openings-page.component.html',
   styleUrls: ['./latest-openings-page.component.scss']
 })

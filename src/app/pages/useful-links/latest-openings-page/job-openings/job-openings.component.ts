@@ -1,4 +1,4 @@
-import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, Signal, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,7 +18,7 @@ import { WINDOW } from 'src/app/services/window.token';
 @Component({
     selector: 'app-job-openings',
     standalone: true,
-    imports: [NgOptimizedImage, CarouselModule, MatButtonModule, MatIconModule, MatProgressBarModule, NgxPaginationModule, MatCardModule, RouterLink],
+    imports: [CarouselModule, MatButtonModule, MatIconModule, MatProgressBarModule, NgxPaginationModule, MatCardModule, RouterLink],
     templateUrl: './job-openings.component.html',
     styleUrls: ['./job-openings.component.scss']
 })

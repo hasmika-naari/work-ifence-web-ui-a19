@@ -1,9 +1,7 @@
-import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FooterComponent } from '../home-page-one/footer/footer.component';
 import { HeaderWorkIfenceComponent } from '../landing/header-wifence/header-wifence.component';
 
 
@@ -16,7 +14,7 @@ interface Template {
 @Component({
   selector: 'app-templates-page',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterModule, NgOptimizedImage, FooterComponent, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent],
+  imports: [RouterModule, CarouselModule, ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent],
   templateUrl: './templates-page.component.html',
   styleUrls: ['./templates-page.component.scss']
 })

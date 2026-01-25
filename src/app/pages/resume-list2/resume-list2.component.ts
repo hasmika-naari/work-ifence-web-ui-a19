@@ -11,7 +11,7 @@ import { MenuModule } from 'primeng/menu';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 import { ResumeService } from 'src/app/services/resume.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
@@ -39,8 +39,6 @@ import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
     standalone: true,
     imports: [
         CommonModule, 
-        RouterLink, 
-        RouterOutlet, 
         RouterModule,
         FormsModule,
         DataViewModule,
@@ -58,7 +56,6 @@ import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
         CheckboxModule,
         MatListModule,
         MatProgressBarModule,
-        ConfirmDialogComponent,
         MatCheckbox,
         MatCheckboxModule
     ]

@@ -22,8 +22,6 @@ import { PasswordModule } from 'primeng/password';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { RippleModule } from 'primeng/ripple';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
-import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { YeaSnackBarService } from 'src/app/services/utilities/snackbar';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
@@ -34,14 +32,13 @@ import { LoginRequest } from 'src/app/services/auth.models';
 import { Account, BioProfile, LoginProfile, PasswordResetRqst, WifRole } from 'src/app/services/profile.model';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { WifProgressDisplayComponent } from 'src/app/shared/wif-progress-display/wif-progress-display.component';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, FormsModule, PopoverModule, OverlayModule, InputTextModule, ButtonModule, DrawerModule, CheckboxModule, BadgeModule, PasswordModule, RadioButtonModule, ToggleSwitchModule, RippleModule, RouterModule, IconsModule, MatProgressBarModule, ReactiveFormsModule, HeaderWorkIfenceComponent, FooterWorkifenceComponent, WifProgressDisplayComponent],
+  imports: [RouterModule, MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule, FormsModule, PopoverModule, OverlayModule, InputTextModule, ButtonModule, DrawerModule, CheckboxModule, BadgeModule, PasswordModule, RadioButtonModule, ToggleSwitchModule, RippleModule, IconsModule, MatProgressBarModule, ReactiveFormsModule],
   templateUrl: './login-page.component.html',
   styleUrl : './login-page.component.scss'
 })
@@ -289,7 +286,6 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                       this.userStore.updateRoles(roles);
                       const adminRole = roles.find(r => r.role === 'ROLE_ADMIN');
                       const userRole = roles.find(r => r.role === 'ROLE_USER') ?? roles[0];
-                      this.userStore.updateActiveRole(userRole);
 
                       this.authService.getLoginProfile(account.login).subscribe(
                         (profile)=>{
@@ -306,7 +302,6 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                                   this.userStore.updateBioProfile(bioProfile);
                                   debugger;
                                   if(this.hasRoleAdmin(account.authorities)){
-                                    this.userStore.updateActiveRole(adminRole ?? roles[0]);
                                     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
                                     if (returnUrl && returnUrl.startsWith('/')) {
                                       this.router.navigateByUrl(returnUrl);
@@ -314,7 +309,6 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                                       this.router.navigate(['/user/dashboard-admin']);
                                     }
                                   }else{
-                                    this.userStore.updateActiveRole(userRole);
                                     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
                                     if (returnUrl && returnUrl.startsWith('/')) {
                                       this.router.navigateByUrl(returnUrl);

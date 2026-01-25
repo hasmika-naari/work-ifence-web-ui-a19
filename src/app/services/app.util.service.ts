@@ -141,7 +141,6 @@ export class AppUtilService {
                             }
                           });
                           this.userStore.updateRoles(roles);
-                          this.userStore.updateActiveRole(roles[0]);
                           debugger;
                         this.authService.getLoginProfile(account.login).subscribe(
                           (profile)=>{

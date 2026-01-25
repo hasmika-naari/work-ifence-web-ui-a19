@@ -1,12 +1,10 @@
-import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, Signal, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import * as _ from 'lodash';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { LanguageSubscribeComponent } from '../../language-subscribe/language-subscribe.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
-import { FooterComponent } from '../../home-page-one/footer/footer.component';
 import { Category } from 'src/app/services/ifence.model';
 import { PCategory } from 'src/app/services/bee-compete.model';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
@@ -28,16 +26,13 @@ import { IconsModule } from 'src/app/shared/icons.module';
   standalone: true,
   imports: [
     RouterLink,
-    LanguageSubscribeComponent,
     MatFormFieldModule,
     ReactiveFormsModule,
-    NgOptimizedImage,
     HeaderWorkIfenceComponent,
     MatSelectModule,
     MatProgressBarModule,
     MatCardModule,
     FormsModule,
-    FooterComponent,
     FooterWorkifenceComponent,
     MatSnackBarModule,
     IconsModule,
