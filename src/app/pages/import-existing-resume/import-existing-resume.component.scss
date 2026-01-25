@@ -1,0 +1,25 @@
+.add-job-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  border: 1px solid #cccccc61;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #cccccc61;
+}
+
+.add-job-btn mat-icon {
+  font-size: 1.2rem;
+}
+
+.add-job-btn:hover {
+  background-color: #cccccc80;
+  border: 1px solid #cccccc80;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}

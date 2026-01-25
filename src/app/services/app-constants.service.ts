@@ -173,6 +173,9 @@ export class AppConstantsService {
 
     public SERVICE_REQUEST_URL: string;
 
+    public UPLOAD_EXTERNAL_RESUME : string;
+    public UPLOAD_EXTERNAL_RESUME_TEXT : string;
+
     public snackbarType: SnackTypes;
     public passwordResetState: PassWordResetState;
 
@@ -243,6 +246,10 @@ export class AppConstantsService {
 
         this.GET_ENTERPRISE_BY_CATEGORY = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/enterprise-profiles';
         this.SERVICE_REQUEST_URL = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/service-requests';
+
+        this.UPLOAD_EXTERNAL_RESUME = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/resume/parse';
+
+        this.UPLOAD_EXTERNAL_RESUME_TEXT = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/service-requests';
 
         ////////////// Deal START
         this.GET_ALL_DEALS_BY_COUNTRY = APP_CONTEXT

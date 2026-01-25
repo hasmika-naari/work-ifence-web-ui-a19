@@ -1,0 +1,135 @@
+<!-- Material Dialog Header -->
+<div mat-dialog-title class="dialog-header" *ngIf="!isLoading">
+  <h2>Import Resume</h2>
+  <button 
+    mat-icon-button
+    type="button"
+    (click)="closeDialog()" 
+    aria-label="Close dialog">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<!-- Material Dialog Content -->
+<mat-dialog-content class="dialog-content">
+  
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <h2 class="loading-title">Importing your resume</h2>
+    
+    <div class="loading-content">
+      <mat-spinner diameter="40" class="loading-spinner"></mat-spinner>
+      <p class="loading-text">Processing your resume... This may take up to 60 seconds.</p>
+    </div>
+    
+    <mat-progress-bar mode="indeterminate" class="loading-progress-bar"></mat-progress-bar>
+  </div>
+
+  <!-- Upload/Paste UI (when not loading) -->
+  <div *ngIf="!isLoading">
+    <!-- Pill-style Toggle Buttons -->
+    <div class="tab-toggle-container">
+      <div class="tab-toggle-buttons">
+        <button 
+          type="button"
+          class="toggle-button"
+          [class.active]="activeTab === 'file'"
+          (click)="selectTab('file')">
+          Resume File
+        </button>
+        <button 
+          type="button"
+          class="toggle-button"
+          [class.active]="activeTab === 'text'"
+          (click)="selectTab('text')">
+          Paste Text
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Content Area -->
+    <div class="tab-content-area">
+      
+      <!-- Resume File Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'file'">
+        <!-- Drag and Drop Upload Area -->
+        <div 
+          class="upload-area"
+          [class.dragging]="isDragging"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)">
+          
+          <!-- Upload Icon -->
+          <mat-icon class="upload-icon">upload_file</mat-icon>
+
+          <!-- Upload Text -->
+          <p class="upload-text">Choose a file or drag and drop it here</p>
+          
+          <!-- Select Resume Button -->
+          <button 
+            mat-stroked-button
+            class="select-button"
+            type="button"
+            (click)="triggerFileInput()">
+            <mat-icon>description</mat-icon>
+            Select Resume
+          </button>
+
+          <!-- Hidden File Input -->
+          <input 
+            type="file" 
+            #fileInput
+            class="file-input" 
+            id="resumeFileInput"
+            accept=".pdf,.docx,.png,.jpeg,.jpg"
+            (change)="onFileSelected($event)">
+
+          <!-- Supported Formats -->
+          <p class="file-formats">.pdf, .docx, .png, .jpeg, .jpg</p>
+
+          <!-- Selected File Display -->
+          <div class="selected-file" *ngIf="selectedFile">
+            <mat-icon>check_circle</mat-icon>
+            <span>Selected: <strong>{{ selectedFile.name }}</strong></span>
+            <button 
+              mat-flat-button
+              color="primary"
+              class="upload-file-button"
+              type="button"
+              (click)="onFileUpload()">
+              <mat-icon>cloud_upload</mat-icon>
+              Upload Resume
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paste Text Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'text'">
+        <!-- Text Area Container -->
+        <div class="text-area-container">
+          <textarea 
+            class="resume-textarea"
+            [(ngModel)]="pastedText"
+            placeholder="Paste your resume text here..."
+            rows="14"></textarea>
+          
+          <!-- Import Text Button -->
+          <button 
+            mat-flat-button
+            color="primary"
+            class="import-text-button" 
+            type="button"
+            [disabled]="!pastedText.trim()"
+            (click)="onTextImport()">
+            <mat-icon>upload</mat-icon>
+            Import Text
+          </button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+</mat-dialog-content>
