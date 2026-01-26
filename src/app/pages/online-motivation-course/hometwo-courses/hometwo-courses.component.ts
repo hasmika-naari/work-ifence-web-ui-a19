@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { ThemeCustomizerService } from '../../../common2/theme-customizer/theme-customizer.service';
 import { CommonModule, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AnimateOnScrollDirective } from 'src/app/shared/directives/animate-on-scroll.directive';
 import { Course } from '../../course-central/course-central.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
 
 @Component({
     selector: 'app-hometwo-courses',
@@ -18,6 +19,9 @@ import { MatMenuModule } from '@angular/material/menu';
 export class HometwoCoursesComponent {
 
     isToggled = false;
+
+    private readonly remoteConfig = inject(RemoteConfigFacadeService);
+    readonly courseCentralEnabled = computed(() => this.remoteConfig.isFlagEnabled('COURSE_CENTRAL'));
 
     courses: Course[] = [
     {

@@ -5,7 +5,9 @@
                 <div class="page-title-content">
                     <ul>
                         <li><a routerLink="/">Home</a></li>
-                        <li><a routerLink="/course-central">Course Details</a></li>
+                                                @if (courseCentralEnabled()) {
+                                                    <li><a routerLink="/course-central">Course Details</a></li>
+                                                }
                         <li>Course List</li>
                     </ul>
                 </div>

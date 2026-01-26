@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,6 +20,10 @@ export class HometwelveMainBannerComponent implements OnInit {
 
     isToggled = false;
     isMobile = false;
+
+    private readonly remoteConfig = inject(RemoteConfigFacadeService);
+    readonly courseCentralEnabled = computed(() => this.remoteConfig.isFlagEnabled('COURSE_CENTRAL'));
+
       homeSlides: OwlOptions = {
             items: 1,
             nav: false,

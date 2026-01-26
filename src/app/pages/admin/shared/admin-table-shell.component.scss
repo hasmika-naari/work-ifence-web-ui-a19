@@ -1,0 +1,37 @@
+.admin-shell {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.admin-shell__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-shell__title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.admin-shell__subtitle {
+  font-size: 12px;
+}
+
+.admin-shell__filters {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-shell__content {
+  position: relative;
+}
+
+.admin-shell__loading {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+}

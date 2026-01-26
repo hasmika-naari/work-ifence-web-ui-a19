@@ -6,7 +6,9 @@
         <div class="section-title text-start">
             <span class="sub-title">POPULAR COURSES</span>
             <h2>Our Best Online Courses</h2>
-            <a routerLink="/central/course-central/courses" class="default-btn"><i class='bx bx-show-alt icon-arrow before'></i><span class="label">View All Courses </span><i class="bx bx-show-alt icon-arrow after"></i></a>
+                        @if (courseCentralEnabled()) {
+                            <a routerLink="/central/course-central/courses" class="default-btn"><i class='bx bx-show-alt icon-arrow before'></i><span class="label">View All Courses </span><i class="bx bx-show-alt icon-arrow after"></i></a>
+                        }
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-3 col-md-6">

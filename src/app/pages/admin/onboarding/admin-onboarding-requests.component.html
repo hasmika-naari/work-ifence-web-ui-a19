@@ -1,0 +1,86 @@
+<app-admin-table-shell
+  title="Onboarding Requests"
+  subtitle="Review enterprise onboarding submissions"
+  [loading]="loading()"
+  [length]="total()"
+  [pageIndex]="pageIndex()"
+  [pageSize]="pageSize()"
+  (pageChange)="onPageChange($event)"
+>
+  <div filters class="admin-filters">
+    <mat-form-field appearance="outline" class="admin-filter">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="status()" (selectionChange)="onStatusChange($event.value)">
+        @for (opt of statusOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="admin-filter admin-filter--grow">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        [value]="q()"
+        (input)="onSearchChange(($any($event.target).value))"
+        placeholder="Enterprise, requester, email…"
+      />
+    </mat-form-field>
+
+    <button mat-stroked-button type="button" (click)="refresh()">Refresh</button>
+  </div>
+
+  <div table>
+    <table mat-table [dataSource]="page().content" class="admin-table">
+      <ng-container matColumnDef="enterpriseName">
+        <th mat-header-cell *matHeaderCellDef>Enterprise</th>
+        <td mat-cell *matCellDef="let row">{{ row.enterpriseName || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="enterpriseType">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let row">{{ row.enterpriseType || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="requesterUserName">
+        <th mat-header-cell *matHeaderCellDef>Requester</th>
+        <td mat-cell *matCellDef="let row">{{ row.requesterUserName || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let row">{{ row.status || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef>Created</th>
+        <td mat-cell *matCellDef="let row">{{ row.createdDate || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let row" class="admin-actions">
+          <button mat-button type="button" (click)="viewDetails(row)" [disabled]="isRowBusy(row.id)">
+            View
+          </button>
+          <button mat-button color="primary" type="button" (click)="approve(row)" [disabled]="isRowBusy(row.id)">
+            Approve
+          </button>
+          <button mat-button type="button" (click)="needMoreInfo(row)" [disabled]="isRowBusy(row.id)">
+            Need more info
+          </button>
+          <button mat-button color="warn" type="button" (click)="reject(row)" [disabled]="isRowBusy(row.id)">
+            Reject
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    @if (!loading() && (page().content?.length ?? 0) === 0) {
+      <div class="muted" style="padding: 12px 0;">No onboarding requests found.</div>
+    }
+  </div>
+</app-admin-table-shell>

@@ -1,0 +1,46 @@
+.flags-card {
+  padding: 12px;
+}
+
+.flags-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 12px 0 16px;
+}
+
+.flags-table {
+  overflow: auto;
+  margin-bottom: 16px;
+}
+
+.flag-key {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+}
+
+.rollout-field {
+  width: 120px;
+}
+
+.import-field {
+  width: 100%;
+}
+
+.pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pill-on {
+  background: rgba(46, 125, 50, 0.15);
+  color: #2e7d32;
+}
+
+.pill-off {
+  background: rgba(198, 40, 40, 0.12);
+  color: #c62828;
+}

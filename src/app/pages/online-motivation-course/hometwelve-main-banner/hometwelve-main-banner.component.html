@@ -73,13 +73,15 @@
                     <div class="widget widget_ednuv_posts_thumb limited-courses">
                       <div class="d-flex justify-content-between align-items-center">
                         <h3 class="widget-title mb-0">Trending Courses</h3>
-                        <span
-                          class="all-courses"
-                          routerLink="/central/course-central/courses"
-                          role="button"
-                          >
-                          All Courses
-                        </span>
+                        @if (courseCentralEnabled()) {
+                          <span
+                            class="all-courses"
+                            routerLink="/central/course-central/courses"
+                            role="button"
+                            >
+                            All Courses
+                          </span>
+                        }
                       </div>
 
                       <div class="courses-list">
@@ -306,13 +308,15 @@
                                   <div class="widget widget_ednuv_posts_thumb limited-courses">
                                     <div class="d-flex justify-content-between align-items-center">
                                       <h3 class="widget-title mb-0">Trending Courses</h3>
-                                      <span
-                                        class="all-courses"
-                                        routerLink="/central/course-central/courses"
-                                        role="button"
-                                        >
-                                        All Courses
-                                      </span>
+                                      @if (courseCentralEnabled()) {
+                                        <span
+                                          class="all-courses"
+                                          routerLink="/central/course-central/courses"
+                                          role="button"
+                                          >
+                                          All Courses
+                                        </span>
+                                      }
                                     </div>
 
                                     <div class="courses-list">

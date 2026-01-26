@@ -8,7 +8,9 @@
                 <div class="single-boxes-item">
                     <h3>Learn The Latest Skills</h3>
                     <p>Like business analytics, graphic design, Python, and more.</p>
-                    <a routerLink="/central/course-central/courses" class="boxes-btn">View Courses<i class='bx bx-plus'></i></a>
+                    @if (courseCentralEnabled()) {
+                        <a routerLink="/central/course-central/courses" class="boxes-btn">View Courses<i class='bx bx-plus'></i></a>
+                    }
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
@@ -18,21 +20,27 @@
                 >
                     <h3>100k Online Courses</h3>
                     <p>In high-demand fields like IT, AI and cloud engineering.</p>
-                    <a routerLink="/central/course-central/courses" class="boxes-btn">View More<i class='bx bx-plus'></i></a>
+                    @if (courseCentralEnabled()) {
+                        <a routerLink="/central/course-central/courses" class="boxes-btn">View More<i class='bx bx-plus'></i></a>
+                    }
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="single-boxes-item bg-color">
                     <h3>Earn a Certificate</h3>
                     <p>From a leading university in business, computer science, and more.</p>
-                    <a routerLink="/central/course-central/courses" class="boxes-btn">View Courses<i class='bx bx-plus'></i></a>
+                    @if (courseCentralEnabled()) {
+                        <a routerLink="/central/course-central/courses" class="boxes-btn">View Courses<i class='bx bx-plus'></i></a>
+                    }
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="single-boxes-item">
                     <h3>Up Your Skill</h3>
                     <p>With on-demand training and development programs.</p>
-                    <a routerLink="/central/course-central/courses" class="boxes-btn">View More<i class='bx bx-plus'></i></a>
+                    @if (courseCentralEnabled()) {
+                        <a routerLink="/central/course-central/courses" class="boxes-btn">View More<i class='bx bx-plus'></i></a>
+                    }
                 </div>
             </div>
         </div>

@@ -1,0 +1,58 @@
+.audit-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.audit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.audit-title h3 {
+  margin: 0;
+}
+
+.audit-subtitle {
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.audit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.w-220 {
+  width: 220px;
+}
+
+.w-260 {
+  width: 260px;
+}
+
+.audit-table {
+  width: 100%;
+}
+
+.cell-wrap {
+  max-width: 520px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.col-details {
+  width: 52px;
+  text-align: right;
+}
+
+.empty-row td {
+  padding: 16px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.55);
+}

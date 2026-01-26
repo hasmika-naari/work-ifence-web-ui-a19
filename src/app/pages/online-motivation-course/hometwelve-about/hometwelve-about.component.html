@@ -45,10 +45,12 @@
                         </div>
                     </div>
                     <div class="new-comers-btn">
-                        <a routerLink="/central/course-central/courses" class="default-btn">
+                        @if (courseCentralEnabled()) {
+                          <a routerLink="/central/course-central/courses" class="default-btn">
                             <span class="label">Search Courses</span>
                             <lucide-icon name="search" class="btn-icon" aria-hidden="true"></lucide-icon>
                         </a>
+                        }
                     </div>
                 </div>
             </div>

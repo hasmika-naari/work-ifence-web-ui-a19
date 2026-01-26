@@ -18,6 +18,7 @@ import { LayoutService } from 'src/app/layout/layout.service';
 import { Subscription } from 'rxjs';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
+import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
 
 @Component({
     selector: 'app-header-wifence',
@@ -65,6 +66,7 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     private storageService: LocalStorageService = inject(LocalStorageService);
     private userStore: UserStoreService = inject(UserStoreService);
     private accessFacade: AccessFacadeService = inject(AccessFacadeService);
+    private remoteConfig: RemoteConfigFacadeService = inject(RemoteConfigFacadeService);
 
     readonly canUseAlerts = computed(() => this.accessFacade.can('ALERTS'));
 
@@ -134,6 +136,55 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
     userAccount: any = this.userStore.getUserAccount();
     menuListStore: any = this.userStore.getMenuList();
+
+    readonly filteredMenuListStore = computed<MenuListItem[]>(() => {
+        const raw = (this.menuListStore?.() ?? []) as MenuListItem[];
+
+        return raw
+            .map((item) => {
+                const next: MenuListItem = {
+                    ...item,
+                    menuItems: Array.isArray(item.menuItems)
+                        ? item.menuItems.filter((sub) => this.isRouteVisible(sub.route))
+                        : [],
+                };
+                return next;
+            })
+            .filter((item) => {
+                // Keep items with an allowed route, or dropdown parents that still have children.
+                const hasChildren = Array.isArray(item.menuItems) && item.menuItems.length > 0;
+                return this.isRouteVisible(item.route) || hasChildren;
+            });
+    });
+
+    private isRouteVisible(route?: string): boolean {
+        if (!route) return true;
+        const r = String(route);
+
+        if (r.startsWith('/notifications')) {
+            return this.accessFacade.can('ALERTS');
+        }
+
+        // Kill-switchable feature areas.
+        if (r.includes('course-central')) {
+            return this.remoteConfig.isFlagEnabled('COURSE_CENTRAL');
+        }
+        if (r.startsWith('/user/job-applications')) {
+            // Effective access = flag && entitlement.
+            return this.accessFacade.can('JOB_TRACKING');
+        }
+        if (r.startsWith('/resume-portal')) {
+            return this.remoteConfig.isFlagEnabled('RESUME_PORTAL');
+        }
+        if (r.startsWith('/user/dashboard-admin') || r.startsWith('/user/admin')) {
+            return this.remoteConfig.isFlagEnabled('ADMIN_CONSOLE');
+        }
+        if (r.startsWith('/user/enterprise')) {
+            return this.remoteConfig.isFlagEnabled('ENTERPRISE_CONSOLE');
+        }
+
+        return true;
+    }
 
     constructor(
         @Inject(WINDOW) private window: Window,

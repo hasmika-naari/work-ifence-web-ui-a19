@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>
+  @if (mode === 'edit') { Edit entitlement } @else { Add service entitlement }
+</h2>
+
+<div mat-dialog-content>
+  @if (mode === 'edit') {
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Service</mat-label>
+      <input matInput [value]="serviceLabelForReadonly()" readonly />
+    </mat-form-field>
+  } @else {
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Service</mat-label>
+      <mat-select [formControl]="form.controls.serviceId">
+        @for (s of data.services; track s.id) {
+          <mat-option [value]="s.id">
+            {{ s.code || s.id }} — {{ s.name || '' }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+
+  <div style="display:flex; gap: 16px; flex-wrap: wrap; margin-top: 8px;">
+    <mat-slide-toggle [formControl]="form.controls.included">Included</mat-slide-toggle>
+    <mat-slide-toggle [formControl]="form.controls.isAddonAllowed">Addon allowed</mat-slide-toggle>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Default quantity</mat-label>
+      <input matInput type="number" [formControl]="form.controls.defaultQuantity" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Status</mat-label>
+      <input matInput [formControl]="form.controls.status" placeholder="ACTIVE" />
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" style="width: 100%; margin-top: 12px;">
+    <mat-label>Notes</mat-label>
+    <textarea matInput rows="3" [formControl]="form.controls.notes" placeholder="Optional"></textarea>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" type="button" (click)="confirm()">
+    @if (mode === 'edit') { Save } @else { Add }
+  </button>
+</div>

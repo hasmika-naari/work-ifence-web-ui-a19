@@ -12,4 +12,6 @@ export interface FeatureDeniedReason {
   feature: FeatureKey;
   message: string;
   pricingScope?: FeaturePricingScope;
+  /** Optional machine-readable denial code. */
+  code?: string;
 }

@@ -1,0 +1,98 @@
+<app-admin-table-shell
+  title="Subscriptions"
+  subtitle="Administer subscriptions and trials"
+  [loading]="loading()"
+  [length]="total()"
+  [pageIndex]="pageIndex()"
+  [pageSize]="pageSize()"
+  (pageChange)="onPageChange($event)"
+>
+  <div filters class="admin-filters">
+    <mat-form-field appearance="outline" class="admin-filter">
+      <mat-label>Subscriber type</mat-label>
+      <mat-select [value]="subscriberType()" (selectionChange)="onSubscriberTypeChange($event.value)">
+        @for (opt of subscriberTypeOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="admin-filter">
+      <mat-label>Status</mat-label>
+      <input
+        matInput
+        [value]="status()"
+        (input)="onStatusChange(($any($event.target).value))"
+        placeholder="e.g. ACTIVE, TRIALING"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="admin-filter admin-filter--grow">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        [value]="q()"
+        (input)="onSearchChange(($any($event.target).value))"
+        placeholder="Subscriber ID, plan code…"
+      />
+    </mat-form-field>
+
+    <button mat-stroked-button type="button" (click)="refresh()">Refresh</button>
+  </div>
+
+  <div table>
+    <table mat-table [dataSource]="page().content" class="admin-table">
+      <ng-container matColumnDef="subscriberType">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let row">{{ row.subscriberType || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="subscriberId">
+        <th mat-header-cell *matHeaderCellDef>Subscriber</th>
+        <td mat-cell *matCellDef="let row">{{ row.subscriberId || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="planCode">
+        <th mat-header-cell *matHeaderCellDef>Plan</th>
+        <td mat-cell *matCellDef="let row">{{ row.planCode || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let row">{{ row.status || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="trialEndDate">
+        <th mat-header-cell *matHeaderCellDef>Trial end</th>
+        <td mat-cell *matCellDef="let row">{{ row.trialEndDate || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="currentPeriodEnd">
+        <th mat-header-cell *matHeaderCellDef>Period end</th>
+        <td mat-cell *matCellDef="let row">{{ row.currentPeriodEnd || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="provider">
+        <th mat-header-cell *matHeaderCellDef>Provider</th>
+        <td mat-cell *matCellDef="let row">{{ row.provider || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let row" class="admin-actions">
+          <button mat-button type="button" (click)="extendTrial(row)" [disabled]="isRowBusy(row.id)">Extend trial</button>
+          <button mat-button type="button" (click)="endTrial(row)" [disabled]="isRowBusy(row.id)">End trial</button>
+          <button mat-button color="primary" type="button" (click)="activate(row)" [disabled]="isRowBusy(row.id)">Activate</button>
+          <button mat-button color="warn" type="button" (click)="suspend(row)" [disabled]="isRowBusy(row.id)">Suspend</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    @if (!loading() && (page().content?.length ?? 0) === 0) {
+      <div class="muted" style="padding: 12px 0;">No subscriptions found.</div>
+    }
+  </div>
+</app-admin-table-shell>

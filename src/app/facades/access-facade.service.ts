@@ -4,11 +4,14 @@ import { Observable, Subject, catchError, of, shareReplay, startWith, switchMap 
 import { AccessMeDto } from '../models/access-me.model';
 import { AccessApiService } from '../services/access-api.service';
 import type { FeatureDeniedReason, FeatureKey, FeaturePricingScope } from '../models/feature-key.model';
+import type { FeatureFlagKey } from 'src/app/models/feature-flag.model';
+import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
 
 @Injectable({ providedIn: 'root' })
 export class AccessFacadeService {
   private readonly injector = inject(Injector);
   private readonly api = inject(AccessApiService);
+  private readonly remoteConfig = inject(RemoteConfigFacadeService);
 
   private readonly refresh$ = new Subject<void>();
 
@@ -37,6 +40,17 @@ export class AccessFacadeService {
   }
 
   can(feature: FeatureKey, me: AccessMeDto = this.accessMeSignal()): boolean {
+    const flagKey = this.featureToFlagKey(feature);
+    if (flagKey && !this.remoteConfig.isFlagEnabled(flagKey)) {
+      this.lastDeniedReason.set({
+        feature,
+        code: 'FEATURE_DISABLED_BY_ADMIN',
+        message: 'This feature is temporarily disabled.',
+        pricingScope: this.defaultPricingScope(feature, me),
+      });
+      return false;
+    }
+
     // Note: default behavior is to require an active/trial subscription for premium features.
     // If the user is logged out, subscription is not OK and checks will return false.
     switch (feature) {
@@ -78,6 +92,12 @@ export class AccessFacadeService {
       return true;
     }
 
+    // If can() already set a flag-denied reason, keep it.
+    const existing = this.lastDeniedReason();
+    if (existing?.feature === feature && existing?.code === 'FEATURE_DISABLED_BY_ADMIN') {
+      return false;
+    }
+
     this.lastDeniedReason.set({
       feature,
       message: this.denyMessage(feature, me),
@@ -87,6 +107,11 @@ export class AccessFacadeService {
   }
 
   denyMessage(feature: FeatureKey, me: AccessMeDto = this.accessMeSignal()): string {
+    const flagKey = this.featureToFlagKey(feature);
+    if (flagKey && !this.remoteConfig.isFlagEnabled(flagKey)) {
+      return 'This feature is temporarily disabled.';
+    }
+
     if (!this.isSubscriptionOk(me)) return 'Subscription required';
 
     switch (feature) {
@@ -173,5 +198,23 @@ export class AccessFacadeService {
   private isSubscriptionOk(me: AccessMeDto): boolean {
     const status = (me.subscription?.status ?? '').toString().toUpperCase();
     return status === 'ACTIVE' || status === 'TRIALING';
+  }
+
+  private featureToFlagKey(feature: FeatureKey): FeatureFlagKey | null {
+    switch (feature) {
+      case 'JOB_TRACKING':
+        return 'JOB_TRACKING';
+      case 'ALERTS':
+        return 'ALERTS';
+      case 'COURSE_CENTRAL':
+        return 'COURSE_CENTRAL';
+      case 'TEMPLATES_PREMIUM':
+      case 'RESUME_CREATE':
+        return 'RESUME_BUILDER';
+      case 'ENTERPRISE_INVITES':
+        return 'ENTERPRISE_CONSOLE';
+      default:
+        return null;
+    }
   }
 }

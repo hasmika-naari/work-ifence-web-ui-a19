@@ -1,0 +1,24 @@
+.admin-filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-filter {
+  min-width: 220px;
+}
+
+.admin-filter--grow {
+  flex: 1 1 320px;
+}
+
+.admin-table {
+  width: 100%;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

@@ -10,6 +10,7 @@ import { Account, BioProfile, MenuListItem, WifRole } from 'src/app/services/pro
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
+import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -33,6 +34,7 @@ export class SidebarComponent {
     public bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
     private platformId: object =  inject(PLATFORM_ID);
     private router: Router =  inject(Router);
+    private remoteConfig: RemoteConfigFacadeService = inject(RemoteConfigFacadeService);
 
     constructor(
     ) {
@@ -44,15 +46,24 @@ export class SidebarComponent {
             const activeRole = this.userActiveRole();
             const role = activeRole?.role;
 
+            const canUseAdminConsole = this.remoteConfig.isFlagEnabled('ADMIN_CONSOLE');
+            const canUseResumePortal = this.remoteConfig.isFlagEnabled('RESUME_PORTAL');
+            const canUseJobTracking = this.remoteConfig.isFlagEnabled('JOB_TRACKING');
+            const canUseCourseCentral = this.remoteConfig.isFlagEnabled('COURSE_CENTRAL');
+
             if(role === 'ROLE_ADMIN'){
                 this.menuList = [
-                    {
-                        title: 'Dashboard',
-                        icon: 'grid',
-                        url: '/user/dashboard-admin',
-                        role: '',
-                        subscription: ''
-                    },
+                    ...(canUseAdminConsole
+                        ? [
+                            {
+                                title: 'Dashboard',
+                                icon: 'grid',
+                                url: '/user/dashboard-admin',
+                                role: '',
+                                subscription: ''
+                            },
+                          ]
+                        : []),
                     {
                         title: 'Requests',
                         icon: 'file-text',
@@ -73,8 +84,18 @@ export class SidebarComponent {
                         url: '/user/user-list',
                         role: '',
                         subscription: ''
-                    }
-                    
+                    },
+                    ...(canUseAdminConsole
+                        ? [
+                            {
+                                title: 'Feature Flags',
+                                icon: 'settings',
+                                url: '/user/admin/feature-flags',
+                                role: '',
+                                subscription: ''
+                            },
+                          ]
+                        : []),
                 ];
             }else if(role === 'ROLE_USER'){
                 this.menuList = [
@@ -85,27 +106,39 @@ export class SidebarComponent {
                         role: '',
                         subscription: ''
                     },
-                    {
-                        title: 'Resumes',
-                        icon: 'file-text',
-                        url: '/user/resumes',
-                        role: '',
-                        subscription: ''
-                    },
-                    {
-                        title: 'Job Applications',
-                        icon: 'file',
-                        url: '/user/job-applications',
-                        role: '',
-                        subscription: ''
-                    },
-                    {
-                        title: 'Learn',
-                        icon: 'book-open',
-                        url: '/user/user-learn',
-                        role: '',
-                        subscription: ''
-                    }
+                    ...(canUseResumePortal
+                        ? [
+                            {
+                                title: 'Resumes',
+                                icon: 'file-text',
+                                url: '/user/resumes',
+                                role: '',
+                                subscription: ''
+                            },
+                          ]
+                        : []),
+                    ...(canUseJobTracking
+                        ? [
+                            {
+                                title: 'Job Applications',
+                                icon: 'file',
+                                url: '/user/job-applications',
+                                role: '',
+                                subscription: ''
+                            },
+                          ]
+                        : []),
+                    ...(canUseCourseCentral
+                        ? [
+                            {
+                                title: 'Learn',
+                                icon: 'book-open',
+                                url: '/user/user-learn',
+                                role: '',
+                                subscription: ''
+                            },
+                          ]
+                        : [])
                 ];
             }else{
                 this.menuList = [
@@ -116,27 +149,39 @@ export class SidebarComponent {
                         role: '',
                         subscription: ''
                     },
-                    {
-                        title: 'Resumes',
-                        icon: 'file-text',
-                        url: '/user/resumes',
-                        role: '',
-                        subscription: ''
-                    },
-                    {
-                        title: 'Job Applications',
-                        icon: 'file',
-                        url: '/user/job-applications',
-                        role: '',
-                        subscription: ''
-                    },
-                    {
-                        title: 'Learn',
-                        icon: 'book-open',
-                        url: '/user/user-learn',
-                        role: '',
-                        subscription: ''
-                    }
+                    ...(canUseResumePortal
+                        ? [
+                            {
+                                title: 'Resumes',
+                                icon: 'file-text',
+                                url: '/user/resumes',
+                                role: '',
+                                subscription: ''
+                            },
+                          ]
+                        : []),
+                    ...(canUseJobTracking
+                        ? [
+                            {
+                                title: 'Job Applications',
+                                icon: 'file',
+                                url: '/user/job-applications',
+                                role: '',
+                                subscription: ''
+                            },
+                          ]
+                        : []),
+                    ...(canUseCourseCentral
+                        ? [
+                            {
+                                title: 'Learn',
+                                icon: 'book-open',
+                                url: '/user/user-learn',
+                                role: '',
+                                subscription: ''
+                            },
+                          ]
+                        : [])
                 ];
             }
           });

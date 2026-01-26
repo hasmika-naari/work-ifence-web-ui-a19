@@ -210,6 +210,8 @@ export const routes: Routes = [
     },
     {
         path: 'resume-portal',
+        canActivate: [accessGuard],
+        data: { requireFlag: 'RESUME_PORTAL' },
         children: [
             {
                 path: '',
@@ -235,6 +237,8 @@ export const routes: Routes = [
             },
             {
                 path: 'course-central',
+                canActivate: [accessGuard],
+                data: { requireFlag: 'COURSE_CENTRAL' },
                  children: [
                         {
                             path: '',
@@ -279,9 +283,10 @@ export const routes: Routes = [
     },
      {
         path: 'course-central',
+        canActivate: [accessGuard],
         loadComponent: () => 
             import('./pages/online-motivation-course/online-motivation-course.component')
-                .then(m => m.OnlineMotivationCourseComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+            .then(m => m.OnlineMotivationCourseComponent), data: {reuseComponent: true, breadcrumb: 'Course Central', requireFlag: 'COURSE_CENTRAL' }
         //   loadComponent: () => 
         //     import('./pages/course-portal-online/course-portal-online.component')
         //         .then(m => m.CoursePortalOnlineComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
@@ -294,15 +299,17 @@ export const routes: Routes = [
     },
     {
         path: 'course-central-list',
+        canActivate: [accessGuard],
         loadComponent: () => 
             import('./pages/course-central/course-central.component')
-                .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+                .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central', requireFlag: 'COURSE_CENTRAL' }
     },
     {
         path: 'single-course',
+        canActivate: [accessGuard],
         loadComponent: () => 
             import('./pages/courses-details-page/courses-details-page.component')
-                .then(m => m.CoursesDetailsPageComponent), data: {reuseComponent: true, breadcrumb: 'Single Course' }
+                .then(m => m.CoursesDetailsPageComponent), data: {reuseComponent: true, breadcrumb: 'Single Course', requireFlag: 'COURSE_CENTRAL' }
     },
     {
         path: 'dashboard-intro',
@@ -431,7 +438,7 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./pages/notifications-page/notifications-page.component')
                 .then(m => m.NotificationsPageComponent),
-        data: { reuseComponent: true, breadcrumb: 'Notifications', requireAuth: true, requireFeature: 'ALERTS', pricingScope: 'individual' }
+        data: { reuseComponent: true, breadcrumb: 'Notifications', requireAuth: true, requireFlag: 'ALERTS', requireFeature: 'ALERTS', pricingScope: 'individual' }
     },
     {
         path: 'resumes/resume',
@@ -465,23 +472,24 @@ export const routes: Routes = [
             {
                 path: 'resumes/:resumeId/builder',
                 canDeactivate: [pendingChangesGuard],
+                canActivate: [accessGuard],
                 loadComponent: () =>
                     import('./resume-portal/pages/resume-builder-shell.component')
                         .then(m => m.ResumeBuilderShellComponent),
-                data: { reuseComponent: true, breadcrumb: 'Resume Builder' },
+                data: { reuseComponent: true, breadcrumb: 'Resume Builder', requireFlag: 'RESUME_BUILDER' },
             },
             {   
                 path: 'job-applications', 
                 canActivate: [accessGuard],
                 loadComponent: () => import('./pages/dashboard-job-application/dashboard-job-application.component').then(m => m.DashboardJobApplicationComponent), 
-                data: { breadcrumb: 'Job Applications', requireAuth: true, requireFeature: 'JOB_TRACKING', pricingScope: 'individual' } 
+                data: { breadcrumb: 'Job Applications', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual' } 
             },
             {
                 path: 'job-applications/application',
                 canActivate: [accessGuard],
                 loadComponent: () => 
                     import('./pages/dashboard-job-application/application-form/application-form3.component')
-                        .then(m => m.ApplicationForm3Component), data: {reuseComponent: true, breadcrumb: 'Application', requireAuth: true, requireFeature: 'JOB_TRACKING', pricingScope: 'individual' },
+                        .then(m => m.ApplicationForm3Component), data: {reuseComponent: true, breadcrumb: 'Application', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual' },
             },
             {   
                 path: 'requests', 
@@ -510,8 +518,30 @@ export const routes: Routes = [
             },
             {   
                 path: 'dashboard-admin', 
+                canActivate: [accessGuard],
                 loadComponent: () => import('./pages/dashboard-app-admin/dashboard-app-admin.component').then(m => m.DashboardAppAdminComponent), 
-                data: { breadcrumb: 'Employee Dashboard' } 
+                data: { breadcrumb: 'Platform Admin', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN' } 
+            },
+            {
+                path: 'admin',
+                children: [
+                    {
+                        path: 'feature-flags',
+                        canActivate: [accessGuard],
+                        loadComponent: () =>
+                            import('./pages/admin/feature-flags/admin-feature-flags.component')
+                                .then(m => m.AdminFeatureFlagsComponent),
+                        data: { breadcrumb: 'Feature Flags', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN' }
+                    },
+                    {
+                        path: 'plans',
+                        canActivate: [accessGuard],
+                        loadComponent: () =>
+                            import('./pages/admin/plans/admin-plans-entitlements.component')
+                                .then(m => m.AdminPlansEntitlementsComponent),
+                        data: { breadcrumb: 'Plans & Entitlements', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN' }
+                    },
+                ]
             },
             {
                 path: 'enterprise',
@@ -523,7 +553,7 @@ export const routes: Routes = [
                         loadComponent: () =>
                             import('./pages/enterprise/org/enterprise-org-page.component')
                                 .then(m => m.EnterpriseOrgPageComponent),
-                        data: { breadcrumb: 'Enterprise Org', requireAuth: true, requireMode: 'ENTERPRISE', requireEnterpriseAdmin: true }
+                        data: { breadcrumb: 'Enterprise Org', requireAuth: true, requireFlag: 'ENTERPRISE_CONSOLE', requireMode: 'ENTERPRISE', requireEnterpriseAdmin: true }
                     },
                     {
                         path: 'members',
@@ -531,7 +561,15 @@ export const routes: Routes = [
                         loadComponent: () =>
                             import('./pages/enterprise/members/enterprise-members-page.component')
                                 .then(m => m.EnterpriseMembersPageComponent),
-                        data: { breadcrumb: 'Enterprise Members', requireAuth: true, requireMode: 'ENTERPRISE', requireEnterpriseAdmin: true }
+                        data: { breadcrumb: 'Enterprise Members', requireAuth: true, requireFlag: 'ENTERPRISE_CONSOLE', requireMode: 'ENTERPRISE', requireEnterpriseAdmin: true }
+                    },
+                    {
+                        path: 'audit',
+                        canActivate: [accessGuard],
+                        loadComponent: () =>
+                            import('./pages/enterprise/audit/enterprise-audit-log-page.component')
+                                .then(m => m.EnterpriseAuditLogPageComponent),
+                        data: { breadcrumb: 'Enterprise Audit Log', requireAuth: true, requireFlag: 'ENTERPRISE_CONSOLE', requireMode: 'ENTERPRISE', requireEnterpriseAdmin: true }
                     },
                     {
                         path: 'subscription',
@@ -539,7 +577,7 @@ export const routes: Routes = [
                         loadComponent: () =>
                             import('./pages/subscription/subscription-page.component')
                                 .then(m => m.SubscriptionPageComponent),
-                        data: { breadcrumb: 'Enterprise Subscription', requireAuth: true, requireMode: 'ENTERPRISE' }
+                        data: { breadcrumb: 'Enterprise Subscription', requireAuth: true, requireFlag: 'ENTERPRISE_CONSOLE', requireMode: 'ENTERPRISE' }
                     },
                 ]
             },

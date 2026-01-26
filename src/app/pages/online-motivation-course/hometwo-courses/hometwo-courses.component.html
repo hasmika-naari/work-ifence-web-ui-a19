@@ -40,12 +40,14 @@
         <span (click)="switchTab($event, 'tab7')">Photography (04)</span>
       </li>
       <li class="nav-tab" [ngClass]="{ 'active': currentTab === 'tab1' }">
-        <span
-          class="active all-courses"
-          (click)="switchTab($event, 'tab1')"
-          routerLink="/central/course-central/courses"
-          >All Courses</span
-          >
+        @if (courseCentralEnabled()) {
+          <span
+            class="active all-courses"
+            (click)="switchTab($event, 'tab1')"
+            routerLink="/central/course-central/courses"
+            >All Courses</span
+            >
+        }
         </li>
       </ul>
 

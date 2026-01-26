@@ -10,6 +10,7 @@ import { DashboardContextService } from 'src/app/services/dashboard-context.serv
 import { ActiveRoleService } from 'src/app/services/active-role.service';
 import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
 import { DashboardSummaryFacadeService } from 'src/app/facades/dashboard-summary-facade.service';
+import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
 
 @Component({
   selector: 'fury-dashboard',
@@ -32,6 +33,7 @@ export class DashboardComponent {
   private routerService: Router =  inject(Router);
   private userStore: UserStoreService =  inject(UserStoreService);
   private accessFacade: AccessFacadeService = inject(AccessFacadeService);
+  private remoteConfig: RemoteConfigFacadeService = inject(RemoteConfigFacadeService);
   private snackBar: MatSnackBar = inject(MatSnackBar);
   private dashboardContext: DashboardContextService = inject(DashboardContextService);
   private activeRoleService: ActiveRoleService = inject(ActiveRoleService);
@@ -110,7 +112,7 @@ export class DashboardComponent {
     ];
 
     // Enterprise admin gets extra shortcuts (UI-only; no backend change)
-    if (this.isEnterpriseAdminView()) {
+    if (this.isEnterpriseAdminView() && this.remoteConfig.isFlagEnabled('ENTERPRISE_CONSOLE')) {
       base.push({
         key: 'enterprise-requests',
         icon: 'assets/jobtrackerai-icon.png',
@@ -137,6 +139,16 @@ export class DashboardComponent {
         title: 'Enterprise Members',
         description: 'Invite and manage enterprise members',
         route: '/user/enterprise/members',
+        enabled: true,
+        disabledMessage: '',
+      });
+
+      base.push({
+        key: 'enterprise-audit',
+        icon: 'assets/jobtrackerai-icon.png',
+        title: 'Audit Log',
+        description: 'Review access denials and admin actions',
+        route: '/user/enterprise/audit',
         enabled: true,
         disabledMessage: '',
       });

@@ -12,7 +12,7 @@
           <!-- Desktop menu - only show on desktop -->
           <div id="mainNav" class="collapse navbar-collapse flex-menu" [class.show]="isMenuOpen() && !isMobile && !isTablet">
             <ul class="navbar-nav main-nav">
-              @for (item of menuListStore(); track item.id) {
+              @for (item of filteredMenuListStore(); track item.id) {
                 <li class="nav-item" [class.dropdown]="item.menuItems && item.menuItems.length > 0">
                   <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
                     @if(item.icon && item.route !== '/sign-in') {
@@ -87,7 +87,7 @@
 
             <!-- Menu Sidebar for Mobile Navigation -->
             <app-menu-sidebar
-              [menuItems]="menuListStore()"
+              [menuItems]="filteredMenuListStore()"
               [menuSidebarOpen]="menuSidebarOpen"
               [userAccount]="userAccount"
               (closeMenuSidebar)="closeMenuSidebar()">
