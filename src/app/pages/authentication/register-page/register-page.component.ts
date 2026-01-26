@@ -289,7 +289,7 @@ export class RegisterPageComponent {
               ],
             ],
             confirmPassword: ['', Validators.required],
-          //   acceptTerms: [false, Validators.requiredTrue],
+             acceptTerms: [false, Validators.requiredTrue],
           },
           {
             validators: [Validation.match('password', 'confirmPassword')],
@@ -398,6 +398,7 @@ export class RegisterPageComponent {
       this.registerRequest.email = this.registerForm3.controls['email'].value; 
       this.registerRequest.password = this.registerForm3.controls['password'].value; 
       this.registerRequest.login = this.registerForm3.controls['userName'].value; 
+      // this.registerRequest.acceptTerms = this.registerForm3.controls['acceptTerms'].value;
       this.registerRequest.langKey = "en";
       this.registerForm3.disable();
       this.authService.signUp(this.registerRequest).subscribe((resp) => {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -7,6 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ResumeService } from '../../../services/resume.service';
+import { Account } from 'src/app/services/profile.model';
+import { UserStoreService } from 'src/app/services/store/user-store.service';
+import { Resume } from 'src/app/services/resume.model';
+import { Router } from '@angular/router';
 
 export interface ImportResumeResult {
   type: 'file' | 'text' | 'cancel' | 'success';
@@ -35,17 +39,21 @@ export class ImportResumeModalComponent implements OnInit {
   isDragging = false;
   isLoading = false;
   userName = '';
+  ownerId = '';
+  private userStore: UserStoreService = inject(UserStoreService);
+  userAccount: Signal<Account> = this.userStore.getUserAccount();
 
   constructor(
     public dialogRef: MatDialogRef<ImportResumeModalComponent>,
-    private resumeService: ResumeService
+    private resumeService: ResumeService,
+    private router : Router
   ) {}
 
   ngOnInit(): void {
     // Get current user - adjust based on your auth service
     // For now using a placeholder
-    this.userName = 'currentUser';
-    
+    this.userName = this.userAccount().login;
+    this.ownerId = this.userAccount().id;
     // Disable close on backdrop click when loading
     this.dialogRef.disableClose = false;
   }
@@ -132,9 +140,16 @@ export class ImportResumeModalComponent implements OnInit {
     this.isLoading = true;
     this.dialogRef.disableClose = true;
 
-    this.resumeService.uploadExternalResume(this.userName, this.selectedFile)
+    this.resumeService.uploadExternalResume(this.userName, this.ownerId,this.selectedFile)
       .subscribe({
-        next: (response) => {
+        next: (response : any) => {
+          // console.log(response);
+          let resume = JSON.parse(response?.resume?.resumeJson);
+          console.log("AI Response --------------->", resume);
+          this.userStore.setResumeForm(resume);
+          this.userStore.updateSelectedResumeListItem(response?.resume);
+          this.userStore.setIsChangeInNewResume(false);
+          this.router.navigateByUrl('/user/resumes/resume');
           this.isLoading = false;
           this.dialogRef.close({
             type: 'success',

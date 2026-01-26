@@ -1143,12 +1143,12 @@ moveSectionDown(section: string) {
 }
 
 
-      setResumeForm(resume: Resume) {
-        this.state.update((state) => ({
-          ...state,
-          selectedResume : {...state.selectedResume,  resumeForm: resume},
-        }));
-      }
+setResumeForm(resume: Resume) {
+  this.state.update((state) => ({
+    ...state,
+    selectedResume : {...state.selectedResume,  resumeForm: resume}
+  }));
+}
 
       // updateResumeIsPrimary(isPrimary: boolean) {
       //   this.state.update((state) => ({

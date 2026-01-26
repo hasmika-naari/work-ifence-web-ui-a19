@@ -504,12 +504,12 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
               e.resumeJson = JSON.stringify(resume)
               this.resumes = [...this.resumes, e]
               let roleExists = this.roleCategories.some(role => role.name.includes(e.roleCategory));
-              if (!roleExists && e.roleCategory.length > 0) {
+              if (!roleExists && e.roleCategory?.length > 0) {
                 this.roleCategories = [...this.roleCategories , { name: e.roleCategory, code: '' }];
               }
 
               let resumeCategoryExists = this.resumeCategories.some(category => category.name.includes(e.resumeCategory));
-              if (!resumeCategoryExists && e.resumeCategory.length > 0) {
+              if (!resumeCategoryExists && e.resumeCategory?.length > 0) {
                 this.resumeCategories = [...this.resumeCategories , { name: e.resumeCategory, code: '' }];
               }
           },

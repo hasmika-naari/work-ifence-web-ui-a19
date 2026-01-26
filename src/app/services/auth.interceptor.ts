@@ -54,7 +54,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       headers = headers.append('Cache-Control', 'no-cache');
       headers = headers.append('Pragma', 'no-cache');
     } else {
-      if(req.url.includes("uploadExternalResumeInS3")){
+      if(req.url.includes("uploadExternalResumeInS3") || req.url.includes("resume/parse")){
         // headers = headers.append('Content-Type', 'image/jpeg');
       }else{
         headers = headers.append('Content-Type', 'application/json');

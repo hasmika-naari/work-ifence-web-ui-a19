@@ -397,6 +397,8 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   addedSections = computed(() => {
     // Explicitly depend on resumeForm signal for reactivity
     const resume = this.resumeForm();
+    console.log(resume);
+    
     const sections = resume.sections || [];
     const added = sections.filter((s: any) => s.isAdded);
     console.log('[Resume1TemplateComponent] addedSections computed:', { resume, sections, added });
@@ -588,6 +590,8 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     this.sidebarIconOnly = this.userStore.getSidebarIconOnly();
     this.sectionStatus = this.userStore.getSectionStatus();
     this.resumeForm = this.userStore.getResumeForm();
+    console.log(this.resumeForm());
+    
     this.selectedResumeListItem = this.userStore.getSelectedResumeListItem();
     console.log('📝 Resume1TemplateComponent initialized. isPreview:', this.isPreview);
 

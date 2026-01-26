@@ -268,20 +268,27 @@ export class ResumeService {
       .pipe(catchError(this.handleError));
   }
 
-  uploadExternalResume(userName: string, file: File) {
-    let baseUrl = this.appConstants.BASE_API_URL;
-    if (isPlatformBrowser(this.platformId)) {
-      baseUrl = '';
-    }
+uploadExternalResume(userName: string, ownerId: string, file: File) {
+  let baseUrl = this.appConstants.BASE_API_URL;
+  let localhosturl = 'http://localhost:8090';
+  
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('userName', userName);
-
-    const queryUrl = baseUrl + this.appConstants.UPLOAD_EXTERNAL_RESUME;
-    return this.httpClient.post(queryUrl, formData)
-      .pipe(catchError(this.handleError));
+  if (isPlatformBrowser(this.platformId)) {
+    baseUrl = '';
   }
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('userName', userName);
+  formData.append('ownerId', ownerId);
+
+  const url = `${localhosturl}${this.appConstants.UPLOAD_EXTERNAL_RESUME}`;
+
+  return this.httpClient.post(url, formData).pipe(
+    catchError(this.handleError)
+  );
+}
+
 
   uploadExternalResumeText(userName: string, resumeText: string) {
     let baseUrl = this.appConstants.BASE_API_URL;
