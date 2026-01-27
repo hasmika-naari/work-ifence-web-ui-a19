@@ -130,7 +130,7 @@ export class AuditLogTableComponent {
     }
   );
 
-  readonly total = computed(() => this.page().totalElements ?? 0);
+  readonly total = computed(() => this.page().totalElements || 0);
 
   readonly eventTypeOptions: Array<{ label: string; value: string }> = [
     { label: 'All', value: '' },

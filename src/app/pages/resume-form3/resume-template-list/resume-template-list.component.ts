@@ -1,13 +1,15 @@
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, 
-          OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, EventEmitter, 
+          OnDestroy, OnInit, Output, Signal, computed, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { TemplatesService } from 'src/app/services/shared/templates.service';
-import { ResumeTemplate } from 'src/app/services/bee-compete.model';
-import { ResumeTemplateDto } from 'src/app/services/store/user-store';
 import { Resume } from 'src/app/services/resume.model';
-import { PlanGateService } from 'src/app/resume-portal/services/plan-gate.service';
+import { ResumeTemplateDto } from 'src/app/services/store/user-store';
+import { ResumeTemplateFacadeService } from 'src/app/resume-portal/data/resume-template-facade.service';
+import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
+import type { ResumeTemplateUi } from 'src/app/resume-portal/data/resume-template.ui.model';
 
 
 export interface DialogData {
@@ -17,7 +19,7 @@ export interface DialogData {
 @Component({
   selector: 'app-resume-template-list',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, MatSnackBarModule],
   templateUrl: './resume-template-list.component.html',
   styleUrls: ['./resume-template-list.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -27,85 +29,16 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
   imageBase64: String | null = null; // Define a class property to store the image bytes
 
   private userStore: UserStoreService = inject(UserStoreService);
-  private planGate: PlanGateService = inject(PlanGateService);
+  private templateFacade: ResumeTemplateFacadeService = inject(ResumeTemplateFacadeService);
+  private templateSelection = inject(ResumeTemplateSelectionService);
+  private snackBar = inject(MatSnackBar);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeForm : Signal<Resume> = this.userStore.getResumeForm();
 
   @Output() contact = new EventEmitter();
   subs: Array<Subscription> = [];
 
-  templates: ResumeTemplate[] = [
-    {
-      id: 1,
-      name: 'MonoPro',
-      companyName : '',
-      template_name: 'TEMPLATE_1',
-      imgPath : 'assets/img/templates/template1.jpg'
-    },
-    // {
-    //   id: 2,
-    //   name: 'Template 2',
-    //   companyName : '',
-    //   template_name: 'TEMPLATE_2',
-    //   imgPath : 'assets/img/template_2.png'
-    // },
-    // {
-    //   id: 3,
-    //   name: 'Template 3',
-    //   companyName : '',
-    //   template_name: 'TEMPLATE_3',
-    //   imgPath : 'assets/img/template_3.png'
-    // },
-    // {
-    //   id: 4,
-    //   name: 'Template 4',
-    //   companyName : '',
-    //   template_name: 'TEMPLATE_4',
-    //   imgPath : 'assets/img/template_4.png'
-    // },
-    // {
-    //   id: 5,
-    //   name: 'Template 5',
-    //   companyName : '',
-    //   template_name: 'TEMPLATE_5',
-    //   imgPath : 'assets/img/template_5.png'
-    // },
-    // {
-    //   id: 6,
-    //   name: 'Template 6',
-    //   companyName : '',
-    //   template_name: 'TEMPLATE_6',
-    //   imgPath : 'assets/img/template_6.png'
-    // },
-    // {
-    //   id: 7,
-    //   name: 'Template 7',
-    //   companyName : '',
-    //   template_name: 'TEMPLATE_7',
-    //   imgPath : 'assets/img/template_7.png'
-    // },
-    // {
-    //   id: 8,
-    //   name: 'Template 8',
-    //   companyName : '',
-    //   template_name: 'TEMPLATE_8',
-    //   imgPath : 'assets/img/template_8.png'
-    // }
-    {
-      id: 9,
-      name: 'DualEdge',
-      companyName : '',
-      template_name: 'TEMPLATE_9',
-      imgPath : 'assets/img/templates/template9.jpg'
-    },
-    {
-      id: 10,
-      name: 'Modern',
-      companyName : '',
-      template_name: 'TEMPLATE_10',
-      imgPath : 'assets/img/templates/template10.jpg'
-    },
-  ];
+  templates = computed(() => this.templateFacade.templates());
 
   constructor(
       private router : Router, 
@@ -120,6 +53,7 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.templateFacade.loadTemplates('available');
     this.subs.push(this.router.events.subscribe(() => {
       const currentUrl = this.router.url;
       if (currentUrl.includes('/resumes/resume')) {
@@ -134,17 +68,77 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
     }));
   }
 
-  selectTemplateHandler($event: any, template: ResumeTemplate){
-    if (!this.planGate.enforceOrUpgrade(this.planGate.canUseTemplate(template.id), 'Free plan can only use free templates.')) {
+  selectTemplateHandler($event: Event, template: ResumeTemplateUi){
+    const gate = this.templateFacade.canUseTemplate(template);
+    if (!gate.allowed) {
+      this.snackBar.open(this.templateFacade.explainReason(gate.reason), 'View plans', { duration: 3200 });
+      this.templateFacade.handleDenied(gate.reason, this.router.url);
       return;
     }
-    this.userStore.updateResumeTemplate(template);
-    if(template.template_name != 'TEMPLATE_9'){
-      this.userStore.emptyMultipleColumnTemplateSections()
+
+    const resumeTemplate = this.toResumeTemplate(template);
+    this.templateSelection.setCatalogSelection({
+      templateId: template.id ?? '',
+      templateKey: template.templateKey ?? resumeTemplate.template_name,
+      componentKey: template.componentKey ?? resumeTemplate.template_name,
+      version: template.version ?? '1.0',
+    });
+    this.userStore.updateResumeTemplate(resumeTemplate);
+    if (!this.isMultiColumnTemplate(resumeTemplate)) {
+      this.userStore.emptyMultipleColumnTemplateSections();
     }
-    this.userStore.setFlagOnTemplateSelected(template.template_name)
+    this.userStore.setFlagOnTemplateSelected(resumeTemplate.template_name);
     this.contact.emit();
 
+  }
+
+  isSelected(template: ResumeTemplateUi): boolean {
+    const currentId = Number(this.resumeForm().template_details.id ?? 0);
+    const templateId = Number(template.id ?? 0);
+    return Number.isFinite(templateId) && templateId === currentId;
+  }
+
+  isPremium(template: ResumeTemplateUi): boolean {
+    return this.templateFacade.isPremium(template);
+  }
+
+  isLocked(template: ResumeTemplateUi): boolean {
+    return this.templateFacade.isLocked(template);
+  }
+
+  private toResumeTemplate(template: ResumeTemplateUi): ResumeTemplateDto {
+    const parsedId = Number(template.id);
+    const id = Number.isFinite(parsedId) && parsedId > 0 ? parsedId : 1;
+    const resolvedName = this.resolveTemplateName({
+      template_name: template.componentKey,
+      templateKey: template.templateKey,
+      componentKey: template.componentKey,
+      id,
+    });
+
+    return {
+      id,
+      name: template.title ?? `Template ${id}`,
+      companyName: '',
+      template_name: resolvedName,
+      imgPath: template.imageUrl ?? '',
+      templateKey: template.templateKey ?? resolvedName,
+      componentKey: template.componentKey ?? resolvedName,
+      version: template.version ?? '1.0',
+      accessLevel: template.accessLevel ?? '',
+    } as ResumeTemplateDto;
+  }
+
+  private resolveTemplateName(details: Partial<ResumeTemplateDto>): string {
+    const fromDetails =
+      details.componentKey || details.templateKey || details.template_name;
+    if (fromDetails) return fromDetails;
+    const id = Number(details.id ?? 0);
+    return Number.isFinite(id) && id > 0 ? `TEMPLATE_${id}` : 'TEMPLATE_1';
+  }
+
+  private isMultiColumnTemplate(details: Partial<ResumeTemplateDto>): boolean {
+    return this.resolveTemplateName(details) === 'TEMPLATE_9';
   }
 
 

@@ -1,11 +1,50 @@
 
 
+.template-card {
+  cursor: pointer;
+}
+
+.template-card-locked {
+  opacity: 0.65;
+}
+
 .template-image{
+  position: relative;
   box-shadow: 0 0 8px -2px #ccc;
   border: 1px solid transparent;
   &:hover{
     border: 1px solid var(--mainColor);
   }
+}
+
+.template-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.72);
+  z-index: 2;
+}
+
+.template-badge.premium {
+  background: linear-gradient(135deg, #f05b45, #0a66c2);
+  color: #fff;
+  border-color: transparent;
+}
+
+.template-badge.locked {
+  left: auto;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  border-color: transparent;
 }
 
 .template-name{

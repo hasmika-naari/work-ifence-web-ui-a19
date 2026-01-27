@@ -1,76 +1,197 @@
-<div class="resume-landing">
-  <div class="header">
-    <app-header-wifence></app-header-wifence>
-  </div>
-
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Build a standout resume in minutes.</h1>
-      <p class="sub">
-        Create, customize, and download a professional resume with free and premium templates.
-        Start free, upgrade anytime for premium designs and advanced options.
-      </p>
-
-      <div class="cta">
-        <button mat-flat-button color="primary" type="button" (click)="startResume()">
-          Start my resume
-        </button>
-        <button mat-stroked-button color="primary" type="button" (click)="browseTemplates()">
-          Browse templates
-        </button>
-      </div>
-
-      <div class="free-paid">
-        <div>
-          <strong>Free:</strong> Core templates + essential resume builder.
+<div class="course-central-wrapper">
+  <div class="course-area" [class.dark-course-area]="themeService.isDark()">
+    <mat-sidenav-container class="dashboard-container">
+      <mat-sidenav-content class="main-content" #pageSection (scroll)="onPageScroll($event)">
+        <div #sentinel style="position: absolute; top: 0; height: 1px; width: 1px;"></div>
+        <div class="course-header" [class.course-header-sticky]="isSticky">
+          <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
         </div>
-        <div>
-          <strong>Paid:</strong> Premium templates + expanded design options.
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="templates">
-    <div class="section-head">
-      <h2>Template previews</h2>
-      <p>Choose a clean layout now and finish it after you sign in.</p>
-    </div>
+        <div class="content-max">
+          <div class="story-content">
+            <div class="rp-layout">
+              <div class="modern-title-section" style="padding-left: 0; padding-top: 0;">
+                <div class="title-wrapper" style="gap: 15px;">
+                  <div class="rp-page-title" style="margin-bottom: 8px;">
+                    <h2 style="margin: 0; font-weight: 800;">Resume Builder</h2>
+                  </div>
+                  <div class="navigation-buttons" style="padding: 0 0 12px 0; gap: 0; display: flex; flex-wrap: wrap;">
+                    <a
+                      class="nav-button home-button"
+                      [routerLink]="['/']"
+                      style="margin-right: 8px; position: relative; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px);">
+                      <lucide-icon name="home"></lucide-icon>
+                      Home
+                      <span style="display: inline-block; margin-left: 8px; color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3); font-weight: 300;">|</span>
+                    </a>
+                    <a
+                      class="nav-button back-button"
+                      (click)="goBack($event)"
+                      style="margin-left: 8px; margin-right: 8px; position: relative; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px);">
+                      <lucide-icon name="undo2"></lucide-icon>
+                      Back
+                      <span style="display: inline-block; margin-left: 8px; color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3); font-weight: 300;">|</span>
+                    </a>
+                  </div>
+                  <div class="rp-page-sub" style="margin-top: 2px; font-weight: 600;">
+                    Choose a template to get started and personalize your resume in minutes.
+                  </div>
+                </div>
+              </div>
 
-    <div class="template-grid">
-      @for (tpl of templates(); track tpl.id) {
-        <button class="template-card" type="button" (click)="selectTemplate(tpl)">
-          <div
-            class="template-preview"
-            [style.backgroundImage]="tpl.previewImageUrl ? 'url(' + tpl.previewImageUrl + ')' : 'none'"
-            [attr.aria-label]="tpl.name">
-          </div>
-          <div class="template-meta">
-            <div class="template-name">{{ tpl.name }}</div>
-            <div class="template-pill" [class.premium]="tpl.isPremium">
-              {{ tpl.isPremium ? 'Premium' : 'Free' }}
+              <section class="rp-hero" aria-label="Resume creation steps">
+                <h1 class="rp-hero-title">Start building your resume.</h1>
+                <div class="rp-hero-sub">Select a template, customize it, then download.</div>
+
+                <div class="rp-flow" aria-label="Resume creation flow">
+                  <div class="rp-step">
+                    <div class="rp-step-badge" aria-hidden="true">1</div>
+                    <div class="rp-step-body">
+                      <div class="rp-step-title">Select Template</div>
+                      <div class="rp-step-sub">Choose a design you like</div>
+                      <div class="rp-step-detail">Browse categories, preview layouts, then pick a Free or Premium template.</div>
+                    </div>
+                  </div>
+
+                  <div class="rp-step rp-step-middle">
+                    <div class="rp-step-badge" aria-hidden="true">2</div>
+                    <div class="rp-step-body">
+                      <div class="rp-step-title">Update</div>
+                      <div class="rp-step-sub">Edit & personalize details</div>
+                      <div class="rp-step-detail">Add your contact info, summary, experience, education, and skills — tailor it to the job.</div>
+                    </div>
+                  </div>
+
+                  <div class="rp-step">
+                    <div class="rp-step-badge" aria-hidden="true">3</div>
+                    <div class="rp-step-body">
+                      <div class="rp-step-title">Download</div>
+                      <div class="rp-step-sub">Export & share anywhere</div>
+                      <div class="rp-step-detail">Download a clean PDF, share it, and come back anytime to edit or update.</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section #templatesSection class="rp-section" aria-label="Resume templates">
+                <div class="rp-sticky">
+                  <div class="rp-toolbar-top">
+                    <div>
+                      <h2 class="rp-heading">Resume Templates</h2>
+                      <div class="rp-message">Choose the template to create resume.</div>
+                    </div>
+
+                    <button
+                      mat-flat-button
+                      color="primary"
+                      type="button"
+                      class="rp-upload"
+                      (click)="uploadResume()">
+                      <mat-icon aria-hidden="true">upload_file</mat-icon>
+                      Upload Resume
+                    </button>
+                  </div>
+
+                  <div class="rp-filters">
+                    <label class="rp-filter">
+                      <span>Category</span>
+                      <select [value]="selectedCategory()" (change)="onCategoryChange($event)">
+                        @for (category of categoryOptions(); track category) {
+                          <option [value]="category">{{ category }}</option>
+                        }
+                      </select>
+                    </label>
+
+                    <label class="rp-filter">
+                      <span>Style</span>
+                      <select [value]="selectedStyle()" (change)="onStyleChange($event)">
+                        @for (style of styleOptions(); track style) {
+                          <option [value]="style">{{ style }}</option>
+                        }
+                      </select>
+                    </label>
+
+                    <label class="rp-filter rp-filter-search">
+                      <span>Search</span>
+                      <input
+                        type="search"
+                        [value]="searchQuery()"
+                        (input)="onSearchChange($event)"
+                        placeholder="Search by title or tags" />
+                    </label>
+                  </div>
+                </div>
+
+                @if (isLoading()) {
+                  <div class="rp-state rp-loading">Loading templates…</div>
+                } @else if (errorMessage()) {
+                  <div class="rp-state rp-error">
+                    <div>{{ errorMessage() }}</div>
+                    <button mat-stroked-button color="primary" (click)="loadTemplates()">Retry</button>
+                  </div>
+                } @else {
+                  @if (filteredTemplates().length === 0) {
+                    <div class="rp-state">No templates match your filters.</div>
+                  } @else {
+                    <div class="rp-templates">
+                      @for (item of filteredTemplates(); track item.id ?? item.title) {
+                        <div class="rp-template">
+                          <div class="rp-preview">
+                            @if ((item.accessLevel ?? '').toString().toUpperCase() === 'PREMIUM') {
+                              <div class="rp-premium-ribbon" aria-hidden="true"></div>
+                            }
+                            @if (isLocked(item)) {
+                              <div class="rp-locked-badge">
+                                <mat-icon>lock</mat-icon>
+                                Premium
+                              </div>
+                            }
+                            <img class="rp-preview-img" [src]="item.imageUrl" [alt]="item.title" />
+
+                            <div class="rp-hover" aria-hidden="true">
+                              <div class="rp-hover-inner">
+                                <button
+                                  mat-flat-button
+                                  color="primary"
+                                  type="button"
+                                  class="rp-cta"
+                                  (click)="useTemplate(item)">
+                                  {{ isLocked(item) ? 'Upgrade account' : 'Use this template' }}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="rp-caption">{{ item.title | uppercase }}</div>
+
+                          <mat-chip-listbox class="rp-card-chips" [selectable]="false">
+                            @if (item.category) {
+                              <mat-chip-option disabled>{{ item.category }}</mat-chip-option>
+                            }
+                            @if (item.style) {
+                              <mat-chip-option disabled>{{ item.style }}</mat-chip-option>
+                            }
+                          </mat-chip-listbox>
+
+                          @if (item.tags?.length) {
+                            <div class="rp-tags">
+                              @for (tag of item.tags; track tag) {
+                                <span class="rp-tag">{{ tag }}</span>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                }
+              </section>
             </div>
           </div>
-          <div class="template-desc">{{ tpl.description }}</div>
-        </button>
-      }
-    </div>
-  </section>
+        </div>
 
-  <section class="details">
-    <div class="detail">
-      <h3>Resume builder</h3>
-      <p>Fill in experience, skills, and education with guided sections.</p>
-    </div>
-    <div class="detail">
-      <h3>Templates</h3>
-      <p>Pick a layout that fits your role and personalize it anytime.</p>
-    </div>
-    <div class="detail">
-      <h3>Free vs paid</h3>
-      <p>Use free templates by default, or upgrade for premium designs.</p>
-    </div>
-  </section>
-
-  <app-work-ifence-footer></app-work-ifence-footer>
+        <app-work-ifence-footer></app-work-ifence-footer>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
 </div>

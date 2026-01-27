@@ -453,7 +453,17 @@ export class Education{
       this.access_level = 'Private';
       this.resume_category = '';
       this.role_category = '';
-      this.template_details = { id: 1, name: 'Template 1', companyName: '', template_name: 'TEMPLATE_1', imgPath: 'assets/img/resume-avatar3.png' };
+      this.template_details = {
+        id: 1,
+        name: 'Template 1',
+        companyName: '',
+        template_name: 'TEMPLATE_1',
+        imgPath: 'assets/img/resume-avatar3.png',
+        templateKey: 'TEMPLATE_1',
+        componentKey: 'TEMPLATE_1',
+        version: '1.0',
+        accessLevel: 'FREE',
+      };
       this.isActive = false;
       this.isPrimary = false;
       this.imageBase64Encoded = null;

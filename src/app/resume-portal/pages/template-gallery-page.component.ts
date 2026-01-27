@@ -9,6 +9,7 @@ import {
   PLATFORM_ID,
   ViewChild,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -19,14 +20,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
-import { catchError, finalize, of } from 'rxjs';
 import { HeaderWorkIfenceComponent } from 'src/app/pages/landing/header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from 'src/app/pages/landing/footer-wifence/footer-wifence.component';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
-import { ResumeTemplateCatalogApiService } from 'src/app/services/resume-template-catalog-api.service';
-import type { ResumeTemplateRecord } from 'src/app/models/resume-template.model';
+import { ResumeTemplateFacadeService } from 'src/app/resume-portal/data/resume-template-facade.service';
+import type { ResumeTemplateUi } from 'src/app/resume-portal/data/resume-template.ui.model';
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
 
 @Component({
@@ -123,15 +123,26 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
                           <div class="rp-message">Choose the template to create resume.</div>
                         </div>
 
-                        <button
-                          mat-flat-button
-                          color="primary"
-                          type="button"
-                          class="rp-upload"
-                          (click)="uploadResume()">
-                          <mat-icon aria-hidden="true">upload_file</mat-icon>
-                          Upload Resume
-                        </button>
+                        <div class="rp-toolbar-actions">
+                          @if (isAdmin()) {
+                            <button
+                              mat-stroked-button
+                              color="primary"
+                              type="button"
+                              (click)="refreshTemplates()">
+                              Refresh templates
+                            </button>
+                          }
+                          <button
+                            mat-flat-button
+                            color="primary"
+                            type="button"
+                            class="rp-upload"
+                            (click)="uploadResume()">
+                            <mat-icon aria-hidden="true">upload_file</mat-icon>
+                            Upload Resume
+                          </button>
+                        </div>
                       </div>
 
                       <div class="rp-filters">
@@ -179,17 +190,18 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
                           @for (item of filteredTemplates(); track item.id ?? item.title) {
                             <div class="rp-template">
                               <div class="rp-preview">
-                                <div class="rp-badges">
-                                  @if (isPremiumTemplate(item)) {
-                                    <span class="rp-badge rp-badge-premium">Premium</span>
-                                  }
-                                  @if (item.isDefault) {
-                                    <span class="rp-badge rp-badge-default">Default</span>
-                                  }
-                                </div>
+                                @if (isPremium(item)) {
+                                  <div class="rp-premium-ribbon" aria-hidden="true"></div>
+                                }
+                                @if (isLocked(item)) {
+                                  <div class="rp-locked-badge">
+                                    <mat-icon>lock</mat-icon>
+                                    Premium
+                                  </div>
+                                }
                                 <img
                                   class="rp-preview-img"
-                                  [src]="item.templateDocUrl"
+                                  [src]="item.imageUrl"
                                   [alt]="item.title" />
 
                                 <div class="rp-hover" aria-hidden="true">
@@ -200,7 +212,7 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
                                       type="button"
                                       class="rp-cta"
                                       (click)="useTemplate(item)">
-                                      Use this template
+                                      {{ isLocked(item) ? 'Upgrade account' : 'Use this template' }}
                                     </button>
                                   </div>
                                 </div>
@@ -217,9 +229,9 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
                                 }
                               </mat-chip-listbox>
 
-                              @if (getTags(item).length) {
+                              @if (item.tags.length) {
                                 <div class="rp-tags">
-                                  @for (tag of getTags(item); track tag) {
+                                  @for (tag of item.tags; track tag) {
                                     <span class="rp-tag">{{ tag }}</span>
                                   }
                                 </div>
@@ -616,6 +628,14 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
         margin-bottom: 10px;
       }
 
+      .rp-toolbar-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
       .rp-filters {
         display: flex;
         flex-wrap: wrap;
@@ -722,36 +742,6 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
         padding: 0;
       }
 
-      .rp-badges {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        display: flex;
-        gap: 8px;
-        z-index: 2;
-        flex-wrap: wrap;
-      }
-
-      .rp-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 4px 10px;
-        font-size: 11px;
-        font-weight: 800;
-        border-radius: 999px;
-        color: #fff;
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
-      }
-
-      .rp-badge-premium {
-        background: linear-gradient(135deg, #c075ff, #ff8a5b);
-      }
-
-      .rp-badge-default {
-        background: linear-gradient(135deg, #0a8f65, #1ec28b);
-      }
       .rp-preview-bg {
         width: 100%;
         height: 100%;
@@ -910,13 +900,13 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
   ],
 })
 export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDestroy {
-  private readonly api = inject(ResumeTemplateCatalogApiService);
+  private readonly templateFacade = inject(ResumeTemplateFacadeService);
   private router = inject(Router);
   private location = inject(Location);
-  private readonly snackBar = inject(MatSnackBar);
+  private snackBar = inject(MatSnackBar);
+  private selection = inject(ResumeTemplateSelectionService);
   readonly themeService = inject(ThemeCustomizerService);
   private access = inject(AccessFacadeService);
-  private readonly selection = inject(ResumeTemplateSelectionService);
 
   @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
   @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
@@ -927,10 +917,10 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
 
-  readonly isLoading = signal(false);
-  readonly errorMessage = signal<string | null>(null);
-  readonly templates = signal<ResumeTemplateRecord[]>([]);
-  readonly isLoggedIn = computed(() => this.access.isLoggedIn());
+  readonly isLoading = this.templateFacade.loading;
+  readonly errorMessage = this.templateFacade.error;
+  readonly templates = this.templateFacade.templates;
+  readonly isAdmin = computed(() => this.access.isAdmin());
 
   readonly selectedCategory = signal<string>('All');
   readonly selectedStyle = signal<string>('All');
@@ -939,17 +929,6 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
   readonly activeTemplates = computed(() =>
     this.templates().filter(t => (t.status ?? '').toUpperCase() === 'ACTIVE')
   );
-
-  readonly sortedTemplates = computed(() => {
-    const list = [...this.activeTemplates()];
-    list.sort((a, b) => {
-      const aOrder = Number.isFinite(Number(a.sortOrder)) ? Number(a.sortOrder) : 0;
-      const bOrder = Number.isFinite(Number(b.sortOrder)) ? Number(b.sortOrder) : 0;
-      if (aOrder !== bOrder) return aOrder - bOrder;
-      return (a.title ?? '').localeCompare(b.title ?? '');
-    });
-    return list;
-  });
 
   readonly categoryOptions = computed(() => {
     const set = new Set(this.activeTemplates().map(t => t.category).filter(Boolean) as string[]);
@@ -966,35 +945,25 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
     const style = this.selectedStyle();
     const query = this.searchQuery().trim().toLowerCase();
 
-    return this.sortedTemplates().filter(t => {
+    return this.activeTemplates().filter(t => {
       if (category !== 'All' && t.category !== category) return false;
       if (style !== 'All' && t.style !== style) return false;
       if (!query) return true;
       const inTitle = (t.title ?? '').toLowerCase().includes(query);
-      const tags = Array.isArray(t.tags)
-        ? t.tags
-        : typeof t.tags === 'string'
-          ? t.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean)
-          : [];
-      const inTags = tags.some(tag => tag.toLowerCase().includes(query));
+      const inTags = (t.tags ?? []).some(tag => tag.toLowerCase().includes(query));
       return inTitle || inTags;
     });
   });
 
-  getTags(tpl: ResumeTemplateRecord): string[] {
-    if (Array.isArray(tpl.tags)) return tpl.tags.filter(Boolean);
-    if (typeof tpl.tags === 'string') {
-      return tpl.tags.split(',').map(tag => tag.trim()).filter(Boolean);
-    }
-    return [];
-  }
-
-  isPremiumTemplate(tpl: ResumeTemplateRecord): boolean {
-    return (tpl.accessLevel ?? '').toUpperCase() === 'PREMIUM';
-  }
-
   ngOnInit(): void {
-    this.loadTemplates();
+    effect(() => {
+      const err = this.templateFacade.error();
+      if (err) {
+        console.warn('[ResumeTemplateFacade]', err);
+      }
+    });
+
+    this.templateFacade.loadTemplates('public');
   }
 
   ngAfterViewInit(): void {
@@ -1029,19 +998,7 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
   }
 
   loadTemplates(): void {
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-
-    this.api
-      .getTemplates()
-      .pipe(
-        catchError(() => {
-          this.errorMessage.set('Unable to load templates. Please try again.');
-          return of([] as ResumeTemplateRecord[]);
-        }),
-        finalize(() => this.isLoading.set(false))
-      )
-      .subscribe(templates => this.templates.set(templates));
+    this.templateFacade.loadTemplates('public');
   }
 
   onCategoryChange(event: Event): void {
@@ -1090,31 +1047,65 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
     }
   }
 
-  useTemplate(tpl: ResumeTemplateRecord): void {
+  isPremium(item: ResumeTemplateUi): boolean {
+    return this.templateFacade.isPremium(item);
+  }
+
+  isLocked(item: ResumeTemplateUi): boolean {
+    return this.templateFacade.isLocked(item);
+  }
+
+  useTemplate(tpl: ResumeTemplateUi): void {
     this.persistSelection(tpl);
 
-    if (this.isLoggedIn()) {
-      this.snackBar.open('Template selected. Create a resume to continue.', 'OK', { duration: 2600 });
-      void this.router.navigateByUrl('/user/resumes');
+    const targetUrl = `/user/resumes/resume?templateId=${encodeURIComponent(String(tpl.id ?? ''))}`;
+    const gate = this.templateFacade.canUseTemplate(tpl);
+
+    if (!gate.allowed) {
+      this.snackBar.open(this.templateFacade.explainReason(gate.reason), 'View plans', { duration: 3500 });
+      this.templateFacade.handleDenied(gate.reason, targetUrl);
       return;
     }
 
-    void this.router.navigate(['/authentication'], {
-      queryParams: { returnUrl: '/user/resumes' },
-    });
+    void this.router.navigateByUrl(targetUrl);
   }
 
-  private persistSelection(tpl: ResumeTemplateRecord): void {
+  private persistSelection(tpl: ResumeTemplateUi): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const legacyKey = this.resolveLegacyKey(tpl);
+
     this.selection.setCatalogSelection({
       templateId: tpl.id ?? '',
-      templateKey: tpl.templateKey ?? '',
-      componentKey: tpl.componentKey ?? '',
-      version: tpl.version ?? '',
+      templateKey: tpl.templateKey ?? legacyKey,
+      componentKey: tpl.componentKey ?? legacyKey,
+      version: tpl.version ?? '1.0',
     });
+
+    try {
+      sessionStorage.setItem('wif_selected_template_title', tpl.title ?? '');
+      sessionStorage.setItem('wif_selected_template_doc', tpl.imageUrl ?? '');
+    } catch {
+      // ignore storage errors
+    }
+  }
+
+  private resolveLegacyKey(tpl: ResumeTemplateUi): string {
+    const fromTemplate = tpl.componentKey || tpl.templateKey;
+    if (fromTemplate) return fromTemplate;
+    const id = Number(tpl.id ?? 0);
+    return Number.isFinite(id) && id > 0 ? `TEMPLATE_${id}` : '';
   }
 
   uploadResume(): void {
     void this.router.navigateByUrl('/user/resumes');
+  }
+
+  refreshTemplates(): void {
+    this.templateFacade.refresh(true);
+    this.snackBar.open('Templates refreshed.', 'OK', { duration: 2400 });
   }
 
   goBack(event: Event): void {

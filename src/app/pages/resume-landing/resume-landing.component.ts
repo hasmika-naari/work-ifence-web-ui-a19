@@ -1,15 +1,32 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { CommonModule, Location, isPlatformBrowser } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  ViewChild,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { HeaderWorkIfenceComponent } from '../landing/header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from '../landing/footer-wifence/footer-wifence.component';
-import { ResumePortalStore, type PortalTemplate } from 'src/app/resume-portal/store/resume-portal.store';
-import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
+import { IconsModule } from 'src/app/shared/icons.module';
+import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
-import { ResumeTemplate } from 'src/app/services/bee-compete.model';
+import { ResumeTemplateFacadeService } from 'src/app/resume-portal/data/resume-template-facade.service';
+import type { ResumeTemplateUi } from 'src/app/resume-portal/data/resume-template.ui.model';
+import type { ResumeTemplate } from 'src/app/services/bee-compete.model';
 
 @Component({
   selector: 'app-resume-landing',
@@ -17,70 +34,225 @@ import { ResumeTemplate } from 'src/app/services/bee-compete.model';
   imports: [
     CommonModule,
     RouterModule,
+    IconsModule,
     MatButtonModule,
-    MatSnackBarModule,
+    MatChipsModule,
+    MatIconModule,
+    MatSidenavModule,
     HeaderWorkIfenceComponent,
     FooterWorkifenceComponent,
   ],
   templateUrl: './resume-landing.component.html',
   styleUrl: './resume-landing.component.scss',
 })
-export class ResumeLandingComponent {
+export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly templateFacade = inject(ResumeTemplateFacadeService);
   private readonly router = inject(Router);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly portalStore = inject(ResumePortalStore);
-  private readonly remoteConfig = inject(RemoteConfigFacadeService);
+  private readonly location = inject(Location);
+  readonly themeService = inject(ThemeCustomizerService);
   private readonly access = inject(AccessFacadeService);
   private readonly selection = inject(ResumeTemplateSelectionService);
 
-  readonly templates = this.portalStore.templates;
+  @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
+  @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
+  @ViewChild('templatesSection', { static: false }) templatesSectionRef!: ElementRef;
+
+  public isSticky = false;
+  private observer?: IntersectionObserver;
+
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
+
+  readonly isLoading = this.templateFacade.loading;
+  readonly errorMessage = this.templateFacade.error;
+  readonly templates = this.templateFacade.templates;
   readonly isLoggedIn = computed(() => this.access.isLoggedIn());
 
-  startResume(): void {
-    void this.router.navigateByUrl('/resume-manager-intro');
+  readonly selectedCategory = signal<string>('All');
+  readonly selectedStyle = signal<string>('All');
+  readonly searchQuery = signal<string>('');
+
+  readonly activeTemplates = computed(() =>
+    this.templates().filter(t => (t.status ?? '').toUpperCase() === 'ACTIVE')
+  );
+
+  readonly categoryOptions = computed(() => {
+    const set = new Set(this.activeTemplates().map(t => t.category).filter(Boolean) as string[]);
+    return ['All', ...Array.from(set).sort()];
+  });
+
+  readonly styleOptions = computed(() => {
+    const set = new Set(this.activeTemplates().map(t => t.style).filter(Boolean) as string[]);
+    return ['All', ...Array.from(set).sort()];
+  });
+
+  readonly filteredTemplates = computed(() => {
+    const category = this.selectedCategory();
+    const style = this.selectedStyle();
+    const query = this.searchQuery().trim().toLowerCase();
+
+    return this.activeTemplates().filter(t => {
+      if (category !== 'All' && t.category !== category) return false;
+      if (style !== 'All' && t.style !== style) return false;
+      if (!query) return true;
+      const inTitle = (t.title ?? '').toLowerCase().includes(query);
+      const inTags = (t.tags ?? []).some(tag => tag.toLowerCase().includes(query));
+      return inTitle || inTags;
+    });
+  });
+
+  ngOnInit(): void {
+    effect(() => {
+      const err = this.templateFacade.error();
+      if (err) {
+        console.warn('[ResumeTemplateFacade]', err);
+      }
+    });
+
+    this.templateFacade.loadTemplates('public');
   }
 
-  async browseTemplates(): Promise<void> {
-    if (!this.remoteConfig.isFlagEnabled('RESUME_PORTAL')) {
-      this.showMessage('Resume templates are temporarily unavailable. Starting Resume Manager instead.');
-      void this.router.navigateByUrl('/resume-manager-intro');
+  ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
-    const ok = await this.router.navigateByUrl('/resume-portal/templates');
-    if (!ok) {
-      this.showMessage('Resume templates are currently unavailable. Starting Resume Manager instead.');
-      void this.router.navigateByUrl('/resume-manager-intro');
+    if (!this.sentinel?.nativeElement || !this.pageSectionRef?.nativeElement) {
+      return;
+    }
+
+    this.observer = new IntersectionObserver(
+      entries => {
+        this.isSticky = !entries[0].isIntersecting;
+      },
+      { root: this.pageSectionRef.nativeElement }
+    );
+    this.observer.observe(this.sentinel.nativeElement);
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
+  }
+
+  onPageScroll(event: Event): void {
+    const el = event.target as HTMLElement | null;
+    const scrollTop = el?.scrollTop ?? 0;
+    this.isSticky = scrollTop > 16;
+  }
+
+  loadTemplates(): void {
+    this.templateFacade.loadTemplates('public');
+  }
+
+  onCategoryChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement)?.value ?? 'All';
+    this.selectedCategory.set(value);
+    this.scrollToTemplatesSection();
+  }
+
+  onStyleChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement)?.value ?? 'All';
+    this.selectedStyle.set(value);
+    this.scrollToTemplatesSection();
+  }
+
+  onSearchChange(event: Event): void {
+    const value = (event.target as HTMLInputElement)?.value ?? '';
+    this.searchQuery.set(value);
+  }
+
+  isLocked(item: ResumeTemplateUi): boolean {
+    return this.templateFacade.isLocked(item);
+  }
+
+  private scrollToTemplatesSection(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const container = this.pageSectionRef?.nativeElement as HTMLElement | undefined;
+    const target = this.templatesSectionRef?.nativeElement as HTMLElement | undefined;
+    if (!container || !target) {
+      return;
+    }
+
+    const rootStyles = getComputedStyle(document.documentElement);
+    const headerVar = rootStyles.getPropertyValue('--wf-header-height').trim();
+    const headerHeight = Number.parseFloat(headerVar) || 61;
+    const topPadding = 16;
+    const offset = headerHeight + topPadding;
+
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const targetTop = targetRect.top - containerRect.top + container.scrollTop;
+    const top = Math.max(0, targetTop - offset);
+
+    if (typeof (container as any).scrollTo === 'function') {
+      (container as any).scrollTo({ top, behavior: 'smooth' });
+    } else {
+      container.scrollTop = top;
     }
   }
 
-  selectTemplate(tpl: PortalTemplate): void {
-    const selection = this.toResumeTemplate(tpl);
-    this.selection.setSelection(selection);
+  useTemplate(tpl: ResumeTemplateUi): void {
+    this.persistSelection(tpl);
+    this.selection.setSelection(this.toResumeTemplate(tpl));
 
-    const targetUrl = `/user/resumes/resume?templateId=${encodeURIComponent(String(tpl.id))}`;
+    const targetUrl = `/user/resumes/resume?templateId=${encodeURIComponent(String(tpl.id ?? ''))}`;
+    const gate = this.templateFacade.canUseTemplate(tpl);
+
+    if (!gate.allowed) {
+      this.templateFacade.handleDenied(gate.reason, targetUrl);
+      return;
+    }
 
     if (this.isLoggedIn()) {
       void this.router.navigateByUrl(targetUrl);
       return;
     }
 
-    void this.router.navigate(['/authentication'], {
+    void this.router.navigate(['/sign-in'], {
       queryParams: { returnUrl: targetUrl },
     });
   }
 
-  private toResumeTemplate(tpl: PortalTemplate): ResumeTemplate {
+  private toResumeTemplate(tpl: ResumeTemplateUi): ResumeTemplate {
+    const templateId = Number(tpl.id ?? 0);
     return {
-      id: tpl.id,
-      name: tpl.name,
+      id: templateId,
+      name: tpl.title ?? '',
       companyName: '',
-      template_name: `TEMPLATE_${tpl.id}`,
-      imgPath: tpl.previewImageUrl ?? '',
+      template_name: tpl.componentKey || tpl.templateKey || `TEMPLATE_${templateId || ''}`,
+      imgPath: tpl.imageUrl ?? '',
     };
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'OK', { duration: 3200 });
+  private persistSelection(tpl: ResumeTemplateUi): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    try {
+      const legacyKey = tpl.componentKey || tpl.templateKey || '';
+      this.selection.setCatalogSelection({
+        templateId: tpl.id ?? '',
+        templateKey: tpl.templateKey ?? legacyKey,
+        componentKey: tpl.componentKey ?? legacyKey,
+        version: tpl.version ?? '1.0',
+      });
+      sessionStorage.setItem('wif_selected_template_title', tpl.title ?? '');
+      sessionStorage.setItem('wif_selected_template_doc', tpl.imageUrl ?? '');
+    } catch {
+      // ignore storage errors
+    }
+  }
+
+  uploadResume(): void {
+    void this.router.navigateByUrl('/user/resumes');
+  }
+
+  goBack(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.location.back();
   }
 }

@@ -1,13 +1,22 @@
 
 <div class="row pl-4 pr-4" style="height: 100% !important;overflow-y: auto;">
-    <div class="col-12"  >
+    <div class="col-12">
         <div class="row wrap">
-            @for (template of templates; track template) {
-                <div class="col-6 p-b-1 p-t-2" (click)="selectTemplateHandler($event, template)">
-                    <span class="template-name">{{template.name}}</span>
-                    <div class="template-image" [class.resume-selected]="template.id === resumeForm().template_details.id" >
-                        <span  class="d-block">
-                            <img style="max-width:100%;margin-top:10px;" [src]="template.imgPath" alt="image">
+            @for (template of templates(); track template.id) {
+                <div
+                    class="col-6 p-b-1 p-t-2 template-card"
+                    [class.template-card-locked]="isLocked(template)"
+                    (click)="selectTemplateHandler($event, template)">
+                    <span class="template-name">{{template.title}}</span>
+                    <div class="template-image" [class.resume-selected]="isSelected(template)">
+                        @if (isPremium(template)) {
+                            <span class="template-badge premium">Premium</span>
+                        }
+                        @if (isLocked(template)) {
+                            <span class="template-badge locked">Locked</span>
+                        }
+                        <span class="d-block">
+                            <img style="max-width:100%;margin-top:10px;" [src]="template.imageUrl" alt="image">
                         </span>
                     </div>
                 </div>

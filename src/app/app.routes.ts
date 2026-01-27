@@ -209,11 +209,16 @@ export const routes: Routes = [
                 .then(m => m.JobAppManagerIntroComponent), data: {reuseComponent: true, breadcrumb: 'Job Application Optimizer' }
     },
     {
-        path: 'resume',
+        path: 'resume-builder',
         loadComponent: () =>
             import('./pages/resume-landing/resume-landing.component')
                 .then(m => m.ResumeLandingComponent),
         data: { reuseComponent: true, breadcrumb: 'Resume' }
+    },
+    {
+        path: 'resume',
+        redirectTo: 'resume-builder',
+        pathMatch: 'full'
     },
     {
         path: 'resume-portal',

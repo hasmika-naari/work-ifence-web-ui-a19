@@ -76,6 +76,8 @@ import { PlanGateService, FREE_TEMPLATE_ID } from 'src/app/resume-portal/service
 import { TemplateAccessService } from 'src/app/resume-portal/services/template-access.service';
 import { ResumeLimitService } from 'src/app/resume-portal/services/resume-limit.service';
 import { ResumeTemplateVm } from 'src/app/resume-portal/models/resume-template.model';
+import { ResumeTemplateFacadeService } from 'src/app/resume-portal/data/resume-template-facade.service';
+import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -319,6 +321,9 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   currentSections!: Signal<SectionDesc[]>;
   visible = true;
   outLineButton = true;
+
+  private readonly templateFacade = inject(ResumeTemplateFacadeService);
+  private readonly templateSelection = inject(ResumeTemplateSelectionService);
 
   browser = false;
 
@@ -668,14 +673,24 @@ ngAfterViewInit(): void {
     const templateIdParam = this.route.snapshot.queryParamMap.get('templateId');
     const templateId = templateIdParam ? Number(templateIdParam) : NaN;
     if (Number.isFinite(templateId) && templateId > 0) {
+      const catalogTemplate = this.templateFacade
+        .templates()
+        .find(item => Number(item.id ?? 0) === templateId);
+
+      const isPremiumTemplate = catalogTemplate
+        ? this.templateFacade.isPremium(catalogTemplate)
+        : templateId !== FREE_TEMPLATE_ID;
+
       const vm: ResumeTemplateVm = {
         id: String(templateId),
-        title: `Template ${templateId}`,
-        category: templateId === FREE_TEMPLATE_ID ? 'BASIC' : 'PREMIUM',
-        isDefault: templateId === FREE_TEMPLATE_ID,
+        title: catalogTemplate?.title ?? `Template ${templateId}`,
+        category: isPremiumTemplate ? 'PREMIUM' : 'BASIC',
+        isDefault: !!catalogTemplate?.isDefault,
       };
 
-      const gate = this.templateAccess.canUseTemplate(vm);
+      const gate = catalogTemplate
+        ? this.templateFacade.canUseTemplate(catalogTemplate)
+        : this.templateAccess.canUseTemplate(vm);
       if (!gate.allowed) {
         this.openSnackBar(this.templateAccess.explainReason(gate.reason), 'View plans');
         this.templateAccess.handleDenied(gate.reason, this.router.url);
@@ -693,16 +708,41 @@ ngAfterViewInit(): void {
       }
 
       const resolvedTemplateId = templateId;
+      const legacyTemplateName = this.resolveTemplateName({
+        id: resolvedTemplateId,
+        template_name: catalogTemplate?.componentKey || catalogTemplate?.templateKey || `TEMPLATE_${resolvedTemplateId}`,
+        templateKey: catalogTemplate?.templateKey || `TEMPLATE_${resolvedTemplateId}`,
+        componentKey: catalogTemplate?.componentKey || `TEMPLATE_${resolvedTemplateId}`,
+      });
 
       const resume = new Resume();
-      const resumeTemplate = new ResumeTemplate();
-      resumeTemplate.id = resolvedTemplateId;
-      resumeTemplate.template_name = `TEMPLATE_${resolvedTemplateId}`;
+      const resumeTemplate: ResumeTemplateDto = {
+        id: resolvedTemplateId,
+        name: catalogTemplate?.title ?? `Template ${resolvedTemplateId}`,
+        companyName: '',
+        template_name: legacyTemplateName,
+        imgPath: catalogTemplate?.imageUrl ?? '',
+        templateKey: catalogTemplate?.templateKey ?? legacyTemplateName,
+        componentKey: catalogTemplate?.componentKey ?? legacyTemplateName,
+        version: catalogTemplate?.version ?? '1.0',
+        accessLevel: catalogTemplate?.accessLevel ?? (resolvedTemplateId === FREE_TEMPLATE_ID ? 'FREE' : 'PREMIUM'),
+      };
       resume.template_details = resumeTemplate;
 
       this.userStore.setResumeForm(resume);
       this.userStore.updateSelectedResumeListItem(new ResumeListDataItem());
+
+      if (catalogTemplate) {
+        this.templateSelection.setCatalogSelection({
+          templateId: catalogTemplate.id ?? '',
+          templateKey: catalogTemplate.templateKey ?? legacyTemplateName,
+          componentKey: catalogTemplate.componentKey ?? legacyTemplateName,
+          version: catalogTemplate.version ?? '1.0',
+        });
+      }
     }
+
+    this.ensureTemplateDetailsCompatibility(this.resumeSignalForm());
     
     // Subscribe to loading bar state to reset isDisabled when loading stops
     // This handles cases where interceptor stops the loading bar on HTTP 500 errors
@@ -791,6 +831,42 @@ ngAfterViewInit(): void {
         this.addWorkField();
         this.addProjectField();
         this.addCertificationField();
+    }
+  }
+
+  private resolveTemplateName(details?: Partial<ResumeTemplateDto>): string {
+    const fromDetails =
+      details?.componentKey || details?.templateKey || details?.template_name;
+    if (fromDetails) return fromDetails;
+    const id = Number(details?.id ?? 0);
+    return Number.isFinite(id) && id > 0 ? `TEMPLATE_${id}` : 'TEMPLATE_1';
+  }
+
+  activeTemplateName(): string {
+    return this.resolveTemplateName(this.resumeSignalForm()?.template_details);
+  }
+
+  private ensureTemplateDetailsCompatibility(resume: Resume): void {
+    if (!resume?.template_details) return;
+
+    const legacyName = this.resolveTemplateName(resume.template_details);
+    const templateKey = resume.template_details.templateKey || legacyName;
+    const componentKey = resume.template_details.componentKey || legacyName;
+
+    if (
+      resume.template_details.template_name !== legacyName ||
+      resume.template_details.templateKey !== templateKey ||
+      resume.template_details.componentKey !== componentKey
+    ) {
+      this.userStore.setResumeForm({
+        ...resume,
+        template_details: {
+          ...resume.template_details,
+          template_name: legacyName,
+          templateKey,
+          componentKey,
+        },
+      });
     }
   }
 
@@ -1392,7 +1468,7 @@ hideMenu() {
 
   isSectionActive(section : string){
     let status = false;
-    if(this.resumeSignalForm().template_details.template_name != 'TEMPLATE_9'){
+    if(this.activeTemplateName() != 'TEMPLATE_9'){
       this.currentSections().map((e : SectionDesc)=>{
       if(e.section === section){
         status = true
