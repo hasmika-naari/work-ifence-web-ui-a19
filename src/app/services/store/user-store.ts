@@ -67,12 +67,20 @@ import { sections } from "./resume-sections";
     companyName: string;
     template_name : string;
     imgPath : string;
+    templateKey?: string;
+    componentKey?: string;
+    version?: string;
+    accessLevel?: string;
     constructor(){
       this.id = -1
       this.name = "-"
       this.companyName = "-"
       this.template_name = 'TEMPLATE_1'
       this.imgPath = '-'
+      this.templateKey = ''
+      this.componentKey = ''
+      this.version = ''
+      this.accessLevel = ''
     }
   };
 

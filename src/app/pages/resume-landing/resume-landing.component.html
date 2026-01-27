@@ -1,0 +1,76 @@
+<div class="resume-landing">
+  <div class="header">
+    <app-header-wifence></app-header-wifence>
+  </div>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Build a standout resume in minutes.</h1>
+      <p class="sub">
+        Create, customize, and download a professional resume with free and premium templates.
+        Start free, upgrade anytime for premium designs and advanced options.
+      </p>
+
+      <div class="cta">
+        <button mat-flat-button color="primary" type="button" (click)="startResume()">
+          Start my resume
+        </button>
+        <button mat-stroked-button color="primary" type="button" (click)="browseTemplates()">
+          Browse templates
+        </button>
+      </div>
+
+      <div class="free-paid">
+        <div>
+          <strong>Free:</strong> Core templates + essential resume builder.
+        </div>
+        <div>
+          <strong>Paid:</strong> Premium templates + expanded design options.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="templates">
+    <div class="section-head">
+      <h2>Template previews</h2>
+      <p>Choose a clean layout now and finish it after you sign in.</p>
+    </div>
+
+    <div class="template-grid">
+      @for (tpl of templates(); track tpl.id) {
+        <button class="template-card" type="button" (click)="selectTemplate(tpl)">
+          <div
+            class="template-preview"
+            [style.backgroundImage]="tpl.previewImageUrl ? 'url(' + tpl.previewImageUrl + ')' : 'none'"
+            [attr.aria-label]="tpl.name">
+          </div>
+          <div class="template-meta">
+            <div class="template-name">{{ tpl.name }}</div>
+            <div class="template-pill" [class.premium]="tpl.isPremium">
+              {{ tpl.isPremium ? 'Premium' : 'Free' }}
+            </div>
+          </div>
+          <div class="template-desc">{{ tpl.description }}</div>
+        </button>
+      }
+    </div>
+  </section>
+
+  <section class="details">
+    <div class="detail">
+      <h3>Resume builder</h3>
+      <p>Fill in experience, skills, and education with guided sections.</p>
+    </div>
+    <div class="detail">
+      <h3>Templates</h3>
+      <p>Pick a layout that fits your role and personalize it anytime.</p>
+    </div>
+    <div class="detail">
+      <h3>Free vs paid</h3>
+      <p>Use free templates by default, or upgrade for premium designs.</p>
+    </div>
+  </section>
+
+  <app-work-ifence-footer></app-work-ifence-footer>
+</div>

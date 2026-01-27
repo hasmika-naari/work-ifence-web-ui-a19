@@ -39,6 +39,7 @@ import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.
 import { MatProgressBar, MatProgressBarModule } from '@angular/material/progress-bar';
 import { SectionDesc } from 'src/app/services/store/user-store';
 import { ImportExistingResumeComponent } from '../import-existing-resume/import-existing-resume.component';
+import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
 
 interface Option {
   name : string;
@@ -353,6 +354,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   filteredResumesList : Signal<ResumeListDataItem[]> = this.userStore.getFilteredResumes();
   loginStatus : Signal<boolean> = this.userStore.getUserLoginStatus();
   subs: Array<Subscription> = [];
+  private readonly templateSelection = inject(ResumeTemplateSelectionService);
   resumes : ResumeListDataItem[] = []
   filteredResumes : ResumeListDataItem[] = []
   isFirstTimeCalling : boolean = true;
@@ -375,6 +377,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   ngOnInit() {
+      this.templateSelection.applySelectionIfPresent();
       // this.sidenavService.toggleCollapsed();
 
       this.filteredResumeCategoryValue.setValue("");
@@ -579,7 +582,20 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
    * Handles the "Add Job Application" button click.
    */
   onAddResume(): void {
-    this.userStore.setResumeForm(new Resume());
+    const resume = new Resume();
+    const selection = this.templateSelection.consumeCatalogSelection();
+    if (selection) {
+      resume.template_details = {
+        ...resume.template_details,
+        id: Number.isFinite(Number(selection.templateId)) ? Number(selection.templateId) : resume.template_details.id,
+        name: selection.templateKey || resume.template_details.name,
+        template_name: selection.componentKey || resume.template_details.template_name,
+        templateKey: selection.templateKey,
+        componentKey: selection.componentKey,
+        version: selection.version,
+      };
+    }
+    this.userStore.setResumeForm(resume);
     this.userStore.updateSelectedResumeListItem(new ResumeListDataItem());
     this.userStore.setIsChangeInNewResume(false);
     this.router.navigateByUrl('/user/resumes/resume');

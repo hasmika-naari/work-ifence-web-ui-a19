@@ -14,21 +14,20 @@ import {
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
+import { catchError, finalize, of } from 'rxjs';
 import { HeaderWorkIfenceComponent } from 'src/app/pages/landing/header-wifence/header-wifence.component';
 import { FooterWorkifenceComponent } from 'src/app/pages/landing/footer-wifence/footer-wifence.component';
 import { IconsModule } from 'src/app/shared/icons.module';
-import { LockedOverlayComponent } from 'src/app/shared/components/locked-overlay/locked-overlay.component';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
-import { PortalTemplate, ResumePortalStore } from '../store/resume-portal.store';
-import { TemplatePreviewDialogComponent } from '../components/template-preview-dialog.component';
-import { ResumeTemplateVm } from '../models/resume-template.model';
-import { ResumeLimitService } from '../services/resume-limit.service';
-import { TemplateAccessService } from '../services/template-access.service';
+import { AccessFacadeService } from 'src/app/facades/access-facade.service';
+import { ResumeTemplateCatalogApiService } from 'src/app/services/resume-template-catalog-api.service';
+import type { ResumeTemplateRecord } from 'src/app/models/resume-template.model';
+import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
 
 @Component({
   selector: 'app-resume-template-gallery-page',
@@ -43,7 +42,7 @@ import { TemplateAccessService } from '../services/template-access.service';
     MatChipsModule,
     MatIconModule,
     MatSidenavModule,
-    LockedOverlayComponent,
+    MatSnackBarModule,
   ],
   template: `
     <div class="course-central-wrapper">
@@ -135,90 +134,101 @@ import { TemplateAccessService } from '../services/template-access.service';
                         </button>
                       </div>
 
-                      <mat-chip-listbox
-                        class="rp-filters"
-                        aria-label="Template categories"
-                        [multiple]="false"
-                        [selectable]="true">
-                        <mat-chip-option
-                          [selected]="selectedCategory() === 'All'"
-                          (click)="onCategorySelected('All')">
-                          All
-                        </mat-chip-option>
-                        <mat-chip-option
-                          [selected]="selectedCategory() === 'Simple'"
-                          (click)="onCategorySelected('Simple')">
-                          Simple
-                        </mat-chip-option>
-                        <mat-chip-option
-                          [selected]="selectedCategory() === 'Modern'"
-                          (click)="onCategorySelected('Modern')">
-                          Modern
-                        </mat-chip-option>
-                        <mat-chip-option
-                          [selected]="selectedCategory() === 'Creative'"
-                          (click)="onCategorySelected('Creative')">
-                          Creative
-                        </mat-chip-option>
-                      </mat-chip-listbox>
+                      <div class="rp-filters">
+                        <label class="rp-filter">
+                          <span>Category</span>
+                          <select [value]="selectedCategory()" (change)="onCategoryChange($event)">
+                            @for (category of categoryOptions(); track category) {
+                              <option [value]="category">{{ category }}</option>
+                            }
+                          </select>
+                        </label>
+
+                        <label class="rp-filter">
+                          <span>Style</span>
+                          <select [value]="selectedStyle()" (change)="onStyleChange($event)">
+                            @for (style of styleOptions(); track style) {
+                              <option [value]="style">{{ style }}</option>
+                            }
+                          </select>
+                        </label>
+
+                        <label class="rp-filter rp-filter-search">
+                          <span>Search</span>
+                          <input
+                            type="search"
+                            [value]="searchQuery()"
+                            (input)="onSearchChange($event)"
+                            placeholder="Search by title or tags" />
+                        </label>
+                      </div>
                     </div>
 
-                    <div class="rp-templates">
-                        @for (item of gatedTemplates(); track item.tpl.id) {
-                        <div
-                          class="rp-template"
-                          >
-                          <div class="rp-preview">
-                            <div
-                              class="rp-preview-bg"
-                                [style.backgroundImage]="item.tpl.previewImageUrl ? 'url(' + item.tpl.previewImageUrl + ')' : 'none'"
-                              role="img"
-                                [attr.aria-label]="item.tpl.name">
-                            </div>
-
-                              @if (!item.allowed) {
-                                <span class="rp-locked-badge" aria-label="Locked">
-                                  <i class="pi pi-lock"></i>
-                                  {{ item.overlayTitle }}
-                                </span>
-                              }
-
-                            <div class="rp-hover" aria-hidden="true">
-                              <div class="rp-hover-inner">
-                                  @if (!item.allowed) {
-                                    <div class="rp-hover-note">
-                                      <div class="rp-hover-note-title">{{ item.overlayTitle }}</div>
-                                      <div class="rp-hover-note-sub">{{ item.overlayMessage }}</div>
-                                    </div>
+                    @if (isLoading()) {
+                      <div class="rp-state rp-loading">Loading templates…</div>
+                    } @else if (errorMessage()) {
+                      <div class="rp-state rp-error">
+                        <div>{{ errorMessage() }}</div>
+                        <button mat-stroked-button color="primary" (click)="loadTemplates()">Retry</button>
+                      </div>
+                    } @else {
+                      @if (filteredTemplates().length === 0) {
+                        <div class="rp-state">No templates match your filters.</div>
+                      } @else {
+                        <div class="rp-templates">
+                          @for (item of filteredTemplates(); track item.id ?? item.title) {
+                            <div class="rp-template">
+                              <div class="rp-preview">
+                                <div class="rp-badges">
+                                  @if (isPremiumTemplate(item)) {
+                                    <span class="rp-badge rp-badge-premium">Premium</span>
                                   }
+                                  @if (item.isDefault) {
+                                    <span class="rp-badge rp-badge-default">Default</span>
+                                  }
+                                </div>
+                                <img
+                                  class="rp-preview-img"
+                                  [src]="item.templateDocUrl"
+                                  [alt]="item.title" />
 
-                                <button
-                                  mat-flat-button
-                                  color="primary"
-                                  type="button"
-                                  class="rp-cta"
-                                    (click)="onTemplateCtaClick($event, item.tpl)">
-                                  Use this template
-                                </button>
+                                <div class="rp-hover" aria-hidden="true">
+                                  <div class="rp-hover-inner">
+                                    <button
+                                      mat-flat-button
+                                      color="primary"
+                                      type="button"
+                                      class="rp-cta"
+                                      (click)="useTemplate(item)">
+                                      Use this template
+                                    </button>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
 
-                              @if (item.tpl.isPremium) {
-                              <span class="rp-premium-ribbon" aria-hidden="true"></span>
-                            }
+                              <div class="rp-caption">{{ item.title | uppercase }}</div>
 
-                              @if (!item.allowed) {
-                                <app-locked-overlay
-                                  [title]="item.overlayTitle"
-                                  [message]="item.overlayMessage"
-                                  [actionLabel]="item.actionLabel"
-                                  (actionClick)="onLockedActionClick(item)" />
+                              <mat-chip-listbox class="rp-card-chips" [selectable]="false">
+                                @if (item.category) {
+                                  <mat-chip-option disabled>{{ item.category }}</mat-chip-option>
+                                }
+                                @if (item.style) {
+                                  <mat-chip-option disabled>{{ item.style }}</mat-chip-option>
+                                }
+                              </mat-chip-listbox>
+
+                              @if (getTags(item).length) {
+                                <div class="rp-tags">
+                                  @for (tag of getTags(item); track tag) {
+                                    <span class="rp-tag">{{ tag }}</span>
+                                  }
+                                </div>
                               }
-                          </div>
-                            <div class="rp-caption">{{ item.tpl.name | uppercase }}</div>
+                            </div>
+                          }
                         </div>
                       }
-                    </div>
+                    }
                   </section>
                 </div>
               </div>
@@ -609,21 +619,51 @@ import { TemplateAccessService } from '../services/template-access.service';
       .rp-filters {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
-        padding: 6px;
-        border-radius: 999px;
+        gap: 12px;
+        padding: 6px 0;
+        border-radius: 12px;
         border: 0;
         background: transparent;
       }
 
-      :host ::ng-deep .rp-filters .mat-mdc-chip {
-        border-radius: 999px;
+      .rp-filter {
+        display: grid;
+        gap: 6px;
         font-weight: 800;
-        letter-spacing: 0.02em;
+        font-size: 12px;
+        color: rgba(0,0,0,.72);
       }
-      :host ::ng-deep .rp-filters .mat-mdc-chip.mat-mdc-chip-selected {
-        background: rgba(255,255,255,.96) !important;
-        border: 1px solid rgba(0,0,0,.18);
+
+      .rp-filter select,
+      .rp-filter input {
+        min-width: 160px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,.12);
+        background: rgba(255,255,255,.9);
+        font-weight: 700;
+        font-size: 13px;
+      }
+
+      .rp-filter-search input {
+        min-width: 240px;
+      }
+
+      .rp-state {
+        margin: 14px 0;
+        padding: 14px 16px;
+        border: 1px dashed rgba(0,0,0,.18);
+        border-radius: 12px;
+        font-weight: 800;
+        color: rgba(0,0,0,.72);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .rp-error {
+        color: #8b1f1f;
+        border-color: rgba(139,31,31,.35);
       }
 
       .rp-upload {
@@ -634,6 +674,29 @@ import { TemplateAccessService } from '../services/template-access.service';
         box-shadow: 0 10px 22px rgba(0,0,0,.10);
       }
       .rp-upload mat-icon { margin-right: 6px; }
+
+      .rp-card-chips {
+        margin-top: 8px;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .rp-tags {
+        margin-top: 6px;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .rp-tag {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(0,0,0,.06);
+        color: rgba(0,0,0,.7);
+      }
 
       .rp-templates {
         display: grid;
@@ -658,6 +721,37 @@ import { TemplateAccessService } from '../services/template-access.service';
         aspect-ratio: 10 / 13;
         padding: 0;
       }
+
+      .rp-badges {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        display: flex;
+        gap: 8px;
+        z-index: 2;
+        flex-wrap: wrap;
+      }
+
+      .rp-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 800;
+        border-radius: 999px;
+        color: #fff;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
+      .rp-badge-premium {
+        background: linear-gradient(135deg, #c075ff, #ff8a5b);
+      }
+
+      .rp-badge-default {
+        background: linear-gradient(135deg, #0a8f65, #1ec28b);
+      }
       .rp-preview-bg {
         width: 100%;
         height: 100%;
@@ -666,6 +760,13 @@ import { TemplateAccessService } from '../services/template-access.service';
         background-repeat: no-repeat;
         background-size: cover;
         background-position: top center;
+      }
+      .rp-preview-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        display: block;
       }
       .rp-template:hover .rp-preview {
         border-color: rgba(0,0,0,.18);
@@ -809,13 +910,13 @@ import { TemplateAccessService } from '../services/template-access.service';
   ],
 })
 export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly store = inject(ResumePortalStore);
-  private dialog = inject(MatDialog);
+  private readonly api = inject(ResumeTemplateCatalogApiService);
   private router = inject(Router);
   private location = inject(Location);
+  private readonly snackBar = inject(MatSnackBar);
   readonly themeService = inject(ThemeCustomizerService);
-  private templateAccess = inject(TemplateAccessService);
-  private resumeLimit = inject(ResumeLimitService);
+  private access = inject(AccessFacadeService);
+  private readonly selection = inject(ResumeTemplateSelectionService);
 
   @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
   @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
@@ -826,37 +927,74 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
 
-  readonly selectedCategory = signal<'All' | 'Simple' | 'Modern' | 'Creative'>('All');
-  readonly filteredTemplates = computed(() => {
-    const category = this.selectedCategory();
-    const templates = this.store.templates();
-    if (category === 'All') {
-      return templates;
-    }
-    return templates.filter(t => t.category === category);
+  readonly isLoading = signal(false);
+  readonly errorMessage = signal<string | null>(null);
+  readonly templates = signal<ResumeTemplateRecord[]>([]);
+  readonly isLoggedIn = computed(() => this.access.isLoggedIn());
+
+  readonly selectedCategory = signal<string>('All');
+  readonly selectedStyle = signal<string>('All');
+  readonly searchQuery = signal<string>('');
+
+  readonly activeTemplates = computed(() =>
+    this.templates().filter(t => (t.status ?? '').toUpperCase() === 'ACTIVE')
+  );
+
+  readonly sortedTemplates = computed(() => {
+    const list = [...this.activeTemplates()];
+    list.sort((a, b) => {
+      const aOrder = Number.isFinite(Number(a.sortOrder)) ? Number(a.sortOrder) : 0;
+      const bOrder = Number.isFinite(Number(b.sortOrder)) ? Number(b.sortOrder) : 0;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      return (a.title ?? '').localeCompare(b.title ?? '');
+    });
+    return list;
   });
 
-  readonly gatedTemplates = computed(() => {
-    return this.filteredTemplates().map(tpl => {
-      const vm = this.toVm(tpl);
-      const gate = this.templateAccess.canUseTemplate(vm);
-      const overlayTitle = gate.reason === 'LOGIN_REQUIRED' ? 'Sign in required' : 'Premium template';
-      const overlayMessage = this.templateAccess.explainReason(gate.reason);
-      const actionLabel = gate.reason === 'LOGIN_REQUIRED' ? 'Sign in' : 'Upgrade';
-      return {
-        tpl,
-        vm,
-        allowed: gate.allowed,
-        reason: gate.reason,
-        overlayTitle,
-        overlayMessage,
-        actionLabel,
-      };
+  readonly categoryOptions = computed(() => {
+    const set = new Set(this.activeTemplates().map(t => t.category).filter(Boolean) as string[]);
+    return ['All', ...Array.from(set).sort()];
+  });
+
+  readonly styleOptions = computed(() => {
+    const set = new Set(this.activeTemplates().map(t => t.style).filter(Boolean) as string[]);
+    return ['All', ...Array.from(set).sort()];
+  });
+
+  readonly filteredTemplates = computed(() => {
+    const category = this.selectedCategory();
+    const style = this.selectedStyle();
+    const query = this.searchQuery().trim().toLowerCase();
+
+    return this.sortedTemplates().filter(t => {
+      if (category !== 'All' && t.category !== category) return false;
+      if (style !== 'All' && t.style !== style) return false;
+      if (!query) return true;
+      const inTitle = (t.title ?? '').toLowerCase().includes(query);
+      const tags = Array.isArray(t.tags)
+        ? t.tags
+        : typeof t.tags === 'string'
+          ? t.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean)
+          : [];
+      const inTags = tags.some(tag => tag.toLowerCase().includes(query));
+      return inTitle || inTags;
     });
   });
 
-  async ngOnInit(): Promise<void> {
-    await this.store.refreshMyResumes();
+  getTags(tpl: ResumeTemplateRecord): string[] {
+    if (Array.isArray(tpl.tags)) return tpl.tags.filter(Boolean);
+    if (typeof tpl.tags === 'string') {
+      return tpl.tags.split(',').map(tag => tag.trim()).filter(Boolean);
+    }
+    return [];
+  }
+
+  isPremiumTemplate(tpl: ResumeTemplateRecord): boolean {
+    return (tpl.accessLevel ?? '').toUpperCase() === 'PREMIUM';
+  }
+
+  ngOnInit(): void {
+    this.loadTemplates();
   }
 
   ngAfterViewInit(): void {
@@ -890,16 +1028,37 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
     this.isSticky = scrollTop > 16;
   }
 
-  onCategorySelected(category: 'All' | 'Simple' | 'Modern' | 'Creative'): void {
-    this.selectedCategory.set(category);
-    // Defer scrolling until after the DOM updates (prevents scroll anchoring/focus
-    // from pushing the viewport in the opposite direction).
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        this.scrollToTemplatesSection();
-        requestAnimationFrame(() => this.scrollToTemplatesSection());
-      }, 0);
-    }
+  loadTemplates(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.api
+      .getTemplates()
+      .pipe(
+        catchError(() => {
+          this.errorMessage.set('Unable to load templates. Please try again.');
+          return of([] as ResumeTemplateRecord[]);
+        }),
+        finalize(() => this.isLoading.set(false))
+      )
+      .subscribe(templates => this.templates.set(templates));
+  }
+
+  onCategoryChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement)?.value ?? 'All';
+    this.selectedCategory.set(value);
+    this.scrollToTemplatesSection();
+  }
+
+  onStyleChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement)?.value ?? 'All';
+    this.selectedStyle.set(value);
+    this.scrollToTemplatesSection();
+  }
+
+  onSearchChange(event: Event): void {
+    const value = (event.target as HTMLInputElement)?.value ?? '';
+    this.searchQuery.set(value);
   }
 
   private scrollToTemplatesSection(): void {
@@ -931,110 +1090,31 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
     }
   }
 
-  private scrollPageToTop(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+  useTemplate(tpl: ResumeTemplateRecord): void {
+    this.persistSelection(tpl);
+
+    if (this.isLoggedIn()) {
+      this.snackBar.open('Template selected. Create a resume to continue.', 'OK', { duration: 2600 });
+      void this.router.navigateByUrl('/user/resumes');
       return;
     }
 
-    const container = this.pageSectionRef?.nativeElement as HTMLElement | undefined;
-    if (!container) {
-      return;
-    }
-
-    // Hard reset first (prevents any unexpected focus/anchor behavior from
-    // pushing the scroll position in the opposite direction).
-    container.scrollTop = 0;
-
-    // Use the sentinel element at the very top of this scroll container.
-    // This is more reliable than scrolling the window or relying on scrollTop
-    // during layout shifts.
-    const sentinelEl = this.sentinel?.nativeElement as HTMLElement | undefined;
-
-    requestAnimationFrame(() => {
-      if (sentinelEl?.scrollIntoView) {
-        sentinelEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        return;
-      }
-
-      if (typeof (container as any).scrollTo === 'function') {
-        (container as any).scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        container.scrollTop = 0;
-      }
+    void this.router.navigate(['/authentication'], {
+      queryParams: { returnUrl: '/user/resumes' },
     });
   }
 
-  async refreshResumes(): Promise<void> {
-    await this.store.refreshMyResumes();
-  }
-
-  openTemplate(tpl: { id: number }): void {
-    const template = this.store.templates().find(t => t.id === tpl.id);
-    if (!template) {
-      return;
-    }
-
-    this.dialog.open(TemplatePreviewDialogComponent, {
-      width: '1320px',
-      maxWidth: 'calc(100vw - 40px)',
-      panelClass: 'rp-template-preview-dialog',
-      data: { template },
+  private persistSelection(tpl: ResumeTemplateRecord): void {
+    this.selection.setCatalogSelection({
+      templateId: tpl.id ?? '',
+      templateKey: tpl.templateKey ?? '',
+      componentKey: tpl.componentKey ?? '',
+      version: tpl.version ?? '',
     });
-  }
-
-  onTemplateCtaClick(event: MouseEvent, tpl: PortalTemplate): void {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const vm = this.toVm(tpl);
-    const access = this.templateAccess.canUseTemplate(vm);
-    if (!access.allowed) {
-      this.templateAccess.handleDenied(access.reason, this.builderReturnUrlForTemplate(tpl));
-      return;
-    }
-
-    const limit = this.resumeLimit.canCreateResume();
-    if (!limit.allowed) {
-      if (limit.reason === 'LOGIN_REQUIRED') {
-        this.templateAccess.handleDenied('LOGIN_REQUIRED', this.builderReturnUrlForTemplate(tpl));
-      } else {
-        this.resumeLimit.handleLimitDenied();
-      }
-      return;
-    }
-
-    this.store.createResumeFromTemplate(tpl.id);
-  }
-
-  onLockedActionClick(item: { tpl: PortalTemplate; reason?: string }): void {
-    if (item.reason === 'LOGIN_REQUIRED') {
-      this.templateAccess.handleDenied('LOGIN_REQUIRED', this.builderReturnUrlForTemplate(item.tpl));
-      return;
-    }
-
-    this.templateAccess.handleDenied('UPGRADE_REQUIRED', this.builderReturnUrlForTemplate(item.tpl));
-  }
-
-  private builderReturnUrlForTemplate(tpl: PortalTemplate): string {
-    return `/user/resumes/resume?templateId=${encodeURIComponent(String(tpl.id))}`;
-  }
-
-  private toVm(tpl: PortalTemplate): ResumeTemplateVm {
-    // Exactly one BASIC template is allowed on free: the default (id=1 in current catalog).
-    const isDefault = tpl.id === 1;
-    return {
-      id: String(tpl.id),
-      title: tpl.name,
-      category: isDefault ? 'BASIC' : 'PREMIUM',
-      previewUrl: tpl.previewImageUrl,
-      isDefault,
-    };
   }
 
   uploadResume(): void {
-    // Best-effort: route user to their resumes area (guarded). If there is an upload flow there,
-    // they can import/upload from that screen.
-    this.store.openMyResumes();
+    void this.router.navigateByUrl('/user/resumes');
   }
 
   goBack(event: Event): void {

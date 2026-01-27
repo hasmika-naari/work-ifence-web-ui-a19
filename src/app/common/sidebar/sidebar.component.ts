@@ -94,6 +94,13 @@ export class SidebarComponent {
                                 role: '',
                                 subscription: ''
                             },
+                            {
+                                title: 'Resume Templates',
+                                icon: 'layout',
+                                url: '/user/admin/resume-templates',
+                                role: '',
+                                subscription: ''
+                            },
                           ]
                         : []),
                 ];

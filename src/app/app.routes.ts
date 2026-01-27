@@ -209,6 +209,13 @@ export const routes: Routes = [
                 .then(m => m.JobAppManagerIntroComponent), data: {reuseComponent: true, breadcrumb: 'Job Application Optimizer' }
     },
     {
+        path: 'resume',
+        loadComponent: () =>
+            import('./pages/resume-landing/resume-landing.component')
+                .then(m => m.ResumeLandingComponent),
+        data: { reuseComponent: true, breadcrumb: 'Resume' }
+    },
+    {
         path: 'resume-portal',
         canActivate: [accessGuard],
         data: { requireFlag: 'RESUME_PORTAL' },
@@ -540,6 +547,14 @@ export const routes: Routes = [
                             import('./pages/admin/plans/admin-plans-entitlements.component')
                                 .then(m => m.AdminPlansEntitlementsComponent),
                         data: { breadcrumb: 'Plans & Entitlements', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN' }
+                    },
+                    {
+                        path: 'resume-templates',
+                        canActivate: [accessGuard],
+                        loadComponent: () =>
+                            import('./pages/admin/resume-templates/admin-resume-templates.component')
+                                .then(m => m.AdminResumeTemplatesComponent),
+                        data: { breadcrumb: 'Resume Templates', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN' }
                     },
                 ]
             },
