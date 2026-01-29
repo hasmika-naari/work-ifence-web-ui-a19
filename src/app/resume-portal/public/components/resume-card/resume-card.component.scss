@@ -1,0 +1,292 @@
+.profile-card.search-job-feed-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,1) !important;
+  border-radius: 12px !important;
+  box-shadow: none;
+  transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
+  font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif, Arial, Helvetica, sans-serif, Geneva, Tahoma, sans-serif !important;
+  height: 320px;
+  min-height: 320px !important;
+  overflow: hidden;
+  margin-bottom: 18px;
+  padding: 14px 16px 14px 16px;
+  background-image: linear-gradient(145deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.30) 100%);
+}
+
+.profile-card.search-job-feed-item:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(var(--mainColor-rgb,67,83,255),0.09), transparent 62%),
+    linear-gradient(120deg, rgba(var(--mainColor-rgb,67,83,255),0) 0%, rgba(var(--mainColor-rgb,67,83,255),0.12) 45%, rgba(var(--mainColor-rgb,67,83,255),0) 90%);
+  background-size: 140% 140%, 220% 100%;
+  background-position: center, -120% 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  transition: background-position .55s ease;
+}
+
+.profile-card.search-job-feed-item mat-card-header,
+.profile-card.search-job-feed-item mat-card-content {
+  position: relative;
+  z-index: 1;
+}
+
+.profile-card mat-card-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-card.search-job-feed-item:hover {
+  transform: none !important;
+  box-shadow: none;
+  background: rgba(255,255,255,0.88) !important;
+  border-color: rgba(255,255,255,0.8) !important;
+}
+
+.profile-card.search-job-feed-item:hover:before {
+  background-position: center, 120% 0;
+}
+
+.dark-course-area .profile-card.search-job-feed-item {
+  background: rgba(30,30,30,0.45) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.4);
+  background-image: linear-gradient(145deg, rgba(45,45,45,0.65) 0%, rgba(35,35,35,0.55) 60%, rgba(25,25,25,0.45) 100%);
+}
+
+.dark-course-area .profile-card.search-job-feed-item:hover {
+  transform: none !important;
+  background: rgba(50,50,50,0.78) !important;
+  border-color: rgba(var(--mainColor-rgb,67,83,255),0.5) !important;
+  box-shadow: none;
+}
+
+.profile-card mat-card-header {
+  padding-top: 8px !important;
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.resume-badge-wrap {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.resume-badge {
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--secondaryColor);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.resume-kebab {
+  border: none;
+  background: transparent;
+  color: var(--secondaryColor);
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.resume-kebab i {
+  font-size: 18px;
+}
+
+.resume-kebab:hover {
+  color: var(--mainColor);
+}
+
+:host ::ng-deep .resume-card-menu.mat-mdc-menu-panel {
+  min-width: 160px;
+  max-width: 220px;
+}
+
+.resume-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex: 0 0 auto;
+  border: 2px solid rgba(15, 23, 42, 0.08);
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.resume-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.resume-initials {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: rgba(15, 23, 42, 0.8);
+  border-radius: 50%;
+}
+
+.resume-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resume-name {
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--secondaryColor);
+  letter-spacing: 0.5px;
+}
+
+.resume-role {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--blackColor);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.resume-skills {
+  margin-top: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 11px;
+  color: rgba(15, 23, 42, 0.9);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.skill-text {
+  font-weight: 500;
+}
+
+.skill-sep {
+  opacity: 0.45;
+  margin: 0 6px;
+}
+
+.skill-more {
+  color: var(--mainColor);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.resume-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--paragraphColor);
+  margin-top: 6px;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meta-item i {
+  font-size: 16px;
+  color: var(--mainColor);
+}
+
+.resume-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.badge-chip {
+  background: rgba(15, 23, 42, 0.10);
+  color: rgba(15, 23, 42, 0.9);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.resume-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.resume-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.resume-action {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #888686;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.resume-action i {
+  font-size: 20px;
+}
+
+.resume-action:hover {
+  color: var(--mainColor);
+}
+
+.published-date {
+  text-align: right;
+  margin-left: auto;
+}
+
+.published-date h6 {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.75);
+}
+

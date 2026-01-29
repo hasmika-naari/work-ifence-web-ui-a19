@@ -6,7 +6,7 @@ import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import { FooterComponent } from 'src/app/pages/home-page-one/footer/footer.component';
-import { getDocument, PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+import { getDocument, PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 
 export interface DialogData {

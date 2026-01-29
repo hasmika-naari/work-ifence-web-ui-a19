@@ -96,25 +96,6 @@
         <div class="content-max">
           <div class="row g-3">
             <div class="story-content w-100">
-              <div class="modern-title-section nav-buttons-row">
-                <div class="navigation-buttons">
-                  <div class="nav-left">
-                    <a class="nav-button home-button" [routerLink]="['/']" style="margin-right:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
-                      <lucide-icon name="home"></lucide-icon>
-                      Home
-                      <span style="display:inline-block; margin-left:8px; color:rgba(var(--mainColor-rgb,67,83,255),0.3); font-weight:300;">|</span>
-                    </a>
-                    <a class="nav-button back-button" (click)="goBack($event)" style="margin-left:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
-                      <lucide-icon name="undo2"></lucide-icon>
-                      Back
-                    </a>
-                  </div>
-                  <!-- Mobile-only Tune button on the same row -->
-                  <button class="nav-button tune-mobile" mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
-                    <mat-icon>tune</mat-icon>
-                  </button>
-                </div>
-              </div>
               <div class="course-list-header navigation-bar title-inline second-row">
                 <div class="inline-title">
                   <span class="sub-title">Discover Job Openings</span>
@@ -133,6 +114,25 @@
                       <mat-icon>tune</mat-icon>
                     </button>
                   </div>
+                </div>
+              </div>
+              <div class="modern-title-section nav-buttons-row">
+                <div class="navigation-buttons">
+                  <div class="nav-left">
+                    <a class="nav-button home-button" [routerLink]="['/']" style="margin-right:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
+                      <lucide-icon name="home"></lucide-icon>
+                      Home
+                      <span style="display:inline-block; margin-left:8px; color:rgba(var(--mainColor-rgb,67,83,255),0.3); font-weight:300;">|</span>
+                    </a>
+                    <a class="nav-button back-button" (click)="goBack($event)" style="margin-left:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
+                      <lucide-icon name="undo2"></lucide-icon>
+                      Back
+                    </a>
+                  </div>
+                  <!-- Mobile-only Tune button on the same row -->
+                  <button class="nav-button tune-mobile" mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
+                    <mat-icon>tune</mat-icon>
+                  </button>
                 </div>
               </div>
               <section  #jobsStart id="jobsStart" class="jobs-content-container mb-50 pb-50">

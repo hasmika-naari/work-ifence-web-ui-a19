@@ -1,11 +1,14 @@
 import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { config } from './app/app.config.server';
-import 'zone.js/node';
 
 global['window'] = global['window'] || {};
 global['document'] = global['document'] || {
-  createElement: () => ({}),
+  createElement: () => ({
+    setAttribute: () => {},
+    removeAttribute: () => {},
+    style: {},
+  }),
   querySelectorAll: () => ([]),
   querySelector: () => null,
   documentElement: { clientHeight: 0 }

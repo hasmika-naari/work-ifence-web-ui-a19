@@ -2,6 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { environment } from 'src/environments/environment';
 import { ResumeTemplateDto } from './resume-template.dto';
 import { ResumeTemplateUi } from './resume-template.ui.model';
 import { adaptResumeTemplates } from './resume-template.adapter';
@@ -110,6 +111,7 @@ export class ResumeTemplateSourceService {
   private readonly api = inject(ResumeTemplateApiService);
   private readonly storage = inject(LocalStorageService);
   private readonly useApi = signal(true);
+  private readonly useMock = !!environment.useMockResumeTemplates;
   private activeMode: 'public' | 'available' = 'public';
   private cacheByMode: Record<'public' | 'available', { timestamp: number; data: ResumeTemplateDto[] } | null> = {
     public: null,
@@ -117,7 +119,7 @@ export class ResumeTemplateSourceService {
   };
   private hydrated = false;
 
-  readonly templates = signal<ResumeTemplateUi[]>(adaptResumeTemplates(staticTemplatesFallback));
+  readonly templates = signal<ResumeTemplateUi[]>(this.useMock ? adaptResumeTemplates(staticTemplatesFallback) : []);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
@@ -141,6 +143,15 @@ export class ResumeTemplateSourceService {
 
   getTemplates(options?: { forceRefresh?: boolean }): void {
     if (!this.useApi()) {
+      if (this.useMock) {
+        this.templates.set(adaptResumeTemplates(staticTemplatesFallback));
+      } else {
+        this.templates.set([]);
+      }
+      return;
+    }
+
+    if (this.useMock) {
       this.templates.set(adaptResumeTemplates(staticTemplatesFallback));
       return;
     }
@@ -155,7 +166,7 @@ export class ResumeTemplateSourceService {
 
     const forceRefresh = !!options?.forceRefresh;
     if (!forceRefresh && this.isCacheValid(this.activeMode)) {
-      const cached = this.cacheByMode[this.activeMode]?.data ?? staticTemplatesFallback;
+      const cached = this.cacheByMode[this.activeMode]?.data ?? [];
       this.templates.set(adaptResumeTemplates(cached));
       return;
     }
@@ -177,7 +188,7 @@ export class ResumeTemplateSourceService {
             this.templates.set(adaptResumeTemplates(normalized));
             return;
           }
-          this.templates.set(adaptResumeTemplates(staticTemplatesFallback));
+          this.templates.set([]);
         },
         error: (err) => {
           console.warn('[ResumeTemplateSource] API failed, using static fallback.', err);
@@ -185,8 +196,6 @@ export class ResumeTemplateSourceService {
           const cached = this.cacheByMode[this.activeMode]?.data;
           if (cached && cached.length > 0) {
             this.templates.set(adaptResumeTemplates(cached));
-          } else {
-            this.templates.set(adaptResumeTemplates(staticTemplatesFallback));
           }
         },
       });

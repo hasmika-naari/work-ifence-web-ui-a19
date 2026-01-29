@@ -1,0 +1,42 @@
+.filters-sheet {
+  padding: 16px 20px 12px;
+  display: grid;
+  gap: 16px;
+}
+
+.filters-sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filters-sheet__content {
+  display: grid;
+  gap: 12px;
+}
+
+.filters-sheet__range {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.filters-sheet__toggles {
+  display: grid;
+  gap: 8px;
+}
+
+.filters-sheet__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .filters-sheet__range {
+    grid-template-columns: 1fr;
+  }
+  .filters-sheet__footer {
+    flex-direction: column;
+  }
+}

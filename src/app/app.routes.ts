@@ -216,6 +216,20 @@ export const routes: Routes = [
         data: { reuseComponent: true, breadcrumb: 'Resume' }
     },
     {
+        path: 'resume-marketplace',
+        loadComponent: () =>
+            import('./resume-portal/public/pages/resume-portal-browse/resume-portal-browse.component')
+                .then(m => m.ResumePortalBrowseComponent),
+        data: { reuseComponent: true, breadcrumb: 'Resume Portal' }
+    },
+    {
+        path: 'resume-marketplace/:id',
+        loadComponent: () =>
+            import('./resume-portal/public/pages/resume-portal-profile/resume-portal-profile.component')
+                .then(m => m.ResumePortalProfileComponent),
+        data: { reuseComponent: false, breadcrumb: 'Profile' }
+    },
+    {
         path: 'resume',
         redirectTo: 'resume-builder',
         pathMatch: 'full'

@@ -124,6 +124,13 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
                         </div>
 
                         <div class="rp-toolbar-actions">
+                          <button
+                            mat-stroked-button
+                            color="primary"
+                            type="button"
+                            routerLink="/resume-marketplace">
+                            Browse public resumes
+                          </button>
                           @if (isAdmin()) {
                             <button
                               mat-stroked-button

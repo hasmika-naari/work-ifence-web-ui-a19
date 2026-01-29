@@ -13,11 +13,6 @@ export default defineConfig(({ mode }) => {
       include: ['pdfjs-dist/build/pdf'],
       exclude: ['pdfjs-dist/build/pdf.worker'],
     },
-    resolve: {
-      alias: {
-        // Add any needed aliases here
-      },
-    },
     define: {
       // Define any global constants here
     },

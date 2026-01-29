@@ -84,9 +84,6 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
       version: template.version ?? '1.0',
     });
     this.userStore.updateResumeTemplate(resumeTemplate);
-    if (!this.isMultiColumnTemplate(resumeTemplate)) {
-      this.userStore.emptyMultipleColumnTemplateSections();
-    }
     this.userStore.setFlagOnTemplateSelected(resumeTemplate.template_name);
     this.contact.emit();
 

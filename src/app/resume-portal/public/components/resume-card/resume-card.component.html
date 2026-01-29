@@ -1,0 +1,100 @@
+<mat-card class="search-job-feed-item profile-card">
+  <mat-card-header>
+    <div class="resume-avatar" [ngClass]="{ 'has-image': card.profileImageUrl }">
+      @if (card.profileImageUrl) {
+        <img [src]="card.profileImageUrl" [alt]="displayName()" />
+      } @else {
+        <div class="resume-initials" [style.backgroundImage]="avatarGradient()">
+          {{ initials() }}
+        </div>
+      }
+    </div>
+    <div class="resume-title-group">
+      <div class="resume-name">{{ displayName() }}</div>
+      <div class="resume-role">{{ roleLine() }}</div>
+    </div>
+  </mat-card-header>
+
+  <div class="resume-badge-wrap">
+    <div class="resume-badge" *ngIf="card.badges?.domain">
+      {{ card.badges.domain }}
+    </div>
+    <button type="button" class="resume-kebab" matTooltip="More Actions" [matMenuTriggerFor]="cardMenu">
+      <i class='bx bx-dots-vertical-rounded'></i>
+    </button>
+  </div>
+
+  <mat-card-content>
+    <div class="resume-meta">
+      <span class="meta-item"><i class='bx bx-briefcase'></i> {{ card.yearsExperience }} yrs</span>
+      @if (card.badges?.domain) {
+        <span class="meta-item"><i class='bx bx-category'></i> {{ card.badges.domain }}</span>
+      }
+      <span class="meta-item"><i class='bx bx-map'></i> {{ card.location || 'Remote' }}</span>
+      <span class="meta-item"><i class='bx bx-id-card'></i> {{ workAuthLabels[card.workAuthorization] }}</span>
+      <span class="meta-item"><i class='bx bx-time'></i> {{ availabilityLabels[card.availability] }}</span>
+    </div>
+
+    <div class="resume-skills">
+      @for (skill of card.topSkills.slice(0, maxSkills); track skill; let idx = $index) {
+        <span class="skill-text">
+          {{ skill }}@if (idx < skillsShownCount() - 1) { <span class="skill-sep">|</span> }
+        </span>
+      }
+      @if (card.topSkills.length > maxSkills) {
+        <span class="skill-text skill-more">+{{ card.topSkills.length - maxSkills }}</span>
+      }
+    </div>
+
+    <div class="resume-badges" *ngIf="card.badges">
+      @if (card.badges.atsOptimized) {
+        <span class="badge-chip">ATS-Optimized</span>
+      }
+      @if (card.badges.verified) {
+        <span class="badge-chip">Verified</span>
+      }
+      @if (card.badges.activelyLooking) {
+        <span class="badge-chip">Actively Looking</span>
+      }
+    </div>
+  </mat-card-content>
+
+  <div class="resume-footer">
+    <div class="resume-actions">
+      <button type="button" class="resume-action" matTooltip="View Profile" (click)="viewProfile()">
+        <i class='bx bx-user'></i>
+      </button>
+      <button type="button" class="resume-action" matTooltip="Use Template" (click)="useTemplate()">
+        <i class='bx bx-magic-wand'></i>
+      </button>
+    </div>
+    <div class="published-date">
+      <div>
+        <h6><b>{{ updatedLabel() }}</b></h6>
+      </div>
+    </div>
+  </div>
+
+  <mat-menu #cardMenu="matMenu" [overlapTrigger]="true" xPosition="before" yPosition="below" panelClass="resume-card-menu">
+    <button mat-menu-item type="button" (click)="handleMenuAction('view')">
+      <mat-icon>visibility</mat-icon>
+      View profile
+    </button>
+    <button mat-menu-item type="button" (click)="handleMenuAction('template')">
+      <mat-icon>description</mat-icon>
+      Use template
+    </button>
+    <button mat-menu-item type="button" (click)="handleMenuAction('share')">
+      <mat-icon>share</mat-icon>
+      Share
+    </button>
+    <button mat-menu-item type="button" (click)="handleMenuAction('save')">
+      <mat-icon>bookmark</mat-icon>
+      Save
+    </button>
+    <button mat-menu-item type="button" (click)="handleMenuAction('report')">
+      <mat-icon>report_problem</mat-icon>
+      Report
+    </button>
+  </mat-menu>
+</mat-card>

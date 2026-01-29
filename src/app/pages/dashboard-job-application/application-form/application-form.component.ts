@@ -70,7 +70,7 @@ import { RoundsComponent } from './rounds/rounds.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import moment from 'moment';
 import { ConfirmDialogComponent } from '../../resume-form3/confirm-dialog/confirm-dialog.component';
-import { getDocument, PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+import { getDocument, PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { PdfViewerComponent } from 'src/app/shared/pdf-viewer/pdf-viewer.component';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
 import { ResumeListDialogComponent } from './resume-list-dialog/resume-list-dialog.component';

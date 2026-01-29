@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { PDFDocumentProxy, getDocument } from 'pdfjs-dist';
-import * as pdfjsLib from 'pdfjs-dist';
+import { PDFDocumentProxy, getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = '../../assets/js/pdf.worker.min.mjs';
 

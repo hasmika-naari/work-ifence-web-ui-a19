@@ -118,6 +118,14 @@
               <!-- Modern Title Section -->
               <div class="modern-title-section" style="padding-left: 0; padding-top: 0;">
                 <div class="title-wrapper" style="gap: 15px;">
+                  <!-- Title Section moved above nav buttons -->
+                  <div class="title-section" style="padding: 0 25px 5px 25px;">
+                    <span class="sub-title d-block mb-0" style="margin-bottom: 2px; font-size: clamp(14px, 3.5vw, 16px); color: #666;">Discover</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <h1 class="course-title" style="margin: 0; font-size: clamp(24px, 5vw, 32px); color: var(--mainColor, #4353ff); font-weight: 600;">Courses</h1>
+                      <span class="course-count-tag" style="background: #ff9800; color: white; padding: 4px 12px; border-radius: 20px; font-size: clamp(12px, 2.5vw, 14px); font-weight: 500;">{{ allCourses.length }}</span>
+                    </div>
+                  </div>
                   <div class="navigation-buttons" style="padding: 15px 0 15px 25px; gap: 0; display: flex; flex-wrap: wrap;">
                     <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 8px; position: relative; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px);">
                       <lucide-icon name="home"></lucide-icon>
@@ -146,17 +154,8 @@
               <!-- Top Carousel Section using ngx-owl-carousel-o -->
               <div class="top-carousel">
                 <!-- Title and Navigation Row - positioned just above carousel -->
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; padding: 0 25px; margin-bottom: 10px;">
-                  <!-- Left: Title Section -->
-                  <div class="title-section">
-                    <span class="sub-title d-block mb-0" style="margin-bottom: 2px; font-size: clamp(14px, 3.5vw, 16px); color: #666;">Discover</span>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <h1 class="course-title" style="margin: 0; font-size: clamp(24px, 5vw, 32px); color: var(--mainColor, #4353ff); font-weight: 600;">Courses</h1>
-                      <span class="course-count-tag" style="background: #ff9800; color: white; padding: 4px 12px; border-radius: 20px; font-size: clamp(12px, 2.5vw, 14px); font-weight: 500;">{{ allCourses.length }}</span>
-                    </div>
-                  </div>
-
-                  <!-- Right: Navigation Controls -->
+                <div style="display: flex; justify-content: flex-end; align-items: flex-end; padding: 0 25px; margin-bottom: 10px;">
+                  <!-- Navigation Controls -->
                   <div class="custom-carousel-pagination">
                     <div class="pagination-box">
                       <button class="pagination-btn" (click)="carouselPrev()" type="button" aria-label="Previous slide">

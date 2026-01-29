@@ -1,0 +1,240 @@
+<div class="course-central-wrapper">
+  <div class="course-area" [class.dark-course-area]="themeService.isDark()">
+    <mat-sidenav-container class="dashboard-container">
+      <p-drawer
+        [(visible)]="drawerOpen"
+        position="left"
+        [modal]="false"
+        [dismissible]="true"
+        [baseZIndex]="1200"
+        [appendTo]="'body'"
+        [blockScroll]="false"
+        [transitionOptions]="'300ms'"
+        styleClass="filter-drawer">
+        <ng-template pTemplate="header">
+          <div class="drawer-header" role="banner">
+            <h3 class="drawer-title">Filter Profiles</h3>
+          </div>
+        </ng-template>
+        <div class="drawer-body">
+          <div class="row">
+            <div class="col-12 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Role</mat-label>
+                <mat-select [value]="pendingFilters.role" (selectionChange)="updateRole($event.value)">
+                  @for (role of roles(); track role) {
+                    <mat-option [value]="role">{{ role }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Skills</mat-label>
+                <mat-select multiple [value]="pendingFilters.skills" (selectionChange)="updateSkills($event.value)">
+                  @for (skill of skills(); track skill) {
+                    <mat-option [value]="skill">{{ skill }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Min years</mat-label>
+                <input matInput type="number" [value]="pendingFilters.yearsMin ?? ''" (input)="updateYearsMin($any($event.target).value)" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Max years</mat-label>
+                <input matInput type="number" [value]="pendingFilters.yearsMax ?? ''" (input)="updateYearsMax($any($event.target).value)" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Location</mat-label>
+                <input matInput type="text" [value]="pendingFilters.location" (input)="updateLocation($any($event.target).value)" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Work authorization</mat-label>
+                <mat-select [value]="pendingFilters.workAuthorization" (selectionChange)="updateWorkAuth($event.value)">
+                  <mat-option value="">Any</mat-option>
+                  @for (option of workAuthOptions; track option) {
+                    <mat-option [value]="option">{{ workAuthLabels[option] }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Availability</mat-label>
+                <mat-select [value]="pendingFilters.availability" (selectionChange)="updateAvailability($event.value)">
+                  <mat-option value="">Any</mat-option>
+                  @for (option of availabilityOptions; track option) {
+                    <mat-option [value]="option">{{ availabilityLabels[option] }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Domain</mat-label>
+                <mat-select [value]="pendingFilters.domain" (selectionChange)="updateDomain($event.value)">
+                  <mat-option value="">Any</mat-option>
+                  @for (domain of domains(); track domain) {
+                    <mat-option [value]="domain">{{ domain }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 mb-3">
+              <div class="rp-toggle-row">
+                <mat-checkbox
+                  [checked]="pendingFilters.badges.atsOptimized"
+                  (change)="toggleBadge('atsOptimized', $event.checked)">
+                  ATS-Optimized
+                </mat-checkbox>
+                <mat-checkbox
+                  [checked]="pendingFilters.badges.verified"
+                  (change)="toggleBadge('verified', $event.checked)">
+                  Verified
+                </mat-checkbox>
+                <mat-checkbox
+                  [checked]="pendingFilters.badges.activelyLooking"
+                  (change)="toggleBadge('activelyLooking', $event.checked)">
+                  Actively Looking
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <div class="drawer-actions">
+            <button class="nav-button" type="button" (click)="clearFilters()">
+              <mat-icon>restart_alt</mat-icon>
+              Reset
+              <span class="nav-divider">|</span>
+            </button>
+            <button class="nav-button" type="button" (click)="applyFilters(); drawerOpen = false">
+              <mat-icon>check_circle</mat-icon>
+              Apply
+            </button>
+          </div>
+        </div>
+      </p-drawer>
+
+      <mat-sidenav-content class="main-content" #pageSection (scroll)="onPageScroll($event)">
+        <div #sentinel style="position: absolute; top: 0; height: 1px; width: 1px;"></div>
+        <app-header-wifence [isSticky]="isSticky"></app-header-wifence>
+
+        <div class="content-max">
+          <div class="row g-3">
+            <div class="story-content w-100">
+              <div class="course-list-header navigation-bar title-inline second-row">
+                <div class="inline-title">
+                  <span class="sub-title">Discover Talent Profiles</span>
+                  <h2 class="page-title">Profile Central</h2>
+                </div>
+                <div class="right-controls"></div>
+              </div>
+
+              <div class="modern-title-section nav-buttons-row">
+                <div class="navigation-buttons">
+                  <div class="nav-left">
+                    <div class="nav-left-buttons">
+                      <a class="nav-button home-button" [routerLink]="['/']" matTooltip="Home">
+                        <i class='bx bx-home'></i>
+                        Home
+                        <span class="nav-divider">|</span>
+                      </a>
+                      <a class="nav-button back-button" (click)="goBack($event)" matTooltip="Back">
+                        <lucide-icon name="undo2"></lucide-icon>
+                        Back
+                      </a>
+                    </div>
+                  </div>
+                  <div class="nav-second-row">
+                    <div class="nav-left-search">
+                      <div class="filter-row">
+                      </div>
+                      <mat-form-field appearance="outline" class="nav-search-field">
+                        <mat-icon
+                          matPrefix
+                          class="search-prefix-icon"
+                          (click)="openFilters()"
+                          aria-label="Toggle Filter"
+                          matTooltip="Filters">
+                          tune
+                        </mat-icon>
+                        <mat-label>Search profiles</mat-label>
+                        <input
+                          matInput
+                          type="search"
+                          [value]="pendingFilters.search"
+                          (input)="updateSearch($any($event.target).value)"
+                          placeholder="Name, role, skills" />
+                        <mat-icon matSuffix>search</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="nav-right">
+                      <div class="header-pagination top-pagination">
+                        <pagination-controls class="product-pagination"
+                          [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
+                        </pagination-controls>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="filter-chips">
+                    @for (item of activeFilterChips(); track item.type + '-' + item.value) {
+                      <span class="filter-chip">
+                        <span class="chip-value">{{ item.value }}</span>
+                        <button
+                          mat-icon-button
+                          type="button"
+                          class="chip-remove"
+                          (click)="clearFilterChip(item.type, item.value)"
+                          aria-label="Remove filter">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      </span>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <section class="jobs-content-container mb-50 pb-50">
+                @if (applyingFilters) {
+                  <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
+                }
+                <div class="row">
+                  @for (card of filtered() | paginate: { itemsPerPage: count, currentPage: page }; track card.id) {
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                      <app-resume-card [card]="card"></app-resume-card>
+                    </div>
+                  }
+                </div>
+              </section>
+
+              <div class="bottom-pagination">
+                <pagination-controls class="product-pagination"
+                  [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
+                </pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <app-work-ifence-footer></app-work-ifence-footer>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+</div>

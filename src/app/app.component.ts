@@ -87,7 +87,7 @@ export class AppComponent implements OnInit, AfterViewInit{
         {
           id: '3',
           parent: 'Profile Central',
-          route: '/resume-portal/templates',
+          route: '/resume-marketplace',
           icon: 'users',
           menuItems:[]
         },

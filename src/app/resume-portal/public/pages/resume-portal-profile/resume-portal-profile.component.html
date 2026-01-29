@@ -1,0 +1,61 @@
+<section class="profile-page">
+  @if (record(); as profile) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ displayName() }}</mat-card-title>
+        <mat-card-subtitle>{{ profile.headline }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="profile-meta">
+          <span><mat-icon>work</mat-icon> {{ profile.yearsExperience }} yrs</span>
+          <span><mat-icon>place</mat-icon> {{ profile.location }}</span>
+          <span><mat-icon>verified_user</mat-icon> {{ workAuthLabel(profile.workAuthorization) }}</span>
+          <span><mat-icon>schedule</mat-icon> {{ availabilityLabel(profile.availability) }}</span>
+        </div>
+
+        <mat-chip-set>
+          @for (skill of profile.topSkills; track skill) {
+            <mat-chip>{{ skill }}</mat-chip>
+          }
+        </mat-chip-set>
+
+        <div class="profile-highlights">
+          <h4>Highlights</h4>
+          <ul>
+            @for (highlight of profile.highlights; track highlight) {
+              <li>{{ highlight }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="profile-badges">
+          @if (profile.badges.atsOptimized) {
+            <span class="badge">ATS-Optimized</span>
+          }
+          @if (profile.badges.verified) {
+            <span class="badge">Verified</span>
+          }
+          @if (profile.badges.activelyLooking) {
+            <span class="badge">Actively Looking</span>
+          }
+          <span class="badge badge-domain">{{ profile.badges.domain }}</span>
+        </div>
+
+        <div class="profile-updated">{{ updatedLabel() }}</div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-stroked-button color="primary" routerLink="/resume-marketplace">Back to browse</button>
+        <button mat-flat-button color="primary" type="button">Open full resume</button>
+      </mat-card-actions>
+    </mat-card>
+  } @else {
+    <mat-card class="profile-empty">
+      <mat-card-content>
+        <p>Profile not found.</p>
+        <button mat-stroked-button color="primary" routerLink="/resume-marketplace">Back to browse</button>
+      </mat-card-content>
+    </mat-card>
+  }
+</section>

@@ -10,7 +10,8 @@
   },
   "files": [
     "server.ts",                               
-    "src/main.server.ts"                       
+    "src/main.server.ts",
+    "src/polyfills.server.ts"                       
   ],
   "angularCompilerOptions": {
     "entryModule": "./src/app/app.server.module#AppServerModule"

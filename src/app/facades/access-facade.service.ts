@@ -195,7 +195,8 @@ export class AccessFacadeService {
     }
   }
 
-  private isSubscriptionOk(me: AccessMeDto): boolean {
+  private isSubscriptionOk(me: AccessMeDto | null | undefined): boolean {
+    if (!me) return false;
     const status = (me.subscription?.status ?? '').toString().toUpperCase();
     return status === 'ACTIVE' || status === 'TRIALING';
   }

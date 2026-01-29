@@ -1,0 +1,95 @@
+<div class="filters-sheet">
+  <div class="filters-sheet__header">
+    <h3>Filters</h3>
+    <button mat-button type="button" (click)="close()">Close</button>
+  </div>
+
+  <div class="filters-sheet__content">
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select [value]="filters().role" (selectionChange)="updateRole($event.value)">
+        @for (role of roles(); track role) {
+          <mat-option [value]="role">{{ role }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Skills</mat-label>
+      <mat-select multiple [value]="filters().skills" (selectionChange)="updateSkills($event.value)">
+        @for (skill of skills(); track skill) {
+          <mat-option [value]="skill">{{ skill }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="filters-sheet__range">
+      <mat-form-field appearance="outline">
+        <mat-label>Min years</mat-label>
+        <input matInput type="number" [value]="filters().yearsMin ?? ''" (input)="updateYearsMin($any($event.target).value)" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Max years</mat-label>
+        <input matInput type="number" [value]="filters().yearsMax ?? ''" (input)="updateYearsMax($any($event.target).value)" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <input matInput type="text" [value]="filters().location" (input)="updateLocation($any($event.target).value)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Work authorization</mat-label>
+      <mat-select [value]="filters().workAuthorization" (selectionChange)="updateWorkAuth($event.value)">
+        <mat-option value="">All</mat-option>
+        @for (option of workAuthOptions; track option) {
+          <mat-option [value]="option">{{ workAuthLabels[option] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Availability</mat-label>
+      <mat-select [value]="filters().availability" (selectionChange)="updateAvailability($event.value)">
+        <mat-option value="">All</mat-option>
+        @for (option of availabilityOptions; track option) {
+          <mat-option [value]="option">{{ availabilityLabels[option] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Domain</mat-label>
+      <mat-select [value]="filters().domain" (selectionChange)="updateDomain($event.value)">
+        <mat-option value="">All</mat-option>
+        @for (domain of domains(); track domain) {
+          <mat-option [value]="domain">{{ domain }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="filters-sheet__toggles">
+      <mat-slide-toggle
+        [checked]="filters().badges.atsOptimized"
+        (change)="toggleBadge('atsOptimized', $event.checked)">
+        ATS-Optimized
+      </mat-slide-toggle>
+      <mat-slide-toggle
+        [checked]="filters().badges.verified"
+        (change)="toggleBadge('verified', $event.checked)">
+        Verified
+      </mat-slide-toggle>
+      <mat-slide-toggle
+        [checked]="filters().badges.activelyLooking"
+        (change)="toggleBadge('activelyLooking', $event.checked)">
+        Actively Looking
+      </mat-slide-toggle>
+    </div>
+  </div>
+
+  <div class="filters-sheet__footer">
+    <button mat-stroked-button type="button" (click)="clear()">Clear all</button>
+    <button mat-flat-button color="primary" type="button" (click)="close()">Apply</button>
+  </div>
+</div>
