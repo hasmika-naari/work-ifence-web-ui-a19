@@ -205,6 +205,8 @@ export class ResumeService {
   getResumeListByOwnerId(ownerId : any){
     
     let baseUrl = this.appConstants.BASE_API_URL;
+    let localhosturl = 'http://localhost:8090';
+
     if(isPlatformBrowser(this.platformId)){
       baseUrl = '';
     }
@@ -282,7 +284,7 @@ uploadExternalResume(userName: string, ownerId: string, file: File) {
   formData.append('userName', userName);
   formData.append('ownerId', ownerId);
 
-  const url = `${localhosturl}${this.appConstants.UPLOAD_EXTERNAL_RESUME}`;
+  const url = `${baseUrl}${this.appConstants.UPLOAD_EXTERNAL_RESUME}`;
 
   return this.httpClient.post(url, formData).pipe(
     catchError(this.handleError)
@@ -290,7 +292,7 @@ uploadExternalResume(userName: string, ownerId: string, file: File) {
 }
 
 
-  uploadExternalResumeText(userName: string, resumeText: string) {
+  uploadExternalResumeText(userName: string, ownerId : string, resumeText: string) {
     let baseUrl = this.appConstants.BASE_API_URL;
     if (isPlatformBrowser(this.platformId)) {
       baseUrl = '';
@@ -302,6 +304,7 @@ uploadExternalResume(userName: string, ownerId: string, file: File) {
 
     const body = {
       userName: userName,
+      ownerId: ownerId,
       resumeText: resumeText
     };
 

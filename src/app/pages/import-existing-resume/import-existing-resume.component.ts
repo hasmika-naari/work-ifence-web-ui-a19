@@ -23,7 +23,7 @@ export class ImportExistingResumeComponent implements OnInit {
    */
   openImportResumeDialog(): void {
     const dialogRef = this.dialog.open(ImportResumeModalComponent, {
-      width: '600px',
+      width: '500px',
       maxWidth: '90vw',
       disableClose: false,
       autoFocus: true,

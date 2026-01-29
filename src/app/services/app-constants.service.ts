@@ -249,7 +249,7 @@ export class AppConstantsService {
 
         this.UPLOAD_EXTERNAL_RESUME = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/resume/parse';
 
-        this.UPLOAD_EXTERNAL_RESUME_TEXT = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/service-requests';
+        this.UPLOAD_EXTERNAL_RESUME_TEXT = APP_CONTEXT ? '/' : '' + APP_CONTEXT +  '/api/resume/importtext';
 
         ////////////// Deal START
         this.GET_ALL_DEALS_BY_COUNTRY = APP_CONTEXT
