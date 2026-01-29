@@ -4,6 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatLabel } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -18,11 +22,19 @@ import { WINDOW } from 'src/app/services/window.token';
 @Component({
     selector: 'app-work-openings',
     standalone: true,
-    imports: [NgOptimizedImage, CarouselModule, MatButtonModule, MatIconModule, MatProgressBarModule, NgxPaginationModule, MatCardModule, RouterLink],
+    imports: [NgOptimizedImage, CarouselModule, MatButtonModule, MatIconModule, MatProgressBarModule, NgxPaginationModule, MatCardModule, RouterLink, MatFormFieldModule, MatInputModule, FormsModule, MatLabel],
     templateUrl: './work-openings.component.html',
     styleUrls: ['./work-openings.component.scss']
 })
 export class WorkOpeningsComponent implements OnInit {
+    // For search bar
+    public searchText: string = '';
+
+    // Called when search input changes
+    onSearch(value: string) {
+        this.searchText = value;
+        // TODO: implement actual search logic or filter jobs
+    }
 
     @Input() isMobile: boolean =  false;
 
@@ -45,7 +57,7 @@ export class WorkOpeningsComponent implements OnInit {
     searchedJobs : Signal<Array<JobFeedItem>> = this.jobFeedStore.getSearchPageJobsFeed();
     
     constructor(
-        @Inject(WINDOW) private window: Window,
+        @Inject(WINDOW) public window: Window,
         public themeService: ThemeCustomizerService
     ) {
         this.themeService.isToggled$.subscribe(isToggled => {

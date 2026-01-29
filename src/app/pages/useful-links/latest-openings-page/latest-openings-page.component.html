@@ -1,7 +1,9 @@
 <div class="course-central-wrapper">
   <div class="course-area" [class.dark-course-area]="themeService.isDark()">
+
+
     <mat-sidenav-container class="dashboard-container" #scrollContainer>
-      <mat-sidenav #filterSidenav mode="over" position="end" class="filter-sidenav">
+      <mat-sidenav #filterSidenav mode="over" position="start" class="filter-sidenav">
         <div class="sidenav-header" role="banner">
           <h3 class="sidenav-title">Filter Openings</h3>
           <button mat-icon-button aria-label="Close filters" (click)="filterSidenav.close()">
@@ -84,8 +86,15 @@
               </div>
             </div>
             <div class="d-flex justify-content-end gap-2 mt-2">
-              <button mat-stroked-button type="button" (click)="resetFilters(filterSidenav)">Reset</button>
-              <button mat-flat-button color="primary" type="submit">Apply</button>
+              <button type="button" class="nav-button" (click)="resetFilters(filterSidenav)">
+                <mat-icon>refresh</mat-icon>
+                Reset
+              </button>
+              <span class="nav-divider">|</span>
+              <button type="submit" class="nav-button">
+                <mat-icon>check_circle</mat-icon>
+                Apply
+              </button>
             </div>
           </form>
         </div>
@@ -101,38 +110,54 @@
                   <span class="sub-title">Discover Job Openings</span>
                   <h2 class="page-title">Job Central</h2>
                 </div>
-                <div class="right-controls">
-                  @if (browser && !actionInProgress) {
-                    <div class="header-pagination">
-                      <pagination-controls class="product-pagination"
-                        [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
-                      </pagination-controls>
-                    </div>
-                  }
-                  <div class="actions">
-                    <button mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
-                      <mat-icon>tune</mat-icon>
-                    </button>
-                  </div>
-                </div>
+                <div class="right-controls"></div>
               </div>
+
               <div class="modern-title-section nav-buttons-row">
                 <div class="navigation-buttons">
                   <div class="nav-left">
-                    <a class="nav-button home-button" [routerLink]="['/']" style="margin-right:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
-                      <lucide-icon name="home"></lucide-icon>
-                      Home
-                      <span style="display:inline-block; margin-left:8px; color:rgba(var(--mainColor-rgb,67,83,255),0.3); font-weight:300;">|</span>
-                    </a>
-                    <a class="nav-button back-button" (click)="goBack($event)" style="margin-left:8px; position:relative; display:flex; align-items:center; font-size:clamp(12px,3vw,14px);">
-                      <lucide-icon name="undo2"></lucide-icon>
-                      Back
-                    </a>
+                    <div class="nav-left-buttons">
+                      <a class="nav-button home-button" [routerLink]="['/']" matTooltip="Home">
+                        <i class='bx bx-home'></i>
+                        Home
+                        <span class="nav-divider">|</span>
+                      </a>
+                      <a class="nav-button back-button" (click)="goBack($event)" matTooltip="Back">
+                        <lucide-icon name="undo2"></lucide-icon>
+                        Back
+                      </a>
+                    </div>
                   </div>
-                  <!-- Mobile-only Tune button on the same row -->
-                  <button class="nav-button tune-mobile" mat-icon-button (click)="filterSidenav.toggle()" aria-label="Toggle Filter">
-                    <mat-icon>tune</mat-icon>
-                  </button>
+                  <div class="nav-second-row">
+                    <div class="nav-left-search">
+                      <div class="filter-row"></div>
+                      <mat-form-field appearance="outline" class="nav-search-field">
+                        <mat-icon
+                          matPrefix
+                          class="search-prefix-icon"
+                          aria-label="Toggle Filter"
+                          matTooltip="Filters"
+                          (click)="filterSidenav.toggle()">
+                          tune
+                        </mat-icon>
+                        <mat-label>Search jobs</mat-label>
+                        <input
+                          matInput
+                          type="search"
+                          [(ngModel)]="searchText"
+                          (ngModelChange)="onSearch($event)"
+                          placeholder="Title, company, skills" />
+                        <mat-icon matSuffix>search</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="nav-right">
+                      <div class="header-pagination top-pagination">
+                        <pagination-controls class="product-pagination"
+                          [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
+                        </pagination-controls>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <section  #jobsStart id="jobsStart" class="jobs-content-container mb-50 pb-50">
@@ -212,13 +237,6 @@
                 </div>
               }
             }
-          </div>
-        }
-        @if (!actionInProgress) {
-          <div class="bottom-pagination">
-            <pagination-controls class="product-pagination"
-              [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
-            </pagination-controls>
           </div>
         }
         <!-- Footer pagination row removed; pagination now in header -->

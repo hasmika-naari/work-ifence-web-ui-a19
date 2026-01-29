@@ -24,6 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -39,11 +40,19 @@ export interface Subject {
 @Component({
   selector: 'latest-openings-page',
   standalone: true,
-  imports: [RouterLink, MatIconModule, MatSidenavModule, IconsModule, MatSelectModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule, NgxPaginationModule, MatCardModule, MatProgressBarModule, FooterWorkifenceComponent, HeaderWorkIfenceComponent],
+  imports: [RouterLink, MatIconModule, MatSidenavModule, IconsModule, MatSelectModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule, NgxPaginationModule, MatCardModule, MatProgressBarModule, FooterWorkifenceComponent, HeaderWorkIfenceComponent, FormsModule],
   templateUrl: './latest-openings-page.component.html',
   styleUrls: ['./latest-openings-page.component.scss']
 })
 export class LatestJobOpeningsPageComponent implements OnInit, AfterViewInit, OnDestroy {
+    // For search bar
+    public searchText: string = '';
+
+    // Called when search input changes
+    onSearch(value: string) {
+      this.searchText = value;
+      // TODO: implement actual search logic or filter jobs
+    }
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChild('jobsStart') jobsStart!: ElementRef;
   @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
@@ -117,6 +126,16 @@ export class LatestJobOpeningsPageComponent implements OnInit, AfterViewInit, On
 
   ngOnInit(): void {
     this.fetchData();
+    // Always initialize filterForm with all controls for SSR and browser
+    this.filterForm = this.fb.group({
+      keyword: [''],
+      company: [''],
+      region: [''],
+      jobType: [''],
+      postedWithin: [''],
+      sortBy: ['date-desc'],
+      itemsPerPage: [this.count]
+    });
     if(this.browser){
       if(this.deviceService.isDesktop()){
         this.isDesktop = true;
@@ -132,23 +151,12 @@ export class LatestJobOpeningsPageComponent implements OnInit, AfterViewInit, On
         this.isDesktop = false;
       }
 
-        this.filterForm = this.fb.group({
-          keyword: [''],
-          company: [''],
-          region: [''],
-          jobType: [''],
-          postedWithin: [''],
-          sortBy: ['date-desc'],
-          itemsPerPage: [this.count]
-        });
-
-        this.actionInProgress = true;
-        this.subs.push(this.ifenceJobService.getJobsFeeds('Any', 'Any').subscribe((jobsFeed: any) => {
-            
-            let feed = JSON.parse(jobsFeed.response);
-            this.jobFeedStore.updateSearchJobFeed(feed.rss.jobs.job);
-            this.actionInProgress = false;
-        }, (error: any) => {
+      this.actionInProgress = true;
+      this.subs.push(this.ifenceJobService.getJobsFeeds('Any', 'Any').subscribe((jobsFeed: any) => {
+        let feed = JSON.parse(jobsFeed.response);
+        this.jobFeedStore.updateSearchJobFeed(feed.rss.jobs.job);
+        this.actionInProgress = false;
+      }, (error: any) => {
             this.actionInProgress = false;
         }))
     

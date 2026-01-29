@@ -1,47 +1,53 @@
+
 <section class="courses-area pt-50 pb-100" [class.dark-courses-area]="themeService.isDark()">
   <div class="container">
-    <div class="container">
-      <div class="courses-topbar">
-        <div class="row align-items-start">
-          <div class="col-12">
-            <div class="topbar-ordering-and-search">
-              <div class="row align-items-start">
-                <div class="col-lg-12 col-md-12">
-                  <div class="topbar-ordering">
-                    <div class="row">
-                      <div class="col-12">
-                        <mat-card class="search-pagenation-deals p-0 text-right">
-                          <div class="row align-items-center">
-                            <div class="col-lg-4 col-12 text-start">
-                              <div class="topbar-search">
-                                <!-- Search Bar -->
-                              </div>
-                            </div>
-                            <div class="col-lg-4 d-none d-lg-block"></div>
-                            @if (browser) {
-                              <div class="col-lg-4 col-12 text-end">
-                                <pagination-controls class="product-pagination"
-                                  [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)">
-                                </pagination-controls>
-                              </div>
-                            }
-                          </div>
-                        </mat-card>
-                      </div>
-                      <div class="col-12">
-                        @if (actionInProgress) {
-                          <mat-progress-bar mode="indeterminate" color="primary"  ></mat-progress-bar>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <!-- Resume Portal-style Navigation Row -->
+    <div class="modern-title-section nav-buttons-row">
+      <div class="navigation-buttons">
+        <div class="nav-left">
+          <div class="nav-left-buttons">
+            <a class="nav-button home-button" [routerLink]="['/']" matTooltip="Home">
+              <i class='bx bx-home'></i>
+              Home
+              <span class="nav-divider">|</span>
+            </a>
+            <a class="nav-button back-button" (click)="window.history.back()" matTooltip="Back">
+              <mat-icon>arrow_back</mat-icon>
+              Back
+            </a>
           </div>
+        </div>
+        <div class="inline-title">
+          <span class="sub-title">Discover Job Openings</span>
+          <h2 class="page-title">Job Central</h2>
+        </div>
+        <div class="right-controls">
+          <button mat-icon-button matTooltip="Filters">
+            <mat-icon>tune</mat-icon>
+          </button>
         </div>
       </div>
     </div>
+
+    <!-- Resume Portal-style Search Bar and Paginator Row -->
+    <div class="nav-second-row">
+      <div class="nav-left-search">
+        <mat-form-field appearance="outline" class="nav-search-field">
+          <mat-icon matPrefix class="search-prefix-icon" aria-label="Toggle Filter" matTooltip="Filters">tune</mat-icon>
+          <mat-label>Search jobs</mat-label>
+          <input matInput type="search" [(ngModel)]="searchText" (ngModelChange)="onSearch($event)" placeholder="Title, company, skills" />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="nav-right">
+        <div class="header-pagination top-pagination">
+          <pagination-controls class="product-pagination" [autoHide]="autoHide" [maxSize]="maxSize" (pageChange)="onPageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+
+    <!-- Existing Job Listings and Pagination Section -->
+    <!-- ...existing code... -->
 
     <!-- Job Listings -->
     <div class="row">
