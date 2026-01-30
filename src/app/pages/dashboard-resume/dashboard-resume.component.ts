@@ -490,16 +490,16 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
               let resume : Resume = JSON.parse(e.resumeJson);
               if(!resume?.sections && !resume?.multipleSections){
                 if(resume.template_details.template_name == 'TEMPLATE_1'){
-                  resume.sections= this.template1_sections
-                  resume.multipleSections = []
+                  // resume.sections= this.template1_sections
+                  // resume.multipleSections = []
                 }
                 else if(resume.template_details.template_name == 'TEMPLATE_9'){
-                  resume.multipleSections = [[...this.template9right_sections], [...this.template9left_sections]]
-                  resume.sections = []
+                  // resume.multipleSections = [[...this.template9right_sections], [...this.template9left_sections]]
+                  // resume.sections = []
                 }
                 else if(resume.template_details.template_name == 'TEMPLATE_10'){
-                  resume.sections= this.template10_sections
-                  resume.multipleSections = []
+                  // resume.sections= this.template10_sections
+                  // resume.multipleSections = []
                 }
               }
               console.log(resume);
@@ -520,6 +520,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
           if(error.status == 403){
             console.log("PDF Fetching Error");
           }
+          this.isActionInProgress = false
          })
           this.userStore.setResumeDataListItems(this.resumes);
           this.userStore.setFilteredResumes([...this.resumes]);
@@ -530,7 +531,15 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
             this.isActionInProgress = false;
           }
           
-          }));
+          
+          }
+        , (error : any)=>{
+             if(error.status == 500){
+            console.log("Internal Server Error");
+          }
+          this.isActionInProgress = false
+          })
+        );
         }
       else{
         this.resumeList().map((e)=>{

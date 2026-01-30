@@ -1,6 +1,7 @@
 <!-- Material Dialog Header -->
-<div mat-dialog-title class="dialog-header" *ngIf="!isLoading">
-  <h2>Import Resume</h2>
+<div mat-dialog-title class="dialog-header">
+  <h2 *ngIf="!isLoading">Import Resume</h2>
+  <h2 *ngIf="isLoading">Importing your resume</h2>
   <button 
     mat-icon-button
     type="button"
@@ -15,10 +16,8 @@
   
   <!-- Loading State -->
   <div class="loading-container" *ngIf="isLoading">
-    <h2 class="loading-title">Importing your resume</h2>
-    
     <div class="loading-content">
-      <mat-spinner diameter="40" class="loading-spinner"></mat-spinner>
+      <mat-spinner diameter="32" class="loading-spinner"></mat-spinner>
       <p class="loading-text">Processing your resume... This may take up to 60 seconds.</p>
     </div>
     
@@ -89,18 +88,9 @@
           <p class="file-formats">.pdf, .docx, .png, .jpeg, .jpg</p>
 
           <!-- Selected File Display -->
-          <div class="selected-file" *ngIf="selectedFile">
+          <div class="selected-file" *ngIf="selectedFile && !isLoading">
             <mat-icon>check_circle</mat-icon>
             <span>Selected: <strong>{{ selectedFile.name }}</strong></span>
-            <button 
-              mat-flat-button
-              color="primary"
-              class="upload-file-button"
-              type="button"
-              (click)="onFileUpload()">
-              <mat-icon>cloud_upload</mat-icon>
-              Upload Resume
-            </button>
           </div>
         </div>
       </div>

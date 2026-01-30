@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Signal } from '@angular/core';
+import { Component, inject, OnInit, Optional, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -6,11 +6,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ResumeService } from '../../../services/resume.service';
 import { Account } from 'src/app/services/profile.model';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { Resume } from 'src/app/services/resume.model';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 export interface ImportResumeResult {
   type: 'file' | 'text' | 'cancel' | 'success';
@@ -27,7 +29,8 @@ export interface ImportResumeResult {
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatSnackBarModule
   ],
   templateUrl: './import-resume-modal.component.html',
   styleUrls: ['./import-resume-modal.component.scss']
@@ -46,7 +49,9 @@ export class ImportResumeModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ImportResumeModalComponent>,
     private resumeService: ResumeService,
-    private router : Router
+    private router : Router,
+    private snackBar: MatSnackBar,
+    @Optional() public messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -127,12 +132,15 @@ export class ImportResumeModalComponent implements OnInit {
       this.selectedFile = null;
       return;
     }
+
+    // Automatically upload the file after validation
+    this.uploadFile();
   }
 
   /**
    * Upload the selected file
    */
-  onFileUpload(): void {
+  private uploadFile(): void {
     if (!this.selectedFile) {
       return;
     }
@@ -159,7 +167,39 @@ export class ImportResumeModalComponent implements OnInit {
         error: (error) => {
           this.isLoading = false;
           this.dialogRef.disableClose = false;
-          alert('Failed to upload resume. Please try again.');
+          
+          // Log the error for debugging
+          console.error('Resume upload failed:', error);
+          
+          let errorMessage = 'Failed to upload resume. Please try again.';
+          
+          // Differentiate based on HTTP status codes
+          if (error.status === 400) {
+            // Extract backend error message for 400 Bad Request
+            errorMessage = error.error?.message || error.error?.error || 'Invalid resume data. Please check your file and try again.';
+          } else if (error.status === 401) {
+            errorMessage = 'Authentication failed. Please log in again.';
+          } else if (error.status === 403) {
+            errorMessage = 'You do not have permission to upload resumes.';
+          } else if (error.status === 404) {
+            errorMessage = 'Resume upload service not found. Please contact support.';
+          } else if (error.status === 409) {
+            errorMessage = 'A resume with this information already exists.';
+          } else if (error.status >= 500) {
+            // Generic message for server errors (do not expose backend details)
+            errorMessage = 'Server error occurred. Please try again later.';
+          } else if (error.status >= 400 && error.status < 500) {
+            // Generic message for other client errors
+            errorMessage = 'Unable to process your request. Please check your input and try again.';
+          }
+          
+          // Display error message in Toast notification
+          this.snackBar.open(errorMessage, 'Close', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
+          });
         }
       });
   }
@@ -183,9 +223,16 @@ export class ImportResumeModalComponent implements OnInit {
     this.isLoading = true;
     this.dialogRef.disableClose = true;
 
-    this.resumeService.uploadExternalResumeText(this.userName, this.pastedText.trim())
+    this.resumeService.uploadExternalResumeText(this.userName, this.ownerId,this.pastedText.trim())
       .subscribe({
-        next: (response) => {
+        next: (response : any) => {
+          // console.log(response);
+          let resume = JSON.parse(response?.resume?.resumeJson);
+          console.log("AI Response --------------->", resume);
+          this.userStore.setResumeForm(resume);
+          this.userStore.updateSelectedResumeListItem(response?.resume);
+          this.userStore.setIsChangeInNewResume(false);
+          this.router.navigateByUrl('/user/resumes/resume');
           this.isLoading = false;
           this.dialogRef.close({
             type: 'success',
@@ -195,7 +242,34 @@ export class ImportResumeModalComponent implements OnInit {
         error: (error) => {
           this.isLoading = false;
           this.dialogRef.disableClose = false;
-          alert('Failed to upload resume text. Please try again.');
+          
+          // Log the error for debugging
+          console.error('Resume upload failed:', error);
+          
+          let errorMessage = 'Failed to upload resume. Please try again.';
+          
+          // Differentiate based on HTTP status codes
+          if (error.status === 400) {
+            // Extract backend error message for 400 Bad Request
+            errorMessage = error.error?.message || error.error?.error || 'Invalid resume data. Please check your file and try again.';
+          } else if (error.status === 401) {
+            errorMessage = 'Authentication failed. Please log in again.';
+          } else if (error.status === 403) {
+            errorMessage = 'You do not have permission to upload resumes.';
+          } else if (error.status === 404) {
+            errorMessage = 'Resume upload service not found. Please contact support.';
+          } else if (error.status === 409) {
+            errorMessage = 'A resume with this information already exists.';
+          } else if (error.status >= 500) {
+            // Generic message for server errors (do not expose backend details)
+            errorMessage = 'Server error occurred. Please try again later.';
+          } else if (error.status >= 400 && error.status < 500) {
+            // Generic message for other client errors
+            errorMessage = 'Unable to process your request. Please check your input and try again.';
+          }
+          
+          // Display error message in Toast notification
+          this.openSnackBar(errorMessage, 'Close');
         }
       });
   }
@@ -210,4 +284,22 @@ export class ImportResumeModalComponent implements OnInit {
     console.log('Upgrade clicked');
     // TODO: Navigate to upgrade page
   }
+
+    openSnackBar(message: string, action: string = '') {
+    // Deprecated: use showToast instead
+    this.showToast('error', action || 'Info', message);
+  }
+
+  showToast(severity: 'success' | 'info' | 'warn' | 'error', summary: string, detail: string) {
+    if (this.messageService) {
+      this.messageService.add({
+        key: 'global',
+        severity,
+        summary,
+        detail,
+        life: 5000
+      });
+    }
+  }
+
 }

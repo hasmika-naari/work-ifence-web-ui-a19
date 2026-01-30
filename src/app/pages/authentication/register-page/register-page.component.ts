@@ -388,7 +388,7 @@ export class RegisterPageComponent {
       console.log('onSecondFormSubmit - 1');
          // Mark all form controls as touched to trigger validation
          this.markFormGroupTouched(this.registerForm3);
-      if (this.registerForm3.invalid || !this.isUserNameAvailable) {
+      if (this.registerForm3.invalid) {
         return;
       }
       console.log('onSecondFormSubmit - 2');
