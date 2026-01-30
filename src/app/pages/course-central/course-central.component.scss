@@ -411,6 +411,85 @@
   }
 }
 
+/* Course Central title + navigation layout (aligned with Job Central) */
+.course-list-header.navigation-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 25px;
+  flex-wrap: wrap;
+  padding: 10px 0 20px 0;
+  background: transparent;
+}
+
+.title-inline {
+  .inline-title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .inline-title .sub-title {
+    margin: 0 0 2px 0;
+    font-size: clamp(13px, 3.2vw, 15px);
+    color: #666;
+    font-weight: 500;
+    letter-spacing: .5px;
+  }
+
+  .inline-title .page-title {
+    margin: 0;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 600;
+    color: var(--mainColor, #4353ff);
+    line-height: 1.15;
+  }
+}
+
+.right-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.nav-buttons-row {
+  padding-bottom: 8px;
+  margin-bottom: 0;
+  border-bottom: none;
+
+  .navigation-buttons {
+    gap: 10px;
+  }
+}
+
+.nav-buttons-row .navigation-buttons .nav-left {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+}
+
+.nav-left-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nav-divider {
+  display: inline-block;
+  margin-left: 8px;
+  color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3);
+  font-weight: 300;
+}
+
+.nav-second-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 /* Modern Title Section Responsive */
 .modern-title-section {
   padding-left: 0;

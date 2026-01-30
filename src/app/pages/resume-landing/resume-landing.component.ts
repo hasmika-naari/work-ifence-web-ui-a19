@@ -13,7 +13,8 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Subject, filter, takeUntil } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
@@ -59,6 +60,7 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public isSticky = false;
   private observer?: IntersectionObserver;
+  private readonly destroy$ = new Subject<void>();
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
 
@@ -100,15 +102,27 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   });
 
-  ngOnInit(): void {
-    effect(() => {
-      const err = this.templateFacade.error();
-      if (err) {
-        console.warn('[ResumeTemplateFacade]', err);
-      }
-    });
+  private readonly errorEffect = effect(() => {
+    const err = this.templateFacade.error();
+    if (err) {
+      console.warn('[ResumeTemplateFacade]', err);
+    }
+  });
 
+  ngOnInit(): void {
     this.templateFacade.loadTemplates('public');
+    this.templateFacade.refresh(true);
+
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd), takeUntil(this.destroy$))
+      .subscribe(event => {
+        const nav = event as NavigationEnd;
+        const url = nav.urlAfterRedirects ?? nav.url;
+        if (url.includes('/resume-builder')) {
+          this.templateFacade.loadTemplates('public');
+          this.templateFacade.refresh(true);
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -131,6 +145,8 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onPageScroll(event: Event): void {
@@ -141,6 +157,7 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
 
   loadTemplates(): void {
     this.templateFacade.loadTemplates('public');
+    this.templateFacade.refresh(true);
   }
 
   onCategoryChange(event: Event): void {

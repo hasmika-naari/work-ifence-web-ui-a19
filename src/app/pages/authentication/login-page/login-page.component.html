@@ -87,7 +87,7 @@
                 </button>
               </div>
               <div class="or-divider">OR</div>
-              <form>
+              @if (!isForgotPassword) {
                 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                   <mat-form-field appearance="outline">
                     <mat-label>Username</mat-label>
@@ -100,7 +100,10 @@
                     <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password">
                     <mat-icon matSuffix (click)="showPassword = !showPassword" style="cursor:pointer;">{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                   </mat-form-field>
-                  <mat-checkbox formControlName="remember" color="primary">I want to receive updates from Work Ifence about latest job offers</mat-checkbox>
+                  <div class="login-options-row">
+                    <mat-checkbox formControlName="remember" color="primary">Remember me</mat-checkbox>
+                    <button type="button" class="forgot-password-link" (click)="forgotPassword($event)">Forgot password?</button>
+                  </div>
                   <button class="login-btn enabled-button" type="submit" [disabled]="isLoading || loginForm.invalid">
                     @if (!isLoading) {
                       SIGN IN
@@ -110,7 +113,29 @@
                     }
                   </button>
                 </form>
-              </form>
+              } @else {
+                <form [formGroup]="forgotPasswordForm" (ngSubmit)="forgotPasswordSubmit($event)">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Username</mat-label>
+                    <mat-icon matPrefix>mail_outline</mat-icon>
+                    <input matInput formControlName="username" placeholder="Username">
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <mat-icon matPrefix>email</mat-icon>
+                    <input matInput formControlName="email" placeholder="Email address">
+                  </mat-form-field>
+                  @if (resetErrorMessage) {
+                    <div style="color:#b91c1c;margin:6px 0 12px 0;">{{ resetErrorMessage }}</div>
+                  }
+                  <button class="login-btn enabled-button" type="submit" [disabled]="isActionInProgress || forgotPasswordForm.invalid">
+                    Reset Password
+                  </button>
+                  <div style="margin-top:10px;text-align:center;">
+                    <button type="button" class="forgot-password-link" (click)="switchToLogin($event)">Back to sign in</button>
+                  </div>
+                </form>
+              }
               <div style="margin-top:16px;font-size:0.95rem;color:#888;text-align:center;">
                 By signing in, you agree to our
                 <a routerLink="/terms" style="font-weight:600;">Terms of Service</a>

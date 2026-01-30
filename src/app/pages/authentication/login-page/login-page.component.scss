@@ -474,15 +474,31 @@ mat-form-field {
 
 // /* Ensure proper spacing for forgot password section */
 .forgot-password-link {
-  // color: #007bff;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
-  // font-weight: bold;
+  color: var(--secondaryColor, #f05b45);
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
 
   &:hover{
-    // color: var(--primary-color);
-    // font-weight: bold;
+    color: var(--mainColor, #4353ff);
     text-decoration: underline;
   }
+}
+
+.login-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 // /* Adjust "Create an Account" link */

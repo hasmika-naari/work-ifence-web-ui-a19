@@ -155,6 +155,19 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
         this.subs.push(this.loginForm.controls['password'].valueChanges.subscribe((uName: any) => {
           this.loginError = false;
           }));
+
+        const rememberMe = this.localStorageService.getItem('rememberMe') === true;
+        const storedUser = this.localStorageService.getItem('userName');
+        const storedPass = this.localStorageService.getItem('passWord');
+        const authenticated = this.localStorageService.getItem('authenticated') === true;
+        if (rememberMe && storedUser && storedPass && !authenticated) {
+          this.loginForm.patchValue({
+            username: storedUser,
+            password: storedPass,
+            remember: true,
+          });
+          this.onSubmit();
+        }
     } 
    
   }
@@ -257,6 +270,11 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                   if(this.loginForm.value.remember){
                     this.localStorageService.setItem('userName', loginRequest.username);
                     this.localStorageService.setItem('passWord', loginRequest.password);
+                    this.localStorageService.setItem('rememberMe', true);
+                  } else {
+                    this.localStorageService.removeItem('userName');
+                    this.localStorageService.removeItem('passWord');
+                    this.localStorageService.removeItem('rememberMe');
                   }
                   this.localStorageService.setItem('authToken', loginResponse.id_token);
                   this.userStore.updateToken(loginResponse.id_token);

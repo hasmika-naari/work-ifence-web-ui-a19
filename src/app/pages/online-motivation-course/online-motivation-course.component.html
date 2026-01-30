@@ -5,20 +5,31 @@
         <div >
             <div class="row g-0">
                 <div class="story-content col-12">
-                    <!-- Modern Title Section -->
-                    <div class="modern-title-section" >
-                        <div class="title-wrapper">
-                            <div class="navigation-buttons">
-                                <a class="nav-button home-button" [routerLink]="['/']">
-                                    <lucide-icon name="home"></lucide-icon>
-                                    Home
-                                </a>
-                                <a class="nav-button back-button" (click)="goBack($event)">
-                                    <lucide-icon name="undo2"></lucide-icon>
-                                    Back
-                                </a>
+                    <div class="course-list-header navigation-bar title-inline second-row">
+                        <div class="inline-title">
+                            <span class="sub-title">Discover Courses</span>
+                            <h2 class="page-title">Course Central</h2>
+                        </div>
+                        <div class="right-controls"></div>
+                    </div>
+                    <div class="modern-title-section nav-buttons-row">
+                        <div class="navigation-buttons">
+                            <div class="nav-left">
+                                <div class="nav-left-buttons">
+                                    <a class="nav-button home-button" [routerLink]="['/']">
+                                        <i class='bx bx-home'></i>
+                                        Home
+                                        <span class="nav-divider">|</span>
+                                    </a>
+                                    <a class="nav-button back-button" (click)="goBack($event)">
+                                        <lucide-icon name="undo2"></lucide-icon>
+                                        Back
+                                    </a>
+                                </div>
                             </div>
-                            <h1 class="course-title">Course Central</h1>
+                            <div class="nav-second-row">
+                                <div class="nav-right"></div>
+                            </div>
                         </div>
                     </div>
                     <!-- <section class="mb-5 full-width-banner tight-banner-spacing"> -->

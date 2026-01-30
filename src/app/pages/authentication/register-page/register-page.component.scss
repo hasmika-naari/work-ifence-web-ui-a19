@@ -202,19 +202,32 @@
   margin-top: 32px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 .register-info-panel .features span {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  gap: 10px;
   font-size: 1rem;
   color: #4a5568;
   opacity: 0.95;
+  line-height: 1.45;
 }
-.register-info-panel .features mat-icon {
+.register-info-panel .features mat-icon,
+.register-info-panel .features i {
   font-size: 1.2rem;
-  margin-right: 8px;
+  width: 20px;
+  min-width: 20px;
+  text-align: center;
+  margin-top: 2px;
   color: #f77c5a;
+  font-family: 'Material Icons' !important;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .register-form-panel {

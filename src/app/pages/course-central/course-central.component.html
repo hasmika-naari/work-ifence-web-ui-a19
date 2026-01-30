@@ -115,40 +115,37 @@
         <div class="container-fluid">
           <div class="row g-3">
             <div class="story-content" style="padding: 15px 20px; max-width: 100%;">
-              <!-- Modern Title Section -->
-              <div class="modern-title-section" style="padding-left: 0; padding-top: 0;">
-                <div class="title-wrapper" style="gap: 15px;">
-                  <!-- Title Section moved above nav buttons -->
-                  <div class="title-section" style="padding: 0 25px 5px 25px;">
-                    <span class="sub-title d-block mb-0" style="margin-bottom: 2px; font-size: clamp(14px, 3.5vw, 16px); color: #666;">Discover</span>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <h1 class="course-title" style="margin: 0; font-size: clamp(24px, 5vw, 32px); color: var(--mainColor, #4353ff); font-weight: 600;">Courses</h1>
-                      <span class="course-count-tag" style="background: #ff9800; color: white; padding: 4px 12px; border-radius: 20px; font-size: clamp(12px, 2.5vw, 14px); font-weight: 500;">{{ allCourses.length }}</span>
+              <div class="modern-title-section nav-buttons-row">
+                <div class="navigation-buttons">
+                  <div class="nav-left">
+                    <div class="nav-left-buttons">
+                      <a class="nav-button home-button" [routerLink]="['/']" matTooltip="Home">
+                        <i class='bx bx-home'></i>
+                        Home
+                        <span class="nav-divider">|</span>
+                      </a>
+                      <a class="nav-button back-button" (click)="goBack($event)" matTooltip="Back">
+                        <lucide-icon name="undo2"></lucide-icon>
+                        Back
+                      </a>
+                      <a class="nav-button course-central-button" [routerLink]="['/central/course-central']" matTooltip="Course Central">
+                        <lucide-icon name="undo2"></lucide-icon>
+                        Course Central
+                      </a>
                     </div>
                   </div>
-                  <div class="navigation-buttons" style="padding: 15px 0 15px 25px; gap: 0; display: flex; flex-wrap: wrap;">
-                    <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 8px; position: relative; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px);">
-                      <lucide-icon name="home"></lucide-icon>
-                      Home
-                      <span style="display: inline-block; margin-left: 8px; color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3); font-weight: 300;">|</span>
-                    </a>
-                    <a class="nav-button back-button" (click)="goBack($event)" style="margin-left: 8px; margin-right: 8px; position: relative; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px);">
-                      <lucide-icon name="undo2"></lucide-icon>
-                      Back
-                      <span style="display: inline-block; margin-left: 8px; color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3); font-weight: 300;">|</span>
-                    </a>
-                    <a class="nav-button course-central-button" [routerLink]="['/central/course-central']" style="margin-left: 8px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px);">
-                      <lucide-icon name="undo2"></lucide-icon>
-                      Course Central
-                    </a>
-                  </div>
-                  <div class="course-list-header streach-h-100" style="margin-top: 10px; padding-top: 5px; padding-left: 25px; display: flex; flex-direction: row; flex-wrap: wrap; align-items: flex-end;">
-                    <!-- Moved Discover Courses section to above carousel -->
-                    <div class="right" style="display: flex; align-items: flex-end; gap: 10px; margin-left: auto;">
-                      <!-- Removed All Courses text -->
-                    </div>
+                  <div class="nav-second-row">
+                    <div class="nav-right"></div>
                   </div>
                 </div>
+              </div>
+
+              <div class="course-list-header navigation-bar title-inline second-row">
+                <div class="inline-title">
+                  <span class="sub-title">Discover Courses</span>
+                  <h2 class="page-title">Course Central</h2>
+                </div>
+                <div class="right-controls"></div>
               </div>
 
               <!-- Top Carousel Section using ngx-owl-carousel-o -->

@@ -67,28 +67,138 @@
   width: 100%;
 }
 
-/* Navigation buttons (match Course Central) */
-.modern-title-section .nav-button {
-  display: inline-flex;
+/* Title + navigation layout (match ResumePortalBrowseComponent) */
+.course-list-header.navigation-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 25px;
+  flex-wrap: wrap;
+  // padding: 10px 0 20px 0;
+  background: transparent;
+}
+
+.title-inline {
+  .inline-title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .inline-title .sub-title {
+    margin: 0 0 2px 0;
+    font-size: clamp(13px, 3.2vw, 15px);
+    color: #666;
+    font-weight: 500;
+    letter-spacing: .5px;
+  }
+
+  .inline-title .page-title {
+    margin: 0;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 600;
+    color: var(--mainColor, #4353ff);
+    line-height: 1.15;
+  }
+}
+
+.right-controls {
+  margin-left: auto;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: var(--secondaryColor);
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.nav-buttons-row {
+  margin-top: 6px;
+  padding-bottom: 8px;
+  margin-bottom: 0;
+  border-bottom: none;
+
+  .navigation-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 5px 0 10px 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(var(--mainColor-rgb, 240, 91, 69), 0.1);
+  }
+}
+
+.nav-buttons-row .navigation-buttons .nav-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.nav-left-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-second-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.nav-divider {
+  display: inline-block;
+  margin-left: 8px;
+  color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3);
+  font-weight: 300;
+  letter-spacing: .25px;
+  transition: color .25s ease;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(12px, 3vw, 14px);
   font-weight: 500;
-  font-size: 15px;
-  line-height: 1;
+  color: var(--secondaryColor);
   text-decoration: none;
-  transition: all 0.2s ease;
-  padding: 4px 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  transition: color .25s ease;
   cursor: pointer;
 }
 
-.modern-title-section .nav-button:hover {
+.nav-button:hover {
   color: var(--mainColor);
 }
 
-.modern-title-section .back-button:hover {
-  transform: translateX(-3px);
+.nav-button:hover .nav-divider {
+  color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.65);
+}
+
+.nav-button mat-icon,
+.nav-button lucide-icon,
+.nav-button i {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dark-course-area .story-content {
@@ -222,6 +332,8 @@
 }
 
 .rp-page-sub {
+  margin-top: 2px;
+  font-weight: 600;
   color: rgba(15, 23, 42, 0.62);
 }
 
@@ -435,13 +547,39 @@
 }
 
 .rp-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border-radius: 999px;
-  padding: 10px 16px;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  box-shadow: 0 10px 22px rgba(0,0,0,.10);
+  padding: 6px 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--secondaryColor);
+  background: rgba(var(--mainColor-rgb, 67, 83, 255), 0.08) !important;
+  border: 1px solid rgba(var(--mainColor-rgb, 67, 83, 255), 0.16) !important;
+  box-shadow: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: color .25s ease, background .25s ease, border-color .25s ease;
 }
-.rp-upload mat-icon { margin-right: 6px; }
+.rp-upload:hover {
+  color: var(--mainColor);
+  background: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.16) !important;
+  border-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.28) !important;
+}
+
+:host ::ng-deep .rp-upload .mdc-button__label,
+:host ::ng-deep .rp-upload .mat-icon {
+  color: var(--secondaryColor);
+}
+
+:host ::ng-deep .rp-upload:hover .mdc-button__label,
+:host ::ng-deep .rp-upload:hover .mat-icon {
+  color: var(--mainColor);
+}
+
+.rp-upload mat-icon { margin-right: 0; }
 
 .rp-card-chips {
   margin-top: 8px;

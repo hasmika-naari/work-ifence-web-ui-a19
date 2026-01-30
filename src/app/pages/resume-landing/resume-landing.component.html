@@ -10,34 +10,35 @@
         <div class="content-max">
           <div class="story-content">
             <div class="rp-layout">
-              <div class="modern-title-section" style="padding-left: 0; padding-top: 0;">
-                <div class="title-wrapper" style="gap: 15px;">
-                  <div class="rp-page-title" style="margin-bottom: 8px;">
-                    <h2 style="margin: 0; font-weight: 800;">Resume Builder</h2>
+              <div class="course-list-header navigation-bar title-inline second-row">
+                <div class="inline-title">
+                  <span class="sub-title">Discover Resume Templates</span>
+                  <h2 class="page-title">Resume Builder</h2>
+                </div>
+                <div class="right-controls"></div>
+              </div>
+
+              <div class="modern-title-section nav-buttons-row">
+                <div class="navigation-buttons">
+                  <div class="nav-left">
+                    <div class="nav-left-buttons">
+                      <a class="nav-button home-button" [routerLink]="['/']">
+                        <lucide-icon name="home"></lucide-icon>
+                        Home
+                        <span class="nav-divider">|</span>
+                      </a>
+                      <a class="nav-button back-button" (click)="goBack($event)">
+                        <lucide-icon name="undo2"></lucide-icon>
+                        Back
+                      </a>
+                    </div>
                   </div>
-                  <div class="navigation-buttons" style="padding: 0 0 12px 0; gap: 0; display: flex; flex-wrap: wrap;">
-                    <a
-                      class="nav-button home-button"
-                      [routerLink]="['/']"
-                      style="margin-right: 8px; position: relative; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px);">
-                      <lucide-icon name="home"></lucide-icon>
-                      Home
-                      <span style="display: inline-block; margin-left: 8px; color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3); font-weight: 300;">|</span>
-                    </a>
-                    <a
-                      class="nav-button back-button"
-                      (click)="goBack($event)"
-                      style="margin-left: 8px; margin-right: 8px; position: relative; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px);">
-                      <lucide-icon name="undo2"></lucide-icon>
-                      Back
-                      <span style="display: inline-block; margin-left: 8px; color: rgba(var(--mainColor-rgb, 67, 83, 255), 0.3); font-weight: 300;">|</span>
-                    </a>
-                  </div>
-                  <div class="rp-page-sub" style="margin-top: 2px; font-weight: 600;">
-                    Choose a template to get started and personalize your resume in minutes.
+                  <div class="nav-second-row">
+                    <div class="nav-right"></div>
                   </div>
                 </div>
               </div>
+
 
               <section class="rp-hero" aria-label="Resume creation steps">
                 <h1 class="rp-hero-title">Start building your resume.</h1>
