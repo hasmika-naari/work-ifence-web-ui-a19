@@ -1,85 +1,121 @@
-<section class="page-full-section">
-
-  <app-header-wifence [back]="showBack"></app-header-wifence>
-
-  <div class=" justify-content-center align-items-center bg-light-primary"
-    [class.blank-layout-container]="!isMobile" [class.blank-layout-container-mobile]="isMobile">
-    <div
-      class="position-relative row w-100 h-100 bg-gredient justify-content-center"
-      >
-      <div class="col-lg-4 d-flex align-items-center" style="overflow: hidden;height:100vh;" >
-        <mat-card class="cardWithShadow boxed-auth fadeInUpSignUp"  >
-          <mat-card-content class="p-32">
-            <div class="text-center  pt-3 pb-2">
-              <a [routerLink]="['/user']">
-                <img
-                  src="assets/img/black-logo.png"
-                  class="align-middle m-2"
-                  alt="logo"
-                  />
+<section class="login-page-full-section activate-page">
+  <div class="content-wrapper">
+    <div class="container-fluid justify-content-center align-items-center bg-light-primary"
+      [class.blank-layout-container]="!isMobile"
+      [class.blank-layout-container-mobile]="isMobile">
+      <div class="position-relative row w-100 justify-content-center">
+        <div class="col-12 d-flex align-items-center">
+          <div class="login-main-container">
+            @if (!isMobile) {
+              <div class="login-info-panel" style="position: relative;">
+                <a class="nav-button home-button" [routerLink]="['/']" style="position: absolute; top: 18px; left: 18px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                  <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                  <span style="margin-left: 8px;">Home</span>
                 </a>
-              </div>
+                <a class="nav-button signup-button" [routerLink]="['/sign-in']" style="position: absolute; top: 18px; left: 110px; display: flex; align-items: center; font-size: clamp(12px, 3vw, 14px); color: var(--secondaryColor, #f05b45); font-weight: 600; text-decoration: none; z-index: 2; border-radius: 8px; padding: 6px 16px; transition: color 0.2s;">
+                  <lucide-icon name="log-in" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                  <span style="margin-left: 8px;">Sign In</span>
+                </a>
 
-              <div class="or-border mt-2 mb-3">Account Activation</div>
-              <form  [formGroup]="activationForm" (ngSubmit)="onActivationSubmit()">
-                <div class="row wrap">
-                  <div class="col-6 mt-3">
-                    <span class="p-float-label">
-                      <input id="userName" type="text" pInputText formControlName="userName">
-                      <label for="userName">User Name</label>
-                    </span>
-                  </div>
-                  <div class="col-6 mt-3">
-
-                    <span class="p-float-label">
-                      <input id="code" type="text" pInputText formControlName="code">
-                      <label for="code">Activation Code</label>
-                    </span>
-                    @if (activationForm.get('code')?.hasError('required') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)) {
-                      <small class="ng-dirty ng-invalid">
-                        Required.
-                      </small>
-                    }
-                    @if (activationForm.get('code')?.hasError('minlength') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)) {
-                      <small class="ng-dirty ng-invalid">
-                        min 6 digits
-                      </small>
-                    }
-                    @if (activationForm.get('code')?.hasError('maxlength') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)) {
-                      <small class="ng-dirty ng-invalid">
-                        max 12 digits
-                      </small>
-                    }
-                  </div>
-                  <div class="col-12 mt-1 mb-3">
-                    @if (!activationForm.get('code')?.value) {
-                      <p class="show-orange-red text-center">
-                        Please Check Your Email for Activation Code
-                      </p>
-                    }
-                  </div>
-                  <div class="col-12 mt-2">
-                    <button pButton type="submit" label="Submit Activation Code"  class="w-100 p-button-lg" [loading]="isLoading" ></button>
-                    <!-- <button  type="submit"  mat-flat-button color="primary" class="w-100 ">
-
-                  </button> -->
+                <div class="logo">
+                  <img src="assets/img/black-logo.png" alt="Work Ifence" >
+                </div>
+                <h1>Activate Your Work Ifence Account</h1>
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
+                <div class="features">
+                  <span><i class="material-icons">mail</i> Check your email for the activation code</span>
+                  <span><i class="material-icons">vpn_key</i> Enter the code to activate your account</span>
+                  <span><i class="material-icons">login</i> Sign in right after activation</span>
                 </div>
               </div>
-            </form>
-            <span class="d-block f-w-500 text-center m-t-24  mt-4 mb-3 show-accent"
-              >Already have an Account?
-              <a
-                [routerLink]="['/sign-in']"
-                class="text-decoration-none f-w-500 f-s-14  bold sign-in-lnk-btn"
-                >
-                Sign In</a
-                >
-              </span>
-            </mat-card-content>
-          </mat-card>
+            }
+
+            <div class="login-form-panel">
+              <div class="form-wrapper">
+                @if (isMobile) {
+                  <div class="mobile-header">
+                    <div style="display: flex; flex-direction: row; align-items: center;">
+                      <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
+                        <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                        <span style="margin-left: 8px;">Home</span>
+                      </a>
+                      <a class="nav-button signup-button" [routerLink]="['/sign-in']" style="margin-left: 6px; white-space: nowrap;">
+                        <lucide-icon name="log-in" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                        <span style="margin-left: 8px;">Sign In</span>
+                      </a>
+                      <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
+                    </div>
+                    <div class="mobile-header-separator"></div>
+                  </div>
+                }
+
+                @if (isMobile) {
+                  <div class="logo" style="margin: 12px 0 8px 0; text-align: left;">
+                    <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
+                  </div>
+                }
+
+                <div class="form-title">
+                  <span>Activate your</span><br>
+                  <span><b>Work&nbsp;Ifence</b> account</span>
+                </div>
+                <div class="or-divider">OR</div>
+
+                @if (activationErrorMessage) {
+                  <div style="color:#b91c1c;margin:6px 0 12px 0;text-align:center;font-weight:600;">
+                    {{ activationErrorMessage }}
+                  </div>
+                }
+
+                <form [formGroup]="activationForm" (ngSubmit)="onActivationSubmit()">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Username</mat-label>
+                    <mat-icon matPrefix>person</mat-icon>
+                    <input matInput formControlName="userName" placeholder="Username" readonly>
+                    @if (activationForm.get('userName')?.hasError('required')) {
+                      <mat-error>Username is required</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Activation Code</mat-label>
+                    <mat-icon matPrefix>vpn_key</mat-icon>
+                    <input matInput formControlName="code" placeholder="Activation Code">
+                    @if (activationForm.get('code')?.hasError('required') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)) {
+                      <mat-error>Activation code is required</mat-error>
+                    }
+                    @if (activationForm.get('code')?.hasError('minlength') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)) {
+                      <mat-error>Min 6 characters</mat-error>
+                    }
+                    @if (activationForm.get('code')?.hasError('maxlength') && (activationForm.get('code')?.dirty || activationForm.get('code')?.touched)) {
+                      <mat-error>Max 22 characters</mat-error>
+                    }
+                  </mat-form-field>
+
+                  @if (!activationForm.get('code')?.value) {
+                    <div class="activation-hint">
+                      Please check your email for the activation code
+                    </div>
+                  }
+
+                  <button class="login-btn enabled-button" type="submit" [disabled]="isLoading || activationForm.invalid">
+                    @if (!isLoading) {
+                      SUBMIT ACTIVATION CODE
+                    }
+                    @if (isLoading) {
+                      <mat-progress-bar mode="indeterminate" color="primary" style="height:4px;border-radius:4px;"></mat-progress-bar>
+                    }
+                  </button>
+                </form>
+
+                <div style="margin-top:24px;text-align:center;font-size:1rem;">
+                  Already have an account? <a routerLink="/sign-in" style="font-weight:600;">Sign in</a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <app-work-ifence-footer></app-work-ifence-footer>
-
-  </section>
+  </div>
+</section>

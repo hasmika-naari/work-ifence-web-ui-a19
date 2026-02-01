@@ -306,7 +306,7 @@
       <div class="row wrap streach-h-100 m-0 p-0" *ngIf="offEdit">
         <div align="end" class="col-12">
 
-          <button fxFlex mat-raised-button color="warn"
+          <button mat-raised-button color="warn"
             (click)="cancelChanges($event)">
             <span  class="show-white">Cancel</span>
             <mat-icon >
@@ -315,7 +315,7 @@
           </button>
 
           <button mat-raised-button color="primary" class="ml-4" (click)="saveAddressProfile($event)"
-            fxFlex    [disabled]="(actionInProgress$ | async) || addressForm.invalid">
+            [disabled]="(actionInProgress$ | async) || addressForm.invalid">
             <span class="show-white">Save</span>
             <mat-icon >
               save

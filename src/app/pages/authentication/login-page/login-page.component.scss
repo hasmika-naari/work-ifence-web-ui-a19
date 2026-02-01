@@ -90,7 +90,7 @@
 }
 
 .login-info-panel {
-  flex: 1;
+  flex: 0.75;
   background-color: transparent;
   background-image:
     radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.15), transparent 35%),
@@ -149,8 +149,25 @@
   color: #f77c5a;
 }
 
+.nav-button {
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  color: var(--mainColor, #4353ff) !important;
+}
+
+.nav-button:hover lucide-icon {
+  color: var(--mainColor, #4353ff) !important;
+}
+
+.nav-button:hover span {
+  color: var(--mainColor, #4353ff) !important;
+}
+
 .login-form-panel {
-  flex: 1;
+  flex: 1.25;
   // background: rgba(255,255,255,0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -162,6 +179,16 @@
   border-radius: 0 32px 32px 0;
   min-width: 340px;
   box-shadow: none;
+}
+.login-form-panel .form-wrapper {
+  width: 100%;
+  max-width: 336px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.login-form-panel .form-wrapper form {
+  width: 100%;
 }
 .login-form-panel .form-title {
   font-size: 1.5rem;
@@ -178,21 +205,125 @@
 }
 .login-form-panel .mat-form-field {
   width: 100%;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
-.login-form-panel .mat-form-field-appearance-outline .mat-form-field-outline {
-  border-radius: 12px;
-  background: rgba(255,255,255,0.22);
-  border: 1.5px solid #dbeafe !important;
-  box-shadow: 0 1px 4px rgba(66,133,244,0.03);
+
+/* Pill-style fields for consistency with Register page */
+:host ::ng-deep .login-form-panel .mdc-text-field,
+:host ::ng-deep .login-form-panel .mdc-text-field--outlined {
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
-.login-form-panel .mat-input-element {
-  background: rgba(255,255,255,0.08);
+
+:host ::ng-deep .login-form-panel .mdc-notched-outline {
+  border-radius: 999px !important;
+}
+
+:host ::ng-deep .login-form-panel .mdc-notched-outline__leading {
+  width: 48px !important;
+  border-radius: 999px 0 0 999px !important;
+  border-right: 0 !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  border-width: 1.5px !important;
+}
+
+:host ::ng-deep .login-form-panel .mdc-notched-outline__trailing {
+  border-radius: 0 999px 999px 0 !important;
+  border-left: 0 !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  border-width: 1.5px !important;
+}
+
+:host ::ng-deep .login-form-panel .mdc-notched-outline__notch {
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  border-width: 1.5px !important;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-icon-prefix,
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-icon-suffix {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-icon-prefix {
+  align-self: center;
+  width: 48px;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-icon-suffix {
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-infix {
+  min-height: 48px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+
+/* Keep floating label aligned with text (immediately after the icon) */
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-has-icon-prefix .mdc-floating-label {
+  transform: translateX(-2px) translateY(-50%) !important;
+  top: 50% !important;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-has-icon-prefix .mdc-floating-label--float-above {
+  transform: translateX(-2px) translateY(calc(-1.7em - 6px)) scale(0.75) !important;
+  top: 50% !important;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-suffix,
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-icon-suffix {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-icon-prefix .mat-icon,
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-icon-suffix .mat-icon {
+  margin: 0;
+}
+
+.login-form-panel .mat-mdc-icon-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 40px !important;
+  width: 40px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Adjust ripple center */
+:host ::ng-deep .login-form-panel .mat-mdc-icon-button.mat-mdc-button-base {
+  --mdc-icon-button-state-layer-size: 40px;
+  padding: 0 !important;
+}
+:host ::ng-deep .login-form-panel .mat-mdc-icon-button .mat-mdc-button-ripple {
+  border-radius: 50% !important;
+}
+
+.login-form-panel .mat-mdc-input-element {
+  background: transparent;
   font-size: 1rem;
   color: #2d3748;
   border: none;
-  border-radius: 8px;
-  padding-left: 4px;
+  border-radius: 999px;
+  padding-left: 0;
 }
 .login-form-panel .mat-form-field-label {
   color: #5a6e8c;
@@ -209,6 +340,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
 .login-form-panel .mat-form-field .mat-icon-button {
   display: flex;
@@ -219,24 +351,57 @@
   padding: 0;
   margin: 0;
 }
-}
 .login-form-panel .login-btn, .login-form-panel .p-button, .login-form-panel .enabled-button {
   width: 100%;
-  background: linear-gradient(90deg, var(--mainColor, #00e6c3) 0%, var(--secondaryColor, #b2f7ef) 100%);
-  color: #fff !important;
-  border: none;
-  border-radius: 8px;
+  border-radius: 9999px;
   font-size: 1.1rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   padding: 12px 0;
+  min-height: 48px;
   margin-top: 12px;
   margin-bottom: 8px;
-  transition: background 0.3s, box-shadow 0.3s;
+  transition: background 0.25s, box-shadow 0.25s, color 0.2s, border 0.2s;
+
+  /* Disabled look (default): subtle secondary tint, readable muted text */
+  background: rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.08) !important;
+  color: rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.62) !important;
+  border: 1.5px solid rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.22) !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
 }
-.login-form-panel .login-btn:hover, .login-form-panel .p-button:hover, .login-form-panel .enabled-button:hover {
-  background: linear-gradient(90deg, var(--secondaryColor, #b2f7ef) 0%, var(--mainColor, #00e6c3) 100%);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+
+/* Hover only when enabled */
+.login-form-panel .login-btn:enabled:hover, .login-form-panel .p-button:enabled:hover, .login-form-panel .enabled-button:enabled:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--secondaryColor-rgb, 58, 103, 115), 1) 0%,
+    rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.86) 100%
+  ) !important;
+  box-shadow:
+    0 14px 34px rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.28),
+    0 3px 14px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+/* Enabled (active) */
+.login-form-panel .login-btn:enabled, .login-form-panel .p-button:enabled, .login-form-panel .enabled-button:enabled {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.98) 0%,
+    rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.78) 100%
+  ) !important;
+  color: #fff !important;
+  border: 1.5px solid rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.45) !important;
+  box-shadow:
+    0 10px 24px rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.24),
+    0 2px 10px rgba(0, 0, 0, 0.08) !important;
+  cursor: pointer !important;
+}
+
+/* Disabled hover state — keep subtle */
+.login-form-panel .login-btn:disabled:hover, .login-form-panel .p-button:disabled:hover, .login-form-panel .enabled-button:disabled:hover {
+  background: rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.08) !important;
+  box-shadow: none !important;
 }
 .login-form-panel .mat-checkbox .mdc-checkbox__background {
   background: var(--mainColor, #00e6c3);
@@ -267,12 +432,13 @@
   background: rgba(255,255,255,0.18);
   color: #4285F4;
   border: 1.5px solid rgba(255,255,255,0.45);
-  border-radius: 12px;
+  border-radius: 9999px;
   font-size: 1.05rem;
   font-weight: 600;
   box-shadow: 0 1.5px 6px 0 rgba(31, 38, 135, 0.04);
   padding: 12px 0;
   margin-bottom: 12px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;

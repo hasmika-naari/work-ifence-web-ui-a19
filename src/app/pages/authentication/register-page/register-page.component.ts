@@ -159,7 +159,7 @@ export class RegisterPageComponent {
         password: new FormControl('', [
           Validators.minLength(8), 
           Validators.maxLength(30),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/)]),
         confirmPassword: new FormControl('', [
           Validators.required,
         ]),
@@ -175,6 +175,7 @@ export class RegisterPageComponent {
     public themeService: ThemeCustomizerService = inject(ThemeCustomizerService);
     private platformId: object =  inject(PLATFORM_ID);
     private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
+    signUpErrorMessage: any;
 
     constructor(private router: Router) {
     this.browser = isPlatformBrowser(this.platformId);
@@ -240,7 +241,7 @@ export class RegisterPageComponent {
               [
                 Validators.required,
                 Validators.minLength(8), 
-                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/),
                 Validators.maxLength(40),
               ],
             ],
@@ -284,7 +285,7 @@ export class RegisterPageComponent {
               [
                 Validators.required,
                 Validators.minLength(8), 
-                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+                Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/),
                 Validators.maxLength(40),
               ],
             ],

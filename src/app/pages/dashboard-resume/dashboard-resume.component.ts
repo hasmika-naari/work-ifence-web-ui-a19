@@ -49,14 +49,23 @@ interface Option {
 @Component({
     selector: 'app-resume-dashboard',
     standalone: true,
-    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule, ImportExistingResumeComponent],
+  imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule, ImportExistingResumeComponent],
     templateUrl: './dashboard-resume.component.html',
     styleUrl : './dashboard-resume.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  isActionInProgress: boolean = true;
+  private _isActionInProgress = true;
+
+  get isActionInProgress(): boolean {
+    return this._isActionInProgress;
+  }
+
+  set isActionInProgress(value: boolean) {
+    this._isActionInProgress = value;
+    this.syncFormControlsDisabledState();
+  }
 
   items!: MenuItem[];
 
@@ -72,13 +81,32 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
 
   showResumeGeneratorHeader =  false;
 
-  searchQuery = new FormControl();
+  searchQuery = new FormControl('', { nonNullable: true });
 
-  filteredRoleCategoryValue = new FormControl()
-  filteredResumeCategoryValue = new FormControl()
+  filteredRoleCategoryValue = new FormControl<Option | null>(null);
+  filteredResumeCategoryValue = new FormControl<Option | null>(null);
   roleCategories : Array<Option> = []
   resumeCategories : Array<Option> = []
   tempResumes : ResumeListDataItem[] = []
+
+  private syncFormControlsDisabledState(): void {
+    if (!this.searchQuery || !this.filteredRoleCategoryValue || !this.filteredResumeCategoryValue) {
+      return;
+    }
+
+    const controls = [this.searchQuery, this.filteredRoleCategoryValue, this.filteredResumeCategoryValue];
+    for (const control of controls) {
+      if (this._isActionInProgress) {
+        if (!control.disabled) {
+          control.disable({ emitEvent: false });
+        }
+      } else {
+        if (control.disabled) {
+          control.enable({ emitEvent: false });
+        }
+      }
+    }
+  }
 
   template1_sections  : Array<SectionDesc> = [
      {
@@ -380,24 +408,25 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
       this.templateSelection.applySelectionIfPresent();
       // this.sidenavService.toggleCollapsed();
 
-      this.filteredResumeCategoryValue.setValue("");
-      this.filteredRoleCategoryValue.setValue("");
-      this.searchQuery.setValue("");
+      this.filteredResumeCategoryValue.setValue(null);
+      this.filteredRoleCategoryValue.setValue(null);
+      this.searchQuery.setValue('');
       this.userStore.setFilteredResumes(this.resumeList());
       
-      this.searchQuery.valueChanges.subscribe((e)=>{
-          if(e.length == 0){
-            this.isSearchOff = true
-          }
-          else{
-            this.isSearchOff = false
-          }
-          this.filteredResumes = this.resumeList().filter((resume) =>
-            resume.title.toLowerCase().includes(this.searchQuery.value.toLowerCase())
-          );
-          this.userStore.setFilteredResumes(this.filteredResumes);
-        
-      })
+      this.searchQuery.valueChanges.subscribe((query) => {
+        const normalizedQuery = query.trim().toLowerCase();
+
+        if (normalizedQuery.length === 0) {
+          this.isSearchOff = true;
+        } else {
+          this.isSearchOff = false;
+        }
+
+        this.filteredResumes = this.resumeList().filter((resume) =>
+          resume.title.toLowerCase().includes(normalizedQuery)
+        );
+        this.userStore.setFilteredResumes(this.filteredResumes);
+      });
 
       this.items = [
           { label: 'Add New', icon: 'pi pi-fw pi-plus' },
@@ -630,8 +659,8 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   unselectFilter(){
     this.isFilterOff = true
     this.searchQuery.enable()
-    this.filteredResumeCategoryValue.setValue("");
-    this.filteredRoleCategoryValue.setValue("")
+    this.filteredResumeCategoryValue.setValue(null);
+    this.filteredRoleCategoryValue.setValue(null)
     this.userStore.setFilteredResumes(this.resumeList());
   }
 

@@ -15,6 +15,7 @@ import { Account, BioProfile, WifRole } from './profile.model';
 import { UserResume } from './store/user-store';
 import { JobFeedItem } from './ifence.model';
 import { WINDOW } from './window.token';
+import { AccessFacadeService } from '../facades/access-facade.service';
 
 @Injectable({providedIn: 'root'})
 export class AppUtilService {
@@ -37,6 +38,7 @@ export class AppUtilService {
   private constantService: AppConstantsService  = inject(AppConstantsService);
   private userStore: UserStoreService = inject(UserStoreService);
   private http: HttpClient = inject(HttpClient);
+  private readonly accessFacade = inject(AccessFacadeService);
   
     constructor( 
       @Inject(DOCUMENT) private document: Document,  
@@ -123,6 +125,8 @@ export class AppUtilService {
                   {
                     this.localStorageService.setItem('authToken', loginResponse.id_token);
                     this.localStorageService.setItem('authenticated', true);
+                    // Ensure entitlements/features update immediately after login
+                    this.accessFacade.reload();
                     
                     this.userStore.updateToken(loginResponse.id_token);
   

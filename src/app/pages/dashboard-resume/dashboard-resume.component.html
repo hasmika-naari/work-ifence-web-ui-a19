@@ -1,7 +1,7 @@
 <div class="job-tracker" style="height: 100vh; overflow: hidden;">
   <div class="resume-container">
     <h1 class="title" style="padding-left: 20px;">Resume Tracker</h1>
-    <div class="toolbar" style="position: absloute; top: 0; background: transparent; z-index: 100;">
+    <div class="toolbar" style="position: absolute; top: 0; background: transparent; z-index: 100;">
       <!-- Header: Applications Tracker -->
       <!-- <mat-progress-bar *ngIf="isActionInProgress" style="margin-bottom: 16px;" mode="indeterminate"></mat-progress-bar> -->
 
@@ -25,7 +25,7 @@
             [checkmark]="true"
             optionLabel="name"
             placeholder="Resume Category"
-            [disabled]="!isFilterOff || !isSearchOff || isActionInProgress"  />
+            />
           </div>
           <div class="flex justify-content-center">
             <!-- <mat-form-field appearance="outline" class="custom-select-dp">
@@ -43,7 +43,7 @@
             [checkmark]="true"
             optionLabel="name"
             placeholder="Role Category"
-            [disabled]="!isFilterOff || !isSearchOff || isActionInProgress" />
+            />
           </div>
           <!-- <div class="flex justify-content-center">
             @if(isFilterOff){
@@ -79,7 +79,6 @@
             type="text"
             class="search-input"
             style="padding-left: 36px; width: 100%;"
-            [disabled]="isActionInProgress"
             placeholder="Search resume by title"
             [formControl]="searchQuery"
             />

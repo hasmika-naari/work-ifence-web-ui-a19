@@ -2,7 +2,6 @@ import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@an
 import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, PLATFORM_ID, Signal, SimpleChanges, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import {MatIconModule} from '@angular/material/icon';
@@ -70,7 +69,6 @@ import { RoundsComponent } from './rounds/rounds.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import moment from 'moment';
 import { ConfirmDialogComponent } from '../../resume-form3/confirm-dialog/confirm-dialog.component';
-import { getDocument, PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { PdfViewerComponent } from 'src/app/shared/pdf-viewer/pdf-viewer.component';
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
 import { ResumeListDialogComponent } from './resume-list-dialog/resume-list-dialog.component';
@@ -90,16 +88,61 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent, MatDialogModule, MatProgressBarModule,
-    CarouselModule,FlexLayoutModule,ReactiveFormsModule, FormsModule, HeaderWorkIfenceComponent,  
-    MatStepperModule, MatFormFieldModule,InputTextModule,TableModule, MenuModule,Resume1TemplateComponent,
-    MatInputModule,ButtonModule,PopoverModule,ResumeContactComponent,ContextMenuComponent,
-    MatButtonModule,AccordionModule,TextareaModule,CertificationComponent,CourseWorkComponent,
-    EducationComponent,ProjectComponent,SkillsComponent,SummaryComponent,ProgressBarModule, MatTooltipModule,
-    MatIconModule,MatExpansionModule, ExperianceComponent, ResumeTitleComponent, ResumeTemplateListComponent, ResumeTemplate2Component,ResumeTemplate3Component
-  , ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, DiscardDialogComponent, AchievementsComponent,
-  JobDescriptionComponent, ApplicationsTabComponent, VendorComponent, ClientComponent, RoundsComponent, FeedbackComponent, PdfViewerComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgOptimizedImage,
+    FooterComponent,
+    MatDialogModule,
+    MatProgressBarModule,
+    CarouselModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HeaderWorkIfenceComponent,
+    MatStepperModule,
+    MatFormFieldModule,
+    InputTextModule,
+    TableModule,
+    MenuModule,
+    Resume1TemplateComponent,
+    MatInputModule,
+    ButtonModule,
+    PopoverModule,
+    ResumeContactComponent,
+    ContextMenuComponent,
+    MatButtonModule,
+    AccordionModule,
+    TextareaModule,
+    CertificationComponent,
+    CourseWorkComponent,
+    EducationComponent,
+    ProjectComponent,
+    SkillsComponent,
+    SummaryComponent,
+    ProgressBarModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatExpansionModule,
+    ExperianceComponent,
+    ResumeTitleComponent,
+    ResumeTemplateListComponent,
+    ResumeTemplate2Component,
+    ResumeTemplate3Component,
+    ResumeTemplate4Component,
+    ResumeTemplate5Component,
+    ResumeTemplate6Component,
+    ResumeTemplate7Component,
+    ResumeTemplate8Component,
+    DiscardDialogComponent,
+    AchievementsComponent,
+    JobDescriptionComponent,
+    ApplicationsTabComponent,
+    VendorComponent,
+    ClientComponent,
+    RoundsComponent,
+    FeedbackComponent,
+    PdfViewerComponent,
+  ],
   templateUrl: './application-form.component.html',
   styleUrls: ['./application-form.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line

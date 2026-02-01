@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   Inject,
+  HostListener,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
@@ -72,6 +73,27 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
   readonly selectedCategory = signal<string>('All');
   readonly selectedStyle = signal<string>('All');
   readonly searchQuery = signal<string>('');
+
+  readonly filterSheetOpen = signal<boolean>(false);
+
+  readonly activeFilterCount = computed(() => {
+    const categoryActive = this.selectedCategory() !== 'All';
+    const styleActive = this.selectedStyle() !== 'All';
+    const queryActive = this.searchQuery().trim().length > 0;
+    return Number(categoryActive) + Number(styleActive) + Number(queryActive);
+  });
+
+  readonly filterSummary = computed(() => {
+    const parts: string[] = [];
+    const category = this.selectedCategory();
+    const style = this.selectedStyle();
+    const query = this.searchQuery().trim();
+
+    if (category !== 'All') parts.push(`Category: ${category}`);
+    if (style !== 'All') parts.push(`Style: ${style}`);
+    if (query) parts.push(`Search: ${query}`);
+    return parts.length ? parts.join(' • ') : 'All templates';
+  });
 
   readonly activeTemplates = computed(() =>
     this.templates().filter(t => (t.status ?? '').toUpperCase() === 'ACTIVE')
@@ -149,6 +171,13 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
     this.destroy$.complete();
   }
 
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape' && this.filterSheetOpen()) {
+      this.closeFilterSheet();
+    }
+  }
+
   onPageScroll(event: Event): void {
     const el = event.target as HTMLElement | null;
     const scrollTop = el?.scrollTop ?? 0;
@@ -175,6 +204,20 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
   onSearchChange(event: Event): void {
     const value = (event.target as HTMLInputElement)?.value ?? '';
     this.searchQuery.set(value);
+  }
+
+  openFilterSheet(): void {
+    this.filterSheetOpen.set(true);
+  }
+
+  closeFilterSheet(): void {
+    this.filterSheetOpen.set(false);
+  }
+
+  clearFilters(): void {
+    this.selectedCategory.set('All');
+    this.selectedStyle.set('All');
+    this.searchQuery.set('');
   }
 
   isLocked(item: ResumeTemplateUi): boolean {

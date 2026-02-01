@@ -3,10 +3,10 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Signal, SimpleChanges, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import { FooterComponent } from 'src/app/pages/home-page-one/footer/footer.component';
-import { getDocument, PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist/legacy/build/pdf.mjs';
+type PdfJsDocumentProxy = any;
+type PdfJsPageProxy = any;
 
 
 export interface DialogData {
@@ -22,9 +22,13 @@ export interface DialogData {
     },
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
-     NgOptimizedImage,FooterComponent,
-    CarouselModule,FlexLayoutModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgOptimizedImage,
+    FooterComponent,
+    CarouselModule,
+  ],
   templateUrl: './pdf-viewer.component.html',
   styleUrls: ['./pdf-viewer.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -32,7 +36,7 @@ export interface DialogData {
 export class PdfViewerComponent implements OnInit {
     @Input() pdfUrl: any = ''; // URL of the PDF file from S3
     @Input() isOnlyFirstPage : boolean = false
-    private pdf: PDFDocumentProxy | null = null;
+  private pdf: PdfJsDocumentProxy | null = null;
   
     ngOnInit(): void {
       if (this.pdfUrl && !this.isOnlyFirstPage) {
@@ -47,7 +51,8 @@ export class PdfViewerComponent implements OnInit {
   
     async loadPDF(): Promise<void> {
       try {
-        this.pdf = await getDocument(this.pdfUrl).promise;
+        const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+        this.pdf = await pdfjs.getDocument(this.pdfUrl).promise;
   
         const totalPages = this.pdf.numPages;
         for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
@@ -61,7 +66,7 @@ export class PdfViewerComponent implements OnInit {
     async renderPage(pageNumber: number): Promise<void> {
       if (!this.pdf) return;
   
-      const page: PDFPageProxy = await this.pdf.getPage(pageNumber);
+      const page: PdfJsPageProxy = await this.pdf.getPage(pageNumber);
       const viewport = page.getViewport({ scale: 1.5 });
   
       // Create a new canvas for each page
@@ -75,32 +80,44 @@ export class PdfViewerComponent implements OnInit {
       await page.render({ canvasContext: context, viewport }).promise;
   
       // Append the canvas to the PDF container
-      const container = document.getElementById('pdf-container') as HTMLElement;
+      const container = document.getElementById('pdf-container') as HTMLElement | null;
+      if (!container) {
+        console.error('PDF container element #pdf-container not found.');
+        return;
+      }
       container.appendChild(canvas);
     }
 
     async loadFirstPage(): Promise<void> {
-        try {
-          const pdf: PDFDocumentProxy = await getDocument(this.pdfUrl).promise;
-          const firstPage: PDFPageProxy = await pdf.getPage(1);
-          this.renderFirstPage(firstPage);
-        } catch (error) {
-          console.error('Error loading PDF:', error);
-        }
+      try {
+        const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+        const pdf: PdfJsDocumentProxy = await pdfjs.getDocument(this.pdfUrl).promise;
+        const firstPage: PdfJsPageProxy = await pdf.getPage(1);
+        await this.renderFirstPage(firstPage);
+      } catch (error) {
+        console.error('Error loading PDF:', error);
       }
-    
-      async renderFirstPage(page: PDFPageProxy): Promise<void> {
-        const viewport = page.getViewport({ scale: 1.5 });
-    
-        // Create a canvas for the first page
-        const canvas = document.getElementById('pdf-canvas') as HTMLCanvasElement;
-        const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-    
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-    
-        // Render the page onto the canvas
-        await page.render({ canvasContext: context, viewport }).promise;
+    }
+
+    async renderFirstPage(page: PdfJsPageProxy): Promise<void> {
+      const viewport = page.getViewport({ scale: 1.5 });
+
+      const canvas = document.getElementById('pdf-canvas') as HTMLCanvasElement | null;
+      if (!canvas) {
+        console.error('PDF canvas element #pdf-canvas not found.');
+        return;
       }
+
+      const context = canvas.getContext('2d');
+      if (!context) {
+        console.error('2D context not available for #pdf-canvas.');
+        return;
+      }
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({ canvasContext: context as CanvasRenderingContext2D, viewport }).promise;
+    }
 
 }

@@ -505,6 +505,157 @@
   background: transparent;
 }
 
+/* Mobile-only floating actions */
+.rp-fabs {
+  display: none;
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right, 0px) + 16px);
+  bottom: max(16px, env(safe-area-inset-bottom, 0px) + 16px);
+  z-index: 900;
+  gap: 12px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.rp-fab {
+  position: relative;
+}
+
+.rp-fab-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 900;
+  color: #fff;
+  background: #ef4444;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 18px rgba(0,0,0,.18);
+}
+
+/* Bottom sheet overlay (mobile only) */
+.rp-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  /* No dark full-screen overlay; keep a transparent click-catcher */
+  background: transparent;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 220ms ease, visibility 0ms linear 220ms;
+}
+
+.rp-sheet-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 220ms ease;
+}
+
+.rp-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1001;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.98) 45%,
+    rgba(255, 255, 255, 0.98) 100%
+  );
+  backdrop-filter: blur(12px) saturate(165%);
+  -webkit-backdrop-filter: blur(12px) saturate(165%);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  box-shadow:
+    0 -18px 45px rgba(0, 0, 0, 0.18),
+    0 -2px 0 rgba(255, 255, 255, 0.35) inset;
+  padding: 12px 14px calc(14px + env(safe-area-inset-bottom, 0px));
+  max-height: min(78vh, 640px);
+  overflow: auto;
+
+  /* Smooth slide in/out */
+  transform: translate3d(0, 110%, 0);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 220ms ease,
+    visibility 0ms linear 260ms;
+}
+
+.rp-sheet.is-open {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    transform 320ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 220ms ease;
+}
+
+.rp-sheet-grabber {
+  width: 44px;
+  height: 5px;
+  border-radius: 999px;
+  margin: 2px auto 10px;
+  background: rgba(15, 23, 42, 0.18);
+}
+
+.rp-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.10);
+}
+
+.rp-sheet-title {
+  font-weight: 900;
+  font-size: 16px;
+  color: rgba(15, 23, 42, 0.9);
+}
+
+.rp-sheet-body {
+  display: grid;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.rp-sheet-body .rp-filter select,
+.rp-sheet-body .rp-filter input {
+  width: 100%;
+  min-width: 0;
+}
+
+.rp-sheet-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(15, 23, 42, 0.10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rp-sheet,
+  .rp-sheet-backdrop {
+    transition: none !important;
+  }
+}
+
 .rp-filter {
   display: grid;
   gap: 6px;
@@ -747,6 +898,50 @@
   font-size: 12px;
 }
 
+.rp-caption-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rp-mobile-cta {
+  display: none;
+  border-radius: 999px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  padding: 6px 10px;
+  line-height: 1;
+}
+
+/* Make the mobile CTA look like a themed glass pill (override Material defaults) */
+:host ::ng-deep .rp-mobile-cta.mat-mdc-outlined-button {
+  border-radius: 999px !important;
+  border: 1px solid rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.28) !important;
+  background: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.10) !important;
+  backdrop-filter: blur(10px) saturate(165%);
+  -webkit-backdrop-filter: blur(10px) saturate(165%);
+
+  /* Force Material (MDC) tokens so color always matches */
+  --mdc-outlined-button-outline-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.28);
+  --mdc-outlined-button-label-text-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.95);
+  --mdc-outlined-button-container-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.10);
+
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .rp-mobile-cta.mat-mdc-outlined-button .mdc-button__label {
+  color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.95) !important;
+}
+
+:host ::ng-deep .rp-mobile-cta.mat-mdc-outlined-button:hover {
+  background: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.14) !important;
+  border-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.34) !important;
+  --mdc-outlined-button-outline-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.34);
+  --mdc-outlined-button-container-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.14);
+  box-shadow: none !important;
+}
+
 .dark-course-area .rp-page-title h2 {
   color: var(--secondaryColor);
 }
@@ -812,13 +1007,92 @@
 @media (max-width: 900px) {
   .rp-templates { grid-template-columns: 1fr; }
   .rp-preview { aspect-ratio: 10 / 13; }
-  .rp-sticky { top: calc(var(--wf-header-height, 61px) + 10px); }
+  /* Mobile: do NOT keep the Resume Templates header sticky */
+  .rp-sticky {
+    position: static;
+    top: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    overflow: visible;
+  }
+  .rp-sticky::before,
+  .rp-sticky::after { display: none; }
+
   .rp-flow { grid-template-columns: 1fr; }
   .rp-flow::before { display: none; }
-  .rp-upload { width: 100%; justify-content: center; }
+  /* Mobile: move Upload + Filters into FABs */
+  .rp-upload { display: none; }
+  .rp-filters { display: none !important; }
+  .rp-fabs { display: flex; }
+
+  /* Mobile: make each template's text clearly belong to its preview */
+  .rp-templates { gap: 18px; }
+  .rp-template {
+    position: relative;
+    padding-bottom: 18px;
+    margin-bottom: 6px;
+  }
+  .rp-template::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(var(--mainColor-rgb, 67, 83, 255), 0) 0%,
+      rgba(var(--mainColor-rgb, 67, 83, 255), 0.26) 18%,
+      rgba(var(--mainColor-rgb, 67, 83, 255), 0.38) 50%,
+      rgba(var(--mainColor-rgb, 67, 83, 255), 0.26) 82%,
+      rgba(var(--mainColor-rgb, 67, 83, 255), 0) 100%
+    );
+    opacity: 0.9;
+  }
+
+  /* Give content space so FABs don't cover cards */
+  .rp-section { padding-bottom: 96px; }
+
+  /* Mobile has no hover: remove preview overlay CTA entirely */
+  .rp-hover { display: none !important; }
 }
 
 @media (max-width: 600px) {
   .course-area .content-max { padding: 16px; }
   .story-content { padding: 16px; }
+
+  .rp-mobile-cta { display: inline-flex; }
+}
+
+.dark-course-area .rp-sheet {
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 18, 18, 0.86) 0%,
+    rgba(18, 18, 18, 0.94) 45%,
+    rgba(18, 18, 18, 0.94) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dark-course-area .rp-sheet-title {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.dark-course-area :host ::ng-deep .rp-mobile-cta.mat-mdc-outlined-button {
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+.dark-course-area :host ::ng-deep .rp-mobile-cta.mat-mdc-outlined-button .mdc-button__label {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.dark-course-area .rp-sheet-header,
+.dark-course-area .rp-sheet-footer {
+  border-color: rgba(255, 255, 255, 0.12);
 }

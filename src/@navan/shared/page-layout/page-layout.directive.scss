@@ -35,7 +35,7 @@
   padding-left: $padding;
   padding-right: $padding;
 
-  @include layout-bp(lt-md) {
+  @media (max-width: 959.98px) {
     padding-left: $padding-md;
     padding-right: $padding-md;
   }

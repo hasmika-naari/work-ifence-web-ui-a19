@@ -1,0 +1,94 @@
+@use '../login-page/login-page.component.scss' as *;
+
+/* Activate-only: make disabled Username field clearly look disabled */
+:host ::ng-deep .login-form-panel .mat-mdc-form-field.mat-mdc-form-field-disabled {
+	opacity: 0.88;
+}
+
+:host ::ng-deep .login-form-panel .mdc-text-field.mdc-text-field--disabled {
+	background: rgba(0, 0, 0, 0.035) !important;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-disabled .mdc-notched-outline__leading,
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-disabled .mdc-notched-outline__notch,
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-disabled .mdc-notched-outline__trailing {
+	border-color: rgba(107, 114, 128, 0.28) !important;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-disabled .mat-mdc-floating-label {
+	color: rgba(107, 114, 128, 0.8) !important;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-disabled .mat-mdc-input-element {
+	color: rgba(107, 114, 128, 0.95) !important;
+	-webkit-text-fill-color: rgba(107, 114, 128, 0.95) !important;
+	cursor: not-allowed;
+}
+
+:host ::ng-deep .login-form-panel .mat-mdc-form-field-disabled .mat-mdc-form-field-icon-prefix .mat-icon {
+	color: rgba(107, 114, 128, 0.75) !important;
+}
+
+/* Keep the activation hint in a single line (desktop/tablet) */
+.activation-hint {
+	margin: -6px 0 12px 0;
+	color: #b45309;
+	text-align: center;
+	font-weight: 600;
+	font-size: clamp(0.86rem, 2.4vw, 0.95rem);
+	line-height: 1.2;
+	white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+	.activation-hint {
+		white-space: normal;
+	}
+}
+
+/* Activate-only tweaks (avoid impacting Sign In page) */
+.activate-page .login-info-panel .logo {
+	margin-top: 34px;
+}
+
+.activate-page .login-info-panel .logo img {
+	height: 54px;
+	max-width: 210px;
+}
+
+/* Activate submit button: match Sign Up button styling */
+.activate-page .login-form-panel .login-btn {
+	border-radius: 9999px;
+	min-height: 48px;
+	background: rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.08) !important;
+	color: rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.62) !important;
+	border: 1.5px solid rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.22) !important;
+	box-shadow: none !important;
+	cursor: not-allowed !important;
+}
+
+.activate-page .login-form-panel .login-btn:enabled {
+	background: linear-gradient(
+		135deg,
+		rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.98) 0%,
+		rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.78) 100%
+	) !important;
+	color: #fff !important;
+	border: 1.5px solid rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.45) !important;
+	box-shadow:
+		0 10px 24px rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.24),
+		0 2px 10px rgba(0, 0, 0, 0.08) !important;
+	cursor: pointer !important;
+}
+
+.activate-page .login-form-panel .login-btn:enabled:hover {
+	background: linear-gradient(
+		135deg,
+		rgba(var(--secondaryColor-rgb, 58, 103, 115), 1) 0%,
+		rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.86) 100%
+	) !important;
+	box-shadow:
+		0 14px 34px rgba(var(--secondaryColor-rgb, 58, 103, 115), 0.28),
+		0 3px 14px rgba(0, 0, 0, 0.1) !important;
+	transform: translateY(-1px);
+}

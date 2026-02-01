@@ -1,14 +1,10 @@
 <div class="fury-list-table">
   @if (!hideHeader) {
-    <div class="fury-list-header"
-      fxLayout="row"
-      fxLayoutAlign="start center"
-      fxLayoutGap="8px"
-      fxLayoutGap.gt-xs="24px">
+    <div class="fury-list-header d-flex align-items-center gap-2 gap-sm-4">
       <div class="fury-list-name">{{ name }}</div>
-      <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
+      <div class="d-flex align-items-center flex-grow-1">
         <mat-icon class="fury-filter-input-icon">search</mat-icon>
-        <input fxFlex class="fury-filter-input" #filter placeholder="Search&hellip;">
+        <input class="fury-filter-input flex-grow-1 w-100" #filter placeholder="Search&hellip;">
       </div>
       <button class="fury-column-filter" type="button" mat-icon-button [matMenuTriggerFor]="columnFilter">
         <mat-icon>filter_list</mat-icon>

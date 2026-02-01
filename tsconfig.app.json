@@ -16,5 +16,12 @@
     "include": [
         "src/**/*.d.ts",
         "src/types/**/*.d.ts"
-    ]
+    ],
+    "angularCompilerOptions": {
+        "extendedDiagnostics": {
+            "checks": {
+                "unusedStandaloneImports": "suppress"
+            }
+        }
+    }
 }

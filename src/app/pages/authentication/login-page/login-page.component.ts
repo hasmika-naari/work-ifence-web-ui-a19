@@ -34,6 +34,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { IconsModule } from 'src/app/shared/icons.module';
+import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 
 @Component({
   selector: 'app-login',
@@ -78,6 +79,7 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
   private snackBarService: YeaSnackBarService  = inject(YeaSnackBarService);
   private router: Router = inject(Router);
   private route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly accessFacade = inject(AccessFacadeService);
   private localStorageService: LocalStorageService  = inject(LocalStorageService);
   private constantService: AppConstantsService  = inject(AppConstantsService);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -280,6 +282,8 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                   this.userStore.updateToken(loginResponse.id_token);
                   if(loginResponse.id_token){
                     this.localStorageService.setItem('authenticated', true);
+                    // Ensure entitlements/features update immediately after login
+                    this.accessFacade.reload();
                   }
                   this.authService.getAccountProfile().subscribe(
                     (account:Account) =>
@@ -352,17 +356,45 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                 },(error: any) => {
                   this.loginError = true;
                   this.isLoading = false;
+                  this.handleLoginHttpError(error);
                 });
           }
         }, (error: any) => {
-          // this.loginError = true;
           this.isLoading = false;
+          this.loginForm.enable();
+          this.handleLoginHttpError(error);
         });
   }
 
-  hasRoleAdmin(authorities: string[]): boolean {
-    return authorities.includes("ROLE_ADMIN");
-}
+  private handleLoginHttpError(error: any): void {
+    // Always allow retry.
+    if (this.loginForm.disabled) {
+      this.loginForm.enable();
+    }
+
+    const status = error?.status;
+    const message =
+      error?.error?.detail ||
+      error?.error?.message ||
+      error?.message ||
+      '';
+
+    const isBadCredentials =
+      status === 401 ||
+      (typeof message === 'string' && message.toLowerCase().includes('bad credentials'));
+
+    if (isBadCredentials) {
+      this.snackBarService.openSnackBar('Invalid username or password', this.constantService.snackbarType.ERROR, 2500);
+      return;
+    }
+
+    // Backend sometimes returns 500 even for auth failures; show a generic but actionable message.
+    this.snackBarService.openSnackBar('Login failed. Please try again.', this.constantService.snackbarType.ERROR, 2500);
+  }
+
+  hasRoleAdmin(authorities?: string[] | null): boolean {
+    return (authorities ?? []).includes('ROLE_ADMIN');
+  }
 
   onReset(): void {
     this.submitted = false;

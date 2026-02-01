@@ -23,130 +23,132 @@
                 <div class="logo">
                   <img src="assets/img/black-logo.png" alt="Work Ifence" >
                 </div>
-                <h1>Unlock Your Career Potential <span style="font-weight:400; white-space:nowrap;">with Work Ifence</span></h1>
+                <h1>Unlock Your Career Potential with Work Ifence</h1>
                 <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
                 <div class="features">
-                  <span><i class="material-icons">description</i> Build resumes tailored to job requirements</span>
-                  <span><i class="material-icons">work</i> Discover jobs that match your profile</span>
-                  <span><i class="material-icons">school</i> Find resources to grow your skills</span>
-                  <span><i class="material-icons">assignment</i> Manage all your job applications in one place</span>
-                  <span><i class="material-icons">group</i> Connect closely with recruiters</span>
+                  <span><i class="material-icons">description</i> Build tailored resumes</span>
+                  <span><i class="material-icons">work</i> Discover matching jobs</span>
+                  <span><i class="material-icons">school</i> Grow your skills</span>
+                  <span><i class="material-icons">assignment</i> Track applications</span>
+                  <span><i class="material-icons">group</i> Connect with recruiters</span>
                 </div>
               </div>
             }
             <!-- Login Form Panel (Right) -->
             <div class="login-form-panel">
-              @if (isMobile) {
-                <div class="mobile-header" >
-                  <div style="display: flex; flex-direction: row; align-items: center;">
-                    <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
-                      <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                      <span style="margin-left: 8px;">Home</span>
-                    </a>
-                    <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="margin-left: 6px; white-space: nowrap;">
-                      <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
-                      <span style="margin-left: 8px;">Sign Up</span>
-                    </a>
-                    <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
+              <div class="form-wrapper">
+                @if (isMobile) {
+                  <div class="mobile-header" >
+                    <div style="display: flex; flex-direction: row; align-items: center;">
+                      <a class="nav-button home-button" [routerLink]="['/']" style="margin-right: 0;">
+                        <lucide-icon name="home" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                        <span style="margin-left: 8px;">Home</span>
+                      </a>
+                      <a class="nav-button signup-button" [routerLink]="['/sign-up']" style="margin-left: 6px; white-space: nowrap;">
+                        <lucide-icon name="user-plus" style="color: var(--secondaryColor, #f05b45);"></lucide-icon>
+                        <span style="margin-left: 8px;">Sign Up</span>
+                      </a>
+                      <div class="mobile-header-separator" style="height: 28px; width: 2px; background: #e0e0e0; border-radius: 2px; margin-left: 12px; opacity: 0.5;"></div>
+                    </div>
+                    <div class="mobile-header-separator"></div>
                   </div>
-                  <div class="mobile-header-separator"></div>
-                </div>
-              }
-              @if (isMobile) {
-                <div class="logo" style="margin: 12px 0 8px 0; text-align: left;">
-                  <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
-                </div>
-              }
-              <div class="form-title">Welcome to <b>Work Ifence</b></div>
-              <div class="social-btn-row" style="display:flex;gap:12px;width:100%;margin-bottom:18px;">
-                <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
-                  <span class="google-icon" style="display:inline-block;vertical-align:middle;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
-                      <g>
-                        <path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.23 9.19 3.25l6.85-6.85C36.62 2.7 30.7 0 24 0 14.64 0 6.27 5.7 1.98 14.1l8.06 6.27C12.36 13.13 17.73 9.5 24 9.5z"/>
-                        <path fill="#34A853" d="M46.1 24.5c0-1.64-.15-3.22-.43-4.75H24v9.02h12.44c-.54 2.9-2.18 5.36-4.64 7.02l7.18 5.59C43.73 37.13 46.1 31.27 46.1 24.5z"/>
-                        <path fill="#FBBC05" d="M10.04 28.37c-1.13-3.36-1.13-6.98 0-10.34l-8.06-6.27C.36 16.7 0 20.27 0 24c0 3.73.36 7.3 1.98 10.24l8.06-6.27z"/>
-                        <path fill="#EA4335" d="M24 48c6.7 0 12.62-2.2 16.98-6.01l-7.18-5.59c-2.01 1.35-4.59 2.15-7.8 2.15-6.27 0-11.64-3.63-14.02-8.87l-8.06 6.27C6.27 42.3 14.64 48 24 48z"/>
-                        <path fill="none" d="M0 0h48v48H0z"/>
-                      </g>
-                    </svg>
-                  </span>
-                  <span style="margin-left:8px;">Sign In With</span>
-                </button>
-                <div style="width:2px;background:#e0e0e0;border-radius:2px;margin:0 2px;"></div>
-                <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
-                  <span class="linkedin-icon" style="display:inline-block;vertical-align:middle;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
-                      <g>
-                        <rect width="32" height="32" rx="6" fill="#0077B5"/>
-                        <path d="M10.5 13.5h2.5v8h-2.5v-8zm1.25-3a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm3.25 3h2.4v1.1h.03c.33-.63 1.13-1.3 2.33-1.3 2.5 0 2.97 1.65 2.97 3.8v4.4h-2.5v-3.9c0-.93-.02-2.13-1.3-2.13-1.3 0-1.5 1.02-1.5 2.07v3.96h-2.5v-8z" fill="#fff"/>
-                      </g>
-                    </svg>
-                  </span>
-                  <span style="margin-left:8px;">Sign In With</span>
-                </button>
-              </div>
-              <div class="or-divider">OR</div>
-              @if (!isForgotPassword) {
-                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Username</mat-label>
-                    <mat-icon matPrefix>mail_outline</mat-icon>
-                    <input matInput formControlName="username" placeholder="Email or Username">
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Password</mat-label>
-                    <mat-icon matPrefix>lock_outline</mat-icon>
-                    <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password">
-                    <mat-icon matSuffix (click)="showPassword = !showPassword" style="cursor:pointer;">{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                  </mat-form-field>
-                  <div class="login-options-row">
-                    <mat-checkbox formControlName="remember" color="primary">Remember me</mat-checkbox>
-                    <button type="button" class="forgot-password-link" (click)="forgotPassword($event)">Forgot password?</button>
+                }
+                @if (isMobile) {
+                  <div class="logo" style="margin: 12px 0 8px 0; text-align: left;">
+                    <img src="assets/img/black-logo.png" alt="Work Ifence" style="max-width: 206px; height: auto;">
                   </div>
-                  <button class="login-btn enabled-button" type="submit" [disabled]="isLoading || loginForm.invalid">
-                    @if (!isLoading) {
-                      SIGN IN
-                    }
-                    @if (isLoading) {
-                      <mat-progress-bar mode="indeterminate" color="primary" style="height:4px;border-radius:4px;"></mat-progress-bar>
-                    }
+                }
+                <div class="form-title">Welcome to <b>Work Ifence</b></div>
+                <div class="social-btn-row" style="display:flex;gap:12px;width:100%;margin-bottom:18px;">
+                  <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
+                    <span class="google-icon" style="display:inline-block;vertical-align:middle;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
+                        <g>
+                          <path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.23 9.19 3.25l6.85-6.85C36.62 2.7 30.7 0 24 0 14.64 0 6.27 5.7 1.98 14.1l8.06 6.27C12.36 13.13 17.73 9.5 24 9.5z"/>
+                          <path fill="#34A853" d="M46.1 24.5c0-1.64-.15-3.22-.43-4.75H24v9.02h12.44c-.54 2.9-2.18 5.36-4.64 7.02l7.18 5.59C43.73 37.13 46.1 31.27 46.1 24.5z"/>
+                          <path fill="#FBBC05" d="M10.04 28.37c-1.13-3.36-1.13-6.98 0-10.34l-8.06-6.27C.36 16.7 0 20.27 0 24c0 3.73.36 7.3 1.98 10.24l8.06-6.27z"/>
+                          <path fill="#EA4335" d="M24 48c6.7 0 12.62-2.2 16.98-6.01l-7.18-5.59c-2.01 1.35-4.59 2.15-7.8 2.15-6.27 0-11.64-3.63-14.02-8.87l-8.06 6.27C6.27 42.3 14.64 48 24 48z"/>
+                          <path fill="none" d="M0 0h48v48H0z"/>
+                        </g>
+                      </svg>
+                    </span>
+                    <span style="margin-left:8px;">Sign In With</span>
                   </button>
-                </form>
-              } @else {
-                <form [formGroup]="forgotPasswordForm" (ngSubmit)="forgotPasswordSubmit($event)">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Username</mat-label>
-                    <mat-icon matPrefix>mail_outline</mat-icon>
-                    <input matInput formControlName="username" placeholder="Username">
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Email</mat-label>
-                    <mat-icon matPrefix>email</mat-icon>
-                    <input matInput formControlName="email" placeholder="Email address">
-                  </mat-form-field>
-                  @if (resetErrorMessage) {
-                    <div style="color:#b91c1c;margin:6px 0 12px 0;">{{ resetErrorMessage }}</div>
-                  }
-                  <button class="login-btn enabled-button" type="submit" [disabled]="isActionInProgress || forgotPasswordForm.invalid">
-                    Reset Password
+                  <div style="width:2px;background:#e0e0e0;border-radius:2px;margin:0 2px;"></div>
+                  <button class="home-style-btn" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 16px;background:transparent;border-radius:8px;border:none;transition:background 0.2s;color:var(--secondaryColor,#f05b45);font-weight:600;box-shadow:none;">
+                    <span class="linkedin-icon" style="display:inline-block;vertical-align:middle;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
+                        <g>
+                          <rect width="32" height="32" rx="6" fill="#0077B5"/>
+                          <path d="M10.5 13.5h2.5v8h-2.5v-8zm1.25-3a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm3.25 3h2.4v1.1h.03c.33-.63 1.13-1.3 2.33-1.3 2.5 0 2.97 1.65 2.97 3.8v4.4h-2.5v-3.9c0-.93-.02-2.13-1.3-2.13-1.3 0-1.5 1.02-1.5 2.07v3.96h-2.5v-8z" fill="#fff"/>
+                        </g>
+                      </svg>
+                    </span>
+                    <span style="margin-left:8px;">Sign In With</span>
                   </button>
-                  <div style="margin-top:10px;text-align:center;">
-                    <button type="button" class="forgot-password-link" (click)="switchToLogin($event)">Back to sign in</button>
-                  </div>
-                </form>
-              }
-              <div style="margin-top:16px;font-size:0.95rem;color:#888;text-align:center;">
-                By signing in, you agree to our
-                <a routerLink="/terms" style="font-weight:600;">Terms of Service</a>
-                and
-                <a routerLink="/privacy" style="font-weight:600;">Privacy Policy</a>.
-              </div>
-              <div style="margin-top:8px;font-size:0.95rem;color:#888;text-align:center;">
-                Need help? <a href="#" style="font-weight:600;">Contact Support</a>
-              </div>
-              <div style="margin-top:24px;text-align:center;font-size:1rem;">
-                Don't have an account? <a routerLink="/sign-up" style="font-weight:600;">Sign up</a>
+                </div>
+                <div class="or-divider">OR</div>
+                @if (!isForgotPassword) {
+                  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Username</mat-label>
+                      <mat-icon matPrefix>mail_outline</mat-icon>
+                      <input matInput formControlName="username" placeholder="Email or Username">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Password</mat-label>
+                      <mat-icon matPrefix>lock_outline</mat-icon>
+                      <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password">
+                      <mat-icon matSuffix (click)="showPassword = !showPassword" style="cursor:pointer;">{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </mat-form-field>
+                    <div class="login-options-row">
+                      <mat-checkbox formControlName="remember" color="primary">Remember me</mat-checkbox>
+                      <button type="button" class="forgot-password-link" (click)="forgotPassword($event)">Forgot password?</button>
+                    </div>
+                    <button class="login-btn enabled-button" type="submit" [disabled]="isLoading || loginForm.invalid">
+                      @if (!isLoading) {
+                        SIGN IN
+                      }
+                      @if (isLoading) {
+                        <mat-progress-bar mode="indeterminate" color="primary" style="height:4px;border-radius:4px;"></mat-progress-bar>
+                      }
+                    </button>
+                  </form>
+                } @else {
+                  <form [formGroup]="forgotPasswordForm" (ngSubmit)="forgotPasswordSubmit($event)">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Username</mat-label>
+                      <mat-icon matPrefix>mail_outline</mat-icon>
+                      <input matInput formControlName="username" placeholder="Username">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Email</mat-label>
+                      <mat-icon matPrefix>email</mat-icon>
+                      <input matInput formControlName="email" placeholder="Email address">
+                    </mat-form-field>
+                    @if (resetErrorMessage) {
+                      <div style="color:#b91c1c;margin:6px 0 12px 0;">{{ resetErrorMessage }}</div>
+                    }
+                    <button class="login-btn enabled-button" type="submit" [disabled]="isActionInProgress || forgotPasswordForm.invalid">
+                      Reset Password
+                    </button>
+                    <div style="margin-top:10px;text-align:center;">
+                      <button type="button" class="forgot-password-link" (click)="switchToLogin($event)">Back to sign in</button>
+                    </div>
+                  </form>
+                }
+                <div style="margin-top:16px;font-size:0.95rem;color:#888;text-align:center;">
+                  By signing in, you agree to our<br>
+                  <a routerLink="/terms" style="font-weight:600;">Terms of Service</a>
+                  and
+                  <a routerLink="/privacy" style="font-weight:600;">Privacy Policy</a>.
+                </div>
+                <div style="margin-top:8px;font-size:0.95rem;color:#888;text-align:center;">
+                  Need help? <a href="#" style="font-weight:600;">Contact Support</a>
+                </div>
+                <div style="margin-top:24px;text-align:center;font-size:1rem;">
+                  Don't have an account? <a routerLink="/sign-up" style="font-weight:600;">Sign up</a>
+                </div>
               </div>
             </div>
           </div>

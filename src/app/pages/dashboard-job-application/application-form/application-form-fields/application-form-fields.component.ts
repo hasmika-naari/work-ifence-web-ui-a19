@@ -2,7 +2,6 @@ import { CommonModule, Location, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
@@ -51,7 +50,7 @@ const moment = _rollupMoment || _moment;
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule,
     NgOptimizedImage,FooterComponent, MatMenuModule, MatRadioModule,
     MatListModule,CurrencyFormatterModule,
-   CarouselModule,FlexLayoutModule,ReactiveFormsModule, FormsModule, 
+   CarouselModule,ReactiveFormsModule, FormsModule, 
    HeaderWorkIfenceComponent,  MatStepperModule,MatDatepickerModule,
   MatFormFieldModule,InputTextModule,TableModule,DatePickerModule,
   MatInputModule,ButtonModule,PopoverModule, MatTooltipModule,

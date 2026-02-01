@@ -78,12 +78,29 @@ export class LocalStorageService {
   }
 
   public isLoggedIn(): boolean {
-    // const user = getWindow().sessionStorage.getItem(USER_KEY);
-    // if (user) {
-    //   return true;
-    // }
+    // Primary signal: explicit authenticated flag
+    const authenticatedRaw = this.getItemByName('authenticated');
+    if (authenticatedRaw) {
+      try {
+        if (JSON.parse(authenticatedRaw) === true) {
+          return true;
+        }
+      } catch {
+        // ignore JSON parse issues
+      }
+    }
 
-    return false;
+    // Fallback: token presence
+    const tokenRaw = this.getItemByName('authToken');
+    if (!tokenRaw) return false;
+
+    try {
+      const token = JSON.parse(tokenRaw);
+      if (typeof token === 'string') return token.trim().length > 0;
+      return !!token;
+    } catch {
+      return tokenRaw.trim().length > 0;
+    }
   }
 
   /** Tests that localStorage exists, can be written to, and read from. */

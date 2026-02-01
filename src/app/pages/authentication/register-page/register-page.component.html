@@ -33,6 +33,7 @@
             }
             <!-- Register Form Panel (Right) -->
             <div class="register-form-panel">
+              <div class="form-wrapper">
               @if (isMobile) {
                 <div class="mobile-header" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 6px; margin-bottom: 0; width: 100%; padding-left: 12px; padding-top: 16px;">
                   <div style="display: flex; flex-direction: row; align-items: center;">
@@ -85,6 +86,18 @@
                 </button>
               </div>
               <div class="or-divider">OR</div>
+
+              @if (signUpError) {
+                <div class="sign-up-error" role="alert">
+                  {{ signUpErrorMessage || 'Sign up failed. Please try again.' }}
+                </div>
+              }
+
+              <!-- Progress bar shown while sign-up is in progress -->
+              @if (isLoading) {
+                <mat-progress-bar mode="indeterminate" color="primary" style="height:4px;border-radius:4px;margin-bottom:12px;"></mat-progress-bar>
+              }
+
               <form [formGroup]="registerForm3" (ngSubmit)="onSecondFormSubmit()" style="width:100%;">
                 <div class="form-row">
                   <mat-form-field appearance="outline" class="form-col">
@@ -164,7 +177,7 @@
                       <mat-error>Max 30 characters</mat-error>
                     }
                     @if (registerForm3.get('password')?.hasError('pattern')) {
-                      <mat-error>Password must contain uppercase, lowercase, number, and special character</mat-error>
+                      <mat-error>Must contain uppercase, lowercase, number, and symbol (@ $ ! % * ? & #)</mat-error>
                     }
                   </mat-form-field>
                   <mat-form-field appearance="outline" class="form-col">
@@ -176,15 +189,14 @@
                     </button>
                     @if (registerForm3.get('confirmPassword')?.hasError('required')) {
                       <mat-error>Confirm Password is required</mat-error>
-                    }
-                    @if (registerForm3.hasError('match')) {
+                    } @else if (registerForm3.hasError('matching') && (registerForm3.get('confirmPassword')?.dirty || registerForm3.get('confirmPassword')?.touched || registerForm3.get('confirmPassword')?.value)) {
                       <mat-error>Passwords do not match</mat-error>
                     }
                   </mat-form-field>
                 </div>
                 <mat-checkbox formControlName="acceptTerms" color="primary">I agree to the Terms of Service and Privacy Policy</mat-checkbox>
-                <button class="register-btn enabled-button" type="submit" [disabled]="registerForm3.invalid" style="width:100%;">
-                  SIGN UP
+                <button class="register-btn enabled-button" type="submit" [disabled]="registerForm3.invalid" style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px;">
+                  <span style="font-weight:700;">SIGN UP</span>
                 </button>
               </form>
               <div style="margin-top:16px;font-size:0.95rem;color:#888;text-align:center;">
@@ -196,6 +208,7 @@
               <div style="margin-top:8px;font-size:0.95rem;color:#888;text-align:center;">
                 Already have an account? <a routerLink="/sign-in" style="font-weight:600;">Sign in</a>
               </div>
+              </div> <!-- .form-wrapper -->
             </div>
           </div>
         </div>

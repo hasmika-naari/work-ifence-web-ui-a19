@@ -225,7 +225,16 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
                                 </div>
                               </div>
 
-                              <div class="rp-caption">{{ item.title | uppercase }}</div>
+                              <div class="rp-caption-row">
+                                <div class="rp-caption">{{ item.title | uppercase }}</div>
+                                <button
+                                  mat-stroked-button
+                                  type="button"
+                                  class="rp-mobile-cta"
+                                  (click)="useTemplate(item)">
+                                  {{ isLocked(item) ? 'Upgrade' : 'Choose Template' }}
+                                </button>
+                              </div>
 
                               <mat-chip-listbox class="rp-card-chips" [selectable]="false">
                                 @if (item.category) {
@@ -868,6 +877,40 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
         font-size: 12px;
       }
 
+      .rp-caption-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .rp-mobile-cta {
+        display: none;
+        border-radius: 999px;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        padding: 6px 10px;
+        line-height: 1;
+      }
+
+      :host ::ng-deep .rp-mobile-cta.mat-mdc-outlined-button {
+        border-radius: 999px !important;
+        border: 1px solid rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.28) !important;
+        background: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.10) !important;
+        backdrop-filter: blur(10px) saturate(165%);
+        -webkit-backdrop-filter: blur(10px) saturate(165%);
+
+        --mdc-outlined-button-outline-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.28);
+        --mdc-outlined-button-label-text-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.95);
+        --mdc-outlined-button-container-color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.10);
+
+        box-shadow: none !important;
+      }
+
+      :host ::ng-deep .rp-mobile-cta.mat-mdc-outlined-button .mdc-button__label {
+        color: rgba(var(--secondaryColor-rgb, 94, 114, 228), 0.95) !important;
+      }
+
       .rp-premium-ribbon {
         position: absolute;
         top: -2px;
@@ -891,12 +934,40 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
       }
 
       @media (max-width: 900px) {
-        .rp-templates { grid-template-columns: 1fr; }
+        .rp-templates { grid-template-columns: 1fr; gap: 18px; }
         .rp-preview { aspect-ratio: 10 / 13; }
         .rp-sticky { top: calc(var(--wf-header-height, 61px) + 10px); }
         .rp-flow { grid-template-columns: 1fr; }
         .rp-flow::before { display: none; }
         .rp-upload { width: 100%; justify-content: center; }
+
+        .rp-mobile-cta { display: inline-flex; }
+
+        .rp-hover { display: none !important; }
+
+        .rp-template {
+          position: relative;
+          padding-bottom: 18px;
+          margin-bottom: 6px;
+        }
+
+        .rp-template::after {
+          content: '';
+          position: absolute;
+          left: 8px;
+          right: 8px;
+          bottom: 0;
+          height: 1px;
+          background: linear-gradient(
+            90deg,
+            rgba(var(--mainColor-rgb, 67, 83, 255), 0) 0%,
+            rgba(var(--mainColor-rgb, 67, 83, 255), 0.26) 18%,
+            rgba(var(--mainColor-rgb, 67, 83, 255), 0.38) 50%,
+            rgba(var(--mainColor-rgb, 67, 83, 255), 0.26) 82%,
+            rgba(var(--mainColor-rgb, 67, 83, 255), 0) 100%
+          );
+          opacity: 0.9;
+        }
       }
 
       @media (max-width: 600px) {

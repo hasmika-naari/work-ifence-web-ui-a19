@@ -163,7 +163,16 @@
                             </div>
                           </div>
 
-                          <div class="rp-caption">{{ item.title | uppercase }}</div>
+                          <div class="rp-caption-row">
+                            <div class="rp-caption">{{ item.title | uppercase }}</div>
+                            <button
+                              mat-stroked-button
+                              type="button"
+                              class="rp-mobile-cta"
+                              (click)="useTemplate(item)">
+                              {{ isLocked(item) ? 'Upgrade' : 'Choose Template' }}
+                            </button>
+                          </div>
 
                           <mat-chip-listbox class="rp-card-chips" [selectable]="false">
                             @if (item.category) {
@@ -174,7 +183,7 @@
                             }
                           </mat-chip-listbox>
 
-                          @if (item.tags?.length) {
+                          @if (item.tags.length) {
                             <div class="rp-tags">
                               @for (tag of item.tags; track tag) {
                                 <span class="rp-tag">{{ tag }}</span>
@@ -188,6 +197,104 @@
                 }
               </section>
             </div>
+          </div>
+        </div>
+
+        <div class="rp-fabs" aria-label="Quick actions">
+          <button
+            mat-mini-fab
+            color="primary"
+            type="button"
+            class="rp-fab"
+            aria-label="Upload resume"
+            (click)="uploadResume()">
+            <mat-icon aria-hidden="true">upload_file</mat-icon>
+          </button>
+
+          <button
+            mat-mini-fab
+            type="button"
+            class="rp-fab rp-fab-filters"
+            aria-label="Open filters"
+            (click)="openFilterSheet()">
+            <mat-icon aria-hidden="true">tune</mat-icon>
+            @if (activeFilterCount() > 0) {
+              <span class="rp-fab-badge" aria-label="Active filters">{{ activeFilterCount() }}</span>
+            }
+          </button>
+        </div>
+
+        <div
+          class="rp-sheet-backdrop"
+          [class.is-open]="filterSheetOpen()"
+          (click)="closeFilterSheet()"
+          aria-hidden="true"></div>
+
+        <div
+          class="rp-sheet"
+          [class.is-open]="filterSheetOpen()"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Filter templates"
+          [attr.aria-hidden]="!filterSheetOpen()">
+          <div class="rp-sheet-grabber" aria-hidden="true"></div>
+
+          <div class="rp-sheet-header">
+            <div class="rp-sheet-title">Filters</div>
+            <button
+              mat-icon-button
+              type="button"
+              aria-label="Close filters"
+              (click)="closeFilterSheet()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <div class="rp-sheet-body">
+            <label class="rp-filter">
+              <span>Category</span>
+              <select [value]="selectedCategory()" (change)="onCategoryChange($event)">
+                @for (category of categoryOptions(); track category) {
+                  <option [value]="category">{{ category }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="rp-filter">
+              <span>Style</span>
+              <select [value]="selectedStyle()" (change)="onStyleChange($event)">
+                @for (style of styleOptions(); track style) {
+                  <option [value]="style">{{ style }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="rp-filter rp-filter-search">
+              <span>Search</span>
+              <input
+                type="search"
+                [value]="searchQuery()"
+                (input)="onSearchChange($event)"
+                placeholder="Search by title or tags" />
+            </label>
+          </div>
+
+          <div class="rp-sheet-footer">
+            <button
+              mat-stroked-button
+              type="button"
+              class="rp-sheet-reset"
+              (click)="clearFilters()">
+              Reset
+            </button>
+            <button
+              mat-flat-button
+              color="primary"
+              type="button"
+              class="rp-sheet-apply"
+              (click)="closeFilterSheet()">
+              Show results
+            </button>
           </div>
         </div>
 
