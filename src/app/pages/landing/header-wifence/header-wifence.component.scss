@@ -34,7 +34,7 @@
     }
 .avatar-trigger:hover .avatar-bg .header-avatar,
 .avatar-trigger:hover .avatar-bg lucide-icon {
-    color: var(--mainColor, #0A66C2);
+        color: var(--mdc-theme-secondary, var(--secondaryColor));
     filter: brightness(1.1) grayscale(0.1);
 }
 
@@ -413,6 +413,7 @@
                 justify-content: center;
                 position: relative;
                 margin: 0; /* Normal margin */
+                color: var(--mdc-theme-secondary, var(--secondaryColor));
 
                 lucide-icon {
                     width: 22px; /* Maintain consistent icon size */
@@ -441,7 +442,7 @@
             border-radius: 50%;
             margin-left: 10px;
             border: none;
-            color: var(--wf-header-text-color);
+            color: var(--mdc-theme-secondary, var(--secondaryColor));
             background-color: rgba(var(--mainColorRgb, 10, 102, 194), 0.1);
             text-decoration: none;
             transition: background .18s ease, color .18s ease, transform .2s ease;
@@ -462,7 +463,7 @@
             
             &.active {
                 background-color: rgba(var(--mainColorRgb, 10, 102, 194), 0.2);
-                color: var(--mainColor, #0A66C2);
+                color: var(--mdc-theme-secondary, var(--secondaryColor));
             }
         }
         
@@ -482,6 +483,7 @@
 
 .icon-link {
     position: relative;
+    color: var(--mdc-theme-secondary, var(--secondaryColor));
     
     lucide-icon {
         width: var(--wf-header-icon-size);
@@ -491,7 +493,7 @@
     
     &:hover { 
         background: rgba(0,0,0,.05); 
-        color: var(--wf-header-active-color); 
+        color: var(--mdc-theme-secondary, var(--secondaryColor));
     }
     &:active { 
         background: rgba(0,0,0,.08); 
@@ -551,12 +553,23 @@
 
             .nav-link,
             .sign-in-link,
-            .icon-link,
             .navbar-toggler lucide-icon {
                 color: #eee;
                 &:hover {
                     color: var(--mainColor, #00aaff);
                 }
+            }
+
+            .icon-link,
+            .menu-trigger,
+            .avatar-trigger .avatar-bg lucide-icon,
+            .navbar-toggler lucide-icon {
+                color: var(--mdc-theme-secondary, var(--secondaryColor));
+            }
+
+            .icon-link:hover,
+            .menu-trigger:hover {
+                color: var(--mdc-theme-secondary, var(--secondaryColor));
             }
 
             .sign-in-link {

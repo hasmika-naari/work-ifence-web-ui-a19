@@ -3,23 +3,30 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  color: black;
-  border: none;
-  border-radius: 4px;
-  border: 1px solid #cccccc61;
-  font-size: 1rem;
-  font-weight: 500;
+  height: 40px;
+  color: #111827;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: #cccccc61;
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+  background: rgba(255, 255, 255, 0.75);
 }
 
-.add-job-btn mat-icon {
-  font-size: 1.2rem;
+.add-job-btn .pi {
+  color: var(--secondaryColor);
+  font-size: 1rem;
+  transition: opacity 0.14s ease, filter 0.14s ease;
 }
 
 .add-job-btn:hover {
-  background-color: #cccccc80;
-  border: 1px solid #cccccc80;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.add-job-btn:hover .pi {
+  opacity: 0.9;
+  filter: brightness(0.92);
 }

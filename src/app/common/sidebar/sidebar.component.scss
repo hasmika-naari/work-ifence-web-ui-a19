@@ -455,6 +455,12 @@
                         margin-top: 0;
                     }
                     .sidebar-menu-link {
+                            color: var(--secondaryColor) !important;
+                        }
+
+                        .sidebar-menu-link i-feather {
+                            color: var(--secondaryColor) !important;
+                        }
                         // transition: var(--transition);
                         color: var(--blackColor);
                         letter-spacing: 0.14px;

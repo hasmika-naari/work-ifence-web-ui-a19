@@ -6,6 +6,7 @@
     height: 44px;
     border-radius: 50%;
     background: transparent;
+    color: var(--mdc-theme-secondary, var(--secondaryColor));
     transition: background 0.18s;
 }
 .header-right-side button[mat-icon-button]:hover,
@@ -19,6 +20,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: inherit;
+}
+
+.header-right-side button[mat-icon-button] mat-icon {
+    color: inherit !important;
 }
 .header-right-side {
     position: relative;

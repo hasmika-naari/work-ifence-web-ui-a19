@@ -36,6 +36,7 @@ import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 @Component({
     selector: 'resume-list2',
     templateUrl: './resume-list2.component.html',
+    styleUrls: ['./resume-list2.component.scss'],
     standalone: true,
     imports: [
         CommonModule, 

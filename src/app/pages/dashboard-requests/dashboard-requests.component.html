@@ -10,13 +10,14 @@
         <!-- Menus Section -->
         <div class="dropdown-container">
           <div class="flex justify-content-center">
-            <p-dropdown
+            <p-select
               [options]="requestTypes"
               [formControl]="filterRequestType"
               [checkmark]="true"
               optionLabel="name"
               placeholder="Request Type"
-              [disabled]="!isFilterOff || !isSearchOff || loading()"  />
+              [disabled]="!isFilterOff || !isSearchOff || loading()"
+            ></p-select>
             </div>
             <!-- <div class="flex justify-content-center">
             <p-dropdown

@@ -1,12 +1,33 @@
 <div class="row" style="margin:0px 0 48px 0;padding-bottom:100px;">
   @if (filteredResumes().length === 0 && !isActionInProgress) {
-    <div class="empty-list-container">
-      <p>No resumes found.</p>
+    <div class="resume-empty">
+      <div class="resume-empty__icon" aria-hidden="true">
+        <i class="pi pi-file"></i>
+      </div>
+      <h2 class="resume-empty__title">No resumes yet</h2>
+      <p class="resume-empty__text">
+        Create your first resume to start applying faster. You can also import an existing resume and keep everything organized here.
+      </p>
+      <div class="resume-empty__tips">
+        <div class="resume-empty__tip">
+          <i class="pi pi-plus-circle" aria-hidden="true"></i>
+          <span>Use <strong>Add Resume</strong> to build from a template.</span>
+        </div>
+        <div class="resume-empty__tip">
+          <i class="pi pi-upload" aria-hidden="true"></i>
+          <span>Use <strong>Import existing resume</strong> to upload a PDF.</span>
+        </div>
+        <div class="resume-empty__tip">
+          <i class="pi pi-filter" aria-hidden="true"></i>
+          <span>Use filters to quickly find resumes by role/category.</span>
+        </div>
+      </div>
     </div>
   }
   @if (isActionInProgress) {
-    <div class="empty-list-container">
-      <p>Loading Please wait...</p>
+    <div class="resume-loading">
+      <span class="resume-loading__spinner" aria-hidden="true"></span>
+      <p>Loading resumes…</p>
     </div>
   }
 
@@ -79,8 +100,8 @@
           </div>
         </div>
         <div class="col-8">
-          <div  [class]="'sm:ml-2 product-badge courses-tag2  status-' + resume.resumeCategory?.toLowerCase()">
-            <span [class]="'sm:ml-2 resume-badge status-' + resume.resumeCategory?.toLowerCase()">{{resume.resumeCategory}}</span>
+          <div  [class]="'sm:ml-2 product-badge courses-tag2  status-' + resume.resumeCategory.toLowerCase()">
+            <span [class]="'sm:ml-2 resume-badge status-' + resume.resumeCategory.toLowerCase()">{{resume.resumeCategory}}</span>
           </div>
         </div>
       </div>

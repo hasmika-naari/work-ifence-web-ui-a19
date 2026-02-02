@@ -43,6 +43,19 @@ body {
     radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
   background-repeat: no-repeat;
   background-size: 100% 100%;
+
+  min-height: 100vh;
+
+  /* Offset for the fixed app header (prevents overlap). */
+  --wf-dashboard-header-offset: 84px;
+
+  @media (max-width: 767px) {
+    --wf-dashboard-header-offset: 120px;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    --wf-dashboard-header-offset: 100px;
+  }
 }
 
 h1 {
@@ -161,13 +174,229 @@ h1 {
 }
 
   .resume-container{
-    height: 100%;
-    overflow-y: hidden !important;
+    /* Allow natural page scroll so the footer is reachable. */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: visible;
+    position: relative;
+    padding: calc(24px + var(--wf-dashboard-header-offset)) 24px 16px;
+    box-sizing: border-box;
+  }
+
+  .resume-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+
+    /* Keep title + search/actions visible while scrolling. */
+    position: sticky;
+    top: var(--wf-dashboard-header-offset);
+    z-index: 50;
+    padding: 10px 0 12px;
+    margin: -10px 0 0;
+
+    /* Default (not-yet-sticky): no background behind the title/actions. */
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: 1px solid transparent;
+  }
+
+  .resume-header.is-stuck{
+    /* Remove title/header background when stuck. */
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  }
+
+  .resume-header__title{
+    min-width: 240px;
+  }
+
+  .title{
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--secondaryColor);
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle{
+    margin: 6px 0 0;
+    color: #667085;
+    font-size: 13px;
+  }
+
+  @media (max-width: 900px) {
+    .resume-header{
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .resume-header__title{
+      min-width: 0;
+    }
+
+    .resume-controls__filters .search-container{
+      width: 100%;
+      min-width: 0;
+    }
+  }
+
+  .resume-controls__filters .search-container{
+    position: relative;
+    flex: 1 1 320px;
+    min-width: 220px;
+  }
+
+  .resume-controls__filters .search-container .pi-search{
     position: absolute;
-    left: 0px;
-    right: 0px;
-    padding-top:60px;
-}
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.05em;
+    color: var(--mdc-theme-secondary, var(--secondaryColor));
+    pointer-events: none;
+  }
+
+  .resume-controls__filters .search-container:focus-within .pi-search{
+    opacity: 1;
+    filter: brightness(0.92);
+  }
+
+  .resume-controls__filters .search-container:hover .pi-search{
+    opacity: 0.9;
+    filter: brightness(0.92);
+  }
+
+  .resume-controls__filters .search-input{
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(15, 23, 42, 0.14);
+    background: rgba(255,255,255,0.85);
+    padding: 0 12px 0 36px;
+    outline: none;
+  }
+
+  .resume-controls__filters .search-input::placeholder{
+    color: rgba(102, 112, 133, 0.9);
+  }
+
+  .resume-controls__filters .search-input:focus{
+    border-color: rgba(55, 97, 238, 0.45);
+    box-shadow: 0 0 0 3px rgba(55, 97, 238, 0.15);
+  }
+
+  .resume-controls{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 4px 0 12px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  }
+
+  .resume-controls__filters{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+
+  @media (max-width: 1100px) {
+    .resume-controls__filters{
+      flex-wrap: wrap;
+    }
+  }
+
+  .resume-controls__meta{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #667085;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .resume-controls__meta .pi,
+  .resume-controls__meta p-icon {
+    color: var(--mdc-theme-secondary, var(--secondaryColor));
+    transition: opacity 0.14s ease, filter 0.14s ease;
+  }
+
+  :host ::ng-deep .resume-controls__meta p-icon svg {
+    fill: currentColor;
+    stroke: currentColor;
+  }
+
+  /* The import button lives in a child component; keep its icon color consistent in the meta area. */
+  :host ::ng-deep .resume-controls__meta app-import-existing-resume .pi {
+    color: var(--mdc-theme-secondary, var(--secondaryColor)) !important;
+  }
+
+  .result-count{
+    color: #667085;
+  }
+
+  .link-btn{
+    background: transparent;
+    border: 1px solid rgba(55, 97, 238, 0.20);
+    padding: 8px 10px;
+    color: #2f5be7;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .link-btn:hover{
+    background: rgba(55, 97, 238, 0.08);
+  }
+
+  .link-btn:disabled{
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .resume-body{
+    flex: 1;
+    overflow: visible;
+    padding-top: 10px;
+  }
+
+  .dashboard-footer{
+    margin-top: 18px;
+  }
+
+  @media (max-width: 900px){
+    .resume-container{
+      padding: 18px 16px 12px;
+    }
+
+    .resume-header{
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .search-container{
+      width: min(520px, 100%);
+      min-width: 0;
+    }
+
+    .resume-controls{
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
 
 .resume-container::-webkit-scrollbar{
     display: none;
@@ -279,163 +508,34 @@ h1 {
 //     transform: translateY(-3px);
 // }
 
-/* Toolbar styles */
-/* Toolbar Styles */
-h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-  color: #333;
-}
+  .add-job-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    background: rgba(255, 255, 255, 0.75);
+    color: #111827;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+  }
 
-/* Toolbar Styling */
-.toolbar {
-  display: flex;
-  flex-direction: column;
-  padding: 20px 10px;
-  background-color: #fff;
-//   border-bottom: 1px solid #ddd;
-}
+  .add-job-btn:hover{
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    transform: translateY(-1px);
+  }
 
-/* Header */
-.title {
-  margin: 0;
-  font-size: 1.9rem;
-  font-weight: 600;
-  padding: 20px 10px 0 10px;
-  color: var(--secondaryColor);
-}
-
-/* Content Row: Menus and Actions */
-.content-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.dropdown-container {
-  display: flex;
-  gap: 10px;
-}
-
-.dropdown {
-  position: relative;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-}
-
-.dropdown-toggle {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.p-icon {
-  font-size: 16px;
-  color: #888;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-top: 5px;
-  list-style: none;
-  padding: 0;
-  display: none;
-  min-width: 120px;
-  z-index: 100;
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  transform: translateY(-10px);
-}
-
-.dropdown-menu.open {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.dropdown-menu li {
-  padding: 10px;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-}
-
-.dropdown-menu li:hover {
-  background-color: #f0f0f0;
-}
-/* Right Section: Search + Add Job */
-.right-section {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* Search Input Styling */
-.search-container {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  background-color: #fff;
-}
-
-.search-input {
-  border: none;
-  padding: 8px 12px;
-  font-size: 1rem;
-  outline: none;
-  flex: 1;
-  width: 250px;
-  color: black;
-}
-
-
-.search-btn {
-  border: none;
-  padding: 8px;
-  cursor: pointer;
-  color: black;
-  font-size: 1.2rem;
-  background-color: transparent;
-}
-
-.search-btn:hover {
-  background-color: #cccccc80;
-}
-
-/* Add Job Button Styling */
-.add-job-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  color: black;
-  border: none;
-  border-radius: 4px;
-  border: 1px solid #cccccc61;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: #cccccc61;
-}
-
-.add-job-btn mat-icon {
-  font-size: 1.2rem;
-}
-
-.add-job-btn:hover {
-  background-color: #cccccc80;
-  border: 1px solid #cccccc80;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
+  .add-job-btn:disabled{
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
 
 .p-dropdown-clear-icon{
   top: 1.2rem !important;

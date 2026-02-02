@@ -1,5 +1,20 @@
-import { Component, OnInit, OnDestroy, inject, Signal, AfterViewInit, PLATFORM_ID, CUSTOM_ELEMENTS_SCHEMA, 
-          Output, EventEmitter, effect, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  Signal,
+  AfterViewInit,
+  PLATFORM_ID,
+  CUSTOM_ELEMENTS_SCHEMA,
+  Output,
+  EventEmitter,
+  effect,
+  OnChanges,
+  SimpleChanges,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
@@ -40,6 +55,7 @@ import { MatProgressBar, MatProgressBarModule } from '@angular/material/progress
 import { SectionDesc } from 'src/app/services/store/user-store';
 import { ImportExistingResumeComponent } from '../import-existing-resume/import-existing-resume.component';
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
+import { FooterWorkifenceComponent } from '../landing/footer-wifence/footer-wifence.component';
 
 interface Option {
   name : string;
@@ -49,12 +65,16 @@ interface Option {
 @Component({
     selector: 'app-resume-dashboard',
     standalone: true,
-  imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule, ImportExistingResumeComponent],
+    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule, ImportExistingResumeComponent, FooterWorkifenceComponent],
     templateUrl: './dashboard-resume.component.html',
     styleUrl : './dashboard-resume.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
 export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('resumeHeader') private resumeHeader?: ElementRef<HTMLElement>;
+  isHeaderStuck = false;
+  private stickyStateListener?: () => void;
 
   private _isActionInProgress = true;
 
@@ -590,6 +610,38 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
       setTimeout(() => {
           // //this.sidenavService.setCollapsed(true);
           }, 100);
+
+      if (!isPlatformBrowser(this.platformId)) {
+        return;
+      }
+
+      const updateStickyState = () => {
+        const headerEl = this.resumeHeader?.nativeElement;
+        if (!headerEl) {
+          return;
+        }
+
+        const computed = getComputedStyle(headerEl);
+        const offsetRaw = computed.getPropertyValue('--wf-dashboard-header-offset').trim();
+        const offset = Number.parseFloat(offsetRaw || '0') || 0;
+
+        const top = headerEl.getBoundingClientRect().top;
+        this.isHeaderStuck = top <= offset + 1;
+      };
+
+      const onScrollOrResize = () => {
+        requestAnimationFrame(updateStickyState);
+      };
+
+      window.addEventListener('scroll', onScrollOrResize, { passive: true });
+      window.addEventListener('resize', onScrollOrResize, { passive: true });
+      this.stickyStateListener = () => {
+        window.removeEventListener('scroll', onScrollOrResize);
+        window.removeEventListener('resize', onScrollOrResize);
+      };
+
+      // Initialize state once the view is ready.
+      updateStickyState();
   }
 
   receiveFromChild(isActionInProgress: boolean) {
@@ -614,6 +666,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngOnDestroy() {
       this.subscriptions.forEach(s => s.unsubscribe());
+      this.stickyStateListener?.();
   }
 
   /**
@@ -662,6 +715,32 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
     this.filteredResumeCategoryValue.setValue(null);
     this.filteredRoleCategoryValue.setValue(null)
     this.userStore.setFilteredResumes(this.resumeList());
+  }
+
+  resetFilters(): void {
+    // Reset UI controls
+    this.isFilterOff = true;
+    this.isSearchOff = true;
+    this.filteredResumeCategoryValue.setValue(null);
+    this.filteredRoleCategoryValue.setValue(null);
+    this.searchQuery.setValue('');
+
+    // Ensure search is enabled after clearing.
+    if (this.searchQuery.disabled) {
+      this.searchQuery.enable({ emitEvent: false });
+    }
+
+    // Restore full list
+    this.userStore.setFilteredResumes(this.resumeList());
+  }
+
+  hasActiveFilters(): boolean {
+    const search = this.searchQuery?.value?.trim() ?? '';
+    return (
+      search.length > 0 ||
+      this.filteredResumeCategoryValue?.value != null ||
+      this.filteredRoleCategoryValue?.value != null
+    );
   }
 
   onSearch(){
