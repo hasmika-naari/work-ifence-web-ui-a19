@@ -1,0 +1,24 @@
+.applications-dashboard {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #f8fafc;
+  background-image:
+    radial-gradient(circle at 15% 15%, hsla(10, 80%, 60%, 0.09), transparent 35%),
+    radial-gradient(circle at 85% 25%, hsla(230, 80%, 70%, 0.09), transparent 35%),
+    radial-gradient(circle at 70% 80%, hsla(330, 80%, 70%, 0.12), transparent 40%),
+    radial-gradient(circle at 20% 75%, hsla(45, 100%, 60%, 0.07), transparent 40%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding-top: 65px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+:root {
+  --fs-page-title: 4rem;     // ~26px
+  --fs-section-title: 1.1rem;  // ~18px
+  --fs-primary: 0.95rem;       // ~15px
+  --fs-secondary: 0.8rem;      // ~13px
+  --fs-meta: 0.75rem;          // ~12px
+}

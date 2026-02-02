@@ -1,0 +1,100 @@
+.recent-updates-card {
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+   background: #ffffff;
+}
+
+.card-header {
+  margin-bottom: 1rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
+
+.updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.update-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 0.75rem 0;
+}
+
+.icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.icon-inner mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+
+  .title {
+    font-size: var(--fs-primary);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-size: var(--fs-secondary);
+    color: #6b7280;
+    line-height: 1.2;
+  }
+}
+
+.time {
+  font-size: var(--fs-meta);
+  color: #9ca3af;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.offer {
+  background: #dcfce7;
+    color: #16a34a;
+}
+
+.interview {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.rejected {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.applied {
+  background: #e0edff;
+  color: #2563eb;
+}

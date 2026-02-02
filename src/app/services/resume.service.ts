@@ -21,6 +21,8 @@ export class ResumeService {
 
   }
 
+  localhosturl : string = 'http://localhost:8090';
+
   generateResume(resumeTemplate: any){
     // 
     let queryUrl = 'http://Workifence.com:8090/api/generateCustomResume';
@@ -205,7 +207,7 @@ export class ResumeService {
   getResumeListByOwnerId(ownerId : any){
     
     let baseUrl = this.appConstants.BASE_API_URL;
-    let localhosturl = 'http://localhost:8090';
+   
 
     if(isPlatformBrowser(this.platformId)){
       baseUrl = '';
@@ -220,7 +222,7 @@ export class ResumeService {
     if(isPlatformBrowser(this.platformId)){
       baseUrl = '';
     }
-    let queryUrl = baseUrl + this.appConstants.SAVE_JOB_APPLICATION;
+    let queryUrl =  this.localhosturl + this.appConstants.SAVE_JOB_APPLICATION;
 
     //console.log('postDeal: api call');
     return this.httpClient.post(queryUrl, data)
@@ -232,8 +234,7 @@ export class ResumeService {
     if(isPlatformBrowser(this.platformId)){
       baseUrl = '';
     }
-    let queryUrl = baseUrl + this.appConstants.SAVE_JOB_APPLICATION;
-
+    let queryUrl = this.localhosturl + this.appConstants.SAVE_JOB_APPLICATION;
     //console.log('postDeal: api call');
     return this.httpClient.post(queryUrl, data)
       .pipe(catchError(this.handleError));
@@ -272,8 +273,6 @@ export class ResumeService {
 
 uploadExternalResume(userName: string, ownerId: string, file: File) {
   let baseUrl = this.appConstants.BASE_API_URL;
-  let localhosturl = 'http://localhost:8090';
-  
 
   if (isPlatformBrowser(this.platformId)) {
     baseUrl = '';
@@ -367,7 +366,7 @@ uploadExternalResume(userName: string, ownerId: string, file: File) {
     if(isPlatformBrowser(this.platformId)){
       baseUrl = '';
     }
-    let queryUrl = baseUrl + this.appConstants.GET_ALL_JOB_APPLICATIONS + '/' + ownerId;;
+    let queryUrl = this.localhosturl + this.appConstants.GET_ALL_JOB_APPLICATIONS + '/' + ownerId;;
     // alert('URL: ' + queryUrl);
    return this.http.get<any>(queryUrl).pipe(catchError(this.handleError));
   }

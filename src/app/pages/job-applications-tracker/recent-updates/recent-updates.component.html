@@ -1,0 +1,30 @@
+<mat-card class="recent-updates-card">
+  <div class="card-header">
+    <h3>Recent Updates</h3>
+  </div>
+
+  <div class="updates-list">
+  <div class="update-item" *ngFor="let update of updates">
+  <div class="icon" [ngClass]="update.type">
+    <span class="icon-inner">
+    <mat-icon>
+      {{
+        update.type === 'offer' ? 'emoji_events' :
+        update.type === 'interview' ? 'event' :
+        update.type === 'rejected' ? 'close' :
+        'send'
+      }}
+    </mat-icon>
+    </span>
+  </div>
+
+  <div class="content">
+    <div class="title">{{ update.title }}</div>
+    <div class="subtitle">{{ update.subtitle }}</div>
+  </div>
+
+  <div class="time">{{ update.time }}</div>
+</div>
+
+  </div>
+</mat-card>

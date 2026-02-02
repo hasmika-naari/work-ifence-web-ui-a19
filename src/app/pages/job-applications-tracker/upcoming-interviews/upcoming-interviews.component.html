@@ -1,0 +1,31 @@
+<mat-card class="upcoming-card">
+  <div class="card-header">
+    <h3>Upcoming Interviews</h3>
+  </div>
+
+  <div class="interview-list">
+    <div
+      class="interview-item"
+      *ngFor="let interview of interviews"
+    >
+      <div class="left">
+        <div class="role">{{ interview.role }}</div>
+        <div class="company">{{ interview.company }}</div>
+      </div>
+
+      <div class="right">
+        <div class="datetime">{{ interview.datetime }}</div>
+
+        <span
+          class="badge"
+          [ngClass]="{
+            'zoom': interview.type === 'Zoom',
+            'onsite': interview.type === 'On-site'
+          }"
+        >
+          {{ interview.type }}
+        </span>
+      </div>
+    </div>
+  </div>
+</mat-card>

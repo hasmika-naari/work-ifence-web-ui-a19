@@ -507,7 +507,7 @@ export const routes: Routes = [
             {   
                 path: 'job-applications', 
                 canActivate: [accessGuard],
-                loadComponent: () => import('./pages/dashboard-job-application/dashboard-job-application.component').then(m => m.DashboardJobApplicationComponent), 
+                loadComponent: () => import('./pages/job-applications-tracker/applications-dashboard.component').then(m => m.ApplicationsDashboardComponent), 
                 data: { breadcrumb: 'Job Applications', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual' } 
             },
             {

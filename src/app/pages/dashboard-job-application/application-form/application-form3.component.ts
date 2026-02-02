@@ -236,12 +236,7 @@ export class ApplicationForm3Component implements OnInit, OnDestroy, AfterViewCh
       public dialog: MatDialog,
       public resumeService : ResumeService,
       public pdfToImageService : PdfToImageService) {
-        if(this.jobApplication().job_application_details.resume_download_link){
-          this.pdfToImageService.convertPdfToImageBytesThroughUrl(this.jobApplication().job_application_details.resume_download_link).then((e)=>{
-            this.resumeToImageBytes = e;
-            this.isResumeGiven = true;
-          })
-        }
+       
       }
 
   experienceForm = this._formBuilder.group({
@@ -705,6 +700,13 @@ ngAfterViewInit(): void {
         this.subs.push(this.router.events.subscribe(() => {
         }));
     }
+
+     if(this.jobApplication().job_application_details.resume_download_link){
+          this.pdfToImageService.convertPdfToImageBytesThroughUrl(this.jobApplication().job_application_details.resume_download_link).then((e)=>{
+            this.resumeToImageBytes = e;
+            this.isResumeGiven = true;
+          })
+        }
   }
 
   ngAfterViewChecked(): void {

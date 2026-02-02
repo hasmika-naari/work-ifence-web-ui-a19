@@ -1,0 +1,196 @@
+
+<div class="applications-grid-card">
+   <div class="card-header">
+    <h3>My Applications</h3>
+    
+    <!-- Filter Controls -->
+    <div class="filter-controls">
+      <!-- Company Filter -->
+      <div class="filter-group">
+        <input 
+          type="text" 
+          placeholder="Filter by company"
+          [(ngModel)]="filters.company"
+          (input)="onFilterChange()"
+          class="filter-input"
+        />
+      </div>
+      
+      <!-- Position Filter -->
+      <div class="filter-group">
+        <input 
+          type="text" 
+          placeholder="Filter by position"
+          [(ngModel)]="filters.position"
+          (input)="onFilterChange()"
+          class="filter-input"
+        />
+      </div>
+      
+      <!-- Status Filter -->
+      <div class="filter-group">
+        <select 
+          [(ngModel)]="filters.status"
+          (change)="onFilterChange()"
+          class="filter-select"
+        >
+          <option value="">All Statuses</option>
+          <option *ngFor="let status of uniqueStatuses" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+      
+      <!-- Clear Filters Button -->
+      <button 
+        class="clear-filters-btn"
+        (click)="clearFilters()"
+        [disabled]="!filters.company && !filters.position && !filters.status"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- HEADER -->
+    <div class="grid-header">
+        <div class="cell header"></div>
+      <div class="cell header">Company</div>
+      <div class="cell header">Position</div>
+      <div class="cell header">Status</div>
+      <div class="cell header">Last update</div>
+      <div class="cell header">Reference Link</div>
+      <div class="cell header">Action</div>
+
+      <!-- <div class="cell header">Website</div>
+      <div class="cell header">Contact</div>
+      <div class="cell header">Reference</div> -->
+    </div>
+
+    <!-- ROWS -->
+    <div
+      class="grid-row"
+      *ngFor="let app of paginatedApplications"
+    >
+     <div class="cell">
+        <input type="checkbox" />
+      </div>
+      <div class="cell company">
+        {{ app.company.name }}
+      </div>
+
+      <div class="cell">
+        {{ app.position }}
+      </div>
+
+      <div class="cell">
+        <span
+          class="status-pill"
+          [ngClass]="getStatusClass(app.status)"
+        >
+          {{ app.status }}
+        </span>
+      </div>
+
+      <div class="cell">
+        {{ app.applicationDate }}
+      </div>
+
+      <div class="cell">
+        <a [href]="app.referenceLink" target="_blank">
+          {{ app.referenceLink }}
+        </a>
+      </div>
+       <div class="cell">
+      
+       <mat-icon class="edit-icon">edit</mat-icon>
+      </div>
+
+      <!-- <div class="cell actions">
+        <span
+          class="action-chip"
+          *ngFor="let action of app.nextActions"
+        >
+          {{ action }}
+        </span>
+      </div>
+
+      <div class="cell">
+        <a [href]="'https://' + app.company.website" target="_blank">
+          {{ app.company.website }}
+        </a>
+      </div>
+
+      <div class="cell">
+        {{ app.contact }}
+      </div>
+
+      <div class="cell">
+        <a href="#" class="ref-link">
+          {{ app.referenceLink }}
+        </a>
+      </div>  -->
+    </div>
+  </div>
+  
+  <!-- Custom Pagination Controls -->
+  <div class="pagination-container">
+    <!-- Page size selector -->
+    <div class="page-size-selector">
+      <label>Items per page:</label>
+      <select 
+        [value]="pageSize" 
+        (change)="changePageSize($event)"
+        class="page-size-select"
+      >
+        <option *ngFor="let size of pageSizeOptions" [value]="size">
+          {{ size }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Pagination info -->
+    <div class="pagination-info">
+      Showing {{ (currentPage - 1) * pageSize + 1 }} to 
+      {{ Math.min(currentPage * pageSize, totalItems) }} of 
+      {{ totalItems }} entries
+    </div>
+
+    <!-- Pagination controls -->
+    <div class="pagination-controls">
+      <!-- Previous button -->
+      <button 
+        class="pagination-btn" 
+        [class.disabled]="currentPage === 1"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+      >
+        ‹ Previous
+      </button>
+
+      <!-- Page numbers -->
+      <button 
+        *ngFor="let page of getPageNumbers()"
+        class="pagination-btn page-number"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)"
+      >
+        {{ page }}
+      </button>
+
+      <!-- Next button -->
+      <button 
+        class="pagination-btn" 
+        [class.disabled]="currentPage === totalPages"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+      >
+        Next ›
+      </button>
+    </div>
+  </div>
+</div>
+
+
+

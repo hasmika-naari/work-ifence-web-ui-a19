@@ -1,0 +1,40 @@
+<div class="row align-items-center dashboard-header">
+  <div class="col-md-8 col-12 mb-3 mb-md-0">
+    <h1 class="title" style="font-size: 24px;">Job Applications Tracker</h1>
+    <p class="subtitle">Keep track of your career journey.</p>
+  </div>
+
+<div class="row mt-4 dashboard-header-stats-container align-items-center">
+  <!-- Stats -->
+  <div class="col-xl-9 col-lg-8 col-md-12">
+    <div class="stats-row">
+      <mat-card
+        class="stat-card"
+        [ngClass]="stat.color"
+        *ngFor="let stat of stats"
+      >
+        <div class="content">
+          <div class="icon">
+            <mat-icon>{{ stat.icon }}</mat-icon>
+          </div>
+
+          <div class="info">
+            <span class="label">{{ stat.label }}</span>
+            <span class="value">{{ stat.value }}</span>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- CTA Button -->
+  <div class="col-xl-3 col-lg-4 col-md-12 text-lg-end text-center ">
+ <button class="primary-cta-btn">
+  New Application
+  <span class="plus">+</span>
+</button>
+
+  </div>
+</div>
+
+</div>
