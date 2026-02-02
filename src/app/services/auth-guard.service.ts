@@ -54,12 +54,11 @@ export class AuthGuardService implements CanActivate {
       
     }
 
-      if(isAuthenticated && isAuthenticated.notoken === ""){
+      if(!isAuthenticated){
         this.router.navigateByUrl('/');
         return of(false);
-      }else{
-        return of(true);
       }
+      return of(true);
 
     // return this.store.pipe(select(getIsAuthenticated)).pipe(
     //   map((isAuthenticated: boolean) => {

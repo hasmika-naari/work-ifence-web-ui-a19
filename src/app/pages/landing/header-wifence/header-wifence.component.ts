@@ -349,12 +349,16 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
     logoutHandler($event: any){
 
-         this.storageService.removeItem("userName");
-         this.storageService.removeItem("passWord");
-        this.storageService.removeItem("authenticated");
+        $event?.preventDefault?.();
+        $event?.stopPropagation?.();
 
+        this.storageService.clearAuthState();
+
+        // Ensure UI flips to logged-out state immediately
+        this.userStore.setUserLoginStatus(false);
         this.userStore.resetStore();
-         this.router.navigateByUrl("/");
+
+        void this.router.navigateByUrl("/");
     }
     goToDashboard($event: any){
         if(this.userActiveRole().role === 'ROLE_ADMIN'){

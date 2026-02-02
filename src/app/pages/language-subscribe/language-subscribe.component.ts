@@ -46,7 +46,8 @@ export class LanguageSubscribeComponent implements OnInit, OnDestroy {
       'email': ['', Validators.compose([Validators.required, this.appValidators.emailValidator])],
     });
 
-    if(!this.emaiLRegistered.notoken){
+    const isRegistered = this.emaiLRegistered === true;
+    if(!isRegistered){
       ;
       // this.subs.push(this.emaiLRegistered$.subscribe(er => {
       //   this.emaiLRegistered = er;

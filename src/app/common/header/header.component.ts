@@ -12,11 +12,12 @@ import { Account, BioProfile, WifRole } from 'src/app/services/profile.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, NgClass, MatDividerModule, MatIconModule],
+    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, NgClass, MatDividerModule, MatIconModule, MatTooltipModule],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss',
     providers: [
@@ -30,6 +31,7 @@ export class HeaderComponent {
     public userAccount: Signal<Account> = this.userStore.getUserAccount();
     public userRoles: Signal<Array<WifRole>> = this.userStore.getUserRoles();
     public userActiveRole: Signal<WifRole> = this.userStore.getUserActiveRole();
+    public isLoggedIn = this.userStore.getUserLoginStatus();
     bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
     private storageService: LocalStorageService = inject(LocalStorageService);
     private router:Router =  inject(Router);
@@ -61,15 +63,23 @@ export class HeaderComponent {
     goHome() {
         this.router.navigate(['/']);
     }
+
+    goToLogin() {
+        void this.router.navigateByUrl('/sign-in');
+    }
     
 
     logoutHandler($event: any){
-        this.storageService.removeItem("userName");
-        this.storageService.removeItem("passWord");
-        this.storageService.removeItem("authenticated");
-    
-    
-       this.userStore.resetStore();
-        this.router.navigateByUrl("/");
+        $event?.preventDefault?.();
+        $event?.stopPropagation?.();
+
+        // Clear token + remember-me + credentials
+        this.storageService.clearAuthState();
+
+        // Ensure UI reflects logged-out state immediately
+        this.userStore.setUserLoginStatus(false);
+        this.userStore.resetStore();
+
+        void this.router.navigateByUrl("/");
     }
 }

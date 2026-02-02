@@ -58,9 +58,12 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('sentinel', { static: false }) sentinel!: ElementRef;
   @ViewChild('pageSection', { static: false }) pageSectionRef!: ElementRef;
   @ViewChild('templatesSection', { static: false }) templatesSectionRef!: ElementRef;
+  @ViewChild('filtersSentinel', { static: false }) filtersSentinel!: ElementRef;
 
   public isSticky = false;
+  public filtersSticky = false;
   private observer?: IntersectionObserver;
+  private filtersObserver?: IntersectionObserver;
   private readonly destroy$ = new Subject<void>();
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
@@ -163,12 +166,41 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
       { root: this.pageSectionRef.nativeElement }
     );
     this.observer.observe(this.sentinel.nativeElement);
+
+    if (this.filtersSentinel?.nativeElement) {
+      const headerHeight = this.getHeaderHeightPx();
+
+      this.filtersObserver = new IntersectionObserver(
+        entries => {
+          this.filtersSticky = !entries[0].isIntersecting;
+        },
+        {
+          root: this.pageSectionRef.nativeElement,
+          // Trigger "stuck" once the sentinel scrolls under the sticky header height.
+          rootMargin: `-${headerHeight}px 0px 0px 0px`,
+          threshold: 0,
+        }
+      );
+
+      this.filtersObserver.observe(this.filtersSentinel.nativeElement);
+    }
   }
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    this.filtersObserver?.disconnect();
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private getHeaderHeightPx(): number {
+    if (!isPlatformBrowser(this.platformId)) {
+      return 61;
+    }
+
+    const rootStyles = getComputedStyle(document.documentElement);
+    const headerVar = rootStyles.getPropertyValue('--wf-header-height').trim();
+    return Number.parseFloat(headerVar) || 61;
   }
 
   @HostListener('document:keydown', ['$event'])

@@ -7,6 +7,7 @@ import { LocalStorageService } from '../../../../services/local-storage.service'
 import { LucideAngularModule } from 'lucide-angular';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UserStoreService } from '../../../../services/store/user-store.service';
 
 @Component({
   selector: 'app-saas-sidebar',
@@ -35,6 +36,7 @@ export class SaasSidebarComponent implements OnInit, OnChanges {
   selectedCountry: any = '';
 
   private _localStorageService: LocalStorageService = inject(LocalStorageService);
+  private userStore: UserStoreService = inject(UserStoreService);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private router: Router = inject(Router);
 
@@ -72,9 +74,11 @@ export class SaasSidebarComponent implements OnInit, OnChanges {
    * Logout the user and redirect to home page
    */
   logout(): void {
-    // Clear user data from local storage
-    this._localStorageService.removeItem('user');
-    this._localStorageService.removeItem('token');
+    this._localStorageService.clearAuthState();
+
+    // Ensure global app state reflects logged-out immediately
+    this.userStore.setUserLoginStatus(false);
+    this.userStore.resetStore();
     
     // Close the sidebar
     this.closeSidebar.emit();

@@ -219,7 +219,10 @@ export class AppComponent implements OnInit, AfterViewInit{
         // //   ]);
     
           // this.recallJsFuntions();
+          // If we clear the token on startup (auto-login flow), also clear the auth flag.
+          // Otherwise other services will think we're logged in and trigger 401s (e.g. /api/access/me).
           this.storageService.removeItem('authToken');
+          this.storageService.removeItem('authenticated');
           let userName:any = this.storageService.getItemByName("userName");
           let passWord:any = this.storageService.getItemByName("passWord");
           let locationPath:string = this.locationService.path(true);

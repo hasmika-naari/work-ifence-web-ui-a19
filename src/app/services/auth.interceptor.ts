@@ -60,7 +60,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         headers = headers.append('Content-Type', 'application/json');
       }
     }
-    let token: any  = '';
+    let token: unknown = '';
     if(isPlatformBrowser(this.platformId)){
       token = this.storageService.getItem("authToken");
     }
@@ -74,13 +74,18 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     if( req.url.includes("uploadProfileImage")){
       
     }
-    if(!req.url.includes("wif-login") && !req.url.includes("authenticate") && 
-        !req.url.includes("en.json") && token !== Object(token) ) {
-          
-        let tempToken = token.replace("\\", "").replace("\\", "");
-        let currentToken = tempToken.replace("\"", "").replace("\"", "");
-        let bearer = "Bearer ";
-        headers = headers.append(TOKEN_HEADER_KEY, bearer + currentToken);
+    const tokenStr = typeof token === 'string' ? token : '';
+
+    if (
+      !req.url.includes("wif-login") &&
+      !req.url.includes("authenticate") &&
+      !req.url.includes("en.json") &&
+      tokenStr.trim().length > 0
+    ) {
+      // Token may already be a raw JWT or a JSON-stringified string; normalize safely.
+      const tempToken = tokenStr.replace("\\", "").replace("\\", "");
+      const currentToken = tempToken.replace("\"", "").replace("\"", "");
+      headers = headers.append(TOKEN_HEADER_KEY, "Bearer " + currentToken);
     }
 
     authReq = req.clone({ headers });

@@ -58,7 +58,7 @@ export const accessGuard: CanActivateFn = (
       if (data.requireAuth) {
         if (isPlatformBrowser(platformId)) {
           const auth = storage.getItem('authenticated');
-          if (auth && auth.notoken === '') {
+          if (auth !== true) {
             const msg = 'Please sign in to continue.';
             show(snackBar, msg);
             telemetry.recordGateDenied({

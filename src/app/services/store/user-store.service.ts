@@ -113,6 +113,7 @@ export class UserStoreService {
        resetStore() {
         this.state.update((state) => ({
           ...state,
+          isUserLoggedIn: false,
           account: new Account(), 
           roles: new Array<WifRole>(),
           activeRole: new WifRole(),

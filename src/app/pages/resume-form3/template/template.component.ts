@@ -8,7 +8,7 @@ import { SkillsCategorySectionComponent } from '../sections/skills-category-sect
 
 
 import { sections as defaultSections } from '../../../services/store/resume-sections';
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectorRef, Signal, effect, computed, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectorRef, Signal, effect, computed, signal, NgZone } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -125,6 +125,7 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  private sectionItemsCacheIntervalId: number | null = null;
   // Handles move up event from achievements section
   onMoveUpAchievement(index: number): void {
     const items = this.getSectionItems('ACHIEVEMENTS_BULLET_POINTS');
@@ -419,6 +420,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     private _formBuilder: FormBuilder,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private zone: NgZone,
     public dialog: MatDialog,
     public promptService: PromptService,
     public genaiService: GenAIService,
@@ -579,6 +581,10 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // this.userStore.setResumeSections([])
+    if (this.sectionItemsCacheIntervalId != null && typeof window !== 'undefined') {
+      window.clearInterval(this.sectionItemsCacheIntervalId);
+      this.sectionItemsCacheIntervalId = null;
+    }
     if (typeof window !== 'undefined') {
       window.removeEventListener('beforeunload', this.unloadHandler);
     }
@@ -641,16 +647,20 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
           });
         } else {
           // Fallback: poll for changes (for dev/test only)
-          setInterval(() => {
-            this.updateSectionItemsCache();
-          }, 500);
+          this.zone.runOutsideAngular(() => {
+            this.sectionItemsCacheIntervalId = window.setInterval(() => {
+              this.updateSectionItemsCache();
+            }, 500);
+          });
         }
       } else {
         // Production: use MutationObserver or manual trigger if needed
-        // For now, just update on every tick (safe for small apps)
-        setInterval(() => {
-          this.updateSectionItemsCache();
-        }, 1000);
+        // For now, just update on every tick outside Angular zone so it doesn't block SSR hydration stability.
+        this.zone.runOutsideAngular(() => {
+          this.sectionItemsCacheIntervalId = window.setInterval(() => {
+            this.updateSectionItemsCache();
+          }, 1000);
+        });
       }
     });
   }

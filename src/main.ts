@@ -1,8 +1,9 @@
-import { provideZoneChangeDetection } from "@angular/core";
+import 'zone.js';
+import 'zone.js/plugins/task-tracking';
+
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
-import { provideAnimations, provideNoopAnimations } from '@angular/platform-browser/animations';
 
 // Ensure "global" is only defined on the server (SSR)
 if (typeof global === 'undefined' && typeof window !== 'undefined') {
@@ -15,11 +16,4 @@ if (typeof global === 'undefined' && typeof window !== 'undefined') {
       createElement: () => ({})
     };
   }
-  bootstrapApplication(AppComponent, {
-    ...appConfig,  // Spread appConfig
-    providers: [
-      provideZoneChangeDetection(),...appConfig.providers!, // Ensure existing providers are included
-      typeof window !== 'undefined' ? provideAnimations() : provideNoopAnimations()
-    ]
-  })
-    .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));

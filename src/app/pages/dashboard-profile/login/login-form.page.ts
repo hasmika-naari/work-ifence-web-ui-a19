@@ -27,6 +27,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   imports: [RouterLink, RouterModule, ReactiveFormsModule, MatButtonModule, MatOptionModule, MatIconModule, MatCardModule, MatProgressBarModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './login-form.page.html',
   styleUrls: ['./login-form.page.scss'],
+  host: { 'data-cmp-id': 'dashboard-login-profile-form' },
 })
 export class LoginProfileFormPage implements OnInit, OnChanges, OnDestroy {
   

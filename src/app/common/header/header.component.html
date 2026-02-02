@@ -12,9 +12,15 @@
             <button mat-icon-button matTooltip="Home" (click)="goHome()" aria-label="Go to Home">
                 <mat-icon>home</mat-icon>
             </button>
-            <button mat-icon-button matTooltip="Profile / Account" (click)="openMenuSidenav.emit()" aria-label="Open account options">
-                <mat-icon>person</mat-icon>
-            </button>
+            @if (isLoggedIn()) {
+                <button mat-icon-button matTooltip="Profile / Account" (click)="openMenuSidenav.emit()" aria-label="Open account options">
+                    <mat-icon>person</mat-icon>
+                </button>
+            } @else {
+                <button mat-icon-button matTooltip="Login" (click)="goToLogin()" aria-label="Sign in">
+                    <mat-icon>login</mat-icon>
+                </button>
+            }
         </div>
     </div>
     </div>

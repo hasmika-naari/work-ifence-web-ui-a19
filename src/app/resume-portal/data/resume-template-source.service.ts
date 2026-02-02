@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Injectable, NgZone, PLATFORM_ID, inject, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { environment } from 'src/environments/environment';
@@ -108,6 +108,7 @@ const staticTemplatesFallback: ResumeTemplateDto[] = [
 @Injectable({ providedIn: 'root' })
 export class ResumeTemplateSourceService {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly zone = inject(NgZone);
   private readonly api = inject(ResumeTemplateApiService);
   private readonly storage = inject(LocalStorageService);
   private readonly useApi = signal(true);
@@ -156,11 +157,8 @@ export class ResumeTemplateSourceService {
       return;
     }
 
-    const isNodeRuntime =
-      typeof (globalThis as any).process !== 'undefined' &&
-      !!(globalThis as any).process?.versions?.node;
-
-    if (!isPlatformBrowser(this.platformId) || isNodeRuntime) {
+    // Only fetch templates in the browser. Server/SSR should not call the API here.
+    if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
@@ -178,33 +176,49 @@ export class ResumeTemplateSourceService {
       ? this.api.listAvailable()
       : this.api.listPublic();
 
-    request
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: (items) => {
-          const normalized = this.normalizeTemplates(items);
-          if (normalized.length > 0) {
-            this.setCache(this.activeMode, normalized);
-            this.templates.set(adaptResumeTemplates(normalized));
-            return;
-          }
-          this.templates.set([]);
-        },
-        error: (err) => {
-          console.warn('[ResumeTemplateSource] API failed, using static fallback.', err);
-          this.error.set(String(err?.message ?? 'Failed to load resume templates.'));
-          const cached = this.cacheByMode[this.activeMode]?.data;
-          if (cached && cached.length > 0) {
-            this.templates.set(adaptResumeTemplates(cached));
-          }
-        },
-      });
+    // Important for SSR hydration:
+    // `ApplicationRef.isStable` can stay false forever if the app has ongoing tasks (intervals, animations, etc).
+    // Instead of waiting for stability, we run the outbound HTTP call *outside Angular's zone* so it won't
+    // contribute to Angular's pending task tracking during hydration. We re-enter the zone only to update UI state.
+    this.zone.runOutsideAngular(() => {
+      const sub = request
+        .pipe(finalize(() => this.zone.run(() => this.loading.set(false))))
+        .subscribe({
+          next: (items) => {
+            this.zone.run(() => {
+              const normalized = this.normalizeTemplates(items);
+              if (normalized.length > 0) {
+                this.setCache(this.activeMode, normalized);
+                this.templates.set(adaptResumeTemplates(normalized));
+                return;
+              }
+              this.templates.set([]);
+            });
+          },
+          error: (err) => {
+            this.zone.run(() => {
+              console.warn('[ResumeTemplateSource] API failed, using static fallback.', err);
+              this.error.set(String(err?.message ?? 'Failed to load resume templates.'));
+              const cached = this.cacheByMode[this.activeMode]?.data;
+              if (cached && cached.length > 0) {
+                this.templates.set(adaptResumeTemplates(cached));
+              } else {
+                this.templates.set(adaptResumeTemplates(staticTemplatesFallback));
+              }
+            });
+          },
+        });
+
+      // Ensure finalize executes even if the observable is canceled elsewhere in the future.
+      sub.add(() => void 0);
+    });
   }
 
   private normalizeTemplates(items: ResumeTemplateDto[]): ResumeTemplateDto[] {
-    const active = items.filter(
-      (item) => (item.status ?? '').toString().toUpperCase() === 'ACTIVE'
-    );
+    const active = items.filter((item) => {
+      const status = (item.status ?? 'ACTIVE').toString().toUpperCase();
+      return status === 'ACTIVE';
+    });
 
     active.sort((a, b) => {
       const aOrder = Number.isFinite(Number(a.sortOrder)) ? Number(a.sortOrder) : Number.POSITIVE_INFINITY;

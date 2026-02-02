@@ -75,11 +75,44 @@
               </section>
 
               <section #templatesSection class="rp-section" aria-label="Resume templates">
-                <div class="rp-sticky">
-                  <div class="rp-toolbar-top">
-                    <div>
-                      <h2 class="rp-heading">Resume Templates</h2>
-                      <div class="rp-message">Choose the template to create resume.</div>
+                <div class="rp-toolbar-top">
+                  <div>
+                    <h2 class="rp-heading">Resume Templates</h2>
+                    <div class="rp-message">Choose the template to create resume.</div>
+                  </div>
+                </div>
+
+                <div #filtersSentinel class="rp-sticky-sentinel" aria-hidden="true"></div>
+
+                <div class="rp-sticky" [class.is-stuck]="filtersSticky">
+                  <div class="rp-filterbar" aria-label="Template filters">
+                    <div class="rp-filters rp-filters-inline">
+                      <label class="rp-filter">
+                        <span>Category</span>
+                        <select [value]="selectedCategory()" (change)="onCategoryChange($event)">
+                          @for (category of categoryOptions(); track category) {
+                            <option [value]="category">{{ category }}</option>
+                          }
+                        </select>
+                      </label>
+
+                      <label class="rp-filter">
+                        <span>Style</span>
+                        <select [value]="selectedStyle()" (change)="onStyleChange($event)">
+                          @for (style of styleOptions(); track style) {
+                            <option [value]="style">{{ style }}</option>
+                          }
+                        </select>
+                      </label>
+
+                      <label class="rp-filter rp-filter-search">
+                        <span>Search</span>
+                        <input
+                          type="search"
+                          [value]="searchQuery()"
+                          (input)="onSearchChange($event)"
+                          placeholder="Search by title or tags" />
+                      </label>
                     </div>
 
                     <button
@@ -91,35 +124,6 @@
                       <mat-icon aria-hidden="true">upload_file</mat-icon>
                       Upload Resume
                     </button>
-                  </div>
-
-                  <div class="rp-filters">
-                    <label class="rp-filter">
-                      <span>Category</span>
-                      <select [value]="selectedCategory()" (change)="onCategoryChange($event)">
-                        @for (category of categoryOptions(); track category) {
-                          <option [value]="category">{{ category }}</option>
-                        }
-                      </select>
-                    </label>
-
-                    <label class="rp-filter">
-                      <span>Style</span>
-                      <select [value]="selectedStyle()" (change)="onStyleChange($event)">
-                        @for (style of styleOptions(); track style) {
-                          <option [value]="style">{{ style }}</option>
-                        }
-                      </select>
-                    </label>
-
-                    <label class="rp-filter rp-filter-search">
-                      <span>Search</span>
-                      <input
-                        type="search"
-                        [value]="searchQuery()"
-                        (input)="onSearchChange($event)"
-                        placeholder="Search by title or tags" />
-                    </label>
                   </div>
                 </div>
 
@@ -149,7 +153,7 @@
                             }
                             <img class="rp-preview-img" [src]="item.imageUrl" [alt]="item.title" />
 
-                            <div class="rp-hover" aria-hidden="true">
+                            <div class="rp-hover">
                               <div class="rp-hover-inner">
                                 <button
                                   mat-flat-button

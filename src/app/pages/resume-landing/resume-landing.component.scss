@@ -342,7 +342,7 @@
 .rp-sticky {
   position: sticky;
   /* Keep the toolbar below the sticky header */
-  top: calc(var(--wf-header-height, 61px) + 12px);
+  top: var(--wf-header-height, 61px);
   z-index: 4;
   padding: 14px 14px 12px;
   border-radius: 14px;
@@ -360,7 +360,8 @@
   overflow: hidden;
 }
 
-.dark-course-area .rp-sticky {
+.rp-sticky.is-stuck {
+  /* Match the sticky header chrome (light glass) */
   background: linear-gradient(
     to bottom,
     rgba(18, 18, 18, 0.55) 0%,
@@ -372,8 +373,8 @@
 }
 
 /* Fade-out side rails (top -> bottom) without hard borders */
-.rp-sticky::before,
-.rp-sticky::after {
+.rp-sticky.is-stuck::before,
+.rp-sticky.is-stuck::after {
   content: '';
   position: absolute;
   top: 10px;
@@ -392,6 +393,10 @@
 }
 .rp-sticky::before { left: 0; }
 .rp-sticky::after { right: 0; }
+
+.rp-sticky-sentinel {
+  height: 1px;
+}
 
 .rp-flow {
   display: grid;
@@ -495,6 +500,14 @@
   margin-bottom: 10px;
 }
 
+.rp-filterbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
 .rp-filters {
   display: flex;
   flex-wrap: wrap;
@@ -503,6 +516,41 @@
   border-radius: 12px;
   border: 0;
   background: transparent;
+}
+
+.rp-filters-inline {
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: nowrap;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rp-filters-inline .rp-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.rp-filters-inline .rp-filter > span {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.rp-filters-inline .rp-filter select,
+.rp-filters-inline .rp-filter input {
+  min-width: 140px;
+  height: 36px;
+  padding: 6px 10px;
+}
+
+.rp-filters-inline .rp-filter-search input {
+  min-width: 220px;
 }
 
 /* Mobile-only floating actions */

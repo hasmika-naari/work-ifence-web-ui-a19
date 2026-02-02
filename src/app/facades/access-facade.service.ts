@@ -1,8 +1,10 @@
-import { Injectable, Injector, computed, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, Injector, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable, Subject, catchError, of, shareReplay, startWith, switchMap } from 'rxjs';
 import { AccessMeDto } from '../models/access-me.model';
 import { AccessApiService } from '../services/access-api.service';
+import { LocalStorageService } from '../services/local-storage.service';
 import type { FeatureDeniedReason, FeatureKey, FeaturePricingScope } from '../models/feature-key.model';
 import type { FeatureFlagKey } from 'src/app/models/feature-flag.model';
 import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
@@ -12,16 +14,25 @@ export class AccessFacadeService {
   private readonly injector = inject(Injector);
   private readonly api = inject(AccessApiService);
   private readonly remoteConfig = inject(RemoteConfigFacadeService);
+  private readonly storage = inject(LocalStorageService);
+
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
 
   private readonly refresh$ = new Subject<void>();
 
   readonly accessMe$: Observable<AccessMeDto> = this.refresh$.pipe(
     startWith(void 0),
-    switchMap(() =>
-      this.api.getAccessMe().pipe(
-        catchError(() => of({} as AccessMeDto))
-      )
-    ),
+    switchMap(() => {
+      // Important: /api/access/me returns 401 when logged out.
+      // Avoid calling it unless we have an authenticated session in the browser.
+      const shouldFetch = isPlatformBrowser(this.platformId) ? this.storage.isLoggedIn() : false;
+
+      if (!shouldFetch) {
+        return of({} as AccessMeDto);
+      }
+
+      return this.api.getAccessMe().pipe(catchError(() => of({} as AccessMeDto)));
+    }),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 

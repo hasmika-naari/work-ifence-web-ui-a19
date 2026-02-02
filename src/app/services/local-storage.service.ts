@@ -47,7 +47,13 @@ export class LocalStorageService {
   }
 
   getItem(key: string) {
-    return JSON.parse(localStorage.getItem(`${APP_PREFIX}${key}`) || '{"notoken": ""}');
+    const raw = localStorage.getItem(`${APP_PREFIX}${key}`);
+    if (raw === null) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return raw;
+    }
   }
 
   getItemByName(key: string) {
@@ -56,6 +62,16 @@ export class LocalStorageService {
 
   removeItem(key: string) {
     localStorage.removeItem(`${APP_PREFIX}${key}`);
+  }
+
+  /** Clears all auth-related state including remember-me credentials. */
+  clearAuthState(): void {
+    ['authToken', 'authenticated', 'rememberMe', 'userName', 'passWord'].forEach(k => this.removeItem(k));
+    try {
+      sessionStorage.removeItem(USER_KEY);
+    } catch {
+      // ignore
+    }
   }
 
   clean(): void {
@@ -78,12 +94,38 @@ export class LocalStorageService {
   }
 
   public isLoggedIn(): boolean {
-    // Primary signal: explicit authenticated flag
+    const tokenRaw = this.getItemByName('authToken');
+    if (!tokenRaw) return false;
+
+    const hasUsableToken = (() => {
+      try {
+        const token = JSON.parse(tokenRaw);
+
+        if (typeof token === 'string') {
+          return token.trim().length > 0;
+        }
+
+        // Some call sites may accidentally store objects; only treat known token shapes as valid.
+        if (token && typeof token === 'object') {
+          const maybeIdToken = (token as any).id_token;
+          if (typeof maybeIdToken === 'string') {
+            return maybeIdToken.trim().length > 0;
+          }
+          return false;
+        }
+
+        return false;
+      } catch {
+        return tokenRaw.trim().length > 0;
+      }
+    })();
+
+    // Primary signal: explicit authenticated flag, but require a real token.
     const authenticatedRaw = this.getItemByName('authenticated');
     if (authenticatedRaw) {
       try {
         if (JSON.parse(authenticatedRaw) === true) {
-          return true;
+          return hasUsableToken;
         }
       } catch {
         // ignore JSON parse issues
@@ -91,16 +133,7 @@ export class LocalStorageService {
     }
 
     // Fallback: token presence
-    const tokenRaw = this.getItemByName('authToken');
-    if (!tokenRaw) return false;
-
-    try {
-      const token = JSON.parse(tokenRaw);
-      if (typeof token === 'string') return token.trim().length > 0;
-      return !!token;
-    } catch {
-      return tokenRaw.trim().length > 0;
-    }
+    return hasUsableToken;
   }
 
   /** Tests that localStorage exists, can be written to, and read from. */
