@@ -52,7 +52,7 @@ export class AccessFacadeService {
 
   can(feature: FeatureKey, me: AccessMeDto = this.accessMeSignal()): boolean {
     const flagKey = this.featureToFlagKey(feature);
-    if (flagKey && !this.remoteConfig.isFlagEnabled(flagKey)) {
+    if (flagKey && !this.remoteConfig.isFlagEnabledSafe(flagKey)) {
       this.lastDeniedReason.set({
         feature,
         code: 'FEATURE_DISABLED_BY_ADMIN',
@@ -119,7 +119,7 @@ export class AccessFacadeService {
 
   denyMessage(feature: FeatureKey, me: AccessMeDto = this.accessMeSignal()): string {
     const flagKey = this.featureToFlagKey(feature);
-    if (flagKey && !this.remoteConfig.isFlagEnabled(flagKey)) {
+    if (flagKey && !this.remoteConfig.isFlagEnabledSafe(flagKey)) {
       return 'This feature is temporarily disabled.';
     }
 

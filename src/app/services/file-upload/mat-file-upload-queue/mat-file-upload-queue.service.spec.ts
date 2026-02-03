@@ -1,14 +1,14 @@
-import { TestBed, async } from "@angular/core/testing";
+import { TestBed, waitForAsync } from "@angular/core/testing";
 
 import { MatFileUploadQueueService } from "./mat-file-upload-queue.service";
 
 describe("MatFileUploadQueueService", () => {
   let service: MatFileUploadQueueService;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [MatFileUploadQueueService],
     }).compileComponents();
-    service = TestBed.get(MatFileUploadQueueService);
+    service = TestBed.inject(MatFileUploadQueueService);
   }));
 
   it("should be created", () => {
@@ -16,7 +16,7 @@ describe("MatFileUploadQueueService", () => {
   });
 
   it("should initialize", () => {
-    expect(service.getInputValue()).toBe(null);
+    expect(service.getInputValue()).toBe('');
     service.initialize({
       fileAlias: "test",
       httpRequestHeaders: {},

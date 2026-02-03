@@ -16,7 +16,7 @@ export class HometwelveAboutComponent {
     isToggled = false;
 
     private readonly remoteConfig = inject(RemoteConfigFacadeService);
-    readonly courseCentralEnabled = computed(() => this.remoteConfig.isFlagEnabled('COURSE_CENTRAL'));
+    readonly courseCentralEnabled = computed(() => this.remoteConfig.isFlagEnabledSafe('COURSE_CENTRAL'));
 	
     constructor(
         public themeService: ThemeCustomizerService

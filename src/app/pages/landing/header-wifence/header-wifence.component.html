@@ -14,7 +14,7 @@
             <ul class="navbar-nav main-nav">
               @for (item of filteredMenuListStore(); track item.id) {
                 <li class="nav-item" [class.dropdown]="item.menuItems && item.menuItems.length > 0">
-                  <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [attr.aria-haspopup]="(item.menuItems?.length||0) > 0 ? 'true' : null">
+                  <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [attr.aria-haspopup]="item.menuItems.length > 0 ? 'true' : null">
                     @if(item.icon && item.route !== '/sign-in') {
                       <lucide-icon [name]="item.icon"></lucide-icon>
                     }

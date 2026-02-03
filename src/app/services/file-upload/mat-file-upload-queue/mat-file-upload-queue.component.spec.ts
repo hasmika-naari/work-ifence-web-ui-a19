@@ -1,28 +1,18 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { MatFileUploadQueueComponent } from "./mat-file-upload-queue.component";
-import {
-  MatProgressBarModule,
-  MatCardModule,
-  MatButtonModule,
-  MatIconModule,
-} from "@angular/material";
 import { CommonModule } from "@angular/common";
 
 describe("MatFileUploadQueueComponent", () => {
   let component: MatFileUploadQueueComponent;
   let fixture: ComponentFixture<MatFileUploadQueueComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        MatProgressBarModule,
-        MatCardModule,
-        MatButtonModule,
-        MatIconModule,
+        MatFileUploadQueueComponent,
         CommonModule,
       ],
-      declarations: [MatFileUploadQueueComponent],
     }).compileComponents();
   }));
 
@@ -44,6 +34,7 @@ describe("MatFileUploadQueueComponent", () => {
 
   it("should add more file", () => {
     expect(component.files).toEqual([]);
+    component.isMultiple = true;
     component.add(new Blob());
     component.add(new Blob());
     component.add(new Blob());
@@ -52,6 +43,7 @@ describe("MatFileUploadQueueComponent", () => {
 
   it("should remove all files", () => {
     expect(component.files).toEqual([]);
+    component.isMultiple = true;
     component.add(new Blob());
     component.add(new Blob());
     component.add(new Blob());

@@ -56,8 +56,58 @@ export class RemoteConfigFacadeService {
    */
   isFlagEnabled(key: FeatureFlagKey): boolean {
     const flag = this.getFlag(key);
-    if (!flag) return true;
+    if (!flag) {
+      // Fail-closed in production: missing flags must NOT enable functionality.
+      if (environment.production) return false;
 
+      // Dev/preview: keep UI usable, but warn loudly.
+      console.warn(`[RemoteConfig] Missing feature flag key '${String(key)}' in dev. Defaulting to enabled.`);
+      return true;
+    }
+
+    if (flag.enabled !== true) return false;
+
+    const rollout = flag.rolloutPercent;
+    if (typeof rollout === 'number') {
+      const pct = Math.max(0, Math.min(100, rollout));
+      if (pct >= 100) return true;
+      if (pct <= 0) return false;
+
+      const cohortId = this.getCohortId();
+      const bucket = this.hashToBucket(`${cohortId}:${key}`);
+      return bucket < pct;
+    }
+
+    return true;
+  }
+
+  /**
+   * Safe flag check for dynamic keys.
+   * - Production: missing/unknown keys evaluate to false.
+   * - Dev: missing/unknown keys may evaluate to true (DEV fallback) and will warn.
+   */
+  isFlagEnabledSafe(flagKey: string): boolean {
+    const key = (flagKey ?? '').trim();
+    if (!key) {
+      console.warn('[RemoteConfig] Missing feature flag key (empty). Defaulting to disabled.');
+      return false;
+    }
+
+    const map = this.flagsMap();
+    const flag = map.get(key as FeatureFlagKey);
+    if (!flag) {
+      if (environment.production) {
+        console.warn(`[RemoteConfig] Missing feature flag key '${key}' in production. Defaulting to disabled.`);
+        return false;
+      }
+
+      console.warn(
+        `[RemoteConfig] Missing feature flag key '${key}' in dev. DEV fallback used (defaulting to enabled).`
+      );
+      return true;
+    }
+
+    // Inline the same evaluation logic as isFlagEnabled() to avoid double lookups.
     if (flag.enabled !== true) return false;
 
     const rollout = flag.rolloutPercent;

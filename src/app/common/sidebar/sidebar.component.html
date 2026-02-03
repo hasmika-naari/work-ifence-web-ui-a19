@@ -48,76 +48,79 @@
   <div class="sidebar-inner">
     <div class="sidebar-menu">
       <mat-accordion>
-        <div style="margin-top:10px;margin-bottom:20px;border-bottom: 1px dotted gray;">
-          <!-- OTHERS -->
-        </div>
-        @for (mListItem of menuList; track mListItem; let i = $index) {
-          <a [routerLink]="mListItem.url"
-            class="sidebar-menu-link" routerLinkActive="active"
-            [routerLinkActiveOptions]="{exact: true}">
-            <i-feather [name]="mListItem.icon"></i-feather>
-            <span class="title">
-              {{mListItem.title}}
-            </span>
-          </a>
+        @for (section of navSections(); track section.id) {
+          <ng-container *ngIf="section.dividerBefore">
+            <mat-divider></mat-divider>
+          </ng-container>
+          <ng-container *ngIf="section.title">
+            <div class="sidebar-section-title">{{section.title}}</div>
+          </ng-container>
+          @for (item of section.items; track item.id) {
+            <ng-container *ngIf="item.visible === true">
+            <ng-container *ngIf="!item.children || item.children.length === 0">
+                    <a *ngIf="item.route" [routerLink]="item.route" [queryParams]="item.queryParams" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                 [matTooltip]="item.tooltip || (item.enabled === false ? item.lockedReason : '')"
+                 [class.locked]="item.enabled === false"
+                 [attr.aria-disabled]="item.enabled === false ? true : null"
+                 (click)="item.enabled === false ? onLockedMenuClick(item, $event) : null">
+                <i-feather [name]="item.icon"></i-feather>
+                <span class="title">{{item.title}}</span>
+                <mat-icon *ngIf="item.enabled === false" class="lock-icon">lock</mat-icon>
+                <span *ngIf="item.badge" class="sidebar-badge" [ngClass]="item.badge.type">{{item.badge.text}}</span>
+                <button *ngIf="item.enabled === false" mat-stroked-button color="primary" class="upgrade-btn"
+                  (click)="$event.stopPropagation(); onLockedMenuClick(item, $event)">Upgrade</button>
+                    </a>
+              <a *ngIf="item.externalUrl" [href]="item.externalUrl" target="_blank" rel="noopener" class="sidebar-menu-link" [matTooltip]="item.tooltip">
+                <i-feather [name]="item.icon"></i-feather>
+                <span class="title">{{item.title}}</span>
+                <span *ngIf="item.badge" class="sidebar-badge" [ngClass]="item.badge.type">{{item.badge.text}}</span>
+              </a>
+            </ng-container>
+            <ng-container *ngIf="item.children && item.children.length > 0">
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <i-feather [name]="item.icon"></i-feather>
+                    <span class="title">{{item.title}}</span>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <ul class="sidebar-sub-menu">
+                  @for (child of item.children; track child.id) {
+                    <ng-container *ngIf="child.visible === true">
+                    <li class="sidemenu-item">
+                      <a *ngIf="child.route && child.enabled !== false" [routerLink]="child.route" [queryParams]="child.queryParams" class="sidemenu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [matTooltip]="child.tooltip">
+                        <i-feather [name]="child.icon"></i-feather>
+                        <span class="title">{{child.title}}</span>
+                        <span *ngIf="child.badge" class="sidebar-badge" [ngClass]="child.badge.type">{{child.badge.text}}</span>
+                      </a>
+                      <a *ngIf="child.route && child.enabled === false" class="sidemenu-link locked" [matTooltip]="child.lockedReason || 'Upgrade to unlock'" (click)="$event.preventDefault(); router.navigate(['/user/billing/upgrade'], { queryParams: { feature: child.entitlementKey, returnUrl: router.url } })">
+                        <i-feather [name]="child.icon"></i-feather>
+                        <span class="title">{{child.title}}</span>
+                        <mat-icon class="lock-icon">lock</mat-icon>
+                        <span *ngIf="child.badge" class="sidebar-badge" [ngClass]="child.badge.type">{{child.badge.text}}</span>
+                        <button mat-stroked-button color="primary" class="upgrade-btn" (click)="$event.stopPropagation(); router.navigate(['/user/billing/upgrade'], { queryParams: { feature: child.entitlementKey, returnUrl: router.url } })">Upgrade</button>
+                      </a>
+                      <a *ngIf="child.externalUrl" [href]="child.externalUrl" target="_blank" rel="noopener" class="sidemenu-link" [matTooltip]="child.tooltip">
+                        <i-feather [name]="child.icon"></i-feather>
+                        <span class="title">{{child.title}}</span>
+                        <span *ngIf="child.badge" class="sidebar-badge" [ngClass]="child.badge.type">{{child.badge.text}}</span>
+                      </a>
+                    </li>
+                    </ng-container>
+                  }
+                </ul>
+              </mat-expansion-panel>
+            </ng-container>
+            <ng-container *ngIf="item.dividerAfter">
+              <mat-divider></mat-divider>
+            </ng-container>
+            </ng-container>
+          }
+          <ng-container *ngIf="section.dividerAfter">
+            <mat-divider></mat-divider>
+          </ng-container>
         }
-        <!-- <a routerLink="/user/resumes" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i-feather name="file-text"></i-feather>
-        <span class="title">
-          Resumes
-        </span>
-      </a>
-      <a routerLink="/user/job-applications" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i-feather name="file"></i-feather>
-        <span class="title">
-          Job Applications
-        </span>
-      </a>
-      <a routerLink="/user/user-learn" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i-feather name="book-open"></i-feather>
-        <span class="title">
-          Learn
-        </span>
-      </a> -->
-
-      <div style="margin-top:10px;margin-bottom:20px;border-bottom: 1px dotted gray;">
-        <!-- OTHERS -->
-
-      </div>
-
-      <a routerLink="/user/profile" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i-feather name="user"></i-feather>
-        <span class="title">
-          My Profile
-        </span>
-      </a>
-      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <i-feather name="settings"></i-feather>
-            <span class="title">
-              Settings
-            </span>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <ul class="sidebar-sub-menu">
-          <li class="sidemenu-item">
-            <a routerLink="/settings" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-              Account Settings
-            </a>
-          </li>
-          <li class="sidemenu-item">
-            <a routerLink="/settings/change-password" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-              Change Password
-            </a>
-          </li>
-        </ul>
-      </mat-expansion-panel>
-      <a routerLink="/authentication/logout" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i-feather name="log-out"></i-feather>
-        <span class="title">Logout</span>
-      </a>
-    </mat-accordion>
+      </mat-accordion>
   </div>
 </div>
 </ng-scrollbar>

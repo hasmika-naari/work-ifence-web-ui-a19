@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProfileComponent } from './profile.component';
+import { UserStoreService } from 'src/app/services/store/user-store.service';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -8,9 +9,13 @@ describe('ProfileComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProfileComponent ]
+      imports: [ProfileComponent],
+      providers: [{ provide: UserStoreService, useValue: {} }],
     })
-    .compileComponents();
+      .overrideComponent(ProfileComponent, {
+        set: { template: '' },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {

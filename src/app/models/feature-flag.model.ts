@@ -6,6 +6,8 @@ export type FeatureFlagKey =
   | 'ALERTS'
   | 'ENTERPRISE_CONSOLE'
   | 'ADMIN_CONSOLE'
+  | 'SUBSCRIPTIONS'
+  | 'NAV_PLACEHOLDER'
   | 'PAYMENTS'
   | 'NEWS_FEED';
 

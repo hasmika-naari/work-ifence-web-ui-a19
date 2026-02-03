@@ -78,7 +78,7 @@ export const accessGuard: CanActivateFn = (
       const isAdmin = accessFacade.isAdmin(me);
 
       if (data.requireFlag) {
-        if (!remoteConfig.isFlagEnabled(data.requireFlag)) {
+        if (!remoteConfig.isFlagEnabledSafe(data.requireFlag)) {
           const msg = 'This feature is temporarily disabled.';
           show(snackBar, msg);
           telemetry.recordGateDenied({

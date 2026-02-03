@@ -54,7 +54,7 @@ export class AdminFeatureFlagsComponent {
   });
 
   isEffectiveEnabled(key: FeatureFlagKey): boolean {
-    return this.remoteConfig.isFlagEnabled(key);
+    return this.remoteConfig.isFlagEnabledSafe(key);
   }
 
   getEdit(key: FeatureFlagKey): FlagEdit {

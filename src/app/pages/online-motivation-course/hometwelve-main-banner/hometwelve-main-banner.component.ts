@@ -22,7 +22,7 @@ export class HometwelveMainBannerComponent implements OnInit {
     isMobile = false;
 
     private readonly remoteConfig = inject(RemoteConfigFacadeService);
-    readonly courseCentralEnabled = computed(() => this.remoteConfig.isFlagEnabled('COURSE_CENTRAL'));
+    readonly courseCentralEnabled = computed(() => this.remoteConfig.isFlagEnabledSafe('COURSE_CENTRAL'));
 
       homeSlides: OwlOptions = {
             items: 1,

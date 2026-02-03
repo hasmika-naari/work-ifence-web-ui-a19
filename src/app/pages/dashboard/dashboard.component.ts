@@ -112,7 +112,7 @@ export class DashboardComponent {
     ];
 
     // Enterprise admin gets extra shortcuts (UI-only; no backend change)
-    if (this.isEnterpriseAdminView() && this.remoteConfig.isFlagEnabled('ENTERPRISE_CONSOLE')) {
+    if (this.isEnterpriseAdminView() && this.remoteConfig.isFlagEnabledSafe('ENTERPRISE_CONSOLE')) {
       base.push({
         key: 'enterprise-requests',
         icon: 'assets/jobtrackerai-icon.png',

@@ -167,20 +167,20 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
 
         // Kill-switchable feature areas.
         if (r.includes('course-central')) {
-            return this.remoteConfig.isFlagEnabled('COURSE_CENTRAL');
+            return this.remoteConfig.isFlagEnabledSafe('COURSE_CENTRAL');
         }
         if (r.startsWith('/user/job-applications')) {
             // Effective access = flag && entitlement.
             return this.accessFacade.can('JOB_TRACKING');
         }
         if (r.startsWith('/resume-portal')) {
-            return this.remoteConfig.isFlagEnabled('RESUME_PORTAL');
+            return this.remoteConfig.isFlagEnabledSafe('RESUME_PORTAL');
         }
         if (r.startsWith('/user/dashboard-admin') || r.startsWith('/user/admin')) {
-            return this.remoteConfig.isFlagEnabled('ADMIN_CONSOLE');
+            return this.remoteConfig.isFlagEnabledSafe('ADMIN_CONSOLE');
         }
         if (r.startsWith('/user/enterprise')) {
-            return this.remoteConfig.isFlagEnabled('ENTERPRISE_CONSOLE');
+            return this.remoteConfig.isFlagEnabledSafe('ENTERPRISE_CONSOLE');
         }
 
         return true;
