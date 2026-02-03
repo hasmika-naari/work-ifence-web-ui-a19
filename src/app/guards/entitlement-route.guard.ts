@@ -28,15 +28,31 @@ export const entitlementRouteGuard: CanActivateFn = (
   const entitlementKey = (data.entitlementKey ?? '').toString();
   const minPlan = toPlanTier(data.minPlan);
 
-  // Contract: if this guard is applied, route.data.entitlementKey must be set.
-  // Dev: warn + allow to avoid blocking local navigation.
-  // Prod: fail-closed (deny) to prevent accidental bypass.
+  // CONTRACT (fail-closed):
+  // If a route uses `entitlementRouteGuard`, it MUST declare `data.entitlementKey`.
+  // - If `data.entitlementKey` is missing/empty: deny access.
+  //   - Prod: console.error (include route path) + return false
+  //   - Dev:  console.warn (misconfiguration) + return false
+  // - If `data.entitlementKey` is present: preserve existing behavior.
   if (!entitlementKey) {
+    const routePath =
+      route.routeConfig?.path ??
+      route.url?.map((u) => u.path).filter(Boolean).join('/') ??
+      state.url;
     if (!environment.production) {
       // eslint-disable-next-line no-console
-      console.warn('[entitlementRouteGuard] Missing route data (entitlementKey). Allowing in dev:', state.url);
-      return true;
+      console.warn(
+        '[entitlementRouteGuard] Misconfigured route: missing data.entitlementKey. Denying access in dev.',
+        { routePath, url: state.url },
+      );
+      return false;
     }
+
+    // eslint-disable-next-line no-console
+    console.error('[entitlementRouteGuard] Misconfigured route: missing data.entitlementKey. Denying access.', {
+      routePath,
+      url: state.url,
+    });
     return false;
   }
 

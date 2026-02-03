@@ -3,6 +3,8 @@ import path from 'node:path';
 import ts from 'typescript';
 
 const repoRoot = process.cwd();
+const argv = new Set(process.argv.slice(2));
+const isCi = argv.has('--ci');
 
 function readText(relPath) {
   return fs.readFileSync(path.join(repoRoot, relPath), 'utf8');
@@ -286,6 +288,11 @@ function audit() {
 
   const routeMap = flattenRoutes(maps);
 
+  const entitlementGuardRoutesMissingKey = Object.values(routeMap)
+    .filter((r) => (r.guards ?? []).some((g) => g.includes('entitlementRouteGuard')))
+    .filter((r) => !r.entitlementKey)
+    .map((r) => ({ absPath: r.absPath, guards: (r.guards ?? []).join(', ') }));
+
   const rows = navItems
     .filter((i) => i.route || i.isGroup)
     .map((i) => {
@@ -365,7 +372,7 @@ function audit() {
     group: rows.filter((r) => r.status === 'GROUP').length,
   };
 
-  return { summary, rows };
+  return { summary, rows, entitlementGuardRoutesMissingKey };
 }
 
 function toMarkdownTable(rows) {
@@ -394,13 +401,42 @@ function toMarkdownTable(rows) {
   return [header, sep, ...lines].join('\n');
 }
 
-const { summary, rows } = audit();
+const { summary, rows, entitlementGuardRoutesMissingKey } = audit();
 
-fs.writeFileSync(path.join(repoRoot, 'audit/nav-route-audit.json'), JSON.stringify({ summary, rows }, null, 2));
-fs.writeFileSync(path.join(repoRoot, 'audit/nav-route-audit.md'), `# Nav/Route Gating Audit\n\nSummary: ${JSON.stringify(summary)}\n\n${toMarkdownTable(rows)}\n`);
+fs.mkdirSync(path.join(repoRoot, 'audit'), { recursive: true });
+
+fs.writeFileSync(
+  path.join(repoRoot, 'audit/nav-route-audit.json'),
+  JSON.stringify({ summary, rows, entitlementGuardRoutesMissingKey }, null, 2),
+);
+fs.writeFileSync(
+  path.join(repoRoot, 'audit/nav-route-audit.md'),
+  `# Nav/Route Gating Audit\n\nSummary: ${JSON.stringify(summary)}\n\n${toMarkdownTable(rows)}\n`,
+);
 
 const failed = rows.filter((r) => r.status.startsWith('FAIL'));
-if (failed.length) {
+
+const visibleDeadLinks = rows.filter((r) => r.status === 'FAIL (no route)');
+
+if (isCi) {
+  const ciErrors = [];
+  if (failed.length) ciErrors.push(`FAIL rows: ${failed.length}`);
+  if (visibleDeadLinks.length) ciErrors.push(`Visible dead links: ${visibleDeadLinks.length}`);
+  if (entitlementGuardRoutesMissingKey.length) {
+    ciErrors.push(`entitlementRouteGuard missing data.entitlementKey: ${entitlementGuardRoutesMissingKey.length}`);
+  }
+
+  if (ciErrors.length) {
+    console.error(`Audit CI FAIL: ${ciErrors.join(' | ')}. See audit/nav-route-audit.md/json`);
+    if (entitlementGuardRoutesMissingKey.length) {
+      console.error('Routes missing entitlementKey (guarded by entitlementRouteGuard):');
+      for (const r of entitlementGuardRoutesMissingKey) console.error(`- ${r.absPath}`);
+    }
+    process.exitCode = 1;
+  } else {
+    console.log(`Audit CI PASS: ${summary.pass} PASS, ${summary.hidden} hidden, ${summary.group} groups.`);
+  }
+} else if (failed.length) {
   console.error(`Audit FAIL: ${failed.length} items failing. See audit/nav-route-audit.md`);
   process.exitCode = 2;
 } else {

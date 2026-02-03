@@ -10,6 +10,8 @@
     "build:ssr:dev:watch": "ng build --configuration development-ssr --watch",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "audit:nav": "node tools/nav-route-audit.mjs",
+    "audit:nav:ci": "node tools/nav-route-audit.mjs --ci",
     "serve:ssr:workifence": "node dist/workifence/server/server.mjs",
     "ssr:local": "npm run build:ssr:dev && set FORCE_HTTP=true&& set PORT=4000&& node dist/workifence/server/server.mjs",
     "serve:ssr:local:watch": "set FORCE_HTTP=true&& set PORT=4000&& node --watch dist/workifence/server/server.mjs",

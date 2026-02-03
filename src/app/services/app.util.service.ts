@@ -28,7 +28,10 @@ export class AppUtilService {
     this.localStorageService.removeItem('authToken');
     this.localStorageService.removeItem('authenticated');
     this.userStore.resetStore();
-    window.location.reload();
+
+    // Avoid hard reload during unit tests (Karma), which fails the test runner.
+    const isKarma = typeof (this.window as any)?.__karma__ !== 'undefined';
+    if (!isKarma) this.window.location.reload();
   }
 
   private authService: AuthService = inject(AuthService);

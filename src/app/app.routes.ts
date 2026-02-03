@@ -274,13 +274,13 @@ export const routes: Routes = [
                             path: '',
                             loadComponent: () => 
                             import('./pages/online-motivation-course/online-motivation-course.component')
-                            .then(m => m.OnlineMotivationCourseComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+                            .then(m => m.OnlineMotivationCourseComponent), data: {reuseComponent: true, breadcrumb: 'Course Central', requireFlag: 'COURSE_CENTRAL', entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL }
                         },
                          {
                             path: 'courses',
                             loadComponent: () => 
                                 import('./pages/course-central/course-central.component')
-                                    .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
+                                    .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central', requireFlag: 'COURSE_CENTRAL', entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL }
                         }
                     ]
             },
@@ -511,13 +511,10 @@ export const routes: Routes = [
                 data: { reuseComponent: true, breadcrumb: 'Resume Builder', requireFlag: 'RESUME_BUILDER', entitlementKey: ENTITLEMENT_KEYS.RESUME_BUILDER },
             },
             {   
-                path: 'job-applications', 
-                canActivate: [accessGuard],
-                loadComponent: () => import('./pages/job-applications-tracker/applications-dashboard.component').then(m => m.ApplicationsDashboardComponent), 
-                data: { breadcrumb: 'Job Applications', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual' } 
+                path: 'job-applications',
                 canActivate: [entitlementRouteGuard, accessGuard],
-                loadComponent: () => import('./pages/dashboard-job-application/dashboard-job-application.component').then(m => m.DashboardJobApplicationComponent), 
-                data: { breadcrumb: 'Job Applications', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual', entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING } 
+                loadComponent: () => import('./pages/job-applications-tracker/applications-dashboard.component').then(m => m.ApplicationsDashboardComponent),
+                data: { breadcrumb: 'Job Applications', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual', entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING }
             },
             {
                 path: 'job-applications/application',

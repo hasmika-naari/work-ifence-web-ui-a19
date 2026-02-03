@@ -26,7 +26,7 @@ describe('entitlementRouteGuard', () => {
     environment.production = originalProduction;
   });
 
-  it('allows in dev when entitlementKey is missing (warns)', () => {
+  it('denies in dev when entitlementKey is missing (warns)', () => {
     environment.production = false;
     spyOn(console, 'warn');
 
@@ -35,12 +35,13 @@ describe('entitlementRouteGuard', () => {
 
     const result = TestBed.runInInjectionContext(() => entitlementRouteGuard(route, state));
 
-    expect(result).toBeTrue();
+    expect(result).toBeFalse();
     expect(console.warn).toHaveBeenCalled();
   });
 
-  it('denies in production when entitlementKey is missing', () => {
+  it('denies in production when entitlementKey is missing (errors)', () => {
     environment.production = true;
+    spyOn(console, 'error');
 
     const route = { data: {} } as any;
     const state = { url: '/somewhere' } as any;
@@ -48,6 +49,7 @@ describe('entitlementRouteGuard', () => {
     const result = TestBed.runInInjectionContext(() => entitlementRouteGuard(route, state));
 
     expect(result).toBeFalse();
+    expect(console.error).toHaveBeenCalled();
   });
 
   it('allows when entitlement service grants access', () => {
@@ -74,7 +76,12 @@ describe('entitlementRouteGuard', () => {
 
     const result = TestBed.runInInjectionContext(() => entitlementRouteGuard(route, state));
 
-    expect(router.createUrlTree).toHaveBeenCalled();
+    expect(router.createUrlTree).toHaveBeenCalledWith(['/user/billing/upgrade'], {
+      queryParams: {
+        feature: 'feature.x',
+        returnUrl: '/feature-x',
+      },
+    });
     expect(result).toBe(urlTree);
   });
 });
