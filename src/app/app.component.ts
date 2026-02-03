@@ -1,6 +1,7 @@
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, inject, Inject, OnInit, PLATFORM_ID, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, Inject, OnInit, PLATFORM_ID, Renderer2 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { HeaderComponent } from './common/header/header.component';
 import { FooterComponent } from './common/footer/footer.component';
 import { ToggleService } from '../app/common/header/toggle.service';
@@ -32,10 +33,12 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ErrorHandler } from '@angular/core';
 import { GlobalErrorHandler } from './services/global-error-handler';
 import { MessageService } from 'primeng/api';
+import { AccessFacadeService } from './facades/access-facade.service';
+import { FeatureGateNoticeComponent } from './shared/feature-gate-notice/feature-gate-notice.component';
 @Component({
     selector: 'app-root',
     imports: [RouterOutlet, RouterModule, CommonModule, LoadingScreenComponent,
-      SidebarComponent, HeaderComponent, FooterComponent, LoadingBarModule, ScrollPositionDirective, ToastModule],
+      SidebarComponent, HeaderComponent, FooterComponent, LoadingBarModule, ScrollPositionDirective, ToastModule, FeatureGateNoticeComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -124,6 +127,29 @@ export class AppComponent implements OnInit, AfterViewInit{
     // private appUtilService: AppUtilService =  inject(AppUtilService);
     private locationService:Location =  inject(Location);
     public  router:Router =  inject(Router);
+    private accessFacade: AccessFacadeService = inject(AccessFacadeService);
+    readonly deniedReason = this.accessFacade.lastDeniedReason;
+    readonly accessLoggedIn = this.accessFacade.isLoggedIn;
+    readonly currentUrl = toSignal(
+      this.router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map((event) => (event as NavigationEnd).urlAfterRedirects || this.router.url)
+      ),
+      { initialValue: this.router.url }
+    );
+
+    readonly isPublicRoute = computed(() => {
+      const raw = this.currentUrl() ?? '';
+      const path = raw.split('?')[0].split('#')[0] || '/';
+
+      if (path === '/' || path === '/pricing') return true;
+      if (path.startsWith('/auth') || path.startsWith('/authentication')) return true;
+      if (path.startsWith('/public')) return true;
+
+      return false;
+    });
+
+    readonly showGateNotice = computed(() => !!this.deniedReason() && !this.isPublicRoute());
     
 
     constructor(

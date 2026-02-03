@@ -1,9 +1,9 @@
 {
   "summary": {
-    "total": 63,
-    "pass": 15,
-    "fail": 0,
-    "hidden": 48,
+    "total": 62,
+    "pass": 1,
+    "fail": 14,
+    "hidden": 47,
     "group": 0
   },
   "rows": [
@@ -14,11 +14,9 @@
       "route": "/user/dashboard-admin",
       "navFlag": "ADMIN_CONSOLE",
       "navEnt": "admin.console",
-      "routeFlag": "ADMIN_CONSOLE",
-      "routeEnt": "admin.console",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -27,10 +25,9 @@
       "title": "Requests",
       "route": "/user/requests",
       "navEnt": "admin.requests",
-      "routeEnt": "admin.requests",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -112,11 +109,9 @@
       "route": "/user/admin/plans",
       "navFlag": "SUBSCRIPTIONS",
       "navEnt": "admin.billing.plans",
-      "routeFlag": "SUBSCRIPTIONS",
-      "routeEnt": "admin.billing.plans",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -162,11 +157,9 @@
       "route": "/user/admin/feature-flags",
       "navFlag": "ADMIN_CONSOLE",
       "navEnt": "admin.featureflags",
-      "routeFlag": "ADMIN_CONSOLE",
-      "routeEnt": "admin.featureflags",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -176,11 +169,9 @@
       "route": "/user/admin/resume-templates",
       "navFlag": "ADMIN_CONSOLE",
       "navEnt": "admin.resume.templates",
-      "routeFlag": "ADMIN_CONSOLE",
-      "routeEnt": "admin.resume.templates",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -284,10 +275,9 @@
       "title": "Dashboard",
       "route": "/user/dashboard",
       "navEnt": "user.dashboard",
-      "routeEnt": "user.dashboard",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -309,11 +299,9 @@
       "route": "/user/resumes",
       "navFlag": "RESUME_PORTAL",
       "navEnt": "resume.portal",
-      "routeFlag": "RESUME_PORTAL",
-      "routeEnt": "resume.portal",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -413,11 +401,9 @@
       "route": "/user/job-applications",
       "navFlag": "JOB_TRACKING",
       "navEnt": "job.tracking",
-      "routeFlag": "JOB_TRACKING",
-      "routeEnt": "job.tracking",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -474,30 +460,13 @@
     {
       "role": "user",
       "section": "Job Tracking",
-      "title": "Job Alerts",
-      "route": "/notifications",
-      "navFlag": "NAV_PLACEHOLDER",
-      "navEnt": "job.alerts",
-      "navPlan": "PlanTier.PRO",
-      "routeFlag": "ALERTS",
-      "routeEnt": "job.alerts",
-      "routeGuards": "entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "HIDDEN (route exists)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
-    },
-    {
-      "role": "user",
-      "section": "Job Tracking",
       "title": "Analytics",
       "route": "/user/job-analytics",
       "navEnt": "job.analytics",
       "navPlan": "PlanTier.PRO",
-      "routeEnt": "job.analytics",
-      "routePlan": "PlanTier.PRO",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -533,11 +502,9 @@
       "route": "/user/user-learn",
       "navFlag": "COURSE_CENTRAL",
       "navEnt": "learn.portal",
-      "routeFlag": "COURSE_CENTRAL",
-      "routeEnt": "learn.portal",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -546,10 +513,9 @@
       "title": "Saved",
       "route": "/user/learn-saved",
       "navEnt": "learn.saved",
-      "routeEnt": "learn.saved",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -623,11 +589,9 @@
       "route": "/notifications",
       "navFlag": "ALERTS",
       "navEnt": "job.alerts",
-      "routeFlag": "ALERTS",
-      "routeEnt": "job.alerts",
-      "routeGuards": "entitlementRouteGuard, accessGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -648,10 +612,9 @@
       "title": "Upgrade",
       "route": "/user/billing/upgrade",
       "navEnt": "billing.upgrade",
-      "routeEnt": "billing.upgrade",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -720,10 +683,9 @@
       "title": "My Profile",
       "route": "/user/profile",
       "navEnt": "profile",
-      "routeEnt": "profile",
-      "routeGuards": "AuthGuardService, entitlementRouteGuard",
-      "exists": true,
-      "status": "PASS",
+      "routeGuards": "",
+      "exists": false,
+      "status": "FAIL (no route)",
       "notes": ""
     },
     {
@@ -798,5 +760,11 @@
       "notes": ""
     }
   ],
-  "entitlementGuardRoutesMissingKey": []
+  "entitlementGuardRoutesMissingKey": [],
+  "lint": {
+    "navRawFeatureFlags": [],
+    "navRawEntitlementKeys": [],
+    "navUnknownFeatureFlags": [],
+    "navUnknownEntitlementKeys": []
+  }
 }

@@ -12,12 +12,17 @@
     "test": "ng test",
     "audit:nav": "node tools/nav-route-audit.mjs",
     "audit:nav:ci": "node tools/nav-route-audit.mjs --ci",
+    "e2e": "playwright test -c e2e/playwright.config.ts",
+    "e2e:ui": "playwright test -c e2e/playwright.config.ts --ui",
+    "e2e:ci": "npm run build && npm run e2e",
     "serve:ssr:workifence": "node dist/workifence/server/server.mjs",
     "ssr:local": "npm run build:ssr:dev && set FORCE_HTTP=true&& set PORT=4000&& node dist/workifence/server/server.mjs",
     "serve:ssr:local:watch": "set FORCE_HTTP=true&& set PORT=4000&& node --watch dist/workifence/server/server.mjs",
     "ssr:local:watch": "concurrently -k -n build,server -c cyan,magenta \"npm:build:ssr:dev:watch\" \"npm:serve:ssr:local:watch\"",
     "ssr:prod:http": "npm run build && set PORT=4000&& node dist/workifence/server/server.mjs",
-    "ssr:prod:https": "npm run build && set ENABLE_HTTPS=true&& set PORT=443&& node dist/workifence/server/server.mjs"
+    "ssr:prod:https": "npm run build && set ENABLE_HTTPS=true&& set PORT=443&& node dist/workifence/server/server.mjs",
+    "serve:dist:e2e": "sirv ./dist/workifence/browser --single --host 127.0.0.1 --port 4200 --no-clear"
+
   },
   "private": true,
   "dependencies": {
@@ -97,6 +102,8 @@
     "zone.js": "^0.15.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.41.2",
+    "sirv-cli": "^2.0.2",
     "@angular-devkit/build-angular": "21.1.1",
     "@angular/cli": "21.1.1",
     "@angular/compiler-cli": "21.1.1",

@@ -394,16 +394,6 @@ export class NavConfigService {
             showWhenLocked: true,
             minPlan: PlanTier.PRO
           },
-          {
-            id: 'job-alerts',
-            title: 'Job Alerts',
-            icon: 'bell',
-            route: '/notifications',
-              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
-              entitlementKey: ENTITLEMENT_KEYS.JOB_ALERTS,
-            showWhenLocked: true,
-            minPlan: PlanTier.PRO
-          },
 
           // Premium analytics + reminders
           {

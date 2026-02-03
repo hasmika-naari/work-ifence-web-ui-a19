@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserEntitlements, EntitlementMap, PlanTier } from '../nav/nav.model';
 import { ENTITLEMENT_KEYS } from '../entitlements/entitlement-keys';
 import { environment } from '../../environments/environment';
+import type { EntitlementsResponse } from '../models/entitlements-response.model';
 
 declare const ngDevMode: boolean;
 
@@ -93,16 +94,103 @@ export class EntitlementService {
   }
 
   private fetchEntitlements() {
-    this.http.get<UserEntitlements>('/api/me/entitlements').subscribe({
-      next: data => {
-        // Normalize: backend does not send isFallback; ensure it is false.
-        this._entitlements.set({ ...data, isFallback: false });
+    const e2eOverride = this.getE2EEntitlementsOverride();
+    if (e2eOverride) {
+      this._entitlements.set(e2eOverride);
+      this._lastFetched = Date.now();
+      return;
+    }
+
+    // Backend contract: `/api/me/entitlements` returns { plan, roles, entitlements, updatedAt? }.
+    // If the contract breaks, FE fails closed by falling back (no entitlements granted in prod).
+    this.http.get<unknown>('/api/me/entitlements').subscribe({
+      next: raw => {
+        const decoded = this.decodeBackendEntitlements(raw);
+        if (!decoded) {
+          this.setFallbackEntitlements('Invalid backend entitlements contract (missing/invalid entitlements object)');
+          return;
+        }
+
+        this._entitlements.set(decoded);
         this._lastFetched = Date.now();
       },
       error: err => {
         this.setFallbackEntitlements(`HTTP error loading /api/me/entitlements: ${String(err)}`);
       }
     });
+  }
+
+  private decodeBackendEntitlements(raw: unknown): UserEntitlements | null {
+    if (!raw || typeof raw !== 'object') return null;
+
+    const resp = raw as Partial<EntitlementsResponse> & Record<string, unknown>;
+    const entRaw = (resp as any).entitlements;
+
+    // Requirement: if entitlements missing or not object => treat as fallback
+    if (!entRaw || typeof entRaw !== 'object' || Array.isArray(entRaw)) return null;
+
+    const entitlements: EntitlementMap = {};
+    for (const [k, v] of Object.entries(entRaw as Record<string, unknown>)) {
+      if (typeof k !== 'string' || !k.trim()) continue;
+      // Fail-closed: only explicit boolean true grants access.
+      if (v === true) entitlements[k] = true;
+    }
+
+    const roles = Array.isArray((resp as any).roles) ? (resp as any).roles.filter((r: unknown) => typeof r === 'string') : [];
+    const plan = this.normalizePlan((resp as any).plan);
+
+    return {
+      plan,
+      entitlements,
+      roles,
+      // Normalize: backend does not send isFallback; ensure it is false.
+      isFallback: false,
+    };
+  }
+
+  private normalizePlan(plan: unknown): PlanTier {
+    const p = typeof plan === 'string' ? plan : '';
+    switch (p) {
+      case PlanTier.FREE:
+      case PlanTier.PRO:
+      case PlanTier.PREMIUM:
+      case PlanTier.ENTERPRISE:
+        return p;
+      default:
+        // Unknown plan values are treated as lowest tier to keep behavior fail-closed.
+        return PlanTier.FREE;
+    }
+  }
+
+  private getE2EEntitlementsOverride(): UserEntitlements | null {
+    if (environment.production) return null;
+    if (typeof window === 'undefined') return null;
+
+    const e2e = window.__E2E__;
+    const raw = e2e?.entitlements;
+    if (!raw) return null;
+
+    const entitlements: EntitlementMap = {};
+
+    if (Array.isArray(raw.allowList)) {
+      for (const k of raw.allowList) {
+        if (typeof k === 'string' && k.trim()) entitlements[k.trim()] = true;
+      }
+    }
+
+    if (raw.map && typeof raw.map === 'object') {
+      for (const [k, v] of Object.entries(raw.map)) {
+        if (!k || typeof v !== 'boolean') continue;
+        entitlements[k] = v;
+      }
+    }
+
+    return {
+      plan: PlanTier.FREE,
+      entitlements,
+      roles: Array.isArray(raw.roles) ? raw.roles : [],
+      isFallback: false,
+    };
   }
 
   plan(): PlanTier | null {

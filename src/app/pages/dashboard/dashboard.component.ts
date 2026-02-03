@@ -6,6 +6,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { BioProfile } from 'src/app/services/profile.model';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
+import type { FeatureKey } from 'src/app/models/feature-key.model';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
 import { ActiveRoleService } from 'src/app/services/active-role.service';
 import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
@@ -72,7 +73,16 @@ export class DashboardComponent {
       ? { enabled: true }
       : { enabled: false, reason: this.accessFacade.denyMessage('JOB_TRACKING') };
 
-    const base = [
+    const base: Array<{
+      key: string;
+      icon: string;
+      title: string;
+      description: string;
+      route: string;
+      enabled: boolean;
+      disabledMessage?: string;
+      featureKey?: FeatureKey;
+    }> = [
       {
         key: 'build-resume',
         icon: 'assets/img/home/resume_animated.jpg',
@@ -81,6 +91,7 @@ export class DashboardComponent {
         route: '/user/resumes/resume',
         enabled: resumeBuild.enabled,
         disabledMessage: resumeBuild.reason ?? lockedMsg,
+        featureKey: 'RESUME_CREATE',
       },
       {
         key: 'create-job-application',
@@ -90,6 +101,7 @@ export class DashboardComponent {
         route: '/user/job-applications/application',
         enabled: jobAppCreate.enabled,
         disabledMessage: jobAppCreate.reason ?? lockedMsg,
+        featureKey: 'JOB_TRACKING',
       },
       {
         key: 'manage-resumes',
@@ -108,6 +120,7 @@ export class DashboardComponent {
         route: '/user/job-applications',
         enabled: jobAppManage.enabled,
         disabledMessage: jobAppManage.reason ?? lockedMsg,
+        featureKey: 'JOB_TRACKING',
       },
     ];
 
@@ -246,7 +259,15 @@ export class DashboardComponent {
 
 
 
-  onToolClick(tool: { route: string; enabled: boolean; disabledMessage?: string }) {
+  onToolClick(tool: { route: string; enabled: boolean; disabledMessage?: string; featureKey?: FeatureKey }) {
+    if (tool.featureKey && !this.accessFacade.canOrExplain(tool.featureKey)) {
+      this.snackBar.open(tool.disabledMessage || 'Upgrade required', 'View plans', {
+        duration: 2500,
+      });
+      this.upgradeRouter.goToPricingForContext(this.dashboardCtx());
+      return;
+    }
+
     if (tool.enabled) {
       this.routerService.navigate([tool.route]);
       return;

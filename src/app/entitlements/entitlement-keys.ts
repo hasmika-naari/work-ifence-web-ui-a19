@@ -61,3 +61,5 @@ export const ENTITLEMENT_KEYS = {
   ADMIN_FEEDBACK: 'admin.feedback',
   ADMIN_SUPPORT_TICKETS: 'admin.support.tickets'
 } as const;
+
+export type EntitlementKey = (typeof ENTITLEMENT_KEYS)[keyof typeof ENTITLEMENT_KEYS];

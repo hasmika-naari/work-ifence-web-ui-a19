@@ -55,6 +55,9 @@ export class RemoteConfigFacadeService {
    * Flag enabled check with stable rollout (per-user or per-anon) and failClosed behavior.
    */
   isFlagEnabled(key: FeatureFlagKey): boolean {
+    const e2eOverride = this.getE2EFlagOverride(key);
+    if (e2eOverride !== null) return e2eOverride;
+
     const flag = this.getFlag(key);
     if (!flag) {
       // Fail-closed in production: missing flags must NOT enable functionality.
@@ -92,6 +95,9 @@ export class RemoteConfigFacadeService {
       console.warn('[RemoteConfig] Missing feature flag key (empty). Defaulting to disabled.');
       return false;
     }
+
+    const e2eOverride = this.getE2EFlagOverride(key);
+    if (e2eOverride !== null) return e2eOverride;
 
     const map = this.flagsMap();
     const flag = map.get(key as FeatureFlagKey);
@@ -403,9 +409,29 @@ export class RemoteConfigFacadeService {
     return isPlatformBrowser(this.platformId);
   }
 
+  /**
+   * DEV-only E2E hook: allow Playwright to override flag evaluation without BE.
+   * If present, missing keys default to false (fail-closed) to keep tests explicit.
+   */
+  private getE2EFlagOverride(flagKey: string): boolean | null {
+    if (environment.production) return null;
+    if (!this.isBrowser()) return null;
+    if (typeof window === 'undefined') return null;
+
+    const overrides = (window as any).__E2E__?.flags as Record<string, boolean> | undefined;
+    if (!overrides) return null;
+
+    if (Object.prototype.hasOwnProperty.call(overrides, flagKey)) {
+      return overrides[flagKey] === true;
+    }
+
+    return false;
+  }
+
   private installDevHooks(): void {
     if (!this.isBrowser()) return;
     if (environment.production) return;
+    if (typeof window === 'undefined') return;
 
     const w: any = window as any;
     w.__wifFlags = {

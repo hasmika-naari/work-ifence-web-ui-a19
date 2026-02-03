@@ -167,6 +167,7 @@ import { accessGuard } from './guards/access.guard';
 import { entitlementRouteGuard } from './guards/entitlement-route.guard';
 import { ENTITLEMENT_KEYS } from './entitlements/entitlement-keys';
 import { PlanTier } from './nav/nav.model';
+import { entitledRoute } from './routing/route-helpers';
 
 export const routes: Routes = [
     {
@@ -247,14 +248,14 @@ export const routes: Routes = [
                 redirectTo: 'templates',
                 pathMatch: 'full'
             },
-            {
+            entitledRoute(ENTITLEMENT_KEYS.RESUME_TEMPLATES_PREMIUM, {
                 path: 'templates',
                 canActivate: [entitlementRouteGuard],
                 loadComponent: () =>
                     import('./resume-portal/pages/template-gallery-page.component')
                         .then(m => m.TemplateGalleryPageComponent),
                 data: { reuseComponent: false, breadcrumb: 'Resume Portal', entitlementKey: ENTITLEMENT_KEYS.RESUME_TEMPLATES_PREMIUM }
-            },
+            }),
         ]
     },
       {
@@ -265,7 +266,7 @@ export const routes: Routes = [
                 redirectTo: 'course-central',
                 pathMatch: 'full'
             },
-            {
+            entitledRoute(ENTITLEMENT_KEYS.LEARN_PORTAL, {
                 path: 'course-central',
                 canActivate: [entitlementRouteGuard, accessGuard],
                 data: { requireFlag: 'COURSE_CENTRAL', entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL },
@@ -283,7 +284,7 @@ export const routes: Routes = [
                                     .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central', requireFlag: 'COURSE_CENTRAL', entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL }
                         }
                     ]
-            },
+            }),
            {
                 path: 'job-central',
                  children: [
@@ -311,7 +312,7 @@ export const routes: Routes = [
            
         ]
     },
-     {
+     entitledRoute(ENTITLEMENT_KEYS.LEARN_PORTAL, {
         path: 'course-central',
         canActivate: [entitlementRouteGuard, accessGuard],
         loadComponent: () => 
@@ -326,21 +327,21 @@ export const routes: Routes = [
         // loadComponent: () => 
         //     import('./pages/course-central/course-central.component')
         //         .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central' }
-    },
-    {
+    }),
+    entitledRoute(ENTITLEMENT_KEYS.LEARN_PORTAL, {
         path: 'course-central-list',
         canActivate: [entitlementRouteGuard, accessGuard],
         loadComponent: () => 
             import('./pages/course-central/course-central.component')
                 .then(m => m.CourseDashboardComponent), data: {reuseComponent: true, breadcrumb: 'Course Central', requireFlag: 'COURSE_CENTRAL', entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL }
-    },
-    {
+    }),
+    entitledRoute(ENTITLEMENT_KEYS.LEARN_PORTAL, {
         path: 'single-course',
         canActivate: [entitlementRouteGuard, accessGuard],
         loadComponent: () => 
             import('./pages/courses-details-page/courses-details-page.component')
                 .then(m => m.CoursesDetailsPageComponent), data: {reuseComponent: true, breadcrumb: 'Single Course', requireFlag: 'COURSE_CENTRAL', entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL }
-    },
+    }),
     {
         path: 'dashboard-intro',
         loadComponent: () => 
@@ -462,14 +463,14 @@ export const routes: Routes = [
                 .then(m => m.PricingPageComponent),
         data: { reuseComponent: true, breadcrumb: 'Pricing' }
     },
-    {
+    entitledRoute(ENTITLEMENT_KEYS.JOB_ALERTS, {
         path: 'notifications',
         canActivate: [entitlementRouteGuard, accessGuard],
         loadComponent: () =>
             import('./pages/notifications-page/notifications-page.component')
                 .then(m => m.NotificationsPageComponent),
         data: { reuseComponent: true, breadcrumb: 'Notifications', requireAuth: true, requireFlag: 'ALERTS', requireFeature: 'ALERTS', pricingScope: 'individual', entitlementKey: ENTITLEMENT_KEYS.JOB_ALERTS }
-    },
+    }),
     {
         path: 'resumes/resume',
         redirectTo: 'user/resumes/resume',
@@ -485,14 +486,14 @@ export const routes: Routes = [
                 redirectTo: 'dashboard',
                 pathMatch: 'full'
             },
-            {
+            entitledRoute(ENTITLEMENT_KEYS.RESUME_PORTAL, {
                 path: 'resumes',
                 canActivate: [entitlementRouteGuard, accessGuard],
                 loadComponent: () => 
                     import('./pages/dashboard-resume/dashboard-resume.component').then(m => m.DashboardResumeComponent),
                 data: { breadcrumb: 'Resumes', requireFlag: 'RESUME_PORTAL', entitlementKey: ENTITLEMENT_KEYS.RESUME_PORTAL } 
-            },
-            {
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.RESUME_PORTAL, {
                 path: 'resumes/resume',
                 canDeactivate: [pendingChangesGuard],
                 canActivate: [entitlementRouteGuard],
@@ -500,8 +501,8 @@ export const routes: Routes = [
                     import('./pages/resume-form3/resume-form3.component')
                         .then(m => m.ResumeForm3Component), 
                         data: {reuseComponent: true, breadcrumb: 'Resume', entitlementKey: ENTITLEMENT_KEYS.RESUME_PORTAL },
-            },
-            {
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.RESUME_BUILDER, {
                 path: 'resumes/:resumeId/builder',
                 canDeactivate: [pendingChangesGuard],
                 canActivate: [entitlementRouteGuard, accessGuard],
@@ -509,26 +510,26 @@ export const routes: Routes = [
                     import('./resume-portal/pages/resume-builder-shell.component')
                         .then(m => m.ResumeBuilderShellComponent),
                 data: { reuseComponent: true, breadcrumb: 'Resume Builder', requireFlag: 'RESUME_BUILDER', entitlementKey: ENTITLEMENT_KEYS.RESUME_BUILDER },
-            },
-            {   
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.JOB_TRACKING, {   
                 path: 'job-applications',
                 canActivate: [entitlementRouteGuard, accessGuard],
                 loadComponent: () => import('./pages/job-applications-tracker/applications-dashboard.component').then(m => m.ApplicationsDashboardComponent),
                 data: { breadcrumb: 'Job Applications', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual', entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING }
-            },
-            {
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.JOB_TRACKING, {
                 path: 'job-applications/application',
                 canActivate: [entitlementRouteGuard, accessGuard],
                 loadComponent: () => 
                     import('./pages/dashboard-job-application/application-form/application-form3.component')
                         .then(m => m.ApplicationForm3Component), data: {reuseComponent: true, breadcrumb: 'Application', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual', entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING },
-            },
-            {   
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.ADMIN_REQUESTS, {   
                 path: 'requests', 
                 canActivate: [entitlementRouteGuard],
                 loadComponent: () => import('./pages/dashboard-requests/dashboard-requests.component').then(m => m.DashboardRequestsComponent), 
                 data: { breadcrumb: 'Requests', entitlementKey: ENTITLEMENT_KEYS.ADMIN_REQUESTS } 
-            },
+            }),
             {   
                 path: 'mail-box', 
                 loadComponent: () => import('./pages/email-box/email.component').then(m => m.EmailComponent), 
@@ -539,80 +540,80 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/user-contacts/user-contacts.component').then(m => m.UserContactsComponent), 
                 data: { breadcrumb: 'Account Settings' } 
             },
-            {   
+            entitledRoute(ENTITLEMENT_KEYS.LEARN_PORTAL, {   
                 path: 'user-learn', 
                 canActivate: [entitlementRouteGuard, accessGuard],
                 loadComponent: () => import('./pages/user-learn/user-learn.component').then(m => m.UserLearnComponent), 
                 data: { breadcrumb: 'Account Settings', requireFlag: 'COURSE_CENTRAL', entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL } 
-            },
-            {
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.LEARN_SAVED, {
                 path: 'learn-saved',
                 canActivate: [entitlementRouteGuard],
                 loadComponent: () =>
                     import('./pages/learn-saved/learn-saved.component')
                         .then(m => m.LearnSavedComponent),
                 data: { breadcrumb: 'Saved', entitlementKey: ENTITLEMENT_KEYS.LEARN_SAVED }
-            },
-            {
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.JOB_ANALYTICS, {
                 path: 'job-analytics',
                 canActivate: [entitlementRouteGuard],
                 loadComponent: () =>
                     import('./pages/job-analytics/job-analytics.component')
                         .then(m => m.JobAnalyticsComponent),
                 data: { breadcrumb: 'Analytics', entitlementKey: ENTITLEMENT_KEYS.JOB_ANALYTICS, minPlan: PlanTier.PRO }
-            },
-            {   
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.USER_DASHBOARD, {   
                 path: 'dashboard', 
                 canActivate: [entitlementRouteGuard],
                 loadComponent: () => import('./pages/dashboard/dashboard-shell.component').then(m => m.DashboardShellComponent), 
                 data: { breadcrumb: 'Employee Dashboard', entitlementKey: ENTITLEMENT_KEYS.USER_DASHBOARD } 
-            },
-            {   
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.ADMIN_CONSOLE, {   
                 path: 'dashboard-admin', 
                 canActivate: [entitlementRouteGuard, accessGuard],
                 loadComponent: () => import('./pages/dashboard-app-admin/dashboard-app-admin.component').then(m => m.DashboardAppAdminComponent), 
                 data: { breadcrumb: 'Platform Admin', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE } 
-            },
+            }),
             {
                 path: 'admin',
                 children: [
-                    {
+                    entitledRoute(ENTITLEMENT_KEYS.ADMIN_FEATUREFLAGS, {
                         path: 'feature-flags',
                         canActivate: [entitlementRouteGuard, accessGuard],
                         loadComponent: () =>
                             import('./pages/admin/feature-flags/admin-feature-flags.component')
                                 .then(m => m.AdminFeatureFlagsComponent),
                         data: { breadcrumb: 'Feature Flags', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_FEATUREFLAGS }
-                    },
-                    {
+                    }),
+                    entitledRoute(ENTITLEMENT_KEYS.ADMIN_BILLING_PLANS, {
                         path: 'plans',
                         canActivate: [entitlementRouteGuard, accessGuard],
                         loadComponent: () =>
                             import('./pages/admin/plans/admin-plans-entitlements.component')
                                 .then(m => m.AdminPlansEntitlementsComponent),
                         data: { breadcrumb: 'Plans & Entitlements', requireAuth: true, requireFlag: 'SUBSCRIPTIONS', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_BILLING_PLANS }
-                    },
-                    {
+                    }),
+                    entitledRoute(ENTITLEMENT_KEYS.ADMIN_RESUME_TEMPLATES, {
                         path: 'resume-templates',
                         canActivate: [entitlementRouteGuard, accessGuard],
                         loadComponent: () =>
                             import('./pages/admin/resume-templates/admin-resume-templates.component')
                                 .then(m => m.AdminResumeTemplatesComponent),
                         data: { breadcrumb: 'Resume Templates', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_RESUME_TEMPLATES }
-                    },
+                    }),
                 ]
             },
             {
                 path: 'billing',
                 children: [
-                    {
+                    entitledRoute(ENTITLEMENT_KEYS.BILLING_UPGRADE, {
                         path: 'upgrade',
                         canActivate: [entitlementRouteGuard],
                         loadComponent: () =>
                             import('./pages/billing-upgrade/billing-upgrade.component')
                                 .then(m => m.BillingUpgradeComponent),
                         data: { breadcrumb: 'Upgrade', entitlementKey: ENTITLEMENT_KEYS.BILLING_UPGRADE }
-                    },
+                    }),
                 ]
             },
             {
@@ -660,13 +661,13 @@ export const routes: Routes = [
                         .then(m => m.SubscriptionPageComponent),
                 data: { breadcrumb: 'Subscription' }
             },
-            {
+            entitledRoute(ENTITLEMENT_KEYS.PROFILE, {
                 path: 'profile',
                 canActivate: [entitlementRouteGuard],
                 loadComponent: () => 
                     import('./pages/dashboard-profile/dashboard-profile.component').then(m => m.DashboardProfileComponent),
                 data: { breadcrumb: 'Profile', entitlementKey: ENTITLEMENT_KEYS.PROFILE } 
-            },
+            }),
             {   
                 path: 'profile2', 
                 loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent), 

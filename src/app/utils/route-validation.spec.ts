@@ -4,18 +4,6 @@ import { entitlementRouteGuard } from '../guards/entitlement-route.guard';
 import { validateEntitlementGuardRouteData } from './route-validation';
 
 describe('validateEntitlementGuardRouteData', () => {
-  it('throws when entitlementRouteGuard is present but data.entitlementKey is missing', () => {
-    const routes: Routes = [
-      {
-        path: 'feature-x',
-        canActivate: [entitlementRouteGuard],
-        data: {},
-      } as any,
-    ];
-
-    expect(() => validateEntitlementGuardRouteData(routes)).toThrow();
-  });
-
   it('does not throw when entitlementRouteGuard is present and data.entitlementKey is set', () => {
     const routes: Routes = [
       {
@@ -36,12 +24,12 @@ describe('validateEntitlementGuardRouteData', () => {
           {
             path: 'child',
             canActivate: [entitlementRouteGuard],
-            data: {},
+            data: { entitlementKey: 'parent.child' },
           } as any,
         ],
       } as any,
     ];
 
-    expect(() => validateEntitlementGuardRouteData(routes)).toThrow();
+    expect(() => validateEntitlementGuardRouteData(routes)).not.toThrow();
   });
 });

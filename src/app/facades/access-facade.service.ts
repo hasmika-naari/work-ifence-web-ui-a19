@@ -1,7 +1,8 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, Injector, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable, Subject, catchError, of, shareReplay, startWith, switchMap } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable, Subject, catchError, filter, of, shareReplay, startWith, switchMap } from 'rxjs';
 import { AccessMeDto } from '../models/access-me.model';
 import { AccessApiService } from '../services/access-api.service';
 import { LocalStorageService } from '../services/local-storage.service';
@@ -15,8 +16,15 @@ export class AccessFacadeService {
   private readonly api = inject(AccessApiService);
   private readonly remoteConfig = inject(RemoteConfigFacadeService);
   private readonly storage = inject(LocalStorageService);
+  private readonly router = inject(Router);
 
-  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.router.events
+        .pipe(filter((event) => event instanceof NavigationEnd))
+        .subscribe(() => this.lastDeniedReason.set(null));
+    }
+  }
 
   private readonly refresh$ = new Subject<void>();
 
@@ -50,60 +58,35 @@ export class AccessFacadeService {
     this.refresh$.next();
   }
 
+  clearDeniedReason(): void {
+    this.lastDeniedReason.set(null);
+  }
+
   can(feature: FeatureKey, me: AccessMeDto = this.accessMeSignal()): boolean {
-    const flagKey = this.featureToFlagKey(feature);
-    if (flagKey && !this.remoteConfig.isFlagEnabledSafe(flagKey)) {
-      this.lastDeniedReason.set({
-        feature,
-        code: 'FEATURE_DISABLED_BY_ADMIN',
-        message: 'This feature is temporarily disabled.',
-        pricingScope: this.defaultPricingScope(feature, me),
-      });
-      return false;
-    }
-
-    // Note: default behavior is to require an active/trial subscription for premium features.
-    // If the user is logged out, subscription is not OK and checks will return false.
-    switch (feature) {
-      case 'JOB_TRACKING':
-        return this.isSubscriptionOk(me) && me.entitlements?.jobTrackingEnabled === true;
-
-      case 'ALERTS':
-        return this.isSubscriptionOk(me) && me.entitlements?.alertsEnabled === true;
-
-      case 'COURSE_CENTRAL':
-        return this.isSubscriptionOk(me) && me.entitlements?.courseCentralEnabled === true;
-
-      case 'TEMPLATES_PREMIUM': {
-        if (!this.isSubscriptionOk(me)) return false;
-        const level = (me.entitlements?.templateAccessLevel ?? '').toString().toUpperCase();
-        return level !== 'BASIC';
-      }
-
-      case 'RESUME_CREATE': {
-        if (!this.isSubscriptionOk(me)) return false;
-        const remaining = this.resumeLimitRemaining(me);
-        if (remaining === undefined) return true;
-        return remaining > 0;
-      }
-
-      case 'ENTERPRISE_INVITES':
-        // Seat limits are enforced in the enterprise members page using enterpriseUsersLimit.
-        // This feature gate is kept as a placeholder for consistent routing/UI patterns.
-        return this.isEnterprise(me);
-
-      default:
-        return false;
-    }
+    return this.check(feature, me).allowed;
   }
 
   require(feature: FeatureKey, me: AccessMeDto = this.accessMeSignal()): boolean {
+    const result = this.check(feature, me);
+    if (result.allowed) {
+      this.lastDeniedReason.set(null);
+      return true;
+    }
+
+    this.lastDeniedReason.set(result.reason ?? null);
+    return false;
+  }
+
+  canOrExplain(
+    feature: FeatureKey,
+    me: AccessMeDto = this.accessMeSignal(),
+    opts?: { message?: string; code?: string; pricingScope?: FeaturePricingScope }
+  ): boolean {
     if (this.can(feature, me)) {
       this.lastDeniedReason.set(null);
       return true;
     }
 
-    // If can() already set a flag-denied reason, keep it.
     const existing = this.lastDeniedReason();
     if (existing?.feature === feature && existing?.code === 'FEATURE_DISABLED_BY_ADMIN') {
       return false;
@@ -111,10 +94,140 @@ export class AccessFacadeService {
 
     this.lastDeniedReason.set({
       feature,
-      message: this.denyMessage(feature, me),
-      pricingScope: this.defaultPricingScope(feature, me),
+      code: opts?.code ?? 'SUBSCRIPTION_REQUIRED',
+      message: opts?.message ?? this.denyMessage(feature, me),
+      pricingScope: opts?.pricingScope ?? this.defaultPricingScope(feature, me),
     });
     return false;
+  }
+
+  private check(
+    feature: FeatureKey,
+    me: AccessMeDto = this.accessMeSignal()
+  ): { allowed: boolean; reason?: FeatureDeniedReason } {
+    const flagKey = this.featureToFlagKey(feature);
+    if (flagKey && !this.remoteConfig.isFlagEnabledSafe(flagKey)) {
+      return {
+        allowed: false,
+        reason: {
+          feature,
+          code: 'FEATURE_DISABLED_BY_ADMIN',
+          message: 'This feature is temporarily disabled.',
+          pricingScope: this.defaultPricingScope(feature, me),
+        },
+      };
+    }
+
+    // Note: default behavior is to require an active/trial subscription for premium features.
+    // If the user is logged out, subscription is not OK and checks will return false.
+    switch (feature) {
+      case 'JOB_TRACKING':
+        return this.isSubscriptionOk(me) && me.entitlements?.jobTrackingEnabled === true
+          ? { allowed: true }
+          : {
+              allowed: false,
+              reason: {
+                feature,
+                message: this.denyMessage(feature, me),
+                pricingScope: this.defaultPricingScope(feature, me),
+              },
+            };
+
+      case 'ALERTS':
+        return this.isSubscriptionOk(me) && me.entitlements?.alertsEnabled === true
+          ? { allowed: true }
+          : {
+              allowed: false,
+              reason: {
+                feature,
+                message: this.denyMessage(feature, me),
+                pricingScope: this.defaultPricingScope(feature, me),
+              },
+            };
+
+      case 'COURSE_CENTRAL':
+        return this.isSubscriptionOk(me) && me.entitlements?.courseCentralEnabled === true
+          ? { allowed: true }
+          : {
+              allowed: false,
+              reason: {
+                feature,
+                message: this.denyMessage(feature, me),
+                pricingScope: this.defaultPricingScope(feature, me),
+              },
+            };
+
+      case 'TEMPLATES_PREMIUM': {
+        if (!this.isSubscriptionOk(me)) {
+          return {
+            allowed: false,
+            reason: {
+              feature,
+              message: this.denyMessage(feature, me),
+              pricingScope: this.defaultPricingScope(feature, me),
+            },
+          };
+        }
+        const level = (me.entitlements?.templateAccessLevel ?? '').toString().toUpperCase();
+        return level !== 'BASIC'
+          ? { allowed: true }
+          : {
+              allowed: false,
+              reason: {
+                feature,
+                message: this.denyMessage(feature, me),
+                pricingScope: this.defaultPricingScope(feature, me),
+              },
+            };
+      }
+
+      case 'RESUME_CREATE': {
+        if (!this.isSubscriptionOk(me)) {
+          return {
+            allowed: false,
+            reason: {
+              feature,
+              message: this.denyMessage(feature, me),
+              pricingScope: this.defaultPricingScope(feature, me),
+            },
+          };
+        }
+        const remaining = this.resumeLimitRemaining(me);
+        if (remaining === undefined || remaining > 0) return { allowed: true };
+        return {
+          allowed: false,
+          reason: {
+            feature,
+            message: this.denyMessage(feature, me),
+            pricingScope: this.defaultPricingScope(feature, me),
+          },
+        };
+      }
+
+      case 'ENTERPRISE_INVITES': {
+        const allowed = this.isEnterprise(me);
+        return allowed
+          ? { allowed }
+          : {
+              allowed,
+              reason: {
+                feature,
+                message: this.denyMessage(feature, me),
+                pricingScope: this.defaultPricingScope(feature, me),
+              },
+            };
+      }
+
+      default:
+        return {
+          allowed: false,
+          reason: {
+            feature,
+            message: this.denyMessage(feature, me),
+            pricingScope: this.defaultPricingScope(feature, me),
+          },
+        };
+    }
   }
 
   denyMessage(feature: FeatureKey, me: AccessMeDto = this.accessMeSignal()): string {

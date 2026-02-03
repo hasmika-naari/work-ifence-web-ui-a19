@@ -1,0 +1,23 @@
+@if (reason) {
+  <mat-card class="feature-gate-notice" role="status" aria-live="polite">
+    <div class="notice-content">
+      <div class="notice-text">
+        <div class="notice-title">{{ title }}</div>
+        <div class="notice-message">{{ message }}</div>
+        <div class="notice-feature" *ngIf="reason.feature">Feature: {{ reason.feature }}</div>
+      </div>
+      <div class="notice-actions">
+        @if (showLogin) {
+          <button mat-stroked-button color="primary" (click)="goLogin()">Login</button>
+        } @else if (showOk) {
+          <button mat-stroked-button color="primary" (click)="close()">OK</button>
+        } @else if (showUpgrade) {
+          <button mat-flat-button color="primary" (click)="goUpgrade()">Upgrade</button>
+        }
+        <button mat-icon-button type="button" aria-label="Dismiss" (click)="close()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+}

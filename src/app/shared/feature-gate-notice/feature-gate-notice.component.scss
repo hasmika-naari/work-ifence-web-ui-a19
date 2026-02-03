@@ -1,0 +1,39 @@
+.feature-gate-notice {
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  display: block;
+}
+
+.notice-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.notice-text {
+  min-width: 200px;
+  flex: 1 1 auto;
+}
+
+.notice-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.notice-message {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.notice-feature {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.notice-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

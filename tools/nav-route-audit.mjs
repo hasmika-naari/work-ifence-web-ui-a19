@@ -96,6 +96,21 @@ function getObjectProp(obj, propName) {
   return undefined;
 }
 
+function keyRefKind(expr) {
+  const e = unwrapParen(expr);
+  if (!e) return undefined;
+
+  if (ts.isStringLiteralLike(e)) return 'string';
+
+  if (ts.isPropertyAccessExpression(e)) {
+    const base = e.expression.getText();
+    if (base === 'FEATURE_FLAGS' || base === 'ENTITLEMENT_KEYS') return 'const';
+    return 'other';
+  }
+
+  return 'other';
+}
+
 function collectNavItemsFromArray(arrayExpr, role, maps) {
   /** @type {Array<any>} */
   const items = [];
@@ -111,8 +126,14 @@ function collectNavItemsFromArray(arrayExpr, role, maps) {
       const title = resolveKey(getObjectProp(e, 'title'), maps);
       const route = resolveKey(getObjectProp(e, 'route'), maps);
 
-      const featureFlag = resolveKey(getObjectProp(e, 'featureFlag'), maps);
-      const entitlementKey = resolveKey(getObjectProp(e, 'entitlementKey'), maps);
+      const featureFlagExpr = getObjectProp(e, 'featureFlag');
+      const entitlementKeyExpr = getObjectProp(e, 'entitlementKey');
+
+      const featureFlag = resolveKey(featureFlagExpr, maps);
+      const entitlementKey = resolveKey(entitlementKeyExpr, maps);
+
+      const featureFlagRefKind = keyRefKind(featureFlagExpr);
+      const entitlementKeyRefKind = keyRefKind(entitlementKeyExpr);
       const minPlan = resolveKey(getObjectProp(e, 'minPlan'), maps);
       const showWhenLocked = resolveKey(getObjectProp(e, 'showWhenLocked'), maps);
 
@@ -130,7 +151,9 @@ function collectNavItemsFromArray(arrayExpr, role, maps) {
         title,
         route,
         featureFlag,
+        featureFlagRefKind,
         entitlementKey,
+        entitlementKeyRefKind,
         minPlan,
         showWhenLocked,
         isGroup,
@@ -282,9 +305,29 @@ function audit() {
   const entitlements = findConstObjectMap(parseTs('src/app/entitlements/entitlement-keys.ts'), 'ENTITLEMENT_KEYS');
   const maps = { featureFlags, entitlements };
 
+  const allowedFeatureFlags = new Set(Object.values(featureFlags));
+  const allowedEntitlementKeys = new Set(Object.values(entitlements));
+
   const navItems = extractNav(maps)
     // We care about clickable items for bypass/dead links; keep groups in output but mark route missing.
     .map((i) => ({ ...i, route: normalizePath(i.route) }));
+
+  // Lint-like enforcement: nav items must reference FEATURE_FLAGS / ENTITLEMENT_KEYS (no magic strings)
+  // and values must be among the exported constants.
+  const lint = {
+    navRawFeatureFlags: [],
+    navRawEntitlementKeys: [],
+    navUnknownFeatureFlags: [],
+    navUnknownEntitlementKeys: [],
+  };
+
+  for (const i of navItems) {
+    if (i.featureFlagRefKind === 'string') lint.navRawFeatureFlags.push(i);
+    if (i.entitlementKeyRefKind === 'string') lint.navRawEntitlementKeys.push(i);
+
+    if (i.featureFlag && !allowedFeatureFlags.has(i.featureFlag)) lint.navUnknownFeatureFlags.push(i);
+    if (i.entitlementKey && !allowedEntitlementKeys.has(i.entitlementKey)) lint.navUnknownEntitlementKeys.push(i);
+  }
 
   const routeMap = flattenRoutes(maps);
 
@@ -372,7 +415,7 @@ function audit() {
     group: rows.filter((r) => r.status === 'GROUP').length,
   };
 
-  return { summary, rows, entitlementGuardRoutesMissingKey };
+  return { summary, rows, entitlementGuardRoutesMissingKey, lint };
 }
 
 function toMarkdownTable(rows) {
@@ -401,17 +444,21 @@ function toMarkdownTable(rows) {
   return [header, sep, ...lines].join('\n');
 }
 
-const { summary, rows, entitlementGuardRoutesMissingKey } = audit();
+const { summary, rows, entitlementGuardRoutesMissingKey, lint } = audit();
 
 fs.mkdirSync(path.join(repoRoot, 'audit'), { recursive: true });
 
 fs.writeFileSync(
   path.join(repoRoot, 'audit/nav-route-audit.json'),
-  JSON.stringify({ summary, rows, entitlementGuardRoutesMissingKey }, null, 2),
+  JSON.stringify({ summary, rows, entitlementGuardRoutesMissingKey, lint }, null, 2),
 );
 fs.writeFileSync(
   path.join(repoRoot, 'audit/nav-route-audit.md'),
-  `# Nav/Route Gating Audit\n\nSummary: ${JSON.stringify(summary)}\n\n${toMarkdownTable(rows)}\n`,
+  `# Nav/Route Gating Audit\n\nSummary: ${JSON.stringify(summary)}\n\n${toMarkdownTable(rows)}\n\n## Lint\n\n` +
+    `- nav raw featureFlag strings: ${lint.navRawFeatureFlags.length}\n` +
+    `- nav raw entitlementKey strings: ${lint.navRawEntitlementKeys.length}\n` +
+    `- nav unknown featureFlag values: ${lint.navUnknownFeatureFlags.length}\n` +
+    `- nav unknown entitlementKey values: ${lint.navUnknownEntitlementKeys.length}\n`,
 );
 
 const failed = rows.filter((r) => r.status.startsWith('FAIL'));
@@ -425,12 +472,32 @@ if (isCi) {
   if (entitlementGuardRoutesMissingKey.length) {
     ciErrors.push(`entitlementRouteGuard missing data.entitlementKey: ${entitlementGuardRoutesMissingKey.length}`);
   }
+  if (lint.navRawEntitlementKeys.length) ciErrors.push(`Nav items with raw entitlementKey strings: ${lint.navRawEntitlementKeys.length}`);
+  if (lint.navRawFeatureFlags.length) ciErrors.push(`Nav items with raw featureFlag strings: ${lint.navRawFeatureFlags.length}`);
+  if (lint.navUnknownEntitlementKeys.length) ciErrors.push(`Nav items with unknown entitlementKey values: ${lint.navUnknownEntitlementKeys.length}`);
+  if (lint.navUnknownFeatureFlags.length) ciErrors.push(`Nav items with unknown featureFlag values: ${lint.navUnknownFeatureFlags.length}`);
 
   if (ciErrors.length) {
     console.error(`Audit CI FAIL: ${ciErrors.join(' | ')}. See audit/nav-route-audit.md/json`);
     if (entitlementGuardRoutesMissingKey.length) {
       console.error('Routes missing entitlementKey (guarded by entitlementRouteGuard):');
       for (const r of entitlementGuardRoutesMissingKey) console.error(`- ${r.absPath}`);
+    }
+    if (lint.navRawEntitlementKeys.length) {
+      console.error('Nav items using raw entitlementKey strings:');
+      for (const i of lint.navRawEntitlementKeys) console.error(`- ${i.role} ${i.route ?? ''} ${i.title ?? ''} => ${i.entitlementKey}`);
+    }
+    if (lint.navRawFeatureFlags.length) {
+      console.error('Nav items using raw featureFlag strings:');
+      for (const i of lint.navRawFeatureFlags) console.error(`- ${i.role} ${i.route ?? ''} ${i.title ?? ''} => ${i.featureFlag}`);
+    }
+    if (lint.navUnknownEntitlementKeys.length) {
+      console.error('Nav items using unknown entitlementKey values (not in ENTITLEMENT_KEYS):');
+      for (const i of lint.navUnknownEntitlementKeys) console.error(`- ${i.role} ${i.route ?? ''} ${i.title ?? ''} => ${i.entitlementKey}`);
+    }
+    if (lint.navUnknownFeatureFlags.length) {
+      console.error('Nav items using unknown featureFlag values (not in FEATURE_FLAGS):');
+      for (const i of lint.navUnknownFeatureFlags) console.error(`- ${i.role} ${i.route ?? ''} ${i.title ?? ''} => ${i.featureFlag}`);
     }
     process.exitCode = 1;
   } else {
