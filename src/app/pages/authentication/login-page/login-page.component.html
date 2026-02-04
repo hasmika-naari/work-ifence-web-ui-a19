@@ -89,23 +89,23 @@
                 </div>
                 <div class="or-divider">OR</div>
                 @if (!isForgotPassword) {
-                  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" data-testid="login-form">
                     <mat-form-field appearance="outline">
                       <mat-label>Username</mat-label>
                       <mat-icon matPrefix>mail_outline</mat-icon>
-                      <input matInput formControlName="username" placeholder="Email or Username">
+                      <input matInput formControlName="username" placeholder="Email or Username" data-testid="login-username">
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                       <mat-label>Password</mat-label>
                       <mat-icon matPrefix>lock_outline</mat-icon>
-                      <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password">
+                      <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password" data-testid="login-password">
                       <mat-icon matSuffix (click)="showPassword = !showPassword" style="cursor:pointer;">{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </mat-form-field>
                     <div class="login-options-row">
                       <mat-checkbox formControlName="remember" color="primary">Remember me</mat-checkbox>
                       <button type="button" class="forgot-password-link" (click)="forgotPassword($event)">Forgot password?</button>
                     </div>
-                    <button class="login-btn enabled-button" type="submit" [disabled]="isLoading || loginForm.invalid">
+                    <button class="login-btn enabled-button" type="submit" [disabled]="isLoading || loginForm.invalid" data-testid="login-submit">
                       @if (!isLoading) {
                         SIGN IN
                       }

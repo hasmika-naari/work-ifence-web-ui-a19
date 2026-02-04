@@ -1,6 +1,7 @@
 import { filter, map } from 'rxjs/operators';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, computed, inject, Inject, OnInit, PLATFORM_ID, Renderer2 } from '@angular/core';
+import { isPublicRoute } from './core/routing/public-routes';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HeaderComponent } from './common/header/header.component';
 import { FooterComponent } from './common/footer/footer.component';
@@ -138,18 +139,7 @@ export class AppComponent implements OnInit, AfterViewInit{
       { initialValue: this.router.url }
     );
 
-    readonly isPublicRoute = computed(() => {
-      const raw = this.currentUrl() ?? '';
-      const path = raw.split('?')[0].split('#')[0] || '/';
-
-      if (path === '/' || path === '/pricing') return true;
-      if (path.startsWith('/auth') || path.startsWith('/authentication')) return true;
-      if (path.startsWith('/public')) return true;
-
-      return false;
-    });
-
-    readonly showGateNotice = computed(() => !!this.deniedReason() && !this.isPublicRoute());
+    readonly showGateNotice = computed(() => !!this.deniedReason() && !isPublicRoute(this.currentUrl() ?? ''));
     
 
     constructor(

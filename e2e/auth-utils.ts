@@ -1,5 +1,7 @@
 import type { Page } from '@playwright/test';
 
+export { waitForLoginSuccess } from './helpers/auth';
+
 type E2EOverrides = {
   auth?: {
     authenticated?: boolean;

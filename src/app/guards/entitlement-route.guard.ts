@@ -1,8 +1,10 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
 import { EntitlementService } from '../services/entitlement.service';
+import { AccessFacadeService } from '../facades/access-facade.service';
 import { PlanTier } from '../nav/nav.model';
 import { environment } from '../../environments/environment';
+import { FeatureKey } from '../models/feature-key.model';
 
 export interface EntitlementRouteData {
   entitlementKey?: string;
@@ -22,11 +24,20 @@ export const entitlementRouteGuard: CanActivateFn = (
   state: RouterStateSnapshot
 ) => {
   const entitlement = inject(EntitlementService);
+  const accessFacade = inject(AccessFacadeService);
   const router = inject(Router);
 
   const data = (route.data ?? {}) as EntitlementRouteData;
   const entitlementKey = (data.entitlementKey ?? '').toString();
   const minPlan = toPlanTier(data.minPlan);
+
+  // 1. Authentication Check
+  if (!accessFacade.isLoggedIn()) {
+    // Redirect unauthenticated users to login with returnUrl
+    return router.createUrlTree(['/sign-in'], {
+      queryParams: { returnUrl: state.url },
+    });
+  }
 
   // CONTRACT (fail-closed):
   // If a route uses `entitlementRouteGuard`, it MUST declare `data.entitlementKey`.
@@ -59,10 +70,9 @@ export const entitlementRouteGuard: CanActivateFn = (
   const ok = entitlement.canAccess(entitlementKey, minPlan);
   if (ok) return true;
 
-  return router.createUrlTree(['/user/billing/upgrade'], {
-    queryParams: {
-      feature: entitlementKey,
-      returnUrl: state.url,
-    },
-  });
+  // 2. Authorization Check (Logged in but not entitled)
+  // Instead of redirecting to upgrade page, set the reason in AccessFacade
+  // and cancel navigation (return false) so the FeatureGateNotice can show.
+  accessFacade.require(entitlementKey as FeatureKey);
+  return false;
 };

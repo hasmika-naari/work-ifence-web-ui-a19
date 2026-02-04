@@ -1,5 +1,5 @@
 <!-- Header -->
-<header class="header header-area" [ngClass]="{'header-glossy': isSticky, 'header-color-white': true}">
+<header class="header header-area" [ngClass]="{'header-glossy': isSticky, 'header-color-white': true}" data-testid="app-navbar">
   <div class="navbar-area">
     <div class="navbar-style-three">
       <div class="container-fluid">
@@ -67,7 +67,7 @@
               </span>
             } @else {
               <!-- Show login icon when not logged in -->
-              <a routerLink="/sign-in" class="icon-link" aria-label="Sign In">
+              <a routerLink="/sign-in" class="icon-link" aria-label="Sign In" data-testid="header-sign-in">
                 <lucide-icon name="log-in"></lucide-icon>
               </a>
             }

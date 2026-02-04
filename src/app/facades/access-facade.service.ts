@@ -19,11 +19,13 @@ export class AccessFacadeService {
   private readonly router = inject(Router);
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.router.events
-        .pipe(filter((event) => event instanceof NavigationEnd))
-        .subscribe(() => this.lastDeniedReason.set(null));
-    }
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        if (isPlatformBrowser(this.platformId)) {
+          this.lastDeniedReason.set(null);
+        }
+      });
   }
 
   private readonly refresh$ = new Subject<void>();

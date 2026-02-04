@@ -8,6 +8,8 @@ import { FeathericonsModule } from '../../icons/feathericons/feathericons.module
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
+import { AuthApiService } from 'src/app/services/auth-api.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -24,6 +26,7 @@ export class SignInComponent {
         private route: ActivatedRoute,
         private localStorageService: LocalStorageService,
         private userStore: UserStoreService,
+        private authApi: AuthApiService,
     ) {
         this.authForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
@@ -37,21 +40,67 @@ export class SignInComponent {
     // Form
     authForm: FormGroup;
     onSubmit() {
-        if (this.authForm.valid) {
-            // Mark authenticated for guards & portal gating.
-            this.userStore.setUserLoginStatus(true);
-            this.localStorageService.setItem('authenticated', { notoken: 'token' });
+        // E2E-only: prove submit handler ran.
+        this.e2eSetAttr('data-e2e-submit-clicked', 'true');
+        if (this.isE2E()) console.info('[E2E] onSubmit() entered');
 
-            const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-            if (returnUrl && returnUrl.startsWith('/')) {
-                this.router.navigateByUrl(returnUrl);
-                return;
-            }
-
-            this.router.navigate(['/']);
-        } else {
-            console.log('Form is invalid. Please check the fields.');
+        if (!this.authForm.valid) {
+            this.e2eSetAttr('data-e2e-login-api', 'form-invalid');
+            if (this.isE2E()) console.warn('[E2E] form invalid', this.authForm.errors, this.authForm.value);
+            return;
         }
+
+        const email = String(this.authForm.value.email ?? '');
+        const password = String(this.authForm.value.password ?? '');
+
+        this.authApi.login(email, password).subscribe({
+            next: (response) => {
+                this.e2eSetAttr('data-e2e-login-api', 'success');
+                if (this.isE2E()) console.info('[E2E] login API success', response);
+
+                // Mark authenticated for guards & portal gating.
+                this.userStore.setUserLoginStatus(true);
+                if (response?.id_token) {
+                    this.localStorageService.setItem('authToken', response.id_token);
+                    this.userStore.updateToken(response.id_token);
+                }
+                this.localStorageService.setItem('authenticated', true);
+
+                const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+                if (returnUrl && returnUrl.startsWith('/')) {
+                    this.router.navigateByUrl(returnUrl);
+                    return;
+                }
+
+                this.router.navigate(['/']);
+            },
+            error: (err) => {
+                this.e2eSetAttr('data-e2e-login-api', 'error');
+                this.e2eSetAttr('data-e2e-login-error', this.toErrorMessage(err));
+                if (this.isE2E()) console.error('[E2E] login API error', err);
+                // Do not navigate on error.
+            }
+        });
+    }
+
+    private isE2E(): boolean {
+        return typeof window !== 'undefined' && (window as any).__E2E__ === true;
+    }
+
+    private e2eSetAttr(name: string, value: string): void {
+        if (!this.isE2E()) return;
+        if (typeof document === 'undefined' || !document.body) return;
+        document.body.setAttribute(name, value);
+    }
+
+    private toErrorMessage(err: unknown): string {
+        if (err instanceof HttpErrorResponse) {
+            const detail = (err.error as any)?.detail;
+            const message = (err.error as any)?.message;
+            return String(detail ?? message ?? err.message ?? 'Unknown error');
+        }
+        const anyErr = err as any;
+        return String(anyErr?.message ?? anyErr?.toString?.() ?? 'Unknown error');
     }
 
 }

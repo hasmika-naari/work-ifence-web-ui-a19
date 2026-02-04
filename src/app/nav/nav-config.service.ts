@@ -22,7 +22,7 @@ export class NavConfigService {
               title: 'Admin Dashboard',
               icon: 'grid',
               route: '/user/dashboard-admin',
-              featureFlag: FEATURE_FLAGS.ADMIN_CONSOLE,
+              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
               entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE
             },
           ]
@@ -38,6 +38,7 @@ export class NavConfigService {
               title: 'Requests',
               icon: 'inbox',
               route: '/user/requests',
+              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
               entitlementKey: ENTITLEMENT_KEYS.ADMIN_REQUESTS
             },
             {
@@ -109,7 +110,7 @@ export class NavConfigService {
               title: 'Plans',
               icon: 'layers',
               route: '/user/admin/plans',
-              featureFlag: FEATURE_FLAGS.SUBSCRIPTIONS,
+              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
               entitlementKey: ENTITLEMENT_KEYS.ADMIN_BILLING_PLANS
             },
             {
@@ -149,7 +150,7 @@ export class NavConfigService {
               title: 'Feature Flags',
               icon: 'settings',
               route: '/user/admin/feature-flags',
-              featureFlag: FEATURE_FLAGS.ADMIN_CONSOLE,
+              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
               entitlementKey: ENTITLEMENT_KEYS.ADMIN_FEATUREFLAGS
             },
             {
@@ -157,7 +158,7 @@ export class NavConfigService {
               title: 'Resume Templates',
               icon: 'layout',
               route: '/user/admin/resume-templates',
-              featureFlag: FEATURE_FLAGS.ADMIN_CONSOLE,
+              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
               entitlementKey: ENTITLEMENT_KEYS.ADMIN_RESUME_TEMPLATES
             },
             {
@@ -265,7 +266,7 @@ export class NavConfigService {
         id: 'resume-portal',
         title: 'Resume Portal',
         items: [
-          { id: 'my-resumes', title: 'My Resumes', icon: 'file-text', route: '/user/resumes', featureFlag: FEATURE_FLAGS.RESUME_PORTAL, entitlementKey: ENTITLEMENT_KEYS.RESUME_PORTAL },
+          { id: 'my-resumes', title: 'My Resumes', icon: 'file-text', route: '/user/resumes', featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER, entitlementKey: ENTITLEMENT_KEYS.RESUME_PORTAL },
 
           // Future core page (builder)
           {
@@ -351,7 +352,7 @@ export class NavConfigService {
             title: 'Applications',
             icon: 'file',
             route: '/user/job-applications',
-              featureFlag: FEATURE_FLAGS.JOB_TRACKING,
+              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
               entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING
           },
           {
@@ -433,8 +434,8 @@ export class NavConfigService {
         id: 'learn',
         title: 'Learn',
         items: [
-          { id: 'course-central', title: 'Course Central', icon: 'book-open', route: '/user/user-learn', featureFlag: FEATURE_FLAGS.COURSE_CENTRAL, entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL },
-          { id: 'saved', title: 'Saved', icon: 'bookmark', route: '/user/learn-saved', entitlementKey: ENTITLEMENT_KEYS.LEARN_SAVED },
+          { id: 'course-central', title: 'Course Central', icon: 'book-open', route: '/user/user-learn', featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER, entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL },
+          { id: 'saved', title: 'Saved', icon: 'bookmark', route: '/user/learn-saved', featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER, entitlementKey: ENTITLEMENT_KEYS.LEARN_SAVED },
 
           // Future modules (locked but visible)
           {

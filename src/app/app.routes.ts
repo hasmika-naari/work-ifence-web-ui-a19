@@ -172,6 +172,7 @@ import { entitledRoute } from './routing/route-helpers';
 export const routes: Routes = [
     {
         path: '',
+        pathMatch: 'full',
         loadComponent: () => 
             import('./pages/landing/landing.component')
                 .then(m => m.LandingComponent), data: {reuseComponent: true, breadcrumb: 'Opening Details'}
@@ -386,9 +387,8 @@ export const routes: Routes = [
     },
     {
         path: 'sign-in',
-        loadComponent: () => 
-            import('./pages/authentication/login-page/login-page.component')
-                .then(m => m.LoginPageComponent), data: {reuseComponent: true, breadcrumb: 'Sign In' }
+        component: SignInComponent,
+        data: {reuseComponent: true, breadcrumb: 'Sign In' }
     },
     {
         path: 'sign-up',
@@ -887,11 +887,13 @@ export const routes: Routes = [
     //         {path: 'more', component: MoreChartsComponent}
     //     ]
     // },
+    // {path: 'sign-in', redirectTo: 'authentication/sign-in', pathMatch: 'full'},
     {
         path: 'authentication',
         component: AuthenticationComponent,
         children: [
-            {path: '', component: SignInComponent},
+            {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
+            {path: 'sign-in', component: SignInComponent},
             {path: 'sign-up', component: SignUpComponent},
             {path: 'forgot-password', component: ForgotPasswordComponent},
             {path: 'reset-password', component: ResetPasswordComponent},

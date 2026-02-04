@@ -15,15 +15,15 @@ function portFromBaseURL(raw: string): number {
 }
 
 export default defineConfig({
-  testDir: '.',
+  testDir: './e2e',
   testMatch: [
     '**/*.e2e.spec.ts',
     '**/*.pw.spec.ts',
-    '**/*.spec.e2e.ts',
-    '**/*.setup.spec.ts'
+    '**/*.spec.e2e.ts'
   ],
   testIgnore: [
-    '**/src/**',
+    '**/src/**/*.spec.ts',
+    '**/src/**/*.test.ts',
     '**/node_modules/**',
     '**/dist/**'
   ],
@@ -39,14 +39,14 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    storageState: path.resolve(__dirname, 'storageState.json'),
+    storageState: path.resolve(__dirname, 'e2e/storageState.json'),
   },
 
   ...(skipWebServer
     ? {}
     : {
         webServer: {
-          command: 'npm run start -- --port=4200 --host=127.0.0.1',
+          command: 'npm run start -- --port 4200 --host 127.0.0.1',
           url: 'http://127.0.0.1:4200',
           reuseExistingServer: !process.env.CI,
           timeout: 120_000,

@@ -1,3 +1,44 @@
+# End-to-End (E2E) Testing
+
+## Running Tests
+
+- Run all tests:
+	```sh
+	npm run e2e
+	```
+- Run Playwright UI mode:
+	```sh
+	npm run e2e:ui
+	```
+- Run a single spec:
+	```sh
+	npx playwright test e2e/specs/routes.smoke.spec.ts
+	```
+
+## Authentication for Gated Routes
+
+- E2E tests use Playwright's `storageState.json` for login state.
+- To set up login state:
+	1. Update credentials in `e2e/setup/auth.setup.spec.ts`.
+	2. Run:
+		 ```sh
+		 npx playwright test e2e/setup/auth.setup.spec.ts
+		 ```
+	3. Main tests will reuse the saved `storageState.json`.
+
+## Test Stability
+
+- All tests wait for known root elements (e.g., `[data-testid]` selectors) or use `page.waitForLoadState('domcontentloaded')`.
+- Avoid arbitrary timeouts; prefer waiting for containers or network idle.
+- Playwright config sets reasonable timeouts and retries for CI.
+
+## Debugging
+
+- Enable trace viewer for failed tests:
+	```sh
+	npx playwright show-trace trace.zip
+	```
+- Use `npm run e2e:ui` for interactive debugging.
 # Playwright E2E (DEV-only)
 
 This folder contains Playwright E2E tests that run the Angular dev server and use a **DEV-only** `window.__E2E__` hook to simulate auth/flags/entitlements without relying on backend APIs.

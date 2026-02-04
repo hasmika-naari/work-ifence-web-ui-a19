@@ -8,5 +8,10 @@ export const environment = {
   country: 'india',
   backend: 'http://Workifence.com:8090', // Put your backend here
   url: '',
-  useMockResumeTemplates: false
+  useMockResumeTemplates: false,
+  // Optional override for AuthApiService.login endpoint.
+  // If empty, AuthApiService uses:
+  // - window.__E2E__ === true  -> /api/mock/login
+  // - otherwise               -> /api/authenticate
+  loginEndpoint: ''
 };
