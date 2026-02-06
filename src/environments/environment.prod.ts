@@ -5,5 +5,6 @@ export const environment = {
   url: '',
   useMockResumeTemplates: false,
   // Optional override for AuthApiService.login endpoint (leave empty for default).
-  loginEndpoint: ''
+  loginEndpoint: '',
+  apiUrl: ''
 };

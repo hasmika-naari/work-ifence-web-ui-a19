@@ -13,5 +13,6 @@ export const environment = {
   // If empty, AuthApiService uses:
   // - window.__E2E__ === true  -> /api/mock/login
   // - otherwise               -> /api/authenticate
-  loginEndpoint: ''
+  loginEndpoint: '',
+  apiUrl: ''
 };

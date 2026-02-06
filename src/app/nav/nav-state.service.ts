@@ -1,13 +1,17 @@
-import { Injectable, computed, signal, Signal } from '@angular/core';
-import { NavConfigService } from './nav-config.service';
+import { Injectable, effect, signal, Signal } from '@angular/core';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { EntitlementService } from '../services/entitlement.service';
 import { NavSection, NavItem, UserEntitlements } from './nav.model';
 import { RemoteConfigFacadeService } from '../facades/remote-config-facade.service';
 import { environment } from '../../environments/environment';
+import { NavApiService } from './nav-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class NavStateService {
   private _sections = signal<NavSection[]>([]);
+  private _menu = signal<NavSection[] | null>(null);
+  private _loading = signal<boolean>(false);
 
   /**
    * Nav gating evaluation order (UI-only):
@@ -31,25 +35,71 @@ export class NavStateService {
    */
 
   constructor(
-    private navConfig: NavConfigService,
+    private navApi: NavApiService,
     private entitlement: EntitlementService,
     private remoteConfig: RemoteConfigFacadeService
   ) {
-    computed(() => {
+    effect(() => {
       const ent = this.entitlement.getEntitlements()();
       if (!ent) {
         this._sections.set([]);
-        return [];
+        return;
       }
-      const sections = this.navConfig.getSectionsForRole(ent.roles[0] || 'ROLE_USER');
-      const evaluated = this.evaluateSections(sections, ent);
-      this._sections.set(evaluated);
-      return evaluated;
+
+      const menu = this._menu();
+      if (menu) {
+        this._sections.set(this.evaluateSections(menu, ent));
+        return;
+      }
+
+      this.loadMenu(ent);
     });
   }
 
   navSections(): Signal<NavSection[]> {
     return this._sections;
+  }
+
+  private loadMenu(ent: UserEntitlements): void {
+    if (this._loading()) return;
+    this._loading.set(true);
+
+    this.navApi
+      .getMenu()
+      .pipe(
+        catchError(err => {
+          console.warn('[NavStateService] Failed to load /api/nav/menu, using fallback menu:', err);
+          return of(this.getFallbackMenu());
+        })
+      )
+      .subscribe(sections => {
+        const normalized = this.normalizeMenu(sections || []);
+        this._menu.set(normalized);
+        const latestEnt = this.entitlement.getEntitlements()() ?? ent;
+        this._sections.set(this.evaluateSections(normalized, latestEnt));
+        this._loading.set(false);
+      });
+  }
+
+  private getFallbackMenu(): NavSection[] {
+    return [];
+  }
+
+  private normalizeMenu(sections: NavSection[]): NavSection[] {
+    return (sections || []).map(section => ({
+      ...section,
+      items: (section.items || []).map(item => this.normalizeItem(item))
+    }));
+  }
+
+  private normalizeItem(item: NavItem): NavItem {
+    const children = item.children?.map(child => this.normalizeItem(child));
+    const route = item.route === '/authentication' ? '/sign-in' : item.route;
+    return {
+      ...item,
+      route,
+      children
+    };
   }
 
   private evaluateSections(sections: NavSection[], ent: UserEntitlements): NavSection[] {

@@ -887,7 +887,7 @@ export const routes: Routes = [
     //         {path: 'more', component: MoreChartsComponent}
     //     ]
     // },
-    // {path: 'sign-in', redirectTo: 'authentication/sign-in', pathMatch: 'full'},
+    {path: 'sign-in', redirectTo: 'authentication/sign-in', pathMatch: 'full'},
     {
         path: 'authentication',
         component: AuthenticationComponent,

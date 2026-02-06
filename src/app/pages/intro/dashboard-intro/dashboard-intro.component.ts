@@ -1,8 +1,8 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ResumeOptiFlowStepsComponent } from './resume-opti-flow-steps/resume-opti-flow-steps.component';
-import { ResumeOptiFlowSteps2Component } from './resume-opti-flow-steps2/resume-opti-flow-steps2.component';
+import { DashboardOptiFlowStepsComponent } from './resume-opti-flow-steps/resume-opti-flow-steps.component';
+import { DashboardOptiFlowSteps2Component } from './resume-opti-flow-steps2/resume-opti-flow-steps2.component';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
 import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
@@ -15,8 +15,8 @@ import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-w
     NgOptimizedImage,
     FooterWorkifenceComponent,
     HeaderWorkIfenceComponent,
-    ResumeOptiFlowStepsComponent,
-    ResumeOptiFlowSteps2Component
+    DashboardOptiFlowStepsComponent,
+    DashboardOptiFlowSteps2Component
 ],
     templateUrl: './dashboard-intro.component.html',
     styleUrls: ['./dashboard-intro.component.scss']

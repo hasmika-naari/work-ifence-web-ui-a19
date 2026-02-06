@@ -235,82 +235,88 @@ export class AppComponent implements OnInit, AfterViewInit{
         // //   ]);
     
           // this.recallJsFuntions();
-          // If we clear the token on startup (auto-login flow), also clear the auth flag.
-          // Otherwise other services will think we're logged in and trigger 401s (e.g. /api/access/me).
-          this.storageService.removeItem('authToken');
-          this.storageService.removeItem('authenticated');
-          let userName:any = this.storageService.getItemByName("userName");
-          let passWord:any = this.storageService.getItemByName("passWord");
-          let locationPath:string = this.locationService.path(true);
-          
-          console.log('UserName: ' + userName);
-          console.log('passWord: ' + passWord);
-          console.log('locationPath: ' + this.router.url);
-    
-    
-      // const item = localStorage.getItem('yourKey'); // Replace 'yourKey' with the actual key used
-      if (!userName || !passWord) {
-        // No value in localStorage for the given key
-        console.log('No value found in localStorage');
-        if(!locationPath.includes('activate') && !locationPath.includes('reset-finish') ){
-          this.router.navigateByUrl('/');
-        }
-      }
-      let parsedUserName;
-      let parsedUserPassword;
+          // Sync user login state from persisted auth flags/tokens.
+          const isLoggedIn = this.storageService.isLoggedIn();
+          this.userStore.setUserLoginStatus(isLoggedIn);
 
-      try {
-        parsedUserName =JSON.parse(userName);
-      } catch (e) {
-        // item is not a valid JSON, handle it as a plain string
-        console.log('Item is not a valid JSON, treating it as plain string');
-        parsedUserName = { notoken: userName };
-      }
-
-      try {
-        parsedUserPassword =JSON.parse(passWord);
-      } catch (e) {
-        // item is not a valid JSON, handle it as a plain string
-        console.log('Item is not a valid JSON, treating it as plain string');
-        parsedUserPassword = { notoken: passWord };
-      }
-
-    
-    
-        
-      try {
-        
-        // const userNameNoTokenEmpty = parsedUserName &&  parsedUserName.notoken !== '';
-        // const userPasswordNoTokenEmpty = parsedUserPassword && parsedUserPassword.notoken !== '';
-        if (!parsedUserName || !parsedUserPassword) {
-          // noToken exists and is an empty string
-          console.log('noToken is an empty string');
-          this.storageService.removeItem('authenticated');
-          if(!locationPath.includes('activate') && !locationPath.includes('reset-finish') && !locationPath.includes('opening')){
-            // this.router.navigateByUrl('/');
-          }
-        } else {
-          // noToken does not exist or is not an empty string
-          console.log('noToken is not an empty string or does not exist');
-          if (this.appUtilService) {
-           this.appUtilService.loginWithCredentials(parsedUserName, parsedUserPassword, locationPath);
-          }
-          // this.isLoggedIn = this.storageService.isLoggedIn();
-          // if (this.isLoggedIn) {
-          //   const user = this.storageService.getUser();
-          //   this.roles = user.roles;
+          if (!isLoggedIn) {
+            // If we clear the token on startup (auto-login flow), also clear the auth flag.
+            // Otherwise other services will think we're logged in and trigger 401s (e.g. /api/access/me).
+            this.storageService.removeItem('authToken');
+            this.storageService.removeItem('authenticated');
+            let userName:any = this.storageService.getItemByName("userName");
+            let passWord:any = this.storageService.getItemByName("passWord");
+            let locationPath:string = this.locationService.path(true);
+            
+            console.log('UserName: ' + userName);
+            console.log('passWord: ' + passWord);
+            console.log('locationPath: ' + this.router.url);
       
-          //   this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
-          //   this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
-          //   this.username = user.username;
-          // }
-          // this.eventBusSub = this.eventBusService.on('logout', () => {
-          // });
+      
+        // const item = localStorage.getItem('yourKey'); // Replace 'yourKey' with the actual key used
+        if (!userName || !passWord) {
+          // No value in localStorage for the given key
+          console.log('No value found in localStorage');
+          if(!locationPath.includes('activate') && !locationPath.includes('reset-finish') ){
+            this.router.navigateByUrl('/');
+          }
         }
-      } catch (e) {
-        // Handle JSON parse error
-        console.log('Error parsing JSON from localStorage', e);
-      }
+        let parsedUserName;
+        let parsedUserPassword;
+
+        try {
+          parsedUserName =JSON.parse(userName);
+        } catch (e) {
+          // item is not a valid JSON, handle it as a plain string
+          console.log('Item is not a valid JSON, treating it as plain string');
+          parsedUserName = { notoken: userName };
+        }
+
+        try {
+          parsedUserPassword =JSON.parse(passWord);
+        } catch (e) {
+          // item is not a valid JSON, handle it as a plain string
+          console.log('Item is not a valid JSON, treating it as plain string');
+          parsedUserPassword = { notoken: passWord };
+        }
+
+      
+      
+          
+        try {
+          
+          // const userNameNoTokenEmpty = parsedUserName &&  parsedUserName.notoken !== '';
+          // const userPasswordNoTokenEmpty = parsedUserPassword && parsedUserPassword.notoken !== '';
+          if (!parsedUserName || !parsedUserPassword) {
+            // noToken exists and is an empty string
+            console.log('noToken is an empty string');
+            this.storageService.removeItem('authenticated');
+            if(!locationPath.includes('activate') && !locationPath.includes('reset-finish') && !locationPath.includes('opening')){
+              // this.router.navigateByUrl('/');
+            }
+          } else {
+            // noToken does not exist or is not an empty string
+            console.log('noToken is not an empty string or does not exist');
+            if (this.appUtilService) {
+             this.appUtilService.loginWithCredentials(parsedUserName, parsedUserPassword, locationPath);
+            }
+            // this.isLoggedIn = this.storageService.isLoggedIn();
+            // if (this.isLoggedIn) {
+            //   const user = this.storageService.getUser();
+            //   this.roles = user.roles;
+        
+            //   this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
+            //   this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
+            //   this.username = user.username;
+            // }
+            // this.eventBusSub = this.eventBusService.on('logout', () => {
+            // });
+          }
+        } catch (e) {
+          // Handle JSON parse error
+          console.log('Error parsing JSON from localStorage', e);
+        }
+          }
         
         }
     }

@@ -11,8 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NavStateService } from 'src/app/nav/nav-state.service';
 import { NavSection } from 'src/app/nav/nav.model';
+import { NavStore } from 'src/app/core/nav/nav.store';
 
 @Component({
     selector: 'app-sidebar',
@@ -40,13 +40,22 @@ export class SidebarComponent {
   public userActiveRole: Signal<WifRole> = this.userStore.getUserActiveRole();
   public bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   public router: Router = inject(Router);
-  private navState: NavStateService = inject(NavStateService);
+  private navStore: NavStore = inject(NavStore);
+  private isLoggedIn = this.userStore.getUserLoginStatus();
 
-  public navSections: Signal<NavSection[]> = this.navState.navSections();
+  public navSections: Signal<NavSection[]> = this.navStore.visibleSections;
 
   constructor() {
     this.toggleService.isToggled$.subscribe(isToggled => {
       this.isToggled = isToggled;
+    });
+    effect(() => {
+      const loggedIn = this.isLoggedIn();
+      if (loggedIn) {
+        this.navStore.load();
+      } else {
+        this.navStore.clear();
+      }
     });
     // Debug: log navSections whenever it changes
     effect(() => {

@@ -1,6 +1,7 @@
 export const PUBLIC_ROUTE_PREFIXES = [
   '/auth',
   '/authentication',
+  '/sign-in',
   '/public'
 ];
 

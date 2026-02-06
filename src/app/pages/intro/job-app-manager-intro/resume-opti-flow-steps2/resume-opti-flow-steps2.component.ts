@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-customizer.service';
 
 @Component({
-    selector: 'resume-opti-flow-steps2',
+    selector: 'job-app-opti-flow-steps2',
     standalone: true,
     templateUrl: './resume-opti-flow-steps2.component.html',
     styleUrls: ['./resume-opti-flow-steps2.component.scss']
 })
-export class ResumeOptiFlowSteps2Component implements OnInit {
+export class JobAppOptiFlowSteps2Component implements OnInit {
 
     isToggled = false;
 
