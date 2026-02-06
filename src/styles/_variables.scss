@@ -40,7 +40,7 @@ $icon-sizes: (
 -xl: 32px
 );
 
-$font-family: 'Poppins', sans-serif;
+$font-family: var(--app-font-family);
 $theme-max-width: 1300px;
 
 $admin-toolbar-height: 56px;
@@ -94,7 +94,7 @@ $blink-scrollbar-width: 12px;
 /*================================================
 Default CSS
 =================================================*/
-$font_family: 'Poppins', sans-serif;
+$font_family: var(--app-font-family);
 $template_color: #b81f89;
 $template_bgcolor: #fbf5d6;
 $transparent-primary_color: #0404048a;

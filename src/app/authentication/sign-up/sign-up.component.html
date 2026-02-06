@@ -29,7 +29,7 @@
               Your Name
             </label>
             <mat-form-field>
-              <i-feather name="user"></i-feather>
+              <span class="material-symbols-outlined input-icon">person</span>
               <mat-label>Enter your name</mat-label>
               <input matInput type="text" id="name" formControlName="name">
             </mat-form-field>
@@ -49,7 +49,7 @@
               Email Address
             </label>
             <mat-form-field>
-              <i-feather name="mail"></i-feather>
+              <span class="material-symbols-outlined input-icon">mail</span>
               <mat-label>Enter email address</mat-label>
               <input matInput type="email" id="email" formControlName="email">
             </mat-form-field>
@@ -69,7 +69,7 @@
               Your Password
             </label>
             <mat-form-field>
-              <i-feather name="lock"></i-feather>
+              <span class="material-symbols-outlined input-icon">lock</span>
               <mat-label>Enter your password</mat-label>
               <input matInput [type]="hide ? 'password' : 'text'" id="password" formControlName="password">
               <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">

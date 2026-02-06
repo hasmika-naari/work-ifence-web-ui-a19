@@ -24,7 +24,7 @@
               Your Password
             </label>
             <mat-form-field>
-              <i-feather name="lock"></i-feather>
+              <span class="material-symbols-outlined input-icon">lock</span>
               <mat-label>Enter your password</mat-label>
               <input matInput [type]="hide ? 'password' : 'text'" id="password" formControlName="password">
               <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">

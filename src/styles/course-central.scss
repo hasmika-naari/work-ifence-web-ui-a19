@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-    --fontFamily1: 'Poppins', sans-serif !important;
-    --fontFamily2: 'Open Sans', sans-serif !important;
-    --fontFamily3: 'Playfair Display', serif !important;
+    --fontFamily1: var(--app-font-family) !important;
+    --fontFamily2: var(--app-font-family) !important;
+    --fontFamily3: var(--app-font-family) !important;
 //     --mainColor: #ff1949;
 //     --mainColor2: #005d40;
 //     --optionalColor: #0eb582;

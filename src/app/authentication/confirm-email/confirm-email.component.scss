@@ -22,9 +22,11 @@
             margin-bottom: 25px;
             background: rgba(55, 97, 238, 0.10);
 
-            i-feather {
+            .input-icon {
                 width: 55px;
                 height: 55px;
+                font-size: 55px;
+                line-height: 1;
             }
         }
         h4 {
@@ -69,9 +71,11 @@
                 height: 120px;
                 margin-bottom: 20px;
     
-                i-feather {
+                .input-icon {
                     width: 45px;
                     height: 45px;
+                    font-size: 45px;
+                    line-height: 1;
                 }
             }
             h4 {

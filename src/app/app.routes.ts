@@ -168,6 +168,7 @@ import { entitlementRouteGuard } from './guards/entitlement-route.guard';
 import { ENTITLEMENT_KEYS } from './entitlements/entitlement-keys';
 import { PlanTier } from './nav/nav.model';
 import { entitledRoute } from './routing/route-helpers';
+import { LoginPageComponent } from './pages/authentication/login-page/login-page.component';
 
 export const routes: Routes = [
     {
@@ -387,8 +388,9 @@ export const routes: Routes = [
     },
     {
         path: 'sign-in',
-        component: SignInComponent,
-        data: {reuseComponent: true, breadcrumb: 'Sign In' }
+        loadComponent: () => 
+            import('./pages/authentication/login-page/login-page.component')
+                .then(m => m.LoginPageComponent), data: {reuseComponent: true, breadcrumb: 'Sign In' }
     },
     {
         path: 'sign-up',

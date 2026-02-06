@@ -1,13 +1,13 @@
 //fonts
 
-$font_0: Lato;
-$font_1: 'Poppins', Tahoma, Geneva, Verdana, sans-serif, Arial, Helvetica, sans-serif, Geneva, Tahoma, sans-serif !important;;
+$font_0: var(--app-font-family);
+$font_1: var(--app-font-family) !important;
 $font-themify: themify;
 $font-awesome: FontAwesome;
 $font-ICO: IcoFont;
-$font-work-sans: work-Sans;
-$font-nunito: Nunito;
-$font-serif: sans-serif;
+$font-work-sans: var(--app-font-family);
+$font-nunito: var(--app-font-family);
+$font-serif: var(--app-font-family);
 
 
 
