@@ -16,6 +16,10 @@ export const FEATURE_FLAG_DEFAULTS: RemoteConfig = {
     { key: 'ADMIN_CONSOLE', enabled: DEFAULT_ENABLED },
     { key: 'SUBSCRIPTIONS', enabled: DEFAULT_ENABLED },
     { key: 'NEWS_FEED', enabled: DEFAULT_ENABLED },
+    { key: 'USER_DASHBOARD', enabled: true },
+    { key: 'user.dashboard', enabled: true },
+    { key: 'job.alerts', enabled: true },
+    { key: 'nav.placeholder', enabled: true },
 
     // Internal: never enable; used to hide placeholder nav entries.
     { key: 'NAV_PLACEHOLDER', enabled: false, failClosed: true },

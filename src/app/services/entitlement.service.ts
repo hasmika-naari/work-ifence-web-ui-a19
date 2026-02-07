@@ -41,6 +41,13 @@ export class EntitlementService {
     }
   }
 
+  private debugLog(...args: unknown[]): void {
+    if (!environment.production) {
+      // eslint-disable-next-line no-console
+      console.log('[EntitlementService]', ...args);
+    }
+  }
+
   private setFallbackEntitlements(reason: string) {
     if (environment.production) {
       this._entitlements.set({
@@ -101,10 +108,11 @@ export class EntitlementService {
       return;
     }
 
-    // Backend contract: `/api/me/entitlements` returns { plan, roles, entitlements, updatedAt? }.
+    // Backend contract: `/api/entitlements/me` returns { plan, roles, entitlements, updatedAt? }.
     // If the contract breaks, FE fails closed by falling back (no entitlements granted in prod).
-    this.http.get<unknown>('/api/me/entitlements').subscribe({
+    this.http.get<unknown>('/api/entitlements/me').subscribe({
       next: raw => {
+        this.debugLog('raw /api/entitlements/me response', raw);
         const decoded = this.decodeBackendEntitlements(raw);
         if (!decoded) {
           this.setFallbackEntitlements('Invalid backend entitlements contract (missing/invalid entitlements object)');
@@ -115,7 +123,7 @@ export class EntitlementService {
         this._lastFetched = Date.now();
       },
       error: err => {
-        this.setFallbackEntitlements(`HTTP error loading /api/me/entitlements: ${String(err)}`);
+        this.setFallbackEntitlements(`HTTP error loading /api/entitlements/me: ${String(err)}`);
       }
     });
   }

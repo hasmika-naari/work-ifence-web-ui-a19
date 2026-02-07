@@ -9,7 +9,11 @@ export type FeatureFlagKey =
   | 'SUBSCRIPTIONS'
   | 'NAV_PLACEHOLDER'
   | 'PAYMENTS'
-  | 'NEWS_FEED';
+  | 'NEWS_FEED'
+  | 'USER_DASHBOARD'
+  | 'user.dashboard'
+  | 'job.alerts'
+  | 'nav.placeholder';
 
 export interface FeatureFlag {
   key: FeatureFlagKey;

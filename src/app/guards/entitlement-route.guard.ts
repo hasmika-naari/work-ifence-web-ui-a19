@@ -5,6 +5,7 @@ import { AccessFacadeService } from '../facades/access-facade.service';
 import { PlanTier } from '../nav/nav.model';
 import { environment } from '../../environments/environment';
 import { FeatureKey } from '../models/feature-key.model';
+import { ENTITLEMENT_KEYS } from '../entitlements/entitlement-keys';
 
 export interface EntitlementRouteData {
   entitlementKey?: string;
@@ -65,6 +66,10 @@ export const entitlementRouteGuard: CanActivateFn = (
       url: state.url,
     });
     return false;
+  }
+
+  if (entitlementKey === ENTITLEMENT_KEYS.USER_DASHBOARD) {
+    return true;
   }
 
   const ok = entitlement.canAccess(entitlementKey, minPlan);

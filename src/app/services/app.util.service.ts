@@ -1,6 +1,7 @@
 import { Inject, Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { CompetationDataItem } from './bee-compete.model';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -16,6 +17,8 @@ import { UserResume } from './store/user-store';
 import { JobFeedItem } from './ifence.model';
 import { WINDOW } from './window.token';
 import { AccessFacadeService } from '../facades/access-facade.service';
+import { EntitlementService } from './entitlement.service';
+import { NavStore } from 'src/app/core/nav/nav.store';
 
 @Injectable({providedIn: 'root'})
 export class AppUtilService {
@@ -42,6 +45,8 @@ export class AppUtilService {
   private userStore: UserStoreService = inject(UserStoreService);
   private http: HttpClient = inject(HttpClient);
   private readonly accessFacade = inject(AccessFacadeService);
+  private entitlementService: EntitlementService = inject(EntitlementService);
+  private navStore: NavStore = inject(NavStore);
   
     constructor( 
       @Inject(DOCUMENT) private document: Document,  
@@ -130,6 +135,8 @@ export class AppUtilService {
                     this.localStorageService.setItem('authenticated', true);
                     // Ensure entitlements/features update immediately after login
                     this.accessFacade.reload();
+                    this.entitlementService.getEntitlements();
+                    this.navStore.refresh();
                     
                     this.userStore.updateToken(loginResponse.id_token);
   
@@ -139,16 +146,19 @@ export class AppUtilService {
                         console.log('account: ' + account.id);
                         // alert('User Account: ' + account.id);
                         this.userStore.updateAccount(account);
-                          let roles: Array<WifRole> = [];
-                          account.authorities.forEach(authr => {
-                            if(authr === 'ROLE_ADMIN'){
-                              roles.push({title:'App Admin ',role:authr, url: '/user/dashboard-admin' });
-                            }else if(authr === 'ROLE_USER'){
-                              roles.push({title: 'Member' ,role:authr, url: '/user/dashboard' });
-                            }
-                          });
-                          this.userStore.updateRoles(roles);
-                          debugger;
+                          this.accessFacade.accessMe$
+                            .pipe(take(1))
+                            .subscribe((me) => {
+                              const roles: Array<WifRole> = [];
+                              if (this.accessFacade.isAdmin(me)) {
+                                roles.push({ title: 'App Admin', role: 'ROLE_ADMIN', url: '/user/dashboard-admin' });
+                              } else if (this.accessFacade.isEnterprise(me)) {
+                                roles.push({ title: 'Enterprise', role: 'ROLE_USER', url: '/user/enterprise' });
+                              } else {
+                                roles.push({ title: 'Member', role: 'ROLE_USER', url: '/user/dashboard' });
+                              }
+                              this.userStore.updateRoles(roles);
+                            });
                         this.authService.getLoginProfile(account.login).subscribe(
                           (profile)=>{
                             this.userStore.updateLoginProfile(profile);

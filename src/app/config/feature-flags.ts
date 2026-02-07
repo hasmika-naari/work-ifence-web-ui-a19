@@ -35,6 +35,7 @@ export const FEATURE_FLAGS = {
   ENTERPRISE_ONBOARDING: 'ENTERPRISE_ONBOARDING',
   USER_ACTIVITY: 'USER_ACTIVITY',
   ENTERPRISE_CONSOLE: 'ENTERPRISE_CONSOLE',
+  USER_DASHBOARD: 'USER_DASHBOARD',
 
   // Reserved internal flag used to hide nav items whose routes are not implemented in this repo.
   // This should not be enabled in any environment.

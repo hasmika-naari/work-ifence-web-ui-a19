@@ -10,6 +10,8 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AccessFacadeService } from 'src/app/facades/access-facade.service';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -27,6 +29,7 @@ export class SignInComponent {
         private localStorageService: LocalStorageService,
         private userStore: UserStoreService,
         private authApi: AuthApiService,
+        private accessFacade: AccessFacadeService,
     ) {
         this.authForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
@@ -72,7 +75,20 @@ export class SignInComponent {
                     return;
                 }
 
-                this.router.navigate(['/']);
+                this.accessFacade.reload();
+                this.accessFacade.accessMe$
+                    .pipe(take(1))
+                    .subscribe((me) => {
+                        if (this.accessFacade.isAdmin(me)) {
+                            this.router.navigate(['/user/dashboard-admin']);
+                            return;
+                        }
+                        if (this.accessFacade.isEnterprise(me)) {
+                            this.router.navigate(['/user/enterprise']);
+                            return;
+                        }
+                        this.router.navigate(['/user/dashboard']);
+                    });
             },
             error: (err) => {
                 this.e2eSetAttr('data-e2e-login-api', 'error');

@@ -6,6 +6,7 @@ import { NavApiItem, NavApiResponse, NavApiSection } from './nav-api.model';
 import { NavBadge, NavItem, NavSection, PlanTier } from 'src/app/nav/nav.model';
 import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
 import { EntitlementService } from 'src/app/services/entitlement.service';
+import { environment } from 'src/environments/environment';
 
 const CACHE_KEY = 'nav_me_cache_v1';
 
@@ -50,10 +51,13 @@ export class NavStore {
     if (this.loading()) return;
     this.loading.set(true);
 
+    // Ensure entitlements are fetched so gating logic has data.
+    this.entitlement.getEntitlements();
+
     this.api.getMyNav()
       .pipe(
         catchError(err => {
-          this.error.set(`Failed to load /api/nav/me: ${String(err)}`);
+          this.error.set(`Failed to load /api/nav/menu: ${String(err)}`);
           const fallback = this.buildFallbackResponse();
           this.navResponse.set(fallback);
           this.persistCache(fallback);
@@ -62,8 +66,14 @@ export class NavStore {
         })
       )
       .subscribe(resp => {
+        this.debugLog('raw /access/nav/menu response', resp);
         this.navResponse.set(resp);
         this.persistCache(resp);
+        this.debugLog('nav counts', {
+          sections: this.countSections(resp),
+          itemsBeforeFilter: this.countItems(resp),
+          itemsAfterFilter: this.countItemsFromSections(this.visibleSections())
+        });
         this.error.set(null);
         this.loading.set(false);
       });
@@ -89,6 +99,7 @@ export class NavStore {
   private toNavItem(item: NavApiItem): NavItem {
     const children = item.children?.map(child => this.toNavItem(child));
     const route = item.route === '/authentication' ? '/sign-in' : item.route;
+    const icon = this.normalizeIcon(item.icon);
     const badge = item.badge
       ? {
           text: item.badge.text,
@@ -100,10 +111,23 @@ export class NavStore {
     let enabled = true;
     let lockedReason = '';
 
-    if (item.featureFlag && !this.remoteConfig.isFlagEnabledSafe(item.featureFlag)) {
+    const flagInfo = this.resolveFeatureFlagKey(item.featureFlag);
+    if (flagInfo.key && flagInfo.known && !this.remoteConfig.isFlagEnabledSafe(flagInfo.key)) {
+      this.debugLog('item hidden: featureFlag disabled', {
+        id: item.id,
+        title: item.title,
+        featureFlag: flagInfo.key
+      });
       visible = false;
       enabled = false;
     } else {
+      if (flagInfo.key && !flagInfo.known) {
+        this.debugLog('item featureFlag unknown (treated as enabled)', {
+          id: item.id,
+          title: item.title,
+          featureFlag: flagInfo.key
+        });
+      }
       if (item.locked === true || item.allowed === false) {
         const showLocked = item.showWhenLocked === true;
         visible = showLocked;
@@ -111,6 +135,12 @@ export class NavStore {
         lockedReason = item.minPlan
           ? `Upgrade to ${item.minPlan} to unlock`
           : 'Upgrade to unlock';
+        if (!showLocked) {
+          this.debugLog('item hidden: locked/allowed=false without showWhenLocked', {
+            id: item.id,
+            title: item.title
+          });
+        }
       } else if (item.allowed === true || item.locked === false) {
         visible = true;
         enabled = true;
@@ -125,6 +155,14 @@ export class NavStore {
           visible = showLocked;
           enabled = false;
           lockedReason = minPlan ? `Upgrade to ${minPlan} to unlock` : 'Upgrade to unlock';
+          if (!showLocked) {
+            this.debugLog('item hidden: entitlement missing without showWhenLocked', {
+              id: item.id,
+              title: item.title,
+              entitlementKey: item.entitlementKey,
+              minPlan
+            });
+          }
         } else {
           visible = true;
           enabled = true;
@@ -140,7 +178,7 @@ export class NavStore {
     return {
       id: item.id,
       title: item.title,
-      icon: item.icon,
+      icon,
       route,
       featureFlag: item.featureFlag,
       entitlementKey: item.entitlementKey,
@@ -156,6 +194,149 @@ export class NavStore {
       lockedReason
     };
   }
+
+  private normalizeIcon(name?: string): string {
+    const normalized = (name ?? '').trim().toLowerCase();
+    if (!normalized) return 'grid';
+    if (this.validIcons.has(normalized)) return normalized;
+
+    this.debugLog('item icon invalid, using fallback', { icon: normalized });
+    return 'grid';
+  }
+
+  private resolveFeatureFlagKey(raw?: string): { key?: string; known: boolean } {
+    const key = (raw ?? '').trim();
+    if (!key) return { key: undefined, known: false };
+
+    const lower = key.toLowerCase();
+    if (lower === 'nav.placeholder') {
+      return { key: undefined, known: false };
+    }
+
+    if (lower === 'job.alerts' && this.remoteConfig.getFlag('ALERTS' as any)) {
+      return { key: 'ALERTS', known: true };
+    }
+
+    if (lower === 'user.dashboard' && this.remoteConfig.getFlag('USER_DASHBOARD' as any)) {
+      return { key: 'USER_DASHBOARD', known: true };
+    }
+
+    if (this.remoteConfig.getFlag(key as any)) return { key, known: true };
+
+    const normalized = key.replace(/[^a-zA-Z0-9]+/g, '_').toUpperCase();
+    if (normalized && this.remoteConfig.getFlag(normalized as any)) {
+      return { key: normalized, known: true };
+    }
+
+    return { key, known: false };
+  }
+
+  private debugLog(...args: unknown[]): void {
+    if (!environment.production) {
+      // eslint-disable-next-line no-console
+      console.log('[NavStore]', ...args);
+    }
+  }
+
+  private countSections(resp: NavApiResponse | null): number {
+    return resp?.sections?.length ?? 0;
+  }
+
+  private countItems(resp: NavApiResponse | null): number {
+    return (resp?.sections ?? []).reduce((acc, section) => acc + (section.items?.length ?? 0), 0);
+  }
+
+  private countItemsFromSections(sections: NavSection[]): number {
+    return (sections ?? []).reduce((acc, section) => acc + (section.items?.length ?? 0), 0);
+  }
+
+  private readonly validIcons = new Set<string>([
+    'activity',
+    'alert-circle',
+    'alert-triangle',
+    'align-left',
+    'bar-chart-2',
+    'bell',
+    'book-open',
+    'briefcase',
+    'calendar',
+    'camera',
+    'check',
+    'check-circle',
+    'chevron-left',
+    'clock',
+    'code',
+    'codepen',
+    'coffee',
+    'command',
+    'copy',
+    'crosshair',
+    'database',
+    'dollar-sign',
+    'dribbble',
+    'edit',
+    'edit-3',
+    'facebook',
+    'file',
+    'file-minus',
+    'file-text',
+    'flag',
+    'folder',
+    'github',
+    'globe',
+    'grid',
+    'headphones',
+    'heart',
+    'home',
+    'info',
+    'key',
+    'layers',
+    'link',
+    'linkedin',
+    'list',
+    'loader',
+    'lock',
+    'log-out',
+    'mail',
+    'map',
+    'map-pin',
+    'meh',
+    'message-square',
+    'minimize',
+    'moon',
+    'more-vertical',
+    'octagon',
+    'paperclip',
+    'percent',
+    'phone',
+    'pie-chart',
+    'play-circle',
+    'plus',
+    'search',
+    'send',
+    'settings',
+    'share-2',
+    'shopping-bag',
+    'shopping-cart',
+    'sliders',
+    'smile',
+    'star',
+    'table',
+    'tag',
+    'thumbs-up',
+    'trash',
+    'trash-2',
+    'trending-down',
+    'trending-up',
+    'twitch',
+    'twitter',
+    'user',
+    'user-check',
+    'user-plus',
+    'users',
+    'x',
+    'youtube'
+  ]);
 
   private normalizeBadgeType(type?: string): NavBadge['type'] | undefined {
     if (!type) return undefined;

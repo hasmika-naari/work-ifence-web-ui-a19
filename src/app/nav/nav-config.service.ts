@@ -5,7 +5,7 @@ import { FEATURE_FLAGS } from '../config/feature-flags';
 import { ENTITLEMENT_KEYS } from '../entitlements/entitlement-keys';
 
 /**
- * @deprecated Replaced by BE-driven nav (/api/nav/me) via NavStore.
+ * @deprecated Replaced by BE-driven nav (/api/nav/menu) via NavStore.
  * Kept temporarily for backward compatibility; scheduled for cleanup.
  */
 @Injectable({ providedIn: 'root' })

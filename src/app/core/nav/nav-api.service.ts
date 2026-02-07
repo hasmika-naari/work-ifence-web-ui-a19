@@ -10,7 +10,7 @@ export class NavApiService {
 
   getMyNav(): Observable<NavApiResponse> {
     const base = (environment.apiUrl ?? '').replace(/\/$/, '');
-    const url = `${base}/api/nav/me`;
+    const url = `${base}/access/nav/menu`;
     return this.http.get<NavApiResponse>(url);
   }
 }

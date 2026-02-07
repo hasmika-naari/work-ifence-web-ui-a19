@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { PopoverModule } from 'primeng/popover';
 import { OverlayModule } from 'primeng/overlay';
@@ -35,6 +36,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
+import { EntitlementService } from 'src/app/services/entitlement.service';
+import { NavStore } from 'src/app/core/nav/nav.store';
 
 @Component({
   selector: 'app-login',
@@ -80,6 +83,8 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
   private router: Router = inject(Router);
   private route: ActivatedRoute = inject(ActivatedRoute);
   private readonly accessFacade = inject(AccessFacadeService);
+  private entitlementService: EntitlementService = inject(EntitlementService);
+  private navStore: NavStore = inject(NavStore);
   private localStorageService: LocalStorageService  = inject(LocalStorageService);
   private constantService: AppConstantsService  = inject(AppConstantsService);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -284,6 +289,8 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                     this.localStorageService.setItem('authenticated', true);
                     // Ensure entitlements/features update immediately after login
                     this.accessFacade.reload();
+                    this.entitlementService.getEntitlements();
+                    this.navStore.refresh();
                   }
                   this.authService.getAccountProfile().subscribe(
                     (account:Account) =>
@@ -291,23 +298,22 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                       ;
                       console.log('account: ' + account.id);
                       this.userStore.updateAccount(account);
-                      let roles: Array<WifRole> = [];
-                      (account.authorities ?? []).forEach(authr => {
-                        if(authr === 'ROLE_ADMIN'){
-                          roles.push({title:'App Admin',role:authr, url: '/user/dashboard-admin' });
-                        }else if(authr === 'ROLE_USER'){
-                          roles.push({title:'Member',role:authr, url: '/user/dashboard' });
-                        }
-                      });
+                      this.subs.push(
+                        this.accessFacade.accessMe$
+                          .pipe(take(1))
+                          .subscribe((me) => {
+                            const roles: Array<WifRole> = [];
+                            if (this.accessFacade.isAdmin(me)) {
+                              roles.push({ title: 'App Admin', role: 'ROLE_ADMIN', url: '/user/dashboard-admin' });
+                            } else if (this.accessFacade.isEnterprise(me)) {
+                              roles.push({ title: 'Enterprise', role: 'ROLE_USER', url: '/user/enterprise' });
+                            } else {
+                              roles.push({ title: 'Member', role: 'ROLE_USER', url: '/user/dashboard' });
+                            }
 
-                      // Defensive default: some accounts may not have authorities populated.
-                      if (roles.length === 0) {
-                        roles.push({ title: 'Member', role: 'ROLE_USER', url: '/user/dashboard' });
-                      }
-
-                      this.userStore.updateRoles(roles);
-                      const adminRole = roles.find(r => r.role === 'ROLE_ADMIN');
-                      const userRole = roles.find(r => r.role === 'ROLE_USER') ?? roles[0];
+                            this.userStore.updateRoles(roles);
+                          })
+                      );
 
                       this.authService.getLoginProfile(account.login).subscribe(
                         (profile)=>{
@@ -323,20 +329,11 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                                 else{
                                   this.userStore.updateBioProfile(bioProfile);
                                   debugger;
-                                  if(this.hasRoleAdmin(account.authorities)){
-                                    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-                                    if (returnUrl && returnUrl.startsWith('/')) {
-                                      this.router.navigateByUrl(returnUrl);
-                                    } else {
-                                      this.router.navigate(['/user/dashboard-admin']);
-                                    }
-                                  }else{
-                                    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-                                    if (returnUrl && returnUrl.startsWith('/')) {
-                                      this.router.navigateByUrl(returnUrl);
-                                    } else {
-                                      this.router.navigate(['/user/dashboard']);
-                                    }
+                                  const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+                                  if (returnUrl && returnUrl.startsWith('/')) {
+                                    this.router.navigateByUrl(returnUrl);
+                                  } else {
+                                    this.navigateToDashboardByMode();
                                   }
                                 }
                                 // bioProfile: 
@@ -394,6 +391,25 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
 
   hasRoleAdmin(authorities?: string[] | null): boolean {
     return (authorities ?? []).includes('ROLE_ADMIN');
+  }
+
+  private navigateToDashboardByMode(): void {
+    this.accessFacade.reload();
+    this.subs.push(
+      this.accessFacade.accessMe$
+        .pipe(take(1))
+        .subscribe((me) => {
+          if (this.accessFacade.isAdmin(me)) {
+            this.router.navigate(['/user/dashboard-admin']);
+            return;
+          }
+          if (this.accessFacade.isEnterprise(me)) {
+            this.router.navigate(['/user/enterprise']);
+            return;
+          }
+          this.router.navigate(['/user/dashboard']);
+        })
+    );
   }
 
   onReset(): void {
