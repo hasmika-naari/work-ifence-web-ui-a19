@@ -8,17 +8,9 @@
     <img class="big-icon transition" src="images/black-logo.png"  alt="logo-icon">
   <!-- </a> -->
 </div>
-<div
-  class="burger-menu transition cursor-pointer" (click)="toggle()" >
-  @if (isToggled) {
-    <mat-icon style="font-size: x-large;">push_pin</mat-icon>
-    }  <!-- Show Pin when sidebar is expanded -->
-    @if (!isToggled) {
-      <mat-icon>chevron_left</mat-icon>
-      }  <!-- Show Left Arrow when sidebar is collapsed -->
-    </div>
 
     <ng-scrollbar visibility="hover">
+      <div #sidebarScroll class="sidebar-scroll" [class.expanded]="showFullMenu" [class.has-overflow]="showMoreAvailable">
       <div  class="sidenav-user" [class.collapsed]="isToggled" >
         <img class="sidenav-user-image transition" [src]="bioProfile().imageUrl?bioProfile().imageUrl:'assets/img/avatars/noavatar.png'">
         <!-- <h4 class="sidenav-user-name p-0 mb-1 ">{{bioProfile().firstName?bioProfile().firstName:'First Name'}} {{bioProfile().lastName?bioProfile().lastName:'Last Name'}}</h4>
@@ -67,8 +59,6 @@
                 <span class="title">{{item.title}}</span>
                 <mat-icon *ngIf="item.enabled === false" class="lock-icon">lock</mat-icon>
                 <span *ngIf="item.badge" class="sidebar-badge" [ngClass]="item.badge.type">{{item.badge.text}}</span>
-                <button *ngIf="item.enabled === false" mat-stroked-button color="primary" class="upgrade-btn"
-                  (click)="$event.stopPropagation(); onLockedMenuClick(item, $event)">Upgrade</button>
                     </a>
               <a *ngIf="item.externalUrl" [href]="item.externalUrl" target="_blank" rel="noopener" class="sidebar-menu-link" [matTooltip]="item.tooltip">
                 <i-feather [name]="item.icon"></i-feather>
@@ -83,6 +73,37 @@
                     <i-feather [name]="item.icon"></i-feather>
                     <span class="title">{{item.title}}</span>
                   </mat-panel-title>
+                  <mat-icon *ngIf="!isToggled" class="submenu-arrow">chevron_right</mat-icon>
+                  <div *ngIf="isToggled" class="collapsed-submenu" role="menu">
+                    <ng-container *ngFor="let child of item.children">
+                      <ng-container *ngIf="child.visible === true">
+                        <a *ngIf="child.route && child.enabled !== false"
+                           class="collapsed-submenu-link"
+                           [routerLink]="child.route"
+                           [queryParams]="child.queryParams"
+                           [matTooltip]="child.tooltip || child.title"
+                           matTooltipPosition="right">
+                          <i-feather [name]="child.icon"></i-feather>
+                        </a>
+                        <a *ngIf="child.route && child.enabled === false"
+                           class="collapsed-submenu-link locked"
+                           [matTooltip]="child.lockedReason || child.title"
+                           matTooltipPosition="right"
+                           (click)="onLockedMenuClick(child, $event)">
+                          <i-feather [name]="child.icon"></i-feather>
+                        </a>
+                        <a *ngIf="child.externalUrl"
+                           class="collapsed-submenu-link"
+                           [href]="child.externalUrl"
+                           target="_blank"
+                           rel="noopener"
+                           [matTooltip]="child.tooltip || child.title"
+                           matTooltipPosition="right">
+                          <i-feather [name]="child.icon"></i-feather>
+                        </a>
+                      </ng-container>
+                    </ng-container>
+                  </div>
                 </mat-expansion-panel-header>
                 <ul class="sidebar-sub-menu">
                   @for (child of item.children; track child.id) {
@@ -98,7 +119,6 @@
                         <span class="title">{{child.title}}</span>
                         <mat-icon class="lock-icon">lock</mat-icon>
                         <span *ngIf="child.badge" class="sidebar-badge" [ngClass]="child.badge.type">{{child.badge.text}}</span>
-                        <button mat-stroked-button color="primary" class="upgrade-btn" (click)="$event.stopPropagation(); router.navigate(['/user/billing/upgrade'], { queryParams: { feature: child.entitlementKey, returnUrl: router.url } })">Upgrade</button>
                       </a>
                       <a *ngIf="child.externalUrl" [href]="child.externalUrl" target="_blank" rel="noopener" class="sidemenu-link" [matTooltip]="child.tooltip">
                         <i-feather [name]="child.icon"></i-feather>
@@ -123,5 +143,16 @@
       </mat-accordion>
   </div>
 </div>
+</div>
+  <button *ngIf="showMoreAvailable" class="show-more-btn" (click)="toggleShowMore()">
+    {{ showFullMenu ? 'Show less' : 'Show more' }}
+  </button>
 </ng-scrollbar>
+  <button class="sidebar-expander" type="button" (click)="toggle()" aria-label="Toggle sidebar"
+    [matTooltip]="isToggled ? 'Expand sidebar' : 'Collapse sidebar'" matTooltipPosition="left">
+    <svg class="sidebar-toggle-icon" [ngClass]="{ 'is-collapsed': isToggled }" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <rect class="frame" x="2" y="2" width="16" height="16" rx="2" />
+      <line class="split" x1="8" y1="2" x2="8" y2="18" />
+    </svg>
+  </button>
 </div>

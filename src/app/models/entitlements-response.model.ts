@@ -1,7 +1,7 @@
 export type EntitlementsPlan = 'FREE' | 'PRO' | 'PREMIUM' | string;
 
 /**
- * Backend contract for `/api/me/entitlements`.
+ * Backend contract for `/api/entitlements/me`.
  *
  * Notes:
  * - `plan` may include future values; the FE treats unknown plans as lowest tier.

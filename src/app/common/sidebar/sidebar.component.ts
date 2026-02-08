@@ -1,4 +1,4 @@
-import { Component, inject, Signal, effect } from '@angular/core';
+import { Component, inject, Signal, effect, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ToggleService } from '../header/toggle.service';
@@ -23,6 +23,10 @@ import { NavStore } from 'src/app/core/nav/nav.store';
     styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
+  showFullMenu = false;
+  showMoreAvailable = false;
+  @ViewChild('sidebarScroll') sidebarScroll?: ElementRef<HTMLDivElement>;
+
     // Handle click on locked/disabled menu item
     onLockedMenuClick(item: any, event: Event) {
       event.preventDefault();
@@ -62,9 +66,31 @@ export class SidebarComponent {
       // eslint-disable-next-line no-console
       console.log('Sidebar navSections:', JSON.stringify(this.navSections(), null, 2));
     });
+    effect(() => {
+      this.navSections();
+      queueMicrotask(() => this.updateShowMoreState());
+    });
   }
 
   // ...existing code...
+
+  toggleShowMore() {
+    this.showFullMenu = !this.showFullMenu;
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateShowMoreState();
+  }
+
+  private updateShowMoreState() {
+    const el = this.sidebarScroll?.nativeElement;
+    if (!el) return;
+    this.showMoreAvailable = el.scrollHeight > el.clientHeight + 4;
+    if (!this.showMoreAvailable) {
+      this.showFullMenu = false;
+    }
+  }
 
   toggle() {
     this.toggleService.toggle();

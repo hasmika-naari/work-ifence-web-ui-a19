@@ -80,25 +80,29 @@
 ::ng-deep {
     .header-area {
         padding: 17px 20px;
-        // position: fixed;
+        position: fixed;
         left: 260px;
-        // z-index: 5;
+        z-index: 5;
         right: 0;
         top: 0;
         // box-shadow: rgba(77, 77, 77, 0.16) 0px -1px 0px 0px inset !important;
         background-color: transparent !important;
+        &.active {
+            left: 88px;
+        }
+
         
         /* Improve header layout on large screens */
         @media (min-width: 1600px) {
             padding: 17px 40px;
             
             .d-md-flex {
-                max-width: 1800px;
-                margin: 0 auto;
-                padding: 0 15px;
+                align-items: center;
             }
         }
         .header-left-side {
+            position: relative;
+            min-width: 24px;
             .burger-menu {
                 top: 1px;
                 cursor: pointer;

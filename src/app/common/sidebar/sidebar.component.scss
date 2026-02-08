@@ -44,7 +44,7 @@
     z-index: 1201;
         left: 0;
         top: 0;
-        box-shadow: 1px 0 4px rgba(0, 0, 0, 0.1);
+        box-shadow: none;
     background: linear-gradient(135deg, rgba(240, 91, 69, 0.06), rgba(240, 91, 69, 0));
     background-repeat: no-repeat;
     background-size: cover;
@@ -84,46 +84,6 @@
                 }
             }
         }
-        .burger-menu {
-            top: 15px;
-            z-index: 3;
-            opacity: 1;
-            right: 15px;
-            // visibility: hidden;
-            position: absolute;
-    
-            .mat-icon{
-                color: rgb(156, 156, 156) !important;
-                font-size: xx-large;
-                &:hover{
-                    color: var(--mainColor) !important
-                }
-            }
-            span {
-                height: 1px;
-                width: 25px;
-                margin: 6px 0;
-            }
-            &.active {
-                opacity: 1;
-                visibility: visible;
-                
-                span {
-                    &.top-bar {
-                        transform: rotate(45deg);
-                        transform-origin: 10% 10%;
-                    }
-                    &.middle-bar {
-                        opacity: 0;
-                    }
-                    &.bottom-bar {
-                        transform: rotate(-45deg);
-                        transform-origin: 10% 90%;
-                        margin-top: 5px;
-                    }
-                }
-            }
-        }
         .ng-scrollbar {
             height: 100vh;
 
@@ -131,6 +91,7 @@
                 --_scrollbar-hover-opacity: 1;
                 --_scrollbar-opacity-transition: opacity var(--scrollbar-hover-opacity-transition-enter-duration);
             }
+            --_scrollbar-size: 0px;
             .ng-scroll-content {
                 padding-right: 0;
             }
@@ -140,6 +101,39 @@
             .ng-scrollbar-thumb {
                 border-radius: 0;
                 background-color: rgba(121, 131, 152, 0.60);
+            }
+        }
+        .ng-scrollbar::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+        .ng-scrollbar-track,
+        .ng-scrollbar-thumb {
+            display: none !important;
+        }
+        .sidebar-scroll {
+            position: relative;
+            max-height: calc(100vh - 120px);
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+
+            &.has-overflow::after {
+                content: '';
+                position: sticky;
+                bottom: 0;
+                display: block;
+                height: 48px;
+                background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+                pointer-events: none;
+            }
+
+            &.expanded {
+                max-height: calc(100vh - 120px);
+                overflow: auto;
+
+                &::after {
+                    display: none;
+                }
             }
         }
         .sidebar-inner {
@@ -218,12 +212,25 @@
                                     transition: var(--transition);
                                 }
                             }
+                            .mat-expansion-indicator {
+                                display: none;
+                            }
+                                .submenu-arrow {
+                                    margin-left: auto;
+                                    font-size: 18px;
+                                    color: #9aa0b2;
+                                    transition: transform 0.2s ease, color 0.2s ease;
+                                }
                             &.mat-expanded {
                                 color: var(--primaryColor);
 
                                 i-feather {
                                     color: var(--primaryColor);
                                 }
+                                    .submenu-arrow {
+                                        color: var(--primaryColor);
+                                        transform: rotate(90deg);
+                                    }
                                 .mat-content {
                                     .mat-expansion-panel-header-title, .mat-expansion-panel-header-description {
                                         color: var(--primaryColor);
@@ -415,6 +422,23 @@
                                                 background-color: var(--whiteColor);
                                             }
                                         }
+                                        &.locked {
+                                            color: #9aa0b2;
+                                            cursor: pointer;
+
+                                            i-feather {
+                                                color: #9aa0b2;
+                                            }
+
+                                            &::after {
+                                                background-color: #c1c6d4;
+                                            }
+
+                                            &:hover {
+                                                background-color: transparent;
+                                                color: #9aa0b2;
+                                            }
+                                        }
                                         .workifence-badge {
                                             font-size: 11px;
                                             padding: 2px 8px;
@@ -486,81 +510,24 @@
                                 color: var(--primaryColor);
                             }
                         }
+                        &.locked {
+                            color: #9aa0b2;
+                            cursor: pointer;
+
+                            i-feather {
+                                color: #9aa0b2;
+                            }
+
+                            &:hover {
+                                background-color: transparent;
+                                color: #9aa0b2;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        /* Expand on Hover */
-        &:hover {
-            .sidenav-user {
-                position: relative;
-                top: 80px; /* keep gap below logo when expanded on hover */
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                transition: width 0.3s ease-in-out;
-                width: 260px;
-                height: 180px; /* allow for bigger avatar */
-                // border-bottom: 1px dotted gray;
-                /* Increase Profile Image Size */
-                .sidenav-user-image {
-                    width: 120px; /* keep large size when expanded */
-                    height: 120px;
-                    opacity: 1;
-                    transition: width .25s ease, height .25s ease;
-                }
-
-                /* Profile Details: Always visible, no animation */
-                .sidenav-user-name{
-                    font-size: medium;
-                    padding: 0px !important;
-                    opacity: 1;
-                    animation: none !important;
-                    will-change: auto;
-                }
-                .sidenav-user-email{
-                    font-size: small;
-                    padding: 0px !important;
-                    opacity: 1;
-                    animation: none !important;
-                    will-change: auto;
-                }
-                .sidenav-user-icons {
-                    opacity: 1;
-                    animation: none !important;
-                    will-change: auto;
-                }
-            }
-
-            .logo {
-                padding: 25px 25px 25px 20px;
-                position: absolute;
-                z-index: 2;
-                right: 0;
-                left: 0;
-                top: 0;
-                height: 70px;
-                a {
-                    span {
-                        font-size: 24px;
-                        margin-left: 5px;
-                        letter-spacing: 0.48px;
-                        color: var(--darkColor);
-                        font-family: var(--headingFontFamily);
-                    }
-                }
-    
-                .small-icon{
-                    display: none;
-                }
-    
-                .big-icon{
-                    display: block;
-                }
-            }
-        }
     &.active {
             sidebar-inner{
                 position: relative;
@@ -672,6 +639,54 @@
             }
         }
     }
+
+    .show-more-btn {
+        margin: 8px 20px 16px;
+        width: calc(100% - 40px);
+        height: 28px;
+        border-radius: 999px;
+        font-size: 12px;
+    }
+
+    .lock-icon {
+        font-size: 16px;
+        margin-left: 6px;
+        color: #9aa0b2;
+    }
+
+    .sidebar-expander {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        border: none;
+        background: transparent;
+        padding: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        box-shadow: none;
+        z-index: 1202;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+    .sidebar-expander:hover {
+        box-shadow: none;
+    }
+    .sidebar-toggle-icon {
+        width: 22px;
+        height: 22px;
+        display: block;
+    }
+    .sidebar-toggle-icon .frame {
+        fill: transparent;
+        stroke: #2f3443;
+        stroke-width: 1;
+    }
+    .sidebar-toggle-icon .split {
+        stroke: #2f3443;
+        stroke-width: 1;
+    }
 }
 
 .sidebar-area {
@@ -679,9 +694,17 @@
   backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
   border-right: 1px solid rgba(200,200,200,0.18);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    box-shadow: none;
   transition: background 0.3s, box-shadow 0.3s;
   overflow-x: hidden;
+}
+
+::ng-deep .sidebar-area .sidebar-expander {
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
+        z-index: 1305;
+        pointer-events: auto;
 }
 
 /* Max width 767px */
@@ -797,7 +820,7 @@
     ::ng-deep {
         .sidebar-area {
             &.active, &.hide-sidebar {
-                width: 75px;
+                width: 88px;
     
                 .logo {
                     // padding: {
@@ -819,8 +842,8 @@
                     top: 70px; /* compact spacing */
                     padding: {
                         top: 0px;
-                        left: 20px;
-                        right: 20px;
+                        left: 0;
+                        right: 0;
                     };
                     .sidebar-menu {
                         .sub-title {
@@ -833,8 +856,15 @@
                 
                             .mat-expansion-panel-header {
                                 padding: 0;
-                                width: 36px;
-                                height: 36px;
+                                width: 44px;
+                                height: 44px;
+                                border-radius: 10px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin-left: auto;
+                                margin-right: auto;
+                                position: relative;
     
                                 i-feather {
                                     left: 0;
@@ -854,6 +884,57 @@
                                 .workifence-badge {
                                     display: none;
                                 }
+                                .submenu-arrow {
+                                    display: none;
+                                }
+                                .collapsed-submenu {
+                                    position: absolute;
+                                    left: 54px;
+                                    top: 0;
+                                    background: rgba(255, 255, 255, 0.9);
+                                    border: 1px solid rgba(200, 200, 200, 0.4);
+                                    border-radius: 10px;
+                                    padding: 6px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 6px;
+                                    opacity: 0;
+                                    transform: translateX(-6px);
+                                    pointer-events: none;
+                                    transition: opacity 0.2s ease, transform 0.2s ease;
+                                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+                                    z-index: 1400;
+                                }
+                                .collapsed-submenu-link {
+                                    width: 36px;
+                                    height: 36px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border-radius: 8px;
+                                    color: #818093;
+                                    background: transparent;
+                                    transition: background 0.2s ease, color 0.2s ease;
+
+                                    i-feather {
+                                        position: static;
+                                        transform: none;
+                                        margin-top: 0;
+                                    }
+                                }
+                                .collapsed-submenu-link:hover {
+                                    background: rgba(55, 97, 238, 0.10);
+                                    color: var(--primaryColor);
+                                }
+                                .collapsed-submenu-link.locked {
+                                    color: #9aa0b2;
+                                    cursor: pointer;
+                                }
+                                &:hover .collapsed-submenu {
+                                    opacity: 1;
+                                    transform: translateX(0);
+                                    pointer-events: auto;
+                                }
                             }
                             .mat-expansion-panel-content {
                                 display: none;
@@ -861,9 +942,16 @@
                         }
                         .sidebar-menu-link {
                             padding: 0;
-                            width: 36px;
-                            height: 36px;
+                            width: 44px;
+                            height: 44px;
+                            border-radius: 10px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-left: auto;
+                            margin-right: auto;
                             margin-bottom: 5px;
+                            background: transparent;
     
                             i-feather {
                                 left: 0;
@@ -877,167 +965,19 @@
                             .title {
                                 display: none;
                             }
+                            .sidebar-badge,
+                            .lock-icon {
+                                display: none;
+                            }
+                            &:hover, &.active {
+                                background: rgba(55, 97, 238, 0.10);
+                            }
                         }
                     }
                 }
-                &:hover {
-                    width: 260px;
-    
-                    .logo {
-                        padding: {
-                            left: 25px;
-                            right: 25px;
-                        };
-                        a {
-                            span {
-                                display: inline-block;
-                            }
-                        }
-                    }
-                    .burger-menu {
-                        opacity: 1;
-                        visibility: visible;
-                    }
-                    .sidenav-user{
-                        width: 260px;
-                        height: 180px; /* align with compact expanded height */
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        .sidenav-user-image {
-                            display: block;
-                            height: 120px; /* larger to fill the section visually */
-                            width: 120px;
-                            border-radius: 50%;
-                            transition: width .25s ease, height .25s ease;
-                        }
-                
-                        .sidenav-user-name {
-                            margin: 8px 0 0;
-                            font-size: medium;
-                            }
-                        
-                            .sidenav-user-email {
-                            font: var(--font-caption);
-                            }
-                        
-
-                        
-                            .sidenav-user-name,
-                            .sidenav-user-email,
-                            .sidenav-user-icons {
-                            white-space: nowrap;
-                            opacity: 1;
-                            }
-                        
-                        .sidenav-user-email {
-                            margin-top: 0;
-                        }
-                        
-                        .sidenav-user-icons {
-                        
-                            [mat-icon-button] {
-                            width: 32px;
-                            height: 32px;
-                            line-height: 32px;
-                            padding: 0;
-                        
-                            & + [mat-icon-button] {
-                                margin-left: 4px;
-                            }
-                            }
-                        
-                                                                                    mat-icon {
-                                                                                        width: 29px;
-                                                                                        height: 29px;
-                                                                                        font-size: 29px;
-                                                                                        line-height: 29px;
-                                                                                    }
-
-                                                                                    @media (max-width: 600px) {
-                                                                                        mat-icon {
-                                                                                            width: 34px;
-                                                                                            height: 34px;
-                                                                                            font-size: 34px;
-                                                                                            line-height: 34px;
-                                                                                        }
-                                                                                    }
-
-                                                                                    @media (min-width: 1200px) {
-                                                                                        mat-icon {
-                                                                                            width: 38px;
-                                                                                            height: 38px;
-                                                                                            font-size: 38px;
-                                                                                            line-height: 38px;
-                                                                                        }
-                                                                                    }
-                        }
-                    }
-                    .sidebar-inner {
-                        padding: {
-                            top: 0px;
-                            left: 25px;
-                            right: 25px;
-                        };
-                        .sidebar-menu {
-                            .sub-title {
-                                display: block;
-                                // color: rgb(129, 128, 147);
-                            }
-                        }
-                        .mat-accordion {
-                            .mat-expansion-panel {
-                                margin-bottom: 25px;
-                    
-                                .mat-expansion-panel-header {
-                                    width: auto;
-                                    height: auto;
-                                    padding: {
-                                        right: 35px;
-                                        left: 24px;
-                                    };
-                                    i-feather {
-                                        right: auto;
-                                        margin: {
-                                            left: 0;
-                                            right: 0;
-                                        };
-                                    }
-                                    .title {
-                                        display: block;
-                                        // color: rgb(129, 128, 147)
-                                    }
-                                    .mat-expansion-indicator {
-                                        display: inline-block;
-                                    }
-                                    .workifence-badge {
-                                        display: inline-block;
-                                    }
-                                }
-                                .mat-expansion-panel-content {
-                                    display: block;
-                                }
-                            }
-                            .sidebar-menu-link {
-                                width: auto;
-                                height: auto;
-                                padding-left: 24px;
-                                margin-bottom: 25px;
-
-                                i-feather {
-                                    right: auto;
-                                    margin: {
-                                        left: 0;
-                                        right: 0;
-                                    };
-                                }
-                                .title {
-                                    display: block;
-                                    // color: rgb(129, 128, 147);
-                                }
-                            }
-                        }
-                    }
+                .sidebar-section-title,
+                .show-more-btn {
+                    display: none;
                 }
             }
         }

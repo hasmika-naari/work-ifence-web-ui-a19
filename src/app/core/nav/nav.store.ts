@@ -66,7 +66,8 @@ export class NavStore {
         })
       )
       .subscribe(resp => {
-        this.debugLog('raw /access/nav/menu response', resp);
+        this.debugLog('raw /api/nav/menu response', resp);
+        this.logFilterDiagnostics(resp);
         this.navResponse.set(resp);
         this.persistCache(resp);
         this.debugLog('nav counts', {
@@ -110,6 +111,7 @@ export class NavStore {
     let visible = true;
     let enabled = true;
     let lockedReason = '';
+    const entitlements = this.entitlement.entitlements();
 
     const flagInfo = this.resolveFeatureFlagKey(item.featureFlag);
     if (flagInfo.key && flagInfo.known && !this.remoteConfig.isFlagEnabledSafe(flagInfo.key)) {
@@ -128,7 +130,8 @@ export class NavStore {
           featureFlag: flagInfo.key
         });
       }
-      if (item.locked === true || item.allowed === false) {
+      const allowed = !item.entitlementKey || entitlements[item.entitlementKey] === true;
+      if (!allowed) {
         const showLocked = item.showWhenLocked === true;
         visible = showLocked;
         enabled = false;
@@ -136,37 +139,15 @@ export class NavStore {
           ? `Upgrade to ${item.minPlan} to unlock`
           : 'Upgrade to unlock';
         if (!showLocked) {
-          this.debugLog('item hidden: locked/allowed=false without showWhenLocked', {
+          this.debugLog('item hidden: entitlement missing without showWhenLocked', {
             id: item.id,
-            title: item.title
+            title: item.title,
+            entitlementKey: item.entitlementKey
           });
         }
-      } else if (item.allowed === true || item.locked === false) {
+      } else {
         visible = true;
         enabled = true;
-      } else {
-        const minPlan = item.minPlan as PlanTier | undefined;
-        const canAccess = item.entitlementKey
-          ? this.entitlement.canAccess(item.entitlementKey, minPlan)
-          : (minPlan ? this.entitlement.canAccess('', minPlan) : true);
-
-        if (!canAccess) {
-          const showLocked = item.showWhenLocked === true;
-          visible = showLocked;
-          enabled = false;
-          lockedReason = minPlan ? `Upgrade to ${minPlan} to unlock` : 'Upgrade to unlock';
-          if (!showLocked) {
-            this.debugLog('item hidden: entitlement missing without showWhenLocked', {
-              id: item.id,
-              title: item.title,
-              entitlementKey: item.entitlementKey,
-              minPlan
-            });
-          }
-        } else {
-          visible = true;
-          enabled = true;
-        }
       }
     }
 
@@ -229,6 +210,64 @@ export class NavStore {
     }
 
     return { key, known: false };
+  }
+
+  private logFilterDiagnostics(resp: NavApiResponse): void {
+    const items = this.flattenItems(resp?.sections ?? []);
+    const menuItems = items.map(item => ({
+      id: item.id,
+      title: item.title,
+      featureFlag: item.featureFlag,
+      entitlementKey: item.entitlementKey,
+      showWhenLocked: item.showWhenLocked
+    }));
+
+    const entitlements = this.entitlement.entitlements();
+
+    const hiddenByFeatureFlag = items
+      .filter(item => {
+        const flagInfo = this.resolveFeatureFlagKey(item.featureFlag);
+        return !!flagInfo.key && flagInfo.known && !this.remoteConfig.isFlagEnabledSafe(flagInfo.key);
+      })
+      .map(item => ({
+        id: item.id,
+        title: item.title,
+        featureFlag: item.featureFlag
+      }));
+
+    const hiddenByEntitlement = items
+      .filter(item => {
+        const allowed = !item.entitlementKey || entitlements[item.entitlementKey] === true;
+        if (allowed) return false;
+        return item.showWhenLocked !== true;
+      })
+      .map(item => ({
+        id: item.id,
+        title: item.title,
+        entitlementKey: item.entitlementKey
+      }));
+
+    this.debugLog('menu items before filtering', menuItems);
+    this.debugLog('items hidden by featureFlag', hiddenByFeatureFlag);
+    this.debugLog('items hidden by entitlement', hiddenByEntitlement);
+  }
+
+  private flattenItems(sections: NavApiSection[]): NavApiItem[] {
+    const result: NavApiItem[] = [];
+    const visit = (items: NavApiItem[]) => {
+      for (const item of items ?? []) {
+        result.push(item);
+        if (Array.isArray(item.children) && item.children.length > 0) {
+          visit(item.children);
+        }
+      }
+    };
+
+    for (const section of sections ?? []) {
+      visit(section.items ?? []);
+    }
+
+    return result;
   }
 
   private debugLog(...args: unknown[]): void {

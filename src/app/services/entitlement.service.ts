@@ -53,6 +53,7 @@ export class EntitlementService {
       this._entitlements.set({
         plan: PlanTier.FREE,
         entitlements: {},
+        entitlementKeys: [],
         roles: [],
         isFallback: true
       });
@@ -68,6 +69,7 @@ export class EntitlementService {
       this._entitlements.set({
         plan: PlanTier.FREE,
         entitlements: defaultEntitlements,
+        entitlementKeys: Object.keys(defaultEntitlements),
         roles: ['ROLE_USER'],
         isFallback: true
       });
@@ -150,6 +152,7 @@ export class EntitlementService {
     return {
       plan,
       entitlements,
+      entitlementKeys: Object.keys(entitlements),
       roles,
       // Normalize: backend does not send isFallback; ensure it is false.
       isFallback: false,
@@ -196,6 +199,7 @@ export class EntitlementService {
     return {
       plan: PlanTier.FREE,
       entitlements,
+      entitlementKeys: Object.keys(entitlements),
       roles: Array.isArray(raw.roles) ? raw.roles : [],
       isFallback: false,
     };
@@ -207,6 +211,10 @@ export class EntitlementService {
 
   entitlements(): EntitlementMap {
     return this._entitlements()?.entitlements ?? {};
+  }
+
+  entitlementKeys(): string[] {
+    return this._entitlements()?.entitlementKeys ?? [];
   }
 
   roles(): string[] {

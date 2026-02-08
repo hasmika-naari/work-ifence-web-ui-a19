@@ -50,6 +50,7 @@ export interface EntitlementMap {
 export interface UserEntitlements {
   plan: PlanTier;
   entitlements: EntitlementMap;
+  entitlementKeys: string[];
   roles: string[];
   /**
    * Frontend-only marker indicating entitlements were populated from a fallback path.
