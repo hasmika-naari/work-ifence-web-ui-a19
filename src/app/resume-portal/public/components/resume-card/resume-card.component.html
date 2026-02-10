@@ -2,7 +2,7 @@
   <mat-card-header>
     <div class="resume-avatar" [ngClass]="{ 'has-image': card.profileImageUrl }">
       @if (card.profileImageUrl) {
-        <img [src]="card.profileImageUrl" [alt]="displayName()" />
+        <img [attr.src]="card.profileImageUrl || null" [alt]="displayName()" />
       } @else {
         <div class="resume-initials" [style.backgroundImage]="avatarGradient()">
           {{ initials() }}

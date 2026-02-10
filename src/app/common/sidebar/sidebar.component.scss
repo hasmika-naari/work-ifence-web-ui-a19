@@ -1,11 +1,245 @@
-@use '../../../styles/variables';
+@use '../../../styles/variables' as *;
+
+.collapsed-rail-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    max-height: calc(100vh - 190px); /* Adjust 120px to match logo + More button height */
+}
+.collapsed-rail-bottom {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    z-index: 2;
+    background: #fff;
+}
+.collapsed-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+.collapsed-rail-bottom {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    z-index: 2;
+    background: inherit;
+}
+
+
+.sidebar-area {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.sidebar-scroll-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.collapsed-rail-bottom {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+
+// Bottom area for collapsed sidebar
+.collapsed-rail-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: auto;
+    margin-bottom: 24px;
+}
+
+.sidebar-more-apps {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 0 0 0;
+    border-radius: 12px;
+    transition: background 0.2s, color 0.2s;
+}
+.sidebar-more-apps:hover {
+    background: none;
+    color: var(--secondaryColor);
+}
+.sidebar-more-apps mat-icon {
+    font-size: 28px;
+    margin-bottom: 2px;
+    color: var(--mainColor) !important;
+    transition: color 0.2s;
+}
+.sidebar-more-apps:hover mat-icon,
+.sidebar-more-apps--expanded mat-icon {
+    color: var(--secondaryColor) !important;
+}
+
+.sidebar-more-apps:hover .sidebar-more-label {
+    color: var(--secondaryColor) !important;
+}
+.sidebar-more-label {
+    font-size: 14px;
+    color: var(--mainColor) !important;
+    margin-top: 2px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+
+.sidebar-more-apps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 12px 0;
+    border-radius: 12px;
+    transition: background 0.2s, color 0.2s;
+}
+.sidebar-more-apps:hover {
+    // background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+    color: var(--mainColor);
+}
+.sidebar-more-apps mat-icon {
+    font-size: 32px;
+}
+
+// Sidebar-more-apps styles
+.sidebar-more-apps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 12px 0;
+    border-radius: 12px;
+    transition: background 0.2s, color 0.2s;
+}
+.sidebar-more-apps:hover {
+    // background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+    color: var(--mainColor);
+}
+.sidebar-more-apps mat-icon {
+    font-size: 32px;
+}
+
+// Sidebar menu grid for expanded mode
+.sidebar-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.sidebar-menu-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 12px 0;
+    border-radius: 12px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-menu-grid-item:hover,
+.sidebar-menu-grid-item.active {
+    background: color-mix(in srgb, var(--primaryColor) 10%, transparent);
+    color: var(--primaryColor);
+}
+
+.sidebar-menu-grid-item i-feather {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.sidebar-menu-grid-item:not(.locked):hover i-feather {
+    color: var(--mainColor) !important;
+}
+
+.sidebar-menu-grid-item.locked i-feather {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.sidebar-menu-grid-label {
+    font-size: 12px;
+    text-align: center;
+    color: var(--mdc-theme-on-surface);
+}
+
+// Collapsed rail styling for icon list
+.collapsed-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.sidebar-inner {
+    padding-top: 60px; /* offset for logo height, adjust as needed */
+}
+
+.logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: inherit;
+    padding-top: 12px;
+    padding-bottom: 8px;
+}
+
+.sidebar-area {
+    position: relative;
+}
+
+.sidebar-scroll-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
 
 ::ng-deep .sidebar-area ng-scrollbar {
-    overflow-x: hidden !important;
+    overflow-x: visible !important;
 }
 
 ::ng-deep .sidebar-area ng-scrollbar .ng-scrollbar-content {
-    overflow-x: hidden !important;
+    overflow-x: visible !important;
 }
 
 :host{
@@ -55,7 +289,7 @@
             right: 0;
             left: 0;
             top: 0;
-            // height: 70px;
+            height: 72px;
             a {
                 span {
                     font-size: 24px;
@@ -85,7 +319,7 @@
             }
         }
         .ng-scrollbar {
-            height: 100vh;
+            height: calc(100vh - 40px);
 
             &[visibility=hover] {
                 --_scrollbar-hover-opacity: 1;
@@ -113,9 +347,10 @@
         }
         .sidebar-scroll {
             position: relative;
-            max-height: calc(100vh - 120px);
+            max-height: calc(100vh - 40px);
             overflow: hidden;
             transition: max-height 0.3s ease;
+            padding-bottom: 96px;
 
             &.has-overflow::after {
                 content: '';
@@ -128,7 +363,7 @@
             }
 
             &.expanded {
-                max-height: calc(100vh - 120px);
+                max-height: calc(100vh - 40px);
                 overflow: auto;
 
                 &::after {
@@ -139,7 +374,7 @@
         .sidebar-inner {
             position: relative;
             margin-right: -5px;
-            top: 80px; /* keep a small gap below the logo */
+            top: 95px; /* below avatar */
             // margin-top: 20px;
             padding: {
                 top: 0px;
@@ -148,6 +383,158 @@
                 bottom: 10px;
             };
             .sidebar-menu {
+                .collapsed-rail {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 6px;
+                }
+                .collapsed-section-icon {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                    color: color-mix(in srgb, var(--mdc-theme-on-surface) 60%, transparent);
+                    transition: background 0.2s ease, color 0.2s ease;
+                    position: relative;
+                    z-index: 1501;
+
+                    i-feather {
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+                .collapsed-section-icon:hover,
+                .collapsed-section-icon:focus-visible {
+                    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+                    i-feather {
+                        width: 18px;
+                        height: 18px;
+                        color: var(--primaryColor) !important;
+                    }
+                }
+                
+                /* Custom Submenu Styling (no Material menu) */
+                .collapsed-section-wrapper {
+                    position: relative;
+                    z-index: 9998;
+                    overflow: visible;
+                }
+                
+                .collapsed-section-icon.is-active,
+                .collapsed-section-icon.is-hovered {
+                    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+                }
+                
+                .collapsed-submenu-panel {
+                    position: absolute;
+                    left: 100%;
+                    top: 0;
+                    margin-left: 8px;
+                    background: var(--mdc-theme-surface);
+                    border-radius: 8px;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                    min-width: 220px;
+                    max-width: 280px;
+                    z-index: 9999 !important;
+                    animation: slideIn 0.2s ease;
+                    border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
+                    pointer-events: auto;
+                    
+                    .submenu-header {
+                        padding: 12px 16px;
+                        font-weight: 500;
+                        color: var(--mdc-theme-on-surface);
+                        border-bottom: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
+                        font-size: 13px;
+                    }
+                    
+                    .submenu-items {
+                        max-height: calc(100vh - 300px);
+                        overflow-y: auto;
+                        padding: 8px 0;
+                    }
+                    
+                    .submenu-item {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        padding: 10px 16px;
+                        color: var(--mdc-theme-on-surface);
+                        text-decoration: none;
+                        transition: background 0.15s ease, color 0.15s ease;
+                        border: none;
+                        background: transparent;
+                        cursor: pointer;
+                        font-size: 13px;
+                        width: 100%;
+                        text-align: left;
+                        
+                        i-feather {
+                            width: 16px;
+                            height: 16px;
+                            flex-shrink: 0;
+                        }
+                        
+                        .submenu-label {
+                            flex: 1;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+                        
+                        .lock-icon {
+                            font-size: 16px;
+                            width: 16px;
+                            height: 16px;
+                            flex-shrink: 0;
+                        }
+                        
+                        &:hover:not(.locked) {
+                            background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+                            color: var(--mdc-theme-primary);
+                            
+                            i-feather {
+                                color: var(--mdc-theme-primary) !important;
+                            }
+                        }
+                        
+                        &.active {
+                            background: color-mix(in srgb, var(--mdc-theme-primary) 15%, transparent);
+                            color: var(--mdc-theme-primary);
+                            font-weight: 500;
+                            
+                            i-feather {
+                                color: var(--mdc-theme-primary) !important;
+                            }
+                        }
+                        
+                        &.locked {
+                            cursor: not-allowed;
+                            opacity: 0.6;
+                            
+                            &:hover {
+                                background: transparent;
+                            }
+                        }
+                    }
+                }
+                
+                @keyframes slideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
                 .sub-title {
                     display: block;
                     position: relative;
@@ -218,7 +605,7 @@
                                 .submenu-arrow {
                                     margin-left: auto;
                                     font-size: 18px;
-                                    color: #9aa0b2;
+                                    color: color-mix(in srgb, var(--mdc-theme-on-surface) 60%, transparent);
                                     transition: transform 0.2s ease, color 0.2s ease;
                                 }
                             &.mat-expanded {
@@ -547,12 +934,13 @@
 
     .sidenav-user {
         position: relative;
-        top: 80px; /* small gap below logo */
+        top: 80px; /* below logo */
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-    height: 180px; /* allow bigger avatar while keeping menu close */
+        height: 160px; /* allow avatar while keeping menu close */
+        margin: 0 auto;
         /* No transition or animation */
         .sidenav-user-image {
             width: 120px; /* larger to fill the section visually */
@@ -575,7 +963,7 @@
             transition: none !important;
         }
         &.collapsed {
-            width: 75px;
+            // width: 75px;
             .sidenav-user-image {
                 width: 60px;
                 height: 60px;
@@ -588,23 +976,6 @@
                 opacity: 0;
                 pointer-events: none;
                 transition: none !important;
-            }
-            &:hover {
-                width: 260px;
-                transition: none !important;
-                .sidenav-user-image {
-                    width: 120px; /* same large size on hover */
-                    height: 120px;
-                    opacity: 1;
-                    transition: width .25s ease, height .25s ease;
-                }
-                .sidenav-user-name,
-                .sidenav-user-email,
-                .sidenav-user-icons {
-                    opacity: 1;
-                    pointer-events: auto;
-                    transition: none !important;
-                }
             }
         }
     }
@@ -643,9 +1014,16 @@
     .show-more-btn {
         margin: 8px 20px 16px;
         width: calc(100% - 40px);
-        height: 28px;
+        height: 32px;
         border-radius: 999px;
         font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: color-mix(in srgb, var(--mdc-theme-primary) 8%, transparent);
+        color: var(--mdc-theme-on-surface);
+        border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
     }
 
     .lock-icon {
@@ -656,10 +1034,10 @@
 
     .sidebar-expander {
         position: absolute;
-        right: 0;
-        bottom: 0;
+        right: 8px;
+        bottom: 8px;
         border: none;
-        background: transparent;
+        background: color-mix(in srgb, var(--mdc-theme-surface) 85%, transparent);
         padding: 6px;
         cursor: pointer;
         display: inline-flex;
@@ -667,43 +1045,370 @@
         justify-content: center;
         border-radius: 10px;
         box-shadow: none;
-        z-index: 1202;
+        z-index: 1500;
         transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
     }
     .sidebar-expander:hover {
         box-shadow: none;
     }
     .sidebar-toggle-icon {
-        width: 22px;
-        height: 22px;
+        width: 24px;
+        height: 24px;
         display: block;
+        color: var(--mdc-theme-on-surface);
     }
     .sidebar-toggle-icon .frame {
         fill: transparent;
-        stroke: #2f3443;
-        stroke-width: 1;
+        stroke: currentColor;
+        stroke-width: 1.5;
     }
     .sidebar-toggle-icon .split {
-        stroke: #2f3443;
-        stroke-width: 1;
+        stroke: currentColor;
+        stroke-width: 1.5;
     }
 }
 
+.sidebar-more-overlay {
+    position: fixed;
+    inset: 0;
+    background: color-mix(in srgb, var(--mdc-theme-on-surface) 20%, transparent);
+    z-index: 1400;
+    display: flex;
+    align-items: stretch;
+}
+
+.sidebar-more-panel {
+    margin-left: 260px;
+    width: min(520px, 90vw);
+    height: 100vh;
+    background: var(--mdc-theme-surface);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--mdc-theme-on-surface) 18%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-more-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
+}
+
+.sidebar-more-title {
+    font-weight: 600;
+    color: var(--mdc-theme-on-surface);
+}
+
+.sidebar-more-close {
+    border: none;
+    background: transparent;
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 70%, transparent);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-more-body {
+    padding: 16px 20px 24px;
+    overflow: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-more-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 80%, transparent);
+}
+
+.sidebar-more-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.sidebar-more-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--mdc-theme-surface) 92%, transparent);
+    color: var(--mdc-theme-on-surface);
+    border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 10%, transparent);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-more-item:hover,
+.sidebar-more-item.active {
+    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+    color: var(--mdc-theme-primary);
+}
+
+.sidebar-more-item i-feather {
+    width: 18px;
+    height: 18px;
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 70%, transparent);
+}
+
+.sidebar-more-item.active i-feather,
+.sidebar-more-item:hover i-feather {
+    color: var(--mdc-theme-primary);
+}
+
+::ng-deep .sidebar-flyout-menu.mat-mdc-menu-panel {
+    background: var(--mdc-theme-surface);
+    border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--mdc-theme-on-surface) 18%, transparent);
+    border-radius: 12px;
+    margin-left: 12px;   /* was 40px */
+    margin-top: 0;       /* was -18px  IMPORTANT */
+    transform-origin: left center;
+}
+
+
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-content {
+    padding: 8px;
+}
+
+.sidebar-flyout-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    pointer-events: auto;
+}
+
+.sidebar-flyout-header {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 10px;
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 80%, transparent);
+}
+
+.sidebar-flyout-item.mat-mdc-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 36px;
+    border-radius: 8px;
+    color: var(--mdc-theme-secondary);
+    padding: 0 12px;
+    background: transparent;
+}
+
+.sidebar-flyout-item.mat-mdc-menu-item i-feather {
+    width: 18px;
+    height: 18px;
+    color: var(--mdc-theme-secondary);
+    margin-right: 2px;
+}
+
+.sidebar-flyout-item.mat-mdc-menu-item:hover {
+    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+    color: var(--mdc-theme-primary);
+}
+
+.sidebar-flyout-item.mat-mdc-menu-item.active {
+    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+    color: var(--mdc-theme-primary);
+}
+
+.sidebar-flyout-item.mat-mdc-menu-item.active i-feather {
+    color: var(--mdc-theme-primary);
+}
+
+.sidebar-flyout-item.mat-mdc-menu-item:hover i-feather {
+    color: var(--mdc-theme-primary);
+}
+
+.sidebar-flyout-item.mat-mdc-menu-item.cdk-focused,
+.sidebar-flyout-item.mat-mdc-menu-item.cdk-program-focused {
+    background: transparent;
+}
+
+.sidebar-flyout-item.locked {
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 55%, transparent);
+}
+
 .sidebar-area {
-  background: rgba(255,255,255,0.65);
+    background: color-mix(in srgb, var(--mdc-theme-surface) 92%, transparent);
   backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
-  border-right: 1px solid rgba(200,200,200,0.18);
+    border-right: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
     box-shadow: none;
   transition: background 0.3s, box-shadow 0.3s;
   overflow-x: hidden;
+}
+
+::ng-deep .sidebar-area .sidebar-section-title {
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 80%, transparent);
+}
+
+::ng-deep .sidebar-area .sidebar-menu-link,
+::ng-deep .sidebar-area .mat-expansion-panel-header {
+    color: var(--mdc-theme-on-surface);
+}
+
+/* Icon color default - secondary color */
+::ng-deep .sidebar-area .sidebar-menu-link i-feather,
+::ng-deep .sidebar-area .mat-expansion-panel-header i-feather,
+::ng-deep .sidebar-area .collapsed-section-icon i-feather,
+::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link i-feather,
+::ng-deep .sidebar-more-item i-feather,
+::ng-deep .sidebar-flyout-item i-feather {
+    color: var(--mdc-theme-secondary, var(--secondaryColor)) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Force SVG stroke to follow the secondary color */
+::ng-deep .sidebar-area i-feather svg {
+    stroke: var(--mdc-theme-secondary, var(--secondaryColor)) !important;
+    color: var(--mdc-theme-secondary, var(--secondaryColor)) !important;
+    fill: none !important;
+    stroke-width: 2 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+::ng-deep .sidebar-area i-feather svg path,
+::ng-deep .sidebar-area i-feather svg circle,
+::ng-deep .sidebar-area i-feather svg line,
+::ng-deep .sidebar-area i-feather svg polyline,
+::ng-deep .sidebar-area i-feather svg polygon,
+::ng-deep .sidebar-area i-feather svg rect {
+    stroke: var(--mdc-theme-secondary, var(--secondaryColor)) !important;
+    fill: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+::ng-deep .sidebar-area .sidebar-menu-link:hover,
+::ng-deep .sidebar-area .sidebar-menu-link.active {
+    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+    color: var(--mdc-theme-primary);
+}
+
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather {
+    color: var(--mdc-theme-primary) !important;
+}
+
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg {
+    stroke: var(--mdc-theme-primary) !important;
+    color: var(--mdc-theme-primary) !important;
+    fill: none !important;
+    stroke-width: 2 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg path,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg path,
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg circle,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg circle,
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg line,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg line,
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg polyline,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg polyline,
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg polygon,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg polygon,
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg rect,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg rect {
+    stroke: var(--mdc-theme-primary) !important;
+    stroke-width: 2 !important;
+    fill: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Additional hover styles for collapsed icons and flyout items - REMOVED to keep icon color static */
+/* Icon color stays secondary on hover, only background changes */
+
+/* Additional hover styles for flyout items */
+::ng-deep .sidebar-area .collapsed-section-icon:hover i-feather,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg path,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg circle,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg line,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg polyline,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg polygon,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg rect,
+::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg,
+::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg path,
+::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg circle,
+::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg line,
+::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg polyline,
+::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg polygon,
+::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg rect {
+    stroke: var(--mdc-theme-primary) !important;
+    color: var(--mdc-theme-primary) !important;
+    fill: none !important;
+}
+
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather,
+::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link:hover i-feather,
+::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link.active i-feather,
+::ng-deep .sidebar-area .collapsed-section-icon:hover i-feather,
+::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather,
+::ng-deep .sidebar-more-item:hover i-feather,
+::ng-deep .sidebar-more-item.active i-feather,
+::ng-deep .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather,
+::ng-deep .sidebar-flyout-item.mat-mdc-menu-item.active i-feather {
+    color: var(--mdc-theme-primary) !important;
+    stroke: var(--mdc-theme-primary) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Primary color SVG overrides for hover/active states */
+::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg,
+::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg,
+::ng-deep .sidebar-area .collapsed-section-icon:hover i-feather svg,
+::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather svg,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg,
+::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item.active i-feather svg {
+    stroke: var(--mdc-theme-primary) !important;
+    color: var(--mdc-theme-primary) !important;
+    fill: none !important;
+    stroke-width: 2 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link {
+    color: var(--mdc-theme-on-surface);
+}
+
+::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link:hover,
+::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link.active {
+    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+    color: var(--mdc-theme-primary);
+}
+
+::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link:hover::after,
+::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link.active::after {
+    background-color: var(--mdc-theme-primary);
+}
+
+::ng-deep .sidebar-area .lock-icon {
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 55%, transparent);
 }
 
 ::ng-deep .sidebar-area .sidebar-expander {
         position: absolute;
         right: 8px;
         bottom: 8px;
-        z-index: 1305;
+    z-index: 1600;
         pointer-events: auto;
 }
 
@@ -735,7 +1440,7 @@
                         margin-bottom: 15px;
     
                         &::before {
-                            width: 10px;
+                    color: var(--mdc-theme-secondary);
                         }
                     }
                     .mat-accordion {
@@ -820,7 +1525,7 @@
     ::ng-deep {
         .sidebar-area {
             &.active, &.hide-sidebar {
-                width: 88px;
+                width: 72px;
     
                 .logo {
                     // padding: {
@@ -853,6 +1558,7 @@
                     .mat-accordion {
                         .mat-expansion-panel {
                             margin-bottom: 5px;
+                            overflow: visible;
                 
                             .mat-expansion-panel-header {
                                 padding: 0;
@@ -865,11 +1571,17 @@
                                 margin-left: auto;
                                 margin-right: auto;
                                 position: relative;
+                                overflow: visible;
+                                &.mat-expansion-panel-header-disabled {
+                                    opacity: 1;
+                                    cursor: pointer;
+                                }
     
                                 i-feather {
                                     left: 0;
                                     right: 0;
                                     text-align: center;
+                                    color: color-mix(in srgb, var(--mdc-theme-on-surface) 60%, transparent);
                                     margin: {
                                         left: auto;
                                         right: auto;
@@ -891,8 +1603,8 @@
                                     position: absolute;
                                     left: 54px;
                                     top: 0;
-                                    background: rgba(255, 255, 255, 0.9);
-                                    border: 1px solid rgba(200, 200, 200, 0.4);
+                                    background: var(--mdc-theme-surface);
+                                    border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
                                     border-radius: 10px;
                                     padding: 6px;
                                     display: flex;
@@ -902,7 +1614,7 @@
                                     transform: translateX(-6px);
                                     pointer-events: none;
                                     transition: opacity 0.2s ease, transform 0.2s ease;
-                                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+                                    box-shadow: 0 6px 18px color-mix(in srgb, var(--mdc-theme-on-surface) 20%, transparent);
                                     z-index: 1400;
                                 }
                                 .collapsed-submenu-link {
@@ -912,7 +1624,7 @@
                                     align-items: center;
                                     justify-content: center;
                                     border-radius: 8px;
-                                    color: #818093;
+                                    color: color-mix(in srgb, var(--mdc-theme-on-surface) 60%, transparent);
                                     background: transparent;
                                     transition: background 0.2s ease, color 0.2s ease;
 
@@ -923,11 +1635,15 @@
                                     }
                                 }
                                 .collapsed-submenu-link:hover {
-                                    background: rgba(55, 97, 238, 0.10);
-                                    color: var(--primaryColor);
+                                    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+                                    color: var(--mdc-theme-primary);
+                                }
+                                .collapsed-submenu-link.active {
+                                    background: var(--mdc-theme-primary);
+                                    color: var(--mdc-theme-on-primary);
                                 }
                                 .collapsed-submenu-link.locked {
-                                    color: #9aa0b2;
+                                    color: color-mix(in srgb, var(--mdc-theme-on-surface) 45%, transparent);
                                     cursor: pointer;
                                 }
                                 &:hover .collapsed-submenu {
@@ -936,8 +1652,16 @@
                                     pointer-events: auto;
                                 }
                             }
+                            &:hover .collapsed-submenu {
+                                opacity: 1;
+                                transform: translateX(0);
+                                pointer-events: auto;
+                            }
                             .mat-expansion-panel-content {
                                 display: none;
+                            }
+                            .sidebar-sub-menu {
+                                display: none !important;
                             }
                         }
                         .sidebar-menu-link {
@@ -957,6 +1681,7 @@
                                 left: 0;
                                 right: 0;
                                 text-align: center;
+                                color: color-mix(in srgb, var(--mdc-theme-on-surface) 60%, transparent);
                                 margin: {
                                     left: auto;
                                     right: auto;
@@ -970,7 +1695,10 @@
                                 display: none;
                             }
                             &:hover, &.active {
-                                background: rgba(55, 97, 238, 0.10);
+                                background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+                                i-feather {
+                                    color: var(--mdc-theme-primary);
+                                }
                             }
                         }
                     }
@@ -990,3 +1718,109 @@
 
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {}
+
+
+
+/* =========================================================
+   COLLAPSED MODE - KEEP ICON PRIMARY WHILE MENU OPEN
+   ========================================================= */
+::ng-deep .sidebar-area .collapsed-section-icon.is-open {
+  background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent) !important;
+  color: var(--mdc-theme-primary) !important;
+}
+
+::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather,
+::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg,
+::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg * {
+  stroke: var(--mdc-theme-primary) !important;
+  color: var(--mdc-theme-primary) !important;
+}
+
+/* =========================================================
+   FLYOUT MENU - FORCE PRIMARY ICON + TEXT ON HOVER/ACTIVE
+   (This beats your secondary-color !important overrides)
+   ========================================================= */
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item {
+  color: color-mix(in srgb, var(--mdc-theme-on-surface) 85%, transparent) !important;
+}
+
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item i-feather svg,
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item i-feather svg * {
+  stroke: color-mix(in srgb, var(--mdc-theme-on-surface) 70%, transparent) !important;
+  color:  color-mix(in srgb, var(--mdc-theme-on-surface) 70%, transparent) !important;
+}
+
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item:hover,
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item.active {
+  background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent) !important;
+  color: var(--mdc-theme-primary) !important;
+}
+
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item:hover i-feather svg,
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item:hover i-feather svg *,
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item.active i-feather svg,
+::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item.active i-feather svg * {
+  stroke: var(--mdc-theme-primary) !important;
+  color: var(--mdc-theme-primary) !important;
+}
+
+/* optional */
+::ng-deep .sidebar-flyout-menu .flyout-label {
+  flex: 1;
+}
+
+
+
+//////////////
+/* =========================================================
+   FIX: Do NOT let the global "secondary !important" rules
+   override hover/open states for collapsed rail icons
+   ========================================================= */
+
+/* Default collapsed icon state = secondary (only when NOT hovered/open) */
+::ng-deep .sidebar-area .collapsed-section-icon:not(.is-open):not(.is-hovered) i-feather svg,
+::ng-deep .sidebar-area .collapsed-section-icon:not(.is-open):not(.is-hovered) i-feather svg * {
+  stroke: var(--mdc-theme-secondary, var(--secondaryColor)) !important;
+  color: var(--mdc-theme-secondary, var(--secondaryColor)) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Hover/open collapsed icon = PRIMARY (this must always win) */
+::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg,
+::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg *,
+::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather svg,
+::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather svg * {
+  stroke: red !important;
+  color: red !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Also keep button bg consistent on hover/open */
+::ng-deep .sidebar-area .collapsed-section-icon.is-open,
+::ng-deep .sidebar-area .collapsed-section-icon.is-hovered {
+  background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent) !important;
+}
+
+/* allow collapsed icon hover to override global secondary */
+// ::ng-deep .sidebar-area .collapsed-section-icon i-feather svg,
+// ::ng-deep .sidebar-area .collapsed-section-icon i-feather svg * {
+//   stroke: inherit !important;
+//   color: inherit !important;
+// }
+
+.sidebar-area .sidebar-mat-menu-custom.mat-menu-panel,
+.sidebar-area .sidebar-mat-menu-custom.mat-mdc-menu-panel {
+  left: 0 !important;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+  min-width: 180px;
+  transform: translate3d(100px, -6px, 0) !important; /* Move menu 100px to the right */
+}
+
+// Force sidebar context menu overlay position
+::ng-deep .cdk-overlay-pane.sidebar-mat-menu-custom {
+  left: 100px !important;
+  top: 0 !important;
+}

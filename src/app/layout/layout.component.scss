@@ -113,7 +113,7 @@ mat-sidenav-container, .mat-sidenav-container {
 .main-content {
   min-height: 100vh;
   background: none !important;
-
+  z-index: 8888 !important;
   overflow: hidden;
 }
 
