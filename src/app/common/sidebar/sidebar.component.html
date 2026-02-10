@@ -17,12 +17,12 @@
                     [matTooltip]="item.title"
                     matTooltipPosition="right"
                     [routerLink]="!item.locked ? item.route : null"
-                    routerLinkActive="active"
+                    routerLinkActive="is-active"
                     [routerLinkActiveOptions]="{ exact: true }"
                     [class.locked]="item.locked"
                     (click)="item.locked ? onLockedMenuClick(item, $event) : null"
                   >
-                    <i-feather [name]="item.icon"></i-feather>
+                    <i-feather class="sidebar-menu-icon" [name]="item.icon"></i-feather>
                   </button>
                 </ng-container>
               </ng-container>

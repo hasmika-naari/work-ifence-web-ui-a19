@@ -1,5 +1,24 @@
 @use '../../../styles/variables' as *;
 
+
+.collapsed-section-icon:not(.locked):hover .sidebar-menu-icon {
+    color: var(--mainColor) !important;
+    stroke: var(--mainColor) !important;
+    transition: color 0.2s, stroke 0.2s;
+}
+.collapsed-section-icon:not(.locked):hover .sidebar-menu-icon svg,
+.collapsed-section-icon:not(.locked):hover .sidebar-menu-icon svg path,
+.collapsed-section-icon:not(.locked):hover .sidebar-menu-icon svg circle,
+.collapsed-section-icon:not(.locked):hover .sidebar-menu-icon svg line,
+.collapsed-section-icon:not(.locked):hover .sidebar-menu-icon svg polyline,
+.collapsed-section-icon:not(.locked):hover .sidebar-menu-icon svg polygon,
+.collapsed-section-icon:not(.locked):hover .sidebar-menu-icon svg rect {
+    stroke: var(--mainColor) !important;
+    color: var(--mainColor) !important;
+    fill: var(--mainColor) !important;
+    transition: color 0.2s, stroke 0.2s, fill 0.2s;
+}
+
 .collapsed-rail-scroll {
     flex: 1 1 auto;
     min-height: 0;
@@ -411,7 +430,7 @@
                 }
                 .collapsed-section-icon:hover,
                 .collapsed-section-icon:focus-visible {
-                    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+                    background: color-mix(in srgb, var(--mainColor) 10%, transparent);
                     i-feather {
                         width: 18px;
                         height: 18px;
@@ -428,7 +447,7 @@
                 
                 .collapsed-section-icon.is-active,
                 .collapsed-section-icon.is-hovered {
-                    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+                    background: color-mix(in srgb, var(--mainColor) 10%, transparent);
                 }
                 
                 .collapsed-submenu-panel {
@@ -496,21 +515,21 @@
                         }
                         
                         &:hover:not(.locked) {
-                            background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
-                            color: var(--mdc-theme-primary);
+                            background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+                            color: var(--mainColor);
                             
                             i-feather {
-                                color: var(--mdc-theme-primary) !important;
+                                color: var(--mainColor) !important;
                             }
                         }
                         
                         &.active {
-                            background: color-mix(in srgb, var(--mdc-theme-primary) 15%, transparent);
-                            color: var(--mdc-theme-primary);
+                            background: color-mix(in srgb, var(--mainColor) 15%, transparent);
+                            color: var(--mainColor);
                             font-weight: 500;
                             
                             i-feather {
-                                color: var(--mdc-theme-primary) !important;
+                                color: var(--mainColor) !important;
                             }
                         }
                         
@@ -1021,7 +1040,7 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        background: color-mix(in srgb, var(--mdc-theme-primary) 8%, transparent);
+        background: color-mix(in srgb, var(--mainColor) 8%, transparent);
         color: var(--mdc-theme-on-surface);
         border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
     }
@@ -1147,8 +1166,8 @@
 
 .sidebar-more-item:hover,
 .sidebar-more-item.active {
-    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
-    color: var(--mdc-theme-primary);
+    background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+    color: var(--mainColor);
 }
 
 .sidebar-more-item i-feather {
@@ -1159,7 +1178,7 @@
 
 .sidebar-more-item.active i-feather,
 .sidebar-more-item:hover i-feather {
-    color: var(--mdc-theme-primary);
+    color: var(--mainColor);
 }
 
 ::ng-deep .sidebar-flyout-menu.mat-mdc-menu-panel {
@@ -1210,21 +1229,21 @@
 }
 
 .sidebar-flyout-item.mat-mdc-menu-item:hover {
-    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
-    color: var(--mdc-theme-primary);
+    background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+    color: var(--mainColor);
 }
 
 .sidebar-flyout-item.mat-mdc-menu-item.active {
-    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
-    color: var(--mdc-theme-primary);
+    background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+    color: var(--mainColor);
 }
 
 .sidebar-flyout-item.mat-mdc-menu-item.active i-feather {
-    color: var(--mdc-theme-primary);
+    color: var(--mainColor);
 }
 
 .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather {
-    color: var(--mdc-theme-primary);
+    color: var(--mainColor);
 }
 
 .sidebar-flyout-item.mat-mdc-menu-item.cdk-focused,
@@ -1266,6 +1285,10 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+
+    &:hover{
+        color: var(--mainColor, var(--mainColor)) !important;
+    }
 }
 
 /* Force SVG stroke to follow the secondary color */
@@ -1276,6 +1299,11 @@
     stroke-width: 2 !important;
     visibility: visible !important;
     opacity: 1 !important;
+
+    &:hover{
+         stroke: var(--mainColor, var(--mainColor)) !important;
+        color: var(--mainColor, var(--mainColor)) !important;
+    }
 }
 
 ::ng-deep .sidebar-area i-feather svg path,
@@ -1292,19 +1320,19 @@
 
 ::ng-deep .sidebar-area .sidebar-menu-link:hover,
 ::ng-deep .sidebar-area .sidebar-menu-link.active {
-    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
-    color: var(--mdc-theme-primary);
+    background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+    color: var(--mainColor);
 }
 
 ::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather,
 ::ng-deep .sidebar-area .sidebar-menu-link.active i-feather {
-    color: var(--mdc-theme-primary) !important;
+    color: var(--mainColor) !important;
 }
 
 ::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg,
 ::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg {
-    stroke: var(--mdc-theme-primary) !important;
-    color: var(--mdc-theme-primary) !important;
+    stroke: var(--mainColor) !important;
+    color: var(--mainColor) !important;
     fill: none !important;
     stroke-width: 2 !important;
     opacity: 1 !important;
@@ -1323,7 +1351,7 @@
 ::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg polygon,
 ::ng-deep .sidebar-area .sidebar-menu-link:hover i-feather svg rect,
 ::ng-deep .sidebar-area .sidebar-menu-link.active i-feather svg rect {
-    stroke: var(--mdc-theme-primary) !important;
+    stroke: var(--mainColor) !important;
     stroke-width: 2 !important;
     fill: none !important;
     visibility: visible !important;
@@ -1334,7 +1362,7 @@
 /* Icon color stays secondary on hover, only background changes */
 
 /* Additional hover styles for flyout items */
-::ng-deep .sidebar-area .collapsed-section-icon:hover i-feather,
+::ng-deep .sidebar-area .collapsed-section-icon:not(.locked):hover i-feather,
 ::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg,
 ::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg path,
 ::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg circle,
@@ -1349,8 +1377,8 @@
 ::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg polyline,
 ::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg polygon,
 ::ng-deep .sidebar-area .sidebar-more-item:hover i-feather svg rect {
-    stroke: var(--mdc-theme-primary) !important;
-    color: var(--mdc-theme-primary) !important;
+    stroke: var(--mainColor) !important;
+    color: var(--mainColor) !important;
     fill: none !important;
 }
 
@@ -1358,14 +1386,14 @@
 ::ng-deep .sidebar-area .sidebar-menu-link.active i-feather,
 ::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link:hover i-feather,
 ::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link.active i-feather,
-::ng-deep .sidebar-area .collapsed-section-icon:hover i-feather,
-::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather,
+::ng-deep .sidebar-area .collapsed-section-icon:not(.locked):hover i-feather,
+::ng-deep .sidebar-area .collapsed-section-icon:not(.locked).is-hovered i-feather,
 ::ng-deep .sidebar-more-item:hover i-feather,
 ::ng-deep .sidebar-more-item.active i-feather,
 ::ng-deep .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather,
 ::ng-deep .sidebar-flyout-item.mat-mdc-menu-item.active i-feather {
-    color: var(--mdc-theme-primary) !important;
-    stroke: var(--mdc-theme-primary) !important;
+    color: var(--mainColor) !important;
+    stroke: var(--mainColor) !important;
     visibility: visible !important;
     opacity: 1 !important;
 }
@@ -1377,8 +1405,8 @@
 ::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather svg,
 ::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item:hover i-feather svg,
 ::ng-deep .sidebar-area .sidebar-flyout-item.mat-mdc-menu-item.active i-feather svg {
-    stroke: var(--mdc-theme-primary) !important;
-    color: var(--mdc-theme-primary) !important;
+    stroke: var(--mainColor) !important;
+    color: var(--mainColor) !important;
     fill: none !important;
     stroke-width: 2 !important;
     visibility: visible !important;
@@ -1391,13 +1419,13 @@
 
 ::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link:hover,
 ::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link.active {
-    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
-    color: var(--mdc-theme-primary);
+    background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+    color: var(--mainColor);
 }
 
 ::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link:hover::after,
 ::ng-deep .sidebar-area .sidebar-sub-menu .sidemenu-link.active::after {
-    background-color: var(--mdc-theme-primary);
+    background-color: var(--mainColor);
 }
 
 ::ng-deep .sidebar-area .lock-icon {
@@ -1635,11 +1663,11 @@
                                     }
                                 }
                                 .collapsed-submenu-link:hover {
-                                    background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
-                                    color: var(--mdc-theme-primary);
+                                    background: color-mix(in srgb, var(--mainColor) 10%, transparent);
+                                    color: var(--mainColor);
                                 }
                                 .collapsed-submenu-link.active {
-                                    background: var(--mdc-theme-primary);
+                                    background: var(--mainColor);
                                     color: var(--mdc-theme-on-primary);
                                 }
                                 .collapsed-submenu-link.locked {
@@ -1695,9 +1723,9 @@
                                 display: none;
                             }
                             &:hover, &.active {
-                                background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+                                background: color-mix(in srgb, var(--mainColor) 10%, transparent);
                                 i-feather {
-                                    color: var(--mdc-theme-primary);
+                                    color: var(--mainColor);
                                 }
                             }
                         }
@@ -1725,15 +1753,15 @@
    COLLAPSED MODE - KEEP ICON PRIMARY WHILE MENU OPEN
    ========================================================= */
 ::ng-deep .sidebar-area .collapsed-section-icon.is-open {
-  background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent) !important;
-  color: var(--mdc-theme-primary) !important;
+  background: color-mix(in srgb, var(--mainColor) 10%, transparent) !important;
+  color: var(--mainColor) !important;
 }
 
 ::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather,
 ::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg,
 ::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg * {
-  stroke: var(--mdc-theme-primary) !important;
-  color: var(--mdc-theme-primary) !important;
+  stroke: var(--mainColor) !important;
+  color: var(--mainColor) !important;
 }
 
 /* =========================================================
@@ -1752,16 +1780,16 @@
 
 ::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item:hover,
 ::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item.active {
-  background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent) !important;
-  color: var(--mdc-theme-primary) !important;
+  background: color-mix(in srgb, var(--mainColor) 10%, transparent) !important;
+  color: var(--mainColor) !important;
 }
 
 ::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item:hover i-feather svg,
 ::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item:hover i-feather svg *,
 ::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item.active i-feather svg,
 ::ng-deep .sidebar-flyout-menu .mat-mdc-menu-item.sidebar-flyout-item.active i-feather svg * {
-  stroke: var(--mdc-theme-primary) !important;
-  color: var(--mdc-theme-primary) !important;
+  stroke: var(--mainColor) !important;
+  color: var(--mainColor) !important;
 }
 
 /* optional */
@@ -1784,23 +1812,29 @@
   color: var(--mdc-theme-secondary, var(--secondaryColor)) !important;
   opacity: 1 !important;
   visibility: visible !important;
+
+  &:hover{
+     stroke: var(--mainColor, var(--mainColor)) !important;
+     color: var(--mainColor, var(--mainColor)) !important;
+  }
 }
 
 /* Hover/open collapsed icon = PRIMARY (this must always win) */
-::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg,
-::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg *,
-::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather svg,
-::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather svg * {
-  stroke: red !important;
-  color: red !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
+// ::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg,
+// ::ng-deep .sidebar-area .collapsed-section-icon.is-open i-feather svg *,
+// ::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather svg,
+// ::ng-deep .sidebar-area .collapsed-section-icon.is-hovered i-feather svg * {
+//       stroke: var(--mainColor, var(--mainColor)) !important;
+//      color: var(--mainColor, var(--mainColor)) !important;
+//   opacity: 1 !important;
+//   visibility: visible !important;
+// }
 
 /* Also keep button bg consistent on hover/open */
 ::ng-deep .sidebar-area .collapsed-section-icon.is-open,
-::ng-deep .sidebar-area .collapsed-section-icon.is-hovered {
-  background: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent) !important;
+::ng-deep .sidebar-area .collapsed-section-icon.is-hovered,
+::ng-deep .sidebar-area .collapsed-section-icon.is-active {
+    background: color-mix(in srgb, var(--mainColor) 10%, transparent) !important;
 }
 
 /* allow collapsed icon hover to override global secondary */
