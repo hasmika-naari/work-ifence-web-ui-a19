@@ -107,8 +107,13 @@
     color: var(--mainColor) !important;
     transition: color 0.2s;
 }
-.sidebar-more-apps:hover mat-icon,
+.sidebar-more-apps:hover mat-icon{
+    color: var(--secondaryColor) !important;
+}
 .sidebar-more-apps--expanded mat-icon {
+    color: var(--mainColor) !important;
+}
+.sidebar-more-apps--expanded:hover mat-icon {
     color: var(--secondaryColor) !important;
 }
 
@@ -189,7 +194,7 @@
 .sidebar-menu-grid-item:hover,
 .sidebar-menu-grid-item.active {
     background: color-mix(in srgb, var(--primaryColor) 10%, transparent);
-    color: var(--primaryColor);
+    // color: var(--primaryColor);
 }
 
 .sidebar-menu-grid-item i-feather {
