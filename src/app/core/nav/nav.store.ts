@@ -16,6 +16,10 @@ export class NavStore {
   readonly loading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
+  // Tracks whether we've fetched nav from the server in this browser session.
+  // (We may hydrate a cached response first; we still want a fresh fetch.)
+  private fetchedThisSession = false;
+
   readonly sectionsSorted = computed<NavApiSection[]>(() => {
     const sections = this.navResponse()?.sections ?? [];
     return [...sections]
@@ -26,11 +30,11 @@ export class NavStore {
       }));
   });
 
-  readonly visibleSections = computed<NavSection[]>(() => {
+  readonly allSections = computed<NavSection[]>(() => {
     const sections = this.sectionsSorted();
-    return sections
-      .map(section => this.toNavSection(section))
-      .filter(section => section.items.length > 0);
+    // Render ALL sections/items returned by the backend menu, even if locked.
+    // Client-side entitlement/feature-flag filtering is intentionally not applied here.
+    return sections.map(section => this.toNavSection(section));
   });
 
   constructor(
@@ -43,7 +47,9 @@ export class NavStore {
 
   load(): void {
     if (this.loading()) return;
-    if (this.navResponse()) return;
+
+    // If we only have a hydrated cache, still refresh once to get the latest menu.
+    if (this.navResponse() && this.fetchedThisSession) return;
     this.refresh();
   }
 
@@ -57,39 +63,99 @@ export class NavStore {
     this.api.getMyNav()
       .pipe(
         catchError(err => {
-          this.error.set(`Failed to load /api/nav/menu: ${String(err)}`);
+          this.error.set(`Failed to load /api/access/nav/menu: ${String(err)}`);
           const fallback = this.buildFallbackResponse();
           this.navResponse.set(fallback);
           this.persistCache(fallback);
+          this.fetchedThisSession = true;
           this.loading.set(false);
           return of(fallback);
         })
       )
       .subscribe(resp => {
-        this.debugLog('raw /api/nav/menu response', resp);
+        this.debugLog('raw /api/access/nav/menu response', resp);
         this.logFilterDiagnostics(resp);
         this.navResponse.set(resp);
         this.persistCache(resp);
+        this.fetchedThisSession = true;
         this.debugLog('nav counts', {
           sections: this.countSections(resp),
           itemsBeforeFilter: this.countItems(resp),
-          itemsAfterFilter: this.countItemsFromSections(this.visibleSections())
+          itemsAfterFilter: this.countItemsFromSections(this.allSections())
         });
         this.error.set(null);
         this.loading.set(false);
       });
   }
 
-  clear(): void {
-    this.navResponse.set(null);
+  /**
+   * Apply a backend nav response without issuing a new HTTP request.
+   * Accepts either the full response shape ({ user, sections }) or a sections array.
+   */
+  applyBackendResponse(raw: unknown): void {
+    const normalized = this.normalizeBackendResponse(raw);
+    if (!normalized) {
+      const fallback = this.buildFallbackResponse();
+      this.navResponse.set(fallback);
+      this.persistCache(fallback);
+      this.fetchedThisSession = true;
+      return;
+    }
+
+    this.debugLog('raw /api/access/nav/menu response (applied)', normalized);
+    this.logFilterDiagnostics(normalized);
+    this.navResponse.set(normalized);
+    this.persistCache(normalized);
+    this.fetchedThisSession = true;
     this.error.set(null);
   }
 
-  private toNavSection(section: NavApiSection): NavSection {
-    const items = (section.items ?? [])
-      .map(item => this.toNavItem(item))
-      .filter(item => item.visible === true);
+  clear(): void {
+    this.navResponse.set(null);
+    this.error.set(null);
+    this.fetchedThisSession = false;
 
+    // Avoid showing stale menu after profile switch.
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.removeItem(CACHE_KEY);
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  private normalizeBackendResponse(raw: unknown): NavApiResponse | null {
+    if (!raw) return null;
+
+    // Some endpoints may return sections array directly
+    if (Array.isArray(raw)) {
+      return {
+        user: {
+          login: '',
+          userId: '',
+          roleKey: '',
+          roles: [],
+          planTier: '',
+          planCode: '',
+          subscriptionStatus: ''
+        },
+        sections: raw as NavApiSection[]
+      };
+    }
+
+    if (typeof raw === 'object') {
+      const maybe = raw as Partial<NavApiResponse>;
+      if (Array.isArray((maybe as any).sections)) {
+        return maybe as NavApiResponse;
+      }
+    }
+
+    return null;
+  }
+
+  private toNavSection(section: NavApiSection): NavSection {
+    const items = (section.items ?? []).map(item => this.toNavItem(item));
     return {
       id: section.id,
       title: section.title,
@@ -108,53 +174,16 @@ export class NavStore {
         }
       : undefined;
 
-    let visible = true;
-    let enabled = true;
-    let lockedReason = '';
-    const entitlements = this.entitlement.entitlements();
-
-    const flagInfo = this.resolveFeatureFlagKey(item.featureFlag);
-    if (flagInfo.key && flagInfo.known && !this.remoteConfig.isFlagEnabledSafe(flagInfo.key)) {
-      this.debugLog('item hidden: featureFlag disabled', {
-        id: item.id,
-        title: item.title,
-        featureFlag: flagInfo.key
-      });
-      visible = false;
-      enabled = false;
-    } else {
-      if (flagInfo.key && !flagInfo.known) {
-        this.debugLog('item featureFlag unknown (treated as enabled)', {
-          id: item.id,
-          title: item.title,
-          featureFlag: flagInfo.key
-        });
-      }
-      const allowed = !item.entitlementKey || entitlements[item.entitlementKey] === true;
-      if (!allowed) {
-        const showLocked = item.showWhenLocked === true;
-        visible = showLocked;
-        enabled = false;
-        lockedReason = item.minPlan
-          ? `Upgrade to ${item.minPlan} to unlock`
-          : 'Upgrade to unlock';
-        if (!showLocked) {
-          this.debugLog('item hidden: entitlement missing without showWhenLocked', {
-            id: item.id,
-            title: item.title,
-            entitlementKey: item.entitlementKey
-          });
-        }
-      } else {
-        visible = true;
-        enabled = true;
-      }
-    }
-
-    const hasVisibleChildren = Array.isArray(children) && children.some(c => c.visible);
-    if (!visible && hasVisibleChildren) {
-      visible = true;
-    }
+    // Always render items returned by the backend.
+    // Mark locked when backend says so, or when explicit allowed=false is provided.
+    const lockedByBackend = item.locked === true;
+    const lockedByAllowed = typeof item.allowed === 'boolean' ? item.allowed === false : false;
+    const locked = lockedByBackend || lockedByAllowed;
+    const enabled = !locked;
+    const visible = true;
+    const lockedReason = locked
+      ? (item.minPlan ? `Upgrade to ${item.minPlan} to unlock` : 'Upgrade to unlock')
+      : '';
 
     return {
       id: item.id,
@@ -165,6 +194,7 @@ export class NavStore {
       entitlementKey: item.entitlementKey,
       minPlan: item.minPlan as PlanTier | undefined,
       showWhenLocked: item.showWhenLocked,
+      locked,
       externalUrl: item.externalUrl,
       tooltip: item.tooltip,
       badge,
@@ -239,7 +269,7 @@ export class NavStore {
       .filter(item => {
         const allowed = !item.entitlementKey || entitlements[item.entitlementKey] === true;
         if (allowed) return false;
-        return item.showWhenLocked !== true;
+        return item.showWhenLocked !== true && item.locked !== true;
       })
       .map(item => ({
         id: item.id,

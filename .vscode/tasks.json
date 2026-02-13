@@ -23,6 +23,30 @@
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "ssr:local",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"ssr:local"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "build:ssr:dev",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build:ssr:dev"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }

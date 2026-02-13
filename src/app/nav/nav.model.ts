@@ -24,6 +24,7 @@ export interface NavItem {
   entitlementKey?: string;
   minPlan?: PlanTier;
   showWhenLocked?: boolean;
+  locked?: boolean;
   visible?: boolean;
   enabled?: boolean;
   lockedReason?: string;

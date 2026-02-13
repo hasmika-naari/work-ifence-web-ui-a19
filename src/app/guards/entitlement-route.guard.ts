@@ -47,25 +47,18 @@ export const entitlementRouteGuard: CanActivateFn = (
   //   - Dev:  console.warn (misconfiguration) + return false
   // - If `data.entitlementKey` is present: preserve existing behavior.
   if (!entitlementKey) {
-    const routePath =
-      route.routeConfig?.path ??
-      route.url?.map((u) => u.path).filter(Boolean).join('/') ??
-      state.url;
-    if (!environment.production) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        '[entitlementRouteGuard] Misconfigured route: missing data.entitlementKey. Denying access in dev.',
-        { routePath, url: state.url },
-      );
-      return false;
+    // If minPlan is set, redirect to upgrade page
+    if (minPlan) {
+      return router.createUrlTree(['/user/billing/upgrade'], {
+        queryParams: {
+          feature: entitlementKey,
+          minPlan,
+          from: state.url
+        }
+      });
     }
-
-    // eslint-disable-next-line no-console
-    console.error('[entitlementRouteGuard] Misconfigured route: missing data.entitlementKey. Denying access.', {
-      routePath,
-      url: state.url,
-    });
-    return false;
+    // Otherwise, redirect to pricing
+    return router.createUrlTree(['/pricing']);
   }
 
   if (entitlementKey === ENTITLEMENT_KEYS.USER_DASHBOARD) {
@@ -76,8 +69,16 @@ export const entitlementRouteGuard: CanActivateFn = (
   if (ok) return true;
 
   // 2. Authorization Check (Logged in but not entitled)
-  // Instead of redirecting to upgrade page, set the reason in AccessFacade
-  // and cancel navigation (return false) so the FeatureGateNotice can show.
-  accessFacade.require(entitlementKey as FeatureKey);
-  return false;
+  // Redirect to upgrade page if minPlan is set
+  if (minPlan) {
+    return router.createUrlTree(['/user/billing/upgrade'], {
+      queryParams: {
+        feature: entitlementKey,
+        minPlan,
+        from: state.url
+      }
+    });
+  }
+  // Otherwise, redirect to pricing
+  return router.createUrlTree(['/pricing']);
 };

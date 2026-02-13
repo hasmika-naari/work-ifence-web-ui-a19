@@ -7,3 +7,4 @@ const require = createRequire(import.meta.url);
 (globalThis as any).__Zone_disable_messagePort = true;
 
 require('zone.js/node');
+require('zone.js/plugins/task-tracking');

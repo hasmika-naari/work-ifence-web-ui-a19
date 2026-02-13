@@ -1,0 +1,39 @@
+{
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.disableAutomaticTypeAcquisition": true,
+
+  "files.maxMemoryForLargeFilesMB": 4096,
+  "editor.largeFileOptimizations": true,
+
+  "files.watcherExclude": {
+    "**/.git/**": true,
+    "**/.angular/**": true,
+    "**/.angular/cache/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/coverage/**": true
+  },
+  "search.exclude": {
+    "**/.git/**": true,
+    "**/.angular/**": true,
+    "**/.angular/cache/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/coverage/**": true
+  },
+
+  "search.followSymlinks": false,
+
+  "task.autoDetect": "off",
+  "npm.autoDetect": "off",
+  "gulp.autoDetect": "off",
+  "grunt.autoDetect": "off",
+  "jake.autoDetect": "off",
+
+  "git.autofetch": false,
+
+  "typescript.suggest.autoImports": false,
+  "javascript.suggest.autoImports": false
+}

@@ -1,5 +1,5 @@
 
-import { Component, inject, Signal, effect, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Component, inject, Signal, computed, effect, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ToggleService } from '../header/toggle.service';
@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NavSection as StoreNavSection } from 'src/app/nav/nav.model';
 import { NavStore } from 'src/app/core/nav/nav.store';
+import { EntitlementService } from 'src/app/services/entitlement.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -25,23 +26,27 @@ import { NavStore } from 'src/app/core/nav/nav.store';
     styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-        
-        // Flatten all submenu items into a single list
-        get allMenuItems(): NavItem[] {
-          return this.navSections.flatMap(section => section.items || []);
-        }
-      // Returns the title for the currently active section (for use in template)
-      get activeSectionTitle(): string {
-        const section = this.navSections.find(s => s.id === this.activeSectionId);
-        return section?.title || '';
-      }
-    // Returns the items for the currently active section (for use in template)
-    get activeSectionItems(): NavItem[] {
-      const section = this.navSections.find(s => s.id === this.activeSectionId);
-      return section?.items || [];
-    }
+
+  private readonly entitlementService = inject(EntitlementService);
+  private readonly entitlementsSignal = this.entitlementService.getEntitlements();
+  private readonly entitlementsMap = computed(() => this.entitlementsSignal()?.entitlements ?? {});
+
+  // Sections and flattened items are signals so they update immediately when NavStore updates.
+  readonly navSections = computed<NavSection[]>(() => this.navSectionsSignal() as unknown as NavSection[]);
+  readonly allMenuItems = computed<NavItem[]>(() => this.navSections().flatMap(section => section.items || []));
+
+  // Returns the title for the currently active section (for use in template)
+  get activeSectionTitle(): string {
+    const section = this.navSections().find(s => s.id === this.activeSectionId);
+    return section?.title || '';
+  }
+
+  // Returns the items for the currently active section (for use in template)
+  get activeSectionItems(): NavItem[] {
+    const section = this.navSections().find(s => s.id === this.activeSectionId);
+    return section?.items || [];
+  }
   isMoreOpen = false;
-  navSections: NavSection[] = [];
   showMoreAvailable = false;
   @ViewChild('sidebarScroll') sidebarScroll?: ElementRef<HTMLDivElement>;
   
@@ -62,6 +67,17 @@ export class SidebarComponent {
         });
       }
     }
+
+    isMenuItemEnabled(item: NavItem): boolean {
+      // Rule: disabled if item.locked=true OR entitlementKey not enabled in /api/entitlements/me
+      if (!item) return false;
+      if (item.locked === true) return false;
+
+      const entitlementKey = item.entitlementKey;
+      if (!entitlementKey) return true;
+
+      return this.entitlementsMap()?.[entitlementKey] === true;
+    }
   isToggled = false;
   public toggleService: ToggleService = inject(ToggleService);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -72,7 +88,7 @@ export class SidebarComponent {
   private navStore: NavStore = inject(NavStore);
   private isLoggedIn = this.userStore.getUserLoginStatus();
 
-  private navSectionsSignal: Signal<StoreNavSection[]> = this.navStore.visibleSections;
+  private navSectionsSignal: Signal<StoreNavSection[]> = this.navStore.allSections;
 
   constructor() {
     this.toggleService.isToggled$.subscribe(isToggled => {
@@ -87,7 +103,16 @@ export class SidebarComponent {
       }
     });
     effect(() => {
-      this.navSections = this.navSectionsSignal() as unknown as NavSection[];
+      const sections = this.navSections();
+
+      // If the menu changes, ensure any open submenu anchors still exist.
+      if (this.activeSectionId && !sections.some(s => s.id === this.activeSectionId)) {
+        this.activeSectionId = null;
+      }
+      if (this.hoveredSectionId && !sections.some(s => s.id === this.hoveredSectionId)) {
+        this.hoveredSectionId = null;
+      }
+
       queueMicrotask(() => this.updateShowMoreState());
     });
   }
@@ -172,9 +197,10 @@ export class SidebarComponent {
 interface NavItem {
   title: string;
   icon: string;
-  route: string;
+  route?: string;
   locked?: boolean;
   showWhenLocked?: boolean;
+  entitlementKey?: string;
 }
 
 interface NavSection {

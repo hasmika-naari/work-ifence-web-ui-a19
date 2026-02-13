@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AccessMeDto } from '../models/access-me.model';
+import { AccessMeDto, SwitchProfileResponseDto } from '../models/access-me.model';
 
 @Injectable({ providedIn: 'root' })
 export class AccessApiService {
@@ -14,6 +14,10 @@ export class AccessApiService {
 
   getAccessMe(): Observable<AccessMeDto> {
     return this.http.get<AccessMeDto>(`${this.getBaseUrl()}/api/access/me`);
+  }
+
+  switchProfile(profileKey: string): Observable<SwitchProfileResponseDto> {
+    return this.http.post<SwitchProfileResponseDto>(`${this.getBaseUrl()}/api/access/profile/switch`, { profileKey });
   }
 
   private getBaseUrl(): string {

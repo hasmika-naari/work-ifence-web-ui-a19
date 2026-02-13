@@ -9,22 +9,23 @@
         <div class="sidebar-menu">
           <div class="collapsed-rail-scroll">
             <div class="collapsed-rail">
-              <ng-container *ngFor="let item of allMenuItems; trackBy: trackItem">
-                <ng-container *ngIf="!item.locked || item.showWhenLocked">
-                  <button class="collapsed-section-icon"
-                    type="button"
-                    [attr.aria-label]="item.title"
-                    [matTooltip]="item.title"
-                    matTooltipPosition="right"
-                    [routerLink]="!item.locked ? item.route : null"
-                    routerLinkActive="is-active"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                    [class.locked]="item.locked"
-                    (click)="item.locked ? onLockedMenuClick(item, $event) : null"
-                  >
-                    <i-feather class="sidebar-menu-icon" [name]="item.icon"></i-feather>
-                  </button>
-                </ng-container>
+              <ng-container *ngFor="let item of allMenuItems(); trackBy: trackItem">
+                <button class="collapsed-section-icon"
+                  type="button"
+                  [attr.aria-label]="item.title"
+                  [matTooltip]="!isMenuItemEnabled(item) ? 'Requires PRO plan' : item.title"
+                  matTooltipPosition="right"
+                  [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
+                  routerLinkActive="is-active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  [class.locked]="!isMenuItemEnabled(item)"
+                  [disabled]="!isMenuItemEnabled(item)"
+                  (click)="!isMenuItemEnabled(item) ? onLockedMenuClick(item, $event) : null"
+                >
+                  <i-feather class="sidebar-menu-icon" [name]="item.icon"></i-feather>
+                  <span *ngIf="!isMenuItemEnabled(item)" class="workifence-badge">Upgrade</span>
+                  <mat-icon *ngIf="!isMenuItemEnabled(item)" class="lock-icon">lock</mat-icon>
+                </button>
               </ng-container>
             </div>
           </div>
@@ -36,21 +37,23 @@
         <div class="sidebar-inner">
           <div class="sidebar-menu">
             <div class="sidebar-menu-grid">
-              <ng-container *ngFor="let item of allMenuItems; trackBy: trackItem">
-                <ng-container *ngIf="!item.locked || item.showWhenLocked">
-                  <button class="sidebar-menu-grid-item"
-                    type="button"
-                    [routerLink]="!item.locked ? item.route : null"
-                    routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                    [attr.aria-disabled]="item.locked ? true : null"
-                    (click)="item.locked ? onLockedMenuClick(item, $event) : null"
-                  >
-                    <i-feather [name]="item.icon"></i-feather>
-                    <span class="sidebar-menu-grid-label">{{item.title}}</span>
-                    <mat-icon *ngIf="item.locked" class="lock-icon">lock</mat-icon>
-                  </button>
-                </ng-container>
+              <ng-container *ngFor="let item of allMenuItems(); trackBy: trackItem">
+                <button class="sidebar-menu-grid-item"
+                  type="button"
+                  [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  [attr.aria-disabled]="!isMenuItemEnabled(item) ? true : null"
+                  [disabled]="!isMenuItemEnabled(item)"
+                  [matTooltip]="!isMenuItemEnabled(item) ? 'Requires PRO plan' : item.title"
+                  matTooltipPosition="right"
+                  (click)="!isMenuItemEnabled(item) ? onLockedMenuClick(item, $event) : null"
+                >
+                  <i-feather [name]="item.icon"></i-feather>
+                  <span class="sidebar-menu-grid-label">{{item.title}}</span>
+                  <span *ngIf="!isMenuItemEnabled(item)" class="workifence-badge">Upgrade</span>
+                  <mat-icon *ngIf="!isMenuItemEnabled(item)" class="lock-icon">lock</mat-icon>
+                </button>
               </ng-container>
             </div>
           </div>
@@ -87,25 +90,27 @@
       </button>
     </div>
     <div class="sidebar-more-body">
-      <ng-container *ngFor="let section of navSections; trackBy: trackSection">
+      <ng-container *ngFor="let section of navSections(); trackBy: trackSection">
         <div class="sidebar-more-section">
           <div class="sidebar-more-section-title">{{ section.title }}</div>
           <div class="sidebar-more-grid">
             <ng-container *ngFor="let item of section.items; trackBy: trackItem">
-              <ng-container *ngIf="!item.locked || item.showWhenLocked">
-                <a
-                  class="sidebar-more-item"
-                  [routerLink]="!item.locked ? item.route : null"
-                  routerLinkActive="active"
-                  [routerLinkActiveOptions]="{ exact: true }"
-                  [attr.aria-disabled]="item.locked ? true : null"
-                  (click)="item.locked ? onLockedMenuClick(item, $event) : closeMorePanel()"
-                >
-                  <i-feather [name]="item.icon"></i-feather>
-                  <span>{{ item.title }}</span>
-                  <mat-icon *ngIf="item.locked" class="lock-icon">lock</mat-icon>
-                </a>
-              </ng-container>
+              <a
+                class="sidebar-more-item"
+                [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [attr.aria-disabled]="!isMenuItemEnabled(item) ? true : null"
+                [class.locked]="!isMenuItemEnabled(item)"
+                (click)="!isMenuItemEnabled(item) ? onLockedMenuClick(item, $event) : closeMorePanel()"
+                [matTooltip]="!isMenuItemEnabled(item) ? 'Requires PRO plan' : item.title"
+                matTooltipPosition="right"
+              >
+                <i-feather [name]="item.icon"></i-feather>
+                <span>{{ item.title }}</span>
+                <span *ngIf="!isMenuItemEnabled(item)" class="workifence-badge">Upgrade</span>
+                <mat-icon *ngIf="!isMenuItemEnabled(item)" class="lock-icon">lock</mat-icon>
+              </a>
             </ng-container>
           </div>
         </div>

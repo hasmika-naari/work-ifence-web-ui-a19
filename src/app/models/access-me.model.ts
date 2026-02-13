@@ -1,4 +1,16 @@
-export type AccessMode = 'PERSONAL' | 'ENTERPRISE_EMPLOYEE' | 'ENTERPRISE_ADMIN' | 'ADMIN';
+export type AccessMode =
+  | 'PERSONAL'
+  | 'ADMIN'
+  | 'ENTERPRISE'
+  | 'ENTERPRISE_EMPLOYEE'
+  | 'ENTERPRISE_ADMIN'
+  | (string & {});
+
+export interface OwnedProfileDto {
+  key: string;
+  label: string;
+  description?: string;
+}
 
 export interface EntitlementsDto {
   resumeLimit?: number;
@@ -22,8 +34,12 @@ export interface AccessMeDto {
   mode?: AccessMode;
   userId?: string;
   userName?: string;
+  email?: string;
+  fullName?: string;
   enterpriseId?: string;
   enterpriseRole?: string;
+  activeProfileKey?: string;
+  ownedProfiles?: OwnedProfileDto[];
   subscription?: AccessSubscriptionDto;
   entitlements?: EntitlementsDto;
   counts?: {
@@ -33,4 +49,9 @@ export interface AccessMeDto {
     offeredCount?: number;
     rejectedApplicationsCount?: number;
   };
+}
+
+export interface SwitchProfileResponseDto {
+  activeProfileKey: string;
+  ownedProfiles: OwnedProfileDto[];
 }

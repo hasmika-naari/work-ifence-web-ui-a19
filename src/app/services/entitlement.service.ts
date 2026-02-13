@@ -102,6 +102,26 @@ export class EntitlementService {
     return this._entitlements;
   }
 
+  /**
+   * Apply a freshly-fetched backend response to the entitlement signal.
+   * Useful when another service orchestrates the fetch order (e.g., profile switch refresh).
+   */
+  applyBackendResponse(raw: unknown): void {
+    const decoded = this.decodeBackendEntitlements(raw);
+    if (!decoded) {
+      this.setFallbackEntitlements('Invalid backend entitlements contract (applyBackendResponse)');
+      return;
+    }
+
+    this._entitlements.set(decoded);
+    this._lastFetched = Date.now();
+  }
+
+  /** Force the next getEntitlements() call to refetch from backend. */
+  invalidateCache(): void {
+    this._lastFetched = 0;
+  }
+
   private fetchEntitlements() {
     const e2eOverride = this.getE2EEntitlementsOverride();
     if (e2eOverride) {

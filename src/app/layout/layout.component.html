@@ -14,51 +14,124 @@
     <!-- Main Content -->
       <div class="main-content transition d-flex flex-column flex-grow-1"><!-- Ensure no position: relative or overflow: hidden here to avoid submenu stacking issues -->
       <mat-sidenav-container autosize style="height: 100vh;"><!-- Removed overflow: hidden to fix submenu z-index -->
-        <mat-sidenav #menuSidenav position="end" mode="over" style="width: 300px; z-index: 1000 !important;">
-          <div class="sidenav-header" style="display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem 1rem 1.5rem; border-bottom: 1px solid #eee;">
-            <img src="assets/img/logo.png" alt="Logo" style="height: 48px; width: auto; display: block;" />
-            <span style="cursor:pointer;display:inline-flex;align-items:center;justify-content:center; margin-left: auto;" (click)="closeMenuSidenav(menuSidenav)" aria-label="Close menu sidenav">
-              <lucide-icon name="X" size="24"></lucide-icon>
-            </span>
-          </div>
-          <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
-            <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
-              @for (role of userRoles(); track role) {
-                <li class="position-relative transition fw-medium cursor-pointer" [class.active-role]="userActiveRole().role === role.role" (click)="switchDashboard($event, role)">
-                  <lucide-icon name="LayoutDashboard" size="24"></lucide-icon> {{ role.title }}
-                </li>
-              }
-            </ul>
-            <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
-              <li class="position-relative transition fw-medium" routerLink="/user/profile" routerLinkActive="active-route">
-                <lucide-icon name="User" size="24"></lucide-icon> My Profile
-              </li>
-              <li class="position-relative transition fw-medium show-silver" routerLink="/settings" routerLinkActive="active-route">
-                <lucide-icon name="Settings" size="24"></lucide-icon> Settings
-              </li>
-              <li class="position-relative transition fw-medium show-silver" routerLink="/support" routerLinkActive="active-route">
-                <lucide-icon name="Info" size="24"></lucide-icon> Support
-              </li>
-              <li class="position-relative transition fw-medium" (click)="logoutHandler($event)">
-                <lucide-icon name="LogOut" size="24"></lucide-icon> Logout
-              </li>
-            </ul>
-          </div>
-          <div class="sidenav-bottom-content">
-            <div class="sidenav-bottom-card">
-              <div class="sbc-title">
-                <lucide-icon name="Sparkles" size="20" style="margin-right: 0.5rem;"></lucide-icon>
-                Tips & Shortcuts
+           <div class="right-sidenav-backdrop"
+             *ngIf="rightSidenavOpen()"
+             (click)="closeRightSidenav()"
+             [@backdropFade]="rightSidenavOpen() ? 'open' : 'closed'"
+             [attr.aria-hidden]="!rightSidenavOpen()"
+             [attr.data-prefers-reduced-motion]="prefersReducedMotion ? 'true' : 'false'"
+             tabindex="-1"
+             aria-label="Close profile panel backdrop"
+             role="presentation">
+           </div>
+           <mat-sidenav #menuSidenav position="end" mode="over" style="width: 300px; z-index: 1000 !important;"
+            [@sidenavSlide]="rightSidenavOpen() ? 'open' : 'closed'"
+            [attr.data-prefers-reduced-motion]="prefersReducedMotion ? 'true' : 'false'"
+            tabindex="0"
+            aria-label="Profile panel"
+            role="dialog"
+            [attr.aria-modal]="true"
+            [attr.aria-hidden]="!rightSidenavOpen()">
+            <div class="sidenav-header" style="display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem 1rem 1.5rem;">
+              <img src="assets/img/logo.png" alt="Logo" style="height: 48px; width: auto; display: block;" />
+              <button
+                type="button"
+                style="cursor:pointer;display:inline-flex;align-items:center;justify-content:center; margin-left: auto; background: transparent; border: 0; padding: 0;"
+                (click)="closeMenuSidenav(menuSidenav)"
+                aria-label="Close profile panel"
+              >
+                <lucide-icon name="X" size="24"></lucide-icon>
+              </button>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- User row -->
+            <div class="user-header" tabindex="0" aria-label="User profile header">
+              <div class="avatar-circle">
+                <span>{{ (accessContextService.accessMe()?.fullName || '?').charAt(0) }}</span>
               </div>
-              <ul class="sbc-list">
-                <li><lucide-icon name="MousePointerClick" size="17"></lucide-icon> Click your role to switch dashboards instantly.</li>
-                <li><lucide-icon name="Palette" size="17"></lucide-icon> Try dark mode for a new look.</li>
-                <li><lucide-icon name="Settings" size="17"></lucide-icon> Personalize your experience in Settings.</li>
-                <li><lucide-icon name="HelpCircle" size="17"></lucide-icon> Need help? Visit Support anytime.</li>
+              <div class="user-info">
+                <div class="user-name">
+                  <span>{{ accessContextService.accessMe()?.fullName || 'User' }}</span>
+                  <span class="profile-badge" [ngClass]="{
+                    'admin-badge': accessContextService.accessMe()?.mode === 'ADMIN',
+                    'personal-badge': accessContextService.accessMe()?.mode === 'PERSONAL',
+                    'enterprise-badge': accessContextService.accessMe()?.mode === 'ENTERPRISE' || accessContextService.accessMe()?.mode?.startsWith('ENTERPRISE')
+                  }">
+                    {{ accessContextService.accessMe()?.mode }}
+                  </span>
+                </div>
+                <div class="user-email">{{ accessContextService.accessMe()?.email || '' }}</div>
+              </div>
+            </div>
+
+            <mat-divider class="divider-spaced"></mat-divider>
+
+            <!-- Profiles list -->
+            <div class="switch-profile-section" aria-label="Switch profile">
+              <div class="switch-title">Switch profile</div>
+              <ul
+                class="switch-profile-list"
+                role="listbox"
+                aria-label="Profiles"
+                [attr.aria-disabled]="profilePanelService.isSwitching ? true : null"
+                [attr.aria-busy]="profilePanelService.isSwitching ? true : null"
+                [class.is-switching]="profilePanelService.isSwitching"
+              >
+                <li *ngFor="let profile of accessContextService.ownedProfiles()"
+                  role="option"
+                  [class.active-profile]="accessContextService.activeProfileKey() === profile.key"
+                  [attr.aria-selected]="accessContextService.activeProfileKey() === profile.key"
+                  [attr.aria-disabled]="(profilePanelService.isSwitching || accessContextService.activeProfileKey() === profile.key) ? true : null"
+                  [attr.tabindex]="(profilePanelService.isSwitching || accessContextService.activeProfileKey() === profile.key) ? -1 : 0"
+                  (click)="onProfileItemActivate($event, profile.key, menuSidenav)"
+                  (keydown)="onProfileItemKeydown($event, profile.key, menuSidenav)"
+                  [class.disabled]="profilePanelService.isSwitching || accessContextService.activeProfileKey() === profile.key">
+                  <span class="profile-radio">
+                    <span class="radio-dot" [class.checked]="accessContextService.activeProfileKey() === profile.key"></span>
+                  </span>
+                  <span class="profile-label">{{ profile.label }}</span>
+                  <span class="profile-active-badge" *ngIf="accessContextService.activeProfileKey() === profile.key">Active</span>
+                  <span class="profile-sublabel">{{ profile.description || '' }}</span>
+                  <span class="profile-spinner" *ngIf="profilePanelService.isSwitching && profilePanelService.switchingKey === profile.key">
+                    <mat-spinner diameter="18"></mat-spinner>
+                  </span>
+                </li>
               </ul>
             </div>
-          </div>
-        </mat-sidenav>
+
+            <mat-divider class="divider-spaced"></mat-divider>
+
+            <!-- Actions (single list) -->
+            <ul class="action-list" aria-label="Profile actions">
+              <li>
+                <a class="action-row" routerLink="/user/profile" (click)="closeMenuSidenav(menuSidenav)">
+                  <lucide-icon name="User" size="20"></lucide-icon>
+                  <span>Profile</span>
+                </a>
+              </li>
+              <li>
+                <a class="action-row" routerLink="/user/billing/upgrade" (click)="closeMenuSidenav(menuSidenav)">
+                  <lucide-icon name="CreditCard" size="20"></lucide-icon>
+                  <span>Subscription</span>
+                </a>
+              </li>
+              <li>
+                <a class="action-row" routerLink="/user/settings" (click)="closeMenuSidenav(menuSidenav)">
+                  <lucide-icon name="Settings" size="20"></lucide-icon>
+                  <span>Settings</span>
+                </a>
+              </li>
+              <li>
+                <button type="button" class="action-row logout" (click)="logoutHandler($event); closeMenuSidenav(menuSidenav)">
+                  <lucide-icon name="LogOut" size="20"></lucide-icon>
+                  <span>Logout</span>
+                </button>
+              </li>
+            </ul>
+       
+          </mat-sidenav>
         <mat-sidenav-content style="height: 100vh; overflow-y: hidden;">
           <!-- Routed Content Section -->
           <app-header [isSticky]="isSticky" (openMenuSidenav)="openMenuSidenav(menuSidenav)" />

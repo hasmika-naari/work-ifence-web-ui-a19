@@ -87,14 +87,7 @@ export const accessGuard: CanActivateFn = (
             message: msg,
             details: { requireFlag: data.requireFlag },
           });
-
-          if (me?.userId) {
-            void router.navigateByUrl('/user/dashboard');
-          } else {
-            void router.navigateByUrl('/');
-          }
-
-          return false;
+          return router.createUrlTree(['/unauthorized']);
         }
       }
 
@@ -105,42 +98,35 @@ export const accessGuard: CanActivateFn = (
           (data.requireMode === 'ENTERPRISE' && isEnterprise);
 
         if (!ok) {
-          if (data.requireMode === 'ADMIN') {
-            const msg = 'Admin access required.';
-            show(snackBar, msg);
-            telemetry.recordGateDenied({
-              requestPath: state.url,
-              denialType: 'MODE',
-              message: msg,
-              details: { requireMode: data.requireMode, actualMode: mode },
-            });
-          } else {
-            const msg = 'This page is not available in the current dashboard context.';
-            show(snackBar, msg);
-            telemetry.recordGateDenied({
-              requestPath: state.url,
-              denialType: 'MODE',
-              message: msg,
-              details: { requireMode: data.requireMode, actualMode: mode },
-            });
-          }
-          void router.navigateByUrl('/user/dashboard');
-          return false;
-        }
-      }
+          if (data.requireMode) {
+            const ok =
+              (data.requireMode === 'ADMIN' && isAdmin) ||
+              (data.requireMode === 'PERSONAL' && mode === 'PERSONAL') ||
+              (data.requireMode === 'ENTERPRISE' && isEnterprise);
 
-      if (data.requireEnterpriseAdmin) {
-        if (mode !== 'ENTERPRISE_ADMIN') {
-          const msg = 'Enterprise Admin access required.';
-          show(snackBar, msg);
-          telemetry.recordGateDenied({
-            requestPath: state.url,
-            denialType: 'ENTERPRISE_ADMIN',
-            message: msg,
-            details: { requireEnterpriseAdmin: true, actualMode: mode },
-          });
-          void router.navigateByUrl('/user/dashboard');
-          return false;
+            if (!ok) {
+              if (data.requireMode === 'ADMIN') {
+                const msg = 'Admin access required.';
+                show(snackBar, msg);
+                telemetry.recordGateDenied({
+                  requestPath: state.url,
+                  denialType: 'MODE',
+                  message: msg,
+                  details: { requireMode: data.requireMode, actualMode: mode },
+                });
+              } else {
+                const msg = 'This page is not available in the current dashboard context.';
+                show(snackBar, msg);
+                telemetry.recordGateDenied({
+                  requestPath: state.url,
+                  denialType: 'MODE',
+                  message: msg,
+                  details: { requireMode: data.requireMode, actualMode: mode },
+                });
+              }
+              return router.createUrlTree(['/unauthorized']);
+            }
+          }
         }
       }
 

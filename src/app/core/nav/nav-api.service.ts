@@ -11,7 +11,8 @@ export class NavApiService {
 
   getMyNav(): Observable<NavApiResponse> {
     const base = (environment.apiUrl ?? '').replace(/\/$/, '');
-    const url = `${base}/api/nav/menu`;
+    // Profile-dependent menu endpoint (used to rebuild sidebar immediately after profile switch)
+    const url = `${base}/api/access/nav/menu`;
     return this.http.get<NavApiResponse | NavApiSection[]>(url).pipe(
       map(resp => {
         if (Array.isArray(resp)) {
