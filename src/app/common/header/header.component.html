@@ -10,24 +10,16 @@
     <div class="d-md-flex align-items-center justify-content-between">
                 <div class="header-left-side d-flex align-items-center"></div>
         <div class="header-right-side d-flex align-items-center" style="margin-left:auto;">
-            <button mat-icon-button matTooltip="Home" (click)="goHome()" aria-label="Go to Home">
-                <mat-icon>home</mat-icon>
+            <button mat-icon-button class="header-action" matTooltip="Home" (click)="goHome()" aria-label="Go to Home">
+                <mat-icon aria-hidden="true">home</mat-icon>
+                <span class="header-action-label">Home</span>
             </button>
             @if (isLoggedIn()) {
-                <button mat-icon-button matTooltip="Profile / Account" (click)="openMenuSidenav.emit()" aria-label="Open account options">
-                    <mat-icon>person</mat-icon>
+                <button mat-icon-button class="header-action" matTooltip="Profile / Account" (click)="openMenuSidenav.emit()" aria-label="Open account options">
+                    <mat-icon aria-hidden="true">person</mat-icon>
+                    <span class="header-action-label" [textContent]="activeProfileLabel()"></span>
+                    <mat-icon class="header-action-caret" aria-hidden="true">expand_more</mat-icon>
                 </button>
-                <ng-container *ngIf="ownedProfiles.length > 1">
-                  <mat-menu #profileMenu="matMenu">
-                    <button mat-menu-item *ngFor="let profile of ownedProfiles" (click)="switchProfile(profile.key)">
-                                            <span>{{ profile.label }}</span>
-                      <span *ngIf="profile.key === activeProfileKey" style="margin-left:8px;color:#888;font-size:12px;">(Active)</span>
-                    </button>
-                  </mat-menu>
-                  <button mat-icon-button [matMenuTriggerFor]="profileMenu" matTooltip="Switch Profile" aria-label="Switch Profile">
-                    <mat-icon>swap_horiz</mat-icon>
-                  </button>
-                </ng-container>
             } @else {
                 <button mat-icon-button matTooltip="Login" (click)="goToLogin()" aria-label="Sign in" data-testid="header-sign-in">
                     <mat-icon>login</mat-icon>

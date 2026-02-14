@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser, Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import { NavigationCancel, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationCancel, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -23,6 +23,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
   imports: [
     RouterOutlet,
     RouterLink,
+    RouterLinkActive,
     CommonModule,
     SidebarComponent,
     HeaderComponent,
@@ -168,14 +169,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  openMenuSidenav(menuSidenav: { open: () => void; }) {
+  openMenuSidenav(menuSidenav: MatSidenav) {
     this.rightSidenavOpen.set(true);
     menuSidenav.open();
   }
   
-  closeMenuSidenav(menuSidenav: { close: () => void; }) {
-    menuSidenav.close();
+  async closeMenuSidenav(menuSidenav: MatSidenav): Promise<void> {
+    // Update state immediately; await close to keep sequencing predictable.
     this.rightSidenavOpen.set(false);
+    await menuSidenav.close();
   }
 
   closeRightSidenav(): void {
@@ -190,8 +192,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     const ok = await this.profilePanelService.switchProfile(profileKey);
     if (!ok) return;
 
+    // Required order: close panel first, then navigate.
+    await this.closeMenuSidenav(menuSidenav);
     await this.router.navigateByUrl(this.profileLandingRoute(profileKey), { replaceUrl: true });
-    this.closeMenuSidenav(menuSidenav);
   }
 
   onProfileItemActivate(event: Event, profileKey: string, menuSidenav: MatSidenav): void {

@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { buildPageableParams } from 'src/app/shared/http/build-pageable-params';
 import type {
   AdminOnboardingRequestRow,
   AdminSubscriptionRow,
@@ -34,12 +35,14 @@ export class AdminApiService {
   listOnboardingRequests(
     params: ListOnboardingRequestsParams
   ): Observable<PagedResponse<AdminOnboardingRequestRow>> {
-    let httpParams = new HttpParams()
-      .set('page', String(params.page))
-      .set('size', String(params.size));
-
-    if (params.status) httpParams = httpParams.set('status', params.status);
-    if (params.q) httpParams = httpParams.set('q', params.q);
+    const httpParams = buildPageableParams({
+      page: params.page,
+      size: params.size,
+      filters: {
+        status: params.status,
+        q: params.q,
+      },
+    });
 
     return this.http.get<PagedResponse<AdminOnboardingRequestRow>>(
       `${this.getBaseUrl()}/api/admin/onboarding/requests`,
@@ -77,13 +80,15 @@ export class AdminApiService {
   listSubscriptions(
     params: ListSubscriptionsParams
   ): Observable<PagedResponse<AdminSubscriptionRow>> {
-    let httpParams = new HttpParams()
-      .set('page', String(params.page))
-      .set('size', String(params.size));
-
-    if (params.subscriberType) httpParams = httpParams.set('subscriberType', params.subscriberType);
-    if (params.status) httpParams = httpParams.set('status', params.status);
-    if (params.q) httpParams = httpParams.set('q', params.q);
+    const httpParams = buildPageableParams({
+      page: params.page,
+      size: params.size,
+      filters: {
+        subscriberType: params.subscriberType,
+        status: params.status,
+        q: params.q,
+      },
+    });
 
     return this.http.get<PagedResponse<AdminSubscriptionRow>>(
       `${this.getBaseUrl()}/api/admin/subscriptions`,

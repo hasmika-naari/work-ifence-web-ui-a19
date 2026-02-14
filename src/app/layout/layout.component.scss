@@ -119,6 +119,118 @@
   font-size: 1.05rem;
   margin-bottom: 0.5rem;
 }
+
+/* Profile switch grid: mirror left sidebar grid look/color coding */
+.profile-switch-grid,
+.drawer-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Make the right drawer content a flex column so Logout can stay at the bottom */
+:host ::ng-deep mat-sidenav .mat-drawer-inner-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.drawer-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.drawer-bottom {
+  margin-top: auto;
+  padding: 0;
+}
+
+.drawer-bottom-grid {
+  padding: 16px;
+}
+
+.profile-switch-grid .sidebar-menu-grid-item,
+.drawer-menu-grid .sidebar-menu-grid-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 12px 0;
+  border-radius: 12px;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+
+.profile-switch-grid .sidebar-menu-grid-item:hover,
+.profile-switch-grid .sidebar-menu-grid-item.active,
+.drawer-menu-grid .sidebar-menu-grid-item:hover,
+.drawer-menu-grid .sidebar-menu-grid-item.active {
+  background: color-mix(in srgb, var(--primaryColor) 10%, transparent);
+}
+
+.profile-switch-grid .sidebar-menu-grid-item:disabled,
+.drawer-menu-grid .sidebar-menu-grid-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.profile-switch-grid .sidebar-menu-grid-label,
+.drawer-menu-grid .sidebar-menu-grid-label {
+  font-size: 12px;
+  text-align: center;
+  color: var(--mdc-theme-on-surface);
+}
+
+.profile-switch-grid .profile-grid-icon,
+.drawer-menu-grid .drawer-grid-icon {
+  margin-bottom: 6px;
+  /* Use secondary color for right-drawer icons (except logout) */
+  color: var(--secondaryColor);
+}
+
+/* Logout stays distinct */
+.drawer-bottom .sidebar-menu-grid-item.logout {
+  color: #f44336;
+}
+
+.drawer-bottom .sidebar-menu-grid-item.logout .sidebar-menu-grid-label {
+  color: currentColor;
+}
+
+.drawer-bottom .drawer-grid-icon {
+  margin-bottom: 6px;
+  color: currentColor;
+}
+
+.profile-switch-grid .sidebar-menu-grid-item:not(:disabled):hover .profile-grid-icon,
+.drawer-menu-grid .sidebar-menu-grid-item:not(:disabled):hover .drawer-grid-icon {
+  color: var(--mainColor) !important;
+}
+
+/* Ensure lucide SVG uses currentColor (same behavior as i-feather) */
+:host ::ng-deep .profile-switch-grid lucide-icon svg,
+:host ::ng-deep .drawer-menu-grid lucide-icon svg,
+:host ::ng-deep .drawer-bottom lucide-icon svg {
+  stroke: currentColor;
+}
+
+.profile-grid-spinner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
 .switch-profile-list {
   list-style: none;
   padding: 0;

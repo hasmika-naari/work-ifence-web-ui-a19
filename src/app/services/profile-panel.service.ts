@@ -1,7 +1,4 @@
-import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { EntitlementService } from './entitlement.service';
-import { NavStore } from '../core/nav/nav.store';
+import { Injectable } from '@angular/core';
 import { AccessContextService } from './access-context.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, switchMap, tap } from 'rxjs/operators';
@@ -14,9 +11,6 @@ export class ProfilePanelService {
   switchingKey: string | null = null;
 
   constructor(
-    private http: HttpClient,
-    private entitlementService: EntitlementService,
-    private navStore: NavStore,
     private accessContext: AccessContextService,
     private snackBar: MatSnackBar
   ) {}
@@ -24,11 +18,6 @@ export class ProfilePanelService {
   async switchProfile(profileKey: string, closeSidenav?: () => void): Promise<boolean> {
     this.isSwitching = true;
     this.switchingKey = profileKey;
-
-    // Reset nav state and re-fetch after switching
-    this.navStore.clear();
-    this.navStore.error.set(null);
-    this.accessContext.navMenu.set(null);
 
     // Reset feature flags (best-effort)
     const remoteConfig = (window as any).ng?.injector?.get?.('RemoteConfigFacadeService') || null;

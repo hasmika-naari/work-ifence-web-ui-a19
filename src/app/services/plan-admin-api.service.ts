@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { buildPageableParams } from 'src/app/shared/http/build-pageable-params';
 import type {
   PlanEntitlementDto,
   PagedResponse,
@@ -42,11 +43,15 @@ export class PlanAdminApiService {
   }
 
   listPlans(params: ListPlansParams): Observable<PagedResponse<SubscriptionPlanDto>> {
-    let httpParams = new HttpParams().set('page', String(params.page)).set('size', String(params.size));
-
-    if (params.sort) httpParams = httpParams.set('sort', params.sort);
-    if (params.scope) httpParams = httpParams.set('scope', params.scope);
-    if (typeof params.isActive === 'boolean') httpParams = httpParams.set('isActive', String(params.isActive));
+    const httpParams = buildPageableParams({
+      page: params.page,
+      size: params.size,
+      sort: params.sort,
+      filters: {
+        scope: params.scope,
+        isActive: params.isActive,
+      },
+    });
 
     return this.http.get<PagedResponse<SubscriptionPlanDto>>(`${this.baseUrl()}/api/subscription-plans`, {
       params: httpParams,

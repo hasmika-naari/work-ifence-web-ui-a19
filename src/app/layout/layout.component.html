@@ -46,90 +46,87 @@
 
             <mat-divider></mat-divider>
 
-            <!-- User row -->
-            <div class="user-header" tabindex="0" aria-label="User profile header">
-              <div class="avatar-circle">
-                <span>{{ (accessContextService.accessMe()?.fullName || '?').charAt(0) }}</span>
-              </div>
-              <div class="user-info">
-                <div class="user-name">
-                  <span>{{ accessContextService.accessMe()?.fullName || 'User' }}</span>
-                  <span class="profile-badge" [ngClass]="{
-                    'admin-badge': accessContextService.accessMe()?.mode === 'ADMIN',
-                    'personal-badge': accessContextService.accessMe()?.mode === 'PERSONAL',
-                    'enterprise-badge': accessContextService.accessMe()?.mode === 'ENTERPRISE' || accessContextService.accessMe()?.mode?.startsWith('ENTERPRISE')
-                  }">
-                    {{ accessContextService.accessMe()?.mode }}
-                  </span>
+            <div class="drawer-shell">
+              <div class="drawer-scroll">
+                <!-- Profiles list -->
+                <div class="switch-profile-section" aria-label="Switch profile">
+                  <div
+                    class="sidebar-menu-grid profile-switch-grid"
+                    [attr.aria-disabled]="profilePanelService.isSwitching ? true : null"
+                    [attr.aria-busy]="profilePanelService.isSwitching ? true : null"
+                  >
+                    <button
+                      *ngFor="let profile of accessContextService.ownedProfiles()"
+                      type="button"
+                      class="sidebar-menu-grid-item"
+                      [class.active]="accessContextService.activeProfileKey() === profile.key"
+                      [disabled]="profilePanelService.isSwitching"
+                      [attr.aria-disabled]="profilePanelService.isSwitching ? true : null"
+                      (click)="onProfileItemActivate($event, profile.key, menuSidenav)"
+                      (keydown)="onProfileItemKeydown($event, profile.key, menuSidenav)"
+                    >
+                      <lucide-icon class="profile-grid-icon" name="User" size="32"></lucide-icon>
+                      <span class="sidebar-menu-grid-label">{{ profile.label }}</span>
+                      <span class="profile-grid-spinner" *ngIf="profilePanelService.isSwitching && profilePanelService.switchingKey === profile.key">
+                        <mat-spinner diameter="18"></mat-spinner>
+                      </span>
+                    </button>
+                  </div>
                 </div>
-                <div class="user-email">{{ accessContextService.accessMe()?.email || '' }}</div>
+
+                <mat-divider class="divider-spaced"></mat-divider>
+
+                <!-- Actions (grid tiles) -->
+                <div class="sidebar-menu-grid drawer-menu-grid" aria-label="Account actions">
+                  <a
+                    class="sidebar-menu-grid-item"
+                    routerLink="/user/profile"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="closeMenuSidenav(menuSidenav)"
+                  >
+                    <lucide-icon class="drawer-grid-icon" name="info" size="32"></lucide-icon>
+                    <span class="sidebar-menu-grid-label">Account</span>
+                  </a>
+
+                  <a
+                    class="sidebar-menu-grid-item"
+                    routerLink="/user/billing/upgrade"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="closeMenuSidenav(menuSidenav)"
+                  >
+                    <lucide-icon class="drawer-grid-icon" name="sparkles" size="32"></lucide-icon>
+                    <span class="sidebar-menu-grid-label">Subscription</span>
+                  </a>
+
+                  <a
+                    class="sidebar-menu-grid-item"
+                    routerLink="/user/settings"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="closeMenuSidenav(menuSidenav)"
+                  >
+                    <lucide-icon class="drawer-grid-icon" name="Settings" size="32"></lucide-icon>
+                    <span class="sidebar-menu-grid-label">Settings</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Logout pinned at bottom -->
+              <div class="drawer-bottom" aria-label="Logout">
+                <div class="sidebar-menu-grid drawer-menu-grid drawer-bottom-grid">
+                  <button
+                    type="button"
+                    class="sidebar-menu-grid-item logout"
+                    (click)="logoutHandler($event); closeMenuSidenav(menuSidenav)"
+                  >
+                    <lucide-icon class="drawer-grid-icon" name="LogOut" size="32"></lucide-icon>
+                    <span class="sidebar-menu-grid-label">Logout</span>
+                  </button>
+                </div>
               </div>
             </div>
-
-            <mat-divider class="divider-spaced"></mat-divider>
-
-            <!-- Profiles list -->
-            <div class="switch-profile-section" aria-label="Switch profile">
-              <div class="switch-title">Switch profile</div>
-              <ul
-                class="switch-profile-list"
-                role="listbox"
-                aria-label="Profiles"
-                [attr.aria-disabled]="profilePanelService.isSwitching ? true : null"
-                [attr.aria-busy]="profilePanelService.isSwitching ? true : null"
-                [class.is-switching]="profilePanelService.isSwitching"
-              >
-                <li *ngFor="let profile of accessContextService.ownedProfiles()"
-                  role="option"
-                  [class.active-profile]="accessContextService.activeProfileKey() === profile.key"
-                  [attr.aria-selected]="accessContextService.activeProfileKey() === profile.key"
-                  [attr.aria-disabled]="(profilePanelService.isSwitching || accessContextService.activeProfileKey() === profile.key) ? true : null"
-                  [attr.tabindex]="(profilePanelService.isSwitching || accessContextService.activeProfileKey() === profile.key) ? -1 : 0"
-                  (click)="onProfileItemActivate($event, profile.key, menuSidenav)"
-                  (keydown)="onProfileItemKeydown($event, profile.key, menuSidenav)"
-                  [class.disabled]="profilePanelService.isSwitching || accessContextService.activeProfileKey() === profile.key">
-                  <span class="profile-radio">
-                    <span class="radio-dot" [class.checked]="accessContextService.activeProfileKey() === profile.key"></span>
-                  </span>
-                  <span class="profile-label">{{ profile.label }}</span>
-                  <span class="profile-active-badge" *ngIf="accessContextService.activeProfileKey() === profile.key">Active</span>
-                  <span class="profile-sublabel">{{ profile.description || '' }}</span>
-                  <span class="profile-spinner" *ngIf="profilePanelService.isSwitching && profilePanelService.switchingKey === profile.key">
-                    <mat-spinner diameter="18"></mat-spinner>
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            <mat-divider class="divider-spaced"></mat-divider>
-
-            <!-- Actions (single list) -->
-            <ul class="action-list" aria-label="Profile actions">
-              <li>
-                <a class="action-row" routerLink="/user/profile" (click)="closeMenuSidenav(menuSidenav)">
-                  <lucide-icon name="User" size="20"></lucide-icon>
-                  <span>Profile</span>
-                </a>
-              </li>
-              <li>
-                <a class="action-row" routerLink="/user/billing/upgrade" (click)="closeMenuSidenav(menuSidenav)">
-                  <lucide-icon name="CreditCard" size="20"></lucide-icon>
-                  <span>Subscription</span>
-                </a>
-              </li>
-              <li>
-                <a class="action-row" routerLink="/user/settings" (click)="closeMenuSidenav(menuSidenav)">
-                  <lucide-icon name="Settings" size="20"></lucide-icon>
-                  <span>Settings</span>
-                </a>
-              </li>
-              <li>
-                <button type="button" class="action-row logout" (click)="logoutHandler($event); closeMenuSidenav(menuSidenav)">
-                  <lucide-icon name="LogOut" size="20"></lucide-icon>
-                  <span>Logout</span>
-                </button>
-              </li>
-            </ul>
        
           </mat-sidenav>
         <mat-sidenav-content style="height: 100vh; overflow-y: hidden;">

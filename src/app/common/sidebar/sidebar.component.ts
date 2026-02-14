@@ -13,23 +13,22 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NavSection as StoreNavSection } from 'src/app/nav/nav.model';
 import { NavStore } from 'src/app/core/nav/nav.store';
-import { EntitlementService } from 'src/app/services/entitlement.service';
+import { UpgradeDialogComponent } from 'src/app/resume-portal/components/upgrade-dialog.component';
 
 @Component({
     selector: 'app-sidebar',
         imports: [NgScrollbarModule, MatExpansionModule, MatIconModule, MatDividerModule,
           CommonModule, MatButtonModule, MatIconModule,
-          RouterLinkActive, RouterModule, RouterLink, NgClass, FeathericonsModule, MatTooltipModule, MatMenuModule],
+          RouterLinkActive, RouterModule, RouterLink, NgClass, FeathericonsModule, MatTooltipModule, MatMenuModule, MatDialogModule],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
 
-  private readonly entitlementService = inject(EntitlementService);
-  private readonly entitlementsSignal = this.entitlementService.getEntitlements();
-  private readonly entitlementsMap = computed(() => this.entitlementsSignal()?.entitlements ?? {});
+  private readonly dialog = inject(MatDialog);
 
   // Sections and flattened items are signals so they update immediately when NavStore updates.
   readonly navSections = computed<NavSection[]>(() => this.navSectionsSignal() as unknown as NavSection[]);
@@ -55,28 +54,23 @@ export class SidebarComponent {
   activeSectionId: string | null = null;
   private submenuCloseTimer: ReturnType<typeof setTimeout> | undefined;
 
-    // Handle click on locked/disabled menu item
-    onLockedMenuClick(item: any, event: Event) {
+    // Handle click on locked menu item: open upgrade dialog.
+    onLockedMenuClick(item: NavItem, event: Event): void {
       event.preventDefault();
-      if (item?.entitlementKey) {
-        this.router.navigate(['/user/billing/upgrade'], {
-          queryParams: {
-            feature: item.entitlementKey,
-            returnUrl: this.router.url
-          }
-        });
-      }
+      event.stopPropagation();
+
+      this.dialog.open(UpgradeDialogComponent, {
+        width: '520px',
+        data: {
+          reason: 'Upgrade required',
+        },
+      });
     }
 
     isMenuItemEnabled(item: NavItem): boolean {
-      // Rule: disabled if item.locked=true OR entitlementKey not enabled in /api/entitlements/me
+      // Rendering rule: always show all items; navigation is disabled only when backend says locked.
       if (!item) return false;
-      if (item.locked === true) return false;
-
-      const entitlementKey = item.entitlementKey;
-      if (!entitlementKey) return true;
-
-      return this.entitlementsMap()?.[entitlementKey] === true;
+      return item.locked !== true;
     }
   isToggled = false;
   public toggleService: ToggleService = inject(ToggleService);

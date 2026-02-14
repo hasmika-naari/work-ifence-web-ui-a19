@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { buildPageableParams } from 'src/app/shared/http/build-pageable-params';
 import type { AuditEventRow, AuditQuery, PagedResponse } from 'src/app/models/audit.model';
 
 @Injectable({ providedIn: 'root' })
@@ -50,16 +51,18 @@ export class AuditApiService {
   }
 
   private toParams(query: AuditQuery): HttpParams {
-    let params = new HttpParams().set('page', String(query.page)).set('size', String(query.size));
-
-    if (query.eventType) params = params.set('eventType', query.eventType);
-    if (query.q) params = params.set('q', query.q);
-    if (query.actor) params = params.set('actor', query.actor);
-    if (query.from) params = params.set('from', query.from);
-    if (query.to) params = params.set('to', query.to);
-    if (query.sort) params = params.set('sort', query.sort);
-
-    return params;
+    return buildPageableParams({
+      page: query.page,
+      size: query.size,
+      sort: query.sort,
+      filters: {
+        eventType: query.eventType,
+        q: query.q,
+        actor: query.actor,
+        from: query.from,
+        to: query.to,
+      },
+    });
   }
 
   private getBaseUrl(): string {

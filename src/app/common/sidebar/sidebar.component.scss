@@ -210,8 +210,57 @@
 }
 
 .sidebar-menu-grid-item.locked i-feather {
-    cursor: not-allowed;
-    opacity: 0.6;
+    cursor: pointer;
+    opacity: 0.55;
+}
+
+.sidebar-menu-grid-item.locked .sidebar-menu-grid-label {
+    opacity: 0.55;
+}
+
+/* Shared icon wrapper + lock badge (collapsed rail / expanded grid / more panel) */
+.menu-icon-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-icon-wrap--sm {
+    width: 18px;
+    height: 18px;
+}
+
+.menu-icon-wrap--md {
+    width: 18px;
+    height: 18px;
+}
+
+.menu-icon-wrap--lg {
+    width: 32px;
+    height: 32px;
+}
+
+.lock-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--mdc-theme-surface) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 14%, transparent);
+}
+
+.lock-badge mat-icon {
+    width: 10px;
+    height: 10px;
+    font-size: 10px;
+    line-height: 10px;
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 70%, transparent);
 }
 
 .sidebar-menu-grid-label {
@@ -432,6 +481,14 @@
                         width: 18px;
                         height: 18px;
                     }
+                }
+
+                .collapsed-section-icon.locked {
+                    cursor: pointer;
+                }
+
+                .collapsed-section-icon.locked .menu-icon-wrap > i-feather {
+                    opacity: 0.55;
                 }
                 .collapsed-section-icon:hover,
                 .collapsed-section-icon:focus-visible {
@@ -1186,6 +1243,18 @@
     color: var(--mainColor);
 }
 
+.sidebar-more-item.locked {
+    cursor: pointer;
+}
+
+.sidebar-more-item.locked i-feather {
+    opacity: 0.55;
+}
+
+.sidebar-more-item.locked .sidebar-more-label {
+    opacity: 0.55;
+}
+
 ::ng-deep .sidebar-flyout-menu.mat-mdc-menu-panel {
     background: var(--mdc-theme-surface);
     border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 12%, transparent);
@@ -1862,4 +1931,22 @@
 ::ng-deep .cdk-overlay-pane.sidebar-mat-menu-custom {
   left: 100px !important;
   top: 0 !important;
+}
+
+/* Collapsed-rail variant: mat-icon used directly as badge */
+.menu-icon-wrap .menu-lock-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--mdc-theme-surface) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mdc-theme-on-surface) 14%, transparent);
+    font-size: 10px;
+    line-height: 10px;
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 70%, transparent);
 }

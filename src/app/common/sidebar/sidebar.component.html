@@ -13,18 +13,19 @@
                 <button class="collapsed-section-icon"
                   type="button"
                   [attr.aria-label]="item.title"
-                  [matTooltip]="!isMenuItemEnabled(item) ? 'Requires PRO plan' : item.title"
+                  [matTooltip]="item.locked ? (item.title + ' \u2022 Upgrade required') : item.title"
                   matTooltipPosition="right"
                   [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
-                  routerLinkActive="is-active"
+                  [routerLinkActive]="item.locked ? '' : 'is-active'"
                   [routerLinkActiveOptions]="{ exact: true }"
-                  [class.locked]="!isMenuItemEnabled(item)"
-                  [disabled]="!isMenuItemEnabled(item)"
-                  (click)="!isMenuItemEnabled(item) ? onLockedMenuClick(item, $event) : null"
+                  [attr.aria-disabled]="item.locked === true ? true : null"
+                  [class.locked]="item.locked === true"
+                  (click)="item.locked === true ? onLockedMenuClick(item, $event) : null"
                 >
-                  <i-feather class="sidebar-menu-icon" [name]="item.icon"></i-feather>
-                  <span *ngIf="!isMenuItemEnabled(item)" class="workifence-badge">Upgrade</span>
-                  <mat-icon *ngIf="!isMenuItemEnabled(item)" class="lock-icon">lock</mat-icon>
+                  <span class="menu-icon-wrap menu-icon-wrap--sm">
+                    <i-feather class="sidebar-menu-icon" [name]="item.icon"></i-feather>
+                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
+                  </span>
                 </button>
               </ng-container>
             </div>
@@ -41,18 +42,19 @@
                 <button class="sidebar-menu-grid-item"
                   type="button"
                   [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
-                  routerLinkActive="active"
+                  [routerLinkActive]="item.locked ? '' : 'active'"
                   [routerLinkActiveOptions]="{ exact: true }"
-                  [attr.aria-disabled]="!isMenuItemEnabled(item) ? true : null"
-                  [disabled]="!isMenuItemEnabled(item)"
-                  [matTooltip]="!isMenuItemEnabled(item) ? 'Requires PRO plan' : item.title"
+                  [attr.aria-disabled]="item.locked === true ? true : null"
+                  [class.locked]="item.locked === true"
+                  [matTooltip]="item.locked === true ? (item.title + ' \u2022 Upgrade required') : item.title"
                   matTooltipPosition="right"
-                  (click)="!isMenuItemEnabled(item) ? onLockedMenuClick(item, $event) : null"
+                  (click)="item.locked === true ? onLockedMenuClick(item, $event) : null"
                 >
-                  <i-feather [name]="item.icon"></i-feather>
+                  <span class="menu-icon-wrap menu-icon-wrap--lg">
+                    <i-feather [name]="item.icon"></i-feather>
+                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
+                  </span>
                   <span class="sidebar-menu-grid-label">{{item.title}}</span>
-                  <span *ngIf="!isMenuItemEnabled(item)" class="workifence-badge">Upgrade</span>
-                  <mat-icon *ngIf="!isMenuItemEnabled(item)" class="lock-icon">lock</mat-icon>
                 </button>
               </ng-container>
             </div>
@@ -98,18 +100,19 @@
               <a
                 class="sidebar-more-item"
                 [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
-                routerLinkActive="active"
+                [routerLinkActive]="item.locked ? '' : 'active'"
                 [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-disabled]="!isMenuItemEnabled(item) ? true : null"
-                [class.locked]="!isMenuItemEnabled(item)"
-                (click)="!isMenuItemEnabled(item) ? onLockedMenuClick(item, $event) : closeMorePanel()"
-                [matTooltip]="!isMenuItemEnabled(item) ? 'Requires PRO plan' : item.title"
+                [attr.aria-disabled]="item.locked === true ? true : null"
+                [class.locked]="item.locked === true"
+                (click)="item.locked === true ? onLockedMenuClick(item, $event) : closeMorePanel()"
+                [matTooltip]="item.locked === true ? (item.title + ' \u2022 Upgrade required') : item.title"
                 matTooltipPosition="right"
               >
-                <i-feather [name]="item.icon"></i-feather>
-                <span>{{ item.title }}</span>
-                <span *ngIf="!isMenuItemEnabled(item)" class="workifence-badge">Upgrade</span>
-                <mat-icon *ngIf="!isMenuItemEnabled(item)" class="lock-icon">lock</mat-icon>
+                <span class="menu-icon-wrap menu-icon-wrap--md">
+                  <i-feather [name]="item.icon"></i-feather>
+                  <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
+                </span>
+                <span class="sidebar-more-label">{{ item.title }}</span>
               </a>
             </ng-container>
           </div>

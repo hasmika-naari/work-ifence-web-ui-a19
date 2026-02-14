@@ -9,6 +9,34 @@
     color: var(--mdc-theme-secondary, var(--secondaryColor));
     transition: background 0.18s;
 }
+
+/* Icon + label buttons (Home/Profile) */
+.header-right-side button[mat-icon-button].header-action {
+    width: auto;
+    padding: 0 12px;
+    gap: 8px;
+    border-radius: 999px;
+}
+
+.header-right-side .header-action-label {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    color: inherit;
+    white-space: nowrap;
+}
+
+.header-right-side .header-action-caret {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+    color: inherit;
+}
 .header-right-side button[mat-icon-button]:hover,
 .header-right-side button[mat-icon-button]:focus {
     background: rgba(55, 97, 238, 0.08);
@@ -29,6 +57,7 @@
 .header-right-side {
     position: relative;
     z-index: 1201;
+    max-width: none;
 }
 ///////////////
 .sticky-header {

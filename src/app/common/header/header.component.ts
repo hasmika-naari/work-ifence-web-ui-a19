@@ -1,8 +1,7 @@
 import { Component, inject, Signal, Input, Output, EventEmitter } from '@angular/core';
 import { fromEvent, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
-import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
 import { Router } from '@angular/router';
@@ -18,7 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [FeathericonsModule, MatButtonModule, MatMenuModule, NgIf, NgFor, NgClass, MatDividerModule, MatIconModule, MatTooltipModule],
+    imports: [FeathericonsModule, MatButtonModule, NgIf, NgClass, MatDividerModule, MatIconModule, MatTooltipModule],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss',
     providers: [
@@ -32,6 +31,14 @@ export class HeaderComponent {
         }
         get activeProfileKey() {
             return this.accessContext.activeProfileKey() ?? '';
+        }
+        activeProfileLabel(): string {
+            const key = this.accessContext.activeProfileKey();
+            if (!key) return 'Account';
+
+            const profiles = this.accessContext.ownedProfiles();
+            const match = (profiles ?? []).find((p: any) => p?.key === key);
+            return match?.label ?? key;
         }
         switchProfile(profileKey: string) {
             // Profile switching is handled by the right-side profile panel.
