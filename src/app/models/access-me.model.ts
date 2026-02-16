@@ -12,6 +12,13 @@ export interface OwnedProfileDto {
   description?: string;
 }
 
+export interface AvailableProfileDto {
+  key: string;
+  label: string;
+  homeRoute: string;
+  mode?: AccessMode;
+}
+
 export interface EntitlementsDto {
   resumeLimit?: number;
   templateAccessLevel?: 'BASIC' | 'PREMIUM' | 'ALL' | string;
@@ -40,6 +47,7 @@ export interface AccessMeDto {
   enterpriseRole?: string;
   activeProfileKey?: string;
   ownedProfiles?: OwnedProfileDto[];
+  availableProfiles?: AvailableProfileDto[];
   subscription?: AccessSubscriptionDto;
   entitlements?: EntitlementsDto;
   counts?: {

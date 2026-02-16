@@ -74,8 +74,15 @@ export const accessGuard: CanActivateFn = (
       }
 
       const mode = (me?.mode ?? 'PERSONAL').toString();
-      const isEnterprise = mode === 'ENTERPRISE_ADMIN' || mode === 'ENTERPRISE_EMPLOYEE';
-      const isAdmin = accessFacade.isAdmin(me);
+      const activeProfileKey = (me?.activeProfileKey ?? '').toString();
+      const isEnterpriseMode = mode === 'ENTERPRISE_ADMIN' || mode === 'ENTERPRISE_EMPLOYEE';
+
+      // IMPORTANT: `requireMode` is used to enforce the current dashboard/profile context.
+      // It must be based on the *active profile* (activeProfileKey), not just global capabilities.
+      const isAdminProfile = activeProfileKey === 'ROLE_ADMIN';
+      const isEnterpriseProfile =
+        activeProfileKey === 'ROLE_ENTERPRISE_ADMIN' || activeProfileKey === 'ROLE_ENTERPRISE_EMPLOYEE';
+      const isPersonalProfile = activeProfileKey === 'ROLE_USER' || (!activeProfileKey && mode === 'PERSONAL');
 
       if (data.requireFlag) {
         if (!remoteConfig.isFlagEnabledSafe(data.requireFlag)) {
@@ -93,40 +100,23 @@ export const accessGuard: CanActivateFn = (
 
       if (data.requireMode) {
         const ok =
-          (data.requireMode === 'ADMIN' && isAdmin) ||
-          (data.requireMode === 'PERSONAL' && mode === 'PERSONAL') ||
-          (data.requireMode === 'ENTERPRISE' && isEnterprise);
+          (data.requireMode === 'ADMIN' && isAdminProfile) ||
+          (data.requireMode === 'PERSONAL' && isPersonalProfile) ||
+          (data.requireMode === 'ENTERPRISE' && (isEnterpriseProfile || isEnterpriseMode));
 
         if (!ok) {
-          if (data.requireMode) {
-            const ok =
-              (data.requireMode === 'ADMIN' && isAdmin) ||
-              (data.requireMode === 'PERSONAL' && mode === 'PERSONAL') ||
-              (data.requireMode === 'ENTERPRISE' && isEnterprise);
-
-            if (!ok) {
-              if (data.requireMode === 'ADMIN') {
-                const msg = 'Admin access required.';
-                show(snackBar, msg);
-                telemetry.recordGateDenied({
-                  requestPath: state.url,
-                  denialType: 'MODE',
-                  message: msg,
-                  details: { requireMode: data.requireMode, actualMode: mode },
-                });
-              } else {
-                const msg = 'This page is not available in the current dashboard context.';
-                show(snackBar, msg);
-                telemetry.recordGateDenied({
-                  requestPath: state.url,
-                  denialType: 'MODE',
-                  message: msg,
-                  details: { requireMode: data.requireMode, actualMode: mode },
-                });
-              }
-              return router.createUrlTree(['/unauthorized']);
-            }
-          }
+          const msg =
+            data.requireMode === 'ADMIN'
+              ? 'Admin access required.'
+              : 'This page is not available in the current dashboard context.';
+          show(snackBar, msg);
+          telemetry.recordGateDenied({
+            requestPath: state.url,
+            denialType: 'MODE',
+            message: msg,
+            details: { requireMode: data.requireMode, actualMode: mode, activeProfileKey },
+          });
+          return router.createUrlTree(['/unauthorized']);
         }
       }
 
@@ -138,11 +128,11 @@ export const accessGuard: CanActivateFn = (
             requestPath: state.url,
             denialType: 'ENTITLEMENT',
             entitlementKey: data.requireEntitlement,
-            pricingScope: data.pricingScope ?? (isEnterprise ? 'enterprise' : 'individual'),
+            pricingScope: data.pricingScope ?? (isEnterpriseMode ? 'enterprise' : 'individual'),
             message: msg,
             details: { requireEntitlement: data.requireEntitlement },
           });
-          navigatePricing(router, data.pricingScope ?? (isEnterprise ? 'enterprise' : 'individual'));
+          navigatePricing(router, data.pricingScope ?? (isEnterpriseMode ? 'enterprise' : 'individual'));
           return false;
         }
       }
@@ -156,11 +146,11 @@ export const accessGuard: CanActivateFn = (
             requestPath: state.url,
             denialType: 'FEATURE',
             featureKey: data.requireFeature,
-            pricingScope: data.pricingScope ?? reason?.pricingScope ?? (isEnterprise ? 'enterprise' : 'individual'),
+            pricingScope: data.pricingScope ?? reason?.pricingScope ?? (isEnterpriseMode ? 'enterprise' : 'individual'),
             message: msg,
             details: { requireFeature: data.requireFeature, deniedReason: reason ?? undefined },
           });
-          navigatePricing(router, data.pricingScope ?? reason?.pricingScope ?? (isEnterprise ? 'enterprise' : 'individual'));
+          navigatePricing(router, data.pricingScope ?? reason?.pricingScope ?? (isEnterpriseMode ? 'enterprise' : 'individual'));
           return false;
         }
       }

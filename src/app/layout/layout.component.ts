@@ -17,6 +17,7 @@ import { AccessContextService } from '../services/access-context.service';
 import { ProfilePanelService } from '../services/profile-panel.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import type { OwnedProfileDto } from '../models/access-me.model';
+import { NavStore } from '../core/nav/nav.store';
 
 @Component({
   selector: 'wif-layout',
@@ -97,9 +98,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
   // Right-side profile/menu panel open state (template calls rightSidenavOpen())
   readonly rightSidenavOpen = signal(false);
 
+  // Track current URL as a signal so we can react to profile-context changes.
+  readonly currentUrl = signal<string>('');
+
   // Services used directly by template
   readonly profilePanelService = inject(ProfilePanelService);
   readonly accessContextService = inject(AccessContextService);
+  private readonly navStore = inject(NavStore);
 
   private readonly platformId: object = inject(PLATFORM_ID);
   readonly toggleService: ToggleService = inject(ToggleService);
@@ -126,6 +131,37 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.toggleService.isToggled$.subscribe((isToggled) => {
       this.isToggled = isToggled;
     });
+
+    // Ensure we never remain on an admin-only route after switching away from Admin profile.
+    // canActivate guards won't re-run on an already-activated route, so we enforce it here.
+    effect(() => {
+      const profileKey = (this.accessContextService.activeProfileKey() ?? '').toString();
+      const url = (this.currentUrl() ?? '').toString();
+      const switching = this.profilePanelService.switching();
+
+      if (!profileKey) return;
+      if (switching) return;
+
+      const inAdminArea = url.startsWith('/user/dashboard-admin') || url.startsWith('/user/admin');
+      const inPersonalDashboard = url.startsWith('/user/dashboard') && !url.startsWith('/user/dashboard-admin');
+
+      // If we are on an admin-only page but active profile is not admin, redirect to that profile's dashboard.
+      if (inAdminArea && profileKey !== 'ROLE_ADMIN') {
+        const target = this.profileLandingRoute(profileKey);
+        if (target && !url.startsWith(target)) {
+          void this.router.navigateByUrl(target, { replaceUrl: true });
+        }
+        return;
+      }
+
+      // If we are on personal dashboard but active profile is admin, redirect to admin dashboard.
+      if (inPersonalDashboard && profileKey === 'ROLE_ADMIN') {
+        const target = this.profileLandingRoute(profileKey);
+        if (target && !url.startsWith(target)) {
+          void this.router.navigateByUrl(target, { replaceUrl: true });
+        }
+      }
+    });
   }
 
   // Proxy for logout
@@ -151,10 +187,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.isBrowser = true;
       this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+      // Initialize URL signal
+      this.currentUrl.set(this.router.url ?? '');
+
       this.router.events
         .pipe(filter((event) => event instanceof NavigationEnd))
         .subscribe(() => {
-          // no-op; keeps parity with legacy behavior
+          this.currentUrl.set(this.router.url ?? '');
         });
 
       if (this.deviceService.isDesktop()) {
@@ -181,7 +220,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
   async closeMenuSidenav(menuSidenav: MatSidenav): Promise<void> {
     // Update state immediately; await close to keep sequencing predictable.
     this.rightSidenavOpen.set(false);
-    await menuSidenav.close();
+
+    // MatSidenav.close() can occasionally hang or throw (animation/focus edge cases).
+    // Profile switching must always navigate, so never let close() block forever.
+    try {
+      await Promise.race([
+        menuSidenav.close(),
+        new Promise<void>((resolve) => setTimeout(resolve, 250)),
+      ]);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('[Layout] Failed to close profile panel; continuing.', err);
+    }
   }
 
   closeRightSidenav(): void {
@@ -196,8 +246,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     const ok = await this.profilePanelService.switchProfile(profileKey);
     if (!ok) return;
 
-    // Required order: close panel first, then navigate.
-    await this.closeMenuSidenav(menuSidenav);
+    // Best practice: never block navigation on UI animations.
+    // Start closing the panel (best-effort), then navigate immediately.
+    void this.closeMenuSidenav(menuSidenav);
     await this.router.navigateByUrl(this.profileLandingRoute(profileKey), { replaceUrl: true });
   }
 
@@ -259,17 +310,64 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   profileLandingRoute(profileKey: string | null | undefined): string {
+    const key = (profileKey ?? '').toString();
+
+    // Highest priority: resolve from the (refreshed) BE-driven nav menu.
+    // Requirement: route should be picked from the menu dashboard first item.
+    const fromMenu = this.resolveDashboardRouteFromMenu(key);
+    if (fromMenu) return fromMenu;
+
+    const me = this.accessContextService.accessMe();
+    const homeRoute = (me?.availableProfiles ?? []).find((p: any) => (p?.key ?? '').toString() === key)?.homeRoute;
+    if (typeof homeRoute === 'string' && homeRoute.trim()) {
+      return homeRoute.trim();
+    }
+    let route = '';
     switch (profileKey) {
       case 'ROLE_ADMIN':
-        return '/user/dashboard-admin';
+        route = '/user/dashboard-admin';
+        break;    
       case 'ROLE_ENTERPRISE_ADMIN':
-        return '/user/enterprise/org';
+        route = '/user/enterprise/org';
+        break;
       case 'ROLE_ENTERPRISE_EMPLOYEE':
       case 'ROLE_USER':
-        return '/user/dashboard';
+        route = '/user/dashboard'; 
+        break;
       default:
-        return '/user/dashboard';
+        route = '/user/dashboard';
     }
+    return route;
+  }
+
+  private resolveDashboardRouteFromMenu(profileKey: string): string | null {
+    const wantsAdmin = profileKey === 'ROLE_ADMIN';
+    const sections = this.navStore.allSections();
+
+    const flat: Array<{ route?: string; title?: string }> = [];
+    const visit = (items: any[] | undefined) => {
+      for (const it of items ?? []) {
+        flat.push({ route: it?.route, title: it?.title });
+        if (Array.isArray(it?.children) && it.children.length > 0) {
+          visit(it.children);
+        }
+      }
+    };
+    for (const s of sections ?? []) {
+      visit((s as any)?.items);
+    }
+
+    const isAdminDashboardRoute = (r: string) => r.includes('/user/dashboard-admin');
+    const isUserDashboardRoute = (r: string) => r.includes('/user/dashboard') && !isAdminDashboardRoute(r);
+
+    const match = flat.find((it) => {
+      const r = (it.route ?? '').toString();
+      if (!r) return false;
+      return wantsAdmin ? isAdminDashboardRoute(r) : isUserDashboardRoute(r);
+    });
+
+    const route = (match?.route ?? '').toString().trim();
+    return route ? route : null;
   }
 
   ngAfterViewInit(): void {
@@ -303,7 +401,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   onClickOutside(){
-    alert('Heloo Close');
     this.configPanel?.close();
   }
 

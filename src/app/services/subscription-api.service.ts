@@ -4,7 +4,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SubscriptionPlanDto, WifenceSubscriptionDto } from '../models/subscription.dto';
-import { buildPageableParams } from '../shared/http/build-pageable-params';
+import { buildCriteriaParams } from '../shared/http/build-criteria-params';
 import type { StartSubscriptionRequest, SubscriptionPlan, SubscriptionScope, WifenceSubscription } from '../models/subscription.model';
 
 @Injectable({ providedIn: 'root' })
@@ -31,21 +31,27 @@ export class SubscriptionApiService {
     const cached = this.plansCache.get(cacheKey);
     if (cached) return cached;
 
-    const params = buildPageableParams({
-      filters: {
-        // Keep both param spellings for compatibility with older backends.
-        isActive: true,
-        active: true,
-        scope,
-      },
-    });
-
-    const req$ = this.http
-      .get<SubscriptionPlanDto[] | SubscriptionPlan[]>(`${this.getBaseUrl()}/api/subscription-plans`, { params })
-      .pipe(shareReplay(1)) as Observable<SubscriptionPlan[]>;
+    const req$ = this.listPlans({ isActive: true, scope }).pipe(shareReplay(1)) as Observable<SubscriptionPlan[]>;
 
     this.plansCache.set(cacheKey, req$);
     return req$;
+  }
+
+  /**
+   * Fetches subscription plans using JHipster Criteria filters.
+   * Example URL:
+   * /api/subscription-plans?isActive.equals=true&scope.equals=INDIVIDUAL
+   */
+  listPlans(criteria: { isActive?: boolean; scope?: SubscriptionScope }): Observable<SubscriptionPlan[]> {
+    const params = buildCriteriaParams({
+      // SubscriptionPlanCriteria field is `isActive` (not `active`).
+      isActive: criteria.isActive,
+      scope: criteria.scope,
+    });
+
+    return this.http.get<SubscriptionPlanDto[] | SubscriptionPlan[]>(`${this.getBaseUrl()}/api/subscription-plans`, {
+      params,
+    }) as Observable<SubscriptionPlan[]>;
   }
 
   startSubscription(req: StartSubscriptionRequest): Observable<WifenceSubscription> {

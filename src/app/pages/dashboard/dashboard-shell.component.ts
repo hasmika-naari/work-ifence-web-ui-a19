@@ -32,8 +32,12 @@ export class DashboardShellComponent {
       const me = this.accessMe();
 
       // Platform admin has a dedicated dashboard.
-      if ((me?.mode ?? '').toString() === 'ADMIN') {
-        this.router.navigateByUrl('/user/dashboard-admin');
+      // Important: use the active profile key, not overall authorities/mode.
+      // Users may *have* admin access but still be in Personal profile.
+      if ((me?.activeProfileKey ?? '').toString() === 'ROLE_ADMIN') {
+        if (!this.router.url.startsWith('/user/dashboard-admin')) {
+          this.router.navigateByUrl('/user/dashboard-admin');
+        }
         return;
       }
 

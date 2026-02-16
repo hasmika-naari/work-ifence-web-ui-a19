@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { AccessContextService } from './access-context.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, filter, switchMap, take, tap, timeout } from 'rxjs/operators';
@@ -11,6 +11,9 @@ export class ProfilePanelService {
   isSwitching = false;
   switchingKey: string | null = null;
 
+  // Reactive switching state for effects/guards.
+  readonly switching = signal(false);
+
   constructor(
     private accessContext: AccessContextService,
     private accessFacade: AccessFacadeService,
@@ -20,6 +23,7 @@ export class ProfilePanelService {
   async switchProfile(profileKey: string, closeSidenav?: () => void): Promise<boolean> {
     this.isSwitching = true;
     this.switchingKey = profileKey;
+    this.switching.set(true);
 
     const prev = this.accessContext.snapshotProfileContext();
 
@@ -62,6 +66,7 @@ export class ProfilePanelService {
     } finally {
       this.isSwitching = false;
       this.switchingKey = null;
+      this.switching.set(false);
     }
   }
 }

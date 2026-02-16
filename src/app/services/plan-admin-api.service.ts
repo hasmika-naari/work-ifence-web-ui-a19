@@ -4,6 +4,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { buildPageableParams } from 'src/app/shared/http/build-pageable-params';
+import { buildCriteriaParams } from 'src/app/shared/http/build-criteria-params';
 import type {
   PlanEntitlementDto,
   PagedResponse,
@@ -43,15 +44,19 @@ export class PlanAdminApiService {
   }
 
   listPlans(params: ListPlansParams): Observable<PagedResponse<SubscriptionPlanDto>> {
-    const httpParams = buildPageableParams({
+    const base = buildPageableParams({
       page: params.page,
       size: params.size,
       sort: params.sort,
-      filters: {
+    });
+
+    const httpParams = buildCriteriaParams(
+      {
         scope: params.scope,
         isActive: params.isActive,
       },
-    });
+      base
+    );
 
     return this.http.get<PagedResponse<SubscriptionPlanDto>>(`${this.baseUrl()}/api/subscription-plans`, {
       params: httpParams,

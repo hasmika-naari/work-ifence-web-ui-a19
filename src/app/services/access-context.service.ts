@@ -88,7 +88,16 @@ export class AccessContextService {
     const source$ = this.accessApi.getProfileContext().pipe(
       tap((ctx) => {
         this.activeProfileKey.set(ctx?.activeProfileKey ?? null);
-        this.ownedProfiles.set(ctx?.ownedProfiles ?? []);
+
+        // IMPORTANT: /api/access/profile/context may not include the backend display labels.
+        // Avoid clobbering the labeled list we get from /api/access/me.
+        const ctxProfiles = Array.isArray(ctx?.ownedProfiles) ? ctx.ownedProfiles : [];
+        const current = this.ownedProfiles();
+        const ctxHasLabels = ctxProfiles.some((p) => (p?.label ?? '').toString().trim().length > 0);
+
+        if (current.length === 0 || ctxHasLabels) {
+          this.ownedProfiles.set(ctxProfiles);
+        }
       })
     );
 
@@ -119,9 +128,21 @@ export class AccessContextService {
           this.activeProfileKey.set(me?.activeProfileKey ?? null);
         }
 
-        const owned = me?.ownedProfiles;
-        if (Array.isArray(owned) && owned.length > 0) {
+        const owned = Array.isArray(me?.ownedProfiles) ? me.ownedProfiles : [];
+        if (owned.length > 0) {
           this.ownedProfiles.set(owned);
+          return;
+        }
+
+        // Fallback: some backends may omit ownedProfiles but provide availableProfiles with labels.
+        const available = Array.isArray(me?.availableProfiles) ? me.availableProfiles : [];
+        if (available.length > 0) {
+          this.ownedProfiles.set(
+            available.map((p: any) => ({
+              key: String(p?.key ?? ''),
+              label: String(p?.label ?? '').trim(),
+            }))
+          );
         }
       })
     );
