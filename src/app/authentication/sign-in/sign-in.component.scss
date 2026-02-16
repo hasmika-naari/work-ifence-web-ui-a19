@@ -130,9 +130,11 @@
                             }
                         }
                     }
-                    .mat-mdc-input-element {
-                        color: #1f2937;
-                        font-weight: 600;
+                    /* Sign-in input text: bold + secondary theme color */
+                    .mat-mdc-input-element,
+                    .mdc-text-field__input {
+                        color: var(--secondaryColor);
+                        font-weight: 700;
                     }
                     .input-icon {
                         top: 15.5px;

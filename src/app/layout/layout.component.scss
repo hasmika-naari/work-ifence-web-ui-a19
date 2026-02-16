@@ -135,6 +135,11 @@
   flex-direction: column;
 }
 
+/* Defensive: when the right drawer is logically closed, don't let it intercept clicks. */
+:host ::ng-deep mat-sidenav[aria-hidden='true'] {
+  pointer-events: none;
+}
+
 .drawer-shell {
   display: flex;
   flex-direction: column;

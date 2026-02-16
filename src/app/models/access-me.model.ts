@@ -55,3 +55,6 @@ export interface SwitchProfileResponseDto {
   activeProfileKey: string;
   ownedProfiles: OwnedProfileDto[];
 }
+
+// GET /api/access/profile/context returns the same shape as switchProfile()
+export type AccessProfileContextDto = SwitchProfileResponseDto;

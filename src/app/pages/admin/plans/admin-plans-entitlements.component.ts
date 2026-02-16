@@ -122,14 +122,15 @@ export class AdminPlansEntitlementsComponent {
           })
           .pipe(
             map((page) => {
+              const normalized = { ...page, content: page.content ?? [] };
               const term = (search ?? '').trim().toLowerCase();
-              if (!term) return page;
-              const filtered = (page.content ?? []).filter((p) => {
+              if (!term) return normalized;
+              const filtered = normalized.content.filter((p) => {
                 const code = (p.code ?? '').toLowerCase();
                 const name = (p.name ?? '').toLowerCase();
                 return code.includes(term) || name.includes(term);
               });
-              return { ...page, content: filtered };
+              return { ...normalized, content: filtered };
             }),
             catchError((err) => {
               this.showError(err);

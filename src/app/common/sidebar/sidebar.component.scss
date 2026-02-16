@@ -19,6 +19,23 @@
     transition: color 0.2s, stroke 0.2s, fill 0.2s;
 }
 
+/* Locked items: gray icon + keep lock overlay badge */
+.collapsed-section-icon.locked i-feather,
+.sidebar-menu-grid-item.locked i-feather,
+.sidebar-more-item.locked i-feather {
+    color: color-mix(in srgb, var(--mdc-theme-on-surface) 45%, transparent) !important;
+    opacity: 0.9;
+}
+
+.collapsed-section-icon.locked i-feather svg,
+.collapsed-section-icon.locked i-feather svg *,
+.sidebar-menu-grid-item.locked i-feather svg,
+.sidebar-menu-grid-item.locked i-feather svg *,
+.sidebar-more-item.locked i-feather svg,
+.sidebar-more-item.locked i-feather svg * {
+    stroke: currentColor !important;
+}
+
 .collapsed-rail-scroll {
     flex: 1 1 auto;
     min-height: 0;

@@ -13,7 +13,7 @@
                 <button class="collapsed-section-icon"
                   type="button"
                   [attr.aria-label]="item.title"
-                  [matTooltip]="item.locked ? (item.title + ' \u2022 Upgrade required') : item.title"
+                  [matTooltip]="item.locked ? (item.title + ' \u2022 Upgrade') : item.title"
                   matTooltipPosition="right"
                   [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
                   [routerLinkActive]="item.locked ? '' : 'is-active'"
@@ -46,7 +46,7 @@
                   [routerLinkActiveOptions]="{ exact: true }"
                   [attr.aria-disabled]="item.locked === true ? true : null"
                   [class.locked]="item.locked === true"
-                  [matTooltip]="item.locked === true ? (item.title + ' \u2022 Upgrade required') : item.title"
+                  [matTooltip]="item.locked === true ? (item.title + ' \u2022 Upgrade') : item.title"
                   matTooltipPosition="right"
                   (click)="item.locked === true ? onLockedMenuClick(item, $event) : null"
                 >
@@ -105,8 +105,10 @@
                 [attr.aria-disabled]="item.locked === true ? true : null"
                 [class.locked]="item.locked === true"
                 (click)="item.locked === true ? onLockedMenuClick(item, $event) : closeMorePanel()"
-                [matTooltip]="item.locked === true ? (item.title + ' \u2022 Upgrade required') : item.title"
+                [matTooltip]="item.locked === true ? (item.title + ' \u2022 Upgrade') : item.title"
                 matTooltipPosition="right"
+                (keydown.enter)="item.locked === true ? onLockedMenuClick(item, $event) : null"
+                (keydown.space)="item.locked === true ? onLockedMenuClick(item, $event) : null"
               >
                 <span class="menu-icon-wrap menu-icon-wrap--md">
                   <i-feather [name]="item.icon"></i-feather>

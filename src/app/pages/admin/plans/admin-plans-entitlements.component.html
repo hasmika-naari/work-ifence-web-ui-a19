@@ -51,7 +51,7 @@
           }
         </mat-selection-list>
 
-        @if (!plansLoading() && (plansPage().content.length ?? 0) === 0) {
+        @if (!plansLoading() && plansPage().content.length === 0) {
           <div class="muted" style="padding: 8px 0;">No plans found.</div>
         }
 
@@ -272,7 +272,7 @@
           <tr mat-row *matRowDef="let row; columns: entDisplayedColumns"></tr>
         </table>
 
-        @if (!entLoading() && (entPage().content?.length ?? 0) === 0) {
+        @if (!entLoading() && entPage().content.length === 0) {
           <div class="muted" style="padding: 8px 0;">No entitlements found for this plan.</div>
         }
 

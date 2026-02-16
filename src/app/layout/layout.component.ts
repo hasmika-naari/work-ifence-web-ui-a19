@@ -16,6 +16,7 @@ import { IconsModule } from '../shared/icons.module';
 import { AccessContextService } from '../services/access-context.service';
 import { ProfilePanelService } from '../services/profile-panel.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import type { OwnedProfileDto } from '../models/access-me.model';
 
 @Component({
   selector: 'wif-layout',
@@ -47,10 +48,13 @@ import { DeviceDetectorService } from 'ngx-device-detector';
       state('open', style({
         opacity: 1,
         transform: 'translateX(0)',
+        'pointer-events': 'auto',
       })),
       state('closed', style({
         opacity: 0,
-        transform: 'translateX(24px)',
+        // Move fully off-canvas; don't leave an invisible panel intercepting clicks.
+        transform: 'translateX(100%)',
+        'pointer-events': 'none',
       })),
       transition('closed => open', [
         animate('200ms cubic-bezier(0.16, 1, 0.3, 1)')
@@ -226,7 +230,32 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     const profiles = this.accessContextService.ownedProfiles();
     const match = (profiles ?? []).find((p: any) => p?.key === key);
-    return match?.label ?? key;
+    return this.profileLabel(match ?? ({ key } as OwnedProfileDto));
+  }
+
+  profileLabel(profile: Partial<OwnedProfileDto> | null | undefined): string {
+    const label = (profile?.label ?? '').toString().trim();
+    if (label) return label;
+
+    const key = (profile?.key ?? '').toString().trim();
+    if (!key) return '';
+
+    switch (key) {
+      case 'ROLE_ADMIN':
+        return 'Admin';
+      case 'ROLE_USER':
+        return 'Personal';
+      case 'ROLE_ENTERPRISE_ADMIN':
+        return 'Enterprise Admin';
+      case 'ROLE_ENTERPRISE_EMPLOYEE':
+        return 'Enterprise';
+      default:
+        return key
+          .replace(/^ROLE_/, '')
+          .replace(/_/g, ' ')
+          .toLowerCase()
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+    }
   }
 
   profileLandingRoute(profileKey: string | null | undefined): string {

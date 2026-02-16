@@ -6,9 +6,14 @@ const projectRoot = process.cwd();
 const entry = path.join(projectRoot, 'dist', 'workifence', 'server', 'server.mjs');
 const watchDir = path.dirname(entry);
 
+const RESTART_DEBOUNCE_MS = 900;
+const DIR_QUIET_PERIOD_MS = 700;
+
 let child = null;
 let restartTimer = null;
 let isRestarting = false;
+
+let lastFsEventAt = 0;
 
 function log(msg) {
   // Match the existing console style from concurrently output.
@@ -25,6 +30,66 @@ async function waitForFile(filePath) {
   while (true) {
     if (fs.existsSync(filePath)) return;
     await sleep(150);
+  }
+}
+
+function latestMjsMtimeMs(dirPath) {
+  let latest = 0;
+  const stack = [dirPath];
+
+  while (stack.length) {
+    const current = stack.pop();
+    let entries;
+    try {
+      entries = fs.readdirSync(current, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+
+    for (const ent of entries) {
+      const full = path.join(current, ent.name);
+      if (ent.isDirectory()) {
+        stack.push(full);
+        continue;
+      }
+      if (!ent.isFile()) continue;
+      if (!ent.name.endsWith('.mjs')) continue;
+      try {
+        const st = fs.statSync(full);
+        const m = st.mtimeMs || 0;
+        if (m > latest) latest = m;
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  return latest;
+}
+
+async function waitForStableOutputDir() {
+  // Wait until the SSR output directory stops changing for a bit.
+  // This prevents starting Node while chunks are still being rewritten,
+  // which causes ERR_MODULE_NOT_FOUND for chunk imports.
+  await waitForFile(entry);
+
+  while (true) {
+    const before = latestMjsMtimeMs(watchDir);
+    const now = Date.now();
+
+    // If fs.watch has seen recent events, give it time to quiet down.
+    const msSinceEvent = now - lastFsEventAt;
+    const extraWait = msSinceEvent < DIR_QUIET_PERIOD_MS ? (DIR_QUIET_PERIOD_MS - msSinceEvent) : 0;
+
+    await sleep(DIR_QUIET_PERIOD_MS + extraWait);
+
+    if (!fs.existsSync(entry)) {
+      await waitForFile(entry);
+      continue;
+    }
+
+    const after = latestMjsMtimeMs(watchDir);
+    if (after !== 0 && after === before) return;
   }
 }
 
@@ -59,7 +124,7 @@ async function restartNow() {
   isRestarting = true;
 
   killChild();
-  await waitForFile(entry);
+  await waitForStableOutputDir();
 
   log(`Starting '${path.relative(projectRoot, entry)}'`);
   spawnChild();
@@ -72,20 +137,26 @@ function scheduleRestart() {
   restartTimer = setTimeout(() => {
     restartTimer = null;
     void restartNow();
-  }, 250);
+  }, RESTART_DEBOUNCE_MS);
 }
 
 async function main() {
   log(`Watching '${path.relative(projectRoot, watchDir)}'`);
-  await waitForFile(entry);
+  await waitForStableOutputDir();
   await restartNow();
 
   // Watch SSR output directory for rebuilds.
   // On Windows, recursive watch is supported; if it errors, fall back to non-recursive.
   try {
-    fs.watch(watchDir, { recursive: true }, () => scheduleRestart());
+    fs.watch(watchDir, { recursive: true }, () => {
+      lastFsEventAt = Date.now();
+      scheduleRestart();
+    });
   } catch {
-    fs.watch(watchDir, () => scheduleRestart());
+    fs.watch(watchDir, () => {
+      lastFsEventAt = Date.now();
+      scheduleRestart();
+    });
   }
 
   // Graceful shutdown

@@ -54,7 +54,7 @@ export class SidebarComponent {
   activeSectionId: string | null = null;
   private submenuCloseTimer: ReturnType<typeof setTimeout> | undefined;
 
-    // Handle click on locked menu item: open upgrade dialog.
+    // Handle activation of a locked menu item (click/Enter/Space): open upgrade dialog.
     onLockedMenuClick(item: NavItem, event: Event): void {
       event.preventDefault();
       event.stopPropagation();
@@ -62,7 +62,7 @@ export class SidebarComponent {
       this.dialog.open(UpgradeDialogComponent, {
         width: '520px',
         data: {
-          reason: 'Upgrade required',
+          reason: `${item?.title ?? 'This feature'} \u2022 Upgrade`,
         },
       });
     }
