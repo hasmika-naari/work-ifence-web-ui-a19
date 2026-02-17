@@ -33,9 +33,9 @@ import {
   Menu 
 } from 'lucide';
 
-/* eslint-disable no-console */
-console.info('Angular CDK version', CDK_VERSION.full);
-console.info('Angular Material version', MAT_VERSION.full);
+// Version info moved to production logs only
+// console.info('Angular CDK version', CDK_VERSION.full);
+// console.info('Angular Material version', MAT_VERSION.full);
 
 export class AppRouteReuseStrategy extends BaseRouteReuseStrategy {
   public override shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {

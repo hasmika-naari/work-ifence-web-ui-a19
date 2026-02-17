@@ -1,38 +1,595 @@
-<div class="dashboard" style="overflow-y: auto; height: 100vh;">
-  <h1 class="welcome-message">Platform Admin Console</h1>
-  <p class="subtitle">Onboarding approvals and subscription administration.</p>
+<div class="dashboard-wrapper">
+  <div class="dashboard">
+    <h1 class="welcome-message">
+      Welcome <span class="user-name">App Admin</span> 👋
+    </h1>
+    <p class="subtitle">Monitor onboarding, subscriptions, entitlements, and platform health at a glance.</p>
 
-  <mat-tab-group>
-    <mat-tab label="Onboarding Requests">
-      <div style="padding-top: 12px;">
-        <app-admin-onboarding-requests></app-admin-onboarding-requests>
+    <!-- Stats Cards Row Only -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Pending Onboardings</span>
+          <i class="pi pi-user-plus" style="color:#f05b4e"></i>
+        </div>
+        <div class="stat-body">14</div>
+        <div class="stat-sub">8 onboarding, 6 in review</div>
+        <a class="stat-link" href="#">View details »</a>
+        <div class="stat-footer" style="background:#f05b4e"></div>
       </div>
-    </mat-tab>
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Trials Expiring <span class="stat-sub">(7 days)</span></span>
+          <i class="pi pi-clock" style="color:#a78bfa"></i>
+        </div>
+        <div class="stat-body">6</div>
+        <a class="stat-link" href="#">View details »</a>
+        <div class="stat-footer" style="background:#a78bfa"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Cancel at Period End</span>
+          <i class="pi pi-times-circle" style="color:#f87171"></i>
+        </div>
+        <div class="stat-body">2</div>
+        <a class="stat-link" href="#">View details »</a>
+        <div class="stat-footer" style="background:#f87171"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Entitlement Health</span>
+          <i class="pi pi-check-circle" style="color:#10b981"></i>
+        </div>
+        <div class="stat-body">OK</div>
+        <div class="stat-sub">Last sync: 2 hours ago</div>
+        <a class="stat-link" href="#">View details »</a>
+        <div class="stat-footer" style="background:#10b981"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Security Events <span class="stat-sub">(24h)</span></span>
+          <i class="pi pi-shield" style="color:#60a5fa"></i>
+        </div>
+        <div class="stat-body">5</div>
+        <div class="stat-sub">3 dep. retries</div>
+        <a class="stat-link" href="#">View details »</a>
+        <div class="stat-footer" style="background:#60a5fa"></div>
+      </div>
+    </div>
 
-    <mat-tab label="Subscriptions">
-      <div style="padding-top: 12px;">
-        <app-admin-subscriptions></app-admin-subscriptions>
+    <!-- My Work Queue and Operational Insights Row -->
+    <div class="work-queue-section-row">
+      <div class="work-queue-section-right">
+        <div class="operational-insights-card">
+          <div class="operational-insights-header">
+            <div>
+              <div class="operational-insights-title">Operational Insights</div>
+              <div class="operational-insights-subtitle">Onboarding Breakdown</div>
+            </div>
+            <!-- <div class="insights-sla-label">SLA: <span class="insights-sla-icon">≡</span></div> -->
+          </div>
+          <div class="operational-insights-piechart-container">
+            <div class="operational-insights-chart-wrapper">
+              <canvas #insightsPieChart width="100" height="100"></canvas>
+            </div>
+            <div class="operational-insights-legend">
+              <div class="legend-item">
+                <span class="legend-dot submitted"></span>
+                <span class="legend-label">Submitted</span>
+                <span class="legend-count">8</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot in-review"></span>
+                <span class="legend-label">In Review</span>
+                <span class="legend-count">6</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot approved"></span>
+                <span class="legend-label">Approved</span>
+                <span class="legend-count">12</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot rejected"></span>
+                <span class="legend-label">Rejected</span>
+                <span class="legend-count">2</span>
+              </div>
+            </div>
+          </div>
+          <div class="insights-avg-time">Avg Time to Approval: <b>14 hrs</b></div>
+          <div class="insights-section-group">
+            <div class="insights-lifecycle-title">Subscription Lifecycle</div>
+            <div class="insights-lifecycle-group">
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot trials"></span> Trials <span class="lifecycle-count">99</span></div>
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot active"></span> Active <span class="lifecycle-count">24</span></div>
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot pad-que"></span> Pad. Que <span class="lifecycle-count">21</span></div>
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot canceling"></span> Canceling <span class="lifecycle-count">6</span></div>
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot canceled"></span> Canceled <span class="lifecycle-count">4</span></div>
+            </div>
+          </div>
+          <div class="insights-section-group">
+            <div class="insights-audit-title">Recent Audit Feed <a class="see-all-link" href="#">See All</a></div>
+            <div class="insights-audit-feed">
+            <div class="audit-feed-item">
+              <div class="audit-feed-avatar"><img src="/assets/avatar-amanda.png" alt="Amanda Chen" onerror="this.src='/assets/avatar-default.png'"></div>
+              <div class="audit-feed-content">
+                <div class="audit-feed-user">Amanda Chen</div>
+                <div class="audit-feed-desc">Feminine info not enriched</div>
+                <div class="audit-feed-meta">2 hours ago <span class="audit-feed-retry">Retry</span></div>
+              </div>
+            </div>
+            <div class="audit-feed-item">
+              <div class="audit-feed-avatar"><img src="/assets/avatar-entitlement.png" alt="Entitlement sync" onerror="this.src='/assets/avatar-default.png'"></div>
+              <div class="audit-feed-content">
+                <div class="audit-feed-user">Entitlement sync</div>
+                <div class="audit-feed-desc">Plans enrich: epterm</div>
+                <div class="audit-feed-meta">2 hours ago <span class="audit-feed-retry">Retry</span></div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
       </div>
-    </mat-tab>
+      <div class="work-queue-section-left">
+        <div class="work-queue-card">
+          <div class="custom-tabs-row">
+            <div class="custom-tabs">
+              <button class="tab" [ngClass]="{active: activeTab==='requests'}" (click)="activeTab='requests'">Onboarding</button>
+              <button class="tab" [ngClass]="{active: activeTab==='subscriptions'}" (click)="activeTab='subscriptions'">Subscriptions</button>
+              <button class="tab" [ngClass]="{active: activeTab==='plans'}" (click)="activeTab='plans'">Plans</button>
+              <button class="tab" [ngClass]="{active: activeTab==='featureFlags'}" (click)="activeTab='featureFlags'">Feature Flags</button>
+              <button class="tab" [ngClass]="{active: activeTab==='audit'}" (click)="activeTab='audit'">Audit Logs</button>
+            </div>
+            <button class="filter-icon-btn" (click)="toggleFilterPanel()" title="Toggle Filters">
+              <i class="pi pi-sliders-h"></i>
+            </button>
+          </div>
+          <div class="table-content-wrapper" [class.tab-panel-hidden]="!isRequestsTabActive()">
+            <div class="table-section" *ngIf="activeTab==='requests'">
+            <div class="filter-chips-row" *ngIf="Object.keys(activeFilters).length > 0">
+              <span *ngFor="let key of Object.keys(activeFilters)" class="filter-chip">
+                <span class="chip-text">{{ key }}: {{ activeFilters[key] }}</span>
+                <button class="chip-close" (click)="clearFilter(key)"><i class="pi pi-times"></i></button>
+              </span>
+              <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
+            </div>
+            <div class="work-queue-table-wrapper">
+              <table class="work-queue-table">
+                <thead>
+                  <tr>
+                    <th>Enterprise</th>
+                    <th>Request Type</th>
+                    <th>Requested By</th>
+                    <th>Status</th>
+                    <th>Age</th>
+                    <th>Priority</th>
+                    <th>SLA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let row of filteredRequestRows">
+                  <td><img class="avatar" [src]="row.avatarSrc" [alt]="row.enterprise" /> {{ row.enterprise }}</td>
+                  <td>{{ row.requestType }}</td>
+                  <td>{{ row.requestedBy }}</td>
+                  <td><span class="chip submitted">{{ row.status }}</span></td>
+                  <td>{{ row.age }}</td>
+                  <td><span class="chip" [ngClass]="row.priority.toLowerCase()">{{ row.priority }}</span></td>
+                  <td><span class="chip ok">{{ row.sla }}</span></td>
+                </tr>
+                <tr class="empty-row" *ngFor="let _ of requestTablePlaceholders">
+                  <td colspan="7"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination-bar">
+              <span>1</span>
+              <span class="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>...</span>
+              <span>7</span>
+              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+            </div>
+          </div>
+            </div>
+          <!-- Filter Panel Using PrimeNG Drawer -->
+          <p-drawer [(visible)]="showFilterPanel" 
+                    [position]="'right'" 
+                    [modal]="false" 
+                    [transitionOptions]="'180ms cubic-bezier(0.2, 0, 0, 1)'"
+                    [showCloseIcon]="true"
+                    (onHide)="closeFilterPanel()"
+                    styleClass="workqueue-drawer"
+                    [style]="{width: '320px'}">
+            <ng-template pTemplate="header">
+              <h3>Filters</h3>
+            </ng-template>
+            
+            <div class="filter-panel-content">
+              <!-- Requests Tab Filters -->
+              <div *ngIf="activeTab==='requests'" class="filter-group">
+                <label>Enterprise</label>
+                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
 
-    <mat-tab label="Plans &amp; Entitlements">
-      <div style="padding-top: 12px;">
-        <app-admin-plans-entitlements></app-admin-plans-entitlements>
-      </div>
-    </mat-tab>
+                <label>Request Type</label>
+                <input type="text" [(ngModel)]="draftFilters['requestType']" placeholder="Search request type..."/>
 
-    <mat-tab label="Audit Log">
-      <div style="padding-top: 12px;">
-        <app-admin-audit-log></app-admin-audit-log>
-      </div>
-    </mat-tab>
+                <label>Status</label>
+                <select [(ngModel)]="draftFilters['status']">
+                  <option value="">Select Status</option>
+                  <option value="Submitted">Submitted</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
 
-    <mat-tab label="Feature Flags">
-      <div style="padding-top: 12px;">
-        <app-admin-feature-flags></app-admin-feature-flags>
+                <label>Search</label>
+                <input type="text" placeholder="Search requests..." [(ngModel)]="draftFilters['search']" />
+              </div>
+
+              <!-- Subscriptions Tab Filters -->
+              <div *ngIf="activeTab==='subscriptions'" class="filter-group">
+                <label>Enterprise</label>
+                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
+
+                <label>Subscription Type</label>
+                <select [(ngModel)]="draftFilters['subscriptionType']">
+                  <option value="">Select Type</option>
+                  <option value="Premium">Premium</option>
+                  <option value="Standard">Standard</option>
+                </select>
+
+                <label>Status</label>
+                <select [(ngModel)]="draftFilters['status']">
+                  <option value="">Select Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </div>
+
+              <!-- Plans Tab Filters -->
+              <div *ngIf="activeTab==='plans'" class="filter-group">
+                <label>Enterprise</label>
+                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
+
+                <label>Plan Type</label>
+                <select [(ngModel)]="draftFilters['planType']">
+                  <option value="">Select Plan</option>
+                  <option value="Premium">Premium</option>
+                  <option value="Standard">Standard</option>
+                </select>
+
+                <label>Status</label>
+                <select [(ngModel)]="draftFilters['status']">
+                  <option value="">Select Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+
+              <!-- Feature Flags Tab Filters -->
+              <div *ngIf="activeTab==='featureFlags'" class="filter-group">
+                <label>Enterprise</label>
+                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
+
+                <label>Flag Name</label>
+                <select [(ngModel)]="draftFilters['flagName']">
+                  <option value="">Select Flag</option>
+                  <option value="BetaAccess">BetaAccess</option>
+                  <option value="API Integration">API Integration</option>
+                </select>
+
+                <label>Status</label>
+                <select [(ngModel)]="draftFilters['status']">
+                  <option value="">Select Status</option>
+                  <option value="Enabled">Enabled</option>
+                  <option value="Disabled">Disabled</option>
+                </select>
+              </div>
+
+              <!-- Audit Tab Filters -->
+              <div *ngIf="activeTab==='audit'" class="filter-group">
+                <label>Enterprise</label>
+                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
+
+                <label>Event Type</label>
+                <select [(ngModel)]="draftFilters['eventType']">
+                  <option value="">Select Event</option>
+                  <option value="Login">Login</option>
+                  <option value="Data Migration">Data Migration</option>
+                </select>
+
+                <label>Status</label>
+                <select [(ngModel)]="draftFilters['status']">
+                  <option value="">Select Status</option>
+                  <option value="Success">Success</option>
+                  <option value="Failed">Failed</option>
+                </select>
+              </div>
+
+              <div class="filter-actions">
+                <button type="button" class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
+                <button type="button" class="apply-filter-btn" (click)="applyFilters()">Apply Filters</button>
+              </div>
+            </div>
+          </p-drawer>
+        <div *ngIf="activeTab==='subscriptions'">
+          <div class="filter-chips-row" *ngIf="Object.keys(activeFilters).length > 0">
+            <span *ngFor="let key of Object.keys(activeFilters)" class="filter-chip">
+              <span class="chip-text">{{ key }}: {{ activeFilters[key] }}</span>
+              <button class="chip-close" (click)="clearFilter(key)"><i class="pi pi-times"></i></button>
+            </span>
+            <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
+          </div>
+          <div class="work-queue-table-wrapper">
+            <table class="work-queue-table">
+              <thead>
+                <tr>
+                  <th>Enterprise</th>
+                  <th>Subscription Type</th>
+                  <th>Status</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>TechCorp</td>
+                  <td>Premium</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-01-01</td>
+                  <td>2027-01-01</td>
+                </tr>
+                <tr>
+                  <td>BlueWave Inc.</td>
+                  <td>Standard</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-02-01</td>
+                  <td>2027-02-01</td>
+                </tr>
+                <tr>
+                  <td>MedSync</td>
+                  <td>Feature Enablement</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-03-01</td>
+                  <td>2027-03-01</td>
+                </tr>
+                <tr>
+                  <td>FinSecure</td>
+                  <td>Data Migration</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-04-01</td>
+                  <td>2027-04-01</td>
+                </tr>
+                <tr>
+                  <td>EduLink</td>
+                  <td>API Integration</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-05-01</td>
+                  <td>2027-05-01</td>
+                </tr>
+                <tr>
+                  <td>HealthPlus</td>
+                  <td>Custom Application</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-06-01</td>
+                  <td>2027-06-01</td>
+                </tr>
+                <tr>
+                  <td>DataSphere</td>
+                  <td>Entitlements Sync</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-07-01</td>
+                  <td>2027-07-01</td>
+                </tr>
+                <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(7)">
+                  <td colspan="5"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination-bar">
+              <span>1</span>
+              <span class="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>...</span>
+              <span>7</span>
+              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="activeTab==='plans'">
+          <div class="filter-chips-row" *ngIf="Object.keys(activeFilters).length > 0">
+            <span *ngFor="let key of Object.keys(activeFilters)" class="filter-chip">
+              <span class="chip-text">{{ key }}: {{ activeFilters[key] }}</span>
+              <button class="chip-close" (click)="clearFilter(key)"><i class="pi pi-times"></i></button>
+            </span>
+            <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
+          </div>
+          <div class="work-queue-table-wrapper">
+            <table class="work-queue-table">
+              <thead>
+                <tr>
+                  <th>Enterprise</th>
+                  <th>Plan Type</th>
+                  <th>Status</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>BlueWave Inc.</td>
+                  <td>Standard</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-02-01</td>
+                  <td>2027-02-01</td>
+                </tr>
+                <tr>
+                  <td>FinSecure</td>
+                  <td>Data Migration</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-04-01</td>
+                  <td>2027-04-01</td>
+                </tr>
+                <tr>
+                  <td>EduLink</td>
+                  <td>API Integration</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-05-01</td>
+                  <td>2027-05-01</td>
+                </tr>
+                <tr>
+                  <td>HealthPlus</td>
+                  <td>Custom Application</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-06-01</td>
+                  <td>2027-06-01</td>
+                </tr>
+                <tr>
+                  <td>DataSphere</td>
+                  <td>Entitlements Sync</td>
+                  <td><span class="chip ok">Active</span></td>
+                  <td>2026-07-01</td>
+                  <td>2027-07-01</td>
+                </tr>
+                <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(5)">
+                  <td colspan="5"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination-bar">
+              <span>1</span>
+              <span class="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>...</span>
+              <span>7</span>
+              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="activeTab==='featureFlags'">
+          <div class="filter-chips-row" *ngIf="Object.keys(activeFilters).length > 0">
+            <span *ngFor="let key of Object.keys(activeFilters)" class="filter-chip">
+              <span class="chip-text">{{ key }}: {{ activeFilters[key] }}</span>
+              <button class="chip-close" (click)="clearFilter(key)"><i class="pi pi-times"></i></button>
+            </span>
+            <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
+          </div>
+          <div class="work-queue-table-wrapper">
+            <table class="work-queue-table">
+              <thead>
+                <tr>
+                  <th>Enterprise</th>
+                  <th>Flag Name</th>
+                  <th>Status</th>
+                  <th>Enabled</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>FinSecure</td>
+                  <td>BetaAccess</td>
+                  <td><span class="chip ok">Enabled</span></td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td>EduLink</td>
+                  <td>API Integration</td>
+                  <td><span class="chip ok">Enabled</span></td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td>HealthPlus</td>
+                  <td>Custom Application</td>
+                  <td><span class="chip ok">Enabled</span></td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td>DataSphere</td>
+                  <td>Entitlements Sync</td>
+                  <td><span class="chip ok">Enabled</span></td>
+                  <td>Yes</td>
+                </tr>
+                <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
+                  <td colspan="4"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination-bar">
+              <span>1</span>
+              <span class="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>...</span>
+              <span>7</span>
+              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="activeTab==='audit'">
+          <div class="filter-chips-row" *ngIf="Object.keys(activeFilters).length > 0">
+            <span *ngFor="let key of Object.keys(activeFilters)" class="filter-chip">
+              <span class="chip-text">{{ key }}: {{ activeFilters[key] }}</span>
+              <button class="chip-close" (click)="clearFilter(key)"><i class="pi pi-times"></i></button>
+            </span>
+            <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
+          </div>
+          <div class="work-queue-table-wrapper">
+            <table class="work-queue-table">
+              <thead>
+                <tr>
+                  <th>Enterprise</th>
+                  <th>Event Type</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>EduLink</td>
+                  <td>Login</td>
+                  <td><span class="chip ok">Success</span></td>
+                  <td>2026-02-16</td>
+                </tr>
+                <tr>
+                  <td>FinSecure</td>
+                  <td>Data Migration</td>
+                  <td><span class="chip ok">Success</span></td>
+                  <td>2026-02-15</td>
+                </tr>
+                <tr>
+                  <td>HealthPlus</td>
+                  <td>Custom Application</td>
+                  <td><span class="chip ok">Success</span></td>
+                  <td>2026-02-14</td>
+                </tr>
+                <tr>
+                  <td>DataSphere</td>
+                  <td>Entitlements Sync</td>
+                  <td><span class="chip ok">Success</span></td>
+                  <td>2026-02-13</td>
+                </tr>
+                <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
+                  <td colspan="4"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination-bar">
+              <span>1</span>
+              <span class="active">1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>...</span>
+              <span>7</span>
+              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+            </div>
+          </div>
+        </div>
+        </div>
       </div>
-    </mat-tab>
-  </mat-tab-group>
+    </div>
+  </div>
 </div>
 
 

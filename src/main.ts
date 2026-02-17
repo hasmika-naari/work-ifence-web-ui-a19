@@ -20,8 +20,17 @@ if (typeof global === 'undefined' && typeof window !== 'undefined') {
     };
   }
 
+const originalWarn = console.warn;
+console.warn = function(...args: any[]) {
+  if (args[0] && typeof args[0] === 'string' && args[0].includes('')) {
+    return;
+  }
+  originalWarn.apply(console, args);
+};
+
 // DEV-ONLY: validate routes early so misconfigurations fail fast during local development.
 if (!environment.production) {
   validateEntitlementGuardRouteData(routes);
 }
+
 bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));

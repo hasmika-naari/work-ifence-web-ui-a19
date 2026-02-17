@@ -1,0 +1,330 @@
+<div class="ops-wrap">
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <mat-card class="kpi-card" *ngFor="let k of kpis()" [ngClass]="'tone-' + k.tone">
+      <div class="kpi-top">
+        <div class="kpi-icon">
+          <mat-icon>{{ k.icon }}</mat-icon>
+        </div>
+
+        <button mat-icon-button class="kpi-menu" [matMenuTriggerFor]="kpiMenu" aria-label="kpi menu">
+          <mat-icon>more_horiz</mat-icon>
+        </button>
+
+        <mat-menu #kpiMenu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>open_in_new</mat-icon>
+            <span>View details</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>tune</mat-icon>
+            <span>Configure</span>
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="kpi-title">{{ k.title }}</div>
+      <div class="kpi-value">{{ k.value }}</div>
+      <div class="kpi-sub">{{ k.subtitle }}</div>
+
+      <div class="kpi-link">
+        <button mat-button class="link-btn">
+          View details <mat-icon class="chev">chevron_right</mat-icon>
+        </button>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+    <!-- LEFT: Work Queue -->
+    <mat-card class="card workq-card">
+      <div class="card-head">
+        <div>
+          <div class="h-title">My Work Queue</div>
+          <div class="h-sub">
+            Operational approvals and actions (all actions open in right Ops Drawer)
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="search compact">
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            matInput
+            placeholder="Search"
+            [ngModel]="searchText()"
+            (ngModelChange)="searchText.set($event)"
+          />
+        </mat-form-field>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab" [class.active]="activeTab() === 'onboarding'" (click)="setTab('onboarding')">
+          Onboarding
+        </button>
+        <button class="tab" [class.active]="activeTab() === 'subscriptions'" (click)="setTab('subscriptions')">
+          Subscriptions
+        </button>
+        <button class="tab" [class.active]="activeTab() === 'flags'" (click)="setTab('flags')">
+          Feature Flags
+        </button>
+        <button class="tab" [class.active]="activeTab() === 'risk'" (click)="setTab('risk')">
+          Risk Events
+        </button>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <mat-form-field appearance="outline" class="ff compact">
+          <mat-select
+            [ngModel]="filterEnterprise()"
+            (ngModelChange)="filterEnterprise.set($event)"
+            placeholder="Enterprise"
+          >
+            <mat-option *ngFor="let v of enterprises()" [value]="v">{{ v }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="ff compact">
+          <mat-select
+            [ngModel]="filterRequestType()"
+            (ngModelChange)="filterRequestType.set($event)"
+            placeholder="Request Type"
+          >
+            <mat-option *ngFor="let v of requestTypes()" [value]="v">{{ v }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="ff compact">
+          <mat-select
+            [ngModel]="filterRequestedBy()"
+            (ngModelChange)="filterRequestedBy.set($event)"
+            placeholder="Requested By"
+          >
+            <mat-option *ngFor="let v of requestedBys()" [value]="v">{{ v }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="ff compact">
+          <mat-select
+            [ngModel]="filterStatus()"
+            (ngModelChange)="filterStatus.set($event)"
+            placeholder="Status"
+          >
+            <mat-option *ngFor="let v of statuses()" [value]="v">{{ v }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-stroked-button class="btn-ghost" matTooltip="Refresh mock data">
+          <mat-icon>refresh</mat-icon>
+          Refresh
+        </button>
+      </div>
+
+      <!-- Table surface -->
+      <div class="table-wrap table-surface">
+        <table mat-table [dataSource]="filteredRows()" class="ops-table">
+
+          <ng-container matColumnDef="enterprise">
+            <th mat-header-cell *matHeaderCellDef> Enterprise </th>
+            <td mat-cell *matCellDef="let row">
+              <div class="enterprise-cell">
+                <div class="avatar">{{ row.enterprise[0] }}</div>
+                <div class="ename">{{ row.enterprise }}</div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="requestType">
+            <th mat-header-cell *matHeaderCellDef> Request Type </th>
+            <td mat-cell *matCellDef="let row">{{ row.requestType }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="requestedBy">
+            <th mat-header-cell *matHeaderCellDef> Requested By </th>
+            <td mat-cell *matCellDef="let row">{{ row.requestedBy }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="chip" [ngClass]="'st-' + statusTone(row.status)">
+                {{ row.status }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ageLabel">
+            <th mat-header-cell *matHeaderCellDef> Age </th>
+            <td mat-cell *matCellDef="let row">{{ row.ageLabel }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef> Priority </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="chip pri" [ngClass]="'pri-' + priorityTone(row.priority)">
+                {{ row.priority }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sla">
+            <th mat-header-cell *matHeaderCellDef> SLA </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="chip sla" [ngClass]="row.sla === 'OK' ? 'sla-ok' : 'sla-breached'">
+                {{ row.sla }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="th-actions"> Actions </th>
+            <td mat-cell *matCellDef="let row" class="td-actions">
+              <button mat-stroked-button class="btn-mini" (click)="onReview(row)">
+                Review
+              </button>
+              <button mat-icon-button class="btn-icon" [matMenuTriggerFor]="rowMenu" aria-label="row menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #rowMenu="matMenu">
+                <button mat-menu-item (click)="onReview(row)">
+                  <mat-icon>open_in_new</mat-icon>
+                  <span>Open Ops Drawer</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>history</mat-icon>
+                  <span>View history</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="row-hover"></tr>
+        </table>
+
+        <div class="table-footer">
+          <div>Showing <b>{{ filteredRows().length }}</b> item(s)</div>
+          <div class="drawer-hint">
+            <mat-icon>keyboard_tab</mat-icon>
+            All actions open in <b>Ops Drawer</b> (right sidenav)
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- RIGHT -->
+    <div class="right-col">
+      <mat-card class="card insights-card">
+        <div class="card-minihead">
+          <div class="h-title">Operational Insights</div>
+          <button mat-icon-button class="btn-icon">
+            <mat-icon>tune</mat-icon>
+          </button>
+        </div>
+
+        <!-- Donut -->
+        <div class="ins-block">
+          <div class="ins-title">
+            <span>Onboarding Breakdown</span>
+            <span class="badge">SLA</span>
+          </div>
+
+          <div class="donut-row">
+            <div
+              class="donut"
+              [style.--p1]="onboardingBreakdown().pct.submitted"
+              [style.--p2]="onboardingBreakdown().pct.inReview"
+              [style.--p3]="onboardingBreakdown().pct.approved"
+              [style.--p4]="onboardingBreakdown().pct.rejected"
+            >
+              <div class="donut-center">
+                <div class="donut-num">{{ onboardingBreakdown().submitted }}</div>
+                <div class="donut-lbl">Submitted</div>
+              </div>
+            </div>
+
+            <div class="legend">
+              <div class="leg"><span class="dot d1"></span><span>Submitted</span><b>{{ onboardingBreakdown().submitted }}</b></div>
+              <div class="leg"><span class="dot d2"></span><span>In Review</span><b>{{ onboardingBreakdown().inReview }}</b></div>
+              <div class="leg"><span class="dot d3"></span><span>Approved</span><b>{{ onboardingBreakdown().approved }}</b></div>
+              <div class="leg"><span class="dot d4"></span><span>Rejected</span><b>{{ onboardingBreakdown().rejected }}</b></div>
+            </div>
+          </div>
+
+          <div class="avg">Avg Time to Approval: <b>{{ onboardingBreakdown().avgTimeToApproval }}</b></div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Lifecycle -->
+        <div class="ins-block">
+          <div class="ins-title">
+            <span>Subscription Lifecycle</span>
+            <button mat-icon-button class="btn-icon">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+          </div>
+
+          <div class="bars">
+            <div class="bar-row">
+              <div class="lbl"><span class="dot d1"></span> Trials</div>
+              <div class="bar"><span class="fill f1" [style.width.%]="(subscriptionLifecycle().trials / lifecycleMax()) * 100"></span></div>
+              <div class="val">{{ subscriptionLifecycle().trials }}</div>
+            </div>
+
+            <div class="bar-row">
+              <div class="lbl"><span class="dot d3"></span> Active</div>
+              <div class="bar"><span class="fill f3" [style.width.%]="(subscriptionLifecycle().active / lifecycleMax()) * 100"></span></div>
+              <div class="val">{{ subscriptionLifecycle().active }}</div>
+            </div>
+
+            <div class="bar-row">
+              <div class="lbl"><span class="dot d2"></span> Past Due</div>
+              <div class="bar"><span class="fill f2" [style.width.%]="(subscriptionLifecycle().pastDue / lifecycleMax()) * 100"></span></div>
+              <div class="val">{{ subscriptionLifecycle().pastDue }}</div>
+            </div>
+
+            <div class="bar-row">
+              <div class="lbl"><span class="dot d4"></span> Canceling</div>
+              <div class="bar"><span class="fill f4" [style.width.%]="(subscriptionLifecycle().canceling / lifecycleMax()) * 100"></span></div>
+              <div class="val">{{ subscriptionLifecycle().canceling }}</div>
+            </div>
+
+            <div class="bar-row">
+              <div class="lbl"><span class="dot d5"></span> Canceled</div>
+              <div class="bar"><span class="fill f5" [style.width.%]="(subscriptionLifecycle().canceled / lifecycleMax()) * 100"></span></div>
+              <div class="val">{{ subscriptionLifecycle().canceled }}</div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="card audit-card">
+        <div class="card-minihead">
+          <div class="h-title">Recent Audit Feed</div>
+          <button mat-button class="link-btn">
+            See All <mat-icon class="chev">chevron_right</mat-icon>
+          </button>
+        </div>
+
+        <div class="audit-list">
+          <div class="audit-item" *ngFor="let a of auditFeed()">
+            <div class="a-ic" [ngClass]="'a-' + a.tone">
+              <mat-icon>{{ a.icon }}</mat-icon>
+            </div>
+            <div class="a-body">
+              <div class="a-title">{{ a.title }}</div>
+              <div class="a-sub">{{ a.subtitle }}</div>
+              <div class="a-time">{{ a.time }}</div>
+            </div>
+            <div class="a-actions">
+              <button mat-stroked-button class="btn-mini" (click)="onRetry(a)">Retry</button>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

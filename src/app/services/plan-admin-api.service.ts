@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, map, shareReplay } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { buildPageableParams } from 'src/app/shared/http/build-pageable-params';
 import { buildCriteriaParams } from 'src/app/shared/http/build-criteria-params';
@@ -28,18 +28,19 @@ export interface ListEntitlementsParams {
 
 @Injectable({ providedIn: 'root' })
 export class PlanAdminApiService {
-  private readonly services$:
-    | Observable<PagedResponse<WifenceServiceDto>>
-    | null = null;
+  private readonly services$: Observable<PagedResponse<WifenceServiceDto>>;
 
   constructor(
     private readonly http: HttpClient,
     @Inject(PLATFORM_ID) private readonly platformId: object
   ) {
     this.services$ = this.http
-      .get<PagedResponse<WifenceServiceDto>>(`${this.baseUrl()}/api/wifence-services`, {
+      .get<PagedResponse<WifenceServiceDto> | WifenceServiceDto[]>(`${this.baseUrl()}/api/wifence-services`, {
         params: new HttpParams().set('page', '0').set('size', '200'),
       })
+      .pipe(
+        map((resp) => this.normalizePaged(resp, { page: 0, size: 200 }))
+      )
       .pipe(shareReplay({ bufferSize: 1, refCount: true }));
   }
 
@@ -58,9 +59,11 @@ export class PlanAdminApiService {
       base
     );
 
-    return this.http.get<PagedResponse<SubscriptionPlanDto>>(`${this.baseUrl()}/api/subscription-plans`, {
-      params: httpParams,
-    });
+    return this.http
+      .get<PagedResponse<SubscriptionPlanDto> | SubscriptionPlanDto[]>(`${this.baseUrl()}/api/subscription-plans`, {
+        params: httpParams,
+      })
+      .pipe(map((resp) => this.normalizePaged(resp, { page: params.page, size: params.size })));
   }
 
   getPlan(id: string | number): Observable<SubscriptionPlanDto> {
@@ -104,8 +107,27 @@ export class PlanAdminApiService {
   }
 
   listServices(): Observable<PagedResponse<WifenceServiceDto>> {
-    // Initialized in constructor; kept null-safe for TS.
-    return this.services$!;
+    return this.services$;
+  }
+
+  private normalizePaged<T>(
+    resp: PagedResponse<T> | T[],
+    fallback: { page: number; size: number }
+  ): PagedResponse<T> {
+    if (Array.isArray(resp)) {
+      return {
+        content: resp,
+        totalElements: resp.length,
+        number: fallback.page,
+        size: fallback.size,
+      } as PagedResponse<T>;
+    }
+
+    const content = Array.isArray((resp as any)?.content) ? (resp as any).content : [];
+    const totalElements = typeof (resp as any)?.totalElements === 'number' ? (resp as any).totalElements : content.length;
+    const number = typeof (resp as any)?.number === 'number' ? (resp as any).number : fallback.page;
+    const size = typeof (resp as any)?.size === 'number' ? (resp as any).size : fallback.size;
+    return { ...(resp as any), content, totalElements, number, size } as PagedResponse<T>;
   }
 
   private baseUrl(): string {

@@ -576,6 +576,12 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/dashboard-app-admin/dashboard-app-admin.component').then(m => m.DashboardAppAdminComponent), 
                 data: { breadcrumb: 'Platform Admin', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE } 
             }),
+            entitledRoute(ENTITLEMENT_KEYS.ADMIN_CONSOLE, {   
+                path: 'dashboard-admin-new', 
+                canActivate: [entitlementRouteGuard, accessGuard],
+                loadComponent: () => import('./pages/admin/ops-dashboard/app-admin-ops-dashboard.component').then(m => m.AppAdminOpsDashboardComponent), 
+                data: { breadcrumb: 'Platform Admin', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE } 
+            }),
             {
                 path: 'admin',
                 children: [
