@@ -54,21 +54,22 @@
                 </span>
               </span>
             } @else if(isLoggedIn()) {
-              <!-- Show avatar once logged in -->
-              <span class="avatar-trigger no-underline" (click)="openSidebar()">
-                <span class="avatar-bg">
-                  @if (userAccount?.profileImage) {
-                    <img [src]="userAccount.profileImage" alt="Avatar" class="header-avatar" />
-                  }
-                  @if (!userAccount?.profileImage) {
-                    <lucide-icon name="user"></lucide-icon>
-                  }
-                </span>
-              </span>
+              <!-- Match main menu link style (e.g., Contact Us): icon + text + dropdown indicator -->
+              <button
+                type="button"
+                class="nav-link header-utility-link"
+                (click)="openSidebar()"
+                aria-label="Open profile menu"
+              >
+                <lucide-icon name="user"></lucide-icon>
+                {{ currentProfileLabel() || 'Profile' }}
+                <lucide-icon name="chevron-down" class="dropdown-indicator"></lucide-icon>
+              </button>
             } @else {
-              <!-- Show login icon when not logged in -->
-              <a routerLink="/sign-in" class="icon-link" aria-label="Sign In" data-testid="header-sign-in">
+              <!-- Match main menu link style (e.g., Contact Us): icon + text -->
+              <a routerLink="/sign-in" class="nav-link header-utility-link" aria-label="Sign In" data-testid="header-sign-in">
                 <lucide-icon name="log-in"></lucide-icon>
+                Log in
               </a>
             }
             <button class="navbar-toggler menu-trigger" type="button" aria-label="Toggle Menu" aria-controls="mainNav"

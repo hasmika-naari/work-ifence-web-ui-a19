@@ -429,6 +429,67 @@
             .menu-trigger {
                 display: none;
             }
+
+            /* Make Login/Profile match main header menu links (e.g., Contact Us) */
+            .header-utility-link {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                color: var(--secondaryColor, #0A66C2);
+                font-weight: var(--wf-header-font-weight);
+                font-size: var(--wf-header-font-size);
+                font-family: var(--wf-header-font-family);
+                line-height: 1;
+                text-decoration: none;
+                padding: 6px 4px 6px 4px;
+                transition: color .22s ease;
+                cursor: pointer !important;
+                background: transparent;
+                border: 0;
+
+                lucide-icon {
+                    width: var(--wf-header-icon-size);
+                    height: var(--wf-header-icon-size);
+                    margin-right: 8px;
+                    vertical-align: middle;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    stroke-width: var(--wf-header-stroke-width) !important;
+                    color: var(--secondaryColor, #0A66C2);
+                }
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    height: var(--wf-header-underline-height);
+                    background: var(--wf-header-active-color);
+                    border-radius: var(--wf-header-underline-radius);
+                    transform: scaleX(0);
+                    transform-origin: center;
+                    transition: transform .25s ease;
+                }
+
+                &:hover {
+                    color: var(--wf-header-hover-color);
+                    lucide-icon {
+                        color: var(--wf-header-hover-color) !important;
+                    }
+                }
+
+                &:hover::after {
+                    transform: scaleX(.85);
+                }
+
+                .dropdown-indicator {
+                    margin-left: auto;
+                    margin-right: 0;
+                    transition: transform 0.2s ease-in-out;
+                }
+            }
         }
 
 @media (max-width: 991px) {
@@ -498,6 +559,89 @@
     &:active { 
         background: rgba(0,0,0,.08); 
     }
+}
+
+/* Header utility actions (icon + text) */
+.header-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--mdc-theme-secondary, var(--secondaryColor));
+    position: relative;
+    text-decoration: none;
+    transition: color .22s ease;
+    font-weight: var(--wf-header-font-weight);
+    font-size: var(--wf-header-font-size);
+    font-family: var(--wf-header-font-family);
+    line-height: 1;
+}
+
+.header-action::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--wf-header-underline-height);
+    background: var(--wf-header-active-color);
+    border-radius: var(--wf-header-underline-radius);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform .25s ease;
+}
+
+.header-action:hover {
+    background: transparent;
+    color: var(--wf-header-hover-color);
+}
+
+.header-action:hover::after {
+    transform: scaleX(.85);
+}
+
+.header-action-text {
+    font-size: var(--wf-header-font-size);
+    font-weight: var(--wf-header-font-weight);
+    color: inherit;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.header-action-chevron {
+    width: 18px;
+    height: 18px;
+    color: inherit;
+}
+
+.header-action lucide-icon {
+    color: inherit;
+    width: var(--wf-header-icon-size);
+    height: var(--wf-header-icon-size);
+    stroke-width: var(--wf-header-stroke-width) !important;
+}
+
+/* Keep dropdown chevron slightly smaller than primary icon */
+.header-action-chevron {
+    width: 18px;
+    height: 18px;
+}
+
+/* Override the circle-only sizing when text is present */
+.avatar-trigger.header-action {
+    border: 0;
+    background: transparent;
+    border-radius: 999px !important;
+    min-width: unset;
+    justify-content: flex-start;
+    padding: 6px 4px;
+}
+
+.icon-link.header-action {
+    min-width: unset;
+    min-height: unset;
+    justify-content: flex-start;
+    padding: 6px 4px;
+    border-radius: 0;
 }
 
         .navbar-toggler {

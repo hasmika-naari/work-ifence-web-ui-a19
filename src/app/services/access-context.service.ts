@@ -1,5 +1,5 @@
-import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, effect, signal } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { EntitlementService } from './entitlement.service';
@@ -7,6 +7,7 @@ import { NavStore } from '../core/nav/nav.store';
 import { AccessMeDto, AccessProfileContextDto, OwnedProfileDto, SwitchProfileResponseDto } from '../models/access-me.model';
 import { AccessApiService } from './access-api.service';
 import { NavMenuService } from './nav-menu.service';
+import { UserStoreService } from './store/user-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class AccessContextService {
@@ -45,16 +46,39 @@ export class AccessContextService {
     private accessApi: AccessApiService,
     private navMenuService: NavMenuService,
     private entitlementService: EntitlementService,
-    private navStore: NavStore
+    private navStore: NavStore,
+    private userStore: UserStoreService
   ) {
-    this.reloadAll();
+    // Avoid firing authenticated endpoints before we know auth state.
+    // Refresh once login is confirmed; clear context on logout.
+    const loginStatus = this.userStore.getUserLoginStatus();
+    effect(() => {
+      const loggedIn = loginStatus();
+      if (loggedIn) {
+        this.reloadAll();
+      } else {
+        this.clearContext();
+      }
+    });
   }
 
   reloadAll() {
-    this.refreshAccessMe().subscribe();
-    this.refreshProfileContext().subscribe();
-    this.refreshEntitlements().subscribe();
-    this.refreshNavMenu().subscribe();
+    this.refreshAccessMe().subscribe({ error: () => void 0 });
+    this.refreshProfileContext().subscribe({ error: () => void 0 });
+    this.refreshEntitlements().subscribe({ error: () => void 0 });
+    this.refreshNavMenu().subscribe({ error: () => void 0 });
+  }
+
+  private clearContext(): void {
+    this.accessMe.set(null);
+    this.activeProfileKey.set(null);
+    this.ownedProfiles.set([]);
+
+    this.entitlementsMe.set(null);
+    this.navMenu.set(null);
+
+    this.entitlementService.invalidateCache();
+    this.navStore.clear();
   }
 
   /** Backend-standard profile switch endpoint. Updates accessMe immediately with the response payload. */
@@ -144,6 +168,15 @@ export class AccessContextService {
             }))
           );
         }
+      }),
+      catchError((err: unknown) => {
+        // /api/access/me returns 401 when logged out; don't leave the service in a broken state.
+        const httpErr = err as HttpErrorResponse;
+        if (httpErr?.status === 401 || httpErr?.status === 403) {
+          this.clearContext();
+        }
+        // Keep stream alive for callers.
+        return of({} as AccessMeDto);
       })
     );
   }

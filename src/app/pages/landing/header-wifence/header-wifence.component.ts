@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs';
 import { IconsModule } from 'src/app/shared/icons.module';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
+import { AccessContextService } from 'src/app/services/access-context.service';
 
 @Component({
     selector: 'app-header-wifence',
@@ -66,9 +67,38 @@ export class HeaderWorkIfenceComponent implements OnInit, AfterViewInit, AfterVi
     private storageService: LocalStorageService = inject(LocalStorageService);
     private userStore: UserStoreService = inject(UserStoreService);
     private accessFacade: AccessFacadeService = inject(AccessFacadeService);
+    private accessContext: AccessContextService = inject(AccessContextService);
     private remoteConfig: RemoteConfigFacadeService = inject(RemoteConfigFacadeService);
 
     readonly canUseAlerts = computed(() => this.accessFacade.can('ALERTS'));
+
+    readonly currentProfileLabel = computed(() => {
+        const activeKey = (this.accessContext.activeProfileKey() ?? '').toString().trim();
+        if (!activeKey) return '';
+
+        const owned = this.accessContext.ownedProfiles();
+        const match = (owned ?? []).find((p: any) => (p?.key ?? '').toString() === activeKey);
+        const label = (match?.label ?? '').toString().trim();
+        if (label) return label;
+
+        // Fallback labels if backend did not provide a label.
+        switch (activeKey) {
+            case 'ROLE_ADMIN':
+                return 'Admin';
+            case 'ROLE_USER':
+                return 'Personal';
+            case 'ROLE_ENTERPRISE_ADMIN':
+                return 'Enterprise Admin';
+            case 'ROLE_ENTERPRISE_EMPLOYEE':
+                return 'Enterprise';
+            default:
+                return activeKey
+                    .replace(/^ROLE_/, '')
+                    .replace(/_/g, ' ')
+                    .toLowerCase()
+                    .replace(/\b\w/g, (c) => c.toUpperCase());
+        }
+    });
 
     private router:Router =  inject(Router);
     private deviceService: DeviceDetectorService=  inject(DeviceDetectorService);
