@@ -33,6 +33,75 @@ async function waitForFile(filePath) {
   }
 }
 
+function getTopLevelRelativeImportSpecifiers(sourceText) {
+  const specs = [];
+  const lines = sourceText.split(/\r?\n/);
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    const isImportLine = trimmed.startsWith('import ');
+    const isExportFromLine = trimmed.startsWith('export ') && trimmed.includes(' from ');
+
+    // In generated server bundles, all static imports are at the top.
+    if (!isImportLine && !isExportFromLine) {
+      break;
+    }
+
+    const m = trimmed.match(/['"]([^'"]+)['"]/);
+    if (!m) continue;
+
+    const spec = m[1];
+    if (spec.startsWith('./') || spec.startsWith('../')) {
+      specs.push(spec);
+    }
+  }
+
+  return specs;
+}
+
+function resolveImportTarget(baseFile, spec) {
+  // Build output uses explicit .mjs imports; still support extension-less fallbacks for robustness.
+  const direct = path.resolve(path.dirname(baseFile), spec);
+  const candidates = [
+    direct,
+    `${direct}.mjs`,
+    `${direct}.js`,
+    path.join(direct, 'index.mjs'),
+    path.join(direct, 'index.js'),
+  ];
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+function findMissingEntryImports(entryFile) {
+  let source;
+  try {
+    source = fs.readFileSync(entryFile, 'utf8');
+  } catch {
+    return [entryFile];
+  }
+
+  const specs = getTopLevelRelativeImportSpecifiers(source);
+  const missing = [];
+
+  for (const spec of specs) {
+    const resolved = resolveImportTarget(entryFile, spec);
+    if (!resolved) {
+      missing.push(path.resolve(path.dirname(entryFile), spec));
+    }
+  }
+
+  return missing;
+}
+
 function latestMjsMtimeMs(dirPath) {
   let latest = 0;
   const stack = [dirPath];
@@ -89,7 +158,12 @@ async function waitForStableOutputDir() {
     }
 
     const after = latestMjsMtimeMs(watchDir);
-    if (after !== 0 && after === before) return;
+    if (after !== 0 && after === before) {
+      const missingImports = findMissingEntryImports(entry);
+      if (missingImports.length === 0) {
+        return;
+      }
+    }
   }
 }
 

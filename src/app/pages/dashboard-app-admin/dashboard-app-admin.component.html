@@ -141,14 +141,6 @@
                 <div class="audit-feed-meta">2 hours ago <span class="audit-feed-retry">Retry</span></div>
               </div>
             </div>
-            <div class="audit-feed-item">
-              <div class="audit-feed-avatar"><img src="/assets/avatar-entitlement.png" alt="Entitlement sync" onerror="this.src='/assets/avatar-default.png'"></div>
-              <div class="audit-feed-content">
-                <div class="audit-feed-user">Entitlement sync</div>
-                <div class="audit-feed-desc">Plans enrich: epterm</div>
-                <div class="audit-feed-meta">2 hours ago <span class="audit-feed-retry">Retry</span></div>
-              </div>
-            </div>
           </div>
           </div>
         </div>
@@ -186,18 +178,33 @@
                     <th>Status</th>
                     <th>Age</th>
                     <th>Priority</th>
-                    <th>SLA</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let row of filteredRequestRows">
-                  <td><img class="avatar" [src]="row.avatarSrc" [alt]="row.enterprise" /> {{ row.enterprise }}</td>
+                <tr *ngFor="let row of filteredRequestRows; let rowIndex = index" class="data-row">
+                  <td>{{ row.enterprise }}</td>
                   <td>{{ row.requestType }}</td>
                   <td>{{ row.requestedBy }}</td>
-                  <td><span class="chip submitted">{{ row.status }}</span></td>
+                  <td><span class="chip" [ngClass]="getStatusClass(row.status)">{{ row.status }}</span></td>
                   <td>{{ row.age }}</td>
-                  <td><span class="chip" [ngClass]="row.priority.toLowerCase()">{{ row.priority }}</span></td>
-                  <td><span class="chip ok">{{ row.sla }}</span></td>
+                  <td><span class="chip" [ngClass]="getPriorityClass(row.priority)">{{ row.priority }}</span></td>
+                  <td class="actions-cell">
+                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditRow($event, row)">
+                      <i class="pi pi-pencil"></i>
+                    </button>
+                    <div class="row-menu-wrap">
+                      <button type="button" class="row-action-icon" title="More actions" (click)="toggleActionMenu($event, rowIndex)">
+                        <i class="pi pi-ellipsis-v"></i>
+                      </button>
+                      <div class="row-context-menu" *ngIf="openActionMenuIndex === rowIndex" (click)="$event.stopPropagation()">
+                        <button type="button" (click)="onUpdateRowStatus($event, row, 'Submitted')">Set Submitted</button>
+                        <button type="button" (click)="onUpdateRowStatus($event, row, 'In Progress')">Set In Progress</button>
+                        <button type="button" (click)="onUpdateRowStatus($event, row, 'Completed')">Set Completed</button>
+                        <button type="button" class="danger" (click)="onDeleteRow($event, row)">Delete</button>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
                 <tr class="empty-row" *ngFor="let _ of requestTablePlaceholders">
                   <td colspan="7"></td>
@@ -223,7 +230,7 @@
                     [showCloseIcon]="true"
                     (onHide)="closeFilterPanel()"
                     styleClass="workqueue-drawer"
-                    [style]="{width: '320px'}">
+                    [style]="{width: '300px'}">
             <ng-template pTemplate="header">
               <h3>Filters</h3>
             </ng-template>
@@ -336,6 +343,29 @@
               </div>
             </div>
           </p-drawer>
+
+          <p-drawer [(visible)]="showRowEditDrawer"
+                    [position]="'right'"
+                    [appendTo]="'body'"
+                    [modal]="false"
+                    [transitionOptions]="'180ms cubic-bezier(0.2, 0, 0, 1)'"
+                    [showCloseIcon]="true"
+                    (onHide)="closeRowEditDrawer()"
+                    styleClass="workqueue-row-edit-drawer"
+                    [style]="{width: '360px'}">
+            <ng-template pTemplate="header">
+              <h3>{{ getEditDrawerTitle() }}</h3>
+            </ng-template>
+
+            <div class="row-edit-drawer-content" [ngSwitch]="getCurrentEditTab()">
+              <db-request-row-edit-form *ngSwitchCase="'requests'"></db-request-row-edit-form>
+              <db-subscription-row-edit-form *ngSwitchCase="'subscriptions'"></db-subscription-row-edit-form>
+              <db-plan-row-edit-form *ngSwitchCase="'plans'"></db-plan-row-edit-form>
+              <db-feature-flag-row-edit-form *ngSwitchCase="'featureFlags'"></db-feature-flag-row-edit-form>
+              <db-audit-row-edit-form *ngSwitchCase="'audit'"></db-audit-row-edit-form>
+            </div>
+          </p-drawer>
+
         <div *ngIf="activeTab==='subscriptions'">
           <div class="filter-chips-row" *ngIf="Object.keys(activeFilters).length > 0">
             <span *ngFor="let key of Object.keys(activeFilters)" class="filter-chip">
@@ -353,60 +383,24 @@
                   <th>Status</th>
                   <th>Start Date</th>
                   <th>End Date</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>TechCorp</td>
-                  <td>Premium</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-01-01</td>
-                  <td>2027-01-01</td>
-                </tr>
-                <tr>
-                  <td>BlueWave Inc.</td>
-                  <td>Standard</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-02-01</td>
-                  <td>2027-02-01</td>
-                </tr>
-                <tr>
-                  <td>MedSync</td>
-                  <td>Feature Enablement</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-03-01</td>
-                  <td>2027-03-01</td>
-                </tr>
-                <tr>
-                  <td>FinSecure</td>
-                  <td>Data Migration</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-04-01</td>
-                  <td>2027-04-01</td>
-                </tr>
-                <tr>
-                  <td>EduLink</td>
-                  <td>API Integration</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-05-01</td>
-                  <td>2027-05-01</td>
-                </tr>
-                <tr>
-                  <td>HealthPlus</td>
-                  <td>Custom Application</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-06-01</td>
-                  <td>2027-06-01</td>
-                </tr>
-                <tr>
-                  <td>DataSphere</td>
-                  <td>Entitlements Sync</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-07-01</td>
-                  <td>2027-07-01</td>
+                <tr *ngFor="let row of subscriptionRows; let rowIndex = index" class="data-row">
+                  <td>{{ row.enterprise }}</td>
+                  <td>{{ row.subscriptionType }}</td>
+                  <td><span class="chip ok">{{ row.status }}</span></td>
+                  <td>{{ row.startDate }}</td>
+                  <td>{{ row.endDate }}</td>
+                  <td class="actions-cell">
+                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'subscriptions', rowIndex)">
+                      <i class="pi pi-pencil"></i>
+                    </button>
+                  </td>
                 </tr>
                 <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(7)">
-                  <td colspan="5"></td>
+                  <td colspan="6"></td>
                 </tr>
               </tbody>
             </table>
@@ -438,46 +432,24 @@
                   <th>Status</th>
                   <th>Start Date</th>
                   <th>End Date</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>BlueWave Inc.</td>
-                  <td>Standard</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-02-01</td>
-                  <td>2027-02-01</td>
-                </tr>
-                <tr>
-                  <td>FinSecure</td>
-                  <td>Data Migration</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-04-01</td>
-                  <td>2027-04-01</td>
-                </tr>
-                <tr>
-                  <td>EduLink</td>
-                  <td>API Integration</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-05-01</td>
-                  <td>2027-05-01</td>
-                </tr>
-                <tr>
-                  <td>HealthPlus</td>
-                  <td>Custom Application</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-06-01</td>
-                  <td>2027-06-01</td>
-                </tr>
-                <tr>
-                  <td>DataSphere</td>
-                  <td>Entitlements Sync</td>
-                  <td><span class="chip ok">Active</span></td>
-                  <td>2026-07-01</td>
-                  <td>2027-07-01</td>
+                <tr *ngFor="let row of planRows; let rowIndex = index" class="data-row">
+                  <td>{{ row.enterprise }}</td>
+                  <td>{{ row.planType }}</td>
+                  <td><span class="chip ok">{{ row.status }}</span></td>
+                  <td>{{ row.startDate }}</td>
+                  <td>{{ row.endDate }}</td>
+                  <td class="actions-cell">
+                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'plans', rowIndex)">
+                      <i class="pi pi-pencil"></i>
+                    </button>
+                  </td>
                 </tr>
                 <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(5)">
-                  <td colspan="5"></td>
+                  <td colspan="6"></td>
                 </tr>
               </tbody>
             </table>
@@ -508,35 +480,23 @@
                   <th>Flag Name</th>
                   <th>Status</th>
                   <th>Enabled</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>FinSecure</td>
-                  <td>BetaAccess</td>
-                  <td><span class="chip ok">Enabled</span></td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>EduLink</td>
-                  <td>API Integration</td>
-                  <td><span class="chip ok">Enabled</span></td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>HealthPlus</td>
-                  <td>Custom Application</td>
-                  <td><span class="chip ok">Enabled</span></td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>DataSphere</td>
-                  <td>Entitlements Sync</td>
-                  <td><span class="chip ok">Enabled</span></td>
-                  <td>Yes</td>
+                <tr *ngFor="let row of featureFlagRows; let rowIndex = index" class="data-row">
+                  <td>{{ row.enterprise }}</td>
+                  <td>{{ row.flagName }}</td>
+                  <td><span class="chip ok">{{ row.status }}</span></td>
+                  <td>{{ row.enabled }}</td>
+                  <td class="actions-cell">
+                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'featureFlags', rowIndex)">
+                      <i class="pi pi-pencil"></i>
+                    </button>
+                  </td>
                 </tr>
                 <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
-                  <td colspan="4"></td>
+                  <td colspan="5"></td>
                 </tr>
               </tbody>
             </table>
@@ -567,35 +527,23 @@
                   <th>Event Type</th>
                   <th>Status</th>
                   <th>Date</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>EduLink</td>
-                  <td>Login</td>
-                  <td><span class="chip ok">Success</span></td>
-                  <td>2026-02-16</td>
-                </tr>
-                <tr>
-                  <td>FinSecure</td>
-                  <td>Data Migration</td>
-                  <td><span class="chip ok">Success</span></td>
-                  <td>2026-02-15</td>
-                </tr>
-                <tr>
-                  <td>HealthPlus</td>
-                  <td>Custom Application</td>
-                  <td><span class="chip ok">Success</span></td>
-                  <td>2026-02-14</td>
-                </tr>
-                <tr>
-                  <td>DataSphere</td>
-                  <td>Entitlements Sync</td>
-                  <td><span class="chip ok">Success</span></td>
-                  <td>2026-02-13</td>
+                <tr *ngFor="let row of auditRows; let rowIndex = index" class="data-row">
+                  <td>{{ row.enterprise }}</td>
+                  <td>{{ row.eventType }}</td>
+                  <td><span class="chip ok">{{ row.status }}</span></td>
+                  <td>{{ row.date }}</td>
+                  <td class="actions-cell">
+                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'audit', rowIndex)">
+                      <i class="pi pi-pencil"></i>
+                    </button>
+                  </td>
                 </tr>
                 <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
-                  <td colspan="4"></td>
+                  <td colspan="5"></td>
                 </tr>
               </tbody>
             </table>
