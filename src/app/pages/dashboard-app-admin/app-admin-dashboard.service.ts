@@ -10,7 +10,7 @@ export class AppAdminDashboardService {
 
   getSummary(): Observable<AppAdminDashboardSummary> {
     return forkJoin({
-      baseSummary: this.http.get<AppAdminDashboardSummary>('/api/app-admin/dashboard/summary').pipe(
+      baseSummary: this.http.get<AppAdminDashboardSummary>('/api/ext/app-admin/dashboard/summary').pipe(
         catchError(() => of({} as AppAdminDashboardSummary)),
       ),
       activeSubscriptions: this.getPaged<any>('/api/wifence-subscriptions', {
@@ -65,16 +65,8 @@ export class AppAdminDashboardService {
     );
   }
 
-  getUsers(params: Record<string, unknown>): Observable<PagedResponse<any>> {
-    return this.getPaged<any>('/api/admin/users', params).pipe(
-      catchError((error: { status?: number }) => {
-        if (error?.status === 404 || error?.status === 405) {
-          return this.getPaged<any>('/api/users', params);
-        }
-
-        return throwError(() => error);
-      }),
-    );
+  getAppAdminUsers(params: Record<string, unknown>): Observable<PagedResponse<any>> {
+    return this.getPaged<any>('/api/ext/app-admin/users', params);
   }
 
   getAuditLogs(params: Record<string, unknown>): Observable<PagedResponse<any>> {
@@ -86,23 +78,23 @@ export class AppAdminDashboardService {
   }
 
   updateOnboarding(id: string | number, payload: Record<string, unknown>): Observable<any> {
-    return this.http.put<any>(`/api/enterprise-onboardings/${encodeURIComponent(String(id))}`, payload);
+    return this.http.put<any>(`/api/ext/enterprise-onboardings/${encodeURIComponent(String(id))}`, payload);
   }
 
   updateSubscription(id: string | number, payload: Record<string, unknown>): Observable<any> {
-    return this.http.put<any>(`/api/wifence-subscriptions/${encodeURIComponent(String(id))}`, payload);
+    return this.http.put<any>(`/api/ext/wifence-subscriptions/${encodeURIComponent(String(id))}`, payload);
   }
 
   updatePlan(id: string | number, payload: Record<string, unknown>): Observable<any> {
-    return this.http.put<any>(`/api/subscription-plans/${encodeURIComponent(String(id))}`, payload);
+    return this.http.put<any>(`/api/ext/subscription-plans/${encodeURIComponent(String(id))}`, payload);
   }
 
   updateUser(idOrLogin: string | number, payload: Record<string, unknown>): Observable<any> {
     const encoded = encodeURIComponent(String(idOrLogin));
-    return this.http.put<any>(`/api/admin/users/${encoded}`, payload).pipe(
+    return this.http.put<any>(`/api/ext/admin/users/${encoded}`, payload).pipe(
       catchError((error: { status?: number }) => {
         if (error?.status === 404 || error?.status === 405) {
-          return this.http.put<any>(`/api/users/${encoded}`, payload);
+          return this.http.put<any>(`/api/ext/users/${encoded}`, payload);
         }
 
         return throwError(() => error);
@@ -112,10 +104,10 @@ export class AppAdminDashboardService {
 
   updateAuditLog(id: string | number, payload: Record<string, unknown>): Observable<any> {
     const encoded = encodeURIComponent(String(id));
-    return this.http.put<any>(`/api/audit-logs/${encoded}`, payload).pipe(
+    return this.http.put<any>(`/api/ext/audit-logs/${encoded}`, payload).pipe(
       catchError((error: { status?: number }) => {
         if (error?.status === 404 || error?.status === 405) {
-          return this.http.put<any>(`/api/admin/audit-logs/${encoded}`, payload);
+          return this.http.put<any>(`/api/ext/admin/audit-logs/${encoded}`, payload);
         }
 
         return throwError(() => error);

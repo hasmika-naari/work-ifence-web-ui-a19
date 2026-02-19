@@ -52,6 +52,11 @@ export interface UserRow {
   email: string;
   activated: string;
   roles: string;
+  subscription?: {
+    planCode?: string;
+    status?: string;
+    nextBillingDate?: string;
+  };
 }
 
 export interface AuditLogRow {

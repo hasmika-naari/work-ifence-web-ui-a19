@@ -13,23 +13,23 @@ export class ResumeTemplateAdminApiService {
   ) {}
 
   listTemplates(): Observable<ResumeTemplateRecord[]> {
-    return this.http.get<ResumeTemplateRecord[]>(`${this.getBaseUrl()}/api/admin/resume-templates`);
+    return this.http.get<ResumeTemplateRecord[]>(`${this.getBaseUrl()}/api/ext/admin/resume-templates`);
   }
 
   createTemplate(payload: ResumeTemplateUpsert): Observable<ResumeTemplateRecord> {
-    return this.http.post<ResumeTemplateRecord>(`${this.getBaseUrl()}/api/admin/resume-templates`, payload);
+    return this.http.post<ResumeTemplateRecord>(`${this.getBaseUrl()}/api/ext/admin/resume-templates`, payload);
   }
 
   updateTemplate(id: string | number, payload: ResumeTemplateUpsert): Observable<ResumeTemplateRecord> {
     return this.http.put<ResumeTemplateRecord>(
-      `${this.getBaseUrl()}/api/admin/resume-templates/${encodeURIComponent(String(id))}`,
+      `${this.getBaseUrl()}/api/ext/admin/resume-templates/${encodeURIComponent(String(id))}`,
       payload
     );
   }
 
   patchTemplate(id: string | number, patch: Partial<ResumeTemplateUpsert>): Observable<ResumeTemplateRecord> {
     return this.http.patch<ResumeTemplateRecord>(
-      `${this.getBaseUrl()}/api/admin/resume-templates/${encodeURIComponent(String(id))}`,
+      `${this.getBaseUrl()}/api/ext/admin/resume-templates/${encodeURIComponent(String(id))}`,
       patch
     );
   }

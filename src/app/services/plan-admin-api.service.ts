@@ -67,15 +67,15 @@ export class PlanAdminApiService {
   }
 
   getPlan(id: string | number): Observable<SubscriptionPlanDto> {
-    return this.http.get<SubscriptionPlanDto>(`${this.baseUrl()}/api/subscription-plans/${encodeURIComponent(String(id))}`);
+    return this.http.get<SubscriptionPlanDto>(`${this.baseUrl()}/api/ext/subscription-plans/${encodeURIComponent(String(id))}`);
   }
 
   savePlan(plan: SubscriptionPlanDto): Observable<SubscriptionPlanDto> {
     if (!plan.id) {
-      return this.http.post<SubscriptionPlanDto>(`${this.baseUrl()}/api/subscription-plans`, plan);
+      return this.http.post<SubscriptionPlanDto>(`${this.baseUrl()}/api/ext/subscription-plans`, plan);
     }
     return this.http.put<SubscriptionPlanDto>(
-      `${this.baseUrl()}/api/subscription-plans/${encodeURIComponent(String(plan.id))}`,
+      `${this.baseUrl()}/api/ext/subscription-plans/${encodeURIComponent(String(plan.id))}`,
       plan
     );
   }

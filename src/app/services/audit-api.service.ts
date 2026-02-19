@@ -21,7 +21,7 @@ export class AuditApiService {
       return of({ content: [], totalElements: 0, number: query.page, size: query.size });
     }
 
-    return this.http.get<PagedResponse<AuditEventRow>>(`${this.getBaseUrl()}/api/admin/audit/events`, {
+    return this.http.get<PagedResponse<AuditEventRow>>(`${this.getBaseUrl()}/api/ext/admin/audit/events`, {
       params: this.toParams(query),
     });
   }

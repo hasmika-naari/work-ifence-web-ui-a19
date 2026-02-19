@@ -1229,7 +1229,7 @@ export class DashboardAppAdminComponent implements OnInit, AfterViewInit {
     this.tableLoadFailed.users = false;
 
     this.dashboardService
-      .getUsers(this.buildRequestParams('users'))
+      .getAppAdminUsers(this.buildRequestParams('users'))
       .pipe(
         catchError(() => {
           this.tableLoadFailed.users = true;
@@ -1248,6 +1248,11 @@ export class DashboardAppAdminComponent implements OnInit, AfterViewInit {
           email: row.email || '—',
           activated: row.activated === false ? 'No' : 'Yes',
           roles: Array.isArray(row.roles) ? row.roles.join(', ') : row.roles || '—',
+          subscription: {
+            planCode: this.toText(row?.subscription?.planCode) || undefined,
+            status: this.toText(row?.subscription?.status) || undefined,
+            nextBillingDate: this.toText(row?.subscription?.nextBillingDate) || undefined,
+          },
         }));
       });
   }

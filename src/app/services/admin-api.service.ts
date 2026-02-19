@@ -45,34 +45,34 @@ export class AdminApiService {
     });
 
     return this.http.get<PagedResponse<AdminOnboardingRequestRow>>(
-      `${this.getBaseUrl()}/api/admin/onboarding/requests`,
+      `${this.getBaseUrl()}/api/ext/admin/onboarding/requests`,
       { params: httpParams }
     );
   }
 
   getOnboardingRequest(id: string): Observable<Record<string, any>> {
     return this.http.get<Record<string, any>>(
-      `${this.getBaseUrl()}/api/admin/onboarding/requests/${encodeURIComponent(id)}`
+      `${this.getBaseUrl()}/api/ext/admin/onboarding/requests/${encodeURIComponent(id)}`
     );
   }
 
   approveOnboarding(id: string, body: { adminNotes?: string }): Observable<void> {
     return this.http.post<void>(
-      `${this.getBaseUrl()}/api/admin/onboarding/requests/${encodeURIComponent(id)}/approve`,
+      `${this.getBaseUrl()}/api/ext/admin/onboarding/requests/${encodeURIComponent(id)}/approve`,
       body
     );
   }
 
   rejectOnboarding(id: string, body: { adminNotes?: string }): Observable<void> {
     return this.http.post<void>(
-      `${this.getBaseUrl()}/api/admin/onboarding/requests/${encodeURIComponent(id)}/reject`,
+      `${this.getBaseUrl()}/api/ext/admin/onboarding/requests/${encodeURIComponent(id)}/reject`,
       body
     );
   }
 
   needMoreInfoOnboarding(id: string, body: { adminNotes?: string }): Observable<void> {
     return this.http.post<void>(
-      `${this.getBaseUrl()}/api/admin/onboarding/requests/${encodeURIComponent(id)}/need-more-info`,
+      `${this.getBaseUrl()}/api/ext/admin/onboarding/requests/${encodeURIComponent(id)}/need-more-info`,
       body
     );
   }
@@ -91,35 +91,35 @@ export class AdminApiService {
     });
 
     return this.http.get<PagedResponse<AdminSubscriptionRow>>(
-      `${this.getBaseUrl()}/api/admin/subscriptions`,
+      `${this.getBaseUrl()}/api/ext/admin/subscriptions`,
       { params: httpParams }
     );
   }
 
   extendTrial(id: string, body: { days: number; reason: string }): Observable<void> {
     return this.http.post<void>(
-      `${this.getBaseUrl()}/api/admin/subscriptions/${encodeURIComponent(id)}/extend-trial`,
+      `${this.getBaseUrl()}/api/ext/admin/subscriptions/${encodeURIComponent(id)}/extend-trial`,
       body
     );
   }
 
   endTrial(id: string): Observable<void> {
     return this.http.post<void>(
-      `${this.getBaseUrl()}/api/admin/subscriptions/${encodeURIComponent(id)}/end-trial`,
+      `${this.getBaseUrl()}/api/ext/admin/subscriptions/${encodeURIComponent(id)}/end-trial`,
       {}
     );
   }
 
   activate(id: string): Observable<void> {
     return this.http.post<void>(
-      `${this.getBaseUrl()}/api/admin/subscriptions/${encodeURIComponent(id)}/activate`,
+      `${this.getBaseUrl()}/api/ext/admin/subscriptions/${encodeURIComponent(id)}/activate`,
       {}
     );
   }
 
   suspend(id: string): Observable<void> {
     return this.http.post<void>(
-      `${this.getBaseUrl()}/api/admin/subscriptions/${encodeURIComponent(id)}/suspend`,
+      `${this.getBaseUrl()}/api/ext/admin/subscriptions/${encodeURIComponent(id)}/suspend`,
       {}
     );
   }

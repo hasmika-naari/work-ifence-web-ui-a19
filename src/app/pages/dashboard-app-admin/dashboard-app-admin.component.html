@@ -544,12 +544,15 @@
                   <th (click)="onSort('users', 'email')" [class]="getSortClass('users', 'email')">Email</th>
                   <th (click)="onSort('users', 'activated')" [class]="getSortClass('users', 'activated')">Activated</th>
                   <th (click)="onSort('users', 'roles')" [class]="getSortClass('users', 'roles')">Roles</th>
+                  <th>Plan</th>
+                  <th>Status</th>
+                  <th>Next Billing</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngIf="tableLoading.users" class="data-row">
-                  <td colspan="6" class="skeleton-block" style="height:28px;"></td>
+                  <td colspan="9" class="skeleton-block" style="height:28px;"></td>
                 </tr>
                 <tr *ngFor="let row of userRows; let rowIndex = index" class="data-row" [style.display]="tableLoading.users ? 'none' : ''">
                   <td>{{ row.login }}</td>
@@ -557,6 +560,13 @@
                   <td>{{ row.email }}</td>
                   <td>{{ row.activated }}</td>
                   <td>{{ row.roles }}</td>
+                  <td>{{ row.subscription?.planCode || '—' }}</td>
+                  <td>
+                    <span class="badge rounded-pill subscription-status-badge" [ngClass]="statusClass(row.subscription?.status)">
+                      {{ statusLabel(row.subscription?.status) }}
+                    </span>
+                  </td>
+                  <td>{{ row.subscription?.nextBillingDate ? formatDate(row.subscription?.nextBillingDate) : '—' }}</td>
                   <td class="actions-cell">
                     <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'users', rowIndex)">
                       <i class="pi pi-pencil"></i>
@@ -567,11 +577,11 @@
                   </td>
                 </tr>
                 <tr *ngIf="!tableLoading.users && userRows.length === 0" class="no-record-row">
-                  <td colspan="6" class="text-center py-3 text-muted">No records found</td>
+                  <td colspan="9" class="text-center py-3 text-muted">No records found</td>
                 </tr>
                 <ng-container *ngIf="userRows.length > 0">
                   <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
-                    <td colspan="6"></td>
+                    <td colspan="9"></td>
                   </tr>
                 </ng-container>
               </tbody>

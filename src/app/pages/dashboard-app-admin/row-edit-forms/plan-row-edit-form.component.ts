@@ -20,7 +20,10 @@ import { DashboardRowEditStore } from '../dashboard-row-edit.store';
       <input type="text" formControlName="price" />
 
       <label>Cycle</label>
-      <input type="text" formControlName="cycle" />
+      <select formControlName="cycle">
+        <option value="">—</option>
+        <option *ngFor="let cycle of cycleOptions" [value]="cycle">{{ cycle }}</option>
+      </select>
 
       <label>Active</label>
       <select formControlName="active">
@@ -39,6 +42,8 @@ export class PlanRowEditFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly rowEditStore = inject(DashboardRowEditStore);
 
+  readonly cycleOptions = ['MONTHLY', 'QUARTERLY', 'YEARLY', 'ONE_TIME'] as const;
+
   readonly form = this.fb.group({
     planCode: [''],
     name: [''],
@@ -55,12 +60,45 @@ export class PlanRowEditFormComponent {
         return;
       }
 
-      this.form.patchValue(rowData as PlanRow, { emitEvent: false });
+      const planRow = rowData as PlanRow;
+      this.form.patchValue(
+        {
+          ...planRow,
+          cycle: this.normalizeCycleValue(planRow.cycle ?? ''),
+        },
+        { emitEvent: false },
+      );
     });
   }
 
   save(): void {
-    this.rowEditStore.submitCurrentRow(this.form.getRawValue() as PlanRow);
+    const formValue = this.form.getRawValue();
+    this.rowEditStore.submitCurrentRow({
+      ...formValue,
+      cycle: this.normalizeCycleValue(formValue.cycle ?? ''),
+    } as PlanRow);
+  }
+
+  private normalizeCycleValue(value: string): string {
+    const normalized = String(value ?? '')
+      .trim()
+      .toUpperCase()
+      .replace(/[-\s]+/g, '_');
+
+    switch (normalized) {
+      case 'MONTHLY':
+      case 'QUARTERLY':
+      case 'YEARLY':
+      case 'ONE_TIME':
+        return normalized;
+      case 'ANNUAL':
+        return 'YEARLY';
+      case 'ONETIME':
+      case 'ONE-TIME':
+        return 'ONE_TIME';
+      default:
+        return normalized;
+    }
   }
 
   cancel(): void {

@@ -89,6 +89,6 @@ export class EnterpriseApiService {
 
   getEnterpriseSubscription(enterpriseId: string): Observable<any> {
     const params = new HttpParams().set('scope', 'ENTERPRISE').set('subscriberId', enterpriseId);
-    return this.http.get('/api/subscriptions/current', { params });
+    return this.http.get('/api/ext/subscriptions/current', { params });
   }
 }

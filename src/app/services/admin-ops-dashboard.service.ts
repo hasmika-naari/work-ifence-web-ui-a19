@@ -83,7 +83,7 @@ export class AdminOpsDashboardService {
 
   /** KPI 4: Entitlement health. */
   getEntitlementHealth(): Observable<OpsEntitlementHealthDto> {
-    return this.http.get<OpsEntitlementHealthDto>(`${this.baseUrl()}/api/admin/ops/entitlements/health`);
+    return this.http.get<OpsEntitlementHealthDto>(`${this.baseUrl()}/api/ext/admin/ops/entitlements/health`);
   }
 
   /** KPI 5: Security events total in last 24 hours. */
@@ -94,12 +94,12 @@ export class AdminOpsDashboardService {
 
   /** Insights: onboarding breakdown summary. */
   getOnboardingSummary(): Observable<OpsOnboardingSummaryDto> {
-    return this.http.get<OpsOnboardingSummaryDto>(`${this.baseUrl()}/api/admin/ops/onboarding/summary`);
+    return this.http.get<OpsOnboardingSummaryDto>(`${this.baseUrl()}/api/ext/admin/ops/onboarding/summary`);
   }
 
   /** Insights: subscription lifecycle summary (ops only). */
   getSubscriptionsSummary(): Observable<OpsSubscriptionsSummaryDto> {
-    return this.http.get<OpsSubscriptionsSummaryDto>(`${this.baseUrl()}/api/admin/ops/subscriptions/summary`);
+    return this.http.get<OpsSubscriptionsSummaryDto>(`${this.baseUrl()}/api/ext/admin/ops/subscriptions/summary`);
   }
 
   /** Insights: recent audit feed. */
