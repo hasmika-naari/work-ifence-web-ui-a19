@@ -33,7 +33,38 @@ export function app(): express.Express {
 
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
-  const indexHtml = join(serverDistFolder, 'index.server.html');
+  const templateCandidates = [
+    join(serverDistFolder, 'index.server.html'),
+    join(browserDistFolder, 'index.server.html'),
+    join(browserDistFolder, 'index.html'),
+    resolve(process.cwd(), 'index.server.html'),
+  ];
+
+  let cachedTemplate: string | null = null;
+
+  const resolveTemplatePath = (): string | null => {
+    for (const candidate of templateCandidates) {
+      if (fs.existsSync(candidate)) {
+        return candidate;
+      }
+    }
+    return null;
+  };
+
+  const loadSsrTemplate = (): string => {
+    const templatePath = resolveTemplatePath();
+    if (templatePath) {
+      const template = fs.readFileSync(templatePath, 'utf8');
+      cachedTemplate = template;
+      return template;
+    }
+
+    if (cachedTemplate !== null) {
+      return cachedTemplate;
+    }
+
+    throw new Error(`SSR template not found. Checked: ${templateCandidates.join(', ')}`);
+  };
 
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
@@ -74,7 +105,7 @@ export function app(): express.Express {
   server.get('*', async (req, res, next) => {
     try {
       const html = await renderApplication(bootstrap, {
-        document: fs.readFileSync(indexHtml, 'utf8'),
+        document: loadSsrTemplate(),
         url: req.originalUrl,
         platformProviders: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }],
       });

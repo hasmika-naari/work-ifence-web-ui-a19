@@ -1,6 +1,7 @@
-export type DashboardRowEditTab = 'requests' | 'subscriptions' | 'plans' | 'featureFlags' | 'audit';
+export type DashboardRowEditTab = 'requests' | 'subscriptions' | 'plans' | 'users' | 'auditLogs' | 'entitlements' | 'featureFlags' | 'audit';
 
 export interface WorkQueueRequestRow {
+  id?: string;
   enterprise: string;
   avatarSrc: string;
   requestType: string;
@@ -12,26 +13,54 @@ export interface WorkQueueRequestRow {
 }
 
 export interface SubscriptionRow {
+  id?: string;
+  seeded?: boolean;
+  createdBy?: string;
+  providerSubscriptionId?: string;
+  subscriberType?: string;
+  subscriberId?: string;
+  subscriberDisplayName?: string;
+  planId?: string;
+  planCode?: string;
+  planDisplayName?: string;
   enterprise: string;
-  subscriptionType: string;
+  plan: string;
   status: string;
   startDate: string;
-  endDate: string;
+  nextBilling?: string;
+  nextBillingDate?: string;
+  trialEndDate?: string;
+  cancelAtPeriodEnd?: boolean;
+  autoRenew?: boolean;
+  createdDate?: string;
+  lastModifiedDate?: string;
 }
 
 export interface PlanRow {
-  enterprise: string;
-  planType: string;
-  status: string;
-  startDate: string;
-  endDate: string;
+  id?: string;
+  planCode: string;
+  name: string;
+  price: string;
+  cycle: string;
+  active: string;
 }
 
-export interface FeatureFlagRow {
-  enterprise: string;
-  flagName: string;
-  status: string;
-  enabled: string;
+export interface UserRow {
+  id?: string;
+  login: string;
+  name: string;
+  email: string;
+  activated: string;
+  roles: string;
+}
+
+export interface AuditLogRow {
+  id?: string;
+  when: string;
+  actor: string;
+  action: string;
+  entity: string;
+  entityId: string;
 }
 
 export interface AuditRow {
@@ -41,4 +70,28 @@ export interface AuditRow {
   date: string;
 }
 
-export type DashboardEditableRow = WorkQueueRequestRow | SubscriptionRow | PlanRow | FeatureFlagRow | AuditRow;
+export interface FeatureFlagRow {
+  enterprise: string;
+  flagName: string;
+  status: string;
+  enabled: string;
+}
+
+export interface EntitlementRow {
+  plan: string;
+  sectionKey: string;
+  title: string;
+  roleKey: string;
+  sortOrder: string;
+  active: string;
+}
+
+export type DashboardEditableRow =
+  | WorkQueueRequestRow
+  | SubscriptionRow
+  | PlanRow
+  | UserRow
+  | AuditLogRow
+  | EntitlementRow
+  | AuditRow
+  | FeatureFlagRow;

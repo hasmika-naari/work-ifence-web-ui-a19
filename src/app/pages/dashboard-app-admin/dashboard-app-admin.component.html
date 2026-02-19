@@ -7,76 +7,77 @@
 
     <!-- Stats Cards Row Only -->
     <div class="stats-container">
+      <div class="widget-inline-error" *ngIf="summaryLoadFailed">Failed to load</div>
       <div class="stat-card">
         <div class="stat-header">
           <span class="stat-title">Pending Onboardings</span>
           <span class="stat-icon onboarding"><i class="pi pi-user-plus"></i></span>
         </div>
-        <div class="stat-body">14</div>
+        <div class="stat-body" [class.skeleton-block]="summaryLoading">{{ summaryLoading ? '' : (summary.pendingOnboardingsTotal ?? 0) }}</div>
         <div class="stat-details">
-          <div class="stat-sub">8 onboarding, 6 in review</div>
-          <div class="stat-sub">High priority: 3</div>
-          <a class="stat-link" href="#">View details »</a>
+          <div class="stat-sub" *ngIf="hasOnboardingBreakdown">{{ summaryLoading ? ' ' : ('Submitted: ' + (onboardingBreakdown?.submitted ?? 0)) }}</div>
+          <div class="stat-sub" *ngIf="hasOnboardingBreakdown">{{ summaryLoading ? ' ' : ('In Review: ' + (onboardingBreakdown?.inReview ?? 0)) }}</div>
+          <a class="stat-link" href="#">View all »</a>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">Trials Expiring <span class="stat-title-sub">(7 days)</span></span>
+          <span class="stat-title">Active Subscriptions</span>
           <span class="stat-icon trials"><i class="pi pi-clock"></i></span>
         </div>
-        <div class="stat-body">6</div>
+        <div class="stat-body" [class.skeleton-block]="summaryLoading">{{ summaryLoading ? '' : (summary.activeSubscriptions ?? 0) }}</div>
         <div class="stat-details">
-          <div class="stat-sub">Renewal reminders sent: 4</div>
-          <div class="stat-sub">Needs follow-up: 2</div>
-          <a class="stat-link" href="#">View details »</a>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Live subscription count' }}</div>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Across all enterprises' }}</div>
+          <a class="stat-link" href="#">View all »</a>
         </div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" *ngIf="showTrialWidgets">
         <div class="stat-header">
-          <span class="stat-title">Cancel at Period End</span>
+          <span class="stat-title">Trial Subscriptions</span>
           <span class="stat-icon cancel"><i class="pi pi-times-circle"></i></span>
         </div>
-        <div class="stat-body">2</div>
+        <div class="stat-body" [class.skeleton-block]="summaryLoading">{{ summaryLoading ? '' : (summary.trialSubscriptions ?? 0) }}</div>
         <div class="stat-details">
-          <div class="stat-sub">At-risk ARR: $12k</div>
-          <div class="stat-sub">Save offers pending: 2</div>
-          <a class="stat-link" href="#">View details »</a>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Currently in trial period' }}</div>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Pending conversion to active' }}</div>
+          <a class="stat-link" href="#">View all »</a>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">Entitlement Health</span>
+          <span class="stat-title">Plans Configured</span>
           <span class="stat-icon health"><i class="pi pi-check-circle"></i></span>
         </div>
-        <div class="stat-body">OK</div>
+        <div class="stat-body" [class.skeleton-block]="summaryLoading">{{ summaryLoading ? '' : (summary.plansConfigured ?? 0) }}</div>
         <div class="stat-details">
-          <div class="stat-sub">Last sync: 2 hours ago</div>
-          <div class="stat-sub">Drift issues: 0</div>
-          <a class="stat-link" href="#">View details »</a>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Configured plan templates' }}</div>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Available for assignment' }}</div>
+          <a class="stat-link" href="#">View all »</a>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">Security Events <span class="stat-title-sub">(24h)</span></span>
+          <span class="stat-title">Total Enterprises</span>
           <span class="stat-icon security"><i class="pi pi-shield"></i></span>
         </div>
-        <div class="stat-body">5</div>
+        <div class="stat-body" [class.skeleton-block]="summaryLoading">{{ summaryLoading ? '' : (summary.totalEnterprises ?? 0) }}</div>
         <div class="stat-details">
-          <div class="stat-sub">3 dep. retries</div>
-          <div class="stat-sub">Blocked IPs: 1</div>
-          <a class="stat-link" href="#">View details »</a>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Enterprises in platform' }}</div>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Total managed accounts' }}</div>
+          <a class="stat-link" href="#">View all »</a>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">Open Escalations</span>
+          <span class="stat-title">Audit Events (24h)</span>
           <span class="stat-icon escalations"><i class="pi pi-exclamation-triangle"></i></span>
         </div>
-        <div class="stat-body">3</div>
+        <div class="stat-body" [class.skeleton-block]="summaryLoading">{{ summaryLoading ? '' : (summary.auditEventsLast24h ?? 0) }}</div>
         <div class="stat-details">
-          <div class="stat-sub">SLA breach risk: 1</div>
-          <div class="stat-sub">Awaiting approval: 2</div>
-          <a class="stat-link" href="#">View details »</a>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Audit activity volume' }}</div>
+          <div class="stat-sub">{{ summaryLoading ? ' ' : 'Captured in last 24 hours' }}</div>
+          <a class="stat-link" href="#">View all »</a>
         </div>
       </div>
     </div>
@@ -92,7 +93,7 @@
             </div>
             <!-- <div class="insights-sla-label">SLA: <span class="insights-sla-icon">≡</span></div> -->
           </div>
-          <div class="operational-insights-piechart-container">
+          <div class="operational-insights-piechart-container" *ngIf="hasOnboardingChartData; else onboardingNoData">
             <div class="operational-insights-chart-wrapper">
               <canvas #insightsPieChart width="100" height="100"></canvas>
             </div>
@@ -100,47 +101,63 @@
               <div class="legend-item">
                 <span class="legend-dot submitted"></span>
                 <span class="legend-label">Submitted</span>
-                <span class="legend-count">8</span>
+                <span class="legend-count">{{ onboardingBreakdown?.submitted ?? 0 }}</span>
               </div>
               <div class="legend-item">
                 <span class="legend-dot in-review"></span>
                 <span class="legend-label">In Review</span>
-                <span class="legend-count">6</span>
+                <span class="legend-count">{{ onboardingBreakdown?.inReview ?? 0 }}</span>
               </div>
               <div class="legend-item">
                 <span class="legend-dot approved"></span>
                 <span class="legend-label">Approved</span>
-                <span class="legend-count">12</span>
+                <span class="legend-count">{{ onboardingBreakdown?.approved ?? 0 }}</span>
               </div>
               <div class="legend-item">
                 <span class="legend-dot rejected"></span>
                 <span class="legend-label">Rejected</span>
-                <span class="legend-count">2</span>
+                <span class="legend-count">{{ onboardingBreakdown?.rejected ?? 0 }}</span>
               </div>
             </div>
           </div>
-          <div class="insights-avg-time">Avg Time to Approval: <b>14 hrs</b></div>
-          <div class="insights-section-group">
+          <ng-template #onboardingNoData>
+            <div class="operational-insights-piechart-container no-data-state">
+              <div class="operational-insights-chart-wrapper no-data-chart">
+                <div class="no-data-pie"><span>0</span></div>
+              </div>
+              <div class="operational-insights-legend no-data-legend">
+                <div class="legend-empty-text">No onboarding data available</div>
+              </div>
+            </div>
+          </ng-template>
+          <div class="insights-section-group" *ngIf="hasSubscriptionBreakdown">
             <div class="insights-lifecycle-title">Subscription Lifecycle</div>
             <div class="insights-lifecycle-group">
-              <div class="insights-lifecycle-row"><span class="lifecycle-dot trials"></span> Trials <span class="lifecycle-count">99</span></div>
-              <div class="insights-lifecycle-row"><span class="lifecycle-dot active"></span> Active <span class="lifecycle-count">24</span></div>
-              <div class="insights-lifecycle-row"><span class="lifecycle-dot pad-que"></span> Pad. Que <span class="lifecycle-count">21</span></div>
-              <div class="insights-lifecycle-row"><span class="lifecycle-dot canceling"></span> Canceling <span class="lifecycle-count">6</span></div>
-              <div class="insights-lifecycle-row"><span class="lifecycle-dot canceled"></span> Canceled <span class="lifecycle-count">4</span></div>
+              <div class="insights-lifecycle-row" *ngIf="showTrialWidgets"><span class="lifecycle-dot trials"></span> Trials <span class="lifecycle-count">{{ subscriptionBreakdown?.trials ?? 0 }}</span></div>
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot active"></span> Active <span class="lifecycle-count">{{ subscriptionBreakdown?.active ?? 0 }}</span></div>
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot pad-que"></span> Pad. Que <span class="lifecycle-count">{{ subscriptionBreakdown?.padQue ?? 0 }}</span></div>
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot canceling"></span> Canceling <span class="lifecycle-count">{{ subscriptionBreakdown?.canceling ?? 0 }}</span></div>
+              <div class="insights-lifecycle-row"><span class="lifecycle-dot canceled"></span> Canceled <span class="lifecycle-count">{{ subscriptionBreakdown?.canceled ?? 0 }}</span></div>
             </div>
           </div>
-          <div class="insights-section-group">
+          <div class="insights-section-group" *ngIf="hasRecentAuditFeed">
             <div class="insights-audit-title">Recent Audit Feed <a class="see-all-link" href="#">See All</a></div>
             <div class="insights-audit-feed">
-            <div class="audit-feed-item">
-              <div class="audit-feed-avatar"><img src="/assets/avatar-amanda.png" alt="Amanda Chen" onerror="this.src='/assets/avatar-default.png'"></div>
+            <div class="audit-feed-item" *ngIf="summaryLoading">
               <div class="audit-feed-content">
-                <div class="audit-feed-user">Amanda Chen</div>
-                <div class="audit-feed-desc">Feminine info not enriched</div>
-                <div class="audit-feed-meta">2 hours ago <span class="audit-feed-retry">Retry</span></div>
+                <div class="audit-feed-user skeleton-block"></div>
+                <div class="audit-feed-desc skeleton-block"></div>
               </div>
             </div>
+            <div class="audit-feed-item" *ngFor="let item of auditFeedItems">
+              <div class="audit-feed-avatar"><img [src]="item.avatarUrl || '/assets/avatar-default.png'" [alt]="item.userName" onerror="this.src='/assets/avatar-default.png'"></div>
+              <div class="audit-feed-content">
+                <div class="audit-feed-user">{{ item.userName }}</div>
+                <div class="audit-feed-desc">{{ item.description }}</div>
+                <div class="audit-feed-meta">{{ item.timestamp }} <span class="audit-feed-retry">{{ item.retryLabel || 'Retry' }}</span></div>
+              </div>
+            </div>
+            <div class="audit-feed-empty" *ngIf="!summaryLoading && auditFeedItems.length === 0">No audit feed data available</div>
           </div>
           </div>
         </div>
@@ -149,15 +166,25 @@
         <div class="work-queue-card">
           <div class="custom-tabs-row">
             <div class="custom-tabs">
-              <button class="tab" [ngClass]="{active: activeTab==='requests'}" (click)="activeTab='requests'">Onboarding</button>
-              <button class="tab" [ngClass]="{active: activeTab==='subscriptions'}" (click)="activeTab='subscriptions'">Subscriptions</button>
-              <button class="tab" [ngClass]="{active: activeTab==='plans'}" (click)="activeTab='plans'">Plans</button>
-              <button class="tab" [ngClass]="{active: activeTab==='featureFlags'}" (click)="activeTab='featureFlags'">Feature Flags</button>
-              <button class="tab" [ngClass]="{active: activeTab==='audit'}" (click)="activeTab='audit'">Audit Logs</button>
+              <button class="tab" [ngClass]="{active: activeTab==='requests'}" (click)="selectTab('requests')">Onboarding</button>
+              <button class="tab" [ngClass]="{active: activeTab==='subscriptions'}" (click)="selectTab('subscriptions')">Subscriptions</button>
+              <button class="tab" [ngClass]="{active: activeTab==='plans'}" (click)="selectTab('plans')">Plans</button>
+              <button class="tab" [ngClass]="{active: activeTab==='users'}" (click)="selectTab('users')">Users</button>
+              <button class="tab" [ngClass]="{active: activeTab==='auditLogs'}" (click)="selectTab('auditLogs')">Audit Logs</button>
             </div>
-            <button class="filter-icon-btn" (click)="toggleFilterPanel()" title="Toggle Filters">
-              <i class="pi pi-sliders-h"></i>
-            </button>
+            <div class="tabs-actions">
+              <label class="form-check form-switch m-0 subscription-toggle" *ngIf="activeTab==='subscriptions'">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [checked]="hideSeededSubscriptions"
+                  (change)="hideSeededSubscriptions = $any($event.target).checked" />
+                <span class="form-check-label">Hide Seeded Subscriptions</span>
+              </label>
+              <button class="filter-icon-btn" (click)="toggleFilterPanel()" title="Toggle Filters">
+                <i class="pi pi-sliders-h"></i>
+              </button>
+            </div>
           </div>
           <div class="table-content-wrapper" [class.tab-panel-hidden]="!isRequestsTabActive()">
             <div class="table-section" *ngIf="activeTab==='requests'">
@@ -168,21 +195,25 @@
               </span>
               <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
             </div>
+            <div class="widget-inline-error" *ngIf="tableLoadFailed.requests">Failed to load</div>
             <div class="work-queue-table-wrapper">
               <table class="work-queue-table">
                 <thead>
                   <tr>
-                    <th>Enterprise</th>
-                    <th>Request Type</th>
-                    <th>Requested By</th>
-                    <th>Status</th>
-                    <th>Age</th>
-                    <th>Priority</th>
+                    <th (click)="onSort('requests', 'enterprise')" [class]="getSortClass('requests', 'enterprise')">Enterprise</th>
+                    <th (click)="onSort('requests', 'requestType')" [class]="getSortClass('requests', 'requestType')">Request Type</th>
+                    <th (click)="onSort('requests', 'requestedBy')" [class]="getSortClass('requests', 'requestedBy')">Requested By</th>
+                    <th (click)="onSort('requests', 'status')" [class]="getSortClass('requests', 'status')">Status</th>
+                    <th (click)="onSort('requests', 'age')" [class]="getSortClass('requests', 'age')">Age</th>
+                    <th (click)="onSort('requests', 'priority')" [class]="getSortClass('requests', 'priority')">Priority</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let row of filteredRequestRows; let rowIndex = index" class="data-row">
+                <tr *ngIf="tableLoading.requests" class="data-row">
+                  <td colspan="7" class="skeleton-block" style="height:28px;"></td>
+                </tr>
+                <tr *ngFor="let row of filteredRequestRows; let rowIndex = index" class="data-row" [style.display]="tableLoading.requests ? 'none' : ''">
                   <td>{{ row.enterprise }}</td>
                   <td>{{ row.requestType }}</td>
                   <td>{{ row.requestedBy }}</td>
@@ -193,32 +224,26 @@
                     <button type="button" class="row-action-icon" title="Edit" (click)="onEditRow($event, row)">
                       <i class="pi pi-pencil"></i>
                     </button>
-                    <div class="row-menu-wrap">
-                      <button type="button" class="row-action-icon" title="More actions" (click)="toggleActionMenu($event, rowIndex)">
-                        <i class="pi pi-ellipsis-v"></i>
-                      </button>
-                      <div class="row-context-menu" *ngIf="openActionMenuIndex === rowIndex" (click)="$event.stopPropagation()">
-                        <button type="button" (click)="onUpdateRowStatus($event, row, 'Submitted')">Set Submitted</button>
-                        <button type="button" (click)="onUpdateRowStatus($event, row, 'In Progress')">Set In Progress</button>
-                        <button type="button" (click)="onUpdateRowStatus($event, row, 'Completed')">Set Completed</button>
-                        <button type="button" class="danger" (click)="onDeleteRow($event, row)">Delete</button>
-                      </div>
-                    </div>
+                    <button type="button" class="row-action-icon" [disabled]="!isActionRouteAvailable('requests')" title="Route not available">
+                      <i class="pi pi-ellipsis-v"></i>
+                    </button>
                   </td>
                 </tr>
-                <tr class="empty-row" *ngFor="let _ of requestTablePlaceholders">
-                  <td colspan="7"></td>
+                <tr *ngIf="!tableLoading.requests && filteredRequestRows.length === 0" class="no-record-row">
+                  <td colspan="7" class="text-center py-3 text-muted">No records found</td>
                 </tr>
+                <ng-container *ngIf="filteredRequestRows.length > 0">
+                  <tr class="empty-row" *ngFor="let _ of requestTablePlaceholders">
+                    <td colspan="7"></td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
             <div class="pagination-bar">
-              <span>1</span>
-              <span class="active">1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>...</span>
-              <span>7</span>
-              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+              <button class="next-btn" (click)="prevPage('requests')" [disabled]="!canPrev('requests')"><i class="pi pi-angle-left"></i></button>
+              <span class="active">{{ getCurrentPage('requests') }}</span>
+              <span>/ {{ getTotalPages('requests') }}</span>
+              <button class="next-btn" (click)="nextPage('requests')" [disabled]="!canNext('requests')"><i class="pi pi-angle-right"></i></button>
             </div>
           </div>
             </div>
@@ -235,17 +260,17 @@
               <h3>Filters</h3>
             </ng-template>
             
-            <div class="filter-panel-content">
+            <form class="filter-panel-content" [formGroup]="filterForm">
               <!-- Requests Tab Filters -->
               <div *ngIf="activeTab==='requests'" class="filter-group">
                 <label>Enterprise</label>
-                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
+                <input type="text" formControlName="enterprise" placeholder="Search enterprise..."/>
 
                 <label>Request Type</label>
-                <input type="text" [(ngModel)]="draftFilters['requestType']" placeholder="Search request type..."/>
+                <input type="text" formControlName="requestType" placeholder="Search request type..."/>
 
                 <label>Status</label>
-                <select [(ngModel)]="draftFilters['status']">
+                <select formControlName="status">
                   <option value="">Select Status</option>
                   <option value="Submitted">Submitted</option>
                   <option value="In Progress">In Progress</option>
@@ -253,23 +278,23 @@
                 </select>
 
                 <label>Search</label>
-                <input type="text" placeholder="Search requests..." [(ngModel)]="draftFilters['search']" />
+                <input type="text" placeholder="Search requests..." formControlName="search" />
               </div>
 
               <!-- Subscriptions Tab Filters -->
               <div *ngIf="activeTab==='subscriptions'" class="filter-group">
                 <label>Enterprise</label>
-                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
+                <input type="text" formControlName="enterprise" placeholder="Search enterprise..."/>
 
                 <label>Subscription Type</label>
-                <select [(ngModel)]="draftFilters['subscriptionType']">
+                <select formControlName="plan">
                   <option value="">Select Type</option>
                   <option value="Premium">Premium</option>
                   <option value="Standard">Standard</option>
                 </select>
 
                 <label>Status</label>
-                <select [(ngModel)]="draftFilters['status']">
+                <select formControlName="status">
                   <option value="">Select Status</option>
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
@@ -280,68 +305,50 @@
               <!-- Plans Tab Filters -->
               <div *ngIf="activeTab==='plans'" class="filter-group">
                 <label>Enterprise</label>
-                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
+                <input type="text" formControlName="enterprise" placeholder="Search enterprise..."/>
 
                 <label>Plan Type</label>
-                <select [(ngModel)]="draftFilters['planType']">
+                <select formControlName="planCode">
                   <option value="">Select Plan</option>
                   <option value="Premium">Premium</option>
                   <option value="Standard">Standard</option>
                 </select>
 
                 <label>Status</label>
-                <select [(ngModel)]="draftFilters['status']">
+                <select formControlName="status">
                   <option value="">Select Status</option>
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                 </select>
               </div>
 
-              <!-- Feature Flags Tab Filters -->
-              <div *ngIf="activeTab==='featureFlags'" class="filter-group">
-                <label>Enterprise</label>
-                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
-
-                <label>Flag Name</label>
-                <select [(ngModel)]="draftFilters['flagName']">
-                  <option value="">Select Flag</option>
-                  <option value="BetaAccess">BetaAccess</option>
-                  <option value="API Integration">API Integration</option>
-                </select>
+              <!-- Users Tab Filters -->
+              <div *ngIf="activeTab==='users'" class="filter-group">
+                <label>Login</label>
+                <input type="text" formControlName="login" placeholder="Search login..."/>
 
                 <label>Status</label>
-                <select [(ngModel)]="draftFilters['status']">
-                  <option value="">Select Status</option>
-                  <option value="Enabled">Enabled</option>
-                  <option value="Disabled">Disabled</option>
+                <select formControlName="status">
+                  <option value="">Any</option>
+                  <option value="true">Activated</option>
+                  <option value="false">Not Activated</option>
                 </select>
               </div>
 
-              <!-- Audit Tab Filters -->
-              <div *ngIf="activeTab==='audit'" class="filter-group">
-                <label>Enterprise</label>
-                <input type="text" [(ngModel)]="draftFilters['enterprise']" placeholder="Search enterprise..."/>
+              <!-- Audit Logs Tab Filters -->
+              <div *ngIf="activeTab==='auditLogs'" class="filter-group">
+                <label>Actor</label>
+                <input type="text" formControlName="actor" placeholder="Search actor..."/>
 
-                <label>Event Type</label>
-                <select [(ngModel)]="draftFilters['eventType']">
-                  <option value="">Select Event</option>
-                  <option value="Login">Login</option>
-                  <option value="Data Migration">Data Migration</option>
-                </select>
-
-                <label>Status</label>
-                <select [(ngModel)]="draftFilters['status']">
-                  <option value="">Select Status</option>
-                  <option value="Success">Success</option>
-                  <option value="Failed">Failed</option>
-                </select>
+                <label>Action</label>
+                <input type="text" formControlName="search" placeholder="Search action..."/>
               </div>
 
               <div class="filter-actions">
                 <button type="button" class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
                 <button type="button" class="apply-filter-btn" (click)="applyFilters()">Apply Filters</button>
               </div>
-            </div>
+            </form>
           </p-drawer>
 
           <p-drawer [(visible)]="showRowEditDrawer"
@@ -361,8 +368,8 @@
               <db-request-row-edit-form *ngSwitchCase="'requests'"></db-request-row-edit-form>
               <db-subscription-row-edit-form *ngSwitchCase="'subscriptions'"></db-subscription-row-edit-form>
               <db-plan-row-edit-form *ngSwitchCase="'plans'"></db-plan-row-edit-form>
-              <db-feature-flag-row-edit-form *ngSwitchCase="'featureFlags'"></db-feature-flag-row-edit-form>
-              <db-audit-row-edit-form *ngSwitchCase="'audit'"></db-audit-row-edit-form>
+              <db-user-row-edit-form *ngSwitchCase="'users'"></db-user-row-edit-form>
+              <db-audit-row-edit-form *ngSwitchCase="'auditLogs'"></db-audit-row-edit-form>
             </div>
           </p-drawer>
 
@@ -374,44 +381,90 @@
             </span>
             <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
           </div>
-          <div class="work-queue-table-wrapper">
-            <table class="work-queue-table">
+          <div class="widget-inline-error" *ngIf="tableLoadFailed.subscriptions">Failed to load</div>
+          <div class="work-queue-table-wrapper table-responsive">
+            <table class="work-queue-table table table-hover align-middle mb-0">
               <thead>
                 <tr>
-                  <th>Enterprise</th>
-                  <th>Subscription Type</th>
-                  <th>Status</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
+                  <th (click)="onSort('subscriptions', 'subscriber')" [class]="getSortClass('subscriptions', 'subscriber')">Subscriber</th>
+                  <th (click)="onSort('subscriptions', 'plan')" [class]="getSortClass('subscriptions', 'plan')">Plan</th>
+                  <th (click)="onSort('subscriptions', 'status')" [class]="getSortClass('subscriptions', 'status')">Status</th>
+                  <th (click)="onSort('subscriptions', 'startDate')" [class]="getSortClass('subscriptions', 'startDate')">Start Date</th>
+                  <th (click)="onSort('subscriptions', 'nextBilling')" [class]="getSortClass('subscriptions', 'nextBilling')">Next Billing</th>
+                  <th>Auto Renew</th>
+                  <th>Cancel at Period End</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let row of subscriptionRows; let rowIndex = index" class="data-row">
-                  <td>{{ row.enterprise }}</td>
-                  <td>{{ row.subscriptionType }}</td>
-                  <td><span class="chip ok">{{ row.status }}</span></td>
-                  <td>{{ row.startDate }}</td>
-                  <td>{{ row.endDate }}</td>
+                <tr *ngIf="tableLoading.subscriptions" class="data-row">
+                  <td colspan="9" class="skeleton-block" style="height:28px;"></td>
+                </tr>
+                <tr *ngFor="let row of visibleSubscriptionRows" class="data-row" [style.display]="tableLoading.subscriptions ? 'none' : ''">
+                  <td>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <div class="subscription-primary">{{ getSubscriberLabel(row) }}</div>
+                      <span class="badge rounded-pill subscription-type-badge" [ngClass]="subscriberTypeClass(row.subscriberType)">
+                        {{ displayOrDash(row.subscriberType).toUpperCase() }}
+                      </span>
+                      <span class="badge rounded-pill subscription-seed-badge" *ngIf="row.seeded">Seed</span>
+                    </div>
+                    <div class="subscription-secondary">{{ getSubscriberSecondary(row) }}</div>
+                  </td>
+                  <td>
+                    <div class="subscription-primary">{{ getPlanLabel(row) }}</div>
+                    <div class="subscription-secondary" *ngIf="getPlanSecondary(row)">{{ getPlanSecondary(row) }}</div>
+                  </td>
+                  <td>
+                    <span class="badge rounded-pill subscription-status-badge" [ngClass]="statusClass(row.status)">
+                      {{ statusLabel(row.status) }}
+                    </span>
+                  </td>
+                  <td [attr.title]="row.startDate || ''">{{ formatDate(row.startDate) }}</td>
+                  <td [attr.title]="row.nextBillingDate || ''">
+                    <div>{{ formatDate(row.nextBillingDate) }}</div>
+                    <div class="subscription-secondary subscription-warning" *ngIf="row.cancelAtPeriodEnd">Cancels at period end</div>
+                  </td>
+                  <td>
+                    <span class="badge rounded-pill subscription-bool-badge" [ngClass]="boolBadgeClass(row.autoRenew, 'success')">
+                      {{ boolBadgeLabel(row.autoRenew) }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge rounded-pill subscription-bool-badge" [ngClass]="boolBadgeClass(row.cancelAtPeriodEnd, 'danger')">
+                      {{ boolBadgeLabel(row.cancelAtPeriodEnd) }}
+                    </span>
+                  </td>
                   <td class="actions-cell">
-                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'subscriptions', rowIndex)">
+                    <button
+                      type="button"
+                      class="row-action-icon"
+                      [disabled]="!isActionRouteAvailable('subscriptions')"
+                      [class.row-action-disabled]="!isActionRouteAvailable('subscriptions')"
+                      [attr.title]="isActionRouteAvailable('subscriptions') ? 'Edit' : 'Route not available'"
+                      (click)="isActionRouteAvailable('subscriptions') && onEditSubscriptionRow($event, row)">
                       <i class="pi pi-pencil"></i>
+                    </button>
+                    <button type="button" class="row-action-icon" title="More actions">
+                      <i class="pi pi-ellipsis-v"></i>
                     </button>
                   </td>
                 </tr>
-                <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(7)">
-                  <td colspan="6"></td>
+                <tr *ngIf="!tableLoading.subscriptions && visibleSubscriptionRows.length === 0" class="no-record-row">
+                  <td colspan="9" class="text-center py-3 text-muted">No records found</td>
                 </tr>
+                <ng-container *ngIf="visibleSubscriptionRows.length > 0">
+                  <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(visibleSubscriptionRows.length)">
+                    <td colspan="9"></td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
             <div class="pagination-bar">
-              <span>1</span>
-              <span class="active">1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>...</span>
-              <span>7</span>
-              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+              <button class="next-btn" (click)="prevPage('subscriptions')" [disabled]="!canPrev('subscriptions')"><i class="pi pi-angle-left"></i></button>
+              <span class="active">{{ getCurrentPage('subscriptions') }}</span>
+              <span>/ {{ getTotalPages('subscriptions') }}</span>
+              <button class="next-btn" (click)="nextPage('subscriptions')" [disabled]="!canNext('subscriptions')"><i class="pi pi-angle-right"></i></button>
             </div>
           </div>
         </div>
@@ -423,48 +476,57 @@
             </span>
             <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
           </div>
+          <div class="widget-inline-error" *ngIf="tableLoadFailed.plans">Failed to load</div>
           <div class="work-queue-table-wrapper">
             <table class="work-queue-table">
               <thead>
                 <tr>
-                  <th>Enterprise</th>
-                  <th>Plan Type</th>
-                  <th>Status</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
+                  <th (click)="onSort('plans', 'planCode')" [class]="getSortClass('plans', 'planCode')">Plan Code</th>
+                  <th (click)="onSort('plans', 'name')" [class]="getSortClass('plans', 'name')">Name</th>
+                  <th (click)="onSort('plans', 'price')" [class]="getSortClass('plans', 'price')">Price</th>
+                  <th (click)="onSort('plans', 'cycle')" [class]="getSortClass('plans', 'cycle')">Cycle</th>
+                  <th (click)="onSort('plans', 'active')" [class]="getSortClass('plans', 'active')">Active</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let row of planRows; let rowIndex = index" class="data-row">
-                  <td>{{ row.enterprise }}</td>
-                  <td>{{ row.planType }}</td>
-                  <td><span class="chip ok">{{ row.status }}</span></td>
-                  <td>{{ row.startDate }}</td>
-                  <td>{{ row.endDate }}</td>
+                <tr *ngIf="tableLoading.plans" class="data-row">
+                  <td colspan="6" class="skeleton-block" style="height:28px;"></td>
+                </tr>
+                <tr *ngFor="let row of planRows; let rowIndex = index" class="data-row" [style.display]="tableLoading.plans ? 'none' : ''">
+                  <td>{{ row.planCode }}</td>
+                  <td>{{ row.name }}</td>
+                  <td>{{ row.price }}</td>
+                  <td>{{ row.cycle }}</td>
+                  <td>{{ row.active }}</td>
                   <td class="actions-cell">
                     <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'plans', rowIndex)">
                       <i class="pi pi-pencil"></i>
                     </button>
+                    <button type="button" class="row-action-icon" [disabled]="!isActionRouteAvailable('plans')" title="Route not available">
+                      <i class="pi pi-ellipsis-v"></i>
+                    </button>
                   </td>
                 </tr>
-                <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(5)">
-                  <td colspan="6"></td>
+                <tr *ngIf="!tableLoading.plans && planRows.length === 0" class="no-record-row">
+                  <td colspan="6" class="text-center py-3 text-muted">No records found</td>
                 </tr>
+                <ng-container *ngIf="planRows.length > 0">
+                  <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(5)">
+                    <td colspan="6"></td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
             <div class="pagination-bar">
-              <span>1</span>
-              <span class="active">1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>...</span>
-              <span>7</span>
-              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+              <button class="next-btn" (click)="prevPage('plans')" [disabled]="!canPrev('plans')"><i class="pi pi-angle-left"></i></button>
+              <span class="active">{{ getCurrentPage('plans') }}</span>
+              <span>/ {{ getTotalPages('plans') }}</span>
+              <button class="next-btn" (click)="nextPage('plans')" [disabled]="!canNext('plans')"><i class="pi pi-angle-right"></i></button>
             </div>
           </div>
         </div>
-        <div *ngIf="activeTab==='featureFlags'">
+        <div *ngIf="activeTab==='users'">
           <div class="filter-chips-row" *ngIf="Object.keys(activeFilters).length > 0">
             <span *ngFor="let key of Object.keys(activeFilters)" class="filter-chip">
               <span class="chip-text">{{ key }}: {{ activeFilters[key] }}</span>
@@ -472,46 +534,57 @@
             </span>
             <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
           </div>
+          <div class="widget-inline-error" *ngIf="tableLoadFailed.users">Failed to load</div>
           <div class="work-queue-table-wrapper">
             <table class="work-queue-table">
               <thead>
                 <tr>
-                  <th>Enterprise</th>
-                  <th>Flag Name</th>
-                  <th>Status</th>
-                  <th>Enabled</th>
+                  <th (click)="onSort('users', 'login')" [class]="getSortClass('users', 'login')">Login</th>
+                  <th (click)="onSort('users', 'name')" [class]="getSortClass('users', 'name')">Name</th>
+                  <th (click)="onSort('users', 'email')" [class]="getSortClass('users', 'email')">Email</th>
+                  <th (click)="onSort('users', 'activated')" [class]="getSortClass('users', 'activated')">Activated</th>
+                  <th (click)="onSort('users', 'roles')" [class]="getSortClass('users', 'roles')">Roles</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let row of featureFlagRows; let rowIndex = index" class="data-row">
-                  <td>{{ row.enterprise }}</td>
-                  <td>{{ row.flagName }}</td>
-                  <td><span class="chip ok">{{ row.status }}</span></td>
-                  <td>{{ row.enabled }}</td>
+                <tr *ngIf="tableLoading.users" class="data-row">
+                  <td colspan="6" class="skeleton-block" style="height:28px;"></td>
+                </tr>
+                <tr *ngFor="let row of userRows; let rowIndex = index" class="data-row" [style.display]="tableLoading.users ? 'none' : ''">
+                  <td>{{ row.login }}</td>
+                  <td>{{ row.name }}</td>
+                  <td>{{ row.email }}</td>
+                  <td>{{ row.activated }}</td>
+                  <td>{{ row.roles }}</td>
                   <td class="actions-cell">
-                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'featureFlags', rowIndex)">
+                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'users', rowIndex)">
                       <i class="pi pi-pencil"></i>
+                    </button>
+                    <button type="button" class="row-action-icon" [disabled]="!isActionRouteAvailable('users')" title="Route not available">
+                      <i class="pi pi-ellipsis-v"></i>
                     </button>
                   </td>
                 </tr>
-                <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
-                  <td colspan="5"></td>
+                <tr *ngIf="!tableLoading.users && userRows.length === 0" class="no-record-row">
+                  <td colspan="6" class="text-center py-3 text-muted">No records found</td>
                 </tr>
+                <ng-container *ngIf="userRows.length > 0">
+                  <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
+                    <td colspan="6"></td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
             <div class="pagination-bar">
-              <span>1</span>
-              <span class="active">1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>...</span>
-              <span>7</span>
-              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+              <button class="next-btn" (click)="prevPage('users')" [disabled]="!canPrev('users')"><i class="pi pi-angle-left"></i></button>
+              <span class="active">{{ getCurrentPage('users') }}</span>
+              <span>/ {{ getTotalPages('users') }}</span>
+              <button class="next-btn" (click)="nextPage('users')" [disabled]="!canNext('users')"><i class="pi pi-angle-right"></i></button>
             </div>
           </div>
         </div>
-        <div *ngIf="activeTab==='audit'">
+        <div *ngIf="activeTab==='auditLogs'">
           <div class="filter-chips-row" *ngIf="Object.keys(activeFilters).length > 0">
             <span *ngFor="let key of Object.keys(activeFilters)" class="filter-chip">
               <span class="chip-text">{{ key }}: {{ activeFilters[key] }}</span>
@@ -519,42 +592,53 @@
             </span>
             <button class="clear-all-btn" (click)="clearAllFilters()">Clear All</button>
           </div>
+          <div class="widget-inline-error" *ngIf="tableLoadFailed.auditLogs">Failed to load</div>
           <div class="work-queue-table-wrapper">
             <table class="work-queue-table">
               <thead>
                 <tr>
-                  <th>Enterprise</th>
-                  <th>Event Type</th>
-                  <th>Status</th>
-                  <th>Date</th>
+                  <th (click)="onSort('auditLogs', 'when')" [class]="getSortClass('auditLogs', 'when')">When</th>
+                  <th (click)="onSort('auditLogs', 'actor')" [class]="getSortClass('auditLogs', 'actor')">Actor</th>
+                  <th (click)="onSort('auditLogs', 'action')" [class]="getSortClass('auditLogs', 'action')">Action</th>
+                  <th (click)="onSort('auditLogs', 'entity')" [class]="getSortClass('auditLogs', 'entity')">Entity</th>
+                  <th (click)="onSort('auditLogs', 'entityId')" [class]="getSortClass('auditLogs', 'entityId')">Entity Id</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let row of auditRows; let rowIndex = index" class="data-row">
-                  <td>{{ row.enterprise }}</td>
-                  <td>{{ row.eventType }}</td>
-                  <td><span class="chip ok">{{ row.status }}</span></td>
-                  <td>{{ row.date }}</td>
+                <tr *ngIf="tableLoading.auditLogs" class="data-row">
+                  <td colspan="6" class="skeleton-block" style="height:28px;"></td>
+                </tr>
+                <tr *ngFor="let row of auditLogRows; let rowIndex = index" class="data-row" [style.display]="tableLoading.auditLogs ? 'none' : ''">
+                  <td>{{ row.when }}</td>
+                  <td>{{ row.actor }}</td>
+                  <td>{{ row.action }}</td>
+                  <td>{{ row.entity }}</td>
+                  <td>{{ row.entityId }}</td>
                   <td class="actions-cell">
-                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'audit', rowIndex)">
+                    <button type="button" class="row-action-icon" title="Edit" (click)="onEditTabRow($event, 'auditLogs', rowIndex)">
                       <i class="pi pi-pencil"></i>
+                    </button>
+                    <button type="button" class="row-action-icon" [disabled]="!isActionRouteAvailable('auditLogs')" title="Route not available">
+                      <i class="pi pi-ellipsis-v"></i>
                     </button>
                   </td>
                 </tr>
-                <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
-                  <td colspan="5"></td>
+                <tr *ngIf="!tableLoading.auditLogs && auditLogRows.length === 0" class="no-record-row">
+                  <td colspan="6" class="text-center py-3 text-muted">No records found</td>
                 </tr>
+                <ng-container *ngIf="auditLogRows.length > 0">
+                  <tr class="empty-row" *ngFor="let _ of getTablePlaceholders(4)">
+                    <td colspan="6"></td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
             <div class="pagination-bar">
-              <span>1</span>
-              <span class="active">1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>...</span>
-              <span>7</span>
-              <button class="next-btn"><i class="pi pi-angle-right"></i></button>
+              <button class="next-btn" (click)="prevPage('auditLogs')" [disabled]="!canPrev('auditLogs')"><i class="pi pi-angle-left"></i></button>
+              <span class="active">{{ getCurrentPage('auditLogs') }}</span>
+              <span>/ {{ getTotalPages('auditLogs') }}</span>
+              <button class="next-btn" (click)="nextPage('auditLogs')" [disabled]="!canNext('auditLogs')"><i class="pi pi-angle-right"></i></button>
             </div>
           </div>
         </div>

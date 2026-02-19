@@ -1,29 +1,32 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { AuditLogRow } from '../dashboard-app-admin.models';
+import { UserRow } from '../dashboard-app-admin.models';
 import { DashboardRowEditStore } from '../dashboard-row-edit.store';
 
 @Component({
-  selector: 'db-audit-row-edit-form',
+  selector: 'db-user-row-edit-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
     <form [formGroup]="form" class="row-edit-form" (ngSubmit)="save()">
-      <label>When</label>
-      <input type="text" formControlName="when" />
+      <label>Login</label>
+      <input type="text" formControlName="login" />
 
-      <label>Actor</label>
-      <input type="text" formControlName="actor" />
+      <label>Name</label>
+      <input type="text" formControlName="name" />
 
-      <label>Action</label>
-      <input type="text" formControlName="action" />
+      <label>Email</label>
+      <input type="email" formControlName="email" />
 
-      <label>Entity</label>
-      <input type="text" formControlName="entity" />
+      <label>Activated</label>
+      <select formControlName="activated">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
 
-      <label>Entity Id</label>
-      <input type="text" formControlName="entityId" />
+      <label>Roles</label>
+      <input type="text" formControlName="roles" />
 
       <div class="row-edit-actions">
         <button type="button" class="clear-all-btn" (click)="cancel()">Cancel</button>
@@ -32,32 +35,32 @@ import { DashboardRowEditStore } from '../dashboard-row-edit.store';
     </form>
   `,
 })
-export class AuditRowEditFormComponent {
+export class UserRowEditFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly rowEditStore = inject(DashboardRowEditStore);
 
   readonly form = this.fb.group({
-    when: [''],
-    actor: [''],
-    action: [''],
-    entity: [''],
-    entityId: [''],
+    login: [''],
+    name: [''],
+    email: [''],
+    activated: ['Yes'],
+    roles: [''],
   });
 
   constructor() {
     effect(() => {
       const rowData = this.rowEditStore.editingRowData();
       const tab = this.rowEditStore.editingTab();
-      if (!rowData || tab !== 'auditLogs') {
+      if (!rowData || tab !== 'users') {
         return;
       }
 
-      this.form.patchValue(rowData as AuditLogRow, { emitEvent: false });
+      this.form.patchValue(rowData as UserRow, { emitEvent: false });
     });
   }
 
   save(): void {
-    this.rowEditStore.submitCurrentRow(this.form.getRawValue() as AuditLogRow);
+    this.rowEditStore.submitCurrentRow(this.form.getRawValue() as UserRow);
   }
 
   cancel(): void {

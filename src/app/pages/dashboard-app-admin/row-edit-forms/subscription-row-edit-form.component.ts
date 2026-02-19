@@ -13,8 +13,8 @@ import { DashboardRowEditStore } from '../dashboard-row-edit.store';
       <label>Enterprise</label>
       <input type="text" formControlName="enterprise" />
 
-      <label>Subscription Type</label>
-      <input type="text" formControlName="subscriptionType" />
+      <label>Plan</label>
+      <input type="text" formControlName="plan" />
 
       <label>Status</label>
       <select formControlName="status">
@@ -26,8 +26,8 @@ import { DashboardRowEditStore } from '../dashboard-row-edit.store';
       <label>Start Date</label>
       <input type="date" formControlName="startDate" />
 
-      <label>End Date</label>
-      <input type="date" formControlName="endDate" />
+      <label>Next Billing</label>
+      <input type="date" formControlName="nextBilling" />
 
       <div class="row-edit-actions">
         <button type="button" class="clear-all-btn" (click)="cancel()">Cancel</button>
@@ -42,10 +42,10 @@ export class SubscriptionRowEditFormComponent {
 
   readonly form = this.fb.group({
     enterprise: [''],
-    subscriptionType: [''],
+    plan: [''],
     status: ['Active'],
     startDate: [''],
-    endDate: [''],
+    nextBilling: [''],
   });
 
   constructor() {

@@ -10,23 +10,23 @@ import { DashboardRowEditStore } from '../dashboard-row-edit.store';
   imports: [CommonModule, ReactiveFormsModule],
   template: `
     <form [formGroup]="form" class="row-edit-form" (ngSubmit)="save()">
-      <label>Enterprise</label>
-      <input type="text" formControlName="enterprise" />
+      <label>Plan Code</label>
+      <input type="text" formControlName="planCode" />
 
-      <label>Plan Type</label>
-      <input type="text" formControlName="planType" />
+      <label>Name</label>
+      <input type="text" formControlName="name" />
 
-      <label>Status</label>
-      <select formControlName="status">
-        <option value="Active">Active</option>
-        <option value="Inactive">Inactive</option>
+      <label>Price</label>
+      <input type="text" formControlName="price" />
+
+      <label>Cycle</label>
+      <input type="text" formControlName="cycle" />
+
+      <label>Active</label>
+      <select formControlName="active">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
       </select>
-
-      <label>Start Date</label>
-      <input type="date" formControlName="startDate" />
-
-      <label>End Date</label>
-      <input type="date" formControlName="endDate" />
 
       <div class="row-edit-actions">
         <button type="button" class="clear-all-btn" (click)="cancel()">Cancel</button>
@@ -40,11 +40,11 @@ export class PlanRowEditFormComponent {
   private readonly rowEditStore = inject(DashboardRowEditStore);
 
   readonly form = this.fb.group({
-    enterprise: [''],
-    planType: [''],
-    status: ['Active'],
-    startDate: [''],
-    endDate: [''],
+    planCode: [''],
+    name: [''],
+    price: [''],
+    cycle: [''],
+    active: ['Yes'],
   });
 
   constructor() {
