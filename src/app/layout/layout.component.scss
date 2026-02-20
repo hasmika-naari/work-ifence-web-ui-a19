@@ -652,6 +652,9 @@ mat-sidenav-container, .mat-sidenav-container {
 
 .sidebar {
   width: 250px; /* Adjust sidebar width as needed */
+  min-width: 250px;
+  max-width: 250px;
+  flex: 0 0 250px;
   height: 100vh; /* Full height */
   overflow-y: auto;
   overflow-x: hidden; /* Hide horizontal scrollbar */
@@ -697,6 +700,9 @@ app-footer {
 /* Sidebar Collapse Handling */
 .sidebar.collapsed {
     width: 75px; /* Adjust for collapsed mode */
+  min-width: 75px;
+  max-width: 75px;
+  flex: 0 0 75px;
 }
 
 .main-content.active {

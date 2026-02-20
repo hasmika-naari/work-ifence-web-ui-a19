@@ -10,12 +10,11 @@
       <section>
         <div class="mb-3">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-            <div>
-              <span class="section-subtitle">Stats</span>
-              @if (lastUpdatedText()) {
-                <div class="muted" style="margin-top:4px;">{{ lastUpdatedText() }}</div>
-              }
-            </div>
+            @if (lastUpdatedText()) {
+              <div class="muted" style="margin-top:4px;">{{ lastUpdatedText() }}</div>
+            } @else {
+              <span></span>
+            }
 
             <button
               type="button"
@@ -29,32 +28,87 @@
             </button>
           </div>
 
-          @if (summaryLoading()) {
-            <div class="mb-3 muted" style="margin-top:8px;">Loading stats…</div>
-          }
-        </div>
-        <div class="stats-container">
-          @for (stat of statsVm(); track stat.title) {
-            <div class="stat-card">
-              <div class="stat-header">
-                <span class="stat-title">{{ stat.title }}</span>
-                <i class="{{ stat.icon }}" [style.color]="stat.color"></i>
+          @if (dashboardErrorMessage && !isDashboardErrorDismissed()) {
+            <div class="dashboard-error-banner" role="alert" aria-live="polite">
+              <span class="dashboard-error-text">Unable to load dashboard. Retry.</span>
+              <div class="dashboard-error-actions">
+                <button type="button" class="dashboard-error-btn" (click)="retryDashboardLoad()">Retry</button>
+                <button type="button" class="dashboard-error-dismiss" (click)="dismissDashboardErrorBanner()" aria-label="Dismiss error">×</button>
               </div>
-              <div class="stat-body">
-                <span class="stat-value">{{ stat.value }}</span>
-                <span class="stat-sub">{{ stat.sub }}</span>
-              </div>
-              <div class="stat-footer" [style.background]="stat.color"></div>
             </div>
           }
         </div>
+
+        @if (summaryLoading()) {
+          <div class="stats-row-shell">
+            <div class="stats-row stats-row--skeleton">
+              @for (_ of [1, 2, 3, 4, 5, 6]; track $index) {
+                <div class="stat-card stat-card--skeleton">
+                  <div class="skeleton-line skeleton-line--title"></div>
+                  <div class="skeleton-line skeleton-line--value"></div>
+                  <div class="skeleton-line skeleton-line--sub"></div>
+                </div>
+              }
+            </div>
+          </div>
+        } @else if (dashboard$ | async; as dashboard) {
+          <div class="stats-row-shell">
+            <div class="stats-row" (scroll)="onStatsRowScroll($event)">
+              @for (stat of statsVm(); track stat.key) {
+                <mat-card
+                  class="stat-card"
+                  [class.card--info]="stat.severity === 'info'"
+                  [class.card--success]="stat.severity === 'success'"
+                  [class.card--warning]="stat.severity === 'warning'"
+                  [class.card--danger]="stat.severity === 'danger'"
+                  [class.card--neutral]="stat.severity === 'neutral'"
+                  [class.card--locked]="stat.isLocked"
+                  [attr.title]="stat.tooltip || null"
+                  (click)="onStatCardClick(stat)"
+                >
+                  <div class="stat-header">
+                    <span class="stat-title">{{ stat.title }}</span>
+                    @if (stat.isLocked) {
+                      <i class="pi pi-lock stat-lock-icon" aria-label="Locked"></i>
+                    } @else {
+                      <i class="{{ stat.icon }}" [style.color]="stat.color"></i>
+                    }
+                  </div>
+                  <div class="stat-body">
+                    {{ stat.value }}
+                  </div>
+                  <div class="stat-details">
+                    <div class="stat-sub">{{ statMessageLine1(stat) }}</div>
+                    <div class="stat-sub">{{ statMessageLine2(stat) }}</div>
+                  </div>
+                </mat-card>
+              }
+            </div>
+
+            @if (showSwipeHint) {
+              <div class="swipe-hint">Swipe →</div>
+            }
+          </div>
+        } @else {
+          <div class="stats-row-shell">
+            <div class="stats-row stats-row--skeleton">
+              @for (_ of [1, 2, 3, 4, 5, 6]; track $index) {
+                <div class="stat-card stat-card--skeleton">
+                  <div class="skeleton-line skeleton-line--title"></div>
+                  <div class="skeleton-line skeleton-line--value"></div>
+                  <div class="skeleton-line skeleton-line--sub"></div>
+                </div>
+              }
+            </div>
+          </div>
+        }
       </section>
 
-      <section class="mt-5">
+      <section class="mt-3">
         <div class="mb-3">
-          <span class="section-subtitle mb-3" >WorkIfence Tools</span>
+          <span class="section-subtitle mb-3">WorkIfence Tools</span>
         </div>
-        <div class="tools-container">
+        <div class="tools-container tools-container--single-row">
           @for (tool of toolsVm(); track tool.key) {
             <div
               class="tools-card radius-8"
@@ -63,14 +117,11 @@
               role="button"
               tabindex="0"
             >
+              <p-icon class="tools-card-side-icon" [class]="'tools-card-side-icon ' + toolIconClass(tool)"></p-icon>
               <div class="tools-card-content">
                 <h1 style="font-size: 14px;line-height: 1.25rem;font-weight: bold;gap: .75rem;display: flex;justify-content: flex-start;align-items: center;">
                   {{ tool.title }}
-                  @if (!tool.enabled) {
-                    <span class="upgrade-badge"><i class="pi pi-lock"></i> Upgrade</span>
-                  } @else {
-                    <p-icon class="pi pi-arrow-right"></p-icon>
-                  }
+                  <p-icon class="pi pi-arrow-right"></p-icon>
                 </h1>
                 <p style="font-size: 12px;line-height: 1rem;font-weight: 400;--tw-text-opacity: 1;color: rgb(68 76 88 1)">{{ tool.description }}</p>
               </div>
@@ -78,6 +129,217 @@
           }
         </div>
       </section>
+
+      <section class="mt-5">
+        <div class="mb-3">
+          <span class="section-subtitle mb-3">Continue where you left off</span>
+        </div>
+
+        @if (summaryLoading()) {
+          <div class="continue-grid">
+            <div class="continue-card continue-card--skeleton">
+              <div class="skeleton-line skeleton-line--title"></div>
+              <div class="continue-list">
+                @for (_ of [1, 2, 3]; track $index) {
+                  <div class="continue-item">
+                    <div class="skeleton-line skeleton-line--item"></div>
+                    <div class="skeleton-line skeleton-line--sub"></div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="continue-card continue-card--skeleton">
+              <div class="skeleton-line skeleton-line--title"></div>
+              <div class="continue-list">
+                @for (_ of [1, 2, 3]; track $index) {
+                  <div class="continue-item">
+                    <div class="skeleton-line skeleton-line--item"></div>
+                    <div class="skeleton-line skeleton-line--sub"></div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        } @else if (dashboard$ | async; as dashboard) {
+          @if (hasRecentItems(dashboard)) {
+            <div class="continue-grid">
+              <div class="continue-card">
+                <div class="continue-title">Recent Resumes</div>
+
+                @if (recentResumes(dashboard).length > 0) {
+                  <div class="continue-list">
+                    @for (item of recentResumes(dashboard); track item.id) {
+                      <div class="continue-item">
+                        <div class="continue-primary">{{ item.title || 'Untitled Resume' }}</div>
+                        <div class="continue-secondary">{{ formatRecentDate(item.lastModifiedDate) }}</div>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="continue-empty-inline">No recent resumes.</div>
+                }
+              </div>
+
+              <div class="continue-card">
+                <div class="continue-title">Recent Job Applications</div>
+
+                @if (recentJobApps(dashboard).length > 0) {
+                  <div class="continue-list">
+                    @for (item of recentJobApps(dashboard); track item.id) {
+                      <div class="continue-item">
+                        <div class="continue-primary">{{ recentJobPrimary(item) }}</div>
+                        <div class="continue-secondary">{{ formatRecentDate(item.lastModifiedDate) }}</div>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="continue-empty-inline">No recent job applications.</div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="continue-empty-grid">
+              <div class="continue-empty-card" role="button" tabindex="0" (click)="goCreateResume()">
+                <div class="continue-empty-text">You have no recent activity yet.</div>
+                <button type="button" class="continue-btn" (click)="goCreateResume(); $event.stopPropagation()">Create Resume</button>
+              </div>
+              <div class="continue-empty-card" role="button" tabindex="0" (click)="goTrackJobApplication()">
+                <div class="continue-empty-text">You have no recent activity yet.</div>
+                <button type="button" class="continue-btn" (click)="goTrackJobApplication(); $event.stopPropagation()">Track Job Application</button>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="continue-empty-grid">
+            <div class="continue-empty-card" role="button" tabindex="0" (click)="goCreateResume()">
+              <div class="continue-empty-text">You have no recent activity yet.</div>
+              <button type="button" class="continue-btn" (click)="goCreateResume(); $event.stopPropagation()">Create Resume</button>
+            </div>
+            <div class="continue-empty-card" role="button" tabindex="0" (click)="goTrackJobApplication()">
+              <div class="continue-empty-text">You have no recent activity yet.</div>
+              <button type="button" class="continue-btn" (click)="goTrackJobApplication(); $event.stopPropagation()">Track Job Application</button>
+            </div>
+          </div>
+        }
+      </section>
+
+      @if (dashboard$ | async; as dashboard) {
+
+        <section class="mt-5">
+          <div class="mb-3">
+            <span class="section-subtitle mb-3">Recommendations</span>
+          </div>
+
+          @if (recommendationRows(dashboard).length > 0) {
+            <div class="recommendation-list">
+              @for (item of recommendationRows(dashboard); track item.key) {
+                <div class="recommendation-item">
+                  <div class="recommendation-title-row">
+                    <span class="recommendation-title">{{ item.title }}</span>
+                    <span class="recommendation-badge" [class.high]="item.priority === 'High'" [class.medium]="item.priority === 'Medium'">{{ item.priority }}</span>
+                  </div>
+                  <div class="recommendation-desc">{{ item.desc }}</div>
+                  <button
+                    type="button"
+                    class="recommendation-action-btn"
+                    [class.details-btn--upgrade]="item.isLocked"
+                    (click)="onRecommendationRowAction(item)"
+                  >
+                    <mat-icon>{{ item.isLocked ? 'workspace_premium' : 'open_in_new' }}</mat-icon>
+                    {{ item.isLocked ? 'Upgrade' : 'Open' }}
+                  </button>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="muted">No recommendations available.</div>
+          }
+        </section>
+
+        <section class="mt-5">
+          <div class="mb-3">
+            <span class="section-subtitle mb-3">Alerts</span>
+          </div>
+
+          @if (alerts(dashboard).length > 0) {
+            <div class="details-list">
+              @for (item of alerts(dashboard); track $index) {
+                <div
+                  class="details-item details-item--alert"
+                  [class.alert--info]="item.severity === 'info'"
+                  [class.alert--success]="item.severity === 'success'"
+                  [class.alert--warning]="item.severity === 'warning'"
+                  [class.alert--danger]="item.severity === 'danger'"
+                  [class.alert--neutral]="!item.severity || item.severity === 'neutral'"
+                >
+                  <div class="details-message">{{ item.message }}</div>
+                  @if (item.actionRoute) {
+                    <button type="button" class="details-btn" (click)="onAlertAction(item)">Open</button>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="alerts-empty-state">
+              <mat-icon>notifications_none</mat-icon>
+              <span>No alerts right now. You’re all caught up.</span>
+            </div>
+          }
+        </section>
+      }
+
+      <section class="mt-5">
+        <div class="mb-3">
+          <span class="section-subtitle mb-3">Your Plan Includes</span>
+        </div>
+
+        <div class="plan-features-card">
+          @if (includedFeatures().length > 0) {
+            <div class="plan-features-grid">
+              @for (feature of includedFeatures(); track feature.key) {
+                <div class="plan-feature-card">
+                  <div class="recommendation-title-row">
+                    <div class="plan-feature-title-with-icon">
+                      <mat-icon>{{ feature.icon }}</mat-icon>
+                      <span class="plan-feature-title">{{ feature.title }}</span>
+                    </div>
+                    <span class="included-badge">Included</span>
+                  </div>
+                  <div class="plan-feature-desc">{{ feature.desc }}</div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="muted">No included features found for your current plan.</div>
+          }
+        </div>
+
+        @if (showUpgradeToUnlock()) {
+          <div class="upgrade-unlock-card mt-3">
+            <div class="upgrade-unlock-title">Upgrade to Unlock</div>
+            <div class="upgrade-unlock-list">
+              @for (feature of lockedFeatures(); track feature.key) {
+                <div class="upgrade-unlock-card-item">
+                  <div class="recommendation-title-row">
+                    <div class="plan-feature-title-with-icon">
+                      <mat-icon>lock</mat-icon>
+                      <span class="plan-feature-title">{{ feature.title }}</span>
+                    </div>
+                    <span class="recommendation-badge high">Locked</span>
+                  </div>
+                  <div class="plan-feature-desc">{{ feature.desc }}</div>
+                  <button type="button" class="recommendation-action-btn details-btn--upgrade" (click)="onUpgradeClick()">
+                    <mat-icon>workspace_premium</mat-icon>
+                    Upgrade
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </section>
+
     <section class="mt-5">
       <div class="mb-3">
         <span class="section-subtitle mt-5 mb-3" >Resources</span>

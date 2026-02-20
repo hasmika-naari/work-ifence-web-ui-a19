@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { LocalStorageService } from './local-storage.service';
 import { WifRole } from './profile.model';
 import { UserStoreService } from './store/user-store.service';
+import { SessionContextStore } from 'src/app/core/store/session-context.store';
 
 @Injectable({ providedIn: 'root' })
 export class ActiveRoleService {
@@ -13,6 +14,7 @@ export class ActiveRoleService {
   private readonly router = inject(Router);
   private readonly storage = inject(LocalStorageService);
   private readonly userStore = inject(UserStoreService);
+  private readonly sessionContextStore = inject(SessionContextStore);
 
   private readonly initialized = signal(false);
 
@@ -62,6 +64,12 @@ export class ActiveRoleService {
   setActiveRole(role: WifRole): void {
     this.userStore.updateActiveRole(role);
     this.persistRole(role);
+
+    const roleKey = (role?.role ?? '').toString().trim();
+    if (roleKey) {
+      this.sessionContextStore.setSelectedRole(roleKey);
+      void this.router.navigateByUrl(this.sessionContextStore.dashboardRouteForRole(roleKey), { replaceUrl: true });
+    }
   }
 
   private persistRole(role: WifRole): void {

@@ -56,18 +56,18 @@
                     [attr.aria-busy]="profilePanelService.isSwitching ? true : null"
                   >
                     <button
-                      *ngFor="let profile of accessContextService.ownedProfiles()"
+                      *ngFor="let role of (profileRoles$ | async)"
                       type="button"
                       class="sidebar-menu-grid-item"
-                      [class.active]="accessContextService.activeProfileKey() === profile.key"
+                      [class.active]="isActiveProfile(role)"
                       [disabled]="profilePanelService.isSwitching"
                       [attr.aria-disabled]="profilePanelService.isSwitching ? true : null"
-                      (click)="onProfileItemActivate($event, profile.key, menuSidenav)"
-                      (keydown)="onProfileItemKeydown($event, profile.key, menuSidenav)"
+                      (click)="onProfileItemActivate($event, role, menuSidenav)"
+                      (keydown)="onProfileItemKeydown($event, role, menuSidenav)"
                     >
                       <lucide-icon class="profile-grid-icon" name="User" size="32"></lucide-icon>
-                      <span class="sidebar-menu-grid-label">{{ profileLabel(profile) }}</span>
-                      <span class="profile-grid-spinner" *ngIf="profilePanelService.isSwitching && profilePanelService.switchingKey === profile.key">
+                      <span class="sidebar-menu-grid-label">{{ profileLabel({ key: role }) }}</span>
+                      <span class="profile-grid-spinner" *ngIf="profilePanelService.isSwitching && profilePanelService.switchingKey === role">
                         <mat-spinner diameter="18"></mat-spinner>
                       </span>
                     </button>

@@ -364,7 +364,7 @@
         overflow: hidden;
         position: fixed;
         height: 100vh;
-        width: 260px;
+        width: 250px;
     z-index: 1201;
         left: 0;
         top: 0;
@@ -1966,4 +1966,36 @@
     font-size: 10px;
     line-height: 10px;
     color: color-mix(in srgb, var(--mdc-theme-on-surface) 70%, transparent);
+}
+
+/* Expanded sidebar: prevent admin menu items/labels from clipping */
+::ng-deep .sidebar-area:not(.active) .sidebar-inner {
+    margin-right: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+::ng-deep .sidebar-area:not(.active) .sidebar-menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 12px;
+    max-height: calc(100vh - 210px);
+}
+
+::ng-deep .sidebar-area:not(.active) .sidebar-menu-grid-item {
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 8px;
+}
+
+::ng-deep .sidebar-area:not(.active) .sidebar-menu-grid-label {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    line-height: 1.25;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    text-align: center;
 }

@@ -1,7 +1,9 @@
-import { AsyncPipe } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
+import { AsyncPipe, isPlatformBrowser } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, DestroyRef, Inject, OnInit, PLATFORM_ID, Signal, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { BioProfile } from 'src/app/services/profile.model';
@@ -10,20 +12,82 @@ import type { FeatureKey } from 'src/app/models/feature-key.model';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
 import { ActiveRoleService } from 'src/app/services/active-role.service';
 import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
-import { DashboardSummaryFacadeService } from 'src/app/facades/dashboard-summary-facade.service';
 import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
+import { map, switchMap } from 'rxjs/operators';
+import { DashboardStatCardDTO } from 'src/app/core/models/my-dashboard.model';
+import { SessionContextStore } from 'src/app/core/store/session-context.store';
+import { UserDashboardStore } from 'src/app/core/store/user-dashboard.store';
+import { forkJoin, of } from 'rxjs';
+
+interface DashboardStatVM {
+  key: string;
+  title: string;
+  value: string;
+  sub: string;
+  color: string;
+  icon: string;
+  severity: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
+  isLocked: boolean;
+  actionRoute: string;
+  tooltip: string;
+  showUpgradeHint: boolean;
+}
+
+interface RecentResumeVM {
+  id: unknown;
+  title?: string;
+  lastModifiedDate?: string;
+}
+
+interface RecentJobAppVM {
+  id: unknown;
+  company?: string;
+  jobTitle?: string;
+  stage?: string;
+  lastModifiedDate?: string;
+}
+
+interface DashboardRecommendationVM {
+  key: string;
+  title: string;
+  actionRoute?: string;
+  isLocked?: boolean;
+}
+
+interface DashboardAlertVM {
+  severity: 'info' | 'warning' | 'danger' | 'success' | 'neutral';
+  message: string;
+  actionRoute?: string;
+}
+
+interface FeatureItem {
+  key: string;
+  title: string;
+  desc: string;
+  icon: string;
+  locked?: boolean;
+}
+
+interface RecommendationRowVM {
+  key: string;
+  title: string;
+  desc: string;
+  priority: 'High' | 'Medium';
+  isLocked: boolean;
+  actionRoute?: string;
+}
 
 @Component({
   selector: 'fury-dashboard',
   standalone: true,
-  imports: [MatCardModule, MatSnackBarModule, AsyncPipe],
+  imports: [MatCardModule, MatSnackBarModule, MatIconModule, AsyncPipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
  
   /**
    * Needed for the Layout
@@ -39,7 +103,47 @@ export class DashboardComponent {
   private dashboardContext: DashboardContextService = inject(DashboardContextService);
   private activeRoleService: ActiveRoleService = inject(ActiveRoleService);
   private upgradeRouter: UpgradeRouterService = inject(UpgradeRouterService);
-  private dashboardSummaryFacade: DashboardSummaryFacadeService = inject(DashboardSummaryFacadeService);
+  private sessionContextStore: SessionContextStore = inject(SessionContextStore);
+  private userDashboardStore: UserDashboardStore = inject(UserDashboardStore);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly swipeHintStorageKey = 'wif.dashboard.statsSwipeHintHidden';
+  private readonly dashboardErrorDismissed = signal(false);
+  private readonly statsOrder = ['profileCompletion', 'resumes', 'jobApps', 'plan', 'exports', 'activity'];
+  private readonly featureCatalog: FeatureItem[] = [
+    { key: 'resume.builder', title: 'Resume Builder', desc: 'Create and edit resumes', icon: 'description' },
+    { key: 'resume.portal', title: 'Resume Library', desc: 'Manage saved resumes', icon: 'folder_open' },
+    { key: 'job.tracking', title: 'Job Tracker', desc: 'Track applications and stages', icon: 'work_outline' },
+    { key: 'job.pipeline', title: 'Pipeline View', desc: 'See your stage breakdown', icon: 'timeline' },
+    { key: 'job.alerts', title: 'Job Alerts', desc: 'Get notified for matching jobs', icon: 'notifications' },
+    { key: 'learn.portal', title: 'Learning Hub', desc: 'Access curated courses', icon: 'school' },
+    { key: 'learn.saved', title: 'Saved Learning', desc: 'Bookmark courses', icon: 'bookmark' },
+    { key: 'support.tickets', title: 'Support Tickets', desc: 'Create and track tickets', icon: 'support_agent' },
+    { key: 'settings.account', title: 'Account Settings', desc: 'Manage account basics', icon: 'manage_accounts' },
+    { key: 'settings.password', title: 'Password & Security', desc: 'Update password', icon: 'lock' },
+  ];
+
+  showSwipeHint = true;
+
+  readonly dashboard$ = this.userDashboardStore.dashboard$;
+  readonly entitlements$ = this.userDashboardStore.entitlements$;
+  readonly loading$ = this.userDashboardStore.loading$;
+  readonly error$ = this.userDashboardStore.error$;
+
+  private readonly dashboardState = toSignal(this.dashboard$, { initialValue: null });
+  private readonly entitlementsState = toSignal(this.entitlements$, { initialValue: null });
+  private readonly loadingState = toSignal(this.loading$, { initialValue: false });
+  private readonly errorState = toSignal(this.error$, { initialValue: '' });
+
+  readonly displayName$ = this.dashboard$.pipe(
+    map((dashboard) => {
+      const welcome = dashboard?.welcome;
+      return this.toText(welcome?.firstName) || this.toText(welcome?.login) || 'User';
+    }),
+  );
+
+  readonly planLabel$ = this.entitlements$.pipe(
+    map((entitlements) => this.normalizePlanLabel(entitlements?.planCode)),
+  );
 
   bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   accessMe = this.accessFacade.accessMeSignal;
@@ -47,11 +151,13 @@ export class DashboardComponent {
   activeRole = computed(() => this.activeRoleService.getActiveRole()());
   isEnterpriseAdminView = computed(() => this.dashboardCtx() === 'ENTERPRISE' && this.activeRole()?.role === 'ENTERPRISE_ADMIN');
 
-  summaryVm = this.dashboardSummaryFacade.currentSummaryVmSignal;
-  summaryLoading = computed(() => this.summaryVm().summary === null);
+  summaryLoading = computed(() => this.loadingState());
   lastUpdatedText = computed(() => {
-    const vm = this.summaryVm();
-    const raw = vm.summary?.lastUpdated;
+    const raw = this.toText(
+      (this.dashboardState() as any)?.lastUpdated ??
+        (this.dashboardState() as any)?.updatedAt ??
+        (this.dashboardState() as any)?.lastModifiedDate,
+    );
     if (!raw) return '';
     const date = new Date(raw);
     if (Number.isNaN(date.getTime())) return '';
@@ -62,17 +168,6 @@ export class DashboardComponent {
   statsVm = computed(() => this.buildStats());
 
   private buildTools() {
-    const lockedMsg = 'Upgrade to access this feature';
-
-    const resumeBuild = this.accessFacade.buildToolAccess('RESUME_BUILD');
-    const jobAppCreate = this.accessFacade.can('JOB_TRACKING')
-      ? { enabled: true }
-      : { enabled: false, reason: this.accessFacade.denyMessage('JOB_TRACKING') };
-    const resumeManage = this.accessFacade.buildToolAccess('RESUME_MANAGE');
-    const jobAppManage = this.accessFacade.can('JOB_TRACKING')
-      ? { enabled: true }
-      : { enabled: false, reason: this.accessFacade.denyMessage('JOB_TRACKING') };
-
     const base: Array<{
       key: string;
       icon: string;
@@ -89,9 +184,8 @@ export class DashboardComponent {
         title: 'Build Your Resume',
         description: 'Create the perfect resume to land your dream job',
         route: '/user/resumes/resume',
-        enabled: resumeBuild.enabled,
-        disabledMessage: resumeBuild.reason ?? lockedMsg,
-        featureKey: 'RESUME_CREATE',
+        enabled: true,
+        disabledMessage: '',
       },
       {
         key: 'create-job-application',
@@ -99,9 +193,8 @@ export class DashboardComponent {
         title: 'Create Job Application',
         description: 'Create Job Application to Track',
         route: '/user/job-applications/application',
-        enabled: jobAppCreate.enabled,
-        disabledMessage: jobAppCreate.reason ?? lockedMsg,
-        featureKey: 'JOB_TRACKING',
+        enabled: true,
+        disabledMessage: '',
       },
       {
         key: 'manage-resumes',
@@ -109,8 +202,8 @@ export class DashboardComponent {
         title: 'Manage Resumes',
         description: 'Organize and track all Resumes',
         route: '/user/resumes',
-        enabled: resumeManage.enabled,
-        disabledMessage: resumeManage.reason ?? lockedMsg,
+        enabled: true,
+        disabledMessage: '',
       },
       {
         key: 'manage-job-applications',
@@ -118,9 +211,8 @@ export class DashboardComponent {
         title: 'Manage Job Applications',
         description: 'Organize and track all your job applications in one place',
         route: '/user/job-applications',
-        enabled: jobAppManage.enabled,
-        disabledMessage: jobAppManage.reason ?? lockedMsg,
-        featureKey: 'JOB_TRACKING',
+        enabled: true,
+        disabledMessage: '',
       },
     ];
 
@@ -169,97 +261,575 @@ export class DashboardComponent {
 
     return base;
   }
-  buildStats() {
-    const vm = this.summaryVm();
+  buildStats(): DashboardStatVM[] {
+    const cards = this.dashboardState()?.statsCards ?? [];
 
-    if (vm.type === 'ENTERPRISE') {
-      const s = vm.summary ?? {};
-      return [
-        {
-          title: 'Active Members',
-          value: String(s.membersActive ?? 0),
-          sub: '',
-          color: '#34A853',
-          icon: 'pi pi-users',
-        },
-        {
-          title: 'Invited',
-          value: String(s.membersInvited ?? 0),
-          sub: '',
-          color: '#4285F4',
-          icon: 'pi pi-user-plus',
-        },
-        {
-          title: 'Job Applications',
-          value: String(s.jobApplicationsTotal ?? 0),
-          sub: '',
-          color: '#9C27B0',
-          icon: 'pi pi-briefcase',
-        },
-        {
-          title: 'Open Roles',
-          value: String(s.openRolesCount ?? 0),
-          sub: '',
-          color: '#FBBC05',
-          icon: 'pi pi-sitemap',
-        },
-        {
-          title: 'Service Requests',
-          value: String(s.serviceRequestsOpen ?? 0),
-          sub: '',
-          color: '#EA4335',
-          icon: 'pi pi-inbox',
-        },
-      ];
+    if (cards.length > 0) {
+      return this.orderStatsCards(cards).map((card) => this.toStatVm(card));
     }
 
-    const s = vm.summary ?? {};
-    return [
-      {
-        title: 'Resumes Created',
-        value: String(s.resumeCount ?? 0),
-        sub: '',
-        color: '#4285F4',
-        icon: 'pi pi-file',
-      },
-      {
-        title: 'Applications Sent',
-        value: String(s.jobApplicationCount ?? 0),
-        sub: '',
-        color: '#9C27B0',
-        icon: 'pi pi-send',
-      },
-      {
-        title: 'Ongoing Applications',
-        value: String(s.ongoingApplications ?? 0),
-        sub: '',
-        color: '#FBBC05',
-        icon: 'pi pi-clock',
-      },
-      {
-        title: 'Offered',
-        value: String(s.offeredCount ?? 0),
-        sub: '',
-        color: '#34A853',
-        icon: 'pi pi-thumbs-up',
-      },
-      {
-        title: 'Rejected',
-        value: String(s.rejectedCount ?? 0),
-        sub: '',
-        color: '#EA4335',
-        icon: 'pi pi-thumbs-down',
-      },
+    const fallback: DashboardStatCardDTO[] = [
+      { key: 'profileCompletion', title: 'Profile Completion', value: '0%', subValue: 'Add skills to improve', severity: 'info' },
+      { key: 'resumes', title: 'Resumes', value: '0', subValue: 'Updated 0 days ago', severity: 'warning' },
+      { key: 'jobApps', title: 'Job Applications', value: '0', subValue: 'No active interviews', severity: 'neutral' },
+      { key: 'plan', title: 'Current Plan', value: 'FREE', subValue: 'Active', severity: 'neutral' },
+      { key: 'exports', title: 'Exports', value: 'Available', subValue: 'Usage count unavailable', severity: 'success' },
+      { key: 'activity', title: 'Activity', value: 'Active', subValue: 'Last activity 0 days ago', severity: 'success' },
     ];
+
+    return fallback.map((card) => this.toStatVm(card));
+  }
+
+  get entitlementsVm(): string[] {
+    return this.entitlementsState()?.entitlements ?? [];
+  }
+
+  get dashboardErrorMessage(): string {
+    return this.errorState();
+  }
+
+  isDashboardErrorDismissed(): boolean {
+    return this.dashboardErrorDismissed();
+  }
+
+  get displayName(): string {
+    const welcome = this.dashboardState()?.welcome;
+    return this.toText(welcome?.firstName) || this.toText(welcome?.login) || 'User';
+  }
+
+  get planLabel(): string {
+    return this.normalizePlanLabel(this.entitlementsState()?.planCode);
+  }
+
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
+
+  ngOnInit(): void {
+    this.loadSwipeHintState();
+    this.loadDashboard();
   }
 
   reloadSummary(): void {
-    this.dashboardSummaryFacade.reload();
+    this.loadDashboard();
+  }
+
+  dismissDashboardErrorBanner(): void {
+    this.dashboardErrorDismissed.set(true);
+  }
+
+  retryDashboardLoad(): void {
+    this.loadDashboard();
+  }
+
+  private loadDashboard(): void {
+    this.dashboardErrorDismissed.set(false);
+
+    this.sessionContextStore
+      .loadAccount()
+      .pipe(
+        switchMap(() => {
+          return forkJoin({
+            dashboard: this.userDashboardStore.loadDashboard(),
+            entitlements: this.userDashboardStore.loadEntitlements(),
+          });
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (payload) => {
+          const cardCount = payload?.dashboard?.statsCards?.length ?? 0;
+          if (cardCount !== 0 && cardCount !== 6) {
+            console.warn(`[Dashboard] Expected 6 statsCards but received ${cardCount}`);
+          }
+          console.debug('[Dashboard] stats response', payload?.dashboard);
+          console.debug('[Dashboard] entitlements response', payload?.entitlements);
+        },
+        error: () => void 0,
+      });
+  }
+
+  hasEntitlement(key: string): boolean {
+    return this.userDashboardStore.hasEntitlement(key);
+  }
+
+  recentResumes(dashboard: any): RecentResumeVM[] {
+    const resumes = dashboard?.details?.recent?.resumes;
+    return Array.isArray(resumes) ? resumes.slice(0, 3) : [];
+  }
+
+  recentJobApps(dashboard: any): RecentJobAppVM[] {
+    const jobApps = dashboard?.details?.recent?.jobApps;
+    return Array.isArray(jobApps) ? jobApps.slice(0, 3) : [];
+  }
+
+  hasRecentItems(dashboard: any): boolean {
+    return this.recentResumes(dashboard).length > 0 || this.recentJobApps(dashboard).length > 0;
+  }
+
+  recommendations(dashboard: any): DashboardRecommendationVM[] {
+    const items = dashboard?.details?.recommendations;
+    return Array.isArray(items) ? items : [];
+  }
+
+  recommendationRows(dashboard: any): RecommendationRowVM[] {
+    return this.recommendations(dashboard).map((item) => {
+      const key = this.toText(item?.key).toLowerCase();
+      let desc = 'Review this recommendation to improve your dashboard results.';
+      let priority: RecommendationRowVM['priority'] = 'Medium';
+
+      if (key.includes('profile')) {
+        desc = 'Increase your profile strength to improve results.';
+        priority = 'High';
+      } else if (key.includes('export')) {
+        desc = item?.isLocked
+          ? 'Unlock PDF export with PRO plan.'
+          : 'Export your resume as PDF in one click.';
+      } else if (key.includes('resume')) {
+        desc = 'Keep your resumes updated for better matches.';
+      } else if (key.includes('job')) {
+        desc = 'Track applications and improve follow-up outcomes.';
+      }
+
+      return {
+        key: this.toText(item?.key) || this.toText(item?.title),
+        title: this.toText(item?.title) || 'Recommendation',
+        desc,
+        priority,
+        isLocked: !!item?.isLocked,
+        actionRoute: this.toText(item?.actionRoute),
+      };
+    });
+  }
+
+  alerts(dashboard: any): DashboardAlertVM[] {
+    const items = dashboard?.details?.alerts;
+    return Array.isArray(items) ? items : [];
+  }
+
+  onRecommendationAction(item: DashboardRecommendationVM): void {
+    if (item?.isLocked) {
+      this.upgradeRouter.goToPricingForContext(this.dashboardCtx());
+      return;
+    }
+
+    const route = this.toText(item?.actionRoute);
+    if (!route) {
+      return;
+    }
+
+    void this.routerService.navigateByUrl(route);
+  }
+
+  onRecommendationRowAction(item: RecommendationRowVM): void {
+    if (item.isLocked) {
+      this.onUpgradeClick();
+      return;
+    }
+
+    const route = this.toText(item.actionRoute);
+    if (!route) {
+      return;
+    }
+
+    void this.routerService.navigateByUrl(route);
+  }
+
+  onAlertAction(item: DashboardAlertVM): void {
+    const route = this.toText(item?.actionRoute);
+    if (!route) {
+      return;
+    }
+
+    void this.routerService.navigateByUrl(route);
+  }
+
+  includedFeatures(): FeatureItem[] {
+    return this.featureCatalog
+      .filter((feature) => this.hasEntitlement(feature.key))
+      .slice(0, 10)
+      .map((item) => ({ ...item, locked: false }));
+  }
+
+  lockedFeatures(): FeatureItem[] {
+    const premiumCandidates: FeatureItem[] = [
+      {
+        key: 'resume.export.pdf',
+        title: 'PDF Resume Export',
+        desc: 'Download polished resumes as PDF',
+        icon: 'picture_as_pdf',
+        locked: true,
+      },
+      {
+        key: 'templates.premium',
+        title: 'Premium Templates',
+        desc: 'Access advanced resume templates',
+        icon: 'style',
+        locked: true,
+      },
+      {
+        key: 'job.alerts',
+        title: 'Advanced Job Alerts',
+        desc: 'Get proactive alerts for matching roles',
+        icon: 'notifications_active',
+        locked: true,
+      },
+    ];
+
+    return premiumCandidates.filter((feature) => !this.hasEntitlement(feature.key));
+  }
+
+  showUpgradeToUnlock(): boolean {
+    return this.planLabel === 'FREE' || this.lockedFeatures().length > 0;
+  }
+
+  onUpgradeClick(): void {
+    this.routerService
+      .navigateByUrl('/user/billing/upgrade')
+      .then((navigated) => {
+        if (!navigated) {
+          this.snackBar.open('Coming soon', 'Close', { duration: 2200 });
+        }
+      })
+      .catch(() => {
+        this.snackBar.open('Coming soon', 'Close', { duration: 2200 });
+      });
+  }
+
+  recentJobPrimary(item: RecentJobAppVM): string {
+    const company = this.toText(item?.company);
+    const jobTitle = this.toText(item?.jobTitle);
+
+    if (company && jobTitle) {
+      return `${company} · ${jobTitle}`;
+    }
+
+    return company || jobTitle || '—';
+  }
+
+  formatRecentDate(value?: string): string {
+    const text = this.toText(value);
+    if (!text) {
+      return '—';
+    }
+
+    const date = new Date(text);
+    if (Number.isNaN(date.getTime())) {
+      return text;
+    }
+
+    return date.toLocaleDateString(undefined, {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    });
+  }
+
+  goCreateResume(): void {
+    void this.routerService.navigate(['/user/resumes/resume']);
+  }
+
+  goTrackJobApplication(): void {
+    void this.routerService.navigate(['/user/job-applications/application']);
+  }
+
+  onStatsRowScroll(event: Event): void {
+    if (!this.showSwipeHint) {
+      return;
+    }
+
+    const target = event.target as HTMLElement | null;
+    if (!target || target.scrollLeft <= 10) {
+      return;
+    }
+
+    this.showSwipeHint = false;
+    this.persistSwipeHintState();
+  }
+
+  onStatCardClick(stat: DashboardStatVM): void {
+    if (stat.isLocked) {
+      return;
+    }
+
+    const route = this.toText(stat.actionRoute);
+    if (!route) {
+      return;
+    }
+
+    void this.routerService.navigateByUrl(route);
+  }
+
+  statMessageLine1(stat: DashboardStatVM): string {
+    const key = this.toText(stat.key).toLowerCase();
+    const sub = this.toText(stat.sub);
+    if (sub) {
+      return sub;
+    }
+
+    if (key === 'profilecompletion') {
+      return 'Complete your profile to boost visibility';
+    }
+
+    if (key === 'resumes') {
+      return 'Keep your resume updated regularly';
+    }
+
+    if (key === 'jobapps') {
+      return 'Track progress across all applications';
+    }
+
+    if (key === 'plan') {
+      return 'Subscription status is currently active';
+    }
+
+    if (key === 'exports') {
+      return stat.isLocked ? 'Upgrade to unlock PDF export' : 'Export tools are ready to use';
+    }
+
+    if (key === 'activity') {
+      return 'Recent account activity summary';
+    }
+
+    return 'Dashboard insight is available';
+  }
+
+  statMessageLine2(stat: DashboardStatVM): string {
+    const key = this.toText(stat.key).toLowerCase();
+
+    if (stat.showUpgradeHint) {
+      return 'Upgrade to access premium benefits';
+    }
+
+    const tooltip = this.toText(stat.tooltip);
+    if (tooltip) {
+      return tooltip;
+    }
+
+    if (key === 'profilecompletion') {
+      return 'Add skills, summary, and experience';
+    }
+
+    if (key === 'resumes') {
+      return 'Use tailored resumes for each role';
+    }
+
+    if (key === 'jobapps') {
+      return 'Stay on top of interviews and offers';
+    }
+
+    if (key === 'plan') {
+      return 'Manage plan and billing from subscription';
+    }
+
+    if (key === 'exports') {
+      return stat.isLocked ? 'Available in paid plans' : 'Download and share exported files';
+    }
+
+    if (key === 'activity') {
+      return 'Review history to stay organized';
+    }
+
+    return 'Keep your dashboard data up to date';
+  }
+
+  hasDashboardData(dashboard: unknown): boolean {
+    return !!dashboard;
+  }
+
+  private orderStatsCards(cards: DashboardStatCardDTO[]): DashboardStatCardDTO[] {
+    const mapByKey = new Map<string, DashboardStatCardDTO>();
+    for (const card of cards ?? []) {
+      mapByKey.set(String(card.key ?? ''), card);
+    }
+
+    const ordered: DashboardStatCardDTO[] = [];
+    for (const key of this.statsOrder) {
+      const card = mapByKey.get(key);
+      if (card) {
+        ordered.push(card);
+      }
+    }
+
+    return ordered;
+  }
+
+  private toStatVm(card: DashboardStatCardDTO): DashboardStatVM {
+    const normalizedKey = String(card.key || '').toLowerCase();
+    const valueText = this.toText(card.value) || '0';
+    const subText = this.toText(card.subValue);
+    const planCode = valueText.toUpperCase();
+
+    const toNumber = (value: string): number => {
+      const parsed = Number(String(value).replace(/[^0-9.-]/g, ''));
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+
+    const hasWords = (source: string, words: string[]): boolean => {
+      const lower = source.toLowerCase();
+      return words.some((word) => lower.includes(word));
+    };
+
+    const extractDays = (source: string): number => {
+      const match = source.match(/(\d+)\s*day/i);
+      return match ? Number(match[1]) : 999;
+    };
+
+    let severity: DashboardStatVM['severity'] = (card.severity as DashboardStatVM['severity']) || 'info';
+    let isLocked = !!card.isLocked;
+    let finalValue = valueText;
+    let finalSub = subText;
+    const tooltip = this.toText(card.tooltip);
+    const actionRoute = this.toText(card.actionRoute);
+    let showUpgradeHint = false;
+
+    if (normalizedKey === 'profilecompletion') {
+      if (!/%$/.test(finalValue)) {
+        const num = toNumber(finalValue);
+        finalValue = `${num}%`;
+      }
+      severity = card.severity || 'info';
+    }
+
+    if (normalizedKey === 'resumes') {
+      const count = toNumber(finalValue);
+      severity = count === 0 ? 'warning' : 'neutral';
+    }
+
+    if (normalizedKey === 'jobapps') {
+      const combined = `${finalSub} ${finalValue}`;
+      if (hasWords(combined, ['offer', 'accepted'])) {
+        severity = 'success';
+      } else if (hasWords(combined, ['interview'])) {
+        severity = 'info';
+      } else {
+        severity = 'neutral';
+      }
+    }
+
+    if (normalizedKey === 'plan') {
+      const isFree = planCode === 'FREE';
+      showUpgradeHint = isFree;
+      severity = isFree ? 'neutral' : 'success';
+    }
+
+    if (normalizedKey === 'exports') {
+      if (isLocked) {
+        severity = 'warning';
+        finalSub = 'Upgrade to unlock PDF export';
+      } else {
+        severity = 'success';
+        if (!finalValue) {
+          finalValue = 'Available';
+        }
+      }
+    }
+
+    if (normalizedKey === 'activity') {
+      const days = extractDays(finalSub || finalValue);
+      severity = days < 3 ? 'success' : 'neutral';
+    }
+
+    const iconMap: Record<string, string> = {
+      profilecompletion: 'pi pi-user',
+      resumes: 'pi pi-file',
+      jobapps: 'pi pi-send',
+      plan: 'pi pi-crown',
+      exports: 'pi pi-download',
+      activity: 'pi pi-chart-line',
+    };
+
+    const colorMap: Record<string, string> = {
+      neutral: '#6c757d',
+      info: '#4285F4',
+      success: '#34A853',
+      warning: '#FBBC05',
+      danger: '#EA4335',
+    };
+
+    return {
+      key: String(card.key || card.title || 'stat'),
+      title: card.title || '—',
+      value: finalValue || '—',
+      sub: finalSub,
+      color: colorMap[severity] || '#4285F4',
+      icon: iconMap[normalizedKey] || 'pi pi-chart-bar',
+      severity,
+      isLocked,
+      actionRoute,
+      tooltip,
+      showUpgradeHint,
+    };
+  }
+
+  private toText(value: unknown): string {
+    if (value === null || value === undefined) {
+      return '';
+    }
+
+    const text = String(value).trim();
+    return text || '';
+  }
+
+  private normalizePlanLabel(planCode: unknown): string {
+    const normalized = this.toText(planCode).toUpperCase();
+
+    if (normalized.includes('PREMIUM')) {
+      return 'PREMIUM';
+    }
+
+    if (normalized.includes('PRO')) {
+      return 'PRO';
+    }
+
+    if (normalized.includes('FREE')) {
+      return 'FREE';
+    }
+
+    return normalized || 'FREE';
+  }
+
+  private loadSwipeHintState(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.showSwipeHint = false;
+      return;
+    }
+
+    this.showSwipeHint = sessionStorage.getItem(this.swipeHintStorageKey) !== 'true';
+  }
+
+  private persistSwipeHintState(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    sessionStorage.setItem(this.swipeHintStorageKey, 'true');
   }
 
 
 
-  onToolClick(tool: { route: string; enabled: boolean; disabledMessage?: string; featureKey?: FeatureKey }) {
+  toolIconClass(tool: { key?: string; title?: string }): string {
+    const key = this.toText(tool?.key).toLowerCase();
+    const title = this.toText(tool?.title).toLowerCase();
+
+    if (key.includes('build-resume') || title.includes('build your resume')) {
+      return 'pi pi-file';
+    }
+
+    if (key.includes('manage-resumes') || title.includes('manage resumes')) {
+      return 'pi pi-copy';
+    }
+
+    if (key.includes('create-job-application') || title.includes('create job application')) {
+      return 'pi pi-briefcase';
+    }
+
+    if (key.includes('manage-job-applications') || title.includes('manage job applications')) {
+      return 'pi pi-briefcase';
+    }
+
+    return 'pi pi-file';
+  }
+
+  onToolClick(tool: { key?: string; title?: string; route: string; enabled: boolean; disabledMessage?: string; featureKey?: FeatureKey }) {
     if (tool.featureKey && !this.accessFacade.canOrExplain(tool.featureKey)) {
       this.snackBar.open(tool.disabledMessage || 'Upgrade required', 'View plans', {
         duration: 2500,
@@ -278,7 +848,6 @@ export class DashboardComponent {
     });
     this.upgradeRouter.goToPricingForContext(this.dashboardCtx());
   }
-
 
 }
 

@@ -6,7 +6,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { SidebarDirective } from '../../@navan/shared/sidebar/sidebar.directive';
 import { ThemeService } from '../../@navan/services/theme.service';
 import { HeaderComponent } from '../common/header/header.component';
@@ -18,6 +18,7 @@ import { ProfilePanelService } from '../services/profile-panel.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import type { OwnedProfileDto } from '../models/access-me.model';
 import { NavStore } from '../core/nav/nav.store';
+import { SessionContextStore } from '../core/store/session-context.store';
 
 @Component({
   selector: 'wif-layout',
@@ -104,7 +105,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   // Services used directly by template
   readonly profilePanelService = inject(ProfilePanelService);
   readonly accessContextService = inject(AccessContextService);
+  readonly sessionContextStore = inject(SessionContextStore);
   private readonly navStore = inject(NavStore);
+
+  readonly profileRoles$ = this.sessionContextStore.account$.pipe(
+    map((account) => account?.authorities ?? []),
+  );
 
   private readonly platformId: object = inject(PLATFORM_ID);
   readonly toggleService: ToggleService = inject(ToggleService);
@@ -183,6 +189,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.sessionContextStore.loadAccount().subscribe({ error: () => void 0 });
+
     if (isPlatformBrowser(this.platformId)) {
       this.isBrowser = true;
       this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -241,14 +249,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   async switchProfileFromPanel(profileKey: string, menuSidenav: MatSidenav): Promise<void> {
     if (this.profilePanelService.isSwitching) return;
-    if (this.accessContextService.activeProfileKey() === profileKey) return;
+    if (this.isActiveProfile(profileKey)) return;
 
-    const ok = await this.profilePanelService.switchProfile(profileKey);
+    const ok = await this.profilePanelService.switchProfile(profileKey, () => {
+      void this.closeMenuSidenav(menuSidenav);
+    });
     if (!ok) return;
 
-    // Best practice: never block navigation on UI animations.
-    // Start closing the panel (best-effort), then navigate immediately.
-    void this.closeMenuSidenav(menuSidenav);
+    this.sessionContextStore.switchRole(profileKey);
     await this.router.navigateByUrl(this.profileLandingRoute(profileKey), { replaceUrl: true });
   }
 
@@ -257,7 +265,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     event.stopPropagation();
 
     if (this.profilePanelService.isSwitching) return;
-    if (this.accessContextService.activeProfileKey() === profileKey) return;
+    if (this.isActiveProfile(profileKey)) return;
     // Delegate to the async switch handler.
     void this.switchProfileFromPanel(profileKey, menuSidenav);
   }
@@ -271,8 +279,46 @@ export class LayoutComponent implements OnInit, OnDestroy {
     event.stopPropagation();
 
     if (this.profilePanelService.isSwitching) return;
-    if (this.accessContextService.activeProfileKey() === profileKey) return;
+    if (this.isActiveProfile(profileKey)) return;
     void this.switchProfileFromPanel(profileKey, menuSidenav);
+  }
+
+  isActiveProfile(profileKey: string): boolean {
+    const current = this.normalizeProfileKey(this.accessContextService.activeProfileKey());
+    const target = this.normalizeProfileKey(profileKey);
+    return !!current && !!target && current === target;
+  }
+
+  private normalizeProfileKey(value: string | null | undefined): string {
+    const normalized = (value ?? '').toString().trim().toUpperCase();
+    if (!normalized) return '';
+    if (normalized === 'ENTERPRISE_ADMIN') return 'ROLE_ENTERPRISE_ADMIN';
+    if (normalized === 'ENTERPRISE_EMPLOYEE') return 'ROLE_ENTERPRISE_EMPLOYEE';
+    if (normalized === 'PLATFORM_ADMIN') return 'ROLE_ADMIN';
+    return normalized;
+  }
+
+  private routeForSelectedRole(role: string): string {
+    const normalized = (role ?? '').toString().trim().toUpperCase();
+
+    if (normalized === 'ROLE_USER') {
+      return '/user/dashboard';
+    }
+
+    if (normalized === 'ROLE_ADMIN' || normalized === 'PLATFORM_ADMIN') {
+      return '/user/dashboard-admin';
+    }
+
+    if (
+      normalized === 'ROLE_ENTERPRISE_ADMIN' ||
+      normalized === 'ROLE_ENTERPRISE_EMPLOYEE' ||
+      normalized === 'ENTERPRISE_ADMIN' ||
+      normalized === 'ENTERPRISE_EMPLOYEE'
+    ) {
+      return '/user/enterprise/org';
+    }
+
+    return '/user/dashboard';
   }
 
   activeProfileLabel(): string {
