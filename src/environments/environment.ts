@@ -5,6 +5,7 @@
 
 export const environment = {
   production: false,
+  debugNavbar: true,
   country: 'india',
   backend: 'http://Workifence.com:8090', // Put your backend here
   url: '',

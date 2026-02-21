@@ -158,6 +158,14 @@ export class NavConfigService {
               entitlementKey: ENTITLEMENT_KEYS.ADMIN_FEATUREFLAGS
             },
             {
+              id: 'menu-management',
+              title: 'Menu Management',
+              icon: 'menu',
+              route: '/user/admin/menu-management',
+              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
+              entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE
+            },
+            {
               id: 'resume-templates',
               title: 'Resume Templates',
               icon: 'layout',

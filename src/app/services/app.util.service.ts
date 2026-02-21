@@ -19,6 +19,7 @@ import { WINDOW } from './window.token';
 import { AccessFacadeService } from '../facades/access-facade.service';
 import { EntitlementService } from './entitlement.service';
 import { NavStore } from 'src/app/core/nav/nav.store';
+import { NavbarStoreService } from 'src/main/webapp/app/core/navbar/navbar-store.service';
 
 @Injectable({providedIn: 'root'})
 export class AppUtilService {
@@ -31,6 +32,7 @@ export class AppUtilService {
     this.localStorageService.removeItem('authToken');
     this.localStorageService.removeItem('authenticated');
     this.userStore.resetStore();
+    this.navbarStore.clear();
 
     // Avoid hard reload during unit tests (Karma), which fails the test runner.
     const isKarma = typeof (this.window as any)?.__karma__ !== 'undefined';
@@ -47,6 +49,7 @@ export class AppUtilService {
   private readonly accessFacade = inject(AccessFacadeService);
   private entitlementService: EntitlementService = inject(EntitlementService);
   private navStore: NavStore = inject(NavStore);
+  private navbarStore: NavbarStoreService = inject(NavbarStoreService);
   
     constructor( 
       @Inject(DOCUMENT) private document: Document,  
@@ -137,6 +140,7 @@ export class AppUtilService {
                     this.accessFacade.reload();
                     this.entitlementService.getEntitlements();
                     this.navStore.refresh();
+                    this.navbarStore.initOnce();
                     
                     this.userStore.updateToken(loginResponse.id_token);
   

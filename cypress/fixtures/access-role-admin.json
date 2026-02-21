@@ -1,0 +1,16 @@
+{
+  "mode": "ADMIN",
+  "userId": "201",
+  "userName": "role-admin",
+  "activeProfileKey": "ROLE_ADMIN",
+  "subscription": {
+    "planCode": "PREMIUM",
+    "status": "ACTIVE"
+  },
+  "entitlements": {
+    "jobTrackingEnabled": true,
+    "alertsEnabled": true,
+    "courseCentralEnabled": true,
+    "templateAccessLevel": "ALL"
+  }
+}

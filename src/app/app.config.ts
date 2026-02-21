@@ -7,7 +7,7 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import { ActivatedRouteSnapshot, BaseRouteReuseStrategy, PreloadAllModules, RouteReuseStrategy, provideRouter, 
         withComponentInputBinding, 
         withInMemoryScrolling, withPreloading, withRouterConfig, 
-        withViewTransitions } from '@angular/router';
+  } from '@angular/router';
 
 import { routes } from './app.routes';
 import { BrowserModule, provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
@@ -90,8 +90,7 @@ export const appConfig: ApplicationConfig = {
     withRouterConfig({
       onSameUrlNavigation: 'reload',
     }),
-    
-    withViewTransitions(),
+
     withPreloading(PreloadAllModules),
     withInMemoryScrolling({
       scrollPositionRestoration: 'enabled',

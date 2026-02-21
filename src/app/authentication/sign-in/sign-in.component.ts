@@ -3,15 +3,17 @@ import { FormsModule, FormBuilder, FormGroup, ReactiveFormsModule, Validators } 
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, RouterLink, Router } from '@angular/router';
+import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, RouterLink, Router } from '@angular/router';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AccessFacadeService } from 'src/app/facades/access-facade.service';
-import { take } from 'rxjs/operators';
+import { firstValueFrom, of, Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { AccessContextStore } from 'src/app/core/store/access-context.store';
 
 
 @Component({
@@ -21,6 +23,8 @@ import { take } from 'rxjs/operators';
     styleUrl: './sign-in.component.scss'
 })
 export class SignInComponent {
+    private loginFinalized = false;
+    private routerEventSub?: Subscription;
 
     constructor(
         private fb: FormBuilder,
@@ -29,12 +33,20 @@ export class SignInComponent {
         private localStorageService: LocalStorageService,
         private userStore: UserStoreService,
         private authApi: AuthApiService,
-        private accessFacade: AccessFacadeService,
+        private accessContextStore: AccessContextStore,
     ) {
         this.authForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(8)]],
         });
+
+        if (!environment.production) {
+            this.routerEventSub = this.router.events.subscribe((e) => {
+                if (e instanceof NavigationEnd || e instanceof NavigationCancel || e instanceof NavigationError) {
+                    console.log('[ROUTER_EVT]', e);
+                }
+            });
+        }
     }
 
     // Password Hide
@@ -43,6 +55,8 @@ export class SignInComponent {
     // Form
     authForm: FormGroup;
     onSubmit() {
+        this.loginFinalized = false;
+
         // E2E-only: prove submit handler ran.
         this.e2eSetAttr('data-e2e-submit-clicked', 'true');
         if (this.isE2E()) console.info('[E2E] onSubmit() entered');
@@ -57,7 +71,7 @@ export class SignInComponent {
         const password = String(this.authForm.value.password ?? '');
 
         this.authApi.login(email, password).subscribe({
-            next: (response) => {
+            next: async (response) => {
                 this.e2eSetAttr('data-e2e-login-api', 'success');
                 if (this.isE2E()) console.info('[E2E] login API success', response);
 
@@ -69,26 +83,27 @@ export class SignInComponent {
                 }
                 this.localStorageService.setItem('authenticated', true);
 
-                const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-                if (returnUrl && returnUrl.startsWith('/')) {
-                    this.router.navigateByUrl(returnUrl);
-                    return;
+                await firstValueFrom(this.accessContextStore.init().pipe(catchError(() => of(void 0))));
+                const activeProfileKey = this.accessContextStore.activeProfileKey || 'ROLE_USER';
+                const mode = this.accessContextStore.mode || 'PERSONAL';
+                const homeRoute = this.accessContextStore.homeRoute || '';
+                const navigatingTo = homeRoute || '/user/dashboard';
+                const storedProfileContext = this.readStoredProfileContext();
+
+                if (!environment.production) {
+                    console.log('[LOGIN_NAV_DECISION]', {
+                        accessMeActiveProfileKey: activeProfileKey,
+                        accessMeMode: mode,
+                        accessMeHomeRoute: homeRoute,
+                        storedProfileContext,
+                        finalRouteToNavigate: navigatingTo,
+                    });
+                    console.debug(
+                        `[LOGIN_NAV] activeProfileKey=${activeProfileKey}, mode=${mode}, homeRoute=${homeRoute}, navigatingTo=${navigatingTo}`
+                    );
                 }
 
-                this.accessFacade.reload();
-                this.accessFacade.accessMe$
-                    .pipe(take(1))
-                    .subscribe((me) => {
-                        if (this.accessFacade.isAdmin(me)) {
-                            this.router.navigate(['/user/dashboard-admin']);
-                            return;
-                        }
-                        if (this.accessFacade.isEnterprise(me)) {
-                            this.router.navigate(['/user/enterprise']);
-                            return;
-                        }
-                        this.router.navigate(['/user/dashboard']);
-                    });
+                await this.finalizeLoginNavigation(navigatingTo);
             },
             error: (err) => {
                 this.e2eSetAttr('data-e2e-login-api', 'error');
@@ -97,6 +112,16 @@ export class SignInComponent {
                 // Do not navigate on error.
             }
         });
+    }
+
+    private async finalizeLoginNavigation(targetRoute: string): Promise<void> {
+        if (this.loginFinalized) return;
+        this.loginFinalized = true;
+
+        if (!environment.production) {
+            console.debug('[LoginDebug] final navigation route', targetRoute);
+        }
+        await this.router.navigateByUrl(targetRoute);
     }
 
     private isE2E(): boolean {
@@ -117,6 +142,16 @@ export class SignInComponent {
         }
         const anyErr = err as any;
         return String(anyErr?.message ?? anyErr?.toString?.() ?? 'Unknown error');
+    }
+
+    private readStoredProfileContext(): unknown {
+        const raw = this.localStorageService.getItemByName('profileContext');
+        if (!raw) return null;
+        try {
+            return JSON.parse(raw);
+        } catch {
+            return raw;
+        }
     }
 
 }

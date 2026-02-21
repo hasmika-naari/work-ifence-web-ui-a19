@@ -1,24 +1,50 @@
 import { PLATFORM_ID, inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
+import { of } from 'rxjs';
+import { catchError, filter, timeout } from 'rxjs/operators';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
-import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
-import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { GateDeniedTelemetryService } from 'src/app/services/gate-denied-telemetry.service';
-import { entitlementDenyReason, isEntitled, type EntitlementKey } from 'src/app/utils/entitlements';
-import type { FeatureKey, FeaturePricingScope } from 'src/app/models/feature-key.model';
-import type { FeatureFlagKey } from 'src/app/models/feature-flag.model';
+// Removed entitlement and feature imports
+import { ActiveProfileStore } from 'src/app/auth/active-profile.store';
+import { AccessContextService } from 'src/app/services/access-context.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { getLandingRoute } from 'src/app/routing/landing-route.util';
+import type { AccessMeDto } from 'src/app/models/access-me.model';
+import { ProfileContextStorageService } from 'src/app/services/profile-context-storage.service';
+import { AccessContextStore } from 'src/app/core/store/access-context.store';
+import { environment } from 'src/environments/environment';
 
 export interface AccessGuardData {
   requireAuth?: boolean;
   requireMode?: 'ENTERPRISE' | 'PERSONAL' | 'ADMIN';
-  requireEnterpriseAdmin?: boolean;
-  requireEntitlement?: EntitlementKey;
-  requireFeature?: FeatureKey;
-  requireFlag?: FeatureFlagKey;
-  pricingScope?: FeaturePricingScope;
+  requireProfileKey?: string;
+}
+
+function normalizeRoleKey(value: unknown): string {
+  return (value ?? '').toString().trim().toUpperCase();
+}
+
+function resolveFallbackProfileKey(profileContextStorage: ProfileContextStorageService): string {
+  return normalizeRoleKey(profileContextStorage.getActiveProfileKey()) || 'ROLE_USER';
+}
+
+function resolveFallbackMode(profileContextStorage: ProfileContextStorageService, activeProfileKey: string): string {
+  return normalizeRoleKey(profileContextStorage.getMode(undefined, activeProfileKey)) || 'PERSONAL';
+}
+
+function resolveHomeRoute(me: AccessMeDto, activeProfileKey: string, mode: string): string {
+  const normalized = normalizeRoleKey(activeProfileKey);
+  const normalizedMode = normalizeRoleKey(mode);
+  if (normalized === 'ROLE_ADMIN' || normalized === 'PLATFORM_ADMIN' || normalizedMode === 'ADMIN') {
+    return '/user/dashboard-admin';
+  }
+  if (normalized === 'ROLE_USER' || normalizedMode === 'PERSONAL') {
+    return '/user/dashboard';
+  }
+  return getLandingRoute(normalized || 'ROLE_USER');
 }
 
 function show(snackBar: MatSnackBar | null, message: string) {
@@ -26,135 +52,143 @@ function show(snackBar: MatSnackBar | null, message: string) {
   snackBar.open(message, 'OK', { duration: 3200 });
 }
 
-function navigatePricing(router: Router, scope?: FeaturePricingScope) {
-  if (scope === 'enterprise') {
-    void router.navigate(['/pricing'], { queryParams: { scope: 'enterprise' } });
-    return;
-  }
-  // individual: default pricing tab
-  void router.navigateByUrl('/pricing');
+// Removed navigatePricing (no longer needed)
+
+// Removed hasAllowedEntitlementInNavbar (no longer needed)
+
+// Removed collectAllowedEntitlementKeys (no longer needed)
+
+function warnDeny(
+  url: string,
+  requireMode: AccessGuardData['requireMode'] | undefined,
+  entitlementKey: string | undefined,
+  activeProfileKey: string,
+  mode: string,
+): void {
+  console.warn('[accessGuard] DENY', {
+    url,
+    requireMode,
+    entitlementKey,
+    activeProfileKey,
+    mode,
+  });
 }
 
+function logAccessDecision(kind: 'ALLOW' | 'DENY', payload: Record<string, unknown>): void {
+  const message = '[accessGuard] decision';
+  if (kind === 'ALLOW') {
+    console.info(message, payload);
+    return;
+  }
+  console.warn(message, payload);
+}
+
+function logGuardDebug(
+  url: string,
+  requireMode: AccessGuardData['requireMode'] | undefined,
+  actualMode: string,
+  allowed: boolean,
+): void {
+  if (environment.production) return;
+  console.debug(
+    `[ACCESS_ONLY] url=${url || ''}, requireMode=${(requireMode ?? '').toString()}, actualMode=${actualMode || ''}, allowed=${allowed}`,
+  );
+}
+
+function logAccessGuardDecision(url: string, allow: boolean): void {
+  console.log('[ACCESS_ONLY_DECISION]', {
+    url,
+    allow,
+  });
+}
 export const accessGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
-  const accessFacade = inject(AccessFacadeService);
   const router = inject(Router);
   const storage = inject(LocalStorageService);
   const platformId = inject(PLATFORM_ID);
-  const telemetry = inject(GateDeniedTelemetryService);
-  const remoteConfig = inject(RemoteConfigFacadeService);
-
-  // Avoid instantiating Material overlay/snackbar on the server (prerender).
-  const snackBar = isPlatformBrowser(platformId) ? inject(MatSnackBar) : null;
+  const profileContextStorage = inject(ProfileContextStorageService);
 
   const data = (route.data ?? {}) as AccessGuardData;
 
-  return accessFacade.accessMe$.pipe(
-    take(1),
-    map((me) => {
-      // Auth check (best-effort). Most /user/* routes are already protected by AuthGuardService.
+  console.log('[ACCESS_ONLY_START]', {
+    url: state.url,
+    routeData: route.data,
+  });
+
+  const profile = profileContextStorage.getCurrent();
+  console.log('[ACCESS_ONLY_PROFILE]', profile);
+
+  return of(true).pipe(
+    map(() => {
+      // Auth check
       if (data.requireAuth) {
         if (isPlatformBrowser(platformId)) {
           const auth = storage.getItem('authenticated');
           if (auth !== true) {
-            const msg = 'Please sign in to continue.';
-            show(snackBar, msg);
-            telemetry.recordGateDenied({
-              requestPath: state.url,
-              denialType: 'AUTH',
-              message: msg,
-              details: { requireAuth: true },
+            console.warn('[DENY]', {
+              guard: 'accessGuard',
+              url: state.url,
+              reason: 'AUTH_OR_MODE',
+              requireMode: data.requireMode,
+              actualMode: undefined,
             });
+            logAccessGuardDecision(state.url, false);
             void router.navigateByUrl('/');
             return false;
           }
         }
       }
 
-      const mode = (me?.mode ?? 'PERSONAL').toString();
-      const activeProfileKey = (me?.activeProfileKey ?? '').toString();
-      const isEnterpriseMode = mode === 'ENTERPRISE_ADMIN' || mode === 'ENTERPRISE_EMPLOYEE';
-
-      // IMPORTANT: `requireMode` is used to enforce the current dashboard/profile context.
-      // It must be based on the *active profile* (activeProfileKey), not just global capabilities.
-      const isAdminProfile = activeProfileKey === 'ROLE_ADMIN';
-      const isEnterpriseProfile =
-        activeProfileKey === 'ROLE_ENTERPRISE_ADMIN' || activeProfileKey === 'ROLE_ENTERPRISE_EMPLOYEE';
-      const isPersonalProfile = activeProfileKey === 'ROLE_USER' || (!activeProfileKey && mode === 'PERSONAL');
-
-      if (data.requireFlag) {
-        if (!remoteConfig.isFlagEnabledSafe(data.requireFlag)) {
-          const msg = 'This feature is temporarily disabled.';
-          show(snackBar, msg);
-          telemetry.recordGateDenied({
-            requestPath: state.url,
-            denialType: 'FLAG',
-            message: msg,
-            details: { requireFlag: data.requireFlag },
-          });
-          return router.createUrlTree(['/unauthorized']);
-        }
-      }
-
+      // Mode check
       if (data.requireMode) {
+        const actualMode = normalizeRoleKey(profile?.mode);
         const ok =
-          (data.requireMode === 'ADMIN' && isAdminProfile) ||
-          (data.requireMode === 'PERSONAL' && isPersonalProfile) ||
-          (data.requireMode === 'ENTERPRISE' && (isEnterpriseProfile || isEnterpriseMode));
+          (data.requireMode === 'ADMIN' && actualMode === 'ADMIN') ||
+          (data.requireMode === 'PERSONAL' && actualMode === 'PERSONAL') ||
+          (data.requireMode === 'ENTERPRISE' && actualMode.startsWith('ENTERPRISE'));
+
+        logGuardDebug(state.url, data.requireMode, actualMode, ok);
 
         if (!ok) {
-          const msg =
-            data.requireMode === 'ADMIN'
-              ? 'Admin access required.'
-              : 'This page is not available in the current dashboard context.';
-          show(snackBar, msg);
-          telemetry.recordGateDenied({
-            requestPath: state.url,
-            denialType: 'MODE',
-            message: msg,
-            details: { requireMode: data.requireMode, actualMode: mode, activeProfileKey },
+          console.warn('[DENY]', {
+            guard: 'accessGuard',
+            url: state.url,
+            reason: 'AUTH_OR_MODE',
+            requireMode: data.requireMode,
+            actualMode,
           });
+          logAccessGuardDecision(state.url, false);
+          return router.createUrlTree([
+            resolveHomeRoute(
+              {} as AccessMeDto,
+              profile?.activeProfileKey ?? '',
+              actualMode ?? ''
+            )
+          ]);
+        }
+      }
+
+      // Profile key check (optional)
+      if (data.requireProfileKey) {
+        const actualProfileKey = normalizeRoleKey(profile?.activeProfileKey);
+        const requiredProfileKey = normalizeRoleKey(data.requireProfileKey);
+        if (actualProfileKey !== requiredProfileKey) {
+          console.warn('[DENY]', {
+            guard: 'accessGuard',
+            url: state.url,
+            reason: 'AUTH_OR_MODE',
+            requireMode: data.requireMode,
+            actualMode: normalizeRoleKey(profile?.mode),
+          });
+          logAccessGuardDecision(state.url, false);
           return router.createUrlTree(['/unauthorized']);
         }
       }
 
-      if (data.requireEntitlement) {
-        if (!isEntitled(me, data.requireEntitlement)) {
-          const msg = entitlementDenyReason(data.requireEntitlement);
-          show(snackBar, msg);
-          telemetry.recordGateDenied({
-            requestPath: state.url,
-            denialType: 'ENTITLEMENT',
-            entitlementKey: data.requireEntitlement,
-            pricingScope: data.pricingScope ?? (isEnterpriseMode ? 'enterprise' : 'individual'),
-            message: msg,
-            details: { requireEntitlement: data.requireEntitlement },
-          });
-          navigatePricing(router, data.pricingScope ?? (isEnterpriseMode ? 'enterprise' : 'individual'));
-          return false;
-        }
-      }
-
-      if (data.requireFeature) {
-        if (!accessFacade.require(data.requireFeature, me)) {
-          const reason = accessFacade.lastDeniedReason();
-          const msg = reason?.message ?? 'Upgrade required';
-          show(snackBar, msg);
-          telemetry.recordGateDenied({
-            requestPath: state.url,
-            denialType: 'FEATURE',
-            featureKey: data.requireFeature,
-            pricingScope: data.pricingScope ?? reason?.pricingScope ?? (isEnterpriseMode ? 'enterprise' : 'individual'),
-            message: msg,
-            details: { requireFeature: data.requireFeature, deniedReason: reason ?? undefined },
-          });
-          navigatePricing(router, data.pricingScope ?? reason?.pricingScope ?? (isEnterpriseMode ? 'enterprise' : 'individual'));
-          return false;
-        }
-      }
-
+      logGuardDebug(state.url, data.requireMode, normalizeRoleKey(profile?.mode), true);
+      logAccessGuardDecision(state.url, true);
       return true;
     })
   );

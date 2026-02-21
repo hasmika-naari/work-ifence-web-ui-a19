@@ -36,6 +36,9 @@ import { GlobalErrorHandler } from './services/global-error-handler';
 import { MessageService } from 'primeng/api';
 import { AccessFacadeService } from './facades/access-facade.service';
 import { FeatureGateNoticeComponent } from './shared/feature-gate-notice/feature-gate-notice.component';
+import { ActiveProfileStore } from './auth/active-profile.store';
+import { RouteDebugService } from './services/route-debug.service';
+import { AccessContextStore } from './core/store/access-context.store';
 @Component({
     selector: 'app-root',
     imports: [RouterOutlet, RouterModule, CommonModule, LoadingScreenComponent,
@@ -125,10 +128,13 @@ export class AppComponent implements OnInit, AfterViewInit{
     private storageService: LocalStorageService = inject(LocalStorageService);
     private constantsService: AppConstantsService= inject(AppConstantsService);
     private userStore: UserStoreService = inject(UserStoreService);
+    private activeProfileStore: ActiveProfileStore = inject(ActiveProfileStore);
     // private appUtilService: AppUtilService =  inject(AppUtilService);
     private locationService:Location =  inject(Location);
     public  router:Router =  inject(Router);
     private accessFacade: AccessFacadeService = inject(AccessFacadeService);
+    private routeDebugService: RouteDebugService = inject(RouteDebugService);
+    private accessContextStore: AccessContextStore = inject(AccessContextStore);
     readonly deniedReason = this.accessFacade.lastDeniedReason;
     readonly accessLoggedIn = this.accessFacade.isLoggedIn;
     readonly currentUrl = toSignal(
@@ -154,6 +160,7 @@ export class AppComponent implements OnInit, AfterViewInit{
         // private route: ActivatedRoute,
         private splashScreenService: SplashScreenService
     ) {
+      void this.routeDebugService;
         this.toggleService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
         });
@@ -174,6 +181,7 @@ export class AppComponent implements OnInit, AfterViewInit{
 
     // ngOnInit
     async ngOnInit(){
+      this.activeProfileStore.restoreActiveRoleFromStorage();
         this.userStore.updateMenuList(this.menuList);
 
         // NOTE: Angular prerender can execute in Node with a DOM-like environment.
@@ -238,6 +246,10 @@ export class AppComponent implements OnInit, AfterViewInit{
           // Sync user login state from persisted auth flags/tokens.
           const isLoggedIn = this.storageService.isLoggedIn();
           this.userStore.setUserLoginStatus(isLoggedIn);
+
+          if (isLoggedIn) {
+            this.accessContextStore.init().subscribe({ error: () => void 0 });
+          }
 
           if (!isLoggedIn) {
             // If we clear the token on startup (auto-login flow), also clear the auth flag.

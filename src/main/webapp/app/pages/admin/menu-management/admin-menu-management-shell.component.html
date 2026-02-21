@@ -1,0 +1,405 @@
+<div class="admin-menu-management">
+  <h1 class="admin-menu-management__title">Menu Management</h1>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let card of getMenuHealthCards()">
+      <mat-card
+        appearance="outlined"
+        class="h-100"
+        style="cursor: pointer;"
+        [ngClass]="[card.toneClass, isHealthCardActive(card.key) ? 'border border-3 border-dark' : '']"
+        (click)="onHealthCardClick(card)"
+      >
+        <mat-card-content>
+          <div class="small fw-semibold">{{ card.label }}</div>
+          <div class="fs-3 fw-bold mt-1">{{ card.count }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <mat-card *ngIf="showDiagnosticsPanel()" appearance="outlined" class="admin-menu-management__diagnostics">
+    <mat-card-header>
+      <mat-card-title>Diagnostics</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="admin-menu-management__diag-row"><strong>User:</strong> {{ diagnosticsSnapshot().user | json }}</div>
+      <div class="admin-menu-management__diag-row"><strong>Sections:</strong> {{ diagnosticsSnapshot().sectionsCount }}</div>
+      <div class="admin-menu-management__diag-row"><strong>Items:</strong> {{ diagnosticsSnapshot().itemsCount }}</div>
+      <div class="admin-menu-management__diag-row"><strong>Locked:</strong> {{ diagnosticsSnapshot().lockedCount }}</div>
+      <div class="admin-menu-management__diag-row"><strong>Allowed:</strong> {{ diagnosticsSnapshot().allowedCount }}</div>
+      <div class="admin-menu-management__diag-row"><strong>Last refresh:</strong> {{ diagnosticsSnapshot().lastRefreshTime }}</div>
+
+      <div class="admin-menu-management__diag-row">
+        <strong>Locked items with reasons:</strong>
+        <ul class="admin-menu-management__diag-list">
+          <li *ngFor="let item of diagnosticsSnapshot().lockedItems">
+            {{ item.title || item.itemKey }} — {{ item.lockReason }}
+          </li>
+        </ul>
+      </div>
+
+      <button mat-stroked-button type="button" (click)="copyDiagnosticsAsJson()">
+        Copy as JSON
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-sidenav-container class="admin-menu-management__drawer-container" autosize>
+    <mat-sidenav-content>
+      <mat-tab-group [selectedIndex]="tabIndex()" (selectedIndexChange)="onTabIndexChange($event)">
+        <mat-tab *ngFor="let tab of tabs; trackBy: trackTab" [label]="tab.label">
+          <mat-card class="admin-menu-management__card" appearance="outlined">
+            <mat-card-content>
+              <div class="admin-menu-management__toolbar">
+                <mat-form-field appearance="outline" class="admin-menu-management__search">
+                  <mat-label>Search</mat-label>
+                  <input
+                    matInput
+                    [ngModel]="searchByTab()[tab.key]"
+                    (ngModelChange)="updateSearch(tab.key, $event)"
+                    placeholder="Search by title or key"
+                  />
+                  <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="admin-menu-management__role-filter">
+                  <mat-label>Role</mat-label>
+                  <mat-select
+                    [ngModel]="roleByTab()[tab.key]"
+                    (ngModelChange)="updateRole(tab.key, $event)"
+                  >
+                    <mat-option
+                      *ngFor="let role of roleOptionsByTab()[tab.key]; trackBy: trackRole"
+                      [value]="role"
+                    >
+                      {{ role === 'ALL' ? 'All Roles' : role }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <ng-container *ngIf="tab.key === 'items'">
+                  <div class="admin-menu-management__bulk-actions">
+                    <div class="admin-menu-management__bulk-selected">
+                      Selected: {{ selectedItemCount() }}
+                    </div>
+
+                    <mat-form-field appearance="outline" class="admin-menu-management__bulk-status-filter">
+                      <mat-label>Bulk feature status</mat-label>
+                      <mat-select
+                        [ngModel]="bulkFeatureStatus()"
+                        (ngModelChange)="updateBulkFeatureStatus($event)"
+                      >
+                        <mat-option *ngFor="let status of featureStatusOptions" [value]="status">
+                          {{ status }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <button
+                      mat-flat-button
+                      color="primary"
+                      type="button"
+                      [disabled]="selectedItemCount() === 0 || bulkInProgress()"
+                      (click)="applyBulkFeatureStatus()"
+                    >
+                      Apply Status
+                    </button>
+
+                    <mat-form-field appearance="outline" class="admin-menu-management__bulk-visibility-filter">
+                      <mat-label>Bulk tenant visibility</mat-label>
+                      <mat-select
+                        [ngModel]="bulkVisibility()"
+                        (ngModelChange)="updateBulkVisibility($event)"
+                      >
+                        <mat-option *ngFor="let option of bulkVisibilityOptions" [value]="option">
+                          {{ option === 'visible' ? 'Visible' : 'Hidden' }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <button
+                      mat-flat-button
+                      color="accent"
+                      type="button"
+                      [disabled]="selectedItemCount() === 0 || bulkInProgress() || !hasTenantConfigRows()"
+                      (click)="applyBulkTenantVisibility()"
+                    >
+                      Apply Visibility
+                    </button>
+                  </div>
+
+                  <mat-form-field appearance="outline" class="admin-menu-management__preview-role-filter">
+                    <mat-label>Preview Role</mat-label>
+                    <mat-select
+                      [ngModel]="previewRole()"
+                      (ngModelChange)="updatePreviewRole($event)"
+                    >
+                      <mat-option
+                        *ngFor="let role of previewRoleOptions; trackBy: trackPreviewRole"
+                        [value]="role"
+                      >
+                        {{ role }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="admin-menu-management__preview-plan-filter">
+                    <mat-label>Preview Plan</mat-label>
+                    <mat-select
+                      [ngModel]="previewPlan()"
+                      (ngModelChange)="updatePreviewPlan($event)"
+                    >
+                      <mat-option
+                        *ngFor="let plan of previewPlanOptions; trackBy: trackPreviewPlan"
+                        [value]="plan"
+                      >
+                        {{ plan }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-slide-toggle
+                    class="admin-menu-management__preview-toggle"
+                    [ngModel]="previewShowOnlyLocked()"
+                    (ngModelChange)="updatePreviewShowOnlyLocked($event)"
+                  >
+                    Show only locked
+                  </mat-slide-toggle>
+
+                  <mat-slide-toggle
+                    class="admin-menu-management__preview-toggle"
+                    [ngModel]="previewShowOnlyVisible()"
+                    (ngModelChange)="updatePreviewShowOnlyVisible($event)"
+                  >
+                    Show only visible
+                  </mat-slide-toggle>
+                </ng-container>
+              </div>
+
+              <mat-progress-bar
+                *ngIf="tab.key === 'items' && bulkInProgress()"
+                mode="determinate"
+                [value]="bulkProgress()"
+                class="admin-menu-management__bulk-progress"
+              ></mat-progress-bar>
+
+              <div class="admin-menu-management__table-wrap">
+                <table mat-table [dataSource]="getFilteredRows(tab)" class="admin-menu-management__table">
+                  <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef>
+                      <mat-checkbox
+                        *ngIf="tab.key === 'items'"
+                        [checked]="areAllVisibleItemsSelected(getFilteredRows(tab))"
+                        [indeterminate]="hasAnyVisibleItemSelected(getFilteredRows(tab)) && !areAllVisibleItemsSelected(getFilteredRows(tab))"
+                        (change)="toggleAllVisibleItems(getFilteredRows(tab), $event.checked)"
+                        (click)="$event.stopPropagation()"
+                        aria-label="Select all visible items"
+                      ></mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                      <mat-checkbox
+                        *ngIf="tab.key === 'items'"
+                        [checked]="isItemSelected(row.id)"
+                        (change)="toggleItemSelection(row.id, $event.checked)"
+                        (click)="$event.stopPropagation()"
+                        aria-label="Select item"
+                      ></mat-checkbox>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef>Icon</th>
+                    <td mat-cell *matCellDef="let row">
+                      <mat-icon>{{ row.icon || 'menu' }}</mat-icon>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef>Title</th>
+                    <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="role">
+                    <th mat-header-cell *matHeaderCellDef>Role</th>
+                    <td mat-cell *matCellDef="let row">{{ row.role }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="route">
+                    <th mat-header-cell *matHeaderCellDef>Route</th>
+                    <td mat-cell *matCellDef="let row">{{ row.route }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="entitlementKey">
+                    <th mat-header-cell *matHeaderCellDef>Entitlement</th>
+                    <td mat-cell *matCellDef="let row">{{ row.entitlementKey }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="updatedAt">
+                    <th mat-header-cell *matHeaderCellDef>Updated</th>
+                    <td mat-cell *matCellDef="let row">{{ row.updatedAt }}</td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(tab.key)"></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="let row; columns: getDisplayedColumns(tab.key);"
+                    class="admin-menu-management__row"
+                    (click)="openDetails(tab, row)"
+                  ></tr>
+                </table>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-sidenav-content>
+
+    <mat-sidenav
+      class="admin-menu-management__drawer"
+      mode="over"
+      position="end"
+      [opened]="drawerOpen()"
+      (closedStart)="closeDrawer()"
+    >
+      <div class="admin-menu-management__drawer-header">
+        <h3>Details</h3>
+        <div class="admin-menu-management__drawer-actions">
+          <mat-progress-spinner
+            *ngIf="refreshingNavbar()"
+            mode="indeterminate"
+            diameter="18"
+            strokeWidth="3"
+          ></mat-progress-spinner>
+          <button
+            *ngIf="selectedTabKey() === 'items'"
+            mat-flat-button
+            color="primary"
+            type="button"
+            [disabled]="saving() || refreshingNavbar()"
+            (click)="saveItemChanges()"
+          >
+            Save
+          </button>
+          <button
+            *ngIf="selectedTabKey() === 'tenantConfig'"
+            mat-flat-button
+            color="primary"
+            type="button"
+            [disabled]="saving() || refreshingNavbar()"
+            (click)="saveTenantVisibility()"
+          >
+            Save
+          </button>
+          <button mat-icon-button type="button" (click)="closeDrawer()" aria-label="Close details drawer">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="selectedRow() as row">
+        <ng-container *ngIf="selectedTabKey() === 'items'; else readOnlyDrawer">
+          <form class="admin-menu-management__edit-form" [formGroup]="itemEditForm">
+            <div class="admin-menu-management__drawer-section">
+              <div class="admin-menu-management__drawer-label">Key</div>
+              <div class="admin-menu-management__drawer-value">{{ row.id }}</div>
+            </div>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Feature Status</mat-label>
+              <mat-select formControlName="featureStatus">
+                <mat-option *ngFor="let status of featureStatusOptions" [value]="status">{{ status }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Status Reason</mat-label>
+              <input matInput formControlName="statusReason" />
+              <mat-error *ngIf="showStatusReasonError">Status reason is required when Feature Status is not ACTIVE.</mat-error>
+            </mat-form-field>
+
+            <mat-slide-toggle formControlName="isActive">Is Active</mat-slide-toggle>
+            <mat-slide-toggle formControlName="showWhenLocked">Show When Locked</mat-slide-toggle>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Min Plan</mat-label>
+              <mat-select formControlName="minPlan">
+                <mat-option *ngFor="let plan of minPlanOptions" [value]="plan">{{ plan }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Sort Order</mat-label>
+              <input matInput type="number" formControlName="sortOrder" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Title</mat-label>
+              <input matInput formControlName="title" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Icon</mat-label>
+              <input matInput formControlName="icon" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Route</mat-label>
+              <input matInput formControlName="route" />
+              <mat-error *ngIf="itemEditForm.controls.route.touched && itemEditForm.controls.route.hasError('routeMustStartWithSlash')">
+                Route must start with '/'.
+              </mat-error>
+            </mat-form-field>
+          </form>
+        </ng-container>
+
+        <ng-template #readOnlyDrawer>
+          <ng-container *ngIf="selectedTabKey() === 'tenantConfig'; else defaultReadOnlyDrawer">
+            <form class="admin-menu-management__edit-form" [formGroup]="tenantVisibilityForm">
+              <div class="admin-menu-management__drawer-section">
+                <div class="admin-menu-management__drawer-label">Key</div>
+                <div class="admin-menu-management__drawer-value">{{ row.id }}</div>
+              </div>
+              <div class="admin-menu-management__drawer-section">
+                <div class="admin-menu-management__drawer-label">Title</div>
+                <div class="admin-menu-management__drawer-value">{{ row.title }}</div>
+              </div>
+              <mat-slide-toggle formControlName="showWhenLocked">Show When Locked</mat-slide-toggle>
+            </form>
+          </ng-container>
+
+          <ng-template #defaultReadOnlyDrawer>
+          <div class="admin-menu-management__drawer-section">
+            <div class="admin-menu-management__drawer-label">Tab</div>
+            <div class="admin-menu-management__drawer-value">{{ selectedTabLabel() }}</div>
+          </div>
+          <div class="admin-menu-management__drawer-section">
+            <div class="admin-menu-management__drawer-label">Key</div>
+            <div class="admin-menu-management__drawer-value">{{ row.id }}</div>
+          </div>
+          <div class="admin-menu-management__drawer-section">
+            <div class="admin-menu-management__drawer-label">Title</div>
+            <div class="admin-menu-management__drawer-value">{{ row.title }}</div>
+          </div>
+          <div class="admin-menu-management__drawer-section">
+            <div class="admin-menu-management__drawer-label">Role</div>
+            <div class="admin-menu-management__drawer-value">{{ row.role }}</div>
+          </div>
+          <div class="admin-menu-management__drawer-section">
+            <div class="admin-menu-management__drawer-label">Route</div>
+            <div class="admin-menu-management__drawer-value">{{ row.route }}</div>
+          </div>
+          <div class="admin-menu-management__drawer-section">
+            <div class="admin-menu-management__drawer-label">Entitlement</div>
+            <div class="admin-menu-management__drawer-value">{{ row.entitlementKey }}</div>
+          </div>
+          <div class="admin-menu-management__drawer-section">
+            <div class="admin-menu-management__drawer-label">Updated</div>
+            <div class="admin-menu-management__drawer-value">{{ row.updatedAt }}</div>
+          </div>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </mat-sidenav>
+  </mat-sidenav-container>
+</div>

@@ -8,6 +8,8 @@ import { AccessMeDto, AccessProfileContextDto, OwnedProfileDto, SwitchProfileRes
 import { AccessApiService } from './access-api.service';
 import { NavMenuService } from './nav-menu.service';
 import { UserStoreService } from './store/user-store.service';
+import { ProfileContextStorageService } from './profile-context-storage.service';
+import { ActiveProfileStore } from 'src/app/auth/active-profile.store';
 
 @Injectable({ providedIn: 'root' })
 export class AccessContextService {
@@ -47,7 +49,9 @@ export class AccessContextService {
     private navMenuService: NavMenuService,
     private entitlementService: EntitlementService,
     private navStore: NavStore,
-    private userStore: UserStoreService
+    private userStore: UserStoreService,
+    private profileContextStorage: ProfileContextStorageService,
+    private activeProfileStore: ActiveProfileStore,
   ) {
     // Avoid firing authenticated endpoints before we know auth state.
     // Refresh once login is confirmed; clear context on logout.
@@ -67,6 +71,51 @@ export class AccessContextService {
     this.refreshProfileContext().subscribe({ error: () => void 0 });
     this.refreshEntitlements().subscribe({ error: () => void 0 });
     this.refreshNavMenu().subscribe({ error: () => void 0 });
+  }
+
+  ensureAccessContextLoaded(): Observable<AccessMeDto> {
+    const current = this.accessMe();
+    const hasLoadedContext = !!current &&
+      (
+        !!(current.activeProfileKey ?? '').toString().trim() ||
+        Array.isArray(current.availableProfiles) ||
+        Array.isArray(current.ownedProfiles)
+      );
+
+    if (hasLoadedContext) {
+      return of(current as AccessMeDto);
+    }
+
+    return this.accessApi.getAccessMe().pipe(
+      tap((me) => {
+        this.applyAccessMeSnapshot(me);
+        this.profileContextStorage.syncFromAccessMe(me);
+        this.debugProfileVsPlanTier();
+      }),
+      catchError((err: unknown) => {
+        const httpErr = err as HttpErrorResponse;
+        if (httpErr?.status === 401 || httpErr?.status === 403) {
+          this.clearContext();
+        }
+
+        const fallback = this.accessMe() ?? ({} as AccessMeDto);
+        if (fallback) {
+          this.profileContextStorage.syncFromAccessMe(fallback);
+        }
+        return of(fallback as AccessMeDto);
+      })
+    );
+  }
+
+  ensureEntitlementsLoaded(): Observable<any> {
+    const current = this.entitlementsMe();
+    if (current) {
+      return of(current);
+    }
+
+    return this.refreshEntitlements().pipe(
+      catchError(() => of(this.entitlementsMe() ?? null))
+    );
   }
 
   private clearContext(): void {
@@ -144,30 +193,9 @@ export class AccessContextService {
   refreshAccessMe(): Observable<AccessMeDto> {
     return this.accessApi.getAccessMe().pipe(
       tap((me) => {
-        this.accessMe.set(me);
-
-        // Keep these signals aligned with /api/access/me so the header + right-sidenav
-        // always have the backend-provided labels for ownedProfiles.
-        if (me?.activeProfileKey !== undefined) {
-          this.activeProfileKey.set(me?.activeProfileKey ?? null);
-        }
-
-        const owned = Array.isArray(me?.ownedProfiles) ? me.ownedProfiles : [];
-        if (owned.length > 0) {
-          this.ownedProfiles.set(owned);
-          return;
-        }
-
-        // Fallback: some backends may omit ownedProfiles but provide availableProfiles with labels.
-        const available = Array.isArray(me?.availableProfiles) ? me.availableProfiles : [];
-        if (available.length > 0) {
-          this.ownedProfiles.set(
-            available.map((p: any) => ({
-              key: String(p?.key ?? ''),
-              label: String(p?.label ?? '').trim(),
-            }))
-          );
-        }
+        this.applyAccessMeSnapshot(me);
+        this.profileContextStorage.syncFromAccessMe(me);
+        this.debugProfileVsPlanTier();
       }),
       catchError((err: unknown) => {
         // /api/access/me returns 401 when logged out; don't leave the service in a broken state.
@@ -181,6 +209,30 @@ export class AccessContextService {
     );
   }
 
+  private applyAccessMeSnapshot(me: AccessMeDto): void {
+    this.accessMe.set(me);
+
+    if (me?.activeProfileKey !== undefined) {
+      this.activeProfileKey.set(me?.activeProfileKey ?? null);
+    }
+
+    const owned = Array.isArray(me?.ownedProfiles) ? me.ownedProfiles : [];
+    if (owned.length > 0) {
+      this.ownedProfiles.set(owned);
+      return;
+    }
+
+    const available = Array.isArray(me?.availableProfiles) ? me.availableProfiles : [];
+    if (available.length > 0) {
+      this.ownedProfiles.set(
+        available.map((p: any) => ({
+          key: String(p?.key ?? ''),
+          label: String(p?.label ?? '').trim(),
+        }))
+      );
+    }
+  }
+
   refreshEntitlements(): Observable<any> {
     // Clear cached entitlement context before reload.
     this.entitlementsMe.set(null);
@@ -189,8 +241,32 @@ export class AccessContextService {
       tap((ent) => {
         this.entitlementsMe.set(ent);
         this.entitlementService.applyBackendResponse(ent);
+
+        const planTier = (ent?.planTier ?? '').toString().trim().toUpperCase();
+        if (planTier) {
+          this.activeProfileStore.setPlanTier(planTier);
+          this.profileContextStorage.setPlanTier(planTier);
+        }
+
+        this.debugProfileVsPlanTier();
       })
     );
+  }
+
+  private debugProfileVsPlanTier(): void {
+    const me = this.accessMe();
+    const ent = this.entitlementsMe();
+    if (!me || !ent) return;
+
+    const activeProfileKey = (me?.activeProfileKey ?? '').toString().trim().toUpperCase();
+    const mode = (me?.mode ?? '').toString().trim().toUpperCase();
+    const planTier = (ent?.planTier ?? '').toString().trim().toUpperCase() || this.profileContextStorage.getPlanTier();
+
+    console.debug('[ProfileContextDebug] access vs entitlements', {
+      activeProfileKey,
+      mode,
+      planTier,
+    });
   }
 
   refreshNavMenu(): Observable<any> {

@@ -1,11 +1,14 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
+import { catchError, from, map, of, switchMap, take } from 'rxjs';
 import { EntitlementService } from '../services/entitlement.service';
 import { AccessFacadeService } from '../facades/access-facade.service';
 import { PlanTier } from '../nav/nav.model';
-import { environment } from '../../environments/environment';
-import { FeatureKey } from '../models/feature-key.model';
-import { ENTITLEMENT_KEYS } from '../entitlements/entitlement-keys';
+import { ActiveProfileStore } from 'src/app/auth/active-profile.store';
+import { AccessContextService } from 'src/app/services/access-context.service';
+import { ProfileContextStorageService } from 'src/app/services/profile-context-storage.service';
+import { AccessContextStore } from 'src/app/core/store/access-context.store';
+import { environment } from 'src/environments/environment';
 
 export interface EntitlementRouteData {
   entitlementKey?: string;
@@ -20,6 +23,38 @@ function toPlanTier(value: PlanTier | string | undefined): PlanTier | undefined 
   return undefined;
 }
 
+function normalizeRoleKey(value: unknown): string {
+  return (value ?? '').toString().trim().toUpperCase();
+}
+
+function resolveFallbackProfileKey(profileContextStorage: ProfileContextStorageService): string {
+  return normalizeRoleKey(profileContextStorage.getActiveProfileKey()) || 'ROLE_USER';
+}
+
+function resolveFallbackMode(profileContextStorage: ProfileContextStorageService, activeProfileKey: string): string {
+  return normalizeRoleKey(profileContextStorage.getMode(undefined, activeProfileKey)) || 'PERSONAL';
+}
+
+function normalizePath(url: string): string {
+  return (url ?? '').toString().split('?')[0].split('#')[0];
+}
+
+function resolveEntitlementsMap(source: unknown): Record<string, boolean> {
+  if (!source || typeof source !== 'object') return {};
+
+  const nested = (source as { entitlements?: unknown }).entitlements;
+  const candidate =
+    nested && typeof nested === 'object' && !Array.isArray(nested)
+      ? (nested as Record<string, unknown>)
+      : (source as Record<string, unknown>);
+
+  const map: Record<string, boolean> = {};
+  for (const [key, value] of Object.entries(candidate)) {
+    map[key] = value === true;
+  }
+  return map;
+}
+
 export const entitlementRouteGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
@@ -27,9 +62,17 @@ export const entitlementRouteGuard: CanActivateFn = (
   const entitlement = inject(EntitlementService);
   const accessFacade = inject(AccessFacadeService);
   const router = inject(Router);
+  const activeProfileStore = inject(ActiveProfileStore);
+  const accessContext = inject(AccessContextService);
+  const profileContextStorage = inject(ProfileContextStorageService);
+  const accessContextStore = inject(AccessContextStore);
+
+  console.log('[ENT_GUARD_START]', {
+    url: state.url,
+    routeData: route.data,
+  });
 
   const data = (route.data ?? {}) as EntitlementRouteData;
-  const entitlementKey = (data.entitlementKey ?? '').toString();
   const minPlan = toPlanTier(data.minPlan);
 
   // 1. Authentication Check
@@ -40,45 +83,44 @@ export const entitlementRouteGuard: CanActivateFn = (
     });
   }
 
-  // CONTRACT (fail-closed):
-  // If a route uses `entitlementRouteGuard`, it MUST declare `data.entitlementKey`.
-  // - If `data.entitlementKey` is missing/empty: deny access.
-  //   - Prod: console.error (include route path) + return false
-  //   - Dev:  console.warn (misconfiguration) + return false
-  // - If `data.entitlementKey` is present: preserve existing behavior.
-  if (!entitlementKey) {
-    // If minPlan is set, redirect to upgrade page
-    if (minPlan) {
-      return router.createUrlTree(['/user/billing/upgrade'], {
-        queryParams: {
-          feature: entitlementKey,
-          minPlan,
-          from: state.url
+  return accessContextStore.init().pipe(
+    catchError(() => of(void 0)),
+    switchMap(() => accessContext.ensureAccessContextLoaded()),
+    take(1),
+    switchMap((loadedMe) => from(entitlement.ensureLoaded()).pipe(
+      catchError(() => of(void 0)),
+      map(() => {
+        const snapshot = entitlement.getSnapshot();
+        console.log('[ENT_GUARD_SNAPSHOT]', {
+          loaded: snapshot.loaded,
+          planTier: snapshot.planTier,
+          entitlementsCount: Object.keys(snapshot.entitlements || {}).length,
+          hasAdminConsole: snapshot.entitlements?.['admin.console'],
+        });
+
+        const requiredKey = ((route.data?.['entitlementKey'] as string) ?? '').toString().trim();
+        // Ensure entitlements loaded
+        const entitlements = snapshot.entitlements || {};
+        const entitlementValue = entitlements[requiredKey];
+
+        if (!requiredKey) {
+          return true;
         }
-      });
-    }
-    // Otherwise, redirect to pricing
-    return router.createUrlTree(['/pricing']);
-  }
 
-  if (entitlementKey === ENTITLEMENT_KEYS.USER_DASHBOARD) {
-    return true;
-  }
+        if (entitlementValue === true) {
+          return true;
+        }
 
-  const ok = entitlement.canAccess(entitlementKey, minPlan);
-  if (ok) return true;
-
-  // 2. Authorization Check (Logged in but not entitled)
-  // Redirect to upgrade page if minPlan is set
-  if (minPlan) {
-    return router.createUrlTree(['/user/billing/upgrade'], {
-      queryParams: {
-        feature: entitlementKey,
-        minPlan,
-        from: state.url
-      }
-    });
-  }
-  // Otherwise, redirect to pricing
-  return router.createUrlTree(['/pricing']);
+        // Final log before redirect
+        console.warn('[DENY]', {
+          guard: 'entitlementRouteGuard',
+          url: state.url,
+          reason: 'ENTITLEMENT',
+          requiredKey,
+          entitlementValue
+        });
+        return router.createUrlTree(['/unauthorized']);
+      })
+    ))
+  );
 };

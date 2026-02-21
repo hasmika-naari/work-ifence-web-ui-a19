@@ -4,10 +4,17 @@ import { UserEntitlements, EntitlementMap, PlanTier } from '../nav/nav.model';
 import { ENTITLEMENT_KEYS } from '../entitlements/entitlement-keys';
 import { environment } from '../../environments/environment';
 import type { EntitlementsResponse } from '../models/entitlements-response.model';
+import { Observable, catchError, firstValueFrom, map, of, tap } from 'rxjs';
 
 declare const ngDevMode: boolean;
 
 const ENTITLEMENT_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+export interface EntitlementSnapshot {
+  loaded: boolean;
+  planTier: PlanTier | null;
+  entitlements: EntitlementMap;
+}
 
 @Injectable({ providedIn: 'root' })
 export class EntitlementService {
@@ -239,6 +246,56 @@ export class EntitlementService {
 
   roles(): string[] {
     return this._entitlements()?.roles ?? [];
+  }
+
+  async ensureLoaded(): Promise<void> {
+    await firstValueFrom(this.loadIfNeeded().pipe(map(() => void 0)));
+  }
+
+  getSnapshot(): EntitlementSnapshot {
+    const current = this._entitlements();
+    return {
+      loaded: !!current,
+      planTier: current?.plan ?? null,
+      entitlements: current?.entitlements ?? {},
+    };
+  }
+
+  loadIfNeeded(): Observable<UserEntitlements | null> {
+    const current = this._entitlements();
+    const isFresh = !!current && Date.now() - this._lastFetched <= ENTITLEMENT_TTL_MS;
+
+    if (isFresh) {
+      return of(current);
+    }
+
+    const e2eOverride = this.getE2EEntitlementsOverride();
+    if (e2eOverride) {
+      this._entitlements.set(e2eOverride);
+      this._lastFetched = Date.now();
+      return of(e2eOverride);
+    }
+
+    return this.http.get<unknown>('/api/entitlements/me').pipe(
+      map((raw) => {
+        this.debugLog('raw /api/entitlements/me response', raw);
+        return this.decodeBackendEntitlements(raw);
+      }),
+      tap((decoded) => {
+        if (!decoded) {
+          this.setFallbackEntitlements('Invalid backend entitlements contract (loadIfNeeded)');
+          return;
+        }
+
+        this._entitlements.set(decoded);
+        this._lastFetched = Date.now();
+      }),
+      map((decoded) => decoded ?? this._entitlements()),
+      catchError((err) => {
+        this.setFallbackEntitlements(`HTTP error loading /api/entitlements/me (loadIfNeeded): ${String(err)}`);
+        return of(this._entitlements());
+      })
+    );
   }
 
   canAccess(entitlementKey: string, minPlan?: PlanTier): boolean {

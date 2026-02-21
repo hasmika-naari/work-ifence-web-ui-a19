@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+.settings-shell {
+  padding: 16px;
+}
+
+.settings-title {
+  margin: 0 0 16px;
+}
+
+.settings-card {
+  width: 100%;
+}
+
+.settings-content {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.settings-nav {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  padding-right: 8px;
+}
+
+.settings-nav .active {
+  font-weight: 600;
+}
+
+.settings-detail {
+  min-height: 280px;
+}
+
+@media (max-width: 960px) {
+  .settings-content {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-nav {
+    border-right: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    padding-right: 0;
+    padding-bottom: 8px;
+  }
+}

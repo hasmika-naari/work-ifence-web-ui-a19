@@ -168,7 +168,6 @@ import { entitlementRouteGuard } from './guards/entitlement-route.guard';
 import { ENTITLEMENT_KEYS } from './entitlements/entitlement-keys';
 import { PlanTier } from './nav/nav.model';
 import { entitledRoute } from './routing/route-helpers';
-import { LoginPageComponent } from './pages/authentication/login-page/login-page.component';
 
 export const routes: Routes = [
     {
@@ -270,7 +269,7 @@ export const routes: Routes = [
             },
             entitledRoute(ENTITLEMENT_KEYS.LEARN_PORTAL, {
                 path: 'course-central',
-                canActivate: [entitlementRouteGuard, accessGuard],
+                canActivate: [accessGuard, entitlementRouteGuard],
                 data: { requireFlag: 'COURSE_CENTRAL', entitlementKey: ENTITLEMENT_KEYS.LEARN_PORTAL },
                  children: [
                         {
@@ -383,8 +382,8 @@ export const routes: Routes = [
     {
         path: 'resources',
         loadComponent: () => 
-            import('./pages/resources/resources-list/resources-list.component')
-                .then(m => m.ResourcesComponent), data: {reuseComponent: true, breadcrumb: 'Resources' }
+            import('./pages/static/resources-page/resources-page.component')
+                .then(m => m.ResourcesPageComponent), data: {reuseComponent: true, breadcrumb: 'Resources' }
     },
     {
         path: 'sign-in',
@@ -409,24 +408,6 @@ export const routes: Routes = [
         loadComponent: () => 
             import('./pages/static/privacy-page/privacy-page.component')
                 .then(m => m.PrivacyPageComponent), data: {reuseComponent: true, breadcrumb: 'Pricacy' }
-    },
-    {
-        path: 'terms',
-        loadComponent: () => 
-            import('./pages/static/terms-page/terms-page.component')
-                .then(m => m.TermsPageComponent), data: {reuseComponent: true, breadcrumb: 'Terms' }
-    },
-    {
-        path: 'privacy',
-        loadComponent: () => 
-            import('./pages/static/privacy-page/privacy-page.component')
-                .then(m => m.PrivacyPageComponent), data: {reuseComponent: true, breadcrumb: 'Pricacy' }
-    },
-    {
-        path: 'resources',
-        loadComponent: () => 
-            import('./pages/static/resources-page/resources-page.component')
-                .then(m => m.ResourcesPageComponent), data: {reuseComponent: true, breadcrumb: 'Resources' }
     },
     {
         path: 'about-us',
@@ -490,7 +471,7 @@ export const routes: Routes = [
             },
             entitledRoute(ENTITLEMENT_KEYS.RESUME_PORTAL, {
                 path: 'resumes',
-                canActivate: [entitlementRouteGuard, accessGuard],
+                canActivate: [accessGuard, entitlementRouteGuard],
                 loadComponent: () => 
                     import('./pages/dashboard-resume/dashboard-resume.component').then(m => m.DashboardResumeComponent),
                 data: { breadcrumb: 'Resumes', requireFlag: 'RESUME_PORTAL', entitlementKey: ENTITLEMENT_KEYS.RESUME_PORTAL } 
@@ -541,6 +522,54 @@ export const routes: Routes = [
                 path: 'user-contacts', 
                 loadComponent: () => import('./pages/user-contacts/user-contacts.component').then(m => m.UserContactsComponent), 
                 data: { breadcrumb: 'Account Settings' } 
+            },
+            {
+                path: 'settings',
+                loadComponent: () =>
+                    import('../main/webapp/app/pages/settings/user-settings-shell/user-settings-shell.component')
+                        .then(m => m.UserSettingsShellComponent),
+                data: { breadcrumb: 'Settings' },
+                children: [
+                    {
+                        path: '',
+                        redirectTo: 'account',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'account',
+                        loadComponent: () =>
+                            import('../main/webapp/app/pages/settings/user-settings-shell/user-settings-shell.component')
+                                .then(m => m.UserSettingsAccountComponent),
+                        data: { breadcrumb: 'Account' }
+                    },
+                    {
+                        path: 'password',
+                        loadComponent: () =>
+                            import('../main/webapp/app/pages/settings/user-settings-shell/user-settings-shell.component')
+                                .then(m => m.UserSettingsPasswordComponent),
+                        data: { breadcrumb: 'Password' }
+                    },
+                    {
+                        path: 'menu',
+                        redirectTo: 'menu-preferences',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'menu-preferences',
+                        loadComponent: () =>
+                            import('../main/webapp/app/pages/settings/user-menu-preferences/user-menu-preferences.component')
+                                .then(m => m.UserMenuPreferencesComponent),
+                        data: { breadcrumb: 'Menu Preferences' }
+                    },
+                    {
+                        path: 'my-plan-access',
+                        canActivate: [accessGuard],
+                        loadComponent: () =>
+                            import('../main/webapp/app/pages/settings/user-plan-access/user-plan-access.component')
+                                .then(m => m.UserPlanAccessComponent),
+                        data: { breadcrumb: 'My Plan & Access', requireMode: 'PERSONAL' }
+                    }
+                ]
             },
             entitledRoute(ENTITLEMENT_KEYS.LEARN_PORTAL, {   
                 path: 'user-learn', 
@@ -608,6 +637,14 @@ export const routes: Routes = [
                             import('./pages/admin/resume-templates/admin-resume-templates.component')
                                 .then(m => m.AdminResumeTemplatesComponent),
                         data: { breadcrumb: 'Resume Templates', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_RESUME_TEMPLATES }
+                    }),
+                    entitledRoute(ENTITLEMENT_KEYS.ADMIN_CONSOLE, {
+                        path: 'menu-management',
+                        canActivate: [entitlementRouteGuard, accessGuard],
+                        loadComponent: () =>
+                            import('../main/webapp/app/pages/admin/menu-management/admin-menu-management-shell.component')
+                                .then(m => m.AdminMenuManagementShellComponent),
+                        data: { breadcrumb: 'Menu Management', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE }
                     }),
                 ]
             },
@@ -895,7 +932,6 @@ export const routes: Routes = [
     //         {path: 'more', component: MoreChartsComponent}
     //     ]
     // },
-    {path: 'sign-in', redirectTo: 'authentication/sign-in', pathMatch: 'full'},
     {
         path: 'authentication',
         component: AuthenticationComponent,

@@ -1,10 +1,10 @@
 
-import { Component, inject, Signal, computed, effect, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Component, inject, Signal, computed, effect, ElementRef, ViewChild, HostListener, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ToggleService } from '../header/toggle.service';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
@@ -14,9 +14,13 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { NavSection as StoreNavSection } from 'src/app/nav/nav.model';
-import { NavStore } from 'src/app/core/nav/nav.store';
 import { UpgradeDialogComponent } from 'src/app/resume-portal/components/upgrade-dialog.component';
+import { Subscription } from 'rxjs';
+import {
+  type MenuBadge,
+} from 'src/main/webapp/app/core/navbar/menu-rendering.util';
+import { AccessContextStore } from 'src/app/core/store/access-context.store';
+import { NavApiSection } from 'src/app/core/nav/nav-api.model';
 
 @Component({
     selector: 'app-sidebar',
@@ -26,12 +30,12 @@ import { UpgradeDialogComponent } from 'src/app/resume-portal/components/upgrade
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
 
   private readonly dialog = inject(MatDialog);
 
-  // Sections and flattened items are signals so they update immediately when NavStore updates.
-  readonly navSections = computed<NavSection[]>(() => this.navSectionsSignal() as unknown as NavSection[]);
+  // Sections and flattened items are signals so they update immediately when navbar state updates.
+  readonly navSections = computed<NavSection[]>(() => this.mapSections(this.navbarSectionsSignal()));
   readonly allMenuItems = computed<NavItem[]>(() => this.navSections().flatMap(section => section.items || []));
 
   // Returns the title for the currently active section (for use in template)
@@ -54,23 +58,55 @@ export class SidebarComponent {
   activeSectionId: string | null = null;
   private submenuCloseTimer: ReturnType<typeof setTimeout> | undefined;
 
-    // Handle activation of a locked menu item (click/Enter/Space): open upgrade dialog.
-    onLockedMenuClick(item: NavItem, event: Event): void {
-      event.preventDefault();
-      event.stopPropagation();
+    onMenuItemClick(item: NavItem, event: Event, closeMorePanel = false): void {
+      if (this.isMenuItemDisabled(item)) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
 
-      this.dialog.open(UpgradeDialogComponent, {
-        width: '520px',
-        data: {
-          reason: `${item?.title ?? 'This feature'} \u2022 Upgrade`,
-        },
-      });
+      if (closeMorePanel) {
+        this.closeMorePanel();
+      }
     }
 
     isMenuItemEnabled(item: NavItem): boolean {
-      // Rendering rule: always show all items; navigation is disabled only when backend says locked.
       if (!item) return false;
-      return item.locked !== true;
+      return !this.isMenuItemDisabled(item);
+    }
+
+    isMenuItemDisabled(item: NavItem): boolean {
+      const route = (item?.route ?? '').toString().trim();
+      const isMissingRoute = !route;
+      const isLocked = item?.locked === true;
+      const isNotAllowed = item?.allowed === false;
+      return isLocked || isNotAllowed || isMissingRoute;
+    }
+
+    getItemBadges(item: NavItem): MenuBadge[] {
+      const badges: MenuBadge[] = [];
+      if (item?.locked) {
+        badges.push({
+          type: 'lock',
+          label: 'Locked',
+          tooltip: (item.lockReason ?? '').toString().trim() || 'Locked feature',
+        });
+      }
+      if (item?.readOnly) {
+        badges.push({
+          type: 'readOnly',
+          label: 'Read-only',
+        });
+      }
+      return badges;
+    }
+
+    getLockTooltip(item: NavItem): string {
+      return this.getItemBadges(item).find((badge) => badge.type === 'lock')?.tooltip || 'LOCKED';
+    }
+
+    getReadOnlyBadgeLabel(item: NavItem): string {
+      return this.getItemBadges(item).find((badge) => badge.type === 'readOnly')?.label || 'Read Only';
     }
   isToggled = false;
   public toggleService: ToggleService = inject(ToggleService);
@@ -79,23 +115,31 @@ export class SidebarComponent {
   public userActiveRole: Signal<WifRole> = this.userStore.getUserActiveRole();
   public bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   public router: Router = inject(Router);
-  private navStore: NavStore = inject(NavStore);
+  private readonly accessContextStore = inject(AccessContextStore);
   private isLoggedIn = this.userStore.getUserLoginStatus();
 
-  private navSectionsSignal: Signal<StoreNavSection[]> = this.navStore.allSections;
+  readonly navbarLoading = signal(true);
+  readonly navbarLoadError = signal(false);
+
+  private navMenuSectionsState = signal<NavApiSection[]>([]);
+  private navbarSectionsSignal = computed<NavApiSection[]>(() => this.navMenuSectionsState());
+  private navbarSub?: Subscription;
+  private errorTimer?: ReturnType<typeof setTimeout>;
 
   constructor() {
     this.toggleService.isToggled$.subscribe(isToggled => {
       this.isToggled = isToggled;
     });
+
     effect(() => {
       const loggedIn = this.isLoggedIn();
       if (loggedIn) {
-        this.navStore.load();
+        this.accessContextStore.init().subscribe({ error: () => void 0 });
       } else {
-        this.navStore.clear();
+        this.navMenuSectionsState.set([]);
       }
     });
+
     effect(() => {
       const sections = this.navSections();
 
@@ -111,8 +155,78 @@ export class SidebarComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.navbarLoading.set(true);
+    this.navbarLoadError.set(false);
+
+    if (this.isLoggedIn()) {
+      this.accessContextStore.init().subscribe({ error: () => void 0 });
+    }
+
+    this.navbarSub = this.accessContextStore.navMenuSections$.subscribe((sections) => {
+      this.navMenuSectionsState.set(Array.isArray(sections) ? sections : []);
+      if (Array.isArray(sections)) {
+        this.navbarLoading.set(false);
+        this.navbarLoadError.set(false);
+        if (this.errorTimer) {
+          clearTimeout(this.errorTimer);
+          this.errorTimer = undefined;
+        }
+      }
+    });
+
+    this.errorTimer = setTimeout(() => {
+      if (!this.navMenuSectionsState().length) {
+        this.navbarLoading.set(false);
+        this.navbarLoadError.set(true);
+      }
+    }, 5000);
+  }
+
+  ngOnDestroy(): void {
+    this.navbarSub?.unsubscribe();
+    if (this.errorTimer) {
+      clearTimeout(this.errorTimer);
+      this.errorTimer = undefined;
+    }
+  }
+
+  private mapSections(sections: NavApiSection[]): NavSection[] {
+    return [...sections]
+      .sort((a, b) => this.sortNum(a.sortOrder, b.sortOrder))
+      .map((section) => ({
+        id: section.id,
+        title: (section.title ?? '').toString(),
+        items: (section.items ?? [])
+          .map((item) => ({
+            itemKey: item.id,
+            title: (item.title ?? '').toString(),
+            icon: this.normalizeIcon(item.icon),
+            route: item.route,
+            locked: item.locked,
+            allowed: item.allowed,
+            showWhenLocked: item.showWhenLocked,
+            readOnly: false,
+            lockReason: item.locked ? 'Locked feature' : undefined,
+            entitlementKey: item.entitlementKey,
+          }))
+          .filter((item) => !(item.locked === true && item.showWhenLocked !== true)),
+      }));
+  }
+
+  private normalizeIcon(name?: string): string {
+    const normalized = (name ?? '').trim().toLowerCase();
+    return normalized || 'grid';
+  }
+
+  private sortNum(a?: number, b?: number): number {
+    const left = Number.isFinite(a) ? (a as number) : Number.MAX_SAFE_INTEGER;
+    const right = Number.isFinite(b) ? (b as number) : Number.MAX_SAFE_INTEGER;
+    return left - right;
+  }
+
   trackSection = (_index: number, section: NavSection) => section.title;
-  trackItem = (_index: number, item: NavItem) => item.route || item.title;
+  trackItem = (_index: number, item: NavItem) => item.itemKey || item.route || item.title;
   getSectionIcon(section: NavSection): string {
     return section.items?.[0]?.icon ?? '';
   }
@@ -129,6 +243,29 @@ export class SidebarComponent {
 
   closeMorePanel() {
     this.isMoreOpen = false;
+  }
+
+  retryNavbarLoad(): void {
+    this.navbarLoadError.set(false);
+    this.navbarLoading.set(true);
+    this.accessContextStore.refreshAfterProfileSwitch().subscribe({
+      next: () => {
+        this.navbarLoading.set(false);
+      },
+      error: () => {
+        this.navbarLoading.set(false);
+        this.navbarLoadError.set(true);
+      },
+    });
+    if (this.errorTimer) {
+      clearTimeout(this.errorTimer);
+    }
+    this.errorTimer = setTimeout(() => {
+      if (!this.navMenuSectionsState().length) {
+        this.navbarLoading.set(false);
+        this.navbarLoadError.set(true);
+      }
+    }, 5000);
   }
 
   @HostListener('window:resize')
@@ -189,16 +326,20 @@ export class SidebarComponent {
 }
 
 interface NavItem {
+  itemKey?: string;
   title: string;
   icon: string;
   route?: string;
   locked?: boolean;
+  allowed?: boolean;
   showWhenLocked?: boolean;
+  readOnly?: boolean;
+  lockReason?: string;
   entitlementKey?: string;
 }
 
 interface NavSection {
-id: any;
+  id: string;
   title: string;
   items: NavItem[];
 }

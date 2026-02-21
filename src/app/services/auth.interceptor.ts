@@ -48,6 +48,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authReq = req;
+    const isAuditEventsRequest = this.isAuditEventsRequest(req.url);
     let headers: HttpHeaders = new HttpHeaders();
     if (req.method === 'GET') {
       headers = headers.append('Accept', 'application/json');
@@ -89,6 +90,10 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     }
 
     authReq = req.clone({ headers });
+
+    if (isAuditEventsRequest) {
+      return next.handle(authReq);
+    }
 
     // console.log('Request URL1: ' + req.url);
     // // Rewrite URL if it starts with '/api'
@@ -135,6 +140,14 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         }
         
         return response;
+      }),
+      catchError((error: unknown) => {
+        const httpErr = error as HttpErrorResponse;
+        if (httpErr?.status === 401) {
+          this.router.navigate(['login']);
+        }
+
+        return throwError(() => error);
       })
     );
 
@@ -154,7 +167,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           catchError((error) => {
             this.isRefreshing = false;
 
-            if (error.status == '403') {
+            if (!this.isAuditEventsRequest(request.url) && error.status == '403') {
               this.eventBusService.emit(new EventData('logout', null));
             }
 
@@ -165,6 +178,10 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     }
 
     return next.handle(request);
+  }
+
+  private isAuditEventsRequest(url: string | null | undefined): boolean {
+    return (url ?? '').includes('/api/audit/events');
   }
 }
 

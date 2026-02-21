@@ -4,7 +4,34 @@
     <img class="big-icon transition" src="images/black-logo.png" alt="logo-icon">
   </div>
   <div class="sidebar-scroll-wrapper">
-    <ng-container *ngIf="isToggled; else expandedMenu">
+    <ng-container *ngIf="navbarLoading() && !navbarLoadError()">
+      <div class="sidebar-inner">
+        <div class="sidebar-menu">
+          <div style="padding: 12px; display: grid; gap: 10px;">
+            <div style="height: 34px; border-radius: 8px; background: rgba(0,0,0,0.08);"></div>
+            <div style="height: 34px; border-radius: 8px; background: rgba(0,0,0,0.08);"></div>
+            <div style="height: 34px; border-radius: 8px; background: rgba(0,0,0,0.08);"></div>
+            <div style="height: 34px; border-radius: 8px; background: rgba(0,0,0,0.08);"></div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="navbarLoadError()">
+      <div class="sidebar-inner">
+        <div class="sidebar-menu">
+          <div style="margin: 12px; padding: 10px; border-radius: 8px; background: rgba(211, 47, 47, 0.1); color: #b71c1c; font-size: 13px; line-height: 1.4;">
+            Unable to load your menu right now. Please try again.
+            <div style="margin-top: 8px;">
+              <button mat-stroked-button color="warn" type="button" (click)="retryNavbarLoad()">Retry</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!navbarLoading() && !navbarLoadError()">
+      <ng-container *ngIf="isToggled; else expandedMenu">
       <div class="sidebar-inner">
         <div class="sidebar-menu">
           <div class="collapsed-rail-scroll">
@@ -13,18 +40,22 @@
                 <button class="collapsed-section-icon"
                   type="button"
                   [attr.aria-label]="item.title"
-                  [matTooltip]="item.locked ? (item.title + ' \u2022 Upgrade') : item.title"
+                  [matTooltip]="item.locked ? getLockTooltip(item) : item.title"
+                  [attr.title]="item.locked ? getLockTooltip(item) : null"
                   matTooltipPosition="right"
                   [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
-                  [routerLinkActive]="item.locked ? '' : 'is-active'"
+                  [routerLinkActive]="isMenuItemEnabled(item) ? 'is-active' : ''"
                   [routerLinkActiveOptions]="{ exact: true }"
-                  [attr.aria-disabled]="item.locked === true ? true : null"
+                  [attr.aria-disabled]="!isMenuItemEnabled(item) ? true : null"
                   [class.locked]="item.locked === true"
-                  (click)="item.locked === true ? onLockedMenuClick(item, $event) : null"
+                  [disabled]="!isMenuItemEnabled(item)"
+                  [attr.tabindex]="isMenuItemEnabled(item) ? 0 : -1"
+                  (click)="onMenuItemClick(item, $event)"
                 >
                   <span class="menu-icon-wrap menu-icon-wrap--sm">
                     <i-feather class="sidebar-menu-icon" [name]="item.icon"></i-feather>
-                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
+                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true" [matTooltip]="getLockTooltip(item)">lock</mat-icon>
+                    <span *ngIf="item.readOnly" class="menu-readonly-badge" aria-label="Read Only">{{ getReadOnlyBadgeLabel(item) }}</span>
                   </span>
                 </button>
               </ng-container>
@@ -42,26 +73,31 @@
                 <button class="sidebar-menu-grid-item"
                   type="button"
                   [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
-                  [routerLinkActive]="item.locked ? '' : 'active'"
+                  [routerLinkActive]="isMenuItemEnabled(item) ? 'active' : ''"
                   [routerLinkActiveOptions]="{ exact: true }"
-                  [attr.aria-disabled]="item.locked === true ? true : null"
+                  [attr.aria-disabled]="!isMenuItemEnabled(item) ? true : null"
                   [class.locked]="item.locked === true"
-                  [matTooltip]="item.locked === true ? (item.title + ' \u2022 Upgrade') : item.title"
+                  [matTooltip]="item.locked === true ? getLockTooltip(item) : item.title"
+                  [attr.title]="item.locked ? getLockTooltip(item) : null"
                   matTooltipPosition="right"
-                  (click)="item.locked === true ? onLockedMenuClick(item, $event) : null"
+                  [disabled]="!isMenuItemEnabled(item)"
+                  [attr.tabindex]="isMenuItemEnabled(item) ? 0 : -1"
+                  (click)="onMenuItemClick(item, $event)"
                 >
                   <span class="menu-icon-wrap menu-icon-wrap--lg">
                     <i-feather [name]="item.icon"></i-feather>
-                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
+                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true" [matTooltip]="getLockTooltip(item)">lock</mat-icon>
                   </span>
                   <span class="sidebar-menu-grid-label">{{item.title}}</span>
+                  <span *ngIf="item.readOnly" class="menu-readonly-badge" aria-label="Read Only">{{ getReadOnlyBadgeLabel(item) }}</span>
                 </button>
               </ng-container>
             </div>
           </div>
         </div>
       </ng-scrollbar>
-    </ng-template>
+      </ng-template>
+    </ng-container>
   </div>
   <div class="collapsed-rail-bottom">
     <button
@@ -100,21 +136,24 @@
               <a
                 class="sidebar-more-item"
                 [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
-                [routerLinkActive]="item.locked ? '' : 'active'"
+                [routerLinkActive]="isMenuItemEnabled(item) ? 'active' : ''"
                 [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-disabled]="item.locked === true ? true : null"
+                [attr.aria-disabled]="!isMenuItemEnabled(item) ? true : null"
                 [class.locked]="item.locked === true"
-                (click)="item.locked === true ? onLockedMenuClick(item, $event) : closeMorePanel()"
-                [matTooltip]="item.locked === true ? (item.title + ' \u2022 Upgrade') : item.title"
+                (click)="onMenuItemClick(item, $event, true)"
+                [matTooltip]="item.locked === true ? getLockTooltip(item) : item.title"
+                [attr.title]="item.locked ? getLockTooltip(item) : null"
                 matTooltipPosition="right"
-                (keydown.enter)="item.locked === true ? onLockedMenuClick(item, $event) : null"
-                (keydown.space)="item.locked === true ? onLockedMenuClick(item, $event) : null"
+                [attr.tabindex]="isMenuItemEnabled(item) ? 0 : -1"
+                (keydown.enter)="onMenuItemClick(item, $event)"
+                (keydown.space)="onMenuItemClick(item, $event)"
               >
                 <span class="menu-icon-wrap menu-icon-wrap--md">
                   <i-feather [name]="item.icon"></i-feather>
-                  <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
+                  <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true" [matTooltip]="getLockTooltip(item)">lock</mat-icon>
                 </span>
                 <span class="sidebar-more-label">{{ item.title }}</span>
+                <span *ngIf="item.readOnly" class="menu-readonly-badge" aria-label="Read Only">{{ getReadOnlyBadgeLabel(item) }}</span>
               </a>
             </ng-container>
           </div>

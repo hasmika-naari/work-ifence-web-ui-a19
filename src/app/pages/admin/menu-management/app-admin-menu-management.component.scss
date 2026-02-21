@@ -1,0 +1,48 @@
+.app-admin-menu-management {
+  .menu-management-drawer-container {
+    background: transparent;
+  }
+
+  .menu-management-drawer {
+    width: min(460px, 92vw);
+    padding: 1rem;
+  }
+
+  h2 {
+    font-weight: 600;
+  }
+
+  mat-card {
+    height: 100%;
+  }
+
+  table {
+    th,
+    td {
+      vertical-align: middle;
+    }
+  }
+
+  mat-card-header {
+    margin-bottom: 0.5rem;
+  }
+
+  .section-item {
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    &.is-selected {
+      border-color: rgba(13, 110, 253, 0.45) !important;
+      background-color: rgba(13, 110, 253, 0.08);
+    }
+  }
+
+  .drawer-actions {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding-top: 0.75rem;
+  }
+}

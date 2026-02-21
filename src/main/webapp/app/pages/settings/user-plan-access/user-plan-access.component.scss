@@ -1,0 +1,33 @@
+.plan-meta {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-block {
+  margin-top: 1rem;
+}
+
+.section-block ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.section-block li {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.35rem;
+}
+
+.muted {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.actions {
+  margin-top: 1rem;
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5;
+}

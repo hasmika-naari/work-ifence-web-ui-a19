@@ -1,0 +1,162 @@
+:host {
+  display: block;
+}
+
+.admin-menu-management {
+  padding: 16px;
+}
+
+.admin-menu-management__title {
+  margin: 0 0 16px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.admin-menu-management__drawer-container {
+  min-height: 560px;
+  background: transparent;
+}
+
+.admin-menu-management__card {
+  margin-top: 12px;
+}
+
+.admin-menu-management__diagnostics {
+  margin-bottom: 12px;
+}
+
+.admin-menu-management__diag-row {
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.admin-menu-management__diag-list {
+  margin: 6px 0 10px;
+  padding-left: 18px;
+}
+
+.admin-menu-management__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-menu-management__search {
+  flex: 1 1 320px;
+}
+
+.admin-menu-management__role-filter {
+  flex: 0 0 220px;
+}
+
+.admin-menu-management__preview-role-filter,
+.admin-menu-management__preview-plan-filter {
+  flex: 0 0 240px;
+}
+
+.admin-menu-management__preview-toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 8px;
+}
+
+.admin-menu-management__bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-menu-management__bulk-selected {
+  font-weight: 600;
+  min-width: 90px;
+}
+
+.admin-menu-management__bulk-status-filter,
+.admin-menu-management__bulk-visibility-filter {
+  flex: 0 0 230px;
+}
+
+.admin-menu-management__bulk-progress {
+  margin: 4px 0 12px;
+}
+
+.admin-menu-management__table-wrap {
+  overflow: auto;
+}
+
+.admin-menu-management__table {
+  width: 100%;
+}
+
+.admin-menu-management__row {
+  cursor: pointer;
+}
+
+.admin-menu-management__row:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.admin-menu-management__drawer {
+  width: 360px;
+  max-width: 90vw;
+  padding: 16px;
+}
+
+.admin-menu-management__drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.admin-menu-management__drawer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-menu-management__drawer-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.admin-menu-management__drawer-section {
+  margin-bottom: 12px;
+}
+
+.admin-menu-management__drawer-label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.58);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-menu-management__drawer-value {
+  margin-top: 2px;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.admin-menu-management__edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-menu-management__edit-form mat-form-field {
+  width: 100%;
+}
+
+@media (max-width: 960px) {
+  .admin-menu-management__role-filter,
+  .admin-menu-management__preview-role-filter,
+  .admin-menu-management__preview-plan-filter,
+  .admin-menu-management__bulk-status-filter,
+  .admin-menu-management__bulk-visibility-filter {
+    flex: 1 1 220px;
+  }
+}

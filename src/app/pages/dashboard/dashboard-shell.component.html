@@ -20,4 +20,6 @@
   </div>
 }
 
-<fury-dashboard></fury-dashboard>
+@if (!isAdminProfile()) {
+  <fury-dashboard></fury-dashboard>
+}

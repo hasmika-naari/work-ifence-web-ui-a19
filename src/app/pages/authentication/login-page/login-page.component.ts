@@ -8,9 +8,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, Router, RouterModule } from '@angular/router';
+import { firstValueFrom, of, Subscription } from 'rxjs';
+import { catchError, filter, take, timeout } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { PopoverModule } from 'primeng/popover';
 import { OverlayModule } from 'primeng/overlay';
@@ -38,6 +38,10 @@ import { IconsModule } from 'src/app/shared/icons.module';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { EntitlementService } from 'src/app/services/entitlement.service';
 import { NavStore } from 'src/app/core/nav/nav.store';
+import { NavbarStoreService } from 'src/main/webapp/app/core/navbar/navbar-store.service';
+import { environment } from 'src/environments/environment';
+import { ActiveProfileStore } from 'src/app/auth/active-profile.store';
+import { AccessContextStore } from 'src/app/core/store/access-context.store';
 
 @Component({
   selector: 'app-login',
@@ -47,6 +51,7 @@ import { NavStore } from 'src/app/core/nav/nav.store';
   styleUrl : './login-page.component.scss'
 })
 export class LoginPageComponent implements OnDestroy, AfterViewInit {
+  private loginFinalized = false;
   isToggled = false;
   showPassword = false;
   submitted = false;
@@ -85,6 +90,9 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
   private readonly accessFacade = inject(AccessFacadeService);
   private entitlementService: EntitlementService = inject(EntitlementService);
   private navStore: NavStore = inject(NavStore);
+  private navbarStore: NavbarStoreService = inject(NavbarStoreService);
+  private activeProfileStore: ActiveProfileStore = inject(ActiveProfileStore);
+  private accessContextStore: AccessContextStore = inject(AccessContextStore);
   private localStorageService: LocalStorageService  = inject(LocalStorageService);
   private constantService: AppConstantsService  = inject(AppConstantsService);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -99,6 +107,16 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
     this.subs.push(this.themeService.isToggled$.subscribe(isToggled => {
       this.isToggled = isToggled;
       }));
+
+    if (!environment.production) {
+      this.subs.push(
+        this.router.events.subscribe((e) => {
+          if (e instanceof NavigationEnd || e instanceof NavigationCancel || e instanceof NavigationError) {
+            console.log('[ROUTER_EVT]', e);
+          }
+        })
+      );
+    }
 
     
   }
@@ -239,6 +257,8 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
   }
 
   onSubmit(): void {
+    this.loginFinalized = false;
+
     this.submitted = true;
     this.markFormGroupTouched(this.loginForm);
 
@@ -293,11 +313,38 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                     this.navStore.refresh();
                   }
                   this.authService.getAccountProfile().subscribe(
-                    (account:Account) =>
+                    async (account:Account) =>
                     {
                       ;
                       console.log('account: ' + account.id);
                       this.userStore.updateAccount(account);
+                      if (!environment.production) {
+                        console.debug('[LoginDebug] /api/account roles', account?.authorities ?? []);
+                      }
+
+                      await firstValueFrom(this.accessContextStore.init().pipe(catchError(() => of(void 0))));
+                      const resolvedRoleKey = this.accessContextStore.activeProfileKey || 'ROLE_USER';
+                      const resolvedMode = this.accessContextStore.mode || 'PERSONAL';
+                      const resolvedHomeRoute = this.accessContextStore.homeRoute || '';
+                      const navigatingTo = resolvedHomeRoute || '/user/dashboard';
+                      const storedProfileContext = this.readStoredProfileContext();
+
+                      if (!environment.production) {
+                        console.log('[LOGIN_NAV_DECISION]', {
+                          accessMeActiveProfileKey: resolvedRoleKey,
+                          accessMeMode: resolvedMode,
+                          accessMeHomeRoute: resolvedHomeRoute,
+                          storedProfileContext,
+                          finalRouteToNavigate: navigatingTo,
+                        });
+                        console.debug(
+                          `[LOGIN_NAV] activeProfileKey=${resolvedRoleKey}, mode=${resolvedMode}, homeRoute=${resolvedHomeRoute}, navigatingTo=${navigatingTo}`
+                        );
+                      }
+
+                      this.activeProfileStore.setActiveRole(resolvedRoleKey);
+                      this.navStore.load({ force: true });
+                      this.navbarStore.loadNavbar(true);
                       this.subs.push(
                         this.accessFacade.accessMe$
                           .pipe(take(1))
@@ -324,17 +371,21 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
                             (bioProfile: BioProfile) => {
                                 if(!bioProfile.id){
                                   this.snackBarService.openSnackBar('Your Account not Activated Please activate', this.constantService.snackbarType.ERROR, 2500);
-                                  this.router.navigate(['/bio-profile']);
+                                  if (!environment.production) {
+                                    console.log('[LOGIN_NAV_DECISION]', {
+                                      accessMeActiveProfileKey: resolvedRoleKey,
+                                      accessMeMode: resolvedMode,
+                                      accessMeHomeRoute: resolvedHomeRoute,
+                                      storedProfileContext,
+                                      finalRouteToNavigate: '/bio-profile',
+                                    });
+                                  }
+                                  void this.finalizeLoginNavigation('/bio-profile');
                                 }
                                 else{
                                   this.userStore.updateBioProfile(bioProfile);
                                   debugger;
-                                  const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-                                  if (returnUrl && returnUrl.startsWith('/')) {
-                                    this.router.navigateByUrl(returnUrl);
-                                  } else {
-                                    this.navigateToDashboardByMode();
-                                  }
+                                  void this.finalizeLoginNavigation(navigatingTo);
                                 }
                                 // bioProfile: 
                                 // {...bioProfile, imageUrl: bioProfile?.imageUrl?this.constantService.BASE_AWS_S3_API_URL + bioProfile?.imageUrl:'' }}),
@@ -393,23 +444,24 @@ export class LoginPageComponent implements OnDestroy, AfterViewInit {
     return (authorities ?? []).includes('ROLE_ADMIN');
   }
 
-  private navigateToDashboardByMode(): void {
-    this.accessFacade.reload();
-    this.subs.push(
-      this.accessFacade.accessMe$
-        .pipe(take(1))
-        .subscribe((me) => {
-          if (this.accessFacade.isAdmin(me)) {
-            this.router.navigate(['/user/dashboard-admin']);
-            return;
-          }
-          if (this.accessFacade.isEnterprise(me)) {
-            this.router.navigate(['/user/enterprise']);
-            return;
-          }
-          this.router.navigate(['/user/dashboard']);
-        })
-    );
+  private async finalizeLoginNavigation(target: string): Promise<void> {
+    if (this.loginFinalized) return;
+    this.loginFinalized = true;
+
+    if (!environment.production) {
+      console.debug('[LoginDebug] final navigation route', target);
+    }
+    await this.router.navigateByUrl(target);
+  }
+
+  private readStoredProfileContext(): unknown {
+    const raw = this.localStorageService.getItemByName('profileContext');
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return raw;
+    }
   }
 
   onReset(): void {

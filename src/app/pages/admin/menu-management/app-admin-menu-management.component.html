@@ -1,0 +1,264 @@
+<div class="container-fluid p-3 app-admin-menu-management">
+  <mat-sidenav-container class="menu-management-drawer-container">
+    <mat-sidenav #drawer mode="over" position="end" [(opened)]="drawerOpen" class="menu-management-drawer" [disableClose]="true">
+      <div class="drawer-header d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">{{ drawerTitle }}</h5>
+        <button mat-icon-button type="button" (click)="closeDrawer(true)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div *ngIf="isSectionDrawer" class="d-flex flex-column gap-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Title</mat-label>
+          <input matInput [(ngModel)]="sectionForm.title" name="sectionTitle" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Section Key</mat-label>
+          <input matInput [(ngModel)]="sectionForm.sectionKey" name="sectionKey" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Sort Order</mat-label>
+          <input matInput type="number" [(ngModel)]="sectionForm.sortOrder" name="sectionSortOrder" />
+        </mat-form-field>
+
+        <mat-slide-toggle [(ngModel)]="sectionForm.isActive" name="sectionIsActive">
+          Active
+        </mat-slide-toggle>
+      </div>
+
+      <div *ngIf="isItemDrawer" class="d-flex flex-column gap-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Title</mat-label>
+          <input matInput [(ngModel)]="itemForm.title" name="itemTitle" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Role Key</mat-label>
+          <mat-select [(ngModel)]="itemForm.roleKey" name="itemRoleKey">
+            <mat-option value="ROLE_USER">ROLE_USER</mat-option>
+            <mat-option value="ROLE_ADMIN">ROLE_ADMIN</mat-option>
+            <mat-option value="ROLE_APP_ADMIN">ROLE_APP_ADMIN</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Section Key</mat-label>
+          <mat-select [(ngModel)]="itemForm.sectionKey" name="itemSectionKey">
+            <mat-option *ngFor="let section of sortedSections" [value]="section.sectionKey">
+              {{ section.title }} ({{ section.sectionKey }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Sort Order</mat-label>
+          <input matInput type="number" [(ngModel)]="itemForm.sortOrder" name="itemSortOrder" />
+        </mat-form-field>
+
+        <mat-slide-toggle [(ngModel)]="itemForm.isActive" name="itemIsActive">
+          Active
+        </mat-slide-toggle>
+      </div>
+
+      <div class="drawer-actions d-flex justify-content-end gap-2 mt-3">
+        <button mat-button type="button" (click)="closeDrawer(true)">Cancel</button>
+        <button mat-flat-button color="primary" type="button" [disabled]="!canSaveDrawer" (click)="saveDrawer()">Save</button>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="row mb-3 gap-3 gap-lg-0 align-items-start">
+        <div class="col-12 col-lg">
+          <h2 class="mb-1">Menu Management</h2>
+          <p class="text-muted mb-0">Manage sections and menu items shown in the sidebar</p>
+        </div>
+        <div class="col-12 col-lg-auto">
+          <div class="d-flex flex-wrap justify-content-lg-end gap-2">
+            <button mat-flat-button color="primary" type="button" (click)="openCreateSectionDrawer()">
+              <mat-icon>add</mat-icon>
+              Add Section
+            </button>
+            <button mat-flat-button color="accent" type="button" (click)="openCreateItemDrawer()">
+              <mat-icon>playlist_add</mat-icon>
+              Add Menu Item
+            </button>
+            <button mat-stroked-button type="button" (click)="reloadData()">
+              <mat-icon>refresh</mat-icon>
+              Reload
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row gap-3 gap-lg-0">
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Sections</mat-card-title>
+              <div class="ms-auto">
+                <button mat-stroked-button type="button" (click)="toggleReorder()">
+                  <mat-icon>{{ reorderEnabled ? 'check' : 'swap_vert' }}</mat-icon>
+                  Reorder
+                </button>
+              </div>
+            </mat-card-header>
+
+            <mat-card-content>
+              <div class="d-flex flex-column gap-2">
+                <div
+                  class="section-item border rounded p-3"
+                  [class.is-selected]="selectedSectionKey === section.sectionKey"
+                  *ngFor="let section of sortedSections"
+                  (click)="selectSection(section.sectionKey)">
+                  <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                    <div>
+                      <div class="fw-semibold">{{ section.title }}</div>
+                      <div class="text-muted small mb-1">{{ section.sectionKey }}</div>
+                      <span class="badge text-bg-light">{{ getItemCount(section.sectionKey) }} items</span>
+                    </div>
+                    <mat-slide-toggle
+                      [ngModel]="section.isActive"
+                      (click)="$event.stopPropagation()"
+                      (ngModelChange)="toggleSectionActive(section.sectionKey, $event)">
+                    </mat-slide-toggle>
+                  </div>
+
+                  <div class="d-flex gap-2 align-items-center">
+                    <button mat-stroked-button color="primary" type="button" (click)="openEditSectionDrawer(section, $event)">
+                      <mat-icon>edit</mat-icon>
+                      Edit
+                    </button>
+
+                    <ng-container *ngIf="reorderEnabled">
+                      <button
+                        mat-icon-button
+                        type="button"
+                        [disabled]="!canMoveUp(section.sectionKey)"
+                        (click)="moveSectionUp(section.sectionKey, $event)">
+                        <mat-icon>arrow_upward</mat-icon>
+                      </button>
+                      <button
+                        mat-icon-button
+                        type="button"
+                        [disabled]="!canMoveDown(section.sectionKey)"
+                        (click)="moveSectionDown(section.sectionKey, $event)">
+                        <mat-icon>arrow_downward</mat-icon>
+                      </button>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="col-12 col-lg-8">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Menu Items</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content>
+              <div class="row mb-3 g-2">
+                <div class="col-12 col-lg-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Search</mat-label>
+                    <input matInput [(ngModel)]="searchText" placeholder="Filter by title, sectionKey, roleKey" />
+                  </mat-form-field>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Role</mat-label>
+                    <mat-select [(ngModel)]="selectedRole">
+                      <mat-option value="ALL">ALL</mat-option>
+                      <mat-option value="ROLE_USER">ROLE_USER</mat-option>
+                      <mat-option value="ROLE_ADMIN">ROLE_ADMIN</mat-option>
+                      <mat-option value="ROLE_APP_ADMIN">ROLE_APP_ADMIN</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Status</mat-label>
+                    <mat-select [(ngModel)]="selectedStatus">
+                      <mat-option value="ALL">ALL</mat-option>
+                      <mat-option value="Active">Active</mat-option>
+                      <mat-option value="Inactive">Inactive</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <table mat-table [dataSource]="filteredMenuItems" class="w-100">
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>Select</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-checkbox
+                  [ngModel]="isSelected(item.id)"
+                  (ngModelChange)="toggleSelection(item.id, $event)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef>Title</th>
+              <td mat-cell *matCellDef="let item">{{ item.title }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="roleKey">
+              <th mat-header-cell *matHeaderCellDef>Role Key</th>
+              <td mat-cell *matCellDef="let item">{{ item.roleKey }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="sectionKey">
+              <th mat-header-cell *matHeaderCellDef>Section Key</th>
+              <td mat-cell *matCellDef="let item">{{ item.sectionKey }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="sortOrder">
+              <th mat-header-cell *matHeaderCellDef>Sort Order</th>
+              <td mat-cell *matCellDef="let item">{{ item.sortOrder }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="active">
+              <th mat-header-cell *matHeaderCellDef>Active</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-chip [highlighted]="true" [class.text-bg-success]="item.isActive" [class.text-bg-secondary]="!item.isActive">
+                  {{ item.isActive ? 'Active' : 'Inactive' }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastUpdated">
+              <th mat-header-cell *matHeaderCellDef>Last Updated</th>
+              <td mat-cell *matCellDef="let item">{{ item.lastUpdated }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let item">
+                <button mat-stroked-button color="primary" type="button" (click)="openEditItemDrawer(item)">
+                  <mat-icon>edit</mat-icon>
+                  Edit
+                </button>
+                <button mat-icon-button type="button" class="ms-1" (click)="toggleMenuItem(item.id, !item.isActive)">
+                  <mat-icon>{{ item.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="menuItemColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: menuItemColumns"></tr>
+              </table>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

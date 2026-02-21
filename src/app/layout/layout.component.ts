@@ -6,7 +6,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { filter, map } from 'rxjs/operators';
+import { firstValueFrom, of } from 'rxjs';
+import { catchError, filter, map, take, timeout } from 'rxjs/operators';
 import { SidebarDirective } from '../../@navan/shared/sidebar/sidebar.directive';
 import { ThemeService } from '../../@navan/services/theme.service';
 import { HeaderComponent } from '../common/header/header.component';
@@ -16,9 +17,16 @@ import { IconsModule } from '../shared/icons.module';
 import { AccessContextService } from '../services/access-context.service';
 import { ProfilePanelService } from '../services/profile-panel.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import type { OwnedProfileDto } from '../models/access-me.model';
+import type { AccessMeDto, OwnedProfileDto } from '../models/access-me.model';
 import { NavStore } from '../core/nav/nav.store';
 import { SessionContextStore } from '../core/store/session-context.store';
+import { getLandingRoute } from 'src/app/routing/landing-route.util';
+import { ActiveProfileStore } from 'src/app/auth/active-profile.store';
+import { NavbarStoreService } from 'src/main/webapp/app/core/navbar/navbar-store.service';
+import { ActiveProfileService } from 'src/app/services/active-profile.service';
+import { ProfileContextStorageService } from 'src/app/services/profile-context-storage.service';
+import { AccessContextStore } from 'src/app/core/store/access-context.store';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'wif-layout',
@@ -101,12 +109,19 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   // Track current URL as a signal so we can react to profile-context changes.
   readonly currentUrl = signal<string>('');
+  readonly profileSwitchNavigationInFlight = signal(false);
 
   // Services used directly by template
   readonly profilePanelService = inject(ProfilePanelService);
   readonly accessContextService = inject(AccessContextService);
   readonly sessionContextStore = inject(SessionContextStore);
   private readonly navStore = inject(NavStore);
+  private readonly activeProfileStore = inject(ActiveProfileStore);
+  private readonly navbarStore = inject(NavbarStoreService);
+  private readonly activeProfileService = inject(ActiveProfileService);
+  private readonly profileContextStorage = inject(ProfileContextStorageService);
+  private readonly accessContextStore = inject(AccessContextStore);
+  private layoutNavigationQueue: Promise<void> = Promise.resolve();
 
   readonly profileRoles$ = this.sessionContextStore.account$.pipe(
     map((account) => account?.authorities ?? []),
@@ -144,9 +159,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
       const profileKey = (this.accessContextService.activeProfileKey() ?? '').toString();
       const url = (this.currentUrl() ?? '').toString();
       const switching = this.profilePanelService.switching();
+      const switchingNavigation = this.profileSwitchNavigationInFlight();
 
       if (!profileKey) return;
       if (switching) return;
+      if (switchingNavigation) return;
 
       const inAdminArea = url.startsWith('/user/dashboard-admin') || url.startsWith('/user/admin');
       const inPersonalDashboard = url.startsWith('/user/dashboard') && !url.startsWith('/user/dashboard-admin');
@@ -155,7 +172,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (inAdminArea && profileKey !== 'ROLE_ADMIN') {
         const target = this.profileLandingRoute(profileKey);
         if (target && !url.startsWith(target)) {
-          void this.router.navigateByUrl(target, { replaceUrl: true });
+          this.profileSwitchNavigationInFlight.set(true);
+          void this.queueLayoutNavigation(target).finally(() => {
+            this.profileSwitchNavigationInFlight.set(false);
+          });
         }
         return;
       }
@@ -164,10 +184,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (inPersonalDashboard && profileKey === 'ROLE_ADMIN') {
         const target = this.profileLandingRoute(profileKey);
         if (target && !url.startsWith(target)) {
-          void this.router.navigateByUrl(target, { replaceUrl: true });
+          this.profileSwitchNavigationInFlight.set(true);
+          void this.queueLayoutNavigation(target).finally(() => {
+            this.profileSwitchNavigationInFlight.set(false);
+          });
         }
       }
     });
+
   }
 
   // Proxy for logout
@@ -250,14 +274,88 @@ export class LayoutComponent implements OnInit, OnDestroy {
   async switchProfileFromPanel(profileKey: string, menuSidenav: MatSidenav): Promise<void> {
     if (this.profilePanelService.isSwitching) return;
     if (this.isActiveProfile(profileKey)) return;
+    if (this.profileSwitchNavigationInFlight()) return;
 
-    const ok = await this.profilePanelService.switchProfile(profileKey, () => {
-      void this.closeMenuSidenav(menuSidenav);
-    });
-    if (!ok) return;
+    this.profileSwitchNavigationInFlight.set(true);
 
-    this.sessionContextStore.switchRole(profileKey);
-    await this.router.navigateByUrl(this.profileLandingRoute(profileKey), { replaceUrl: true });
+    try {
+      const fromProfileKey = this.normalizeProfileKey(
+        this.accessContextStore.activeProfileKey || this.accessContextService.activeProfileKey(),
+      );
+      const targetProfileKey = this.normalizeProfileKey(profileKey);
+
+      const ok = await this.profilePanelService.switchProfile(profileKey, () => {
+        void this.closeMenuSidenav(menuSidenav);
+      });
+      if (!ok) return;
+
+      this.profileContextStorage.setProfileContext(
+        targetProfileKey,
+        this.profileContextStorage.inferModeFromRole(targetProfileKey),
+      );
+
+      await firstValueFrom(
+        this.accessContextStore.refreshAfterProfileSwitch().pipe(catchError(() => of(void 0))),
+      );
+
+      const toProfileKey = this.normalizeProfileKey(this.accessContextStore.activeProfileKey || targetProfileKey);
+      const mode = (this.accessContextStore.mode || this.profileContextStorage.inferModeFromRole(toProfileKey)).toUpperCase();
+      const nextHomeRoute = (this.accessContextStore.homeRoute || getLandingRoute(toProfileKey)).trim();
+
+      this.profileContextStorage.setProfileContext(toProfileKey, mode);
+      this.sessionContextStore.switchRole(toProfileKey);
+      this.activeProfileStore.setActiveRole(toProfileKey);
+
+      this.navbarStore.applySectionsFromAccessContext(this.accessContextStore.navMenuSections, toProfileKey);
+
+      if (!environment.production) {
+        console.debug(`[PROFILE_SWITCH] from=${fromProfileKey || 'UNKNOWN'}, to=${toProfileKey || 'UNKNOWN'}, nextHomeRoute=${nextHomeRoute || 'UNKNOWN'}`);
+      }
+
+      await this.router.navigateByUrl(nextHomeRoute || '/user/dashboard', { replaceUrl: true });
+    } finally {
+      this.profileSwitchNavigationInFlight.set(false);
+    }
+  }
+
+  private queueLayoutNavigation(target: string): Promise<boolean> {
+    const next = this.layoutNavigationQueue.then(() => this.navigateByUrlSafely(target));
+    this.layoutNavigationQueue = next.then(() => void 0, () => void 0);
+    return next;
+  }
+
+  private async navigateByUrlSafely(target: string): Promise<boolean> {
+    if (!target) return false;
+    if (this.router.url.startsWith(target)) return true;
+
+    try {
+      return await this.router.navigateByUrl(target, { replaceUrl: true });
+    } catch (error) {
+      const name = (error as { name?: string })?.name ?? '';
+      if (name === 'AbortError' || name === 'InvalidStateError') {
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  private profileSwitchTargetRoute(profileKey: string): string {
+    const normalized = this.normalizeProfileKey(profileKey);
+    if (normalized === 'ROLE_ADMIN' || normalized === 'ROLE_USER') {
+      return getLandingRoute(normalized);
+    }
+    return this.profileLandingRoute(profileKey);
+  }
+
+  private async waitForNavbarLoad(): Promise<void> {
+    await firstValueFrom(
+      this.navbarStore.navbar$.pipe(
+        filter((navbar) => !!navbar),
+        take(1),
+        timeout({ first: 5000 }),
+        catchError(() => of(null)),
+      ),
+    );
   }
 
   onProfileItemActivate(event: Event, profileKey: string, menuSidenav: MatSidenav): void {

@@ -1,7 +1,8 @@
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Inject, Injectable, PLATFORM_ID, isDevMode } from '@angular/core';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { buildPageableParams } from 'src/app/shared/http/build-pageable-params';
 import type { AuditEventRow, AuditQuery, PagedResponse } from 'src/app/models/audit.model';
@@ -43,7 +44,24 @@ export class AuditApiService {
       return of(void 0);
     }
 
-    return this.http.post<void>(`${this.getBaseUrl()}/api/audit/events`, event);
+    return this.http.post<void>(`${this.getBaseUrl()}/api/audit/events`, event).pipe(
+      catchError((err: unknown) => {
+        const status = (err as HttpErrorResponse | undefined)?.status;
+        if (status === 404 || status === 401 || status === 403 || status === 500) {
+          if (status === 404) {
+            this.markAuditUnavailable(10);
+          }
+          if (isDevMode()) {
+            console.warn('[AuditApiService] Audit ingest skipped:', {
+              status,
+              url: `${this.getBaseUrl()}/api/audit/events`,
+            });
+          }
+          return EMPTY;
+        }
+        return throwError(() => err);
+      })
+    );
   }
 
   markAuditUnavailable(minutes: number): void {

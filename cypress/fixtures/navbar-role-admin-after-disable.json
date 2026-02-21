@@ -1,0 +1,63 @@
+{
+  "user": {
+    "userId": 201,
+    "role": "ROLE_ADMIN",
+    "plan": "PREMIUM"
+  },
+  "sections": [
+    {
+      "sectionKey": "admin",
+      "title": "Admin",
+      "items": [
+        {
+          "itemKey": "admin-console",
+          "title": "Admin Console",
+          "icon": "shield",
+          "route": "/user/dashboard-admin",
+          "locked": false,
+          "allowed": true,
+          "featureStatus": "ACTIVE",
+          "entitlementKey": "ADMIN_CONSOLE"
+        },
+        {
+          "itemKey": "feature-flags",
+          "title": "Feature Flags",
+          "icon": "flag",
+          "route": "/user/admin/feature-flags",
+          "locked": true,
+          "allowed": true,
+          "featureStatus": "DISABLED",
+          "entitlementKey": "ADMIN_FEATUREFLAGS",
+          "showWhenLocked": true,
+          "lockReason": "Disabled by admin"
+        },
+        {
+          "itemKey": "menu-management",
+          "title": "Menu Management",
+          "icon": "settings",
+          "route": "/user/admin/menu-management",
+          "locked": false,
+          "allowed": true,
+          "featureStatus": "ACTIVE",
+          "entitlementKey": "ADMIN_CONSOLE"
+        }
+      ]
+    },
+    {
+      "sectionKey": "settings",
+      "title": "Settings",
+      "items": [
+        {
+          "itemKey": "settings-menu-preferences",
+          "title": "Menu Preferences",
+          "icon": "sliders",
+          "route": "/user/settings/menu-preferences",
+          "locked": false,
+          "allowed": true,
+          "featureStatus": "ACTIVE",
+          "entitlementKey": "PROFILE"
+        }
+      ]
+    }
+  ]
+}

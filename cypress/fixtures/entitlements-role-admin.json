@@ -1,0 +1,12 @@
+{
+  "plan": "PREMIUM",
+  "roles": ["ROLE_ADMIN"],
+  "entitlements": {
+    "ADMIN_CONSOLE": true,
+    "ADMIN_FEATUREFLAGS": true,
+    "ADMIN_BILLING_PLANS": true,
+    "PROFILE": true,
+    "BILLING_UPGRADE": true,
+    "USER_DASHBOARD": true
+  }
+}

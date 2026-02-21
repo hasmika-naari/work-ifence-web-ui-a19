@@ -1,0 +1,137 @@
+:host {
+  display: block;
+}
+
+.menu-preferences {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menu-preferences__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-preferences__header h2 {
+  margin: 0;
+}
+
+.menu-preferences__search {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.menu-preferences__filters {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.menu-preferences__item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.menu-preferences__item-row:last-child {
+  border-bottom: 0;
+}
+
+.menu-preferences__item-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.menu-preferences__icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.menu-preferences__icon {
+  margin-top: 2px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.menu-preferences__lock-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: rgba(0, 0, 0, 0.54);
+  margin-top: 3px;
+}
+
+.menu-preferences__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.menu-preferences__title {
+  font-weight: 600;
+}
+
+.menu-preferences__plan-badge {
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: rgba(25, 118, 210, 0.12);
+  color: #0d47a1;
+  font-weight: 600;
+}
+
+.menu-preferences__readonly-badge {
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: rgba(84, 110, 122, 0.16);
+  color: #37474f;
+  font-weight: 600;
+}
+
+::ng-deep .mat-expansion-panel-header-description {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.menu-preferences__meta {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.56);
+  word-break: break-all;
+}
+
+.menu-preferences__empty {
+  padding: 16px 0 4px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 960px) {
+  .menu-preferences__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu-preferences__item-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu-preferences__filters {
+    justify-content: flex-start;
+  }
+}

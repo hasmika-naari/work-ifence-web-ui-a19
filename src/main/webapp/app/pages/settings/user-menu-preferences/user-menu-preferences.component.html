@@ -1,0 +1,70 @@
+<div class="menu-preferences">
+  <div class="menu-preferences__header">
+    <h2 class="mat-headline-6">Menu Preferences</h2>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <mat-progress-spinner
+        *ngIf="refreshingNavbar()"
+        mode="indeterminate"
+        diameter="18"
+        strokeWidth="3"
+      ></mat-progress-spinner>
+      <button mat-stroked-button color="primary" type="button" (click)="onReset()" [disabled]="resetting() || refreshingNavbar()">
+        Reset to Default
+      </button>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="menu-preferences__search">
+        <mat-label>Search menu items</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Search by title or item key" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="menu-preferences__filters">
+        <mat-slide-toggle [formControl]="showOnlyLockedControl" color="primary">
+          Show only locked items
+        </mat-slide-toggle>
+      </div>
+
+      <div class="menu-preferences__item-row" *ngFor="let item of items(); trackBy: trackItem">
+        <div class="menu-preferences__item-main">
+          <div class="menu-preferences__icon-wrap">
+            <mat-icon class="menu-preferences__icon">{{ item.icon || 'menu' }}</mat-icon>
+            <mat-icon
+              *ngIf="item.locked"
+              class="menu-preferences__lock-icon"
+              [matTooltip]="getLockTooltip(item)"
+            >
+              lock
+            </mat-icon>
+          </div>
+          <div>
+            <div class="menu-preferences__title-row">
+              <span class="menu-preferences__title">{{ item.title }}</span>
+              <span class="menu-preferences__plan-badge" *ngIf="item.minPlan">{{ item.minPlan }}</span>
+              <span class="menu-preferences__readonly-badge" *ngIf="item.readOnly">{{ getReadOnlyBadgeLabel(item) }}</span>
+            </div>
+            <div class="menu-preferences__meta" *ngIf="item.route">{{ item.route }}</div>
+            <div class="menu-preferences__meta" *ngIf="item.entitlementKey">{{ item.entitlementKey }}</div>
+          </div>
+        </div>
+
+        <mat-slide-toggle
+          [checked]="!item.hidden"
+          (change)="onToggle(item, $event)"
+          color="primary"
+          [disabled]="!isItemActionEnabled(item)"
+          [attr.tabindex]="isItemActionEnabled(item) ? 0 : -1"
+        >
+          Show in Menu
+        </mat-slide-toggle>
+      </div>
+
+      <div class="menu-preferences__empty" *ngIf="!loadingPrefs() && items().length === 0">
+        No menu items found.
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

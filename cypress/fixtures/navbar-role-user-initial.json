@@ -1,0 +1,74 @@
+{
+  "user": {
+    "userId": 101,
+    "role": "ROLE_USER",
+    "plan": "FREE_INDIVIDUAL"
+  },
+  "sections": [
+    {
+      "sectionKey": "core",
+      "title": "Core",
+      "items": [
+        {
+          "itemKey": "dashboard",
+          "title": "Dashboard",
+          "icon": "home",
+          "route": "/user/dashboard",
+          "locked": false,
+          "allowed": true,
+          "featureStatus": "ACTIVE",
+          "entitlementKey": "USER_DASHBOARD"
+        },
+        {
+          "itemKey": "job-applications",
+          "title": "Job Applications",
+          "icon": "briefcase",
+          "route": "/user/job-applications",
+          "locked": false,
+          "allowed": true,
+          "featureStatus": "ACTIVE",
+          "entitlementKey": "JOB_TRACKING",
+          "showWhenLocked": false
+        },
+        {
+          "itemKey": "job-analytics",
+          "title": "Job Analytics",
+          "icon": "bar-chart-2",
+          "route": "/user/job-analytics",
+          "locked": true,
+          "allowed": true,
+          "featureStatus": "ACTIVE",
+          "entitlementKey": "JOB_ANALYTICS",
+          "showWhenLocked": true,
+          "lockReason": "Upgrade to PRO to unlock"
+        },
+        {
+          "itemKey": "billing-upgrade",
+          "title": "Upgrade",
+          "icon": "arrow-up-circle",
+          "route": "/user/billing/upgrade",
+          "locked": false,
+          "allowed": true,
+          "featureStatus": "ACTIVE",
+          "entitlementKey": "BILLING_UPGRADE"
+        }
+      ]
+    },
+    {
+      "sectionKey": "settings",
+      "title": "Settings",
+      "items": [
+        {
+          "itemKey": "settings-menu-preferences",
+          "title": "Menu Preferences",
+          "icon": "sliders",
+          "route": "/user/settings/menu-preferences",
+          "locked": false,
+          "allowed": true,
+          "featureStatus": "ACTIVE",
+          "entitlementKey": "PROFILE"
+        }
+      ]
+    }
+  ]
+}

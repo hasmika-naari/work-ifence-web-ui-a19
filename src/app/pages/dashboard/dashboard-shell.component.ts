@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
 import { DashboardComponent } from './dashboard.component';
@@ -14,11 +13,14 @@ import { DashboardComponent } from './dashboard.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardShellComponent {
-  private readonly router = inject(Router);
   private readonly accessFacade = inject(AccessFacadeService);
   private readonly dashboardContext = inject(DashboardContextService);
 
   readonly accessMe = this.accessFacade.accessMeSignal;
+
+  readonly isAdminProfile = computed(() => {
+    return (this.accessMe()?.activeProfileKey ?? '').toString() === 'ROLE_ADMIN';
+  });
 
   readonly canShowEnterprise = computed(() => {
     const mode = (this.accessMe()?.mode ?? 'PERSONAL').toString();
@@ -31,13 +33,7 @@ export class DashboardShellComponent {
     effect(() => {
       const me = this.accessMe();
 
-      // Platform admin has a dedicated dashboard.
-      // Important: use the active profile key, not overall authorities/mode.
-      // Users may *have* admin access but still be in Personal profile.
-      if ((me?.activeProfileKey ?? '').toString() === 'ROLE_ADMIN') {
-        if (!this.router.url.startsWith('/user/dashboard-admin')) {
-          this.router.navigateByUrl('/user/dashboard-admin');
-        }
+      if (this.isAdminProfile()) {
         return;
       }
 

@@ -1,0 +1,16 @@
+{
+  "mode": "PERSONAL",
+  "userId": "101",
+  "userName": "role-user",
+  "activeProfileKey": "ROLE_USER",
+  "subscription": {
+    "planCode": "FREE_INDIVIDUAL",
+    "status": "ACTIVE"
+  },
+  "entitlements": {
+    "jobTrackingEnabled": true,
+    "alertsEnabled": true,
+    "courseCentralEnabled": true,
+    "templateAccessLevel": "BASIC"
+  }
+}

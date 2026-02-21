@@ -1,0 +1,60 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>My Plan &amp; Access</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ng-container *ngIf="vm.role === 'ROLE_USER'; else userOnlyNote">
+        <div class="plan-meta">
+          <div><strong>Plan Code:</strong> {{ vm.planCode || '—' }}</div>
+          <div><strong>Subscription Status:</strong> {{ vm.subscriptionStatus || '—' }}</div>
+        </div>
+
+        <section class="section-block" aria-label="Enabled features">
+          <h3>Enabled features</h3>
+          <ul *ngIf="vm.enabledFeatures.length > 0; else noEnabled">
+            <li *ngFor="let feature of vm.enabledFeatures">
+              <span>{{ feature.title }}</span>
+              <small class="muted">{{ feature.entitlementKey }}</small>
+            </li>
+          </ul>
+          <ng-template #noEnabled>
+            <div class="muted">No enabled features found.</div>
+          </ng-template>
+        </section>
+
+        <section class="section-block" aria-label="Locked features">
+          <details>
+            <summary>Locked features ({{ vm.lockedFeatures.length }})</summary>
+            <ul *ngIf="vm.lockedFeatures.length > 0; else noLocked">
+              <li *ngFor="let feature of vm.lockedFeatures">
+                <span>{{ feature.title }}</span>
+                <small class="muted" *ngIf="feature.lockReason">{{ feature.lockReason }}</small>
+              </li>
+            </ul>
+          </details>
+          <ng-template #noLocked>
+            <div class="muted">No locked features.</div>
+          </ng-template>
+        </section>
+
+        <div class="actions">
+          <a
+            mat-flat-button
+            color="primary"
+            [routerLink]="vm.canUpgrade ? '/user/billing/upgrade' : null"
+            [attr.aria-disabled]="!vm.canUpgrade"
+            [class.disabled-link]="!vm.canUpgrade"
+            [tabindex]="vm.canUpgrade ? 0 : -1"
+          >
+            Upgrade
+          </a>
+        </div>
+      </ng-container>
+
+      <ng-template #userOnlyNote>
+        <p class="muted">This page is available only for ROLE_USER.</p>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

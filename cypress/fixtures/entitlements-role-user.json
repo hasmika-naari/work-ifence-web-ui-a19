@@ -1,0 +1,11 @@
+{
+  "plan": "FREE",
+  "roles": ["ROLE_USER"],
+  "entitlements": {
+    "USER_DASHBOARD": true,
+    "JOB_TRACKING": true,
+    "JOB_ANALYTICS": true,
+    "PROFILE": true,
+    "BILLING_UPGRADE": true
+  }
+}

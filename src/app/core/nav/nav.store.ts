@@ -45,7 +45,13 @@ export class NavStore {
     this.hydrateCache();
   }
 
-  load(): void {
+  load(options?: { force?: boolean }): void {
+    const force = options?.force === true;
+
+    if (force) {
+      this.reset();
+    }
+
     if (this.loading()) return;
 
     // If we only have a hydrated cache, still refresh once to get the latest menu.
@@ -123,6 +129,10 @@ export class NavStore {
         // ignore
       }
     }
+  }
+
+  reset(): void {
+    this.clear();
   }
 
   private normalizeBackendResponse(raw: unknown): NavApiResponse | null {
