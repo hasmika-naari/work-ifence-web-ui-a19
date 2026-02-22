@@ -1,15 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FeatherModule } from 'angular-feather';
-import { Camera, Heart, Github, AlignLeft, Sliders, BarChart2, Edit3, 
-    ShoppingCart, Search, Moon, User, AlertCircle, Calendar, Bell, PieChart, Clock, Mail, 
-    Home, Phone, BookOpen, MapPin, Loader, TrendingUp, Map, ShoppingBag, Tag, Trash2, Minimize, 
-    DollarSign, CheckCircle, Percent, Database, Linkedin, UserCheck, Coffee, Flag, Globe, 
-    TrendingDown, Headphones, PlayCircle, Star, Info, MoreVertical, Users, List, Dribbble, 
-    Briefcase, Layers, Youtube, Check, Key, Share2, Command, Twitch, FileText, Copy, X, Code, 
-    Octagon, Codepen, Facebook, Twitter, UserPlus, Settings, Link, Meh, Lock, Smile, Activity, 
-    MessageSquare, Folder, File, Send, Trash, AlertTriangle, Crosshair, Plus, Table, FileMinus, 
-    Edit, ThumbsUp, Grid, ChevronLeft,Paperclip , LogOut } from 'angular-feather/icons';
+import {
+    Camera, Heart, Github, AlignLeft, Sliders, BarChart2, Edit3,
+    ShoppingCart, Search, Moon, User, AlertCircle, Calendar, Bell, PieChart, Clock, Mail,
+    Home, Phone, BookOpen, MapPin, Loader, TrendingUp, Map, ShoppingBag, Tag, Trash2, Minimize,
+    DollarSign, CheckCircle, Percent, Database, Linkedin, UserCheck, Coffee, Flag, Globe,
+    TrendingDown, Headphones, PlayCircle, Star, Info, MoreVertical, Users, List, Dribbble,
+    Briefcase, Layers, Youtube, Check, Key, Share2, Command, Twitch, FileText, Copy, X, Code,
+    Octagon, Codepen, Facebook, Twitter, UserPlus, Settings, Link, Meh, Lock, Smile, Activity,
+    MessageSquare, Folder, File, Send, Trash, AlertTriangle, Crosshair, Plus, Table, FileMinus,
+    Edit, ThumbsUp, Grid, ChevronLeft, Paperclip, LogOut,
+    Inbox, HelpCircle, Shield, CreditCard, Layout,
+    Navigation,
+    Zap, Download, GitBranch, Bookmark, Target, Award, Repeat, ArrowUpCircle
+} from 'angular-feather/icons';
 
 // Select some icons (use an object, not an array)
 const icons = {
@@ -89,6 +94,15 @@ const icons = {
     CheckCircle,
     ShoppingCart,
     Sliders,
+    Navigation,
+    Zap,
+    Download,
+    GitBranch,
+    Bookmark,
+    Target,
+    Award,
+    Repeat,
+    ArrowUpCircle,
     Layers,
     User,
     Mail,
@@ -97,6 +111,11 @@ const icons = {
     TrendingUp,
     TrendingDown,
     Grid,
+    Inbox,
+    HelpCircle,
+    Shield,
+    CreditCard,
+    Layout,
     ChevronLeft
 };
 
