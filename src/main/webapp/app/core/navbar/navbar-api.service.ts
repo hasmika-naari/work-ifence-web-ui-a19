@@ -11,7 +11,7 @@ export class NavbarApiService {
   constructor(private readonly http: HttpClient) {}
 
   getMyNavbar(_activeRoleKey?: string): Observable<NavbarResponseDTO> {
-    return this.http.get<NavbarResponseDTO>('/api/access/nav/menu');
+    return this.http.get<NavbarResponseDTO>('/api/ext/navbar/my');
   }
 
   getPrefs(): Observable<UserMenuPrefDTO[]> {

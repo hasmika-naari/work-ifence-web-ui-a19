@@ -48,7 +48,7 @@ export class FeatureGateNoticeComponent {
 
   goLogin(): void {
     this.close();
-    void this.router.navigateByUrl('/login');
+    void this.router.navigateByUrl('/sign-in');
   }
 
   goUpgrade(): void {

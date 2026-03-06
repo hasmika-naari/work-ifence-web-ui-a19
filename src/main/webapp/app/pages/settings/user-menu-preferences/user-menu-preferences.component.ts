@@ -201,7 +201,7 @@ export class UserMenuPreferencesComponent implements OnInit {
       title: item.title,
       icon: item.icon,
       route: item.route,
-      entitlementKey: item.entitlementKey,
+      entitlementKey: item.entitlementKey ?? undefined,
       locked: item.locked,
       showWhenLocked: item.showWhenLocked,
       readOnly: item.readOnly,

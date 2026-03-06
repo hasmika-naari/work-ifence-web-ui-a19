@@ -1097,8 +1097,8 @@ export class DashboardAppAdminComponent implements OnInit, AfterViewInit {
       .getPlans({
         page: 0,
         size: 500,
-        sort: 'planCode,asc',
-        active: true,
+        sort: 'code,asc',
+        'isActive.equals': true,
       })
       .pipe(catchError(() => of(this.emptyPagedResponse<any>())))
       .subscribe((res) => {

@@ -46,10 +46,10 @@ export class SubscriptionFacadeService {
    * Upgrade/start a subscription for the current scope.
    * Prefer using upgradeToPlan when you already have the plan object (to set startTrial).
    */
-  upgrade(planCode: string): Observable<unknown> {
+  upgrade(code: string): Observable<unknown> {
     const scope = this.currentScopeSignal();
-    const plan = this.plansSignal(scope)().find(p => (p.code ?? '').toString() === planCode);
-    return this.upgradeToPlan({ ...(plan ?? {}), code: planCode, scope });
+    const plan = this.plansSignal(scope)().find(p => (p.code ?? '').toString() === code);
+    return this.upgradeToPlan({ ...(plan ?? {}), code: code, scope });
   }
 
   upgradeToPlan(plan: Pick<SubscriptionPlan, 'code' | 'trialDays'> & { scope?: SubscriptionScope }): Observable<unknown> {

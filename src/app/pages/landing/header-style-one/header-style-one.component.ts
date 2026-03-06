@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 import {getWindow} from "ssr-window";
@@ -11,10 +11,12 @@ import { ThemeCustomizerService } from 'src/app/services/theme-customizer/theme-
     templateUrl: './header-style-one.component.html',
     styleUrls: ['./header-style-one.component.scss']
 })
-export class HeaderStyleOneComponent implements OnInit {
+export class HeaderStyleOneComponent implements OnInit, OnDestroy {
 
     isSticky: boolean = false;
-    @HostListener('window:scroll', ['$event'])
+
+    private readonly onWindowScroll = () => this.checkScroll();
+
     checkScroll() {
         const scrollPosition = getWindow().pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
         if (scrollPosition >= 50) {
@@ -38,7 +40,14 @@ export class HeaderStyleOneComponent implements OnInit {
         this.themeService.toggleTheme();
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        window.addEventListener('scroll', this.onWindowScroll, { passive: true });
+        this.checkScroll();
+    }
+
+    ngOnDestroy(): void {
+        window.removeEventListener('scroll', this.onWindowScroll);
+    }
 
     classApplied = false;
     toggleClass() {

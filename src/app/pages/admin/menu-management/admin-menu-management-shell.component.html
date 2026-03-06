@@ -1,0 +1,172 @@
+<div class="container mt-4">
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='masterMenu'" (click)="selectTab('masterMenu')">Master Menu</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='enterpriseOverrides'" (click)="selectTab('enterpriseOverrides')">Enterprise Overrides</a>
+    </li>
+  </ul>
+
+  <!-- Master Menu Tab -->
+  <div *ngIf="activeTab==='masterMenu'">
+    <div *ngIf="masterMenuSaveSuccess" class="alert alert-success">Menu item saved successfully.</div>
+    <div *ngIf="masterMenuSaveError" class="alert alert-danger">{{masterMenuSaveError}}</div>
+    <div class="d-flex justify-content-between mb-2">
+      <h5>Master Menu Items</h5>
+      <button class="btn btn-primary btn-sm" (click)="openMasterMenuModal()">Create Menu Item</button>
+    </div>
+    <div *ngIf="masterMenuLoading" class="text-center py-3"><span class="spinner-border"></span> Loading...</div>
+    <div *ngIf="masterMenuError" class="alert alert-danger">{{masterMenuError}}</div>
+    <table class="table table-bordered table-sm" *ngIf="!masterMenuLoading && masterMenuItems.length">
+      <thead>
+        <tr>
+          <th>ItemKey</th><th>Title</th><th>Route</th><th>Icon</th><th>SectionId</th><th>Sort</th><th>Entitlement</th><th>Admin</th><th>User</th><th>Ent Admin</th><th>Ent Emp</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of masterMenuItems; let i = index">
+          <td>{{item.itemKey}}</td>
+          <td>{{item.title}}</td>
+          <td>{{item.route}}</td>
+          <td>{{item.icon}}</td>
+          <td>{{item.sectionId}}</td>
+          <td>{{item.sortOrder}}</td>
+          <td>{{item.entitlementKey}}</td>
+          <td><span [class]="item.roleActiveMap['ROLE_ADMIN'] ? 'badge bg-success' : 'badge bg-secondary'">A</span></td>
+          <td><span [class]="item.roleActiveMap['ROLE_USER'] ? 'badge bg-success' : 'badge bg-secondary'">U</span></td>
+          <td><span [class]="item.roleActiveMap['ROLE_ENTERPRISE_ADMIN'] ? 'badge bg-success' : 'badge bg-secondary'">EA</span></td>
+          <td><span [class]="item.roleActiveMap['ROLE_ENTERPRISE_EMPLOYEE'] ? 'badge bg-success' : 'badge bg-secondary'">EE</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" (click)="openMasterMenuModal(i)">Edit</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!masterMenuLoading && !masterMenuItems.length" class="text-muted">No menu items found.</div>
+
+    <!-- Modal -->
+    <div class="modal fade show d-block" tabindex="-1" *ngIf="showMasterMenuModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{editingMasterMenuIndex !== null ? 'Edit Menu Item' : 'Create Menu Item'}}</h5>
+            <button type="button" class="btn-close" (click)="closeMasterMenuModal()"></button>
+          </div>
+          <form [formGroup]="masterMenuForm" (ngSubmit)="saveMasterMenu()">
+            <div class="modal-body">
+              <div class="mb-2">
+                <label>Item Key</label>
+                <input class="form-control" formControlName="itemKey" [readonly]="editingMasterMenuIndex !== null">
+                <div *ngIf="masterMenuForm.get('itemKey')?.invalid && masterMenuForm.get('itemKey')?.touched" class="text-danger">Item Key is required.</div>
+              </div>
+              <div class="mb-2">
+                <label>Section</label>
+                <select class="form-select" formControlName="sectionId">
+                  <option value="">Select section</option>
+                  <option *ngFor="let section of masterMenuSections" [value]="section.sectionId">{{section.title}}</option>
+                </select>
+                <div *ngIf="masterMenuForm.get('sectionId')?.invalid && masterMenuForm.get('sectionId')?.touched" class="text-danger">Section is required.</div>
+              </div>
+              <div class="mb-2">
+                <label>Title</label>
+                <input class="form-control" formControlName="title">
+                <div *ngIf="masterMenuForm.get('title')?.invalid && masterMenuForm.get('title')?.touched" class="text-danger">Title is required.</div>
+              </div>
+              <div class="mb-2">
+                <label>Route</label>
+                <input class="form-control" formControlName="route">
+                <div *ngIf="masterMenuForm.get('route')?.invalid && masterMenuForm.get('route')?.touched" class="text-danger">Route is required and must start with '/'.</div>
+              </div>
+              <div class="mb-2">
+                <label>Icon</label>
+                <input class="form-control" formControlName="icon">
+              </div>
+              <div class="mb-2">
+                <label>Sort Order</label>
+                <input type="number" class="form-control" formControlName="sortOrder">
+              </div>
+              <div class="mb-2">
+                <label>Entitlement Key</label>
+                <input class="form-control" formControlName="entitlementKey">
+              </div>
+              <div class="mb-2">
+                <label>Feature Flag</label>
+                <input type="checkbox" class="form-check-input ms-2" formControlName="featureFlag">
+                <label class="ms-2">Feature Flag Key</label>
+                <input class="form-control mt-1" formControlName="featureFlagKey">
+              </div>
+              <div class="mb-2">
+                <label>Show When Locked</label>
+                <input type="checkbox" class="form-check-input ms-2" formControlName="showWhenLocked">
+              </div>
+              <div class="mb-2">
+                <label>Min Plan</label>
+                <input class="form-control" formControlName="minPlan">
+              </div>
+              <div class="mb-2">
+                <label>Role Active Map</label>
+                <div class="d-flex gap-2 mt-1">
+                  <div *ngFor="let role of ROLE_KEYS">
+                    <label>{{role}}</label>
+                      <input type="checkbox" class="form-check-input ms-1" [formControl]="getRoleControl(role)">
+                  </div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <label>Reason</label>
+                <textarea class="form-control" formControlName="reason"></textarea>
+                <div *ngIf="masterMenuForm.get('reason')?.invalid && masterMenuForm.get('reason')?.touched" class="text-danger">Reason is required.</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeMasterMenuModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="masterMenuSaveLoading">Save</button>
+              <span *ngIf="masterMenuSaveLoading" class="ms-2"><span class="spinner-border spinner-border-sm"></span></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show" *ngIf="showMasterMenuModal"></div>
+  </div>
+
+  <!-- Enterprise Overrides Tab -->
+  <div *ngIf="activeTab==='enterpriseOverrides'">
+    <div *ngIf="overrideSaveSuccess" class="alert alert-success">Overrides saved successfully.</div>
+    <div *ngIf="overrideSaveError" class="alert alert-danger">{{overrideSaveError}}</div>
+    <div class="mb-3">
+      <label>Enterprise ID</label>
+      <input class="form-control w-auto d-inline-block me-2" [(ngModel)]="enterpriseId" placeholder="Enter enterprise ID">
+      <button class="btn btn-primary btn-sm" (click)="loadEnterpriseOverrides()" [disabled]="enterpriseOverridesLoading">Load</button>
+      <span *ngIf="enterpriseOverridesLoading" class="ms-2"><span class="spinner-border spinner-border-sm"></span></span>
+    </div>
+    <div *ngIf="enterpriseOverridesError" class="alert alert-danger">{{enterpriseOverridesError}}</div>
+    <table class="table table-bordered table-sm" *ngIf="!enterpriseOverridesLoading && mergedOverrideRows.length">
+      <thead>
+        <tr>
+          <th>ItemKey</th><th>Title</th><th>Visible</th><th>Locked</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of mergedOverrideRows">
+          <td>{{row.itemKey}}</td>
+          <td>{{row.title}}</td>
+          <td>
+            <input type="checkbox" class="form-check-input" [checked]="row.isVisible" (change)="onOverrideRowChange(row.itemKey,'isVisible',$event.target.checked)">
+          </td>
+          <td>
+            <input type="checkbox" class="form-check-input" [checked]="row.isLocked" (change)="onOverrideRowChange(row.itemKey,'isLocked',$event.target.checked)">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!enterpriseOverridesLoading && !mergedOverrideRows.length" class="text-muted">No menu items found.</div>
+    <div class="mb-2">
+      <label>Reason</label>
+      <textarea class="form-control" [(ngModel)]="overrideReason"></textarea>
+    </div>
+    <button class="btn btn-primary btn-sm" (click)="saveEnterpriseOverrides()" [disabled]="overrideSaveLoading || !enterpriseId || !overrideReason || !objectKeys(overrideDirtyMap).length">Save</button>
+    <span *ngIf="overrideSaveLoading" class="ms-2"><span class="spinner-border spinner-border-sm"></span></span>
+  </div>
+</div>

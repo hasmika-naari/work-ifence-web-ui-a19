@@ -1,18 +1,17 @@
 export interface NavbarResponseDTO {
-  user: {
-    userId: number;
-    role: string;
-    plan: string;
-    enterpriseId?: number;
-  };
   sections: NavbarSectionDTO[];
+  roleKey?: string;
+  enterpriseId?: string | null;
+  user?: {
+    role?: string;
+    [key: string]: any;
+  };
 }
 
 export interface NavbarSectionDTO {
   sectionKey: string;
   title: string;
-  icon?: string;
-  sortOrder?: number;
+  sortOrder: number;
   items: NavbarItemDTO[];
 }
 
@@ -20,14 +19,17 @@ export interface NavbarItemDTO {
   itemKey: string;
   title: string;
   icon?: string;
-  route?: string;
-  locked: boolean;
-  allowed: boolean;
-  lockReason?: string;
-  readOnly?: boolean;
-  featureStatus?: string;
-  entitlementKey?: string;
+  route: string;
+  isLocked?: boolean;
   showWhenLocked?: boolean;
+  entitlementKey?: string | null;
+  sortOrder?: number;
+  lockReason?: string;
+  featureStatus?: 'ACTIVE' | 'READ_ONLY' | 'DISABLED';
+  minPlan?: string;
+  locked?: boolean;
+  readOnly?: boolean;
+  allowed?: boolean;
 }
 
 export interface UserMenuPrefDTO {

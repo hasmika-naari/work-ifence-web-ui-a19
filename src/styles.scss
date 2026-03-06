@@ -212,6 +212,17 @@ body {
   min-height: 350px !important;
 }
 
+/* Menu Management: scope drawer scrolling to the edit drawer only */
+.menu-edit-drawer.p-drawer-left .p-drawer-content,
+.menu-edit-drawer.p-drawer-right .p-drawer-content,
+.menu-edit-drawer.p-drawer-top .p-drawer-content,
+.menu-edit-drawer.p-drawer-bottom .p-drawer-content {
+    width: 100%;
+    min-height: 0;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+}
+
 /* Resume Portal filter drawer sizing (global, because drawer is appended to body) */
 .filter-drawer {
     width: 425px !important;

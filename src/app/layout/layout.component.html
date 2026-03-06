@@ -77,38 +77,50 @@
                 <mat-divider class="divider-spaced"></mat-divider>
 
                 <!-- Actions (grid tiles) -->
-                <div class="sidebar-menu-grid drawer-menu-grid" aria-label="Account actions">
+                <div class="sidebar-menu-grid drawer-menu-grid" aria-label="Quick actions">
                   <a
                     class="sidebar-menu-grid-item"
-                    routerLink="/user/profile"
+                    routerLink="/help-center"
                     routerLinkActive="active"
                     [routerLinkActiveOptions]="{ exact: true }"
                     (click)="closeMenuSidenav(menuSidenav)"
                   >
-                    <lucide-icon class="drawer-grid-icon" name="info" size="32"></lucide-icon>
-                    <span class="sidebar-menu-grid-label">Account</span>
+                    <lucide-icon class="drawer-grid-icon" name="HelpCircle" size="32"></lucide-icon>
+                    <span class="sidebar-menu-grid-label">Help Center</span>
                   </a>
 
                   <a
                     class="sidebar-menu-grid-item"
-                    routerLink="/user/billing/upgrade"
+                    routerLink="/notifications"
                     routerLinkActive="active"
                     [routerLinkActiveOptions]="{ exact: true }"
                     (click)="closeMenuSidenav(menuSidenav)"
                   >
-                    <lucide-icon class="drawer-grid-icon" name="sparkles" size="32"></lucide-icon>
-                    <span class="sidebar-menu-grid-label">Subscription</span>
+                    <lucide-icon class="drawer-grid-icon" name="Bell" size="32"></lucide-icon>
+                    <span class="sidebar-menu-grid-label">Notifications</span>
                   </a>
 
                   <a
                     class="sidebar-menu-grid-item"
-                    routerLink="/user/settings"
+                    routerLink="/platform-info"
                     routerLinkActive="active"
                     [routerLinkActiveOptions]="{ exact: true }"
                     (click)="closeMenuSidenav(menuSidenav)"
                   >
-                    <lucide-icon class="drawer-grid-icon" name="Settings" size="32"></lucide-icon>
-                    <span class="sidebar-menu-grid-label">Settings</span>
+                    <lucide-icon class="drawer-grid-icon" name="Info" size="32"></lucide-icon>
+                    <span class="sidebar-menu-grid-label">Platform Info</span>
+                  </a>
+
+                  <a
+                    *ngIf="accessContextService.activeProfileKey() === 'ROLE_ADMIN'"
+                    class="sidebar-menu-grid-item"
+                    routerLink="/user/menu-management"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="closeMenuSidenav(menuSidenav)"
+                  >
+                    <lucide-icon class="drawer-grid-icon" name="Menu" size="32"></lucide-icon>
+                    <span class="sidebar-menu-grid-label">Menu Management</span>
                   </a>
                 </div>
               </div>

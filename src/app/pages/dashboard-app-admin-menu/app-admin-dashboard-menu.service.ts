@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { catchError, forkJoin, map, Observable, of, throwError } from 'rxjs';
-import { AppAdminDashboardSummary, PagedResponse } from './app-admin-dashboard.api.models';
+import { AppAdminDashboardSummary, PagedResponse } from './app-admin-dashboard-menu.api.models';
 import { AllowedSubscriptionStatuses, HAS_TRIAL_STATUS, SubscriptionStatus } from './subscription-status.constants';
 
 @Injectable({ providedIn: 'root' })
-export class AppAdminDashboardService {
+export class AppAdminDashboardMenuService {
   private readonly http = inject(HttpClient);
 
   getSummary(): Observable<AppAdminDashboardSummary> {
@@ -43,21 +43,12 @@ export class AppAdminDashboardService {
   }
 
   getPlans(params: Record<string, unknown>): Observable<PagedResponse<any>> {
-    // Always force correct sort and filter params
-    const forcedParams: Record<string, unknown> = {
-      ...params,
-      sort: 'code,asc',
-      'isActive.equals': true
+    const preferredParams = {
+      ...this.normalizePlanSortParams(params),
+      'isActive.equals': true,
     };
-    // Remove legacy/incorrect params
-    delete forcedParams['planCode'];
-    delete forcedParams['planCode,asc'];
-    delete forcedParams['active'];
-    // Remove any sort fields that are not 'code,asc'
-    if (forcedParams['sort'] && forcedParams['sort'] !== 'code,asc') {
-      forcedParams['sort'] = 'code,asc';
-    }
-    return this.getPaged<any>('/api/subscription-plans', forcedParams).pipe(
+
+    return this.getPaged<any>('/api/subscription-plans', preferredParams).pipe(
       catchError((error: { status?: number; error?: { message?: string } }) => {
         const isInvalidSortError =
           error?.status === 400 &&
@@ -67,10 +58,10 @@ export class AppAdminDashboardService {
           return throwError(() => error);
         }
 
-        const fallbackNameParams = { ...forcedParams, sort: 'name,asc' };
-        const fallbackIdParams = { ...forcedParams, sort: 'id,asc' };
+        const fallbackCodeParams = { ...preferredParams, sort: 'code,asc' };
+        const fallbackIdParams = { ...preferredParams, sort: 'id,asc' };
 
-        return this.getPaged<any>('/api/subscription-plans', fallbackNameParams).pipe(
+        return this.getPaged<any>('/api/subscription-plans', fallbackCodeParams).pipe(
           catchError(() => this.getPaged<any>('/api/subscription-plans', fallbackIdParams)),
         );
       }),

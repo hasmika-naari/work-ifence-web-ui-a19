@@ -196,7 +196,7 @@ export class AdminMenuManagementTabComponent implements OnInit, OnDestroy {
       route: row.route,
       isActive: row.isActive,
       featureStatus: row.featureStatus,
-      statusReason: statusReason || undefined,
+    // Removed unused AppAdminMenuManagementComponent import
       showWhenLocked: row.showWhenLocked,
     };
 

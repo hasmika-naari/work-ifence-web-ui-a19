@@ -45,16 +45,18 @@ export class PlanAdminApiService {
   }
 
   listPlans(params: ListPlansParams): Observable<PagedResponse<SubscriptionPlanDto>> {
+    // Force correct sort and filter params
     const base = buildPageableParams({
       page: params.page,
       size: params.size,
-      sort: params.sort,
+      sort: 'code,asc',
     });
 
     const httpParams = buildCriteriaParams(
       {
         scope: params.scope,
-        isActive: params.isActive,
+        isActive: undefined, // Remove legacy param
+        'isActive.equals': true,
       },
       base
     );

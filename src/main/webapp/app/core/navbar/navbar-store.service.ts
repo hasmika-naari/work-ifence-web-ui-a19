@@ -46,33 +46,22 @@ export class NavbarStoreService {
     this.resolveCurrentActiveRoleKey().subscribe((resolvedRoleKey) => {
       this.activeProfileStore.setActiveRole(resolvedRoleKey);
 
-      if (!environment.production) {
-        if (!this.loggedResolvedRole) {
-          this.loggedResolvedRole = true;
-          console.debug('[NavbarDebug] resolved activeRoleKey', resolvedRoleKey);
-        }
-        console.debug('[NavbarDebug] load start', { force, loaded: this.loaded, activeRoleKey: resolvedRoleKey });
-      }
-      console.log('[NavbarDebug] calling navbar with', resolvedRoleKey);
-
       this.navbarApi.getMyNavbar(resolvedRoleKey).subscribe({
         next: (navbar) => {
-          this.logNavbarDebugDiagnostics(navbar);
-          this.activeProfileStore.setFromNavbarResponse(navbar?.user as Record<string, unknown>);
-          this.activeProfileStore.setEntitlements(this.collectEntitlements(navbar));
-          this.navbarSubject.next(navbar);
+          // Sort sections and items if backend does not sort
+          const sortedSections = (navbar.sections || []).slice().sort((a, b) => a.sortOrder - b.sortOrder);
+          sortedSections.forEach(section => {
+            section.items = (section.items || []).slice().sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+          });
+          this.navbarSubject.next({ ...navbar, sections: sortedSections });
           this.loaded = true;
           this.loadingSubject.next(false);
-          if (!environment.production) {
-            console.debug('[NavbarDebug] load complete', { success: true, sections: navbar?.sections?.length ?? 0 });
-          }
         },
         error: () => {
+          // Fallback: empty menu
+          this.navbarSubject.next({ sections: [] });
           this.loaded = false;
           this.loadingSubject.next(false);
-          if (!environment.production) {
-            console.debug('[NavbarDebug] load complete', { success: false });
-          }
         },
       });
     });
@@ -102,7 +91,7 @@ export class NavbarStoreService {
       sectionKey: (section?.id ?? '').toString().trim(),
       title: (section?.title ?? '').toString().trim(),
       icon: '',
-      sortOrder: section?.sortOrder,
+        sortOrder: section?.sortOrder ?? 0,
       items: (section?.items ?? []).map((item) => ({
         itemKey: (item?.id ?? '').toString().trim(),
         title: (item?.title ?? '').toString().trim(),
@@ -112,7 +101,7 @@ export class NavbarStoreService {
         allowed: item?.allowed !== false,
         lockReason: item?.locked === true ? 'Locked feature' : undefined,
         readOnly: false,
-        featureStatus: 'ACTIVE',
+        featureStatus: 'ACTIVE' as 'ACTIVE',
         entitlementKey: (item?.entitlementKey ?? '').toString().trim() || undefined,
         showWhenLocked: item?.showWhenLocked === true,
       })),
@@ -124,7 +113,7 @@ export class NavbarStoreService {
         role: normalizedRoleKey,
         plan: '',
       },
-      sections: nextSections,
+      sections: Array.isArray(nextSections) ? nextSections : [nextSections],
     });
     this.loaded = true;
     this.loadingSubject.next(false);
@@ -162,7 +151,7 @@ export class NavbarStoreService {
     );
 
     console.info('[NavbarDebug] user access', {
-      planCode: (navbar.user?.plan ?? '').toString(),
+      planCode: (navbar.user?.['plan'] ?? '').toString(),
       subscriptionStatus: (user['subscriptionStatus'] ?? '').toString(),
     });
     console.info('[NavbarDebug] item counts', {

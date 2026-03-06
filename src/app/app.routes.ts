@@ -606,6 +606,12 @@ export const routes: Routes = [
                 data: { breadcrumb: 'Platform Admin', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE } 
             }),
             entitledRoute(ENTITLEMENT_KEYS.ADMIN_CONSOLE, {   
+                path: 'menu-management', 
+                canActivate: [entitlementRouteGuard, accessGuard],
+                loadComponent: () => import('./pages/dashboard-app-admin-menu/dashboard-app-admin-menu.component').then(m => m.DashboardAppAdminMenuComponent), 
+                data: { breadcrumb: 'Menu Management', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE } 
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.ADMIN_CONSOLE, {   
                 path: 'dashboard-admin-new', 
                 canActivate: [entitlementRouteGuard, accessGuard],
                 loadComponent: () => import('./pages/admin/ops-dashboard/app-admin-ops-dashboard.component').then(m => m.AppAdminOpsDashboardComponent), 
@@ -638,16 +644,16 @@ export const routes: Routes = [
                                 .then(m => m.AdminResumeTemplatesComponent),
                         data: { breadcrumb: 'Resume Templates', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_RESUME_TEMPLATES }
                     }),
-                    entitledRoute(ENTITLEMENT_KEYS.ADMIN_CONSOLE, {
-                        path: 'menu-management',
-                        canActivate: [entitlementRouteGuard, accessGuard],
-                        loadComponent: () =>
-                            import('../main/webapp/app/pages/admin/menu-management/admin-menu-management-shell.component')
-                                .then(m => m.AdminMenuManagementShellComponent),
-                        data: { breadcrumb: 'Menu Management', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE }
-                    }),
                 ]
             },
+            entitledRoute(ENTITLEMENT_KEYS.ADMIN_CONSOLE, {
+                path: 'menu-management-shell',
+                canActivate: [entitlementRouteGuard, accessGuard],
+                loadComponent: () =>
+                    import('../main/webapp/app/pages/admin/menu-management/admin-menu-management-shell.component')
+                        .then(m => m.AdminMenuManagementShellComponent),
+                data: { breadcrumb: 'Menu Management', requireAuth: true, requireFlag: 'ADMIN_CONSOLE', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_CONSOLE }
+            }),
             {
                 path: 'billing',
                 children: [
