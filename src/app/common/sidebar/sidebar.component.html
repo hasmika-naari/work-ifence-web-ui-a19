@@ -41,7 +41,6 @@
                   type="button"
                   [attr.aria-label]="item.title"
                   [matTooltip]="item.locked ? getLockTooltip(item) : item.title"
-                  [attr.title]="item.locked ? getLockTooltip(item) : null"
                   matTooltipPosition="right"
                   [routerLink]="isMenuItemEnabled(item) ? (item.route ?? null) : null"
                   [routerLinkActive]="isMenuItemEnabled(item) ? 'is-active' : ''"
@@ -54,7 +53,7 @@
                 >
                   <span class="menu-icon-wrap menu-icon-wrap--sm">
                     <i-feather class="sidebar-menu-icon" [name]="item.icon"></i-feather>
-                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true" [matTooltip]="getLockTooltip(item)">lock</mat-icon>
+                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
                     <span *ngIf="item.readOnly" class="menu-readonly-badge" aria-label="Read Only">{{ getReadOnlyBadgeLabel(item) }}</span>
                   </span>
                 </button>
@@ -78,7 +77,6 @@
                   [attr.aria-disabled]="!isMenuItemEnabled(item) ? true : null"
                   [class.locked]="item.locked === true"
                   [matTooltip]="item.locked === true ? getLockTooltip(item) : item.title"
-                  [attr.title]="item.locked ? getLockTooltip(item) : null"
                   matTooltipPosition="right"
                   [disabled]="!isMenuItemEnabled(item)"
                   [attr.tabindex]="isMenuItemEnabled(item) ? 0 : -1"
@@ -86,7 +84,7 @@
                 >
                   <span class="menu-icon-wrap menu-icon-wrap--lg">
                     <i-feather [name]="item.icon"></i-feather>
-                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true" [matTooltip]="getLockTooltip(item)">lock</mat-icon>
+                    <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
                   </span>
                   <span class="sidebar-menu-grid-label">{{item.title}}</span>
                   <span *ngIf="item.readOnly" class="menu-readonly-badge" aria-label="Read Only">{{ getReadOnlyBadgeLabel(item) }}</span>
@@ -142,7 +140,6 @@
                 [class.locked]="item.locked === true"
                 (click)="onMenuItemClick(item, $event, true)"
                 [matTooltip]="item.locked === true ? getLockTooltip(item) : item.title"
-                [attr.title]="item.locked ? getLockTooltip(item) : null"
                 matTooltipPosition="right"
                 [attr.tabindex]="isMenuItemEnabled(item) ? 0 : -1"
                 (keydown.enter)="onMenuItemClick(item, $event)"
@@ -150,7 +147,7 @@
               >
                 <span class="menu-icon-wrap menu-icon-wrap--md">
                   <i-feather [name]="item.icon"></i-feather>
-                  <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true" [matTooltip]="getLockTooltip(item)">lock</mat-icon>
+                  <mat-icon *ngIf="item.locked" class="menu-lock-badge" aria-hidden="true">lock</mat-icon>
                 </span>
                 <span class="sidebar-more-label">{{ item.title }}</span>
                 <span *ngIf="item.readOnly" class="menu-readonly-badge" aria-label="Read Only">{{ getReadOnlyBadgeLabel(item) }}</span>

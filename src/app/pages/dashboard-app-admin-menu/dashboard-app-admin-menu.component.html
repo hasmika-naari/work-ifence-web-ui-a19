@@ -1,69 +1,103 @@
 
-<mat-sidenav-container class="menu-mgmt-sidenav-container">
-  <mat-sidenav position="end" mode="over" [(opened)]="editSidenavOpen" class="menu-mgmt-edit-sidenav">
-    <div class="menu-mgmt-sidenav-header d-flex align-items-center justify-content-between">
-      <h3 class="m-0">Edit Menu Item</h3>
-      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeEditSidenav()" title="Close">
-        <i class="pi pi-times"></i>
-      </button>
-    </div>
+<div class="menu-mgmt-sidenav-container">
+    <!-- Right-side drawer for create/edit (single instance) -->
+    <p-drawer [(visible)]="editSidenavOpen" [position]="'right'" [modal]="false" [transitionOptions]="'180ms cubic-bezier(0.2, 0, 0, 1)'" [showCloseIcon]="true" (hide)="closeEditDrawer()" styleClass="workqueue-drawer menu-edit-drawer" [style]="{width: '400px', height: '100%', top: '0', bottom: '0'}">
+      <ng-template pTemplate="header">
+        <h3>
+          <ng-container *ngIf="editingMasterMenuIndex === null; else editTitle">Create Menu Item</ng-container>
+          <ng-template #editTitle>
+            Edit Menu Item
+            <span *ngIf="masterMenuForm.get('itemKey')?.value">: {{ masterMenuForm.get('itemKey')?.value }}</span>
+          </ng-template>
+        </h3>
+      </ng-template>
+      <form id="menuEditForm" [formGroup]="masterMenuForm" (ngSubmit)="saveSelectedRow()">
+        <div class="modal-body">
+          <div class="mb-2">
+            <label>Item Key</label>
+            <input class="form-control" formControlName="itemKey" [readonly]="editingMasterMenuIndex !== null">
+            <div *ngIf="masterMenuForm.get('itemKey')?.invalid && masterMenuForm.get('itemKey')?.touched" class="text-danger">Item Key is required.</div>
+          </div>
+          <div class="mb-2">
+            <label>Section</label>
+            <select class="form-select" formControlName="sectionKey">
+              <option [ngValue]="null">Select section</option>
+              <option *ngFor="let section of filteredSections" [ngValue]="section.id">{{section.title}}</option>
+            </select>
+            <div *ngIf="masterMenuForm.get('id')?.invalid && masterMenuForm.get('id')?.touched" class="text-danger">Section is required.</div>
+          </div>
+          <div class="mb-2">
+            <label>Title</label>
+            <input class="form-control" formControlName="title">
+            <div *ngIf="masterMenuForm.get('title')?.invalid && masterMenuForm.get('title')?.touched" class="text-danger">Title is required.</div>
+          </div>
+          <div class="mb-2">
+            <label>Route</label>
+            <input class="form-control" formControlName="route">
+            <div *ngIf="masterMenuForm.get('route')?.invalid && masterMenuForm.get('route')?.touched" class="text-danger">Route is required and must start with '/'.</div>
+          </div>
+          <div class="mb-2">
+            <label>Icon</label>
+            <input class="form-control" formControlName="icon">
+          </div>
+          <div class="mb-2">
+            <label>Sort Order</label>
+            <input type="number" class="form-control" formControlName="sortOrder">
+          </div>
+          <div class="mb-2">
+            <label>Entitlement Key</label>
+            <select class="form-select" formControlName="entitlementKey" [disabled]="dropdownsLoading">
+              <option value="">Select entitlement</option>
+              <option *ngFor="let opt of entitlementOptions" [value]="opt.value">{{opt.label}}</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label>Status (Show/Hide)</label>
+            <input type="checkbox" class="form-check-input ms-2" formControlName="isActive">
+            <label class="ms-2">Status Key</label>
+            <input class="form-control mt-1" formControlName="featureFlagKey">
+          </div>
+          <div class="mb-2">
+            <label>Show When Locked</label>
+            <input type="checkbox" class="form-check-input ms-2" formControlName="showWhenLocked">
+          </div>
+          <div class="mb-2">
+            <label>Min Plan</label>
+            <select class="form-select" formControlName="minPlan" [disabled]="dropdownsLoading">
+              <option value="">Select plan</option>
+              <option *ngFor="let opt of planOptions" [value]="opt.value">{{opt.label}}</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label>Role Active Map</label>
+            <div class="d-flex gap-2 mt-1">
+              <div *ngFor="let role of ROLE_KEYS">
+                <label>{{role}}</label>
+                <input
+                  type="checkbox"
+                  class="form-check-input ms-1"
+                  [formControl]="getRoleControl(role)"
+                  [disabled]="editingMasterMenuIndex !== null"
+                >
+              </div>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label>Reason</label>
+            <textarea class="form-control" formControlName="reason"></textarea>
+            <div *ngIf="masterMenuForm.get('reason')?.invalid && masterMenuForm.get('reason')?.touched" class="text-danger">Reason is required.</div>
+          </div>
+        </div>
+      </form>
 
-    <form class="menu-mgmt-sidenav-body" [formGroup]="masterMenuForm" (ngSubmit)="saveSelectedRow()">
-      <div class="mb-2">
-        <label>Item Key</label>
-        <input class="form-control" formControlName="itemKey" readonly>
-      </div>
-
-      <div class="mb-2">
-        <label>Status (Show/Hide)</label>
-        <input type="checkbox" class="form-check-input ms-2" formControlName="featureFlag">
-      </div>
-
-      <div class="mb-2">
-        <label>Min Plan</label>
-        <select class="form-select" formControlName="minPlan" [disabled]="dropdownsLoading">
-          <option value="">Select plan</option>
-          <option *ngFor="let opt of planOptions" [value]="opt.value">{{opt.label}}</option>
-        </select>
-      </div>
-
-      <div class="mb-2">
-        <label>Entitlement Key</label>
-        <select class="form-select" formControlName="entitlementKey" [disabled]="dropdownsLoading">
-          <option value="">Select entitlement</option>
-          <option *ngFor="let opt of entitlementOptions" [value]="opt.value">{{opt.label}}</option>
-        </select>
-      </div>
-
-      <div class="mb-2">
-        <label>Section</label>
-        <select class="form-select" formControlName="sectionId">
-          <option value="">Select section</option>
-          <option *ngFor="let section of masterMenuSections" [value]="section.sectionId">{{section.title}}</option>
-        </select>
-        <div *ngIf="masterMenuForm.get('sectionId')?.invalid && masterMenuForm.get('sectionId')?.touched" class="text-danger">Section is required.</div>
-      </div>
-
-      <div class="mb-2">
-        <label>Sort Order</label>
-        <input type="number" class="form-control" formControlName="sortOrder">
-      </div>
-
-      <div class="mb-2">
-        <label>Reason</label>
-        <textarea class="form-control" formControlName="reason"></textarea>
-        <div *ngIf="masterMenuForm.get('reason')?.invalid && masterMenuForm.get('reason')?.touched" class="text-danger">Reason is required.</div>
-      </div>
-
-      <div class="menu-mgmt-sidenav-footer d-flex align-items-center justify-content-end gap-2">
-        <button type="button" class="btn btn-secondary" (click)="closeEditSidenav()">Cancel</button>
-        <button type="submit" class="btn btn-primary" [disabled]="masterMenuSaveLoading">Save</button>
-        <span *ngIf="masterMenuSaveLoading" class="ms-1"><span class="spinner-border spinner-border-sm"></span></span>
-      </div>
-    </form>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
+      <ng-template pTemplate="footer">
+        <div class="menu-edit-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEditDrawer()">Cancel</button>
+          <button type="submit" class="btn btn-primary" form="menuEditForm" [disabled]="masterMenuSaveLoading">Save</button>
+          <span *ngIf="masterMenuSaveLoading" class="ms-2"><span class="spinner-border spinner-border-sm"></span></span>
+        </div>
+      </ng-template>
+    </p-drawer>
     <div class="dashboard-wrapper">
       <div class="dashboard">
     <h1 class="welcome-message" style="color: var(--secondaryColor);">Menu Management</h1>
@@ -131,15 +165,6 @@
                     </button>
                   </div>
                 </th>
-                <th>
-                  <div class="header-filter-inline" title="Section">
-                    <i class="pi pi-filter header-filter-left-icon" aria-hidden="true"></i>
-                    <input class="header-input" placeholder="Section" [(ngModel)]="headerFilters.section" (ngModelChange)="onHeaderFilterInput()" />
-                    <button type="button" class="header-filter-clear" title="Clear" (click)="$event.stopPropagation(); clearHeaderFilter('section')" [disabled]="!headerFilters.section">
-                      <i class="pi pi-times" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </th>
                 <!-- Sort column removed from table header -->
                 <th>
                   <div class="header-filter-inline" title="Entitlement">
@@ -155,6 +180,15 @@
                     <i class="pi pi-filter header-filter-left-icon" aria-hidden="true"></i>
                     <input class="header-input" placeholder="Subscription" [(ngModel)]="headerFilters.subscription" (ngModelChange)="onHeaderFilterInput()" />
                     <button type="button" class="header-filter-clear" title="Clear" (click)="$event.stopPropagation(); clearHeaderFilter('subscription')" [disabled]="!headerFilters.subscription">
+                      <i class="pi pi-times" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </th>
+                <th>
+                  <div class="header-filter-inline" title="Section ID">
+                    <i class="pi pi-filter header-filter-left-icon" aria-hidden="true"></i>
+                    <input class="header-input" placeholder="Section ID" [(ngModel)]="headerFilters.section" (ngModelChange)="onHeaderFilterInput()" />
+                    <button type="button" class="header-filter-clear" title="Clear" (click)="$event.stopPropagation(); clearHeaderFilter('section')" [disabled]="!headerFilters.section">
                       <i class="pi pi-times" aria-hidden="true"></i>
                     </button>
                   </div>
@@ -201,20 +235,19 @@
                   <span>{{row.icon}}</span>
                   <i-feather *ngIf="row.icon" [name]="row.icon" class="ms-2" style="width: 18px; height: 18px; vertical-align: middle;"></i-feather>
                 </td>
-                <td>{{row.sectionId}}</td>
                 <!-- Sort column removed from table data -->
                 <td>{{row.entitlementKey}}</td>
-                <td>{{row.minPlan || '-'}} </td>
-                <td>{{row.featureFlag ? 'Enabled' : 'Disabled'}}</td>
+                <td>{{row.minPlan || '-'}}</td>
+                <td>{{ getSectionTitle(row.sectionId) }}</td>
+                <td>{{row.isActive ? 'Enabled' : 'Disabled'}}</td>
                 <td>{{row.showWhenLocked ? 'Yes' : 'No'}}</td>
                 <td>{{row.roleLabel || row.roleKey}}</td>
                 <td class="actions-cell">
                   <button
                     type="button"
-                    class="row-action-icon"
+                    class="row-action-icon edit-enabled"
                     title="Edit"
-                    [disabled]="getEditIndex(row.itemKey) === -1"
-                    (click)="openEditDrawer(getEditIndex(row.itemKey))">
+                    (click)="openEditDrawer(row)">
                     <i class="pi pi-pencil"></i>
                   </button>
                   <button type="button" class="row-action-icon" title="More actions" (click)="setMenuItems(row); menu.toggle($event)">
@@ -222,6 +255,19 @@
                   </button>
                   <p-menu #menu [popup]="true" [model]="menuItems" [baseZIndex]="1100" [appendTo]="'body'" [style]="{minWidth: '140px'}"></p-menu>
                 </td>
+              <style>
+              .row-action-icon.edit-enabled {
+                color: #1976d2;
+                background: #e3f2fd;
+                border-radius: 4px;
+              }
+              .row-action-icon.edit-disabled {
+                color: #aaa;
+                background: #f5f5f5;
+                border-radius: 4px;
+                cursor: not-allowed;
+              }
+              </style>
               </tr>
             </tbody>
             </table>
@@ -341,96 +387,7 @@
         </div>
       </div>
     </p-drawer>
-    <!-- Right-side drawer for create/edit -->
-    <p-drawer [(visible)]="showEditDrawer" [position]="'right'" [modal]="false" [transitionOptions]="'180ms cubic-bezier(0.2, 0, 0, 1)'" [showCloseIcon]="true" (hide)="closeEditDrawer()" styleClass="workqueue-drawer menu-edit-drawer" [style]="{width: '400px', height: '100%', top: '0', bottom: '0'}">
-      <ng-template pTemplate="header">
-        <h3>{{editingMasterMenuIndex !== null ? 'Edit Menu Item' : 'Create Menu Item'}}</h3>
-      </ng-template>
-      <form id="menuEditForm" [formGroup]="masterMenuForm" (ngSubmit)="saveMasterMenu()">
-        <div class="modal-body">
-          <div class="mb-2">
-            <label>Item Key</label>
-            <input class="form-control" formControlName="itemKey" [readonly]="editingMasterMenuIndex !== null">
-            <div *ngIf="masterMenuForm.get('itemKey')?.invalid && masterMenuForm.get('itemKey')?.touched" class="text-danger">Item Key is required.</div>
-          </div>
-          <div class="mb-2">
-            <label>Section</label>
-            <select class="form-select" formControlName="sectionId">
-              <option value="">Select section</option>
-              <option *ngFor="let section of masterMenuSections" [value]="section.sectionId">{{section.title}}</option>
-            </select>
-            <div *ngIf="masterMenuForm.get('sectionId')?.invalid && masterMenuForm.get('sectionId')?.touched" class="text-danger">Section is required.</div>
-          </div>
-          <div class="mb-2">
-            <label>Title</label>
-            <input class="form-control" formControlName="title">
-            <div *ngIf="masterMenuForm.get('title')?.invalid && masterMenuForm.get('title')?.touched" class="text-danger">Title is required.</div>
-          </div>
-          <div class="mb-2">
-            <label>Route</label>
-            <input class="form-control" formControlName="route">
-            <div *ngIf="masterMenuForm.get('route')?.invalid && masterMenuForm.get('route')?.touched" class="text-danger">Route is required and must start with '/'.</div>
-          </div>
-          <div class="mb-2">
-            <label>Icon</label>
-            <input class="form-control" formControlName="icon">
-          </div>
-          <div class="mb-2">
-            <label>Sort Order</label>
-            <input type="number" class="form-control" formControlName="sortOrder">
-          </div>
-          <div class="mb-2">
-            <label>Entitlement Key</label>
-            <select class="form-select" formControlName="entitlementKey" [disabled]="dropdownsLoading">
-              <option value="">Select entitlement</option>
-              <option *ngFor="let opt of entitlementOptions" [value]="opt.value">{{opt.label}}</option>
-            </select>
-          </div>
-          <div class="mb-2">
-            <label>Status (Show/Hide)</label>
-            <input type="checkbox" class="form-check-input ms-2" formControlName="featureFlag">
-            <label class="ms-2">Status Key</label>
-            <input class="form-control mt-1" formControlName="featureFlagKey">
-          </div>
-          <div class="mb-2">
-            <label>Show When Locked</label>
-            <input type="checkbox" class="form-check-input ms-2" formControlName="showWhenLocked">
-          </div>
-          <div class="mb-2">
-            <label>Min Plan</label>
-            <select class="form-select" formControlName="minPlan" [disabled]="dropdownsLoading">
-              <option value="">Select plan</option>
-              <option *ngFor="let opt of planOptions" [value]="opt.value">{{opt.label}}</option>
-            </select>
-          </div>
-          <div class="mb-2">
-            <label>Role Active Map</label>
-            <div class="d-flex gap-2 mt-1">
-              <div *ngFor="let role of ROLE_KEYS">
-                <label>{{role}}</label>
-                  <input type="checkbox" class="form-check-input ms-1" [formControl]="getRoleControl(role)">
-              </div>
-            </div>
-          </div>
-          <div class="mb-2">
-            <label>Reason</label>
-            <textarea class="form-control" formControlName="reason"></textarea>
-            <div *ngIf="masterMenuForm.get('reason')?.invalid && masterMenuForm.get('reason')?.touched" class="text-danger">Reason is required.</div>
-          </div>
-        </div>
-      </form>
-
-      <ng-template pTemplate="footer">
-        <div class="menu-edit-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeEditDrawer()">Cancel</button>
-          <button type="submit" class="btn btn-primary" form="menuEditForm" [disabled]="masterMenuSaveLoading">Save</button>
-          <span *ngIf="masterMenuSaveLoading" class="ms-2"><span class="spinner-border spinner-border-sm"></span></span>
-        </div>
-      </ng-template>
-    </p-drawer>
       </div>
     </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
 
 

@@ -1,14 +1,16 @@
 
+ 
 import { CommonModule } from '@angular/common';
 import { DrawerModule } from 'primeng/drawer';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject, effect, EffectRef } from '@angular/core';
+import { DashboardRowEditStore } from './dashboard-row-edit.store';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-import { MenuManagementApiService, MasterMenuItemDTO, MasterMenuSectionDTO, MasterMenuUpsertDTO, TenantMenuConfigBulkUpdateDTO, DropdownOption } from 'src/app/services/menu-management/menu-management-api.service';
+import { MenuManagementApiService, MasterMenuItemDTO, MasterMenuSectionDTO, MasterMenuUpsertDTO, MasterMenuFlatUpdateDTO, TenantMenuConfigBulkUpdateDTO, DropdownOption } from 'src/app/services/menu-management/menu-management-api.service';
 import { forkJoin } from 'rxjs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -28,6 +30,7 @@ interface MenuTableRow {
   roleLabel: string;
   itemKey: string;
   sectionId: string;
+  id: string;
   title: string;
   icon: string;
   route: string;
@@ -69,6 +72,32 @@ type HeaderFilters = {
   styleUrls: ['./dashboard-app-admin-menu.component.scss']
 })
 export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
+      // Getter for filteredSections used in template
+      public get filteredSections(): MasterMenuSectionDTO[] {
+        // Sections are not role-specific, so return all
+        return this.masterMenuSections;
+      }
+    // Map MenuTableRow to MasterMenuItemDTO (for edit)
+    private mapTableRowToMasterMenuItem(row: MenuTableRow): MasterMenuItemDTO {
+      return {
+        id: row.id,
+        itemKey: row.itemKey,
+        title: row.title,
+        route: row.route,
+        icon: row.icon,
+        sectionId: row.sectionId,
+        sortOrder: row.sortOrder,
+        entitlementKey: row.entitlementKey,
+        featureFlag: row.featureFlag,
+        featureFlagKey: row.featureFlagKey,
+        showWhenLocked: row.showWhenLocked,
+        minPlan: row.minPlan,
+        roleActiveMap: row['roleActiveMap'] || {},
+      };
+    }
+
+  private rowEditStore = inject(DashboardRowEditStore);
+  private signalEffectCleanup: EffectRef | null = null;
   // For context menu actions
   menuItems: any[] = [];
 
@@ -95,6 +124,11 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
     ];
   }
 
+    getSectionTitle(sectionId: string): string {
+    const section = this.masterMenuSections.find(s => s.id === sectionId);
+    return section ? section.title : sectionId;
+  }
+
       disableItem(item: MasterMenuItemDTO) {
         // Implement disable logic
         this.saveMasterMenuStatus(item, false);
@@ -106,6 +140,10 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
       }
 
       private saveMasterMenuStatus(item: MasterMenuItemDTO, isActive: boolean) {
+        if (!item.id) {
+          alert('Missing menu item id for status update');
+          return;
+        }
         // Only include fields that exist in MasterMenuUpsertDTO and add required 'reason'
         const upsert: MasterMenuUpsertDTO = {
           itemKey: item.itemKey,
@@ -122,7 +160,13 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
           roleActiveMap: item.roleActiveMap,
           reason: 'Status change', // or prompt for a reason if needed
         };
-        this.api.updateMasterItem(item.itemKey, upsert).subscribe({
+        console.debug('[MenuManagement] saveMasterMenuStatus', {
+          isEditMode: true,
+          editingRowId: item.id,
+          method: 'PUT',
+          path: `/api/ext/admin/menu/master/${item.id}`
+        });
+        this.api.updateMasterItem(item.id, upsert).subscribe({
           next: () => this.loadMaster(),
           error: () => alert('Failed to update status')
         });
@@ -181,7 +225,9 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
   }
           showHelpDrawer = false;
 
-  selectedRow: MasterMenuItemDTO | null = null;
+  selectedRow: MenuTableRow | null = null;
+  isEditMode = false;
+  editingRowId: string | null = null;
   editSidenavOpen = false;
   tableRows: MenuTableRow[] = [];
 
@@ -209,6 +255,13 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
   };
 
   headerFilters: HeaderFilters = { ...this.emptyHeaderFilters };
+
+  private resetEditModeState(): void {
+    this.selectedRow = null;
+    this.isEditMode = false;
+    this.editingRowId = null;
+    this.editingMasterMenuIndex = null;
+  }
 
 
   private appliedFilterItemsCache: MasterMenuItemDTO[] = [];
@@ -394,7 +447,7 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
       if (icon && !(item.icon || '').toLowerCase().includes(icon)) continue;
 
       if (section) {
-        const sectionText = `${item.sectionId || ''} ${(this.masterMenuSections.find(s => s.sectionId === item.sectionId)?.title) || ''}`.toLowerCase();
+        const sectionText = `${item.sectionId || ''} ${(this.masterMenuSections.find(s => s.id === item.sectionId)?.title) || ''}`.toLowerCase();
         if (!sectionText.includes(section)) continue;
       }
 
@@ -403,8 +456,8 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
       if (subscription && !(item.minPlan || '').toLowerCase().includes(subscription)) continue;
 
       if (featureFlag) {
-        const ffText = item.featureFlag ? 'enabled true yes' : 'disabled false no';
-        if (!ffText.includes(featureFlag)) continue;
+        const statusText = item.isActive ? 'enabled true yes' : 'disabled false no';
+        if (!statusText.includes(featureFlag)) continue;
       }
 
       if (lockedView) {
@@ -437,7 +490,10 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
       clearTimeout(this.headerFilterTimer);
       this.headerFilterTimer = null;
     }
-
+    if (this.signalEffectCleanup) {
+      this.signalEffectCleanup.destroy();
+      this.signalEffectCleanup = null;
+    }
     this.dismissMasterMenuSaveSuccess();
     this.dismissMasterMenuSaveError();
     this.dismissMasterMenuError();
@@ -472,6 +528,7 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
             route: item.route,
             icon: item.icon,
             sectionId: item.sectionId,
+            id: item.id ?? item.sectionId,
             sortOrder: item.sortOrder,
             entitlementKey: item.entitlementKey,
             featureFlag: typeof item.featureFlag === 'string' ? item.featureFlag === 'true' : !!item.featureFlag,
@@ -480,6 +537,10 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
             minPlan: item.minPlan
           };
         });
+        this.masterMenuItems = (res.items || []).map((item: any) => ({
+          ...item,
+          id: item.id ?? item.sectionId,
+        }));
         // Use plain array for dataSource
         this.dataSource = { data: rows, paginator: null, filter: '' };
         this.attachPaginator();
@@ -516,21 +577,26 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
       }
     });
   }
-    showEditDrawer = false;
-    openEditDrawer(index: number | null = null) {
-      this.editingMasterMenuIndex = index;
-      if (index !== null && index > -1) {
-        const item = this.masterMenuItems[index];
-        if (item) {
-          this.openEdit(item);
-          return;
-        }
+    openEditDrawer(row?: MenuTableRow) {
+      if (row) {
+        this.openEdit(row);
+        return;
       }
-      this.showEditDrawer = true;
-      this.closeMasterMenuModal();
+      this.resetEditModeState();
+      // Add button: open empty form for new item (via signal store)
+      this.rowEditStore.startEditing('entitlements', -1, {
+        plan: '',
+        sectionKey: '',
+        title: '',
+        roleKey: '',
+        sortOrder: '',
+        isActive: true,
+        active: '',
+      } as any);
     }
     closeEditDrawer() {
-      this.showEditDrawer = false;
+      this.rowEditStore.closeEditing();
+      this.resetEditModeState();
       this.closeMasterMenuModal();
     }
   activeTab: 'masterMenu' | 'enterpriseOverrides' = 'masterMenu';
@@ -571,12 +637,13 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
       title: ['', [Validators.required]],
       route: ['', [Validators.required, Validators.pattern(/^\//)]],
       icon: [''],
-      sectionId: ['', Validators.required],
+      sectionKey: ['', Validators.required],
       sortOrder: [0],
       entitlementKey: [''],
       featureFlag: [false],
       featureFlagKey: [''],
       showWhenLocked: [false],
+      isActive: [true],
       minPlan: [''],
       roleActiveMap: this.fb.group(
         ROLE_KEYS.reduce((acc, role) => {
@@ -586,34 +653,87 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
       ),
       reason: ['', Validators.required]
     });
-      this.loadMaster();
+    this.loadMaster();
+
+    // Effect: keep form in sync with signal store's editingRowData
+    this.signalEffectCleanup = effect(() => {
+      const rowData = this.rowEditStore.editingRowData();
+      console.log('[signalEffect] editingMasterMenuIndex:', this.editingMasterMenuIndex, 'rowData:', rowData);
+      if (rowData) {
+        console.log('[signalEffect] Opening sidenav with rowData:', rowData, 'editingMasterMenuIndex:', this.editingMasterMenuIndex);
+        // Patch form with row data (Edit or New)
+        const roleActiveMap = this.buildRoleActiveMap(rowData);
+        this.masterMenuForm.patchValue({ ...rowData, roleActiveMap, reason: '' });
+        // If editingMasterMenuIndex is null, it's a new item, so enable itemKey; else, disable for edit
+        if (this.editingMasterMenuIndex === null) {
+          this.masterMenuForm.get('itemKey')?.enable();
+        } else {
+          this.masterMenuForm.get('itemKey')?.disable();
+        }
+        this.editSidenavOpen = true;
+      } else {
+        console.log('[signalEffect] Closing sidenav (no rowData)');
+        // No row selected (Add or close)
+        this.masterMenuForm.reset();
+        this.masterMenuForm.get('itemKey')?.enable();
+        this.editSidenavOpen = false;
+      }
+    });
   }
 
-  openEdit(row: MasterMenuItemDTO): void {
-    if (this.showEditDrawer) {
-      this.closeEditDrawer();
-    }
-
+  openEdit(row: MenuTableRow): void {
     this.selectedRow = row;
-    this.editingMasterMenuIndex = this.masterMenuItems.findIndex(i => i.itemKey === row.itemKey);
-
-    const roleActiveMap = this.buildRoleActiveMap(row);
-    this.masterMenuForm.patchValue({ ...row, roleActiveMap, reason: '' });
-    this.masterMenuForm.get('itemKey')?.disable();
-
-    this.editSidenavOpen = true;
+    this.isEditMode = true;
+    this.editingRowId = row.id || null;
+    // Build roleActiveMap so only the row's roleKey is true
+    const roleActiveMap: Record<string, boolean> = {};
+    (this.ROLE_KEYS || []).forEach(role => {
+      roleActiveMap[role] = role === row.roleKey;
+    });
+    // Determine sectionKey for dropdown selection
+    let sectionKey = row['sectionKey'] || '';
+    if (!sectionKey && row.sectionId) {
+      const section = this.masterMenuSections.find(s => s.id === row.sectionId);
+      if (section) {
+        sectionKey = section.id || '';
+      } else {
+        sectionKey = row.sectionId;
+      }
+    }
+    this.rowEditStore.startEditing('entitlements', -1, {
+      id: row.id || '',
+      itemKey: row.itemKey || '',
+      sectionId: row.sectionId || '',
+      sectionKey,
+      title: row.title || '',
+      route: row.route || '',
+      icon: row.icon || '',
+      sortOrder: (row.sortOrder !== undefined && row.sortOrder !== null) ? String(row.sortOrder) : '',
+      entitlementKey: row.entitlementKey || '',
+      featureFlag: row.featureFlag ?? false,
+      featureFlagKey: row.featureFlagKey || '',
+      showWhenLocked: row.showWhenLocked ?? false,
+      isActive: row.isActive ?? false,
+      minPlan: row.minPlan || '',
+      reason: '',
+      // For legacy compatibility with EntitlementRow shape
+      plan: row.minPlan || '',
+      roleKey: row.roleKey || '',
+      active: row.isActive ? 'true' : 'false',
+      ['roleActiveMap']: roleActiveMap,
+    } as any);
+    const editIndex = this.masterMenuItems.findIndex(i => (i.id ?? i.itemKey) === (row.id ?? row.itemKey));
+    this.editingMasterMenuIndex = editIndex > -1 ? editIndex : 0;
   }
 
   closeEditSidenav(): void {
     this.editSidenavOpen = false;
-    this.selectedRow = null;
+    this.resetEditModeState();
     this.closeMasterMenuModal();
   }
 
   saveSelectedRow(): void {
-    if (!this.selectedRow) {
-      return;
-    }
+    // Always use form value from signal-driven form
     if (this.masterMenuForm.invalid) {
       this.masterMenuForm.markAllAsTouched();
       return;
@@ -622,31 +742,85 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
     this.dismissMasterMenuSaveSuccess();
     this.dismissMasterMenuSaveError();
     const formValue = this.masterMenuForm.getRawValue();
-    // Always send all 4 roles in roleActiveMap
-    const currentMaster = this.masterMenuItems.find(i => i.itemKey === formValue.itemKey);
-    const baseMap = currentMaster?.roleActiveMap || {};
-    const newMap: Record<string, boolean> = {};
-    for (const role of ROLE_KEYS) {
-      newMap[role] = formValue.roleActiveMap?.[role] ?? baseMap[role] ?? false;
+    const selectedRoleKey = this.selectedRow?.roleKey || '';
+    const sectionId = formValue.sectionKey;
+    const isActive = !!formValue.isActive;
+    let req$;
+    if (this.isEditMode && this.editingRowId) {
+      const updatePayload: MasterMenuFlatUpdateDTO = {
+        title: formValue.title,
+        route: formValue.route,
+        icon: formValue.icon,
+        sectionId,
+        sortOrder: Number(formValue.sortOrder ?? 0),
+        entitlementKey: formValue.entitlementKey,
+        featureFlag: !!formValue.featureFlag,
+        featureFlagKey: formValue.featureFlagKey,
+        showWhenLocked: !!formValue.showWhenLocked,
+        minPlan: formValue.minPlan,
+        isActive,
+        reason: formValue.reason,
+      };
+      console.debug('[MenuManagement] saveSelectedRow', {
+        isEditMode: this.isEditMode,
+        editingRowId: this.editingRowId,
+        payloadSectionId: updatePayload.sectionId,
+        payloadIsActive: updatePayload.isActive,
+        selectedRoleKey,
+        selectedItemKey: this.selectedRow?.itemKey,
+        method: 'PUT',
+        path: `/api/ext/admin/menu/master/${this.editingRowId}`
+      });
+      req$ = this.api.updateMasterItem(this.editingRowId, updatePayload);
+    } else {
+      const currentMaster = this.masterMenuItems.find(i => i.itemKey === formValue.itemKey);
+      const baseMap = currentMaster?.roleActiveMap || {};
+      const newMap: Record<string, boolean> = {};
+      for (const role of ROLE_KEYS) {
+        newMap[role] = formValue.roleActiveMap?.[role] ?? baseMap[role] ?? false;
+      }
+      const upsert: MasterMenuUpsertDTO = {
+        itemKey: formValue.itemKey,
+        title: formValue.title,
+        route: formValue.route,
+        icon: formValue.icon,
+        sectionId,
+        sortOrder: Number(formValue.sortOrder ?? 0),
+        entitlementKey: formValue.entitlementKey,
+        featureFlag: !!formValue.featureFlag,
+        featureFlagKey: formValue.featureFlagKey,
+        showWhenLocked: !!formValue.showWhenLocked,
+        minPlan: formValue.minPlan,
+        isActive,
+        roleActiveMap: newMap,
+        reason: formValue.reason,
+      };
+      console.debug('[MenuManagement] saveSelectedRow', {
+        isEditMode: this.isEditMode,
+        editingRowId: this.editingRowId,
+        payloadSectionId: upsert.sectionId,
+        payloadIsActive: isActive,
+        selectedRoleKey,
+        selectedItemKey: this.selectedRow?.itemKey,
+        method: 'POST',
+        path: '/api/ext/admin/menu/master'
+      });
+      req$ = this.api.createMasterItem(upsert);
     }
-    const upsert: MasterMenuUpsertDTO = {
-      ...formValue,
-      roleActiveMap: newMap,
-      reason: formValue.reason,
-    };
-          this.api.updateMasterItem(formValue.itemKey, upsert).subscribe({
-            next: () => {
-              this.masterMenuSaveLoading = false;
-              this.masterMenuSaveSuccess = true;
-              this.autoHideMasterMenuSaveSuccess();
-              this.loadMaster();
-            },
-            error: () => {
-              this.masterMenuSaveLoading = false;
-              this.masterMenuSaveError = 'Failed to save.';
-              this.autoHideMasterMenuSaveError();
-            }
-          });
+    req$.subscribe({
+      next: () => {
+        this.masterMenuSaveLoading = false;
+        this.masterMenuSaveSuccess = true;
+        this.autoHideMasterMenuSaveSuccess();
+        this.closeEditDrawer();
+        this.loadMaster();
+      },
+      error: () => {
+        this.masterMenuSaveLoading = false;
+        this.masterMenuSaveError = 'Failed to save.';
+        this.autoHideMasterMenuSaveError();
+      }
+    });
   }
 
   getRoleControl(role: string): FormControl {
@@ -701,11 +875,16 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
     }, ms);
   }
 
-  closeMasterMenuModal() {
+  closeMasterMenuModal(options?: { resetEditState?: boolean; resetForm?: boolean }) {
+    const { resetEditState = true, resetForm = true } = options ?? {};
     this.showMasterMenuModal = false;
-    this.editingMasterMenuIndex = null;
-    this.masterMenuForm.reset({ featureFlag: false, showWhenLocked: false, sortOrder: 0 });
-    this.masterMenuForm.get('itemKey')?.enable();
+    if (resetEditState && !this.editSidenavOpen) {
+      this.resetEditModeState();
+    }
+    if (resetForm) {
+      this.masterMenuForm.reset({ featureFlag: false, showWhenLocked: false, isActive: true, sortOrder: 0 });
+      this.masterMenuForm.get('itemKey')?.enable();
+    }
   }
 
   saveMasterMenu() {
@@ -717,15 +896,62 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
     this.dismissMasterMenuSaveSuccess();
     this.dismissMasterMenuSaveError();
     const formValue = this.masterMenuForm.getRawValue();
-    const upsert: MasterMenuUpsertDTO = {
-      ...formValue,
-      roleActiveMap: formValue.roleActiveMap,
-      reason: formValue.reason
-    };
+    const sectionId = formValue.sectionKey;
+    const isActive = !!formValue.isActive;
     let req$;
-    if (this.editingMasterMenuIndex !== null) {
-      req$ = this.api.updateMasterItem(formValue.itemKey, upsert);
+    if (this.isEditMode && this.editingRowId) {
+      const updatePayload: MasterMenuFlatUpdateDTO = {
+        title: formValue.title,
+        route: formValue.route,
+        icon: formValue.icon,
+        sectionId,
+        sortOrder: Number(formValue.sortOrder ?? 0),
+        entitlementKey: formValue.entitlementKey,
+        featureFlag: !!formValue.featureFlag,
+        featureFlagKey: formValue.featureFlagKey,
+        showWhenLocked: !!formValue.showWhenLocked,
+        minPlan: formValue.minPlan,
+        isActive,
+        reason: formValue.reason
+      };
+      console.debug('[MenuManagement] saveMasterMenu', {
+        isEditMode: this.isEditMode,
+        editingRowId: this.editingRowId,
+        payloadSectionId: updatePayload.sectionId,
+        payloadIsActive: updatePayload.isActive,
+        selectedRoleKey: this.selectedRow?.roleKey,
+        selectedItemKey: this.selectedRow?.itemKey,
+        method: 'PUT',
+        path: `/api/ext/admin/menu/master/${this.editingRowId}`
+      });
+      req$ = this.api.updateMasterItem(this.editingRowId, updatePayload);
     } else {
+      const upsert: MasterMenuUpsertDTO = {
+        itemKey: formValue.itemKey,
+        title: formValue.title,
+        route: formValue.route,
+        icon: formValue.icon,
+        sectionId,
+        sortOrder: Number(formValue.sortOrder ?? 0),
+        entitlementKey: formValue.entitlementKey,
+        featureFlag: !!formValue.featureFlag,
+        featureFlagKey: formValue.featureFlagKey,
+        showWhenLocked: !!formValue.showWhenLocked,
+        minPlan: formValue.minPlan,
+        isActive,
+        roleActiveMap: formValue.roleActiveMap,
+        reason: formValue.reason
+      };
+      console.debug('[MenuManagement] saveMasterMenu', {
+        isEditMode: this.isEditMode,
+        editingRowId: this.editingRowId,
+        payloadSectionId: upsert.sectionId,
+        payloadIsActive: isActive,
+        selectedRoleKey: this.selectedRow?.roleKey,
+        selectedItemKey: this.selectedRow?.itemKey,
+        method: 'POST',
+        path: '/api/ext/admin/menu/master'
+      });
       req$ = this.api.createMasterItem(upsert);
     }
     req$.subscribe({
@@ -733,7 +959,7 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
         this.masterMenuSaveLoading = false;
         this.masterMenuSaveSuccess = true;
         this.autoHideMasterMenuSaveSuccess();
-        this.closeMasterMenuModal();
+        this.closeEditDrawer();
         this.loadMaster();
       },
       error: () => {
@@ -853,6 +1079,10 @@ export class DashboardAppAdminMenuComponent implements OnInit, OnDestroy {
     this.masterMenuLoading = true;
     this.api.getMasterMenu().subscribe({
       next: (res) => {
+        this.masterMenuItems = (res.items || []).map((item: any) => ({
+          ...item,
+          id: item.id ?? item.sectionId,
+        }));
         const rows = this.adaptMenuItems(res.items || []);
         this.dataSource.data = rows;
         this.setupFilterPredicate();

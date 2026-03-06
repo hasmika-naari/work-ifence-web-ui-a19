@@ -18,7 +18,7 @@ export interface MasterMenuSectionDTO {
 
 export interface MasterMenuItemDTO {
   itemKey: string;
-  sectionId: number;
+  id: number; // Updated to use id instead of sectionId
   title: string;
   icon?: string;
   route: string;
@@ -33,7 +33,7 @@ export interface MasterMenuItemDTO {
 
 export interface MasterMenuUpsertDTO {
   itemKey?: string;
-  sectionId: number;
+  id: number; // Updated to use id instead of sectionId
   title: string;
   icon?: string;
   route: string;

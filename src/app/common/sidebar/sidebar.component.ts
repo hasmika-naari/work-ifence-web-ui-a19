@@ -102,7 +102,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
 
     getLockTooltip(item: NavItem): string {
-      return this.getItemBadges(item).find((badge) => badge.type === 'lock')?.tooltip || 'LOCKED';
+      const lockMessage = this.getItemBadges(item).find((badge) => badge.type === 'lock')?.tooltip || 'Locked feature';
+      return `${item.title} - ${lockMessage}`;
     }
 
     getReadOnlyBadgeLabel(item: NavItem): string {

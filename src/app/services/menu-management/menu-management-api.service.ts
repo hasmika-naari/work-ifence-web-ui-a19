@@ -1,17 +1,25 @@
-export interface DropdownOption {
-  value: string;
-  label: string;
-}
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+
+
 export interface MasterMenuSectionDTO {
 // removed stray curly brace
-  sectionId: string;
+  id: string;
+  key?: string;
   title: string;
 }
+
+export interface DropdownOption {
+  value: string;
+  label: string;
+}
 export interface MasterMenuItemDTO {
+  id?: string;
+  roleKey?: string;
+  isActive?: boolean;
   itemKey: string;
   title: string;
   route: string;
@@ -41,7 +49,23 @@ export interface MasterMenuUpsertDTO {
   featureFlagKey: string;
   showWhenLocked: boolean;
   minPlan: string;
+  isActive?: boolean;
   roleActiveMap: Record<string, boolean>;
+  reason: string;
+}
+
+export interface MasterMenuFlatUpdateDTO {
+  title: string;
+  route: string;
+  icon: string;
+  sectionId: string;
+  sortOrder: number;
+  entitlementKey: string;
+  featureFlag: boolean;
+  featureFlagKey: string;
+  showWhenLocked: boolean;
+  minPlan: string;
+  isActive: boolean;
   reason: string;
 }
 export interface TenantMenuConfigDTO {
@@ -78,12 +102,12 @@ export class MenuManagementApiService {
     return this.http.get<DropdownOption[]>(`${this.apiUrl}/api/admin/dropdowns/plans`);
   }
 
-  updateMasterItem(itemKey: string, dto: MasterMenuUpsertDTO): Observable<MasterMenuItemDTO> {
-    return this.http.put<MasterMenuItemDTO>(`${this.apiUrl}/api/ext/admin/menu/master/${itemKey}`, dto);
+  updateMasterItem(id: string, dto: MasterMenuUpsertDTO | MasterMenuFlatUpdateDTO): Observable<MasterMenuItemDTO> {
+    return this.http.put<MasterMenuItemDTO>(`${this.apiUrl}/api/ext/admin/menu/master/${id}`, dto);
   }
 
-  deleteMasterItem(itemKey: string, reason: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/api/ext/admin/menu/master/${itemKey}?reason=${encodeURIComponent(reason)}`);
+  deleteMasterItem(id: string, reason: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/api/ext/admin/menu/master/${id}?reason=${encodeURIComponent(reason)}`);
   }
 
   getEnterpriseMenuConfig(enterpriseId: string): Observable<TenantMenuConfigDTO[]> {
