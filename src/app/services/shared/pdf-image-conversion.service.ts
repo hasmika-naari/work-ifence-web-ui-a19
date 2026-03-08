@@ -38,8 +38,13 @@ async convertPdfToImageBytes(pdfFile: File): Promise<string[]> {
 
 
 async convertPdfToImageBytesThroughUrl(url: string): Promise<string[]> {
+  const normalizedUrl = (url ?? '').trim();
+  if (!normalizedUrl || normalizedUrl.endsWith('/undefined') || normalizedUrl.endsWith('/null')) {
+    return [];
+  }
+
   try {
-    const pdf: PDFDocumentProxy = await getDocument({ url }).promise;
+    const pdf: PDFDocumentProxy = await getDocument({ url: normalizedUrl }).promise;
 
     const imageBytes: string[] = [];
     for (let i = 1; i <= pdf.numPages; i++) {

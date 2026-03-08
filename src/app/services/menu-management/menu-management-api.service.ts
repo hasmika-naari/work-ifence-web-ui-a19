@@ -1,8 +1,9 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { normalizeEntitlementKey } from 'src/app/entitlements/entitlement-key.util';
 
 
 export interface MasterMenuSectionDTO {
@@ -86,16 +87,33 @@ export class MenuManagementApiService {
   constructor(private http: HttpClient) {}
 
   getMasterMenu(): Observable<MasterMenuResponseDTO> {
-    return this.http.get<MasterMenuResponseDTO>(`${this.apiUrl}/api/ext/admin/menu/master`);
+    return this.http.get<MasterMenuResponseDTO>(`${this.apiUrl}/api/ext/admin/menu/master`).pipe(
+      map((response) => ({
+        ...response,
+        items: (response.items ?? []).map((item) => this.normalizeMasterMenuItem(item)),
+      })),
+    );
   }
 
   createMasterItem(dto: MasterMenuUpsertDTO): Observable<MasterMenuItemDTO> {
-    return this.http.post<MasterMenuItemDTO>(`${this.apiUrl}/api/ext/admin/menu/master`, dto);
+    return this.http.post<MasterMenuItemDTO>(`${this.apiUrl}/api/ext/admin/menu/master`, this.normalizeUpsertDto(dto)).pipe(
+      map((item) => this.normalizeMasterMenuItem(item)),
+    );
   }
 
 
   getEntitlementKeys(): Observable<DropdownOption[]> {
-    return this.http.get<DropdownOption[]>(`${this.apiUrl}/api/admin/dropdowns/entitlement-keys`);
+    return this.http.get<DropdownOption[]>(`${this.apiUrl}/api/admin/dropdowns/entitlement-keys`).pipe(
+      map((options) =>
+        (options ?? []).map((option) => {
+          const value = normalizeEntitlementKey(option?.value || option?.label);
+          return {
+            value,
+            label: option?.label || value,
+          };
+        }),
+      ),
+    );
   }
 
   getPlans(): Observable<DropdownOption[]> {
@@ -103,7 +121,9 @@ export class MenuManagementApiService {
   }
 
   updateMasterItem(id: string, dto: MasterMenuUpsertDTO | MasterMenuFlatUpdateDTO): Observable<MasterMenuItemDTO> {
-    return this.http.put<MasterMenuItemDTO>(`${this.apiUrl}/api/ext/admin/menu/master/${id}`, dto);
+    return this.http.put<MasterMenuItemDTO>(`${this.apiUrl}/api/ext/admin/menu/master/${id}`, this.normalizeUpdateDto(dto)).pipe(
+      map((item) => this.normalizeMasterMenuItem(item)),
+    );
   }
 
   deleteMasterItem(id: string, reason: string): Observable<void> {
@@ -120,5 +140,26 @@ export class MenuManagementApiService {
 
   deleteEnterpriseOverride(enterpriseId: string, itemKey: string, reason: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/api/ext/enterprises/${enterpriseId}/menu-config/${itemKey}?reason=${encodeURIComponent(reason)}`);
+  }
+
+  private normalizeMasterMenuItem(item: MasterMenuItemDTO): MasterMenuItemDTO {
+    return {
+      ...item,
+      entitlementKey: normalizeEntitlementKey(item?.entitlementKey),
+    };
+  }
+
+  private normalizeUpsertDto(dto: MasterMenuUpsertDTO): MasterMenuUpsertDTO {
+    return {
+      ...dto,
+      entitlementKey: normalizeEntitlementKey(dto.entitlementKey),
+    };
+  }
+
+  private normalizeUpdateDto(dto: MasterMenuUpsertDTO | MasterMenuFlatUpdateDTO): MasterMenuUpsertDTO | MasterMenuFlatUpdateDTO {
+    return {
+      ...dto,
+      entitlementKey: normalizeEntitlementKey(dto.entitlementKey),
+    };
   }
 }

@@ -6,6 +6,7 @@ import { NavApiItem, NavApiResponse, NavApiSection } from './nav-api.model';
 import { NavBadge, NavItem, NavSection, PlanTier } from 'src/app/nav/nav.model';
 import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
 import { EntitlementService } from 'src/app/services/entitlement.service';
+import { hasEntitlementKey, normalizeEntitlementKey } from 'src/app/entitlements/entitlement-key.util';
 import { environment } from 'src/environments/environment';
 
 const CACHE_KEY = 'nav_me_cache_v1';
@@ -177,6 +178,7 @@ export class NavStore {
     const children = item.children?.map(child => this.toNavItem(child));
     const route = item.route === '/authentication' ? '/sign-in' : item.route;
     const icon = this.normalizeIcon(item.icon);
+    const entitlementKey = normalizeEntitlementKey(item.entitlementKey) || undefined;
     const badge = item.badge
       ? {
           text: item.badge.text,
@@ -201,7 +203,7 @@ export class NavStore {
       icon,
       route,
       featureFlag: item.featureFlag,
-      entitlementKey: item.entitlementKey,
+      entitlementKey,
       minPlan: item.minPlan as PlanTier | undefined,
       showWhenLocked: item.showWhenLocked,
       locked,
@@ -277,7 +279,7 @@ export class NavStore {
 
     const hiddenByEntitlement = items
       .filter(item => {
-        const allowed = !item.entitlementKey || entitlements[item.entitlementKey] === true;
+        const allowed = !item.entitlementKey || hasEntitlementKey(entitlements, item.entitlementKey);
         if (allowed) return false;
         return item.showWhenLocked !== true && item.locked !== true;
       })

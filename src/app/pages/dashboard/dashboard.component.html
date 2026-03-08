@@ -3,7 +3,8 @@
   <div class="dashboard">
     <div class="welcome-container">
       <h1 class="welcome-message">
-        Welcome <span class="user-name">{{bioProfile().firstName }} {{bioProfile().lastName}}</span> 👋
+        Welcome <span class="user-name">{{bioProfile().firstName }} {{bioProfile().lastName}}</span>
+        <span style="font-size: 14px; font-weight: 500; color: #6c757d; margin-left: 8px;">{{ currentPlanName() || 'Free' }}</span> 👋
       </h1>
       <p class="subtitle">Let’s manage your journey to dream job with Workifence!</p>
 

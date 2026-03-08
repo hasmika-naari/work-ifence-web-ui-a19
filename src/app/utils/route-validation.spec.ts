@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { ENTITLEMENT_KEYS } from '../entitlements/entitlement-keys';
 import { entitlementRouteGuard } from '../guards/entitlement-route.guard';
 import { validateEntitlementGuardRouteData } from './route-validation';
 
@@ -9,7 +10,7 @@ describe('validateEntitlementGuardRouteData', () => {
       {
         path: 'feature-x',
         canActivate: [entitlementRouteGuard],
-        data: { entitlementKey: 'feature.x' },
+        data: { entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING },
       } as any,
     ];
 
@@ -24,7 +25,7 @@ describe('validateEntitlementGuardRouteData', () => {
           {
             path: 'child',
             canActivate: [entitlementRouteGuard],
-            data: { entitlementKey: 'parent.child' },
+            data: { entitlementKey: ENTITLEMENT_KEYS.USER_DASHBOARD },
           } as any,
         ],
       } as any,

@@ -39,22 +39,6 @@ function normalizePath(url: string): string {
   return (url ?? '').toString().split('?')[0].split('#')[0];
 }
 
-function resolveEntitlementsMap(source: unknown): Record<string, boolean> {
-  if (!source || typeof source !== 'object') return {};
-
-  const nested = (source as { entitlements?: unknown }).entitlements;
-  const candidate =
-    nested && typeof nested === 'object' && !Array.isArray(nested)
-      ? (nested as Record<string, unknown>)
-      : (source as Record<string, unknown>);
-
-  const map: Record<string, boolean> = {};
-  for (const [key, value] of Object.entries(candidate)) {
-    map[key] = value === true;
-  }
-  return map;
-}
-
 export const entitlementRouteGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
@@ -95,19 +79,17 @@ export const entitlementRouteGuard: CanActivateFn = (
           loaded: snapshot.loaded,
           planTier: snapshot.planTier,
           entitlementsCount: Object.keys(snapshot.entitlements || {}).length,
-          hasAdminConsole: snapshot.entitlements?.['admin.console'],
+          hasAdminConsole: entitlement.canAccess('ADMIN_CONSOLE'),
         });
 
-        const requiredKey = ((route.data?.['entitlementKey'] as string) ?? '').toString().trim();
-        // Ensure entitlements loaded
-        const entitlements = snapshot.entitlements || {};
-        const entitlementValue = entitlements[requiredKey];
+        const requiredKey = (route.data?.['entitlementKey'] ?? '').toString().trim();
+        const entitlementValue = requiredKey ? entitlement.canAccess(requiredKey, minPlan) : true;
 
         if (!requiredKey) {
           return true;
         }
 
-        if (entitlementValue === true) {
+        if (entitlementValue) {
           return true;
         }
 

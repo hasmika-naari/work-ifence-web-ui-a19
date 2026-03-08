@@ -1557,6 +1557,8 @@ ul {
     padding-bottom: 5px;
     display:flex;
     justify-content:center;
+
+    
     align-items:center;
 }
 .job-title {

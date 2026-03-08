@@ -201,6 +201,16 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
         return resume.template_details.imgPath;
       }
 
+        getResumeCategoryClassSuffix(category: unknown): string {
+                const normalizedCategory = typeof category === 'string' ? category.trim().toLowerCase() : '';
+                return normalizedCategory || 'uncategorized';
+        }
+
+        getResumeCategoryLabel(category: unknown): string {
+                const normalizedCategory = typeof category === 'string' ? category.trim() : '';
+                return normalizedCategory || 'Uncategorized';
+        }
+
     ngOnChanges(changes: SimpleChanges): void {
     }
 

@@ -2,6 +2,7 @@ import { Injectable, Signal, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserEntitlements, EntitlementMap, PlanTier } from '../nav/nav.model';
 import { ENTITLEMENT_KEYS } from '../entitlements/entitlement-keys';
+import { hasEntitlementKey, normalizeEntitlementKey } from '../entitlements/entitlement-key.util';
 import { environment } from '../../environments/environment';
 import type { EntitlementsResponse } from '../models/entitlements-response.model';
 import { Observable, catchError, firstValueFrom, map, of, tap } from 'rxjs';
@@ -168,9 +169,10 @@ export class EntitlementService {
 
     const entitlements: EntitlementMap = {};
     for (const [k, v] of Object.entries(entRaw as Record<string, unknown>)) {
-      if (typeof k !== 'string' || !k.trim()) continue;
+      const key = String(k ?? '').trim();
+      if (!key) continue;
       // Fail-closed: only explicit boolean true grants access.
-      if (v === true) entitlements[k] = true;
+      if (v === true) entitlements[key] = true;
     }
 
     const roles = Array.isArray((resp as any).roles) ? (resp as any).roles.filter((r: unknown) => typeof r === 'string') : [];
@@ -212,14 +214,17 @@ export class EntitlementService {
 
     if (Array.isArray(raw.allowList)) {
       for (const k of raw.allowList) {
-        if (typeof k === 'string' && k.trim()) entitlements[k.trim()] = true;
+        const key = String(k ?? '').trim();
+        if (key) entitlements[key] = true;
       }
     }
 
     if (raw.map && typeof raw.map === 'object') {
-      for (const [k, v] of Object.entries(raw.map)) {
-        if (!k || typeof v !== 'boolean') continue;
-        entitlements[k] = v;
+      for (const [key, value] of Object.entries(raw.map as Record<string, boolean>)) {
+        const rawKey = String(key ?? '').trim();
+        if (rawKey && value === true) {
+          entitlements[rawKey] = true;
+        }
       }
     }
 
@@ -301,22 +306,23 @@ export class EntitlementService {
   canAccess(entitlementKey: string, minPlan?: PlanTier): boolean {
     const ent = this.entitlements();
     const plan = this.plan();
+    const normalizedKey = normalizeEntitlementKey(entitlementKey);
 
     // Production safety: if we're in fallback mode, never grant access unless explicitly true.
     if (environment.production && this._entitlements()?.isFallback) {
-      return !!entitlementKey && ent[entitlementKey] === true;
+      return !!normalizedKey && hasEntitlementKey(ent, normalizedKey);
     }
 
     // Fail-closed: callers must provide an entitlementKey for entitlement-gated features.
     // If a caller wants plan-only gating, it must explicitly pass minPlan.
-    if (!entitlementKey) {
+    if (!normalizedKey) {
       if (minPlan && plan) {
         const order = ['FREE','PRO','PREMIUM','ENTERPRISE'];
         return order.indexOf(plan) >= order.indexOf(minPlan);
       }
       return false;
     }
-    if (ent[entitlementKey]) return true;
+    if (hasEntitlementKey(ent, normalizedKey)) return true;
     if (minPlan && plan) {
       const order = ['FREE','PRO','PREMIUM','ENTERPRISE'];
       return order.indexOf(plan) >= order.indexOf(minPlan);

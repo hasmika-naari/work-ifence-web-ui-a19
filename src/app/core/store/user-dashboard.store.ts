@@ -5,6 +5,7 @@ import { MyDashboardDTO } from '../models/my-dashboard.model';
 import { MyEntitlementsDTO } from '../models/my-entitlements.model';
 import { SessionContextStore } from './session-context.store';
 import { AccessContextService } from 'src/app/services/access-context.service';
+import { normalizeEntitlementKey } from 'src/app/entitlements/entitlement-key.util';
 
 @Injectable({ providedIn: 'root' })
 export class UserDashboardStore {
@@ -161,11 +162,7 @@ export class UserDashboardStore {
   }
 
   private normalizeEntitlementKey(value: unknown): string {
-    return String(value ?? '')
-      .trim()
-      .toLowerCase()
-      .replace(/[\s_-]+/g, '.')
-      .replace(/\.+/g, '.');
+    return normalizeEntitlementKey(value);
   }
 
   private normalizeEntitlementsPayload(payload: unknown): MyEntitlementsDTO {

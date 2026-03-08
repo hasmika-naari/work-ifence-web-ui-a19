@@ -13,11 +13,13 @@ import { DashboardContextService } from 'src/app/services/dashboard-context.serv
 import { ActiveRoleService } from 'src/app/services/active-role.service';
 import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
 import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { DashboardStatCardDTO } from 'src/app/core/models/my-dashboard.model';
 import { SessionContextStore } from 'src/app/core/store/session-context.store';
 import { UserDashboardStore } from 'src/app/core/store/user-dashboard.store';
 import { forkJoin, of } from 'rxjs';
+import { AccountPlanSummaryDTO, AccountPlanSummaryFeatureDTO, AccountPlanSummaryService } from 'src/app/services/account-plan-summary.service';
+import { normalizeEntitlementKey } from 'src/app/entitlements/entitlement-key.util';
 
 interface DashboardStatVM {
   key: string;
@@ -105,22 +107,42 @@ export class DashboardComponent implements OnInit {
   private upgradeRouter: UpgradeRouterService = inject(UpgradeRouterService);
   private sessionContextStore: SessionContextStore = inject(SessionContextStore);
   private userDashboardStore: UserDashboardStore = inject(UserDashboardStore);
+  private accountPlanSummaryService: AccountPlanSummaryService = inject(AccountPlanSummaryService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly swipeHintStorageKey = 'wif.dashboard.statsSwipeHintHidden';
   private readonly dashboardErrorDismissed = signal(false);
   private readonly statsOrder = ['profileCompletion', 'resumes', 'jobApps', 'plan', 'exports', 'activity'];
-  private readonly featureCatalog: FeatureItem[] = [
-    { key: 'resume.builder', title: 'Resume Builder', desc: 'Create and edit resumes', icon: 'description' },
-    { key: 'resume.portal', title: 'Resume Library', desc: 'Manage saved resumes', icon: 'folder_open' },
-    { key: 'job.tracking', title: 'Job Tracker', desc: 'Track applications and stages', icon: 'work_outline' },
-    { key: 'job.pipeline', title: 'Pipeline View', desc: 'See your stage breakdown', icon: 'timeline' },
-    { key: 'job.alerts', title: 'Job Alerts', desc: 'Get notified for matching jobs', icon: 'notifications' },
-    { key: 'learn.portal', title: 'Learning Hub', desc: 'Access curated courses', icon: 'school' },
-    { key: 'learn.saved', title: 'Saved Learning', desc: 'Bookmark courses', icon: 'bookmark' },
-    { key: 'support.tickets', title: 'Support Tickets', desc: 'Create and track tickets', icon: 'support_agent' },
-    { key: 'settings.account', title: 'Account Settings', desc: 'Manage account basics', icon: 'manage_accounts' },
-    { key: 'settings.password', title: 'Password & Security', desc: 'Update password', icon: 'lock' },
-  ];
+  private readonly entitlementIconMap: Record<string, string> = {
+    RESUME_BUILDER: 'description',
+    RESUME_PORTAL: 'folder_open',
+    RESUME_EXPORT: 'picture_as_pdf',
+    RESUME_TEMPLATES_PREMIUM: 'style',
+    JOB_TRACKING: 'work_outline',
+    JOB_PIPELINE: 'timeline',
+    JOB_ALERTS: 'notifications',
+    LEARN_PORTAL: 'school',
+    LEARN_SAVED: 'bookmark',
+    DOCS_STORAGE: 'folder_copy',
+    BILLING: 'credit_card',
+    SUPPORT_TICKETS: 'support_agent',
+    SETTINGS_ACCOUNT: 'manage_accounts',
+    SETTINGS_PASSWORD: 'lock',
+  };
+
+  private readonly entitlementTitleMap: Record<string, string> = {
+    RESUME_BUILDER: 'Resume Builder',
+    RESUME_PORTAL: 'Resume Portal',
+    JOB_TRACKING: 'Job Tracking',
+    JOB_PIPELINE: 'Job Pipeline',
+    JOB_ALERTS: 'Job Alerts',
+    LEARN_PORTAL: 'Learning Hub',
+    LEARN_SAVED: 'Saved Learning',
+    SUPPORT_TICKETS: 'Support Tickets',
+    SETTINGS_ACCOUNT: 'Account Settings',
+    SETTINGS_PASSWORD: 'Change Password',
+    DOCS_STORAGE: 'Documents Storage',
+    BILLING: 'Billing',
+  };
 
   showSwipeHint = true;
 
@@ -133,6 +155,7 @@ export class DashboardComponent implements OnInit {
   private readonly entitlementsState = toSignal(this.entitlements$, { initialValue: null });
   private readonly loadingState = toSignal(this.loading$, { initialValue: false });
   private readonly errorState = toSignal(this.error$, { initialValue: '' });
+  private readonly planSummaryState = signal<AccountPlanSummaryDTO | null>(null);
 
   readonly displayName$ = this.dashboard$.pipe(
     map((dashboard) => {
@@ -142,8 +165,17 @@ export class DashboardComponent implements OnInit {
   );
 
   readonly planLabel$ = this.entitlements$.pipe(
-    map((entitlements) => this.normalizePlanLabel(entitlements?.planCode)),
+    map((entitlements) => this.normalizePlanLabel(this.planSummaryState()?.planCode || entitlements?.planCode)),
   );
+
+  readonly currentPlanName = computed(() => {
+    const summary = this.planSummaryState();
+    return this.toText(summary?.planName) || this.normalizePlanLabel(summary?.planCode || this.entitlementsState()?.planCode);
+  });
+
+  readonly currentPlanCode = computed(() => {
+    return this.toText(this.planSummaryState()?.planCode) || this.toText(this.entitlementsState()?.planCode) || 'FREE';
+  });
 
   bioProfile: Signal<BioProfile> = this.userStore.getUserBioProfile();
   accessMe = this.accessFacade.accessMeSignal;
@@ -298,7 +330,7 @@ export class DashboardComponent implements OnInit {
   }
 
   get planLabel(): string {
-    return this.normalizePlanLabel(this.entitlementsState()?.planCode);
+    return this.normalizePlanLabel(this.currentPlanCode());
   }
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
@@ -330,18 +362,23 @@ export class DashboardComponent implements OnInit {
           return forkJoin({
             dashboard: this.userDashboardStore.loadDashboard(),
             entitlements: this.userDashboardStore.loadEntitlements(),
+            planSummary: this.accountPlanSummaryService.getCurrentPlanSummary().pipe(
+              catchError(() => of(null)),
+            ),
           });
         }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (payload) => {
+          this.planSummaryState.set(payload?.planSummary ?? null);
           const cardCount = payload?.dashboard?.statsCards?.length ?? 0;
           if (cardCount !== 0 && cardCount !== 6) {
             console.warn(`[Dashboard] Expected 6 statsCards but received ${cardCount}`);
           }
           console.debug('[Dashboard] stats response', payload?.dashboard);
           console.debug('[Dashboard] entitlements response', payload?.entitlements);
+          console.debug('[Dashboard] plan summary response', payload?.planSummary);
         },
         error: () => void 0,
       });
@@ -443,30 +480,33 @@ export class DashboardComponent implements OnInit {
   }
 
   includedFeatures(): FeatureItem[] {
-    return this.featureCatalog
-      .filter((feature) => this.hasEntitlement(feature.key))
-      .slice(0, 10)
-      .map((item) => ({ ...item, locked: false }));
+    const features = this.planSummaryState()?.features;
+
+    if (!Array.isArray(features) || !features.length) {
+      return [];
+    }
+
+    return features.slice(0, 10).map((feature) => this.toFeatureItem(feature));
   }
 
   lockedFeatures(): FeatureItem[] {
     const premiumCandidates: FeatureItem[] = [
       {
-        key: 'resume.export.pdf',
+        key: 'RESUME_EXPORT',
         title: 'PDF Resume Export',
         desc: 'Download polished resumes as PDF',
         icon: 'picture_as_pdf',
         locked: true,
       },
       {
-        key: 'templates.premium',
+        key: 'RESUME_TEMPLATES_PREMIUM',
         title: 'Premium Templates',
         desc: 'Access advanced resume templates',
         icon: 'style',
         locked: true,
       },
       {
-        key: 'job.alerts',
+        key: 'JOB_ALERTS',
         title: 'Advanced Job Alerts',
         desc: 'Get proactive alerts for matching roles',
         icon: 'notifications_active',
@@ -479,6 +519,19 @@ export class DashboardComponent implements OnInit {
 
   showUpgradeToUnlock(): boolean {
     return this.planLabel === 'FREE' || this.lockedFeatures().length > 0;
+  }
+
+  private toFeatureItem(feature: AccountPlanSummaryFeatureDTO): FeatureItem {
+    const entitlementKey = normalizeEntitlementKey(feature?.entitlementKey);
+    const titleOverride = this.entitlementTitleMap[entitlementKey];
+
+    return {
+      key: entitlementKey || this.toText(feature?.title),
+      title: this.toText(feature?.title) || titleOverride || entitlementKey || 'Feature',
+      desc: this.toText(feature?.description) || 'Included in your current plan.',
+      icon: this.entitlementIconMap[entitlementKey] || 'check_circle',
+      locked: false,
+    };
   }
 
   onUpgradeClick(): void {

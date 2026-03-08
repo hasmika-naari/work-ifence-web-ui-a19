@@ -3,9 +3,9 @@ import { auth, entitled, flags, installE2E, mergeOverrides } from '../auth-utils
 
 type Query = Record<string, string>;
 
-const ENT_JOB_TRACKING = 'job.tracking';
-const ENT_LEARN_PORTAL = 'learn.portal';
-const ENT_JOB_ANALYTICS = 'job.analytics';
+const ENT_JOB_TRACKING = 'JOB_TRACKING';
+const ENT_LEARN_PORTAL = 'LEARN_PORTAL';
+const ENT_JOB_ANALYTICS = 'JOB_ANALYTICS';
 
 const NAV_TIMEOUT_MS = 20_000;
 

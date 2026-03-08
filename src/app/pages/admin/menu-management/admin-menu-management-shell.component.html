@@ -64,7 +64,7 @@
                 <label>Section</label>
                 <select class="form-select" formControlName="sectionId">
                   <option value="">Select section</option>
-                  <option *ngFor="let section of masterMenuSections" [value]="section.sectionId">{{section.title}}</option>
+                    <option *ngFor="let section of masterMenuSections" [value]="section.id">{{section.title}}</option>
                 </select>
                 <div *ngIf="masterMenuForm.get('sectionId')?.invalid && masterMenuForm.get('sectionId')?.touched" class="text-danger">Section is required.</div>
               </div>

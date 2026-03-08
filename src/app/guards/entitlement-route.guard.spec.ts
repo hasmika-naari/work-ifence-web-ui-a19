@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { ENTITLEMENT_KEYS } from '../entitlements/entitlement-keys';
 import { entitlementRouteGuard } from './entitlement-route.guard';
 import { EntitlementService } from '../services/entitlement.service';
 import { environment } from '../../environments/environment';
@@ -56,12 +57,12 @@ describe('entitlementRouteGuard', () => {
     environment.production = false;
     entitlement.canAccess.and.returnValue(true);
 
-    const route = { data: { entitlementKey: 'feature.x' } } as any;
+    const route = { data: { entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING } } as any;
     const state = { url: '/feature-x' } as any;
 
     const result = TestBed.runInInjectionContext(() => entitlementRouteGuard(route, state));
 
-    expect(entitlement.canAccess).toHaveBeenCalledWith('feature.x', undefined);
+    expect(entitlement.canAccess).toHaveBeenCalledWith(ENTITLEMENT_KEYS.JOB_TRACKING, undefined);
     expect(result).toBeTrue();
   });
 
@@ -71,14 +72,14 @@ describe('entitlementRouteGuard', () => {
     const urlTree = {} as any;
     router.createUrlTree.and.returnValue(urlTree);
 
-    const route = { data: { entitlementKey: 'feature.x' } } as any;
+    const route = { data: { entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING } } as any;
     const state = { url: '/feature-x' } as any;
 
     const result = TestBed.runInInjectionContext(() => entitlementRouteGuard(route, state));
 
     expect(router.createUrlTree).toHaveBeenCalledWith(['/user/billing/upgrade'], {
       queryParams: {
-        feature: 'feature.x',
+        feature: ENTITLEMENT_KEYS.JOB_TRACKING,
         returnUrl: '/feature-x',
       },
     });

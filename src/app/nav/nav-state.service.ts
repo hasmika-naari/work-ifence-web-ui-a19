@@ -4,6 +4,7 @@ import { catchError } from 'rxjs/operators';
 import { EntitlementService } from '../services/entitlement.service';
 import { NavSection, NavItem, UserEntitlements } from './nav.model';
 import { RemoteConfigFacadeService } from '../facades/remote-config-facade.service';
+import { hasEntitlementKey, normalizeEntitlementKey } from '../entitlements/entitlement-key.util';
 import { environment } from '../../environments/environment';
 import { NavApiService } from './nav-api.service';
 
@@ -97,6 +98,7 @@ export class NavStateService {
     const route = item.route === '/authentication' ? '/sign-in' : item.route;
     return {
       ...item,
+      entitlementKey: normalizeEntitlementKey(item.entitlementKey) || undefined,
       route,
       children
     };
@@ -145,7 +147,7 @@ export class NavStateService {
     let entitled = true;
     let lockedReason = '';
     if (item.entitlementKey) {
-      entitled = !isProdFallback && ent.entitlements[item.entitlementKey] === true;
+      entitled = !isProdFallback && hasEntitlementKey(ent.entitlements, item.entitlementKey);
       if (!entitled) {
         lockedReason = isProdFallback ? 'Entitlements unavailable' : 'Upgrade to unlock';
       }

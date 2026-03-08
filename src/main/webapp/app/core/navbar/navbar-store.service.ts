@@ -9,6 +9,7 @@ import { ActiveProfileStore } from 'src/app/auth/active-profile.store';
 import { AccessContextService } from 'src/app/services/access-context.service';
 import { ProfileContextStorageService } from 'src/app/services/profile-context-storage.service';
 import { NavApiSection } from 'src/app/core/nav/nav-api.model';
+import { normalizeEntitlementKey } from 'src/app/entitlements/entitlement-key.util';
 
 export type NavbarRefreshReason = 'profile-switch' | 'manual';
 
@@ -102,7 +103,7 @@ export class NavbarStoreService {
         lockReason: item?.locked === true ? 'Locked feature' : undefined,
         readOnly: false,
         featureStatus: 'ACTIVE' as 'ACTIVE',
-        entitlementKey: (item?.entitlementKey ?? '').toString().trim() || undefined,
+        entitlementKey: normalizeEntitlementKey(item?.entitlementKey) || undefined,
         showWhenLocked: item?.showWhenLocked === true,
       })),
     }));

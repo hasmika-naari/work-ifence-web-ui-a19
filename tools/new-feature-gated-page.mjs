@@ -27,7 +27,7 @@ function usage() {
     'Prompts for:',
     '  - feature name (e.g., "Resume Export")',
     '  - route path (e.g., /user/resume-export)',
-    '  - entitlement key (ENTITLEMENT_KEYS member like RESUME_EXPORT, or raw key like resume.export)',
+    '  - entitlement key (ENTITLEMENT_KEYS member like RESUME_EXPORT, or canonical raw key like RESUME_EXPORT)',
     '  - feature flag key (optional) (FEATURE_FLAGS member like RESUME_PORTAL, or raw key like RESUME_PORTAL/ALERTS)',
     '  - min plan (optional) (FREE|PRO|PREMIUM|ENTERPRISE)',
     '',
@@ -184,7 +184,7 @@ async function main() {
     const featureName = await ask('Feature name (e.g., "Resume Export")', { required: true });
     const routePath = normalizeRoutePath(await ask('Route path (e.g., /user/resume-export)', { required: true }));
     const entitlementInput = await ask(
-      'Entitlement key (ENTITLEMENT_KEYS member like RESUME_EXPORT, or raw like resume.export)',
+      'Entitlement key (ENTITLEMENT_KEYS member like RESUME_EXPORT, or canonical raw like RESUME_EXPORT)',
       { required: true }
     );
     const flagInput = await ask(

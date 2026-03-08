@@ -526,6 +526,34 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
     }
   }
 
+  private getText(value: unknown): string {
+    return typeof value === 'string' ? value.trim() : '';
+  }
+
+  private addFilterOption(options: Array<Option>, rawValue: unknown): Array<Option> {
+    const value = this.getText(rawValue);
+    if (!value) {
+      return options;
+    }
+
+    const exists = options.some(option => option.name === value);
+    return exists ? options : [...options, { name: value, code: '' }];
+  }
+
+  private syncCategoriesForResume(item: ResumeListDataItem): void {
+    this.roleCategories = this.addFilterOption(this.roleCategories, item.roleCategory);
+    this.resumeCategories = this.addFilterOption(this.resumeCategories, item.resumeCategory);
+  }
+
+  private buildResumePdfUrl(documentUrl: unknown): string | null {
+    const normalizedDocumentUrl = this.getText(documentUrl);
+    if (!normalizedDocumentUrl) {
+      return null;
+    }
+
+    return `https://workifence.s3.us-east-1.amazonaws.com/${normalizedDocumentUrl}`;
+  }
+
   getResumeData(){
     if(this.resumeList().length == 0 && this.loginStatus()){
       this.isActionInProgress = true;
@@ -534,7 +562,8 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
             console.log(data);
             if(data.length>0){
               data.map(async (e : ResumeListDataItem)=>{
-          await this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
+          const pdfUrl = this.buildResumePdfUrl(e.documentUrl);
+          await this.pdfToImageService.convertPdfToImageBytesThroughUrl(pdfUrl ?? '').then((bytes)=>{
               e.imageBytes = bytes;
               let resume : Resume = JSON.parse(e.resumeJson);
               if(!resume?.sections && !resume?.multipleSections){
@@ -555,15 +584,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
               
               e.resumeJson = JSON.stringify(resume)
               this.resumes = [...this.resumes, e]
-              let roleExists = this.roleCategories.some(role => role.name.includes(e.roleCategory));
-              if (!roleExists && e.roleCategory?.length > 0) {
-                this.roleCategories = [...this.roleCategories , { name: e.roleCategory, code: '' }];
-              }
-
-              let resumeCategoryExists = this.resumeCategories.some(category => category.name.includes(e.resumeCategory));
-              if (!resumeCategoryExists && e.resumeCategory?.length > 0) {
-                this.resumeCategories = [...this.resumeCategories , { name: e.resumeCategory, code: '' }];
-              }
+              this.syncCategoriesForResume(e);
           },
          (error : any)=>{
           if(error.status == 403){
@@ -592,15 +613,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
         }
       else{
         this.resumeList().map((e)=>{
-          let roleExists = this.roleCategories.some(role => role.name.includes(e.roleCategory));
-              if (!roleExists && e.roleCategory.length > 0) {
-                this.roleCategories = [...this.roleCategories , { name: e.roleCategory, code: '' }];
-              }
-
-              let resumeCategoryExists = this.resumeCategories.some(category => category.name.includes(e.resumeCategory));
-              if (!resumeCategoryExists && e.resumeCategory.length > 0) {
-                this.resumeCategories = [...this.resumeCategories , { name: e.resumeCategory, code: '' }];
-              }
+          this.syncCategoriesForResume(e);
         })
         this.isActionInProgress = false;
       }      
@@ -650,15 +663,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
 
   setFilterValues(){
     this.resumeList().map((e)=>{
-      let roleExists = this.roleCategories.some(role => role.name.includes(e.roleCategory));
-          if (!roleExists && e.roleCategory.length > 0) {
-            this.roleCategories = [...this.roleCategories , { name: e.roleCategory, code: '' }];
-          }
-
-          let resumeCategoryExists = this.resumeCategories.some(category => category.name.includes(e.resumeCategory));
-          if (!resumeCategoryExists && e.resumeCategory.length > 0) {
-            this.resumeCategories = [...this.resumeCategories , { name: e.resumeCategory, code: '' }];
-          }
+      this.syncCategoriesForResume(e);
     })
   }
 
