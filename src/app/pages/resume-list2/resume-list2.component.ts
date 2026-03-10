@@ -63,6 +63,8 @@ import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 })
 export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
 
+    private readonly resumeAssetBaseUrl = 'https://workifence.s3.us-east-1.amazonaws.com';
+
 
  
     private userStore: UserStoreService = inject(UserStoreService);
@@ -120,8 +122,8 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
         }
     },
     {
-      label: 'Download',
-      routerLink: '',
+            label: 'Download',
+            routerLink: '',
 
       icon: 'pi pi-download',
       command: () => {
@@ -141,6 +143,7 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
 
     subs: Array<Subscription> = [];
     imageSrc: string | null = null;
+    private failedResumeImageKeys = new Set<string>();
 
     constructor(
         private resumeService: ResumeService,
@@ -196,10 +199,37 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
     //     });
     //   }
 
-      getImagePath(item : ResumeListDataItem){
-        var resume = JSON.parse(item.resumeJson)
-        return resume.template_details.imgPath;
-      }
+        private getResumeImageKey(resume: ResumeListDataItem): string {
+            return resume.id || resume.code || resume.fileName || resume.title;
+        }
+
+        getResumeImageUrl(resume: ResumeListDataItem): string {
+            const imageUrl = Array.isArray(resume.imageBytes) ? resume.imageBytes[0] : '';
+                    return typeof imageUrl === 'string' ? imageUrl.trim() : '';
+        }
+
+        shouldShowResumeImage(resume: ResumeListDataItem): boolean {
+            const imageUrl = this.getResumeImageUrl(resume);
+            return imageUrl.length > 0 && !this.failedResumeImageKeys.has(this.getResumeImageKey(resume));
+        }
+
+        handleResumeImageError(resume: ResumeListDataItem): void {
+            this.failedResumeImageKeys.add(this.getResumeImageKey(resume));
+        }
+
+        getResumeImageFallbackText(resume: ResumeListDataItem): string {
+            const imageUrl = resume.documentUrl || resume.fileName;
+
+            if (!imageUrl) {
+                return 'Preview unavailable';
+            }
+
+            if (imageUrl.length <= 180) {
+                return imageUrl;
+            }
+
+            return `${imageUrl.slice(0, 177)}...`;
+        }
 
         getResumeCategoryClassSuffix(category: unknown): string {
                 const normalizedCategory = typeof category === 'string' ? category.trim().toLowerCase() : '';
@@ -296,6 +326,115 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
             }
     
 
+    private downloadBlobFile(blob: Blob, fileName: string) {
+        const dataUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = dataUrl;
+        link.download = fileName;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(dataUrl);
+    }
+
+    private downloadFileFromUrl(fileUrl: string, fileName: string) {
+        const link = document.createElement('a');
+
+        link.href = fileUrl;
+        link.download = fileName;
+        link.rel = 'noopener';
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    private getResumeDocumentDownloadUrl(item: ResumeListDataItem): string | null {
+        const documentUrl = (item.documentUrl || '').trim();
+
+        if (!documentUrl) {
+            return null;
+        }
+
+        if (/^https?:\/\//i.test(documentUrl)) {
+            return documentUrl;
+        }
+
+        return `${this.resumeAssetBaseUrl}/${documentUrl.replace(/^\/+/, '')}`;
+    }
+
+    private getFileExtension(fileName: string | null | undefined): string {
+        const normalizedFileName = (fileName || '').trim();
+        const extensionIndex = normalizedFileName.lastIndexOf('.');
+
+        if (extensionIndex === -1) {
+            return '';
+        }
+
+        return normalizedFileName.substring(extensionIndex + 1).toLowerCase();
+    }
+
+    private getDocumentFileName(item: ResumeListDataItem): string {
+        const documentUrl = (item.documentUrl || '').trim();
+        const documentFileName = documentUrl.split('/').filter(Boolean).pop();
+
+        return documentFileName || item.fileName;
+    }
+
+    downloadResumePdf(item: ResumeListDataItem) {
+        this.childEvent.emit(true);
+        this.subs.push(this.resumeService.dowloadResumePDF(item.userName , item.fileName).subscribe({
+            next: (res : any) => {
+                const blob = new Blob([res], { type: 'application/pdf' });
+                this.downloadBlobFile(blob, item.fileName);
+                this.childEvent.emit(false);
+            },
+            error: () => {
+                this.childEvent.emit(false);
+            }
+        }));
+    }
+
+    downloadResumeDoc(item: ResumeListDataItem) {
+        this.childEvent.emit(true);
+        // Copy logic from downloadResumePdf, but change Accept and type to docx
+        // Try docx first, fallback to doc if needed
+        let fileName = item.fileName;
+        if (!fileName) {
+            this.childEvent.emit(false);
+            alert('No file name found for DOC download.');
+            return;
+        }
+        // Change extension to .docx
+        fileName = fileName.replace(/\.[^.]+$/, '') + '.docx';
+        this.subs.push(this.resumeService.dowloadResumeDOC(item.userName, fileName).subscribe({
+            next: (res: any) => {
+                const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                this.downloadBlobFile(blob, fileName);
+                this.childEvent.emit(false);
+            },
+            error: () => {
+                // Try .doc fallback
+                const fallbackFileName = fileName.replace(/\.docx$/, '.doc');
+                this.resumeService.dowloadResumeDOC(item.userName, fallbackFileName).subscribe({
+                    next: (res: any) => {
+                        const blob = new Blob([res], { type: 'application/msword' });
+                        this.downloadBlobFile(blob, fallbackFileName);
+                        this.childEvent.emit(false);
+                    },
+                    error: () => {
+                        this.childEvent.emit(false);
+                        alert('DOC download is not available for this resume.');
+                    }
+                });
+            }
+        }));
+    }
+
+
 
     menuActionHandler($event: any, item: ResumeListDataItem, option: any){
         console.log(item);
@@ -347,33 +486,6 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
                 this.childEvent.emit(false);
               }));
 
-        }else if(option.label === 'Download'){
-            this.childEvent.emit(true);
-            this.subs.push(this.resumeService.dowloadResumePDF(item.userName , item.fileName).subscribe((res : any)=>{
-                var blob = new Blob([res], { type: 'application/pdf' });
-
-                // Create a data URL from the Blob
-                var dataUrl = URL.createObjectURL(blob);
-
-                // Create a link element
-                var link = document.createElement('a');
-
-                // Set the href attribute with the data URL
-                link.href = dataUrl;
-
-                // Set the download attribute with the desired file name
-                link.download = this.selectedResumeListItem().fileName;
-
-                // Append the link to the document
-                document.body.appendChild(link);
-
-                // Trigger a click event on the link to initiate the download
-                link.click();
-
-                // Remove the link from the document
-                document.body.removeChild(link);
-            }))
-            this.childEvent.emit(false);
         }else if(option.label === 'Delete'){
             this.confirmDeleteDialog(item);
            

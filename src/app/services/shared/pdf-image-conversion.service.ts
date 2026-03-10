@@ -8,12 +8,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = '../../assets/js/pdf.worker.min.mjs';
   providedIn: 'root',
 })
 export class PdfToImageService {
-async convertPdfToImageBytes(pdfFile: File): Promise<string[]> {
-  try {
-    const pdfData = await pdfFile.arrayBuffer();
+  private async renderPdfToImageBytes(pdfData: ArrayBuffer): Promise<string[]> {
     const pdf: PDFDocumentProxy = await getDocument({ data: pdfData }).promise;
-
     const imageBytes: string[] = [];
+
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const canvas = document.createElement('canvas');
@@ -24,53 +22,48 @@ async convertPdfToImageBytes(pdfFile: File): Promise<string[]> {
       canvas.height = viewport.height;
 
       await page.render({ canvasContext: context, viewport }).promise;
-
-      const imageData = canvas.toDataURL('image/png');
-      imageBytes.push(imageData);
+      imageBytes.push(canvas.toDataURL('image/png'));
     }
 
     return imageBytes;
-  } catch (error) {
-    console.error('Error converting PDF to image bytes:', error);
-    return [];
-  }
-}
-
-
-async convertPdfToImageBytesThroughUrl(url: string): Promise<string[]> {
-  const normalizedUrl = (url ?? '').trim();
-  if (!normalizedUrl || normalizedUrl.endsWith('/undefined') || normalizedUrl.endsWith('/null')) {
-    return [];
   }
 
-  try {
-    const pdf: PDFDocumentProxy = await getDocument({ url: normalizedUrl }).promise;
+  async convertPdfArrayBufferToImageBytes(pdfData: ArrayBuffer): Promise<string[]> {
+    try {
+      return await this.renderPdfToImageBytes(pdfData);
+    } catch (error) {
+      console.error('Error converting PDF array buffer to image bytes:', error);
+      return [];
+    }
+  }
 
-    const imageBytes: string[] = [];
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  async convertPdfToImageBytes(pdfFile: File): Promise<string[]> {
+    try {
+      return await this.renderPdfToImageBytes(await pdfFile.arrayBuffer());
+    } catch (error) {
+      console.error('Error converting PDF to image bytes:', error);
+      return [];
+    }
+  }
 
-      const viewport = page.getViewport({ scale: 2 });
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await page.render({ canvasContext: context, viewport }).promise;
-
-      const imageData = canvas.toDataURL('image/png');
-      imageBytes.push(imageData);
+  async convertPdfToImageBytesThroughUrl(url: string): Promise<string[]> {
+    const normalizedUrl = (url ?? '').trim();
+    if (!normalizedUrl || normalizedUrl.endsWith('/undefined') || normalizedUrl.endsWith('/null')) {
+      return [];
     }
 
-    return imageBytes;
-  } catch (error: any) {
-    console.error('Failed to load PDF from URL:', error);
-    // Optional: handle specific status codes like 403
-    if (error?.message?.includes('403') || error?.status === 403) {
-      // alert('Access denied to PDF (403 Forbidden). Make sure the URL is public or signed.');
+    try {
+      const response = await fetch(normalizedUrl, { method: 'GET' });
+      if (!response.ok) {
+        console.error('Failed to fetch PDF for preview:', normalizedUrl, response.status, response.statusText);
+        return [];
+      }
+
+      return await this.renderPdfToImageBytes(await response.arrayBuffer());
+    } catch (error: any) {
+      console.error('Failed to load PDF from URL:', normalizedUrl, error);
+      return [];
     }
-    return [];
   }
-}
 
 }

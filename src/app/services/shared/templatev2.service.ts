@@ -7,6 +7,53 @@ import { SectionDesc } from '../store/user-store';
 })
 export class Templatesv2Service {
 
+    private getSection(resume: Resume, sectionName: string): any {
+      return resume.sections?.find((section: any) => section.section === sectionName);
+    }
+
+    private getSectionData<T>(resume: Resume, sectionName: string): T | undefined {
+      const section = this.getSection(resume, sectionName);
+      return section?.items?.[0]?.data ?? section?.data;
+    }
+
+    private getSectionList<T>(resume: Resume, sectionName: string): T[] {
+      const section = this.getSection(resume, sectionName);
+      if (!section) {
+        return [];
+      }
+
+      if (Array.isArray(section.items) && section.items.length > 0) {
+        return section.items
+          .map((item: any) => item?.data ?? item)
+          .filter((item: any) => item != null);
+      }
+
+      if (Array.isArray(section.data)) {
+        return section.data.filter((item: any) => item != null);
+      }
+
+      return [];
+    }
+
+    private getDisplayText(item: any, keys: string[]): string {
+      if (typeof item === 'string') {
+        return item.trim();
+      }
+
+      if (!item || typeof item !== 'object') {
+        return '';
+      }
+
+      for (const key of keys) {
+        const value = item[key];
+        if (typeof value === 'string' && value.trim().length > 0) {
+          return value.trim();
+        }
+      }
+
+      return '';
+    }
+
     public getFormatedResumeHTMLText(templateName: string, resume: Resume): string {
       // For now, always use the modern sections formatter
       return this.getFormattedSectionsForModern(resume);
@@ -31,8 +78,7 @@ export class Templatesv2Service {
 
         switch (e.section) {
           case 'PROFILE_SUMMARY': {
-            const summarySection = resume.sections?.find(s => s.section === 'PROFILE_SUMMARY');
-            const summary = summarySection?.items?.[0]?.data?.profile_summary ?? '';
+            const summary = this.getSectionData<any>(resume, 'PROFILE_SUMMARY')?.profile_summary ?? '';
             return summary.length > 0
               ? `
                 <div class="section">
@@ -47,8 +93,7 @@ export class Templatesv2Service {
           }
 
           case 'EDUCATION': {
-            const eduSection = resume.sections?.find(s => s.section === 'EDUCATION');
-            const items = eduSection?.items?.map(i => i.data) ?? [];
+            const items = this.getSectionList<Education>(resume, 'EDUCATION');
             return items.length > 0
               ? `
                 <div class="section education">
@@ -59,8 +104,7 @@ export class Templatesv2Service {
       }
 
       case 'RELEVANT_COURSEWORK': {
-        const cwSection = resume.sections?.find(s => s.section === 'RELEVANT_COURSEWORK');
-        const items = cwSection?.items?.map(i => i.data) ?? [];
+        const items = this.getSectionList<courseWork>(resume, 'RELEVANT_COURSEWORK');
         return items.length > 0
           ? `
             <div class="section">
@@ -75,8 +119,7 @@ export class Templatesv2Service {
       }
 
       case 'SKILLS_BULLET_POINTS': {
-        const skillSection = resume.sections?.find(s => s.section === 'SKILLS_BULLET_POINTS');
-        const items = skillSection?.items?.map(i => i.data) ?? [];
+        const items = this.getSectionList<any>(resume, 'SKILLS_BULLET_POINTS');
         return items.length > 0
           ? `
             <div class="section">
@@ -107,8 +150,7 @@ export class Templatesv2Service {
           : '';
 
       case 'WORK_EXPERIENCE': {
-        const expSection = resume.sections?.find(s => s.section === 'WORK_EXPERIENCE');
-        const items = expSection?.items?.map(i => i.data) ?? [];
+        const items = this.getSectionList<Experience>(resume, 'WORK_EXPERIENCE');
         return items.length > 0
           ? `
             <div class="section experince trigger-area">
@@ -119,8 +161,7 @@ export class Templatesv2Service {
       }
 
       case 'PROJECT': {
-        const projSection = resume.sections?.find(s => s.section === 'PROJECT');
-        const items = projSection?.items?.map(i => i.data) ?? [];
+        const items = this.getSectionList<Project>(resume, 'PROJECT');
         return items.length > 0
           ? `
             <div class="section experince trigger-area">
@@ -131,8 +172,7 @@ export class Templatesv2Service {
       }
 
       case 'CERTIFICATIONS': {
-        const certSection = resume.sections?.find(s => s.section === 'CERTIFICATIONS');
-        const items = certSection?.items?.map(i => i.data) ?? [];
+        const items = this.getSectionList<Certification>(resume, 'CERTIFICATIONS');
         return items.length > 0
           ? `
             <div class="section experince trigger-area">
@@ -143,8 +183,7 @@ export class Templatesv2Service {
       }
 
       case 'ACHIEVEMENTS_BULLET_POINTS': {
-        const achSection = resume.sections?.find(s => s.section === 'ACHIEVEMENTS_BULLET_POINTS');
-        const achItem = achSection?.items?.[0]?.data;
+        const achItem = this.getSectionData<any>(resume, 'ACHIEVEMENTS_BULLET_POINTS');
         return achItem?.ach?.length > 0
           ? `
             <div class="section experince trigger-area">
@@ -157,8 +196,7 @@ export class Templatesv2Service {
       }
 
       case 'CERTIFICATIONS_BULLET_POINTS': {
-        const certBPSection = resume.sections?.find(s => s.section === 'CERTIFICATIONS_BULLET_POINTS');
-        const certBPItem = certBPSection?.items?.[0]?.data;
+        const certBPItem = this.getSectionData<any>(resume, 'CERTIFICATIONS_BULLET_POINTS');
         return certBPItem?.point?.length > 0
           ? `
             <div class="section experince trigger-area">
@@ -171,8 +209,7 @@ export class Templatesv2Service {
       }
 
       case 'ACHIEVEMENT_WITH_DESC': {
-        const accSection = resume.sections?.find(s => s.section === 'ACHIEVEMENT_WITH_DESC');
-        const items = accSection?.items?.map(i => i.data) ?? [];
+        const items = this.getSectionList<Accomplishment>(resume, 'ACHIEVEMENT_WITH_DESC');
         return items.length > 0
           ? `
             <div class="section education">
@@ -290,18 +327,21 @@ export class Templatesv2Service {
         `).join('');
     }
 
-        public getSkillsWithBulletPointsSectionForModern(items : Skill[]) : string{
-        return items.map((item : Skill, index: number)=> 
-        `
-        ${items.length > 0 ?
-            `
-                  <li class="custom-li">
-                  <span style="font-size:12px;">${ item.name || item }</span>
-                  ${index !== items.length - 1 ? `<span class="bullet">•</span>` : ''}
-                  </li>
-        ` : ''
+        public getSkillsWithBulletPointsSectionForModern(items : Array<Skill | string | any>) : string{
+        return items.map((item : Skill | string | any, index: number) => {
+        const label = this.getDisplayText(item, ['name', 'skill', 'title', 'value']);
+        if (!label.length) {
+          return '';
         }
-        `).join('');
+
+        const bullet = index !== items.length - 1 ? '<span class="bullet">&bull;</span>' : '';
+        return `
+              <li class="custom-li">
+              <span style="font-size:12px;">${ label }</span>
+              ${bullet}
+              </li>
+        `;
+        }).join('');
     }
 
         public getCourseWorkWithBulletPointsSectionForModern(items : courseWork[]) : string{
@@ -331,9 +371,10 @@ export class Templatesv2Service {
   }
 
   public getSkillsWithBulletPointsSectionForMonoPro(items: Skill[]): string {
-    return items.map((item: Skill) =>
-      `<li class="course-work-lisit-item" style="margin:0;padding:0;">${item.name || item}</li>`
-    ).join('');
+    return items.map((item: Skill | string | any) => {
+      const label = this.getDisplayText(item, ['name', 'skill', 'title', 'value']);
+      return label ? `<li class="course-work-lisit-item" style="margin:0;padding:0;">${label}</li>` : '';
+    }).join('');
   }
 
   public getSkillsCategorySectionForMonoPro(items: SkillV2[]): string {

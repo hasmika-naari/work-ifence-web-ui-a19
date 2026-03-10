@@ -872,7 +872,7 @@
       <ul class="course-work-list">
         @for (item of getSectionItems('SKILLS_CATEGORY'); track item; let i = $index) {
           <li class="custom-li">
-            <span>{{ item.name || item }}</span>
+            <span>{{ item.name || item.skill || item.title || item }}</span>
             @if ( i != (getSectionItems('SKILLS_CATEGORY').length-1)) {
               <span class="bullet">•</span>
             }

@@ -2784,7 +2784,7 @@ public formatHTMLTemplate9Education(items : Education[]) : string{
 public formatDefaultSKillWork(items: Skill[] | string[] = []): string {
     const list = (items ?? []);
     return list.map((s: any) => {
-        const name = typeof s === 'string' ? s : s?.name ?? '';
+    const name = typeof s === 'string' ? s : s?.name ?? s?.skill ?? s?.title ?? s?.value ?? '';
         return name ? `<li class="course-work-lisit-item" style="margin:0;padding:0;">${name}</li>` : '';
     }).join('');
 }

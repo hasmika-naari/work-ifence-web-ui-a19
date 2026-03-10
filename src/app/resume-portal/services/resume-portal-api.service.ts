@@ -1,14 +1,21 @@
 import { Injectable, inject } from '@angular/core';
-import { WorkIfenceDataService } from 'src/app/services/work-ifence-data.service';
+import { firstValueFrom } from 'rxjs';
+import { ResumeService } from 'src/app/services/resume.service';
+import { UserStoreService } from 'src/app/services/store/user-store.service';
 import { ResumeListDataItem } from 'src/app/services/work-ifence-data.model';
 
 @Injectable({ providedIn: 'root' })
 export class ResumePortalApiService {
-  private dataService = inject(WorkIfenceDataService);
+  private resumeService = inject(ResumeService);
+  private userStore = inject(UserStoreService);
 
   async getMyResumes(): Promise<ResumeListDataItem[]> {
-    // Current app already has resume fetching logic elsewhere; for the portal we use
-    // the existing demo-backed method as a safe fallback.
-    return await this.dataService.getResumesByUserName();
+    const ownerId = (this.userStore.state().account?.id ?? '').toString().trim();
+
+    if (!this.userStore.state().isUserLoggedIn || !ownerId) {
+      return [];
+    }
+
+    return await firstValueFrom(this.resumeService.getResumeListByOwnerId(ownerId));
   }
 }

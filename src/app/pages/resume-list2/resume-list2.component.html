@@ -39,7 +39,20 @@
             <div  class="col-6">
               <div class="courses-image">
                 <span  class="d-block template-image cubic-image-container">
-                  <img style="max-width:100%;margin-top:10px;" class="cubic-image" [src]="resume.imageBytes[0]" alt="image">
+                  @if (shouldShowResumeImage(resume)) {
+                    <img
+                      style="max-width:100%;margin-top:10px;"
+                      class="cubic-image"
+                      [src]="getResumeImageUrl(resume)"
+                      [alt]="resume.title || 'Resume image'"
+                      (error)="handleResumeImageError(resume)">
+                  }
+                  @else {
+                    <div class="resume-image-fallback" [title]="getResumeImageFallbackText(resume)">
+                      <span class="resume-image-fallback__label">Image URL</span>
+                      <span class="resume-image-fallback__value">{{ getResumeImageFallbackText(resume) }}</span>
+                    </div>
+                  }
                 </span>
               </div>
             </div>
@@ -113,11 +126,29 @@
     <div class="resume-content3 custom-menu-scope">
       <p-menu [model]="menuOptions">
         <ng-template pTemplate="item" let-item>
-          <a class="p-menuitem-link resume-menu-option"
-            (click)="menuActionHandler($event, resume, item)">
-            <span class="p-menuitem-icon pi" [ngClass]="item.icon"></span>
-            <span class="p-menuitem-text"> {{ item.label }}</span>
-          </a>
+          @if (item.label === 'Download') {
+            <div style="display: flex; gap: 18px; align-items: center;">
+              <a class="p-menuitem-link resume-menu-option"
+                href="#"
+                (click)="$event.preventDefault(); $event.stopPropagation(); downloadResumePdf(resume)">
+                <span class="p-menuitem-icon pi pi-download"></span>
+                <span class="p-menuitem-text">PDF</span>
+              </a>
+              <a class="p-menuitem-link resume-menu-option"
+                href="#"
+                (click)="$event.preventDefault(); $event.stopPropagation(); downloadResumeDoc(resume)">
+                <span class="p-menuitem-icon pi pi-download"></span>
+                <span class="p-menuitem-text">DOC</span>
+              </a>
+            </div>
+          }
+          @else {
+            <a class="p-menuitem-link resume-menu-option"
+              (click)="menuActionHandler($event, resume, item)">
+              <span class="p-menuitem-icon pi" [ngClass]="item.icon"></span>
+              <span class="p-menuitem-text"> {{ item.label }}</span>
+            </a>
+          }
         </ng-template>
       </p-menu>
     </div>

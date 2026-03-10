@@ -16,7 +16,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -56,6 +56,7 @@ import { SectionDesc } from 'src/app/services/store/user-store';
 import { ImportExistingResumeComponent } from '../import-existing-resume/import-existing-resume.component';
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
 import { FooterWorkifenceComponent } from '../landing/footer-wifence/footer-wifence.component';
+import { ResumePortalApiService } from 'src/app/resume-portal/services/resume-portal-api.service';
 
 interface Option {
   name : string;
@@ -390,6 +391,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
     }
   ]
 
+  private resumePortalApi: ResumePortalApiService = inject(ResumePortalApiService);
   private resumeService: ResumeService = inject(ResumeService);
   private pdfToImageService: PdfToImageService = inject(PdfToImageService);
   private userStore: UserStoreService = inject(UserStoreService);
@@ -554,69 +556,75 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
     return `https://workifence.s3.us-east-1.amazonaws.com/${normalizedDocumentUrl}`;
   }
 
-  getResumeData(){
+  async getResumeData(){
     if(this.resumeList().length == 0 && this.loginStatus()){
       this.isActionInProgress = true;
-      this.subs.push(this.resumeService.getResumeListByOwnerId(
-          this.userAccount().id).subscribe((data: ResumeListDataItem[])=> {
-            console.log(data);
-            if(data.length>0){
-              data.map(async (e : ResumeListDataItem)=>{
-          const pdfUrl = this.buildResumePdfUrl(e.documentUrl);
-          await this.pdfToImageService.convertPdfToImageBytesThroughUrl(pdfUrl ?? '').then((bytes)=>{
-              e.imageBytes = bytes;
-              let resume : Resume = JSON.parse(e.resumeJson);
-              if(!resume?.sections && !resume?.multipleSections){
-                if(resume.template_details.template_name == 'TEMPLATE_1'){
-                  // resume.sections= this.template1_sections
-                  // resume.multipleSections = []
-                }
-                else if(resume.template_details.template_name == 'TEMPLATE_9'){
-                  // resume.multipleSections = [[...this.template9right_sections], [...this.template9left_sections]]
-                  // resume.sections = []
-                }
-                else if(resume.template_details.template_name == 'TEMPLATE_10'){
-                  // resume.sections= this.template10_sections
-                  // resume.multipleSections = []
-                }
-              }
-              console.log(resume);
-              
-              e.resumeJson = JSON.stringify(resume)
-              this.resumes = [...this.resumes, e]
-              this.syncCategoriesForResume(e);
-          },
-         (error : any)=>{
-          if(error.status == 403){
-            console.log("PDF Fetching Error");
-          }
-          this.isActionInProgress = false
-         })
+
+      try {
+        const data = await this.resumePortalApi.getMyResumes();
+        console.log(data);
+
+        if (data.length > 0) {
+          this.resumes = await Promise.all(data.map(item => this.hydrateResumeListItem(item)));
+          this.resumes.forEach(item => this.syncCategoriesForResume(item));
           this.userStore.setResumeDataListItems(this.resumes);
           this.userStore.setFilteredResumes([...this.resumes]);
-          this.isActionInProgress = false;
-          })
-            }
-          else{
-            this.isActionInProgress = false;
-          }
-          
-          
-          }
-        , (error : any)=>{
-             if(error.status == 500){
-            console.log("Internal Server Error");
-          }
-          this.isActionInProgress = false
-          })
-        );
         }
-      else{
-        this.resumeList().map((e)=>{
-          this.syncCategoriesForResume(e);
-        })
+      } catch (error: any) {
+        if(error?.status == 500){
+          console.log("Internal Server Error");
+        }
+      } finally {
         this.isActionInProgress = false;
-      }      
+      }
+    }
+    else{
+      this.resumeList().map((e)=>{
+        this.syncCategoriesForResume(e);
+      })
+      this.isActionInProgress = false;
+    }
+  }
+
+  private async hydrateResumeListItem(item: ResumeListDataItem): Promise<ResumeListDataItem> {
+    const hydratedItem = { ...item };
+    const pdfUrl = this.buildResumePdfUrl(hydratedItem.documentUrl);
+
+    try {
+      hydratedItem.imageBytes = await this.pdfToImageService.convertPdfToImageBytesThroughUrl(pdfUrl ?? '');
+
+      if ((hydratedItem.imageBytes?.length ?? 0) === 0 && hydratedItem.userName && hydratedItem.fileName) {
+        const pdfBytes = await firstValueFrom(
+          this.resumeService.dowloadResumePDF(hydratedItem.userName, hydratedItem.fileName)
+        );
+        hydratedItem.imageBytes = await this.pdfToImageService.convertPdfArrayBufferToImageBytes(pdfBytes as ArrayBuffer);
+      }
+    } catch (error: any) {
+      if (error?.status == 403) {
+        console.log("PDF Fetching Error");
+      }
+      hydratedItem.imageBytes = Array.isArray(hydratedItem.imageBytes) ? hydratedItem.imageBytes : [];
+    }
+
+    let resume: Resume = JSON.parse(hydratedItem.resumeJson);
+    if(!resume?.sections && !resume?.multipleSections){
+      if(resume.template_details.template_name == 'TEMPLATE_1'){
+        // resume.sections= this.template1_sections
+        // resume.multipleSections = []
+      }
+      else if(resume.template_details.template_name == 'TEMPLATE_9'){
+        // resume.multipleSections = [[...this.template9right_sections], [...this.template9left_sections]]
+        // resume.sections = []
+      }
+      else if(resume.template_details.template_name == 'TEMPLATE_10'){
+        // resume.sections= this.template10_sections
+        // resume.multipleSections = []
+      }
+    }
+
+    console.log(resume);
+    hydratedItem.resumeJson = JSON.stringify(resume);
+    return hydratedItem;
   }
 
   ngAfterViewInit(): void {

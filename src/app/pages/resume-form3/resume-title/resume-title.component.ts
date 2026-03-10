@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, Signal, ViewChild, effect, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
@@ -949,9 +949,15 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
 
   resumeTitleForm = this._formBuilder.group({
     title: ['', [Validators.required, Validators.maxLength(64)]],
-    category: ['', [Validators.required, this.categoryValidator()]],
+    category: new FormControl<string | ResumeCategory>('', {
+      validators: [Validators.required, this.categoryValidator()],
+      nonNullable: true,
+    }),
     access : ['', Validators.required],
-    roleLevel : ['', [Validators.required, this.roleValidator()]],
+    roleLevel : new FormControl<string | ResumeRoleLevel>('', {
+      validators: [Validators.required, this.roleValidator()],
+      nonNullable: true,
+    }),
     isPrimary: [false],
     isActive: [false],
     visibleToPublic: [false]
@@ -1066,10 +1072,38 @@ export class ResumeTitleComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
+  private findCategoryOption(value: unknown): ResumeCategory | string {
+    const normalized = typeof value === 'string'
+      ? value.trim().toLowerCase()
+      : value && typeof value === 'object' && 'sub_category' in value
+        ? String((value as ResumeCategory).sub_category).trim().toLowerCase()
+        : '';
+
+    if (!normalized) {
+      return '';
+    }
+
+    return this.categories.find(category => category.sub_category.trim().toLowerCase() === normalized) ?? String(value);
+  }
+
+  private findRoleOption(value: unknown): ResumeRoleLevel | string {
+    const normalized = typeof value === 'string'
+      ? value.trim().toLowerCase()
+      : value && typeof value === 'object' && 'role_level_desc' in value
+        ? String((value as ResumeRoleLevel).role_level_desc).trim().toLowerCase()
+        : '';
+
+    if (!normalized) {
+      return '';
+    }
+
+    return this.roleCategories.find(role => role.role_level_desc.trim().toLowerCase() === normalized) ?? String(value);
+  }
+
   setContactValues(){
     this.resumeTitleForm.controls['title'].setValue(this.resumeSignalForm().title);
-    this.resumeTitleForm.controls['category'].setValue(this.resumeSignalForm().resume_category);
-    this.resumeTitleForm.controls['roleLevel'].setValue(this.resumeSignalForm().role_category);
+    this.resumeTitleForm.controls['category'].setValue(this.findCategoryOption(this.resumeSignalForm().resume_category));
+    this.resumeTitleForm.controls['roleLevel'].setValue(this.findRoleOption(this.resumeSignalForm().role_category));
     this.resumeTitleForm.controls['access'].setValue(this.resumeSignalForm().access_level);
     this.resumeTitleForm.controls['isPrimary'].setValue(this.resumeSignalForm().isPrimary);
     this.resumeTitleForm.controls['isActive'].setValue(this.resumeSignalForm().isActive);

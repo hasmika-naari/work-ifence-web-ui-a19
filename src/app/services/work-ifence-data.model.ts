@@ -60,7 +60,7 @@ export class ApplicationListDataItem {
     constructor() {
         this.documentUrl= ""
         this.fileName=""
-        this.imageBytes = "assets/img/resume-avatar3.png"
+      this.imageBytes = []
     }
 }
 
