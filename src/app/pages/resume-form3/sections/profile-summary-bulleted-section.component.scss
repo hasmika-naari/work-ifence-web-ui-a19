@@ -11,7 +11,7 @@
   overflow-wrap: break-word;
   word-break: break-word;
 }
-.summary-bullets {
+.summary-bullets, .summary-bullets-html ul {
   margin: 0 0 0 1.25rem;
   padding: 0;
   list-style: disc inside;
@@ -21,7 +21,7 @@
   overflow-wrap: break-word;
   word-break: break-word;
 }
-.summary-bullets li {
+.summary-bullets li, .summary-bullets-html li {
   margin-bottom: 0.25rem;
   line-height: 1.4;
   text-align: left;
@@ -29,8 +29,17 @@
   overflow-wrap: break-word;
   word-break: break-word;
 }
+.summary-bullets-html p {
+  margin-bottom: 0.5rem;
+}
 .empty-bullets {
   color: #888;
   font-size: 0.98em;
   margin-bottom: 0.5em;
 }
+@media print {
+  .profile-summary-bulleted {
+    page-break-inside: avoid;
+  }
+}
+
