@@ -31,6 +31,7 @@ export class ProfileSummarySectionComponent {
   @Input() data: any;
   @Input() isPreview: boolean = false;
   @Input() canMoveDown: boolean = true;
+  @Input() isPrintMode: boolean = false;
   @Output() edit = new EventEmitter<void>();
   @Output() moveDown = new EventEmitter<void>();
 

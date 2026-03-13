@@ -54,6 +54,7 @@ import { ResumeTemplate5Component } from './template5/template5.component';
 import { ResumeTemplate6Component } from './template6/template6.component';
 import { ResumeTemplate7Component } from './template7/template7.component';
 import { ResumeTemplate8Component } from './template8/template8.component';
+import { ResumeTemplateDefaultComponent } from './template-default/resume-template-default.component';
 import { ResumeAccess } from 'src/app/services/store/resume.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DiscardDialogComponent } from './discard-dialog/discard-dialog.component';
@@ -101,7 +102,7 @@ export interface DialogData {
     EducationComponent,ProjectComponent,SkillsComponent,SummaryComponent,ProgressBarModule, MatTooltipModule,
     MatIconModule,MatExpansionModule, ExperianceComponent, ResumeTitleComponent, ResumeTemplateListComponent, ResumeTemplate2Component,ResumeTemplate3Component, PreviewResumeComponent
   , ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, AchievementsComponent,
-  JobDescriptionComponent, MatExpansionModule, ResumeTemplate9Component, ResumeTemplate10Component, AccomplishmentsComponent, AddSectionComponent],
+  JobDescriptionComponent, MatExpansionModule, ResumeTemplate9Component, ResumeTemplate10Component, AccomplishmentsComponent, AddSectionComponent, ResumeTemplateDefaultComponent],
   templateUrl: './resume-form3.component.html',
   styleUrls: ['./resume-form3.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

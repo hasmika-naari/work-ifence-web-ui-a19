@@ -1,0 +1,122 @@
+<div class="resume-container" [ngStyle]="getDynamicStyles()" [class.print-mode]="isPrintMode">
+  
+  <!-- Fixed Header: CONTACT Section -->
+  <header class="resume-header" *ngIf="contactSection() as contact">
+    <div class="header-name" (click)="onEdit('CONTACT', contact.data)">
+      <h1 class="profile-full-name">{{ contact.data?.fname }} {{ contact.data?.lname }}</h1>
+      <h2 class="profile-sub-title" *ngIf="contact.data?.subTitle">{{ contact.data.subTitle }}</h2>
+    </div>
+    
+    <div class="contact-details" *ngIf="config.showContactIcons !== false">
+      <span class="contact-item" *ngIf="contact.data?.phone_number">
+        <i class="pi pi-phone" *ngIf="config.showContactIcons"></i> {{ contact.data.phone_number }}
+      </span>
+      <span class="contact-item" *ngIf="contact.data?.email_address">
+        <i class="pi pi-envelope" *ngIf="config.showContactIcons"></i> {{ contact.data.email_address }}
+      </span>
+      <span class="contact-item" *ngIf="contact.data?.linkedIn_profile_display_name">
+        <i class="pi pi-linkedin" *ngIf="config.showContactIcons"></i>
+        <a [href]="contact.data.linkedIn_profile" target="_blank">{{ contact.data.linkedIn_profile_display_name }}</a>
+      </span>
+      <span class="contact-item" *ngIf="contact.data?.github_profile_display_name">
+        <i class="pi pi-github" *ngIf="config.showContactIcons"></i>
+        <a [href]="contact.data.github_profile" target="_blank">{{ contact.data.github_profile_display_name }}</a>
+      </span>
+    </div>
+  </header>
+
+  <!-- Ordered Sections based on sections[] array -->
+  <main class="resume-body">
+    <section class="resume-section" 
+             *ngFor="let section of activeSections()" 
+             [class.with-divider]="config.showSectionDividers">
+      
+      <h3 class="section-title" (click)="onEdit(section.section, section.data)">{{ section.editable_section_title || section.title }}</h3>
+      
+      <div class="section-content" [ngSwitch]="section.section">
+        
+        <!-- PROFILE_SUMMARY -->
+        <div *ngSwitchCase="'PROFILE_SUMMARY'" class="summary-content">
+          <div [innerHTML]="section.data?.original_summary_html || section.data?.profile_summary"></div>
+        </div>
+
+        <!-- WORK_EXPERIENCE -->
+        <div *ngSwitchCase="'WORK_EXPERIENCE'" class="experience-list">
+          <ng-container *ngFor="let item of section.items">
+            <div class="experience-item" *ngIf="item.data?.position_title || item.data?.company_name">
+              <div class="item-header">
+                <div class="item-main">
+                  <span class="item-title" *ngIf="item.data?.position_title">{{ item.data.position_title }}</span>
+                  <span class="item-subtitle" *ngIf="item.data?.company_name">{{ item.data.company_name }}</span>
+                </div>
+                <div class="item-meta">
+                  <span class="item-dates" *ngIf="item.data?.start_date || item.data?.end_date">
+                    {{ formatDate(item.data?.start_date) }} 
+                    <span *ngIf="item.data?.start_date && item.data?.end_date"> - </span>
+                    {{ formatDate(item.data?.end_date) }}
+                  </span>
+                  <span class="item-location" *ngIf="item.data?.location">{{ item.data.location }}</span>
+                </div>
+              </div>
+              <div class="item-description" *ngIf="item.data?.description" [innerHTML]="item.data.description"></div>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- EDUCATION -->
+        <div *ngSwitchCase="'EDUCATION'" class="education-list">
+          <ng-container *ngFor="let item of section.items">
+            <div class="education-item" *ngIf="item.data?.degree || item.data?.school_name">
+              <div class="item-header">
+                <div class="item-main">
+                  <span class="item-title" *ngIf="item.data?.degree">
+                    {{ item.data.degree }} <span *ngIf="item.data?.field_of_study">in {{ item.data.field_of_study }}</span>
+                  </span>
+                  <span class="item-subtitle" *ngIf="item.data?.school_name">{{ item.data.school_name }}</span>
+                </div>
+                <div class="item-meta">
+                  <span class="item-dates" *ngIf="item.data?.graduation_date">{{ item.data.graduation_date }}</span>
+                  <span class="item-location" *ngIf="item.data?.school_location">{{ item.data.school_location }}</span>
+                </div>
+              </div>
+              <div class="item-gpa" *ngIf="item.data?.gpa">GPA: {{ item.data.gpa }}</div>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- SKILLS_BULLET_POINTS -->
+        <div *ngSwitchCase="'SKILLS_BULLET_POINTS'" class="skills-grid">
+          <ul class="skills-bullets">
+            <!-- Prefer section.items[].data.skill if present, fallback to section.data.skills_bullets -->
+            <ng-container *ngIf="section.items && section.items.length > 0; else fallbackSkills">
+              <li *ngFor="let item of section.items">{{ item.data?.skill }}</li>
+            </ng-container>
+            <ng-template #fallbackSkills>
+              <li *ngFor="let skill of (section.data?.skills_bullets || [])">{{ skill }}</li>
+            </ng-template>
+          </ul>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" class="achievements-list">
+          <div class="achievement-item" *ngFor="let item of section.items">
+            <div class="item-header" *ngIf="item.data?.title || item.data?.year">
+              <span class="item-title">{{ item.data?.title }}</span>
+              <span class="item-dates">{{ item.data?.year }}</span>
+            </div>
+            <div class="item-subtitle" *ngIf="item.data?.organization">{{ item.data?.organization }}</div>
+          </div>
+        </div>
+
+        <div *ngSwitchDefault>
+          <!-- Future Proofing: placeholder for unknown sections if added -->
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="resume-footer" *ngIf="!isPrintMode">
+    <div class="footer-line">Generated by workifence.com</div>
+  </footer>
+</div>

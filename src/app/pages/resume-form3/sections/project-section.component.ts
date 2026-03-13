@@ -112,6 +112,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ProjectSectionComponent {
   @Input() items: any[] = [];
   @Input() isPreview: boolean = false;
+  @Input() isPrintMode: boolean = false;
 
   @Output() editProject = new EventEmitter<number>();
   @Output() deleteProject = new EventEmitter<number>();

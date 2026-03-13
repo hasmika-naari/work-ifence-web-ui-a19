@@ -42,6 +42,7 @@ import { ButtonModule } from 'primeng/button';
 export class AchievementsSectionComponent {
   @Input() achievements: any[] = [];
   @Input() isPreview: boolean = false;
+  @Input() isPrintMode: boolean = false;
 
   // Section header actions
   @Output() add = new EventEmitter<void>();

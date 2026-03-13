@@ -27,16 +27,16 @@ import { IconsModule } from 'src/app/shared/icons.module';
         <span class="resume-contact-subtitle">{{ data.subTitle }}</span>
       </div>
       <div class="resume-contact-icons-line">
-        <span class="icon"><i class="pi pi-phone"></i></span> <span class="resume-contact-label">{{ data.phone_number }}</span>
-        <span class="icon"><i class="pi pi-envelope"></i></span> <span class="resume-contact-label">{{ data.email_address }}</span>
+        <span class="icon fa-icon phone-icon"></span> <span class="resume-contact-label">{{ data.phone_number }}</span>
+        <span class="icon fa-icon email-icon"></span> <span class="resume-contact-label">{{ data.email_address }}</span>
         @if (data.linkedIn_profile_display_name) {
-          <span class="icon"><i class="pi pi-linkedin"></i></span>
+          <span class="icon fa-icon linkedin-icon"></span>
         }
         @if (data.linkedIn_profile_display_name) {
           <a class="resume-contact-link" [href]="data.linkedIn_profile" target="_blank">{{ data.linkedIn_profile_display_name }}</a>
         }
         @if (data.github_profile_display_name) {
-          <span class="icon"><i class="pi pi-github"></i></span>
+          <span class="icon fa-icon github-icon"></span>
         }
         @if (data.github_profile_display_name) {
           <a class="resume-contact-link" [href]="data.github_profile" target="_blank">{{ data.github_profile_display_name }}</a>
@@ -50,6 +50,7 @@ export class ContactSectionComponent {
   @Input() data: any;
   @Input() sectionConfig: any;
   @Input() isFormPanleClosed: boolean = false;
+  @Input() isPrintMode: boolean = false;
   showEdit = false;
   @Output() editContact = new EventEmitter<any>();
   @Output() dataChange = new EventEmitter<void>();

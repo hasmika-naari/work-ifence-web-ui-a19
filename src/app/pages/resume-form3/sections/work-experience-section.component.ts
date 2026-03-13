@@ -46,6 +46,7 @@ import { Experience } from 'src/app/services/resume.model';
 export class WorkExperienceSectionComponent {
   @Input() data!: any[];
   @Input() isPreview: boolean = false;
+  @Input() isPrintMode: boolean = false;
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
   @Output() moveUp = new EventEmitter<number>();

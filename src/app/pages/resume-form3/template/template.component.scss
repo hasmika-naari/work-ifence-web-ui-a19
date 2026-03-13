@@ -1027,6 +1027,12 @@ a{
 
 // Container styles for better drop feedback
 .container {
+  font-family: 'Poppins', sans-serif !important;
+
+  * {
+    font-family: 'Poppins', sans-serif !important;
+  }
+
   &.cdk-drop-list-dragging {
     .cdk-drag:not(.cdk-drag-placeholder):not(.cdk-drag-dragging) {
       transition: transform 0.25s ease-in-out;

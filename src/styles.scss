@@ -50,6 +50,46 @@ body {
     font-family: 'Material Symbols Sharp' !important;
 }
 
+/* ---------------------------------------------------------------------------- */
+/* 5. Resume and PDF Rendering Fonts                                           */
+/* Local font-face definitions for Poppins for consistent rendering.           */
+/* ---------------------------------------------------------------------------- */
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Poppins Regular'), local('Poppins-Regular'),
+         url('/assets/resume/fonts/Poppins-Regular.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Poppins Medium'), local('Poppins-Medium'),
+         url('/assets/resume/fonts/Poppins-Medium.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Poppins SemiBold'), local('Poppins-SemiBold'),
+         url('/assets/resume/fonts/Poppins-SemiBold.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Poppins Bold'), local('Poppins-Bold'),
+         url('/assets/resume/fonts/Poppins-Bold.ttf') format('truetype');
+    font-display: swap;
+}
+
 .pi,
 .pi:before {
     font-family: 'PrimeIcons' !important;

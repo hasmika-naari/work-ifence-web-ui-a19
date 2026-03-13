@@ -1,0 +1,50 @@
+// Resume Design System Components
+// Centralized tokens for consistent resume rendering across frontend and backend.
+
+// 1. Fonts
+// Poppins is the primary font for resume templates.
+// ----------------------------------------------------------------------------
+$resume-font-family: 'Poppins', 'Roboto', 'Arial', sans-serif;
+
+// Map weights to standard names
+$resume-font-weight-regular: 400;
+$resume-font-weight-medium: 500;
+$resume-font-weight-semibold: 600;
+$resume-font-weight-bold: 700;
+
+// 2. Colors
+// ----------------------------------------------------------------------------
+$resume-primary-color: #007bff;   // Default accent
+$resume-text-primary: #1a1a1a;    // Headers
+$resume-text-secondary: #444444;  // Body text
+$resume-text-muted: #666666;      // Metadata/Dates
+$resume-border-color: #eeeeee;
+
+// 3. Spacing
+// ----------------------------------------------------------------------------
+$resume-section-margin: 25px;
+$resume-item-margin: 15px;
+$resume-header-padding: 36px;
+
+// 4. Icons
+// ----------------------------------------------------------------------------
+$resume-icon-size: 16px;
+$resume-icon-path: "/assets/resume/icons/";
+
+// Mixin for section titles
+@mixin resume-section-title {
+    font-family: $resume-font-family;
+    font-size: 16px;
+    font-weight: $resume-font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+// Mixin for item headers (Company/Role + Date/Location)
+@mixin resume-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}

@@ -37,7 +37,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Angular CDK modules
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 
 // PrimeNG modules
 import { InputTextModule } from 'primeng/inputtext';
@@ -94,7 +94,7 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
     MatExpansionModule,
     MatTooltipModule,
     // Angular CDK modules
-    DragDropModule,
+    DragDropModule, CdkDropList, CdkDrag,
     // PrimeNG modules
     InputTextModule,
     ButtonModule,
@@ -125,6 +125,11 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   ]
 })
 export class Resume1TemplateComponent implements OnInit, OnDestroy {
+  /**
+   * Print/export mode: disables all editor-only UI, drag/drop, and actions.
+   * Set to true for print/PDF export rendering.
+   */
+  @Input() isPrintMode: boolean = false;
   private sectionItemsCacheIntervalId: number | null = null;
   // Handles move up event from achievements section
   onMoveUpAchievement(index: number): void {
@@ -412,7 +417,9 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
   resetCourseworkForm: boolean = false;
   @Output() editSection = new EventEmitter<any>();
   @Output() saveRequested = new EventEmitter<void>();
+  @Output() rendered = new EventEmitter<void>();
   @Input() isPreview: boolean = false;
+  @Input() resumeId: string | null = null;
   certificationsTitles = () => this.getCertificationsSection().map((c: any) => c.title || c.name || '');
   userStore: UserStoreService;
 
@@ -569,6 +576,12 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
       }
     }
     this.sectionItemsCache = cache;
+    // Notify print-resume component that rendering is complete
+    if (this.isPrintMode) {
+      setTimeout(() => {
+        this.rendered.emit();
+      }, 500);
+    }
   }
  
   private unloadHandler = (e: BeforeUnloadEvent) => {

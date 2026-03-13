@@ -400,34 +400,33 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
 
     downloadResumeDoc(item: ResumeListDataItem) {
         this.childEvent.emit(true);
-        // Copy logic from downloadResumePdf, but change Accept and type to docx
-        // Try docx first, fallback to doc if needed
         let fileName = item.fileName;
         if (!fileName) {
             this.childEvent.emit(false);
-            alert('No file name found for DOC download.');
+            console.error('No file name found for DOCX download.');
             return;
         }
-        // Change extension to .docx
-        fileName = fileName.replace(/\.[^.]+$/, '') + '.docx';
-        this.subs.push(this.resumeService.dowloadResumeDOC(item.userName, fileName).subscribe({
+        // Ensure we are requesting a .docx file
+        const docxFileName = fileName.replace(/\.[^.]+$/, '') + '.docx';
+        this.subs.push(this.resumeService.dowloadResumeDOC(item.userName, docxFileName).subscribe({
             next: (res: any) => {
                 const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-                this.downloadBlobFile(blob, fileName);
+                this.downloadBlobFile(blob, docxFileName);
                 this.childEvent.emit(false);
             },
-            error: () => {
+            error: (err) => {
+                console.error('DOCX download failed, trying .doc fallback', err);
                 // Try .doc fallback
-                const fallbackFileName = fileName.replace(/\.docx$/, '.doc');
-                this.resumeService.dowloadResumeDOC(item.userName, fallbackFileName).subscribe({
+                const docFileName = fileName.replace(/\.[^.]+$/, '') + '.doc';
+                this.resumeService.dowloadResumeDOC(item.userName, docFileName).subscribe({
                     next: (res: any) => {
                         const blob = new Blob([res], { type: 'application/msword' });
-                        this.downloadBlobFile(blob, fallbackFileName);
+                        this.downloadBlobFile(blob, docFileName);
                         this.childEvent.emit(false);
                     },
-                    error: () => {
+                    error: (fallbackErr) => {
+                        console.error('DOC download failed', fallbackErr);
                         this.childEvent.emit(false);
-                        alert('DOC download is not available for this resume.');
                     }
                 });
             }

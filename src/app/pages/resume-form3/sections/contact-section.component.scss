@@ -85,6 +85,31 @@
   text-decoration: underline;
   margin-left: 0.1rem;
 }
+
+/* Local FontAwesome for Resume Rendering */
+@font-face {
+  font-family: 'FontAwesomeLocal';
+  src: url('/assets/resume/icons/fontawesome-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.fa-icon {
+  font-family: 'FontAwesomeLocal' !important;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.phone-icon::before { content: "\f095"; }
+.email-icon::before { content: "\f0e0"; }
+.linkedin-icon::before { content: "\f0e1"; }
+.github-icon::before { content: "\f09b"; }
+
 .icon {
   font-size: 1.1rem;
   color: #222;

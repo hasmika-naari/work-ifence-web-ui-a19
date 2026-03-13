@@ -27,6 +27,7 @@ export class SkillsBulletPointsSectionComponent {
   @Input() skills: SkillV2[] = [];
   @Input() skillsBulletPoints: string[] = [];
   @Input() isPreview: boolean = false;
+  @Input() isPrintMode: boolean = false;
   @Output() add = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
 

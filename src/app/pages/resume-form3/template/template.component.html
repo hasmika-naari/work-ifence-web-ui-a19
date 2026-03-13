@@ -1,13 +1,13 @@
-<div class="container" [class.is-preview]="isPreview">
+<div class="container" [class.is-preview]="isPreview" [class.is-print-mode]="isPrintMode">
   <!-- Always show contact section at the top -->
   <section class="trigger-area resume-contact-us">
-  <resume-contact-section [data]="getContactSection()" (editContact)="showContact($event)" (dataChange)="onContactSectionUpdated()" [isFormPanleClosed]="isPreview"></resume-contact-section>
+  <resume-contact-section [data]="getContactSection()" (editContact)="showContact($event)" (dataChange)="onContactSectionUpdated()" [isFormPanleClosed]="isPreview" [isPrintMode]="isPrintMode"></resume-contact-section>
   </section>
 
-  <div *ngIf="addedSections() && addedSections().length" cdkDropList (cdkDropListDropped)="onSectionDrop($event)">
+  <div *ngIf="addedSections() && addedSections().length" cdkDropList [cdkDropListDisabled]="isPrintMode" (cdkDropListDropped)="onSectionDrop($event)">
     <ng-container *ngFor="let section of addedSections(); let idx = index; let last = last">
       <section class="trigger-area"
-        cdkDrag
+        cdkDrag [cdkDragDisabled]="isPrintMode"
         style="margin-bottom:16px;"
         *ngIf="section && section.isAdded && shouldShowSection(section.section) && section.section !== 'CONTACT'"
         [ngClass]="getSectionCssClass(section.section)">
@@ -15,7 +15,7 @@
           <span class="summary-section-title">
             {{getSectionTitle(section.section)}}
           </span>
-          <div class="section-actions" *ngIf="!isPreview">
+          <div class="section-actions" *ngIf="!isPreview && !isPrintMode">
             <!-- Only Move Down for first, only Move Up for last, both for others. For PROJECT, hide move down if last. -->
             <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'moveUp')" (click)="moveObjectById(section.section, section.id || '', 'up')"></button>
             <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" *ngIf="section.section !== 'PROJECT' ? shouldShowButton(section.section, 'moveDown') : !last" (click)="moveObjectById(section.section, section.id || '', 'down')"></button>
@@ -31,6 +31,7 @@
             *ngSwitchCase="'PROFILE_SUMMARY'"
             [data]="section.data"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             [canMoveDown]="canMoveSectionDown('PROFILE_SUMMARY')"
             (edit)="onEditProfileSummary()"
             (moveDown)="onMoveDownProfileSummary()"
@@ -39,6 +40,7 @@
             *ngSwitchCase="'PROFILE_SUMMARY_BULLETED'"
             [data]="getSectionData('PROFILE_SUMMARY_BULLETED')?.data"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             (edit)="onEditProfileSummaryBulleted()"
             (delete)="removeSection('PROFILE_SUMMARY_BULLETED')"
           ></resume-profile-summary-bulleted-section>
@@ -46,6 +48,7 @@
             *ngSwitchCase="'EDUCATION'"
             [data]="getSectionItems('EDUCATION')"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             (edit)="onEditEducation($event)"
             (delete)="onDeleteEducation($event)"
             (moveUp)="onMoveUpEducation($event)"
@@ -57,6 +60,7 @@
             [courseworkList]="getCourseWorkSection()"
             [resetFormTrigger]="resetCourseworkForm"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             (edit)="onEditCoursework($event)"
             (delete)="onDeleteCoursework($event)"
             (moveUp)="onMoveUpCoursework($event)"
@@ -66,6 +70,7 @@
             *ngSwitchCase="'SKILLS_BULLET_POINTS'"
             [skillsBulletPoints]="getSkillsBulletPointsSection()"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             (add)="onAddSkills()"
             (edit)="onEditSkills()"
           ></resume-skills-bullet-points-section>
@@ -73,6 +78,7 @@
             *ngSwitchCase="'SKILLS_BY_CATEGORY'"
             [items]="section.items || []"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             (edit)="onEditSkillsCategoryItem($event)"
             (moveUp)="onMoveUpSkillsCategoryItem($event)"
             (moveDown)="onMoveDownSkillsCategoryItem($event)"
@@ -82,6 +88,7 @@
             *ngSwitchCase="'WORK_EXPERIENCE'"
             [data]="getSectionItems('WORK_EXPERIENCE')"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             (edit)="editExperienceItem($event)"
             (delete)="deleteExperienceItem($event)"
             (moveUp)="onMoveUpExperience($event)"
@@ -91,6 +98,7 @@
             *ngSwitchCase="'PROJECT'"
             [items]="getSectionItems('PROJECT')"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             (moveProjectUp)="onMoveUpProject($event)"
             (moveProjectDown)="onMoveDownProject($event)"
             (editProject)="editProjectItem($event)"
@@ -99,12 +107,13 @@
           <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'"
             [certifications]="getSectionItems('CERTIFICATIONS')"
             [isPreview]="isPreview"
+            [isPrintMode]="isPrintMode"
             (edit)="onEditCertification($event)"
             (delete)="onDeleteCertification($event)"
             (moveUp)="onMoveUpCertification($event)"
             (moveDown)="onMoveDownCertification($event)"></resume-certifications-section>
           <resume-achievements-section *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" 
-            [achievements]="getAchievementBulletPointsSection() || []" [isPreview]="isPreview"
+            [achievements]="getAchievementBulletPointsSection() || []" [isPreview]="isPreview" [isPrintMode]="isPrintMode"
             (edit)="onEditAchievement($event)"
             (delete)="onDeleteAchievement($event)"
             (moveItemUp)="onMoveUpAchievement($event)"
@@ -114,7 +123,7 @@
         </ng-container>
       </section>
     </ng-container>
-  <footer style="padding-top: 100px;padding-bottom:30px;">
+  <footer *ngIf="!isPrintMode" style="padding-top: 100px;padding-bottom:30px;">
     <div class="row">
       <div class="text-left">
         <p class="company-name-in-footer">www.workifence.com</p>

@@ -1,0 +1,181 @@
+@use "src/app/shared/resume-design-system.scss" as rds;
+
+:host {
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: var(--resume-font-family, rds.$resume-font-family);
+  color: rds.$resume-text-secondary;
+}
+
+.resume-container {
+  padding: rds.$resume-header-padding;
+  background-color: #fff;
+  min-height: 1056px; // A4 approx height
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+  &.print-mode {
+    padding: 0;
+    box-shadow: none;
+    min-height: auto;
+  }
+}
+
+// HEADER & CONTACT
+.resume-header {
+  border-bottom: 2px solid var(--resume-accent-color, rds.$resume-primary-color);
+  padding-bottom: 15px;
+  margin-bottom: rds.$resume-item-margin;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  .header-name {
+    .profile-full-name {
+      margin: 0;
+      font-size: 28px;
+      font-weight: rds.$resume-font-weight-bold;
+      line-height: 1.2;
+      text-transform: uppercase;
+      color: rds.$resume-text-primary;
+    }
+    .profile-sub-title {
+      margin: 5px 0 0;
+      font-size: 16px;
+      font-weight: rds.$resume-font-weight-medium;
+      color: var(--resume-accent-color, rds.$resume-primary-color);
+    }
+  }
+
+  .contact-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    font-size: 13px;
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rds.$resume-text-muted;
+
+      i {
+        font-size: 14px;
+        color: var(--resume-accent-color, rds.$resume-primary-color);
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        &:hover { text-decoration: underline; }
+      }
+    }
+  }
+}
+
+// SECTION LAYOUT
+.resume-section {
+  margin-bottom: var(--resume-section-gap, 25px);
+
+  &.with-divider {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    &:first-of-type { border-top: none; padding-top: 0; }
+  }
+
+  .section-title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--resume-accent-color, #007bff);
+    letter-spacing: 0.5px;
+  }
+
+  .section-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
+
+    // Use ::ng-deep to handle dynamic HTML content like profile_summary
+    ::ng-deep {
+      ul, ol {
+        padding-left: 20px;
+        margin: 5px 0;
+      }
+      li { margin-bottom: 4px; }
+      p { margin: 0 0 8px; }
+    }
+  }
+}
+
+// ITEM HEADERS (Experience, Education)
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+
+  .item-main {
+    .item-title {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: #222;
+    }
+    .item-subtitle {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #555;
+    }
+  }
+
+  .item-meta {
+    text-align: right;
+    .item-dates {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+    }
+    .item-location {
+      display: block;
+      font-size: 12px;
+      color: #777;
+    }
+  }
+}
+
+// SPECIFIC BLOCKS
+.experience-item, .education-item {
+  margin-bottom: 15px;
+}
+
+.skills-bullets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  list-style-type: square;
+  padding-left: 20px;
+  margin: 0;
+  
+  li {
+    font-size: 13px;
+    color: #444;
+  }
+}
+
+.achievement-item {
+  margin-bottom: 10px;
+}
+
+.resume-footer {
+  margin-top: 30px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  font-size: 11px;
+  color: #aaa;
+}

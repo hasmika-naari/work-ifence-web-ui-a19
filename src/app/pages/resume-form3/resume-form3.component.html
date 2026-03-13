@@ -164,6 +164,12 @@
                                         position: relative;
                                         padding: 36px 36px 0px;
                                         padding-top:0px;">
+                            @if(resumeSignalForm() && resumeSignalForm().template_details && activeTemplateName() == 'TEMPLATE_DEFAULT'){
+                                <app-resume-template-default
+                                    [resumeForm]="resumeSignalForm"
+                                    (editSection)="showEditSection($event)">
+                                </app-resume-template-default>
+                            }
                             @if(resumeSignalForm() && resumeSignalForm().template_details && activeTemplateName() == 'TEMPLATE_1'){
                                 <app-resume1-template
                                     [resumeSections]="resumeSignalForm().sections"

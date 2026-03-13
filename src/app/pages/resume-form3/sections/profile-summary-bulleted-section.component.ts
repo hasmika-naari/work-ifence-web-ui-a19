@@ -33,6 +33,7 @@ import { ButtonModule } from 'primeng/button';
 export class ProfileSummaryBulletedSectionComponent {
   @Input() data: any;
   @Input() isPreview: boolean = false;
+  @Input() isPrintMode: boolean = false;
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
 }

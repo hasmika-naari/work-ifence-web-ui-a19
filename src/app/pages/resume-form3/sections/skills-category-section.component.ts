@@ -45,6 +45,7 @@ import { ButtonModule } from 'primeng/button';
 export class SkillsCategorySectionComponent {
   @Input() items: any[] = [];
   @Input() isPreview = false;
+  @Input() isPrintMode: boolean = false;
   @Output() edit = new EventEmitter<number>();
   @Output() moveUp = new EventEmitter<number>();
   @Output() moveDown = new EventEmitter<number>();

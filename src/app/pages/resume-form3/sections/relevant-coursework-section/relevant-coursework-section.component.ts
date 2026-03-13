@@ -39,6 +39,7 @@ export class RelevantCourseworkSectionComponent implements OnChanges {
   @Input() courseworkList: courseWork[] = [];
   @Input() resetFormTrigger: boolean = false;
   @Input() isPreview: boolean = false;
+  @Input() isPrintMode: boolean = false;
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
   @Output() moveUp = new EventEmitter<number>();

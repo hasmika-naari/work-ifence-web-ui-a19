@@ -169,6 +169,8 @@ import { ENTITLEMENT_KEYS } from './entitlements/entitlement-keys';
 import { PlanTier } from './nav/nav.model';
 import { entitledRoute } from './routing/route-helpers';
 
+import { PrintResumeComponent } from './pages/resume-form3/print-resume.component';
+
 export const routes: Routes = [
     {
         path: '',
@@ -238,6 +240,11 @@ export const routes: Routes = [
         path: 'resume',
         redirectTo: 'resume-builder',
         pathMatch: 'full'
+    },
+    {
+        path: 'resume/:resumeId/print',
+        component: PrintResumeComponent,
+        data: { reuseComponent: false, breadcrumb: 'Print Resume' }
     },
     {
         path: 'resume-portal',

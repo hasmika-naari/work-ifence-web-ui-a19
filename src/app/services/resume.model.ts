@@ -412,6 +412,21 @@ export class Education{
     }
   }
 
+  /**
+   * Represents the visual configuration for rendering the resume.
+   * This is used by both the Frontend Preview and Backend Export (PDF/DOCX).
+   */
+  export class RenderConfig {
+    fontFamily: string = 'Roboto'; // Default font
+    accentColor: string = '#000000'; // Primary theme color
+    spacingMode: 'compact' | 'comfortable' | 'loose' = 'comfortable';
+    showSectionDividers: boolean = true;
+    showContactIcons: boolean = true;
+    fontSize: number = 11; // Base font size in points
+    lineHeight: number = 1.2;
+    pageMargins: string = '1in'; // standard margin
+  }
+
   export class Accomplishment{
     id : string;
     accomplisment : string;
@@ -445,6 +460,7 @@ export class Education{
     isSectionPresent: IsSectionPresent;
     sections: Array<SectionDesc>;
     multipleSections: Array<Array<SectionDesc>>;
+    renderConfig: RenderConfig;
 
   selectedContact?: any;
   constructor() {
@@ -467,6 +483,7 @@ export class Education{
       this.isActive = false;
       this.isPrimary = false;
       this.imageBase64Encoded = null;
+      this.renderConfig = new RenderConfig();
       this.isSectionPresent = new IsSectionPresent();
       // Initialize all sections from the sections array, with default sections having isAdded: true
       this.sections = sections.map(section => ({
