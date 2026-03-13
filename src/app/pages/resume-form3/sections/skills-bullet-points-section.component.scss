@@ -34,19 +34,32 @@
 }
 
 .skills-bullets {
-  columns: 4 200px;
-  -webkit-columns: 4 200px;
-  -moz-columns: 4 200px;
+  columns: 3;
+  -webkit-columns: 3;
+  -moz-columns: 3;
   column-gap: 2rem;
-  padding-left: 1.5rem;
+  padding-left: 1.2rem;
   margin: 0;
-  list-style: disc inside;
+  list-style: disc outside;
 }
+
 .skills-bullets li {
   break-inside: avoid;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  color: #222;
+  margin-bottom: 0.4rem;
+  font-size: 13px;
+  color: #5a6c7d;
+  line-height: 1.4;
+}
+
+@media print {
+  .skills-bullets {
+    columns: 3;
+    display: block !important;
+  }
+  .skills-bullets li {
+    break-inside: avoid-column;
+    page-break-inside: avoid;
+  }
 }
 .no-skills {
   color: #888;
