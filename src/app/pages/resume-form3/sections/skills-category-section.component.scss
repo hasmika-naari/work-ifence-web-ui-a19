@@ -27,43 +27,34 @@
   visibility: visible;
 }
 .skills-category-item {
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-.skills-category-item:last-child {
   border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-// ...existing code...
-.skills-category {
-  padding: 0.1rem 0 0.1rem 0;
-  background: none;
-  border-radius: 0;
-  box-shadow: none;
+  padding-bottom: 0.2rem;
   margin-bottom: 0.3rem;
 }
-.formal-block {
-  margin-bottom: 0.7rem;
-  font-size: 1.01rem;
-  color: #222;
+.skills-category-item:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
-.formal-title {
+
+.skills-category-title.formal-title {
+  font-size: 14px;
   font-weight: 600;
-  color: #2a2a2a;
-  margin-bottom: 0.2rem;
-  font-size: 1.04rem;
+  color: #2c3e50;
+  margin-bottom: 2px;
 }
-// ...existing code...
-// ...existing code...
+
 .skills-inline-list-compact {
-  font-weight: 400;
-  color: #222;
-  font-size: 0.98rem;
-  margin: 0.1rem 0 0.2rem 0.2rem;
-  line-height: 1.7;
-  word-break: break-word;
+  font-size: 13px;
+  color: #5a6c7d;
+  line-height: 1.4;
+  margin: 0;
+}
+
+@media print {
+  .skills-category-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
 }
 p {
   color: #888;

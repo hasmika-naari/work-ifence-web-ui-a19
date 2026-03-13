@@ -76,7 +76,7 @@
           ></resume-skills-bullet-points-section>
           <resume-skills-category-section
             *ngSwitchCase="'SKILLS_BY_CATEGORY'"
-            [items]="section.items || []"
+            [items]="getSkillsByCategoryNormalized()"
             [isPreview]="isPreview"
             [isPrintMode]="isPrintMode"
             (edit)="onEditSkillsCategoryItem($event)"

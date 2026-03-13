@@ -473,8 +473,27 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     return section?.data || {};
   }
   getCourseWorkSection() { const section = this.addedSections().find((s: any) => s.section === 'RELEVANT_COURSEWORK'); return section?.items?.map((i: any) => i.data) || []; }
-  getSkillsCategorySection() { const section = this.addedSections().find((s: any) => s.section === 'SKILLS_CATEGORY'); return section?.items?.map((i: any) => i.data) || []; }
+  getSkillsCategorySection() { 
+    const section = this.addedSections().find((s: any) => s.section === 'SKILLS_BY_CATEGORY'); 
+    return section?.items?.map((i: any) => i.data) || []; 
+  }
   getSkillsBulletPointsSection() { const section = this.addedSections().find((s: any) => s.section === 'SKILLS_BULLET_POINTS'); return section?.items?.map((i: any) => i.data.skill) || []; }
+  
+  getSkillsByCategoryNormalized() {
+    const section = this.addedSections().find((s: any) => s.section === 'SKILLS_BY_CATEGORY');
+    if (!section?.items) return [];
+    
+    return section.items
+      .map((item: any) => {
+        const name = (item.data?.name || '').trim();
+        const skills = Array.isArray(item.data?.skills) 
+          ? item.data.skills.map((s: string) => (s || '').trim()).filter((s: string) => s.length > 0)
+          : [];
+        return { name, skills };
+      })
+      .filter((cat: any) => cat.name.length > 0 || cat.skills.length > 0);
+  }
+
   getAccomplishmentSection() { const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENT_WITH_DESC'); return section?.items?.map((i: any) => i.data) || []; }
   getAchievementBulletPointsSection() {
     const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENTS_BULLET_POINTS');
@@ -1120,6 +1139,7 @@ private animateSuccessfulDrop(targetIndex: number) {
         'PROJECT': () => false,
         'CERTIFICATIONS': () => false,
         'SKILLS_BULLET_POINTS': () => this.hasSkillsBulletPoints(),
+        'SKILLS_BY_CATEGORY': () => this.hasSkillsByCategory(),
         'SKILLS_CATEGORY': () => this.hasSkills(),
         'ACHIEVEMENTS_BULLET_POINTS': () => this.hasAchievements(),
         'default': () => true
@@ -1130,6 +1150,7 @@ private animateSuccessfulDrop(targetIndex: number) {
         'PROJECT': () => true,
         'CERTIFICATIONS': () => true,
         'SKILLS_BULLET_POINTS': () => !this.hasSkillsBulletPoints(),
+        'SKILLS_BY_CATEGORY': () => true,
         'SKILLS_CATEGORY': () => !this.hasSkills(),
         'ACHIEVEMENTS_BULLET_POINTS': () => !this.hasAchievements(),
         'default': () => true
@@ -1347,6 +1368,10 @@ return data?.length==0
   hasSkills(): boolean {
     const skills = this.getSkillsCategorySection();
     return !!skills.length && !this.isSkillsCategoryDefault();
+  }
+
+  hasSkillsByCategory(): boolean {
+    return this.getSkillsByCategoryNormalized().length > 0;
   }
 
   hasSkillsBulletPoints(): boolean {

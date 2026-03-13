@@ -2180,6 +2180,8 @@ hideMenu() {
     updateSection('WORK_EXPERIENCE');
     updateSection('PROJECT');
     updateSection('ACHIEVEMENT_WITH_DESC');
+    updateSection('SKILLS_BULLET_POINTS');
+    updateSection('SKILLS_BY_CATEGORY');
     return resume;
 
   }
