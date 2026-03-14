@@ -1230,7 +1230,7 @@ private animateSuccessfulDrop(targetIndex: number) {
     console.log('📊 Current Resume Data Status:', {
       contact: {
         name: contact?.data?.fname + ' ' + contact?.data?.lname,
-        email: contact?.data?.email_address || contact?.data?.emailId,
+        email: contact?.data?.email_address || contact?.data?.email,
         hasDefaultData: contact?.data?.isDefaultData
       },
       profileSummary: {

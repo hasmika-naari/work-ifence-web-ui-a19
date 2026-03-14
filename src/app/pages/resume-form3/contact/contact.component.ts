@@ -137,14 +137,14 @@ get email_address(){
     }
     this.contactForm.patchValue({
       address: contactData.address || '',
-      email_address: contactData.email_address || '',
+      email_address: contactData.email_address || contactData.email || '',
       github_profile: contactData.github_profile || '',
       linkedIn_profile: contactData.linkedIn_profile || '',
       subTitle: contactData.subTitle || '',
       fname: contactData.fname || '',
       lname: contactData.lname || '',
       phone_number: contactData.phone_number || '',
-      portfolio_url: contactData.portfolio_url || '',
+      portfolio_url: contactData.portfolio_url || contactData.portfolio_link || '',
       role: contactData.role || '',
       linkedIn_profile_display_name: contactData.linkedIn_profile_display_name || '',
       github_profile_display_name: contactData.github_profile_display_name || ''
@@ -201,10 +201,10 @@ get email_address(){
     resumeContact.lname =  this.contactForm.value.lname?this.contactForm.value.lname?.trim() : '';
     resumeContact.subTitle =  this.contactForm.value.subTitle?this.contactForm.value.subTitle:'';
     resumeContact.phone_number =  this.contactForm.value.phone_number?this.contactForm.value.phone_number : "";
-    resumeContact.email =  this.contactForm.value.email_address?this.contactForm.value.email_address : "";
+    resumeContact.email_address =  this.contactForm.value.email_address?this.contactForm.value.email_address : "";
     resumeContact.linkedIn_profile =  this.contactForm.value.linkedIn_profile?this.contactForm.value.linkedIn_profile : "";
     resumeContact.github_profile =  this.contactForm.value.github_profile?this.contactForm.value.github_profile : "";
-    resumeContact.portfolio_link =  this.contactForm.value.portfolio_url?this.contactForm.value.portfolio_url : "";
+    resumeContact.portfolio_url =  this.contactForm.value.portfolio_url?this.contactForm.value.portfolio_url : "";
     resumeContact.linkedIn_profile_display_name = this.contactForm.value.linkedIn_profile_display_name?this.contactForm.value.linkedIn_profile_display_name:"";
     resumeContact.github_profile_display_name = this.contactForm.value.github_profile_display_name?this.contactForm.value.github_profile_display_name:"";
     resumeContact.address = this.contactForm.value.address?this.contactForm.value.address:"";
@@ -219,8 +219,7 @@ get email_address(){
       }
       // Clear selectedContact after save
       resume.selectedContact = undefined;
-      // Only call setResumeForm to replace the object and trigger the signal
-      this.userStore.setResumeForm({ ...resume });
+      this.userStore.updateResumeForm({ ...resume });
     }
 
     if(!this.sectionStatus().isContact){

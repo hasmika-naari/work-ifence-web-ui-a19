@@ -213,11 +213,13 @@ export class Education{
     lname : string;
     subTitle : string;
     role : string;
+    email_address : string;
     email : string;
     phone_number : string;
     address : string;
     linkedIn_profile : string;
     github_profile : string;
+    portfolio_url : string;
     portfolio_link : string
     linkedIn_profile_display_name : string;
     github_profile_display_name : string;
@@ -229,11 +231,13 @@ export class Education{
       this.lname = "";
       this.subTitle = '';
       this.role = "";
+      this.email_address = "";
       this.email = "";
       this.phone_number = "";
       this.address = "";
       this.linkedIn_profile = "";
       this.github_profile = "";
+      this.portfolio_url = "";
       this.portfolio_link = "";
       this.linkedIn_profile_display_name = "";
       this.github_profile_display_name = "";

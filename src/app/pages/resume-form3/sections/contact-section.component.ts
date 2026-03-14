@@ -28,7 +28,9 @@ import { IconsModule } from 'src/app/shared/icons.module';
       </div>
       <div class="resume-contact-icons-line">
         <span class="icon fa-icon phone-icon"></span> <span class="resume-contact-label">{{ data.phone_number }}</span>
-        <span class="icon fa-icon email-icon"></span> <span class="resume-contact-label">{{ data.email_address }}</span>
+        @if (data.email_address) {
+          <span class="icon fa-icon email-icon"></span> <span class="resume-contact-label">{{ data.email_address }}</span>
+        }
         @if (data.linkedIn_profile_display_name) {
           <span class="icon fa-icon linkedin-icon"></span>
         }

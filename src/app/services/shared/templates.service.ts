@@ -5,6 +5,7 @@ import { UserStoreService } from '../store/user-store.service';
 const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: any, context: any) => string | null> = {
   CONTACT: (section: any, resumeForm: any) => {
     if (!resumeForm.isSectionPresent.isContact) return null;
+    const contactEmail = resumeForm.contact.email_address || resumeForm.contact.email || '';
     return `
       <header class="trigger-area resume-contact-us" style="margin-bottom:15px;">
         <div style="display:flex;flex-direction:column;"> 
@@ -15,8 +16,8 @@ const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: a
               <ul class="profile-contact-details-list">
                   ${resumeForm.contact.phone_number.length > 0 ?
         `<li class="contact-li"><span class="material-icons contact-detail-icon">phone</span> ${resumeForm.contact.phone_number}</li>` : ''}
-                  ${resumeForm.contact.email.length > 0 ?
-        `<li class="contact-li"><span class="material-icons contact-detail-icon">alternate_email</span> ${resumeForm.contact.email}</li>` : ''}
+                  ${contactEmail.length > 0 ?
+            `<li class="contact-li"><span class="material-icons contact-detail-icon">alternate_email</span> ${contactEmail}</li>` : ''}
                   ${resumeForm.contact.linkedIn_profile.length > 0 ?
         `<li class="contact-li"><i class="fab fa-linkedin contact-detail-icon"></i> <a href="${resumeForm.contact.linkedIn_profile}" class="contact-a" style="color:#000000DE"> ${resumeForm.contact.linkedIn_profile_display_name}</a></li>` : ''}
                   ${resumeForm.contact.github_profile.length > 0 ?
@@ -188,7 +189,17 @@ export class TemplatesService {
     return resume.sections?.find((s: any) => s.section === sectionName)?.items?.map((i: any) => i.data) ?? [];
   }
   private getContact(resume: Resume) {
-    return this.getSectionData<any>(resume, 'CONTACT') ?? { fname: '', lname: '', email: '', phone_number: '', linkedIn_profile: '', github_profile: '' };
+    const contact = this.getSectionData<any>(resume, 'CONTACT');
+    if (!contact) {
+      return { fname: '', lname: '', email_address: '', email: '', phone_number: '', linkedIn_profile: '', github_profile: '' };
+    }
+
+    const email_address = contact.email_address || contact.email || '';
+    return {
+      ...contact,
+      email_address,
+      email: email_address
+    };
   }
   private getProfileSummary(resume: Resume) {
     return this.getSectionData<any>(resume, 'PROFILE_SUMMARY') ?? { profile_summary: '' };
