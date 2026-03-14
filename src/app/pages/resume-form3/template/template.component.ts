@@ -942,6 +942,10 @@ formatSkills(items : string[]){
   // Call store method to add section and set default data
   this.userStore.addSection(section);
 
+  if (section === 'WORK_EXPERIENCE') {
+    this.userStore.setSelectedExperience(new Experience());
+  }
+
   this.markDirty();
   this.cdr.detectChanges();
   this.cdr.markForCheck();
@@ -979,12 +983,9 @@ formatSkills(items : string[]){
       this.userStore.updateProject(selectedJson)
     }
     else if(section == "WORK_EXPERIENCE"){
-      if (selectedJson === null) {
-        this.userStore.setSelectedExperience(new Experience());
-      } else {
-        this.userStore.setSelectedExperience(selectedJson);
-      }
-      this.userStore.updateExperience(selectedJson)
+      const selectedExperience = selectedJson?.data ?? selectedJson ?? new Experience();
+      this.userStore.setSelectedExperience(selectedExperience);
+      this.userStore.updateExperience(selectedExperience)
     }
     else if(section == "CERTIFICATIONS"){
       this.userStore.setSelectedCertification(selectedJson);
@@ -1543,10 +1544,18 @@ getSectionTitle(section : string){
   editExperienceItem(index: number): void {
     const experiences = this.getSectionItems('WORK_EXPERIENCE');
     const experienceItem = experiences[index];
+    if (!experienceItem) {
+      return;
+    }
     this.editSectionHandler('WORK_EXPERIENCE', experienceItem);
   }
 
-  deleteExperienceItem(experienceItem: any): void {
+  deleteExperienceItem(index: number): void {
+    const experiences = this.getSectionItems('WORK_EXPERIENCE');
+    const experienceItem = experiences[index];
+    if (!experienceItem) {
+      return;
+    }
     this.confirmDeleteItemDialog('WORK_EXPERIENCE', experienceItem);
   }
 

@@ -86,7 +86,7 @@
             (moveDown)="onMoveDownSkillsCategoryItem($event)"
             (deleteItem)="onDeleteSkillsCategoryItem($event)"
           ></resume-skills-category-section>
-        <!--  <resume-work-experience-section
+         <resume-work-experience-section
             *ngSwitchCase="'WORK_EXPERIENCE'"
             [data]="getSectionItems('WORK_EXPERIENCE')"
             [isPreview]="isPreview"
@@ -96,7 +96,7 @@
             (moveUp)="onMoveUpExperience($event)"
             (moveDown)="onMoveDownExperience($event)"
           ></resume-work-experience-section>
-          <resume-project-section
+        <!--   <resume-project-section
             *ngSwitchCase="'PROJECT'"
             [items]="getSectionItems('PROJECT')"
             [isPreview]="isPreview"

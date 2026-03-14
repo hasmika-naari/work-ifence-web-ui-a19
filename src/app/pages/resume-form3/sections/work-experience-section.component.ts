@@ -27,12 +27,12 @@ import { Experience } from 'src/app/services/resume.model';
                 }
                 <div class="job-header">
                   <div>
-                    <div class="job-title">{{ job.data?.position_title || 'Position Title' }}</div>
-                    <div class="company">{{ job.data?.company_name || 'Company Name' }}</div>
+                    <div class="job-title">{{ getPositionTitle(job) }}</div>
+                    <div class="company">{{ getCompanyName(job) }}</div>
                   </div>
-                  <div class="dates">{{ formatDate(job.data?.start_date) }} - {{ formatDate(job.data?.end_date) }}</div>
+                  <div class="dates">{{ formatDate(getExperienceData(job)?.start_date) }} - {{ formatDate(getExperienceData(job)?.end_date) }}</div>
                 </div>
-                <div class="job-description" [innerHTML]="job.data?.description || 'Job description'"></div>
+                <div class="job-description" [innerHTML]="getDescription(job)"></div>
               </div>
             </div>
           }
@@ -58,7 +58,23 @@ export class WorkExperienceSectionComponent {
 
   // TrackBy function for performance optimization
   trackByExperienceId(index: number, item: any): any {
-    return item.id || index;
+    return item?.id || item?.data?.id || index;
+  }
+
+  getExperienceData(item: any): any {
+    return item?.data ?? item ?? {};
+  }
+
+  getPositionTitle(item: any): string {
+    return this.getExperienceData(item)?.position_title || '';
+  }
+
+  getCompanyName(item: any): string {
+    return this.getExperienceData(item)?.company_name || '';
+  }
+
+  getDescription(item: any): string {
+    return this.getExperienceData(item)?.description || '';
   }
 
   formatDate(date: string): string {
