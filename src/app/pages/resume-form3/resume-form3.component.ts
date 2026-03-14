@@ -2171,28 +2171,40 @@ hideMenu() {
   }
 
   getUnHideElements(){
-    let resume = this.resumeSignalForm();
-    // Helper to filter items in a section
-    const filterSectionItems = (sectionName: string) => {
-      const section = resume.sections?.find((s: any) => s.section === sectionName);
-      if (!section || !section.items) return [];
-      return section.items.map((i: any) => i.data).filter((e: any) => e.isHideSelected == false);
+    const resume = this.resumeSignalForm();
+    const cloneItem = (item: any) => ({
+      ...item,
+      data: item?.data ? { ...item.data } : item?.data
+    });
+
+    const visibleSectionNames = new Set([
+      'CERTIFICATIONS',
+      'EDUCATION',
+      'WORK_EXPERIENCE',
+      'PROJECT',
+      'ACHIEVEMENT_WITH_DESC',
+      'SKILLS_BULLET_POINTS',
+      'SKILLS_BY_CATEGORY'
+    ]);
+
+    return {
+      ...resume,
+      sections: (resume.sections ?? []).map((section: any) => {
+        const items = Array.isArray(section?.items) ? section.items.map(cloneItem) : section?.items;
+
+        if (!visibleSectionNames.has(section.section) || !Array.isArray(items)) {
+          return {
+            ...section,
+            items
+          };
+        }
+
+        return {
+          ...section,
+          items: items.filter((item: any) => item?.data?.isHideSelected !== true)
+        };
+      })
     };
-    // Update sections with filtered items
-    const updateSection = (sectionName: string) => {
-      const section = resume.sections?.find((s: any) => s.section === sectionName);
-      if (section) {
-        section.items = filterSectionItems(sectionName).map((data: any) => ({ data }));
-      }
-    };
-    updateSection('CERTIFICATIONS');
-    updateSection('EDUCATION');
-    updateSection('WORK_EXPERIENCE');
-    updateSection('PROJECT');
-    updateSection('ACHIEVEMENT_WITH_DESC');
-    updateSection('SKILLS_BULLET_POINTS');
-    updateSection('SKILLS_BY_CATEGORY');
-    return resume;
 
   }
 
