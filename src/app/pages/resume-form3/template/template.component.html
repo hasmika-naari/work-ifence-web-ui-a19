@@ -66,6 +66,7 @@
             (moveUp)="onMoveUpCoursework($event)"
             (moveDown)="onMoveDownCoursework($event)"
           ></app-relevant-coursework-section>
+           -->
           <resume-skills-bullet-points-section
             *ngSwitchCase="'SKILLS_BULLET_POINTS'"
             [skillsBulletPoints]="getSkillsBulletPointsSection()"
@@ -74,7 +75,7 @@
             (add)="onAddSkills()"
             (edit)="onEditSkills()"
           ></resume-skills-bullet-points-section>
-        -->
+       
           <resume-skills-category-section
             *ngSwitchCase="'SKILLS_BY_CATEGORY'"
             [items]="getSectionItems('SKILLS_BY_CATEGORY')"
