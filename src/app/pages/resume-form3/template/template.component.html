@@ -44,7 +44,7 @@
             (edit)="onEditProfileSummaryBulleted()"
             (delete)="removeSection('PROFILE_SUMMARY_BULLETED')"
           ></resume-profile-summary-bulleted-section>
-         <!-- <resume-education-section
+         <resume-education-section
             *ngSwitchCase="'EDUCATION'"
             [data]="getSectionItems('EDUCATION')"
             [isPreview]="isPreview"
@@ -55,7 +55,7 @@
             (moveDown)="onMoveDownEducation($event)"
             (dummyEdit)="onEditEducation($event)"
           ></resume-education-section>
-          <app-relevant-coursework-section
+          <!-- <app-relevant-coursework-section
             *ngSwitchCase="'RELEVANT_COURSEWORK'"
             [courseworkList]="getCourseWorkSection()"
             [resetFormTrigger]="resetCourseworkForm"

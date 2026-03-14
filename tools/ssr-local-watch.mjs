@@ -6,8 +6,8 @@ const projectRoot = process.cwd();
 const entry = path.join(projectRoot, 'dist', 'workifence', 'server', 'server.mjs');
 const watchDir = path.dirname(entry);
 
-const RESTART_DEBOUNCE_MS = 900;
-const DIR_QUIET_PERIOD_MS = 700;
+const RESTART_DEBOUNCE_MS = 1200;
+const DIR_QUIET_PERIOD_MS = 1200;
 
 let child = null;
 let restartTimer = null;
@@ -142,6 +142,9 @@ async function waitForStableOutputDir() {
   // which causes ERR_MODULE_NOT_FOUND for chunk imports.
   await waitForFile(entry);
 
+  let stablePasses = 0;
+  let lastVerifiedEntryMtime = -1;
+
   while (true) {
     const before = latestMjsMtimeMs(watchDir);
     const now = Date.now();
@@ -153,6 +156,8 @@ async function waitForStableOutputDir() {
     await sleep(DIR_QUIET_PERIOD_MS + extraWait);
 
     if (!fs.existsSync(entry)) {
+      stablePasses = 0;
+      lastVerifiedEntryMtime = -1;
       await waitForFile(entry);
       continue;
     }
@@ -161,9 +166,32 @@ async function waitForStableOutputDir() {
     if (after !== 0 && after === before) {
       const missingImports = findMissingEntryImports(entry);
       if (missingImports.length === 0) {
-        return;
+        let entryStat = null;
+        try {
+          entryStat = fs.statSync(entry);
+        } catch {
+          stablePasses = 0;
+          lastVerifiedEntryMtime = -1;
+          continue;
+        }
+
+        const entryMtime = entryStat.mtimeMs || 0;
+        if (entryMtime === lastVerifiedEntryMtime) {
+          stablePasses += 1;
+        } else {
+          stablePasses = 1;
+          lastVerifiedEntryMtime = entryMtime;
+        }
+
+        if (stablePasses >= 2) {
+          return;
+        }
+        continue;
       }
     }
+
+    stablePasses = 0;
+    lastVerifiedEntryMtime = -1;
   }
 }
 
