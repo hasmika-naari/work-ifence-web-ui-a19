@@ -24,7 +24,7 @@
                                         <div><span class="checkmark"><p-icon class="pi pi-id-card"></p-icon></span> CONTACT</div>
                                     </li>
                                     <!-- Render menu in the order of default sections, but only for sections present in the selected resume -->
-                                    @for(section of resumeSignalForm().sections; track section.id ?? section.section) {
+                                    @for(section of getMenuSections(); track section.id ?? section.section) {
                                         @switch(section.section) {
                                             @case('WORK_EXPERIENCE') {
                                                 <li (click)="showWorkExperianceDetails()"><div><span class="checkmark"><p-icon class="pi pi-briefcase"></p-icon></span> EXPERIENCE</div></li>
@@ -166,7 +166,6 @@
                                         padding-top:0px;">
                             @if(resumeSignalForm() && resumeSignalForm().template_details && activeTemplateName() == 'TEMPLATE_DEFAULT'){
                                 <app-resume-template-default
-                                    [resumeForm]="resumeSignalForm"
                                     (editSection)="showEditSection($event)">
                                 </app-resume-template-default>
                             }

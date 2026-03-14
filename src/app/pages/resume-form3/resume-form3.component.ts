@@ -109,6 +109,8 @@ export interface DialogData {
 })
 export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked, OnChanges, AfterViewInit {
 
+  private readonly emptySections: SectionDesc[] = [];
+
 
 
     /**
@@ -128,6 +130,10 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
   getSection(sectionName: string) {
     const resume = this.resumeSignalForm();
     return resume.sections?.find(s => s.section === sectionName) || null;
+  }
+
+  getMenuSections(): SectionDesc[] {
+    return this.resumeSignalForm()?.sections ?? this.emptySections;
   }
 
   /**
@@ -173,7 +179,7 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
     const section = resume.sections?.find((s: any) => s.section === 'SKILLS_BY_CATEGORY');
     if (section && section.items && section.items[index]) {
       // Set the selected category in the store (UserStoreService)
-      this.userStore.setSelectedSkillsCategory(section.items[index].data);
+      this.userStore.setSelectedSkillsCategory(section.items[index]);
       // Open the skills editor for SKILLS_BY_CATEGORY
       this.showSkillsDetails('SKILLS_BY_CATEGORY');
     }
@@ -1452,6 +1458,10 @@ hideMenu() {
     this.courseWorkCount = this.courseWorkCount + 1;
   }
   showSkillsDetails(section :string){
+    if (section === 'SKILLS_BY_CATEGORY') {
+      this.selectedSkillsCategoryIndex = null;
+      this.userStore.setSelectedSkillsCategory(null);
+    }
     this.openPanel('skillsDetails', 'Skill Details');
     this.skillCount = this.skillCount + 1;
     this.sectionName=section

@@ -36,7 +36,7 @@
             (edit)="onEditProfileSummary()"
             (moveDown)="onMoveDownProfileSummary()"
           ></resume-profile-summary-section>
-          <resume-profile-summary-bulleted-section
+           <resume-profile-summary-bulleted-section
             *ngSwitchCase="'PROFILE_SUMMARY_BULLETED'"
             [data]="getSectionData('PROFILE_SUMMARY_BULLETED')?.data"
             [isPreview]="isPreview"
@@ -44,7 +44,7 @@
             (edit)="onEditProfileSummaryBulleted()"
             (delete)="removeSection('PROFILE_SUMMARY_BULLETED')"
           ></resume-profile-summary-bulleted-section>
-          <resume-education-section
+         <!-- <resume-education-section
             *ngSwitchCase="'EDUCATION'"
             [data]="getSectionItems('EDUCATION')"
             [isPreview]="isPreview"
@@ -74,9 +74,10 @@
             (add)="onAddSkills()"
             (edit)="onEditSkills()"
           ></resume-skills-bullet-points-section>
+        -->
           <resume-skills-category-section
             *ngSwitchCase="'SKILLS_BY_CATEGORY'"
-            [items]="getSkillsByCategoryNormalized()"
+            [items]="getSectionItems('SKILLS_BY_CATEGORY')"
             [isPreview]="isPreview"
             [isPrintMode]="isPrintMode"
             (edit)="onEditSkillsCategoryItem($event)"
@@ -84,7 +85,7 @@
             (moveDown)="onMoveDownSkillsCategoryItem($event)"
             (deleteItem)="onDeleteSkillsCategoryItem($event)"
           ></resume-skills-category-section>
-          <resume-work-experience-section
+        <!--  <resume-work-experience-section
             *ngSwitchCase="'WORK_EXPERIENCE'"
             [data]="getSectionItems('WORK_EXPERIENCE')"
             [isPreview]="isPreview"
@@ -118,7 +119,7 @@
             (delete)="onDeleteAchievement($event)"
             (moveItemUp)="onMoveUpAchievement($event)"
             (moveItemDown)="onMoveDownAchievement($event)"
-          ></resume-achievements-section>
+          ></resume-achievements-section> -->
           <div *ngSwitchDefault>Section '{{section.section}}' is not supported.</div>
         </ng-container>
       </section>

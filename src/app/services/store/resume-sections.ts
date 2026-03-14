@@ -1,5 +1,5 @@
 // Removed stray PROFILE_SUMMARY and PROFILE_SUMMARY_BULLETED objects at the top of the file
-import { SectionDesc } from "./user-store";
+import { SectionDesc, SectionItem } from "./user-store";
 
 export const sections: Array<SectionDesc> = [
   {
@@ -366,3 +366,80 @@ export const sections: Array<SectionDesc> = [
       ]
     }
   ];
+
+type SectionDefaultsFactory = (section: SectionDesc) => Pick<SectionDesc, 'data' | 'items'>;
+
+const cloneSectionValue = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+
+const cloneSectionDefaults = (section: SectionDesc): Pick<SectionDesc, 'data' | 'items'> => ({
+  data: cloneSectionValue(section.data ?? {}),
+  items: cloneSectionValue(section.items ?? []),
+});
+
+const createSkillCategoryItem = (item: SectionItem, index: number): SectionItem => {
+  const data = item?.data ?? {};
+  const title = data.name ?? data.sub_title ?? `Category ${index + 1}`;
+  const skills = Array.isArray(data.skills) && data.skills.length > 0 ? data.skills : ['TypeScript'];
+
+  return {
+    ...item,
+    id: item?.id ?? `skillCategory${index + 1}`,
+    data: {
+      ...data,
+      name: title,
+      sub_title: data.sub_title ?? title,
+      skills,
+    },
+    actions: {
+      edit: true,
+      delete: true,
+      moveUp: index > 0,
+      moveDown: true,
+      ...(item?.actions ?? {}),
+    },
+  };
+};
+
+const SECTION_DEFAULT_REGISTRY: Record<string, SectionDefaultsFactory> = {
+  CONTACT: cloneSectionDefaults,
+  PROFILE_SUMMARY: cloneSectionDefaults,
+  SKILLS_BULLET_POINTS: cloneSectionDefaults,
+  WORK_EXPERIENCE: cloneSectionDefaults,
+  EDUCATION: cloneSectionDefaults,
+  PROJECT: cloneSectionDefaults,
+  CERTIFICATIONS: cloneSectionDefaults,
+  SKILLS_BY_CATEGORY: (section: SectionDesc) => {
+    const defaults = cloneSectionDefaults(section);
+    const defaultItems = defaults.items ?? [];
+    const items = (defaultItems.length > 0 ? defaultItems : [
+      {
+        id: 'skillCategory1',
+        data: { name: 'Programming Languages', sub_title: 'Programming Languages', skills: ['TypeScript', 'JavaScript'] },
+        actions: { edit: true, delete: true, moveUp: false, moveDown: true },
+      },
+    ]).map((item, index) => createSkillCategoryItem(item, index));
+
+    return {
+      data: defaults.data,
+      items,
+    };
+  },
+};
+
+export function createInitializedSection(sectionName: string): SectionDesc | undefined {
+  const baseSection = sections.find((section) => section.section === sectionName);
+  if (!baseSection) {
+    return undefined;
+  }
+
+  const clonedSection = cloneSectionValue(baseSection);
+  const defaultsFactory = SECTION_DEFAULT_REGISTRY[sectionName] ?? cloneSectionDefaults;
+  const defaults = defaultsFactory(clonedSection);
+
+  return {
+    ...clonedSection,
+    isAdded: true,
+    data: defaults.data ?? {},
+    items: defaults.items ?? [],
+  };
+}

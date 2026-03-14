@@ -10,6 +10,7 @@ import { MenuListItem, ResumeTemplate } from "../bee-compete.model";
 import { Education, Experience, Project, Resume, Certification, ResumeContact, ProfileSummary, JobDescriptionAIResponse, JobApplication, RoundDetails, VendorDetails, ClientDetails, AchievementBulletPoints, IsSectionPresent, SkillV2, Accomplishment, Skill, CertificationBulletPoints, courseWork } from "../resume.model";
 import { ApplicationListDataItem, ClientContact, JobApplicationFeedback, JobApplicationRequest, JobInterviewRounds, ResumeListDataItem, VendorContact } from "../work-ifence-data.model";
 import { Address } from "../contact.model";
+import { createInitializedSection, sections as defaultSections } from "./resume-sections";
 
 @Injectable({
   providedIn: 'root',
@@ -919,7 +920,6 @@ removeSection(sectionName: string) {
   });
 
   // Set isAdded = false in the default sections list
-  const defaultSections = require('./resume-sections').sections;
   const defaultSection = defaultSections.find((s: any) => s.section === sectionName);
   if (defaultSection) defaultSection.isAdded = false;
 
@@ -935,16 +935,17 @@ private clearSectionData(sectionName: string) {
   // Find the section in resume.sections and clear its items
   const sectionObj = resume.sections?.find((s: any) => s.section === sectionName);
   if (sectionObj) {
-    if (["PROFILE_SUMMARY", "RELEVANT_COURSEWORK", "SKILLS_BULLET_POINTS", "SKILLS_CATEGORY", "EDUCATION", "PROJECT", "WORK_EXPERIENCE", "CERTIFICATIONS", "ACHIEVEMENTS_BULLET_POINTS", "CERTIFICATIONS_BULLET_POINTS", "ACHIEVEMENT_WITH_DESC"].includes(sectionName)) {
+    if (["PROFILE_SUMMARY", "PROFILE_SUMMARY_BULLETED", "RELEVANT_COURSEWORK", "SKILLS_BULLET_POINTS", "SKILLS_CATEGORY", "SKILLS_BY_CATEGORY", "EDUCATION", "PROJECT", "WORK_EXPERIENCE", "CERTIFICATIONS", "ACHIEVEMENTS_BULLET_POINTS", "CERTIFICATIONS_BULLET_POINTS", "ACHIEVEMENT_WITH_DESC"].includes(sectionName)) {
       sectionObj.items = [];
+      sectionObj.data = sectionObj.data ?? {};
     }
   }
 
   // Update status flags
   const status = resume.isSectionPresent;
-  if(sectionName === "PROFILE_SUMMARY") status.isSummary = false;
+  if(sectionName === "PROFILE_SUMMARY" || sectionName === "PROFILE_SUMMARY_BULLETED") status.isSummary = false;
   else if(sectionName === "RELEVANT_COURSEWORK") status.isCourseWork = false;
-  else if(sectionName === "SKILLS_BULLET_POINTS" || sectionName === "SKILLS_CATEGORY") status.isSkill = false;
+  else if(sectionName === "SKILLS_BULLET_POINTS" || sectionName === "SKILLS_CATEGORY" || sectionName === "SKILLS_BY_CATEGORY") status.isSkill = false;
   else if(sectionName === "EDUCATION") status.isEducation = false;
   else if(sectionName === "PROJECT") status.isProject = false;
   else if(sectionName === "WORK_EXPERIENCE") status.isExperience = false;
@@ -958,7 +959,6 @@ private clearSectionData(sectionName: string) {
 
 addSection(sectionName: string) {
   // Find the default section definition
-  const defaultSections = require('./resume-sections').sections;
   const defaultSection = defaultSections.find((s: any) => s.section === sectionName);
   if (!defaultSection) {
     console.error(`Section ${sectionName} not found in default sections.`);
@@ -967,9 +967,11 @@ addSection(sectionName: string) {
   // Set isAdded to true in the default list
   defaultSection.isAdded = true;
 
-  // Deep clone the section to add
-  const newSection = JSON.parse(JSON.stringify(defaultSection));
-  newSection.isAdded = true;
+  const newSection = createInitializedSection(sectionName);
+  if (!newSection) {
+    console.error(`Failed to initialize section ${sectionName}.`);
+    return;
+  }
 
   // Get current sections and add the new section as last
   this.state.update((state) => {
@@ -1017,8 +1019,6 @@ addSection(sectionName: string) {
       }
     };
   });
-  // Add default data based on section type
-  this.addDefaultDataForSection(sectionName);
   console.log(`Added section ${sectionName} to resume as last, updated arrow flags.`);
 }
 

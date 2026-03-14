@@ -502,39 +502,56 @@ export class SkillsComponent implements OnInit, OnDestroy {
     this.markFormGroupTouched(this.skillsForm);
 
     if (this.sectionName === 'SKILLS_BY_CATEGORY' && this.selectedCategory) {
-      // Save/update the category and its skills in the selectedResume's SKILLS_BY_CATEGORY section
       const resume = this.resumeSignalForm();
-      const section = resume.sections?.find((s: any) => s.section === 'SKILLS_BY_CATEGORY');
-      let updatedCategory = null;
-      if (section && this.selectedCategory) {
-        // Find the category item in section.items by id or name
-        const categoryName = this.skillsForm.controls['sub_title'].value?.trim();
-        // Always use localSkills for saving
-        let itemToUpdate = section.items?.find((item: any) => {
-          if (item.data?.id && this.selectedCategory.data?.id) {
-            return item.data.id === this.selectedCategory.data.id;
+      const categoryName = this.skillsForm.controls['sub_title'].value?.trim() ?? '';
+      const savedSkills = [...this.localSkills];
+      const selectedCategoryId = this.selectedCategory?.data?.id ?? this.selectedCategory?.id ?? null;
+      const selectedCategoryName = this.selectedCategory?.data?.name ?? this.selectedCategory?.name ?? this.selectedCategory?.sub_title ?? '';
+
+      let updatedCategory: any = null;
+      const updatedSections = (resume.sections ?? []).map((section: any) => {
+        if (section.section !== 'SKILLS_BY_CATEGORY') {
+          return section;
+        }
+
+        const sectionItems = Array.isArray(section.items) ? [...section.items] : [];
+        const itemIndex = sectionItems.findIndex((item: any) => {
+          const itemId = item?.data?.id ?? item?.id ?? null;
+          if (selectedCategoryId != null && itemId != null) {
+            return itemId === selectedCategoryId;
           }
-          return (item.data?.name || item.data?.sub_title) === (this.selectedCategory.data?.name || this.selectedCategory.sub_title);
+
+          const itemName = item?.data?.name ?? item?.name ?? item?.sub_title ?? '';
+          return itemName === selectedCategoryName;
         });
-        if (itemToUpdate) {
-          if (itemToUpdate.data) {
-            itemToUpdate.data.name = categoryName;
-            itemToUpdate.data.skills = [...this.localSkills];
-            updatedCategory = itemToUpdate;
-          }
+
+        const existingItem = itemIndex >= 0 ? sectionItems[itemIndex] : null;
+        const updatedItem = {
+          ...(existingItem ?? {}),
+          data: {
+            ...(existingItem?.data ?? {}),
+            ...(this.selectedCategory?.data ?? {}),
+            name: categoryName,
+            sub_title: categoryName,
+            skills: savedSkills,
+          },
+        };
+
+        if (itemIndex >= 0) {
+          sectionItems[itemIndex] = updatedItem;
         } else {
-          const newCat = { data: { name: categoryName, skills: [...this.localSkills] } };
-          section.items = section.items || [];
-          section.items.push(newCat);
-          updatedCategory = newCat;
+          sectionItems.push(updatedItem);
         }
-        // Also update selectedCategory.data.skills so UI stays in sync
-        if (this.selectedCategory.data) {
-          this.selectedCategory.data.skills = [...this.localSkills];
-        }
-      }
-      // Update selectedSkillsCategory in store so future edits reflect latest
+
+        updatedCategory = updatedItem;
+        return {
+          ...section,
+          items: sectionItems,
+        };
+      });
+
       if (updatedCategory) {
+        this.selectedCategory = updatedCategory;
         this.userStore.setSelectedSkillsCategory(updatedCategory);
       }
       // Update section status for regular skills
@@ -543,7 +560,7 @@ export class SkillsComponent implements OnInit, OnDestroy {
         status.isSkill = true;
         this.userStore.updateSectionStatus(status);
       }
-      this.userStore.setResumeSections(this.sections());
+      this.userStore.setResumeSections(updatedSections);
     } else {
       if (this.sectionName === 'SKILLS_BULLET_POINTS') {
         // Update the SKILLS_BULLET_POINTS section in the selectedResume
@@ -583,12 +600,17 @@ export class SkillsComponent implements OnInit, OnDestroy {
       this.userStore.setMultipleColumnTemplateSections(this.multipleSections())
     }
     else{
-      this.sections().map((section : SectionDesc)=>{
-          if(section.section == this.sectionName){
-            section.editable_section_title = this.skillsForm.controls['section_title'].value?? 'Skills'
-          }
-        })
-        this.userStore.setResumeSections(this.sections())
+      const updatedSections = this.sections().map((section: SectionDesc) => {
+        if (section.section === this.sectionName) {
+          return {
+            ...section,
+            editable_section_title: this.skillsForm.controls['section_title'].value ?? 'Skills'
+          };
+        }
+
+        return section;
+      });
+      this.userStore.setResumeSections(updatedSections)
     }
 
 

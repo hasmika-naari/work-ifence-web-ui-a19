@@ -578,10 +578,15 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   // Helper to get items from sections by section name (all item-based sections use cache)
   getSectionItems(sectionName: string): any[] {
-    // if(sectionName==='CERTIFICATIONS'){
-    //   console.log('[Resume1TemplateComponent] getSectionItems called for section:', this.sectionItemsCache[sectionName]);
-    // }
-    return this.sectionItemsCache[sectionName] ?? [];
+    const liveSection = this.addedSections().find((section: any) => section.section === sectionName);
+    const liveItems = Array.isArray(liveSection?.items) ? liveSection.items : [];
+    const cachedItems = this.sectionItemsCache[sectionName];
+
+    if (Array.isArray(cachedItems) && cachedItems.length === liveItems.length) {
+      return cachedItems;
+    }
+
+    return liveItems;
   }
 
 

@@ -22,10 +22,10 @@ import { ButtonModule } from 'primeng/button';
                   </span>
                 }
                 <div class="skills-category-header-row">
-                  <div class="skills-category-title formal-title">{{ item.data.name }}</div>
+                  <div class="skills-category-title formal-title">{{ getItemTitle(item) }}</div>
                 </div>
                 <div class="skills-inline-list-compact">
-                  @for (skill of item.data.skills; track skill; let last = $last) {
+                  @for (skill of getItemSkills(item); track skill; let last = $last) {
                     <span>{{ skill }}</span>@if (!last) {
                     <span>, </span>
                   }
@@ -50,4 +50,13 @@ export class SkillsCategorySectionComponent {
   @Output() moveUp = new EventEmitter<number>();
   @Output() moveDown = new EventEmitter<number>();
   @Output() deleteItem = new EventEmitter<number>();
+
+  getItemTitle(item: any): string {
+    return item?.data?.name ?? item?.data?.sub_title ?? item?.name ?? item?.sub_title ?? '';
+  }
+
+  getItemSkills(item: any): string[] {
+    const skills = item?.data?.skills ?? item?.skills;
+    return Array.isArray(skills) ? skills : [];
+  }
 }
