@@ -114,13 +114,13 @@
             (delete)="onDeleteCertification($event)"
             (moveUp)="onMoveUpCertification($event)"
             (moveDown)="onMoveDownCertification($event)"></resume-certifications-section>
-         <!--  <resume-achievements-section *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" 
+          <resume-achievements-section *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" 
             [achievements]="getAchievementBulletPointsSection() || []" [isPreview]="isPreview" [isPrintMode]="isPrintMode"
             (edit)="onEditAchievement($event)"
             (delete)="onDeleteAchievement($event)"
             (moveItemUp)="onMoveUpAchievement($event)"
             (moveItemDown)="onMoveDownAchievement($event)"
-          ></resume-achievements-section> -->
+          ></resume-achievements-section>
           <div *ngSwitchDefault>Section '{{section.section}}' is not supported.</div>
         </ng-container>
       </section>

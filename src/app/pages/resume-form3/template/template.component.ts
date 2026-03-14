@@ -73,6 +73,7 @@ export const RESUME1_TEMPLATE_SECTION_TITLES: string[] = [
   'SKILLS_BULLET_POINTS',
   'WORK_EXPERIENCE',
   'EDUCATION',
+  'ACHIEVEMENTS_BULLET_POINTS',
   'PROJECT',
 ];
 
@@ -496,8 +497,7 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
 
   getAccomplishmentSection() { const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENT_WITH_DESC'); return section?.items?.map((i: any) => i.data) || []; }
   getAchievementBulletPointsSection() {
-    const section = this.addedSections().find((s: any) => s.section === 'ACHIEVEMENTS_BULLET_POINTS');
-    return section?.items || [];
+    return this.getSectionItems('ACHIEVEMENTS_BULLET_POINTS');
   }
   getCertificationBulletPointsSection() { const section = this.addedSections().find((s: any) => s.section === 'CERTIFICATIONS_BULLET_POINTS'); return section?.items?.[0]?.data || {}; }
   getCertificationsSection() { const section = this.addedSections().find((s: any) => s.section === 'CERTIFICATIONS'); return section?.items?.map((i: any) => i.data) || []; }

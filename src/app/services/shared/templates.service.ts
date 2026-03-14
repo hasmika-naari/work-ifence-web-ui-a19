@@ -130,6 +130,37 @@ const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: a
           ${context.formatHTMLTemplate1CertificationV1(certItems)}
       </section>`;
   },
+  ACHIEVEMENTS_BULLET_POINTS: (section: any, resumeForm: any) => {
+    const achievementItems = (section?.items ?? [])
+      .map((item: any) => {
+        const data = item?.data ?? item ?? {};
+        return {
+          title: (data.title ?? '').trim(),
+          organization: (data.organization ?? '').trim(),
+          year: String(data.year ?? '').trim()
+        };
+      })
+      .filter((item: any) => item.title || item.organization || item.year);
+
+    if (!(achievementItems.length > 0 && resumeForm.isSectionPresent?.isAchievement)) return null;
+
+    return `
+      <section class="course-work section-details trigger-area">
+        <span class="summary-section-title">${section.editable_section_title || 'Achievements'}</span>
+        <div class="course-work-section-content" style="margin-top:7px;">
+          ${achievementItems.map((item: any) => `
+            <div class="achievement-item" style="margin: 0 0 8px 0;">
+              <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+                <div>
+                  ${item.title ? `<div class="job-title"><b>${item.title}</b></div>` : ''}
+                  ${item.organization ? `<div class="company-duration">${item.organization}</div>` : ''}
+                </div>
+                ${item.year ? `<div class="company-duration">${item.year}</div>` : ''}
+              </div>
+            </div>`).join('')}
+        </div>
+      </section>`;
+  },
   ACCOMPLISHMENTS: (section: any, resumeForm: any) => {
     const achvItems = section?.items?.map((i: any) => i.data.description) ?? [];
     if (!(achvItems.length > 0 && resumeForm.isSectionPresent?.isAchievement)) return null;
