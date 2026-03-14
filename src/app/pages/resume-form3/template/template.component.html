@@ -106,7 +106,7 @@
             (editProject)="editProjectItem($event)"
             (deleteProject)="onDeleteProject($event)"
           ></resume-project-section>
-          <!--  <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'"
+           <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'"
             [certifications]="getSectionItems('CERTIFICATIONS')"
             [isPreview]="isPreview"
             [isPrintMode]="isPrintMode"
@@ -114,7 +114,7 @@
             (delete)="onDeleteCertification($event)"
             (moveUp)="onMoveUpCertification($event)"
             (moveDown)="onMoveDownCertification($event)"></resume-certifications-section>
-          <resume-achievements-section *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" 
+         <!--  <resume-achievements-section *ngSwitchCase="'ACHIEVEMENTS_BULLET_POINTS'" 
             [achievements]="getAchievementBulletPointsSection() || []" [isPreview]="isPreview" [isPrintMode]="isPrintMode"
             (edit)="onEditAchievement($event)"
             (delete)="onDeleteAchievement($event)"
