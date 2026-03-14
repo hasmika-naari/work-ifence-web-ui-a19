@@ -113,11 +113,12 @@ const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: a
       </section>`;
   },
   PROJECT: (section: any, resumeForm: any, context: any) => {
-    if (!(resumeForm.project.length > 0 && resumeForm.isSectionPresent.isProject)) return null;
+    const projectItems = section?.items?.map((item: any) => item?.data ?? item).filter(Boolean) ?? [];
+    if (!(projectItems.length > 0 && resumeForm.isSectionPresent.isProject)) return null;
     return `
       <section class="course-work section-details trigger-area">
           <span class="summary-section-title">Projects</span>
-          ${context.formatHTMLTemplate1ProjectV1(resumeForm.project)}  
+          ${context.formatHTMLTemplate1ProjectV1(projectItems)}  
       </section>`;
   },
   CERTIFICATIONS: (section: any, resumeForm: any, context: any) => {
@@ -2263,30 +2264,36 @@ ul {
 
   public formatHTMLTemplate1ProjectV1(items : Project[]) : string{
     return items.map((item : Project)=> 
-    `
+  {
+    const projectName = item?.project_name ?? '';
+    const projectLink = item?.project_link ?? '';
+    const technologiesUsed = item?.technologies_used ?? '';
+    const description = item?.description ?? '';
+
+    return `
     <div  class="course-work-section-content template1-section-content trigger-area" style="margin-top:7px;">
-        ${item.project_name.length > 0?
+    ${projectName.length > 0?
             `
           <div style="flex: 1;text-align: left;margin:0;padding:0;" class="project-content">
             <div class="education-p">
-                ${item.project_name.length > 0 && item.project_link.length>0?
+        ${projectName.length > 0 && projectLink.length > 0?
                 `
-                    <p style="margin:0;padding:0;"><a style="color:#000000DE" href="${item.project_link}"><b>${item.project_name}</b></a></p>
+          <p style="margin:0;padding:0;"><a style="color:#000000DE" href="${projectLink}"><b>${projectName}</b></a></p>
                 ` : ''
                 }
-                ${item.project_name.length > 0 && item.project_link.length==0?
+        ${projectName.length > 0 && projectLink.length === 0?
                 `
-                    <p style="margin:0;padding:0;"><b>${item.project_name}</b></p>
+          <p style="margin:0;padding:0;"><b>${projectName}</b></p>
                 ` : ''
                 }
-                ${item.project_name.length > 0 && item.technologies_used.length > 0?
+        ${projectName.length > 0 && technologiesUsed.length > 0?
                 `
                     <p>|</p>
                 ` : ''
                 }
-                ${item.technologies_used.length > 0?
+        ${technologiesUsed.length > 0?
                 `
-                    <p>{{item.technologies_used}}</p>
+          <p>${technologiesUsed}</p>
                 ` : ''
                 }
             </div> 
@@ -2296,12 +2303,13 @@ ul {
         <div class="project-content-container" style="margin:0;padding:0;">
         <div class="project-content">
             ${
-              item.description
+        description
             }
         </div>
         </div>
     </div>
-    `).join('');
+  `;
+  }).join('');
   }
 
 

@@ -96,7 +96,7 @@
             (moveUp)="onMoveUpExperience($event)"
             (moveDown)="onMoveDownExperience($event)"
           ></resume-work-experience-section>
-        <!--   <resume-project-section
+         <resume-project-section
             *ngSwitchCase="'PROJECT'"
             [items]="getSectionItems('PROJECT')"
             [isPreview]="isPreview"
@@ -106,7 +106,7 @@
             (editProject)="editProjectItem($event)"
             (deleteProject)="onDeleteProject($event)"
           ></resume-project-section>
-          <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'"
+          <!--  <resume-certifications-section *ngSwitchCase="'CERTIFICATIONS'"
             [certifications]="getSectionItems('CERTIFICATIONS')"
             [isPreview]="isPreview"
             [isPrintMode]="isPrintMode"
