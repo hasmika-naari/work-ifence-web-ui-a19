@@ -8,7 +8,7 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [ButtonModule],
   template: `
-    <div class="section achievements">
+    <div class="section achievements template1-section template1-achievements-section">
       @if (achievements && achievements.length) {
         <ul class="achievements-list">
           @for (achievement of achievements; track achievement; let i = $index) {

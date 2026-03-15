@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [FormsModule, ButtonModule],
   template: `
-    <div class="section profile-summary">
+    <div class="section profile-summary template1-section template1-profile-summary-section">
       @switch (data.format) {
         @case ('paragraph') {
           <div [innerHTML]="data.original_summary_html || data.profile_summary"></div>

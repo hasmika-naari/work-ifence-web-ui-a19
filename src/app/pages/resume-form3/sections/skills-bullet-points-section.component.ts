@@ -7,7 +7,7 @@ import { SkillV2 } from 'src/app/services/resume.model';
   standalone: true,
   imports: [],
   template: `
-    <div class="section skills-bullet-points">
+    <div class="section skills-bullet-points template1-section template1-skills-bullet-points-section">
       @if (allSkills.length) {
         <div class="skills-list">
           <ul class="skills-bullets">

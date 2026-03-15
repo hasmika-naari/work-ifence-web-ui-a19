@@ -1,0 +1,303 @@
+.template1-root {
+  --template1-font-family: "Poppins", "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --t1-name-size: 1.4375rem;
+  --t1-subtitle-size: 0.8125rem;
+  --t1-contact-size: 0.75rem;
+  --t1-section-title-size: 0.75rem;
+  --t1-item-title-size: 0.71875rem;
+  --t1-label-size: 0.703125rem;
+  --t1-body-size: 0.703125rem;
+  --t1-meta-size: 0.65625rem;
+  --t1-section-title-line-height: 1.2;
+  --t1-line-height: 1.48;
+  --template1-heading-color: #111827;
+  --template1-text-color: #1f2937;
+  --template1-meta-color: #6b7280;
+  --template1-divider-color: rgba(101, 105, 109, 0.24);
+  --t1-section-gap: 1rem;
+  --t1-item-gap: 0.75rem;
+  --t1-bullet-gap: 0.3125rem;
+  --t1-list-indent: 1rem;
+  --t1-readable-width: 100%;
+  --template1-name-size: var(--t1-name-size);
+  --template1-subtitle-size: var(--t1-subtitle-size);
+  --template1-contact-size: var(--t1-contact-size);
+  --template1-title-size: var(--t1-section-title-size);
+  --template1-item-title-size: var(--t1-item-title-size);
+  --template1-label-size: var(--t1-label-size);
+  --template1-body-size: var(--t1-body-size);
+  --template1-meta-size: var(--t1-meta-size);
+  --template1-title-line-height: var(--t1-section-title-line-height);
+  --template1-body-line-height: var(--t1-line-height);
+  --template1-section-gap: var(--t1-section-gap);
+  --template1-item-gap: var(--t1-item-gap);
+  --template1-bullet-gap: var(--t1-bullet-gap);
+  --template1-list-indent: var(--t1-list-indent);
+  font-family: var(--template1-font-family);
+  color: var(--template1-text-color);
+}
+
+.template1-root:not(.is-print-mode) {
+  --t1-name-size: clamp(2.15rem, 1.85rem + 1vw, 2.45rem);
+  --t1-subtitle-size: clamp(1.08rem, 0.98rem + 0.28vw, 1.2rem);
+  --t1-contact-size: clamp(0.94rem, 0.88rem + 0.18vw, 1rem);
+  --t1-section-title-size: clamp(0.98rem, 0.92rem + 0.18vw, 1.04rem);
+  --t1-item-title-size: clamp(0.94rem, 0.9rem + 0.14vw, 0.98rem);
+  --t1-label-size: clamp(0.92rem, 0.88rem + 0.14vw, 0.97rem);
+  --t1-body-size: clamp(0.94rem, 0.9rem + 0.14vw, 0.98rem);
+  --t1-meta-size: clamp(0.84rem, 0.8rem + 0.12vw, 0.9rem);
+  --t1-line-height: 1.62;
+  --t1-section-gap: clamp(1.2rem, 1.05rem + 0.4vw, 1.55rem);
+  --t1-item-gap: clamp(0.95rem, 0.82rem + 0.32vw, 1.2rem);
+  --t1-bullet-gap: clamp(0.38rem, 0.32rem + 0.12vw, 0.52rem);
+  --t1-list-indent: clamp(1.08rem, 1rem + 0.14vw, 1.2rem);
+  --t1-readable-width: 100%;
+  width: 100%;
+  max-width: 100% !important;
+  margin: 0;
+}
+
+.template1-root.is-preview {
+  --t1-readable-width: 100%;
+}
+
+.template1-root .resume-contact-us {
+  text-align: left !important;
+  margin-bottom: 0.9rem;
+  padding: 0.35rem 0;
+
+  .profile-full-name {
+    white-space: pre-wrap;
+    padding-bottom: 2px;
+    font-family: "Poppins", sans-serif;
+    text-transform: uppercase;
+    line-height: 1;
+    font-weight: 500 !important;
+    font-size: var(--template1-name-size);
+    margin-bottom: 0;
+    text-align: left;
+    color: #2c3e50;
+  }
+
+  .profile-sub-title {
+    white-space: pre-wrap;
+    padding-bottom: 0.5rem;
+    font-size: var(--template1-subtitle-size);
+    line-height: 1.3;
+    font-weight: 500;
+    margin-bottom: 0 !important;
+    text-align: left;
+    width: 100%;
+    display: block;
+    color: #34495e;
+  }
+
+  .profile-contact-details-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: left;
+    font-size: var(--template1-contact-size) !important;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.9rem;
+
+    li {
+      white-space: pre-wrap;
+      font-size: var(--template1-contact-size);
+      line-height: 1.35;
+      font-weight: 400;
+      display: flex;
+      width: auto;
+      margin-left: 1px;
+      padding-right: 14px !important;
+      margin-bottom: 0.2rem;
+      justify-content: center;
+      align-items: center;
+      color: #5a6c7d;
+
+      i,
+      span {
+        color: #5a6c7d;
+      }
+
+      a {
+        text-decoration: underline;
+        white-space: pre-wrap;
+        font-size: var(--template1-contact-size);
+        line-height: 1.35;
+        font-weight: 400;
+        display: flex;
+        width: auto;
+        margin-left: 1px;
+        padding-left: 2px;
+        justify-content: center;
+        align-items: center;
+        color: #5a6c7d;
+
+        &:hover {
+          color: #34495e;
+        }
+      }
+    }
+  }
+}
+
+.template1-root a {
+  text-decoration: underline;
+}
+
+.template1-root .project-content ol,
+.template1-root .project-content ul {
+  padding-left: 1.09rem !important;
+  margin: 0 !important;
+}
+
+.template1-root .project-content ol li,
+.template1-root .project-content ul li,
+.template1-root .project-content p {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 400;
+  padding: 3px 0;
+  font-family: "Poppins", sans-serif;
+  color: black;
+  white-space: pre-wrap;
+}
+
+.template1-root .project-content p {
+  margin: 0;
+}
+
+.template1-root .section-header {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--template1-divider-color);
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.5rem;
+  min-height: 2rem;
+}
+
+.template1-root .summary-section-title {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  font-family: var(--template1-font-family);
+  font-size: var(--template1-title-size);
+  line-height: var(--template1-title-line-height);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--template1-heading-color);
+}
+
+.template1-root .section-header .section-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  gap: 6px;
+  z-index: 2;
+  transform: translateX(24px);
+  transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1), transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.template1-root .section-header:hover .section-actions {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.template1-root .resume-summary-text {
+  white-space: pre-wrap;
+  text-align: left;
+  font-size: var(--template1-body-size);
+  line-height: var(--template1-body-line-height);
+  font-weight: 400;
+  padding: 0.5rem 0;
+  font-family: var(--template1-font-family);
+  color: var(--template1-text-color);
+  margin: 0 !important;
+}
+
+.template1-root .section:not(.contact-info),
+.template1-root .section:not(.contact-info) *:not(.fa-icon):not(.material-icons):not(.pi) {
+  font-family: var(--template1-font-family);
+}
+
+.template1-root .profile-summary p,
+.template1-root .profile-summary li,
+.template1-root .profile-summary-bulleted p,
+.template1-root .profile-summary-bulleted li,
+.template1-root .skills-bullets li,
+.template1-root .skills-inline-list-compact,
+.template1-root .job-description,
+.template1-root .job-description p,
+.template1-root .job-description li,
+.template1-root .education-school,
+.template1-root .education-gpa,
+.template1-root .project-meta,
+.template1-root .project-description,
+.template1-root .project-section-label,
+.template1-root .project-rich-text,
+.template1-root .project-rich-text li,
+.template1-root .project-tech-label,
+.template1-root .tech-chip,
+.template1-root .cert-org,
+.template1-root .ach-org {
+  font-size: var(--template1-body-size);
+  line-height: var(--template1-body-line-height);
+  color: var(--template1-text-color);
+}
+
+.template1-root .company,
+.template1-root .dates,
+.template1-root .education-meta,
+.template1-root .education-meta-line,
+.template1-root .project-meta,
+.template1-root .cert-year,
+.template1-root .ach-year,
+.template1-root .empty-bullets,
+.template1-root .no-skills,
+.template1-root .no-certifications-message,
+.template1-root .skills-category p {
+  font-size: var(--template1-meta-size);
+  line-height: 1.45;
+  color: var(--template1-meta-color);
+}
+
+.template1-root .job-title,
+.template1-root .education-degree,
+.template1-root .project-title,
+.template1-root .skills-category-title,
+.template1-root .cert-title,
+.template1-root .ach-title {
+  font-size: var(--template1-item-title-size);
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--template1-heading-color);
+}
+
+.template1-root .profile-summary ul,
+.template1-root .profile-summary-bulleted ul,
+.template1-root .skills-bullets,
+.template1-root .project-rich-text ul,
+.template1-root .project-rich-text ol,
+.template1-root .job-description ul,
+.template1-root .job-description ol {
+  padding-left: var(--template1-list-indent);
+  margin: 0.25rem 0 0;
+}
+
+.template1-root .profile-summary li,
+.template1-root .profile-summary-bulleted li,
+.template1-root .skills-bullets li,
+.template1-root .project-rich-text li,
+.template1-root .job-description li {
+  margin-bottom: var(--template1-bullet-gap);
+}

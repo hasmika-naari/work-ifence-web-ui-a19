@@ -1,0 +1,256 @@
+.template1-root .add-education-icon {
+  display: none;
+  cursor: pointer;
+  font-size: small;
+}
+
+.template1-root .resume-education:hover .add-education-icon,
+.template1-root .course-work:hover .add-education-icon,
+.template1-root .resume-summary:hover .add-education-icon,
+.template1-root .skill-section:hover .add-education-icon {
+  display: block;
+  cursor: pointer;
+}
+
+.template1-root.is-preview .summary-section-title,
+.template1-root.is-preview .summary-section-title:hover {
+  cursor: default !important;
+}
+
+.template1-root.is-preview .drag-icon {
+  display: none !important;
+}
+
+.template1-root .summary-section-title {
+  cursor: grab !important;
+  text-transform: uppercase;
+  white-space: pre-wrap;
+  font-size: 20px;
+  line-height: 20px;
+  display: block;
+  text-align: left;
+  position: relative;
+  transition: background-color 0.2s ease;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  .is-preview &,
+  .is-preview &:active {
+    cursor: default !important;
+  }
+
+  &::before {
+    content: '⋮⋮';
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    color: #666;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+}
+
+.template1-root .trigger-area {
+  .template1-section-content,
+  .education-section-content,
+  .project-content-container,
+  .education-item-container,
+  .education-content,
+  .education-item,
+  .resume-summary-text,
+  p,
+  div,
+  span {
+    cursor: default !important;
+
+    &:not(button):not(a):not(input):not([role="button"]):not(.pi) {
+      pointer-events: auto;
+    }
+  }
+
+  button,
+  a,
+  input,
+  [role="button"],
+  .pi,
+  .wif-tooltip,
+  .section-actions {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+
+  .summary-section-title {
+    cursor: grab !important;
+    pointer-events: auto !important;
+
+    &:active {
+      cursor: grabbing !important;
+    }
+  }
+}
+
+.template1-root .opacity-50 {
+  opacity: 0.5;
+}
+
+.template1-root .opacity-100 {
+  opacity: 1;
+}
+
+.template1-root .tp-50 {
+  background-color: #ffffffa4;
+}
+
+.template1-root .unsaved-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: #fff7e6;
+  border: 1px solid #ffd591;
+  color: #8c6d1f;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.template1-root .save-btn {
+  background: #1677ff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.template1-root .tp-0 {
+  background-color: #ffffff00;
+}
+
+.template1-root .section-actions {
+  position: relative;
+  top: 0;
+  right: 0;
+  display: flex;
+  border-radius: 1000px !important;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  p-icon {
+    border-radius: 50%;
+    background-color: #eeeeee85;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  p-icon:hover {
+    background-color: #eee;
+    transform: scale(1.1);
+  }
+}
+
+.template1-root .sub-items-actions {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  display: flex;
+  border-radius: 1000px !important;
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  .icon {
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    background-color: #eeeeee;
+  }
+
+  .icon:hover {
+    transform: scale(1.1);
+  }
+}
+
+.template1-root .cer-sub-items-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  border-radius: 1000px !important;
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 100 !important;
+
+  .icon {
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    background-color: #eeeeee;
+  }
+
+  .icon:hover {
+    transform: scale(1.1);
+  }
+}
+
+.template1-root .resume-contact-us:hover .section-actions,
+.template1-root .summary-section-title:hover .section-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.template1-root .project-content-container:hover .sub-items-actions,
+.template1-root .project-content-container:hover .cer-sub-items-actions {
+  opacity: 1 !important;
+  transform: translateX(0);
+}
+
+.template1-root .pi-plus {
+  color: #3498db;
+}
+
+.template1-root .pi-pencil {
+  color: #2ecc71;
+}
+
+.template1-root .pi-eye-slash,
+.template1-root .pi-eye {
+  color: #f39c12;
+}
+
+.template1-root .pi-times {
+  color: #e74c3c;
+}
+
+.template1-root .pi-arrow-up,
+.template1-root .pi-arrow-down,
+.template1-root .pi-angle-up,
+.template1-root .pi-angle-down {
+  color: #7f8c8d;
+}
+
+.template1-root .pi-arrow-up:hover,
+.template1-root .pi-arrow-down:hover,
+.template1-root .pi-angle-up:hover,
+.template1-root .pi-angle-down:hover {
+  color: #2c3e50;
+}
+
+.template1-root .opacity-full {
+  opacity: 1;
+}

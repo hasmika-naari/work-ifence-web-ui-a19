@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [ButtonModule],
   template: `
-    <div class="section profile-summary-bulleted">
+    <div class="section profile-summary-bulleted template1-section template1-profile-summary-bulleted-section">
       @if (data?.profile_summary) {
         <div>
           <div class="summary-bullets-html" [innerHTML]="data.profile_summary"></div>

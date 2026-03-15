@@ -9,12 +9,12 @@
   justify-content: space-between;
   margin-bottom: 0.5rem;
 }
-.skills-title {
+.template1-skills-bullet-points-section .skills-title {
   font-size: var(--template1-title-size, 0.75rem);
   font-weight: 600;
   color: var(--template1-heading-color, #111827);
 }
-.icon-btn {
+.template1-skills-bullet-points-section .icon-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -23,7 +23,7 @@
   color: #007ad9;
   transition: color 0.2s;
 }
-.icon-btn:hover {
+.template1-skills-bullet-points-section .icon-btn:hover {
   color: #005fa3;
 }
 .skills-list {

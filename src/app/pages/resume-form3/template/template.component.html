@@ -1,4 +1,4 @@
-<div class="container" [class.is-preview]="isPreview" [class.is-print-mode]="isPrintMode">
+<div class="container template1-root" [class.is-preview]="isPreview" [class.is-print-mode]="isPrintMode">
   <!-- Always show contact section at the top -->
   <section class="trigger-area resume-contact-us">
   <resume-contact-section [data]="getContactSection()" (editContact)="showContact($event)" (dataChange)="onContactSectionUpdated()" [isFormPanleClosed]="isPreview" [isPrintMode]="isPrintMode"></resume-contact-section>

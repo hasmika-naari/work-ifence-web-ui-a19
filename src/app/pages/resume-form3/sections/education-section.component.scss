@@ -76,7 +76,7 @@
   opacity: 1;
   visibility: visible;
 }
-.icon-btn {
+.template1-education-section .icon-btn {
   border: none;
   background: transparent;
   cursor: pointer;
@@ -88,28 +88,28 @@
   justify-content: center;
   transition: background 0.2s, color 0.2s;
 }
-.icon-btn.pi-pencil {
+.template1-education-section .icon-btn.pi-pencil {
   color: #fff;
   background: #2ecc71;
 }
-.icon-btn.pi-pencil:hover {
+.template1-education-section .icon-btn.pi-pencil:hover {
   background: #27ae60;
 }
-.icon-btn.pi-trash {
+.template1-education-section .icon-btn.pi-trash {
   color: #fff;
   background: #e74c3c;
 }
-.icon-btn.pi-trash:hover {
+.template1-education-section .icon-btn.pi-trash:hover {
   background: #c0392b;
 }
-.icon-btn.pi-arrow-up, .icon-btn.pi-arrow-down {
+.template1-education-section .icon-btn.pi-arrow-up, .template1-education-section .icon-btn.pi-arrow-down {
   color: #fff;
   background: #5a6c7d;
 }
-.icon-btn.pi-arrow-up:hover, .icon-btn.pi-arrow-down:hover {
+.template1-education-section .icon-btn.pi-arrow-up:hover, .template1-education-section .icon-btn.pi-arrow-down:hover {
   background: #34495e;
 }
-.icon-btn:disabled {
+.template1-education-section .icon-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

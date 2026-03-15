@@ -9,7 +9,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
   imports: [ButtonModule, SplitCommaPipe],
   template: `
-    <div class="section project">
+    <div class="section project template1-section template1-project-section">
       @if (items && items.length) {
         <div>
           @for (item of items; track item; let i = $index; let last = $last) {

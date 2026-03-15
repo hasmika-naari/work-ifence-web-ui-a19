@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [ButtonModule],
   template: `
-    <div class="section skills-category">
+    <div class="section skills-category template1-section template1-skills-category-section">
       @if (items && items.length) {
         <div>
           @for (item of items; track item; let i = $index) {

@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [ButtonModule],
   template: `
-    <div class="section education">
+    <div class="section education template1-section template1-education-section">
       @if (data && data.length) {
         <div>
           @for (edu of data; track trackByEducationId(i, edu); let i = $index) {

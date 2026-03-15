@@ -9,7 +9,7 @@ import { Experience } from 'src/app/services/resume.model';
   standalone: true,
   imports: [ButtonModule],
   template: `
-    <div class="section work-experience">
+    <div class="section work-experience template1-section template1-work-experience-section">
       @if (data && data.length) {
         <div class="work-experience-list">
           @for (job of data; track trackByExperienceId(i, job); let i = $index) {

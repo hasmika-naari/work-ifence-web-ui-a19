@@ -9,7 +9,7 @@ import { IconsModule } from 'src/app/shared/icons.module';
   standalone: true,
   imports: [ButtonModule, IconsModule],
   template: `
-    <div class="resume-contact-details" (mouseenter)="showEdit=true" (mouseleave)="showEdit=false" style="position:relative;">
+    <div class="section contact-info template1-section template1-contact-section resume-contact-details" (mouseenter)="showEdit=true" (mouseleave)="showEdit=false" style="position:relative;">
       @if (showEdit && !isFormPanleClosed) {
         <p-button
           icon="pi pi-pencil"
