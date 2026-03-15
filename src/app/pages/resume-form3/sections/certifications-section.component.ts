@@ -9,21 +9,21 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [ButtonModule],
   template: `
-    <div class="section certifications" style="text-align: left;">
+    <div class="section certifications">
       @if (certifications && certifications.length) {
         <ul class="certifications-list">
           @for (cert of certifications; track cert; let i = $index) {
-            <li class="certification-item" style="display: flex; align-items: center; gap: 0em; padding: 0;">
-              <span class="cert-details" style="flex: 1 1 auto;">
-                <span class="cert-title" style="font-weight: 500;">{{ cert.data?.name || cert.data?.title }}</span>
+            <li class="certification-item">
+              <span class="cert-details">
+                <span class="cert-title">{{ cert.data?.name || cert.data?.title }}</span>
                 @if (cert.data?.authority || cert.data?.organization || cert.data?.issuer) {
-                  <span class="cert-org" style="margin-left: 1.2em; color: #555;">
+                  <span class="cert-org">
                     {{ cert.data?.authority || cert.data?.organization || cert.data?.issuer }}
                   </span>
                 }
               </span>
               @if (cert.data?.date || cert.data?.year) {
-                <span class="cert-year" style="min-width: 80px; text-align: right; color: #888;">
+                <span class="cert-year">
                   {{ cert.data?.date || cert.data?.year }}
                 </span>
               }
@@ -37,7 +37,7 @@ import { ButtonModule } from 'primeng/button';
           }
         </ul>
       } @else {
-        <div class="no-certifications-message" style="color: #b0b0b0; font-size: 1em; padding: 1em 0; text-align: left;">
+        <div class="no-certifications-message">
           No certifications added yet.
         </div>
       }

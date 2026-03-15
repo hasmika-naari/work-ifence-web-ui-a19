@@ -1,8 +1,8 @@
 
 .section.achievements {
   padding: 0rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  border-radius: 0;
+  margin-bottom: 0;
 }
 
 .achievements-list {
@@ -15,10 +15,10 @@
 .achievement-item {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 0.5em;
-  padding: 0.2em 0 0.2em 0;
+  margin-bottom: 0.75rem;
+  padding: 0.1rem 0;
   position: relative;
-  gap: 0.7em;
+  gap: 0.5rem;
   border-radius: 0;
   background: none;
   box-shadow: none;
@@ -49,24 +49,24 @@
 
 .ach-title {
   font-weight: 600;
-  color: #222;
-  font-size: 1.08em;
-  line-height: 1.2;
+  color: var(--template1-heading-color, #111827);
+  font-size: var(--template1-item-title-size, 0.71875rem);
+  line-height: 1.35;
   margin-bottom: 0.1em;
   word-break: break-word;
 }
 
 .ach-org {
-  color: #555;
-  font-size: 0.98em;
+  color: var(--template1-text-color, #1f2937);
+  font-size: var(--template1-body-size, 0.6875rem);
   margin-left: 0;
-  line-height: 1.1;
+  line-height: var(--template1-body-line-height, 1.55);
   word-break: break-word;
 }
 
 .ach-year {
-  color: #888;
-  font-size: 0.97em;
+  color: var(--template1-meta-color, #6b7280);
+  font-size: var(--template1-meta-size, 0.625rem);
   margin-left: 1em;
   white-space: nowrap;
   align-self: flex-start;

@@ -11,8 +11,8 @@ import { ButtonModule } from 'primeng/button';
       @if (data && data.length) {
         <div>
           @for (edu of data; track trackByEducationId(i, edu); let i = $index) {
-            <div class="education-item" style="position:relative;">
-              <div class="education-item-container" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; position: relative; width: 100%;">
+            <div class="education-item">
+              <div class="education-item-container">
                 @if (!isPreview) {
                   <span class="education-item-actions">
                     <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="edit.emit(i)"></button>
@@ -21,41 +21,41 @@ import { ButtonModule } from 'primeng/button';
                     <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" [disabled]="i === data.length - 1" (click)="onMoveDown(i)"></button>
                   </span>
                 }
-                <div style="display: flex; align-items: flex-start; width: 100%;">
-                  <div style="flex:1; min-width:0;">
-                    <div style="font-weight:600;">{{ (edu.data?.degree && edu.data?.field_of_study) ? (edu.data.degree + ' in ' + edu.data.field_of_study) : (edu.data?.degree || edu.data?.field_of_study || 'Degree and Field of Study') }}</div>
-                    <div style="color:#555; font-size:14px;">{{ edu.data?.school_name || 'School or University' }}</div>
+                <div class="education-row">
+                  <div class="education-main">
+                    <div class="education-degree">{{ (edu.data?.degree && edu.data?.field_of_study) ? (edu.data.degree + ' in ' + edu.data.field_of_study) : (edu.data?.degree || edu.data?.field_of_study || 'Degree and Field of Study') }}</div>
+                    <div class="education-school">{{ edu.data?.school_name || 'School or University' }}</div>
                   </div>
-                  <span style="margin-left:24px; text-align:right; min-width:120px;">
-                    <div style="color:#888; font-size:13px;">{{ edu.data?.school_location || 'Location' }}</div>
-                    <div style="color:#888; font-size:13px;">{{ edu.data?.graduation_date || 'Date Period' }}</div>
+                  <span class="education-meta">
+                    <div class="education-meta-line">{{ edu.data?.school_location || 'Location' }}</div>
+                    <div class="education-meta-line">{{ edu.data?.graduation_date || 'Date Period' }}</div>
                   </span>
                 </div>
-                <div style="color:#888; font-size:13px; margin-left:2px;">GPA - {{ edu.data?.gpa || 'GPA/Percentage' }}</div>
+                <div class="education-gpa">GPA - {{ edu.data?.gpa || 'GPA/Percentage' }}</div>
               </div>
             </div>
           }
         </div>
       } @else {
-        <div class="education-item" style="position:relative;">
-          <div class="education-item-container" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; position: relative; width: 100%;">
+        <div class="education-item">
+          <div class="education-item-container">
             @if (!isPreview) {
               <span class="education-item-actions">
                 <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="onDummyEdit()"></button>
                 <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" disabled></button>
               </span>
             }
-            <div style="display: flex; align-items: flex-start; width: 100%;">
-              <div style="flex:1; min-width:0;">
-                <div style="font-weight:600;">Degree and Field of Study</div>
-                <div style="color:#555; font-size:14px;">School or University</div>
+            <div class="education-row">
+              <div class="education-main">
+                <div class="education-degree">Degree and Field of Study</div>
+                <div class="education-school">School or University</div>
               </div>
-              <span style="margin-left:24px; text-align:right; min-width:120px;">
-                <div style="color:#888; font-size:13px;">Location</div>
-                <div style="color:#888; font-size:13px;">Date Period</div>
+              <span class="education-meta">
+                <div class="education-meta-line">Location</div>
+                <div class="education-meta-line">Date Period</div>
               </span>
             </div>
-            <div style="color:#888; font-size:13px; margin-left:2px;">GPA - GPA/Percentage</div>
+            <div class="education-gpa">GPA - GPA/Percentage</div>
           </div>
         </div>
       }

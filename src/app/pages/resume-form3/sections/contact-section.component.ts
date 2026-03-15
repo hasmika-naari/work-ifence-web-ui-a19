@@ -28,14 +28,23 @@ import { IconsModule } from 'src/app/shared/icons.module';
       </div>
       <div class="resume-contact-icons-line">
         <span class="icon fa-icon phone-icon"></span> <span class="resume-contact-label">{{ data.phone_number }}</span>
+        @if (data.email_address || data.linkedIn_profile_display_name || data.github_profile_display_name) {
+          <span class="resume-contact-separator">|</span>
+        }
         @if (data.email_address) {
           <span class="icon fa-icon email-icon"></span> <span class="resume-contact-label">{{ data.email_address }}</span>
+          @if (data.linkedIn_profile_display_name || data.github_profile_display_name) {
+            <span class="resume-contact-separator">|</span>
+          }
         }
         @if (data.linkedIn_profile_display_name) {
           <span class="icon fa-icon linkedin-icon"></span>
         }
         @if (data.linkedIn_profile_display_name) {
           <a class="resume-contact-link" [href]="data.linkedIn_profile" target="_blank">{{ data.linkedIn_profile_display_name }}</a>
+          @if (data.github_profile_display_name) {
+            <span class="resume-contact-separator">|</span>
+          }
         }
         @if (data.github_profile_display_name) {
           <span class="icon fa-icon github-icon"></span>

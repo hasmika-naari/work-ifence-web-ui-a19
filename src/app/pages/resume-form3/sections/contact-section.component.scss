@@ -51,39 +51,57 @@
 .resume-contact-details {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 0.12rem;
+  font-family: var(--template1-font-family, "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif);
 }
 .resume-contact-name-line {
-  font-size: 2.2rem;
+  font-size: var(--template1-name-size, 1.4375rem);
   font-weight: 700;
   color: #222;
-  margin-bottom: 0.1rem;
-  letter-spacing: 0.5px;
+  line-height: 1.08;
+  margin-bottom: 0.15rem;
+  letter-spacing: 0.02em;
 }
 .resume-contact-subtitle-line {
-  font-size: 1.2rem;
-  color: #222;
-  margin-bottom: 0.5rem;
+  font-size: var(--template1-subtitle-size, 0.8125rem);
+  line-height: 1.35;
+  font-weight: 500;
+  color: rgba(31, 41, 55, 0.82);
+  margin-bottom: 0.45rem;
 }
 .resume-contact-icons-line {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.98rem;
-  color: #222;
+  gap: 0.45rem;
+  font-size: var(--template1-contact-size, 0.75rem);
+  line-height: 1.4;
+  color: rgba(75, 85, 99, 0.88);
   margin-bottom: 0.2rem;
   flex-wrap: wrap;
 }
 .resume-contact-label {
-  font-size: 1.05rem;
-  color: #222;
+  font-size: var(--template1-contact-size, 0.75rem);
+  line-height: 1.4;
+  color: rgba(75, 85, 99, 0.88);
   margin-right: 0.2rem;
 }
 .resume-contact-link {
-  font-size: 1.05rem;
-  color: #222;
+  font-size: var(--template1-contact-size, 0.75rem);
+  line-height: 1.4;
+  color: rgba(55, 65, 81, 0.92);
   text-decoration: underline;
   margin-left: 0.1rem;
+}
+
+.resume-contact-link:hover {
+  color: rgba(31, 41, 55, 0.96);
+}
+
+.resume-contact-separator {
+  color: rgba(107, 114, 128, 0.38);
+  font-size: var(--template1-contact-size, 0.75rem);
+  line-height: 1;
+  margin: 0 0.1rem;
 }
 
 /* Local FontAwesome for Resume Rendering */
@@ -111,7 +129,7 @@
 .github-icon::before { content: "\f09b"; }
 
 .icon {
-  font-size: 1.1rem;
-  color: #222;
+  font-size: var(--template1-contact-size, 0.75rem);
+  color: rgba(107, 114, 128, 0.72);
   margin-right: 0.1rem;
 }

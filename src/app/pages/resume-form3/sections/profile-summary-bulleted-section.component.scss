@@ -12,18 +12,19 @@
   word-break: break-word;
 }
 .summary-bullets, .summary-bullets-html ul {
-  margin: 0 0 0 1.25rem;
+  margin: 0;
   padding: 0;
-  list-style: disc inside;
-  color: #222;
-  font-size: 1.05rem;
+  padding-left: var(--template1-list-indent, 1rem);
+  list-style: disc outside;
+  color: var(--template1-text-color, #1f2937);
+  font-size: var(--template1-body-size, 0.6875rem);
   max-width: 100%;
   overflow-wrap: break-word;
   word-break: break-word;
 }
 .summary-bullets li, .summary-bullets-html li {
   margin-bottom: 0.25rem;
-  line-height: 1.4;
+  line-height: var(--template1-body-line-height, 1.55);
   text-align: left;
   max-width: 100%;
   overflow-wrap: break-word;
@@ -33,8 +34,8 @@
   margin-bottom: 0.5rem;
 }
 .empty-bullets {
-  color: #888;
-  font-size: 0.98em;
+  color: var(--template1-meta-color, #6b7280);
+  font-size: var(--template1-meta-size, 0.625rem);
   margin-bottom: 0.5em;
 }
 @media print {

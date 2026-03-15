@@ -64,17 +64,18 @@
 /* Match contact section text styles */
 .profile-summary p,
 .profile-summary li {
-  font-size: 1.05rem;
-  color: #222;
+  font-size: var(--template1-body-size, 0.6875rem);
+  color: var(--template1-text-color, #1f2937);
   margin-bottom: 0.25rem;
   text-align: left;
   max-width: 100%;
   overflow-wrap: break-word;
   word-break: break-word;
+  line-height: var(--template1-body-line-height, 1.55);
 }
 
 .profile-summary ul {
-  padding-left: 1.25rem;
+  padding-left: var(--template1-list-indent, 1rem);
   margin-bottom: 0.5rem;
   max-width: 100%;
   overflow-wrap: break-word;

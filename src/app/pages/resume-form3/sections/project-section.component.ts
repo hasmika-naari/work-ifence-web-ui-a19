@@ -13,7 +13,7 @@ import { Pipe, PipeTransform } from '@angular/core';
       @if (items && items.length) {
         <div>
           @for (item of items; track item; let i = $index; let last = $last) {
-            <div class="project-item" style="margin-bottom:1.5rem; position:relative;">
+            <div class="project-item">
               <!-- Hover action buttons -->
               @if (!isPreview) {
                 <span class="project-item-actions">
@@ -23,16 +23,16 @@ import { Pipe, PipeTransform } from '@angular/core';
                   <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" [disabled]="!canMoveDown(i)" (click)="moveDown(i)"></button>
                 </span>
               }
-              <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap;">
+              <div class="project-header-row">
                 <div>
-                  <span class="project-title" style="font-size:1.15em; font-weight:600; letter-spacing:0.01em; color:#222;">
+                  <span class="project-title">
                     {{ item.data?.project_name }}
                   </span>
                 </div>
                 @if (item.data?.role || item.data?.start_date || item.data?.end_date) {
-                  <div style="font-size:0.98em; color:#555; text-align:right; min-width:180px;">
+                  <div class="project-meta">
                     @if (item.data?.role) {
-                      <span><strong>{{ item.data?.role }}</strong></span>
+                      <span class="project-role">{{ item.data?.role }}</span>
                     }
                     @if (item.data?.role && (item.data?.start_date || item.data?.end_date)) {
                       <span> | </span>
@@ -51,30 +51,30 @@ import { Pipe, PipeTransform } from '@angular/core';
                 }
               </div>
               @if (item.data?.technologies_used) {
-                <div style="margin:0.5em 0 0.5em 0;">
-                  <span style="font-size:0.97em; color:#666;">Technologies:</span>
+                <div class="project-tech-stack">
+                  <span class="project-tech-label">Technologies:</span>
                   @for (tech of (item.data?.technologies_used | splitComma); track tech) {
-                    <span style="display:inline-block; background:#f3f3f3; color:#333; border-radius:12px; padding:2px 10px; margin:0 6px 4px 0; font-size:0.93em;">{{ tech }}</span>
+                    <span class="tech-chip">{{ tech }}</span>
                   }
                 </div>
               }
               @if (item.data?.description) {
-                <div style="margin:0.5em 0 0.5em 0; color:#444; font-size:0.98em;">
+                <div class="project-description">
                   {{ item.data?.description }}
                 </div>
               }
               <!-- Rich text Responsibilities -->
               @if (item.data?.responsibilitiesRichText) {
-                <div style="margin:0.5em 0 0.5em 0;">
-                  <span style="font-weight:500; color:#333;">Roles & Responsibilities:</span>
-                  <div [innerHTML]="item.data?.responsibilitiesRichText" style="font-size:0.97em; color:#444;"></div>
+                <div class="project-section-block">
+                  <span class="project-section-label">Roles & Responsibilities:</span>
+                  <div class="project-rich-text" [innerHTML]="item.data?.responsibilitiesRichText"></div>
                 </div>
               }
               <!-- Fallback for old array -->
               @if (!item.data?.responsibilitiesRichText && item.data?.responsibilities?.length) {
-                <div style="margin:0.5em 0 0.5em 0;">
-                  <span style="font-weight:500; color:#333;">Roles & Responsibilities:</span>
-                  <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; padding-left: 1.2em; font-size:0.97em; color:#444;">
+                <div class="project-section-block">
+                  <span class="project-section-label">Roles & Responsibilities:</span>
+                  <ul class="project-rich-text">
                     @for (resp of item.data?.responsibilities; track resp) {
                       <li>{{ resp }}</li>
                     }
@@ -83,16 +83,16 @@ import { Pipe, PipeTransform } from '@angular/core';
               }
               <!-- Rich text Highlights -->
               @if (item.data?.highlightsRichText) {
-                <div style="margin:0.5em 0 0.5em 0;">
-                  <span style="font-weight:500; color:#333;">Highlights:</span>
-                  <div [innerHTML]="item.data?.highlightsRichText" style="font-size:0.97em; color:#444;"></div>
+                <div class="project-section-block">
+                  <span class="project-section-label">Highlights:</span>
+                  <div class="project-rich-text" [innerHTML]="item.data?.highlightsRichText"></div>
                 </div>
               }
               <!-- Fallback for old array -->
               @if (!item.data?.highlightsRichText && item.data?.highlights?.length) {
-                <div style="margin:0.5em 0 0.5em 0;">
-                  <span style="font-weight:500; color:#333;">Highlights:</span>
-                  <ul style="margin:0.2em 0 0.2em 1.2em; padding:0; padding-left: 1.2em; font-size:0.97em; color:#444;">
+                <div class="project-section-block">
+                  <span class="project-section-label">Highlights:</span>
+                  <ul class="project-rich-text">
                     @for (hl of item.data?.highlights; track hl) {
                       <li>{{ hl }}</li>
                     }

@@ -27,22 +27,21 @@
   visibility: visible;
 }
 .work-experience {
-  background: #fff;
-  border-radius: 8px;
-//   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  background: none;
+  border-radius: 0;
+  margin-bottom: 0;
 }
 
 .work-experience-list {
   display: flex;
   flex-direction: column;
-  gap: 0rem;
+  gap: var(--template1-item-gap, 0.75rem);
 }
 
 .work-experience-item {
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(101, 105, 109, 0.16);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0;
   &:last-child {
     border-bottom: none;
     margin-bottom: 0;
@@ -55,33 +54,51 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0rem;
+  margin-bottom: 0.1875rem;
   width: 100%;
+  gap: 0.75rem;
 }
 
 .job-title {
-  font-size: 1.1rem;
+  font-size: var(--template1-item-title-size, 0.71875rem);
   font-weight: 600;
-  color: #1e293b;
+  color: var(--template1-heading-color, #111827);
+  line-height: 1.35;
 }
 
 .company {
-  font-size: 0.8rem;
-  color: #475569;
+  font-size: var(--template1-label-size, 0.703125rem);
+  color: var(--template1-text-color, #1f2937);
   font-weight: 500;
+  line-height: 1.4;
 }
 
 .dates {
-  font-size: 0.95rem;
-  color: #64748b;
-  font-style: italic;
+  font-size: var(--template1-meta-size, 0.625rem);
+  color: var(--template1-meta-color, #6b7280);
+  font-style: normal;
+  line-height: 1.35;
   margin-left: auto;
   text-align: right;
   min-width: 120px;
 }
 
 .job-description {
-  margin-top: 0rem;
-  color: #374151;
-  line-height: 1.6;
+  margin-top: 0.125rem;
+  color: var(--template1-text-color, #1f2937);
+  font-size: var(--template1-body-size, 0.6875rem);
+  line-height: var(--template1-body-line-height, 1.55);
+  font-weight: 400;
+}
+
+.job-description :where(p, ul, ol) {
+  margin: 0.375rem 0 0;
+}
+
+.job-description :where(ul, ol) {
+  padding-left: var(--template1-list-indent, 1rem);
+}
+
+.job-description :where(li) {
+  margin-bottom: var(--template1-bullet-gap, 0.3125rem);
 }

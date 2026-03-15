@@ -1,6 +1,7 @@
 
 .project-item {
   position: relative;
+  margin-bottom: 1rem;
 }
 .project-item-actions {
   position: absolute;
@@ -39,4 +40,73 @@
 .action-btn:hover {
   background: #f0f0f0;
   border-color: #888;
+}
+
+.project-header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.project-title {
+  font-size: var(--template1-item-title-size, 0.71875rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--template1-heading-color, #111827);
+  line-height: 1.35;
+}
+
+.project-meta {
+  font-size: var(--template1-meta-size, 0.625rem);
+  color: var(--template1-meta-color, #6b7280);
+  text-align: right;
+  min-width: 180px;
+}
+
+.project-role {
+  font-weight: 600;
+}
+
+.project-tech-stack,
+.project-description,
+.project-section-block {
+  margin: 0.45rem 0 0;
+}
+
+.project-tech-label,
+.project-section-label {
+  font-size: var(--template1-label-size, 0.703125rem);
+  font-weight: 600;
+  color: var(--template1-heading-color, #111827);
+}
+
+.tech-chip {
+  display: inline-block;
+  background: #f3f4f6;
+  color: var(--template1-text-color, #1f2937);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin: 0 6px 4px 0;
+  font-size: var(--template1-meta-size, 0.625rem);
+}
+
+.project-description,
+.project-rich-text {
+  font-size: var(--template1-body-size, 0.6875rem);
+  line-height: var(--template1-body-line-height, 1.55);
+  color: var(--template1-text-color, #1f2937);
+}
+
+.project-rich-text {
+  margin-top: 0.2rem;
+}
+
+.project-rich-text:where(ul, ol) {
+  padding-left: var(--template1-list-indent, 1rem);
+}
+
+.project-rich-text li {
+  margin-bottom: var(--template1-bullet-gap, 0.3125rem);
 }

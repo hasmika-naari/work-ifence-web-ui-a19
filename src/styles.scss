@@ -19,7 +19,7 @@
 @use "./styles/_theme-colors.scss" as theme-colors;
 
 :root {
-    --app-font-family: ui-sans-serif, "Poppins", -apple-system, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol";
+    --app-font-family:  "Poppins", -apple-system, ui-sans-serif, "system-ui", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "sans-serif", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 html,

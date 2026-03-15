@@ -5,15 +5,15 @@
   display: flex;
   flex-direction: column;
   padding: 0px;
-  padding-top: 0.5rem;
+  padding-top: 0.25rem;
 }
 
 .certification-item {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   position: relative;
-  gap: 0.7em;
+  gap: 0.5rem;
   border-radius: 0;
   background: none;
   box-shadow: none;
@@ -106,24 +106,26 @@
 }
 .cert-title {
   font-weight: 600;
-  color: #222;
-  font-size: 1.08em;
-  line-height: 1.2;
+  color: var(--template1-heading-color, #111827);
+  font-size: var(--template1-item-title-size, 0.71875rem);
+  line-height: 1.35;
   margin-bottom: 0.1em;
   word-break: break-word;
 }
 .cert-org {
-  color: #555;
-  font-size: 0.98em;
-  margin-left: 0;
-  line-height: 1.1;
+  color: var(--template1-text-color, #1f2937);
+  font-size: var(--template1-body-size, 0.6875rem);
+  margin-left: 0.5rem;
+  line-height: var(--template1-body-line-height, 1.55);
   word-break: break-word;
 }
 .cert-year {
-  color: #888;
-  font-size: 0.97em;
+  color: var(--template1-meta-color, #6b7280);
+  font-size: var(--template1-meta-size, 0.625rem);
   margin-left: 1em;
   white-space: nowrap;
   align-self: flex-start;
   margin-top: 2px;
+  min-width: 80px;
+  text-align: right;
 }

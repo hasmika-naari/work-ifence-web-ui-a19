@@ -1,9 +1,7 @@
 .skills-bullet-points {
-  // padding: 1rem;
-  background: #fff;
-  border-radius: 8px;
-  // box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  margin-bottom: 1.5rem;
+  background: none;
+  border-radius: 0;
+  margin-bottom: 0;
 }
 .skills-header {
   display: flex;
@@ -12,9 +10,9 @@
   margin-bottom: 0.5rem;
 }
 .skills-title {
-  font-size: 1.15rem;
+  font-size: var(--template1-title-size, 0.75rem);
   font-weight: 600;
-  color: #2a2a2a;
+  color: var(--template1-heading-color, #111827);
 }
 .icon-btn {
   background: none;
@@ -29,26 +27,26 @@
   color: #005fa3;
 }
 .skills-list {
-  font-size: 1rem;
-  color: #555;
+  font-size: var(--template1-body-size, 0.6875rem);
+  color: var(--template1-text-color, #1f2937);
 }
 
 .skills-bullets {
   columns: 3;
   -webkit-columns: 3;
   -moz-columns: 3;
-  column-gap: 2rem;
-  padding-left: 1.2rem;
+  column-gap: clamp(1rem, 0.85rem + 0.5vw, 1.5rem);
+  padding-left: var(--template1-list-indent, 1rem);
   margin: 0;
   list-style: disc outside;
 }
 
 .skills-bullets li {
   break-inside: avoid;
-  margin-bottom: 0.4rem;
-  font-size: 13px;
-  color: #5a6c7d;
-  line-height: 1.4;
+  margin-bottom: 0.3125rem;
+  font-size: var(--template1-body-size, 0.6875rem);
+  color: var(--template1-text-color, #1f2937);
+  line-height: var(--template1-body-line-height, 1.55);
 }
 
 @media print {
@@ -62,8 +60,8 @@
   }
 }
 .no-skills {
-  color: #888;
-  font-size: 1rem;
+  color: var(--template1-meta-color, #6b7280);
+  font-size: var(--template1-meta-size, 0.625rem);
   margin-top: 0.5rem;
   display: flex;
   align-items: center;

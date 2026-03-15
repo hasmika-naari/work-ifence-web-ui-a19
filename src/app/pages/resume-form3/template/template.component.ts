@@ -813,6 +813,22 @@ getSectionDisplayTitle(sectionKey: string): string {
   return sectionData?.editable_section_title || sectionData?.title || sectionKey.replace(/_/g, ' ');
 }
 
+private readonly template1DisplayTitleMap: Record<string, string> = {
+  PROFILE_SUMMARY: 'PROFILE SUMMARY',
+  PROFILE_SUMMARY_BULLETED: 'CAREER HIGHLIGHTS',
+  SKILLS_BY_CATEGORY: 'SKILLS',
+  SKILLS_BULLET_POINTS: 'CORE COMPETENCIES',
+  WORK_EXPERIENCE: 'PROFESSIONAL EXPERIENCE',
+  EDUCATION: 'EDUCATION',
+  PROJECT: 'PROJECTS',
+  CERTIFICATIONS: 'CERTIFICATIONS',
+  ACHIEVEMENTS_BULLET_POINTS: 'ACHIEVEMENTS'
+};
+
+private normalizeTemplate1SectionTitle(value: string): string {
+  return (value || '').trim().replace(/[_\s]+/g, ' ').toUpperCase();
+}
+
   
 formatSkills(items : string[]){
   return items.join(", ");
@@ -1434,13 +1450,24 @@ hasGPA(item: Education): boolean {
 }
 
 getSectionTitle(section : string){
-  let sectionTitle;
-  this.addedSections().map((e: any) => {
-    if(e.section == section){
-      sectionTitle = e.editable_section_title
-    }
-  })
-  return sectionTitle??'Section Title'
+  const sectionData = this.addedSections().find((entry: any) => entry.section === section);
+  const defaultSection = defaultSections.find((entry: any) => entry.section === section);
+  const mappedTitle = this.template1DisplayTitleMap[section] || section.replace(/_/g, ' ');
+  const customTitle = (sectionData?.editable_section_title || '').trim();
+
+  const builtInTitles = new Set([
+    this.normalizeTemplate1SectionTitle(section),
+    this.normalizeTemplate1SectionTitle(mappedTitle),
+    this.normalizeTemplate1SectionTitle(defaultSection?.editable_section_title || ''),
+    this.normalizeTemplate1SectionTitle(defaultSection?.title || ''),
+    this.normalizeTemplate1SectionTitle(defaultSection?.label || '')
+  ]);
+
+  if (customTitle && !builtInTitles.has(this.normalizeTemplate1SectionTitle(customTitle))) {
+    return customTitle;
+  }
+
+  return mappedTitle;
 }
 
   isAccomplishmentDefaultData(){

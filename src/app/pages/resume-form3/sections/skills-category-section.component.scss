@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
+  gap: 0.2rem;
   position: relative;
   width: 100%;
 }
@@ -29,7 +29,7 @@
 .skills-category-item {
   border-bottom: none;
   padding-bottom: 0.2rem;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.6rem;
 }
 .skills-category-item:last-child {
   padding-bottom: 0;
@@ -37,16 +37,17 @@
 }
 
 .skills-category-title.formal-title {
-  font-size: 14px;
+  font-size: var(--template1-label-size, 0.703125rem);
   font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 2px;
+  color: var(--template1-heading-color, #111827);
+  margin-bottom: 0.1875rem;
+  line-height: 1.45;
 }
 
 .skills-inline-list-compact {
-  font-size: 13px;
-  color: #5a6c7d;
-  line-height: 1.4;
+  font-size: var(--template1-body-size, 0.6875rem);
+  color: var(--template1-text-color, #1f2937);
+  line-height: var(--template1-body-line-height, 1.55);
   margin: 0;
 }
 
@@ -57,7 +58,7 @@
   }
 }
 p {
-  color: #888;
-  font-size: 0.92rem;
-  margin: 0.2rem 0 0 0;
+  color: var(--template1-meta-color, #6b7280);
+  font-size: var(--template1-meta-size, 0.625rem);
+  margin: 0.25rem 0 0 0;
 }
