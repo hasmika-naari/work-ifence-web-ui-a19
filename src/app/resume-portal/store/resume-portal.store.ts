@@ -9,6 +9,9 @@ import { ResumePortalApiService } from '../services/resume-portal-api.service';
 import { ResumeLimitService } from '../services/resume-limit.service';
 import { TemplateAccessService } from '../services/template-access.service';
 import { ResumeTemplateVm } from '../models/resume-template.model';
+import { ResumeTemplateFacadeService } from '../data/resume-template-facade.service';
+import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
+import { buildResumeTemplateIdentity } from '../utils/resume-template-key.util';
 
 export type PortalTemplate = {
   id: number;
@@ -17,6 +20,11 @@ export type PortalTemplate = {
   category: 'Simple' | 'Modern' | 'Creative';
   isPremium: boolean;
   previewImageUrl?: string;
+  templateKey: string;
+  componentKey?: string;
+  accessLevel?: string;
+  version?: string;
+  isDefault?: boolean;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -26,6 +34,8 @@ export class ResumePortalStore {
   private resumeLimit = inject(ResumeLimitService);
   private api = inject(ResumePortalApiService);
   private router = inject(Router);
+  private templateCatalog = inject(ResumeTemplateFacadeService);
+  private templateSelection = inject(ResumeTemplateSelectionService);
 
   private loadingMyResumes = signal(false);
 
@@ -39,6 +49,11 @@ export class ResumePortalStore {
       category: 'Simple',
       isPremium: false,
       previewImageUrl: 'assets/img/templates/rt1.png',
+      templateKey: 'TEMPLATE_1',
+      componentKey: 'TEMPLATE_1',
+      accessLevel: 'BASIC',
+      version: '1.0',
+      isDefault: true,
     },
     {
       id: 2,
@@ -47,6 +62,10 @@ export class ResumePortalStore {
       category: 'Simple',
       isPremium: false,
       previewImageUrl: 'assets/img/templates/rt2.png',
+      templateKey: 'TEMPLATE_2',
+      componentKey: 'TEMPLATE_2',
+      accessLevel: 'BASIC',
+      version: '1.0',
     },
     {
       id: 3,
@@ -55,6 +74,10 @@ export class ResumePortalStore {
       category: 'Simple',
       isPremium: true,
       previewImageUrl: 'assets/img/templates/rt3.png',
+      templateKey: 'TEMPLATE_3',
+      componentKey: 'TEMPLATE_3',
+      accessLevel: 'PREMIUM',
+      version: '1.0',
     },
     {
       id: 4,
@@ -63,6 +86,10 @@ export class ResumePortalStore {
       category: 'Modern',
       isPremium: true,
       previewImageUrl: 'assets/img/templates/rt4.png',
+      templateKey: 'TEMPLATE_4',
+      componentKey: 'TEMPLATE_4',
+      accessLevel: 'PREMIUM',
+      version: '1.0',
     },
     {
       id: 5,
@@ -71,6 +98,10 @@ export class ResumePortalStore {
       category: 'Modern',
       isPremium: true,
       previewImageUrl: 'assets/img/templates/rt5.png',
+      templateKey: 'TEMPLATE_5',
+      componentKey: 'TEMPLATE_5',
+      accessLevel: 'PREMIUM',
+      version: '1.0',
     },
     {
       id: 6,
@@ -79,6 +110,10 @@ export class ResumePortalStore {
       category: 'Creative',
       isPremium: true,
       previewImageUrl: 'assets/img/templates/rt6.png',
+      templateKey: 'TEMPLATE_6',
+      componentKey: 'TEMPLATE_6',
+      accessLevel: 'PREMIUM',
+      version: '1.0',
     },
     {
       id: 7,
@@ -87,6 +122,10 @@ export class ResumePortalStore {
       category: 'Creative',
       isPremium: true,
       previewImageUrl: 'assets/img/templates/rt7.png',
+      templateKey: 'TEMPLATE_7',
+      componentKey: 'TEMPLATE_7',
+      accessLevel: 'PREMIUM',
+      version: '1.0',
     },
   ]);
 
@@ -117,10 +156,16 @@ export class ResumePortalStore {
    * "Create Resume" flow).
    */
   createResumeDefault(): void {
-    // Include templateId so the builder can initialize correctly after login.
-    const builderUrl = `/user/resumes/resume?templateId=${encodeURIComponent(String(FREE_TEMPLATE_ID))}`;
+    const template = this.getDefaultTemplate();
+    const identity = buildResumeTemplateIdentity({
+      id: template.id,
+      templateKey: template.templateKey,
+      componentKey: template.componentKey,
+      imageUrl: template.previewImageUrl,
+    });
+    const builderUrl = `/user/resumes/resume?templateKey=${encodeURIComponent(identity.templateKey)}`;
 
-    const access = this.templateAccess.canUseTemplate(this.toVm(FREE_TEMPLATE_ID));
+    const access = this.templateAccess.canUseTemplate(this.toVm(template));
     if (!access.allowed) {
       this.templateAccess.handleDenied(access.reason, builderUrl);
       return;
@@ -141,13 +186,32 @@ export class ResumePortalStore {
     this.userStore.updateSelectedResumeListItem(new ResumeListDataItem());
     this.userStore.setIsChangeInNewResume(false);
 
-    void this.router.navigateByUrl('/user/resumes/resume');
+    this.templateSelection.setCatalogSelection({
+      templateId: template.id,
+      templateKey: identity.templateKey,
+      componentKey: identity.componentKey,
+      version: template.version ?? '1.0',
+      title: template.name,
+      previewUrl: template.previewImageUrl,
+      accessLevel: template.accessLevel ?? (template.isPremium ? 'PREMIUM' : 'BASIC'),
+    });
+
+    void this.router.navigate(['/user/resumes/resume'], {
+      queryParams: { templateKey: identity.templateKey },
+    });
   }
 
   createResumeFromTemplate(templateId: number): void {
-    const builderUrl = `/user/resumes/resume?templateId=${encodeURIComponent(String(templateId))}`;
+    const template = this.getTemplateById(templateId);
+    const identity = buildResumeTemplateIdentity({
+      id: template.id,
+      templateKey: template.templateKey,
+      componentKey: template.componentKey,
+      imageUrl: template.previewImageUrl,
+    });
+    const builderUrl = `/user/resumes/resume?templateKey=${encodeURIComponent(identity.templateKey)}`;
 
-    const access = this.templateAccess.canUseTemplate(this.toVm(templateId));
+    const access = this.templateAccess.canUseTemplate(this.toVm(template));
     if (!access.allowed) {
       this.templateAccess.handleDenied(access.reason, builderUrl);
       return;
@@ -163,21 +227,87 @@ export class ResumePortalStore {
       return;
     }
 
+    this.templateSelection.setCatalogSelection({
+      templateId: template.id,
+      templateKey: identity.templateKey,
+      componentKey: identity.componentKey,
+      version: template.version ?? '1.0',
+      title: template.name,
+      previewUrl: template.previewImageUrl,
+      accessLevel: template.accessLevel ?? (template.isPremium ? 'PREMIUM' : 'BASIC'),
+    });
+
     // Land on builder and let it initialize with templateId.
     void this.router.navigate(['/user/resumes/resume'], {
-      queryParams: { templateId },
+      queryParams: { templateKey: identity.templateKey },
     });
   }
 
-  private toVm(templateId: number): ResumeTemplateVm {
-    const isDefault = templateId === FREE_TEMPLATE_ID;
-    const tpl = this.templates().find(t => t.id === templateId);
+  private toVm(template: PortalTemplate): ResumeTemplateVm {
     return {
-      id: String(templateId),
-      title: tpl?.name ?? `Template ${templateId}`,
-      category: isDefault ? 'BASIC' : 'PREMIUM',
-      previewUrl: tpl?.previewImageUrl,
-      isDefault,
+      id: String(template.id),
+      title: template.name,
+      category: template.isPremium ? 'PREMIUM' : 'BASIC',
+      previewUrl: template.previewImageUrl,
+      isDefault: !!template.isDefault,
     };
+  }
+
+  private getTemplateById(templateId: number): PortalTemplate {
+    return this.getAvailableTemplates().find((template) => template.id === templateId)
+      ?? this.templates().find((template) => template.id === templateId)
+      ?? this.getDefaultTemplate();
+  }
+
+  private getDefaultTemplate(): PortalTemplate {
+    const templates = this.getAvailableTemplates();
+    return templates.find((template) => template.isDefault)
+      ?? templates.find((template) => !template.isPremium)
+      ?? templates[0]
+      ?? {
+        id: FREE_TEMPLATE_ID,
+        name: 'Atlantic Blue',
+        description: 'Clean, modern single-column resume template.',
+        category: 'Simple',
+        isPremium: false,
+        previewImageUrl: 'assets/img/templates/rt1.png',
+        templateKey: 'TEMPLATE_1',
+        componentKey: 'TEMPLATE_1',
+        accessLevel: 'BASIC',
+        version: '1.0',
+        isDefault: true,
+      };
+  }
+
+  private getAvailableTemplates(): PortalTemplate[] {
+    const catalogTemplates = this.templateCatalog.templates();
+    if (catalogTemplates.length === 0) {
+      return this.templates();
+    }
+
+    return catalogTemplates.map((template) => ({
+      id: Number(template.id ?? 0),
+      name: template.title ?? 'Template',
+      description: `${template.category ?? 'Resume'} template`,
+      category: this.toPortalCategory(template.category),
+      isPremium: this.templateCatalog.isPremium(template),
+      previewImageUrl: template.imageUrl,
+      templateKey: template.templateKey ?? template.componentKey ?? `TEMPLATE_${template.id ?? ''}`,
+      componentKey: template.componentKey ?? template.templateKey ?? `TEMPLATE_${template.id ?? ''}`,
+      accessLevel: template.accessLevel,
+      version: template.version,
+      isDefault: !!template.isDefault,
+    }));
+  }
+
+  private toPortalCategory(category?: string): PortalTemplate['category'] {
+    const normalized = (category ?? '').toString().toLowerCase();
+    if (normalized === 'creative') {
+      return 'Creative';
+    }
+    if (normalized === 'modern') {
+      return 'Modern';
+    }
+    return 'Simple';
   }
 }

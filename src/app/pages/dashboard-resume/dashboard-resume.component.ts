@@ -57,6 +57,7 @@ import { ImportExistingResumeComponent } from '../import-existing-resume/import-
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
 import { FooterWorkifenceComponent } from '../landing/footer-wifence/footer-wifence.component';
 import { ResumePortalApiService } from 'src/app/resume-portal/services/resume-portal-api.service';
+import { buildResumeTemplateIdentity } from 'src/app/resume-portal/utils/resume-template-key.util';
 
 interface Option {
   name : string;
@@ -689,15 +690,24 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
     const resume = new Resume();
     const selection = this.templateSelection.consumeCatalogSelection();
     if (selection) {
+      const identity = buildResumeTemplateIdentity({
+        id: selection.templateId,
+        templateKey: selection.templateKey,
+        componentKey: selection.componentKey,
+        imageUrl: selection.previewUrl,
+      });
       resume.template_details = {
         ...resume.template_details,
         id: Number.isFinite(Number(selection.templateId)) ? Number(selection.templateId) : resume.template_details.id,
-        name: selection.templateKey || resume.template_details.name,
-        template_name: selection.componentKey || resume.template_details.template_name,
-        templateKey: selection.templateKey,
-        componentKey: selection.componentKey,
+        name: selection.title || selection.templateKey || resume.template_details.name,
+        template_name: identity.template_name,
+        templateKey: identity.templateKey,
+        componentKey: identity.componentKey,
         version: selection.version,
+        imgPath: selection.previewUrl || resume.template_details.imgPath,
+        accessLevel: selection.accessLevel || resume.template_details.accessLevel,
       };
+      this.userStore.setFlagOnTemplateSelected(identity.template_name);
     }
     this.userStore.setResumeForm(resume);
     this.userStore.updateSelectedResumeListItem(new ResumeListDataItem());

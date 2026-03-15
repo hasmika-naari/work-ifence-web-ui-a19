@@ -79,6 +79,12 @@ import { ResumeLimitService } from 'src/app/resume-portal/services/resume-limit.
 import { ResumeTemplateVm } from 'src/app/resume-portal/models/resume-template.model';
 import { ResumeTemplateFacadeService } from 'src/app/resume-portal/data/resume-template-facade.service';
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
+import { ResumeTemplateUi } from 'src/app/resume-portal/data/resume-template.ui.model';
+import {
+  buildResumeTemplateIdentity,
+  resolveCanonicalTemplateKey,
+  resolveLegacyTemplateName,
+} from 'src/app/resume-portal/utils/resume-template-key.util';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -675,22 +681,37 @@ ngAfterViewInit(): void {
   ngOnInit() {
     this.currentSections = this.userStore.getCurrentSections();
     this.browser = isPlatformBrowser(this.platformId);
+    this.templateFacade.loadTemplates('available');
 
     // If templateId is provided (from Resume Portal), initialize builder state.
     const templateIdParam = this.route.snapshot.queryParamMap.get('templateId');
+    const templateKeyParam = this.route.snapshot.queryParamMap.get('templateKey');
     const templateId = templateIdParam ? Number(templateIdParam) : NaN;
-    if (Number.isFinite(templateId) && templateId > 0) {
-      const catalogTemplate = this.templateFacade
-        .templates()
-        .find(item => Number(item.id ?? 0) === templateId);
+    const catalogSelection = this.getMatchingCatalogSelection(templateId, templateKeyParam);
+    const catalogTemplate = this.findCatalogTemplate(templateId, templateKeyParam, catalogSelection?.templateKey);
+
+    if ((Number.isFinite(templateId) && templateId > 0) || !!templateKeyParam) {
+      const resolvedTemplateId = this.resolveTemplateId(
+        templateId,
+        catalogTemplate?.id,
+        catalogSelection?.templateId,
+      );
+      const templateIdentity = buildResumeTemplateIdentity({
+        id: resolvedTemplateId,
+        templateKey: templateKeyParam ?? catalogSelection?.templateKey ?? catalogTemplate?.templateKey,
+        componentKey: catalogSelection?.componentKey ?? catalogTemplate?.componentKey,
+        template_name: catalogTemplate?.templateKey,
+        imageUrl: catalogTemplate?.imageUrl ?? catalogSelection?.previewUrl,
+      });
 
       const isPremiumTemplate = catalogTemplate
         ? this.templateFacade.isPremium(catalogTemplate)
-        : templateId !== FREE_TEMPLATE_ID;
+        : (catalogSelection?.accessLevel ?? '').toUpperCase() === 'PREMIUM'
+          || resolvedTemplateId !== FREE_TEMPLATE_ID;
 
       const vm: ResumeTemplateVm = {
-        id: String(templateId),
-        title: catalogTemplate?.title ?? `Template ${templateId}`,
+        id: String(resolvedTemplateId),
+        title: catalogTemplate?.title ?? catalogSelection?.title ?? templateIdentity.templateKey,
         category: isPremiumTemplate ? 'PREMIUM' : 'BASIC',
         isDefault: !!catalogTemplate?.isDefault,
       };
@@ -714,25 +735,17 @@ ngAfterViewInit(): void {
         return;
       }
 
-      const resolvedTemplateId = templateId;
-      const legacyTemplateName = this.resolveTemplateName({
-        id: resolvedTemplateId,
-        template_name: catalogTemplate?.componentKey || catalogTemplate?.templateKey || `TEMPLATE_${resolvedTemplateId}`,
-        templateKey: catalogTemplate?.templateKey || `TEMPLATE_${resolvedTemplateId}`,
-        componentKey: catalogTemplate?.componentKey || `TEMPLATE_${resolvedTemplateId}`,
-      });
-
       const resume = new Resume();
       const resumeTemplate: ResumeTemplateDto = {
         id: resolvedTemplateId,
-        name: catalogTemplate?.title ?? `Template ${resolvedTemplateId}`,
+        name: catalogTemplate?.title ?? catalogSelection?.title ?? `Template ${resolvedTemplateId}`,
         companyName: '',
-        template_name: legacyTemplateName,
-        imgPath: catalogTemplate?.imageUrl ?? '',
-        templateKey: catalogTemplate?.templateKey ?? legacyTemplateName,
-        componentKey: catalogTemplate?.componentKey ?? legacyTemplateName,
-        version: catalogTemplate?.version ?? '1.0',
-        accessLevel: catalogTemplate?.accessLevel ?? (resolvedTemplateId === FREE_TEMPLATE_ID ? 'FREE' : 'PREMIUM'),
+        template_name: templateIdentity.template_name,
+        imgPath: catalogTemplate?.imageUrl ?? catalogSelection?.previewUrl ?? '',
+        templateKey: templateIdentity.templateKey,
+        componentKey: templateIdentity.componentKey,
+        version: catalogTemplate?.version ?? catalogSelection?.version ?? '1.0',
+        accessLevel: catalogTemplate?.accessLevel ?? catalogSelection?.accessLevel ?? (resolvedTemplateId === FREE_TEMPLATE_ID ? 'FREE' : 'PREMIUM'),
       };
       resume.template_details = resumeTemplate;
 
@@ -742,9 +755,12 @@ ngAfterViewInit(): void {
       if (catalogTemplate) {
         this.templateSelection.setCatalogSelection({
           templateId: catalogTemplate.id ?? '',
-          templateKey: catalogTemplate.templateKey ?? legacyTemplateName,
-          componentKey: catalogTemplate.componentKey ?? legacyTemplateName,
+          templateKey: templateIdentity.templateKey,
+          componentKey: templateIdentity.componentKey,
           version: catalogTemplate.version ?? '1.0',
+          title: catalogTemplate.title,
+          previewUrl: catalogTemplate.imageUrl,
+          accessLevel: catalogTemplate.accessLevel,
         });
       }
     }
@@ -842,11 +858,13 @@ ngAfterViewInit(): void {
   }
 
   private resolveTemplateName(details?: Partial<ResumeTemplateDto>): string {
-    const fromDetails =
-      details?.componentKey || details?.templateKey || details?.template_name;
-    if (fromDetails) return fromDetails;
-    const id = Number(details?.id ?? 0);
-    return Number.isFinite(id) && id > 0 ? `TEMPLATE_${id}` : 'TEMPLATE_1';
+    return resolveLegacyTemplateName({
+      id: details?.id,
+      templateKey: details?.templateKey,
+      componentKey: details?.componentKey,
+      template_name: details?.template_name,
+      imgPath: details?.imgPath,
+    });
   }
 
   activeTemplateName(): string {
@@ -856,25 +874,103 @@ ngAfterViewInit(): void {
   private ensureTemplateDetailsCompatibility(resume: Resume): void {
     if (!resume?.template_details) return;
 
-    const legacyName = this.resolveTemplateName(resume.template_details);
-    const templateKey = resume.template_details.templateKey || legacyName;
-    const componentKey = resume.template_details.componentKey || legacyName;
+    const identity = buildResumeTemplateIdentity({
+      id: resume.template_details.id,
+      templateKey: resume.template_details.templateKey,
+      componentKey: resume.template_details.componentKey,
+      template_name: resume.template_details.template_name,
+      imgPath: resume.template_details.imgPath,
+    });
 
     if (
-      resume.template_details.template_name !== legacyName ||
-      resume.template_details.templateKey !== templateKey ||
-      resume.template_details.componentKey !== componentKey
+      resume.template_details.template_name !== identity.template_name ||
+      resume.template_details.templateKey !== identity.templateKey ||
+      resume.template_details.componentKey !== identity.componentKey
     ) {
       this.userStore.setResumeForm({
         ...resume,
         template_details: {
           ...resume.template_details,
-          template_name: legacyName,
-          templateKey,
-          componentKey,
+          template_name: identity.template_name,
+          templateKey: identity.templateKey,
+          componentKey: identity.componentKey,
         },
       });
     }
+  }
+
+  private resolveTemplateId(...ids: Array<string | number | undefined | null>): number {
+    for (const value of ids) {
+      const parsed = Number(value ?? 0);
+      if (Number.isFinite(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+
+    return FREE_TEMPLATE_ID;
+  }
+
+  private findCatalogTemplate(
+    templateId: number,
+    templateKey?: string | null,
+    fallbackTemplateKey?: string | null,
+  ): ResumeTemplateUi | undefined {
+    const requestedKey = resolveCanonicalTemplateKey({
+      id: templateId,
+      templateKey: templateKey ?? fallbackTemplateKey,
+    });
+
+    return this.templateFacade.templates().find((item) => {
+      const itemId = Number(item.id ?? 0);
+      if (Number.isFinite(templateId) && templateId > 0 && itemId === templateId) {
+        return true;
+      }
+
+      if (!requestedKey) {
+        return false;
+      }
+
+      const itemKey = resolveCanonicalTemplateKey({
+        id: item.id,
+        templateKey: item.templateKey,
+        componentKey: item.componentKey,
+        imageUrl: item.imageUrl,
+      });
+
+      return itemKey === requestedKey;
+    });
+  }
+
+  private getMatchingCatalogSelection(
+    templateId: number,
+    templateKey?: string | null,
+  ) {
+    const selection = this.templateSelection.getCatalogSelection();
+    if (!selection) {
+      return null;
+    }
+
+    const requestedKey = resolveCanonicalTemplateKey({ id: templateId, templateKey });
+    if (!requestedKey && !(Number.isFinite(templateId) && templateId > 0)) {
+      return selection;
+    }
+
+    const selectionKey = resolveCanonicalTemplateKey({
+      id: selection.templateId,
+      templateKey: selection.templateKey,
+      componentKey: selection.componentKey,
+    });
+    const selectionId = Number(selection.templateId ?? 0);
+
+    if (requestedKey && selectionKey === requestedKey) {
+      return selection;
+    }
+
+    if (Number.isFinite(templateId) && templateId > 0 && selectionId === templateId) {
+      return selection;
+    }
+
+    return null;
   }
 
   accessCategories: Array<ResumeAccess> = [

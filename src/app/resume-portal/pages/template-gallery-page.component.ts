@@ -28,6 +28,7 @@ import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { ResumeTemplateFacadeService } from 'src/app/resume-portal/data/resume-template-facade.service';
 import type { ResumeTemplateUi } from 'src/app/resume-portal/data/resume-template.ui.model';
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
+import { buildResumeTemplateIdentity } from 'src/app/resume-portal/utils/resume-template-key.util';
 
 @Component({
   selector: 'app-resume-template-gallery-page',
@@ -1153,13 +1154,21 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
       return;
     }
 
-    const legacyKey = this.resolveLegacyKey(tpl);
+    const identity = buildResumeTemplateIdentity({
+      id: tpl.id,
+      templateKey: tpl.templateKey,
+      componentKey: tpl.componentKey,
+      imageUrl: tpl.imageUrl,
+    });
 
     this.selection.setCatalogSelection({
       templateId: tpl.id ?? '',
-      templateKey: tpl.templateKey ?? legacyKey,
-      componentKey: tpl.componentKey ?? legacyKey,
+      templateKey: identity.templateKey,
+      componentKey: identity.componentKey,
       version: tpl.version ?? '1.0',
+      title: tpl.title ?? '',
+      previewUrl: tpl.imageUrl ?? '',
+      accessLevel: tpl.accessLevel ?? '',
     });
 
     try {
@@ -1168,13 +1177,6 @@ export class TemplateGalleryPageComponent implements OnInit, AfterViewInit, OnDe
     } catch {
       // ignore storage errors
     }
-  }
-
-  private resolveLegacyKey(tpl: ResumeTemplateUi): string {
-    const fromTemplate = tpl.componentKey || tpl.templateKey;
-    if (fromTemplate) return fromTemplate;
-    const id = Number(tpl.id ?? 0);
-    return Number.isFinite(id) && id > 0 ? `TEMPLATE_${id}` : '';
   }
 
   uploadResume(): void {

@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ResumeTemplate } from 'src/app/services/bee-compete.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
+import { resolveLegacyTemplateName } from 'src/app/resume-portal/utils/resume-template-key.util';
 
 const STORAGE_KEY = 'resume-template-selection';
 const CATALOG_STORAGE_KEY = 'resume-template-selection-v2';
@@ -10,8 +11,11 @@ const CATALOG_STORAGE_KEY = 'resume-template-selection-v2';
 export type ResumeTemplateCatalogSelection = {
   templateId: string | number;
   templateKey: string;
-  componentKey: string;
+  componentKey?: string;
   version: string;
+  title?: string;
+  previewUrl?: string;
+  accessLevel?: string;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -56,7 +60,7 @@ export class ResumeTemplateSelectionService {
       const raw = sessionStorage.getItem(CATALOG_STORAGE_KEY);
       if (!raw) return null;
       const parsed = JSON.parse(raw) as ResumeTemplateCatalogSelection;
-      if (!parsed?.templateId || !parsed?.componentKey) return null;
+      if (!parsed?.templateId || !parsed?.templateKey) return null;
       return parsed;
     } catch {
       return null;
@@ -84,12 +88,22 @@ export class ResumeTemplateSelectionService {
     const tpl = this.getSelection();
     if (!tpl) return null;
 
-    this.userStore.updateResumeTemplate(tpl);
-    if (tpl.template_name !== 'TEMPLATE_9') {
+    const templateName = resolveLegacyTemplateName({
+      id: tpl.id,
+      template_name: tpl.template_name,
+    });
+
+    const normalizedSelection = {
+      ...tpl,
+      template_name: templateName,
+    };
+
+    this.userStore.updateResumeTemplate(normalizedSelection);
+    if (templateName !== 'TEMPLATE_9') {
       this.userStore.emptyMultipleColumnTemplateSections();
     }
-    this.userStore.setFlagOnTemplateSelected(tpl.template_name);
+    this.userStore.setFlagOnTemplateSelected(templateName);
     this.clearSelection();
-    return tpl;
+    return normalizedSelection;
   }
 }

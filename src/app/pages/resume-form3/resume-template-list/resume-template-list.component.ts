@@ -10,6 +10,10 @@ import { ResumeTemplateDto } from 'src/app/services/store/user-store';
 import { ResumeTemplateFacadeService } from 'src/app/resume-portal/data/resume-template-facade.service';
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
 import type { ResumeTemplateUi } from 'src/app/resume-portal/data/resume-template.ui.model';
+import {
+  buildResumeTemplateIdentity,
+  resolveCanonicalTemplateKey,
+} from 'src/app/resume-portal/utils/resume-template-key.util';
 
 
 export interface DialogData {
@@ -79,9 +83,12 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
     const resumeTemplate = this.toResumeTemplate(template);
     this.templateSelection.setCatalogSelection({
       templateId: template.id ?? '',
-      templateKey: template.templateKey ?? resumeTemplate.template_name,
-      componentKey: template.componentKey ?? resumeTemplate.template_name,
+      templateKey: resumeTemplate.templateKey ?? resumeTemplate.template_name,
+      componentKey: resumeTemplate.componentKey ?? resumeTemplate.templateKey,
       version: template.version ?? '1.0',
+      title: template.title ?? resumeTemplate.name,
+      previewUrl: template.imageUrl ?? '',
+      accessLevel: template.accessLevel ?? resumeTemplate.accessLevel,
     });
     this.userStore.updateResumeTemplate(resumeTemplate);
     this.userStore.setFlagOnTemplateSelected(resumeTemplate.template_name);
@@ -90,6 +97,24 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
   }
 
   isSelected(template: ResumeTemplateUi): boolean {
+    const currentTemplateKey = resolveCanonicalTemplateKey({
+      id: this.resumeForm().template_details.id,
+      templateKey: this.resumeForm().template_details.templateKey,
+      componentKey: this.resumeForm().template_details.componentKey,
+      template_name: this.resumeForm().template_details.template_name,
+      imgPath: this.resumeForm().template_details.imgPath,
+    });
+    const selectedTemplateKey = resolveCanonicalTemplateKey({
+      id: template.id,
+      templateKey: template.templateKey,
+      componentKey: template.componentKey,
+      imageUrl: template.imageUrl,
+    });
+
+    if (currentTemplateKey && selectedTemplateKey) {
+      return currentTemplateKey === selectedTemplateKey;
+    }
+
     const currentId = Number(this.resumeForm().template_details.id ?? 0);
     const templateId = Number(template.id ?? 0);
     return Number.isFinite(templateId) && templateId === currentId;
@@ -106,37 +131,24 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
   private toResumeTemplate(template: ResumeTemplateUi): ResumeTemplateDto {
     const parsedId = Number(template.id);
     const id = Number.isFinite(parsedId) && parsedId > 0 ? parsedId : 1;
-    const resolvedName = this.resolveTemplateName({
-      template_name: template.componentKey,
+    const identity = buildResumeTemplateIdentity({
+      id,
       templateKey: template.templateKey,
       componentKey: template.componentKey,
-      id,
+      imageUrl: template.imageUrl,
     });
 
     return {
       id,
       name: template.title ?? `Template ${id}`,
       companyName: '',
-      template_name: resolvedName,
+      template_name: identity.template_name,
       imgPath: template.imageUrl ?? '',
-      templateKey: template.templateKey ?? resolvedName,
-      componentKey: template.componentKey ?? resolvedName,
+      templateKey: identity.templateKey,
+      componentKey: identity.componentKey,
       version: template.version ?? '1.0',
       accessLevel: template.accessLevel ?? '',
     } as ResumeTemplateDto;
   }
-
-  private resolveTemplateName(details: Partial<ResumeTemplateDto>): string {
-    const fromDetails =
-      details.componentKey || details.templateKey || details.template_name;
-    if (fromDetails) return fromDetails;
-    const id = Number(details.id ?? 0);
-    return Number.isFinite(id) && id > 0 ? `TEMPLATE_${id}` : 'TEMPLATE_1';
-  }
-
-  private isMultiColumnTemplate(details: Partial<ResumeTemplateDto>): boolean {
-    return this.resolveTemplateName(details) === 'TEMPLATE_9';
-  }
-
 
 }

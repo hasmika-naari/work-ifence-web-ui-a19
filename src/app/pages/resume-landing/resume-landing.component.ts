@@ -29,6 +29,7 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
 import { ResumeTemplateFacadeService } from 'src/app/resume-portal/data/resume-template-facade.service';
 import type { ResumeTemplateUi } from 'src/app/resume-portal/data/resume-template.ui.model';
 import type { ResumeTemplate } from 'src/app/services/bee-compete.model';
+import { buildResumeTemplateIdentity } from 'src/app/resume-portal/utils/resume-template-key.util';
 
 @Component({
   selector: 'app-resume-landing',
@@ -309,11 +310,18 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private toResumeTemplate(tpl: ResumeTemplateUi): ResumeTemplate {
     const templateId = Number(tpl.id ?? 0);
+    const identity = buildResumeTemplateIdentity({
+      id: templateId,
+      templateKey: tpl.templateKey,
+      componentKey: tpl.componentKey,
+      imageUrl: tpl.imageUrl,
+    });
+
     return {
       id: templateId,
       name: tpl.title ?? '',
       companyName: '',
-      template_name: tpl.componentKey || tpl.templateKey || `TEMPLATE_${templateId || ''}`,
+      template_name: identity.template_name,
       imgPath: tpl.imageUrl ?? '',
     };
   }
@@ -324,12 +332,20 @@ export class ResumeLandingComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     try {
-      const legacyKey = tpl.componentKey || tpl.templateKey || '';
+      const identity = buildResumeTemplateIdentity({
+        id: tpl.id,
+        templateKey: tpl.templateKey,
+        componentKey: tpl.componentKey,
+        imageUrl: tpl.imageUrl,
+      });
       this.selection.setCatalogSelection({
         templateId: tpl.id ?? '',
-        templateKey: tpl.templateKey ?? legacyKey,
-        componentKey: tpl.componentKey ?? legacyKey,
+        templateKey: identity.templateKey,
+        componentKey: identity.componentKey,
         version: tpl.version ?? '1.0',
+        title: tpl.title ?? '',
+        previewUrl: tpl.imageUrl ?? '',
+        accessLevel: tpl.accessLevel ?? '',
       });
       sessionStorage.setItem('wif_selected_template_title', tpl.title ?? '');
       sessionStorage.setItem('wif_selected_template_doc', tpl.imageUrl ?? '');
