@@ -102,6 +102,39 @@ function findMissingEntryImports(entryFile) {
   return missing;
 }
 
+function getEntryImportSnapshot(entryFile) {
+  let source;
+  try {
+    source = fs.readFileSync(entryFile, 'utf8');
+  } catch {
+    return null;
+  }
+
+  const specs = getTopLevelRelativeImportSpecifiers(source);
+  const files = [entryFile];
+
+  for (const spec of specs) {
+    const resolved = resolveImportTarget(entryFile, spec);
+    if (!resolved) {
+      return null;
+    }
+    files.push(resolved);
+  }
+
+  const snapshot = [];
+  for (const file of files) {
+    try {
+      const stat = fs.statSync(file);
+      snapshot.push(`${path.basename(file)}:${Math.floor(stat.mtimeMs || 0)}:${stat.size}`);
+    } catch {
+      return null;
+    }
+  }
+
+  snapshot.sort();
+  return snapshot.join('|');
+}
+
 function latestMjsMtimeMs(dirPath) {
   let latest = 0;
   const stack = [dirPath];
@@ -143,7 +176,7 @@ async function waitForStableOutputDir() {
   await waitForFile(entry);
 
   let stablePasses = 0;
-  let lastVerifiedEntryMtime = -1;
+  let lastVerifiedSnapshot = '';
 
   while (true) {
     const before = latestMjsMtimeMs(watchDir);
@@ -157,7 +190,7 @@ async function waitForStableOutputDir() {
 
     if (!fs.existsSync(entry)) {
       stablePasses = 0;
-      lastVerifiedEntryMtime = -1;
+      lastVerifiedSnapshot = '';
       await waitForFile(entry);
       continue;
     }
@@ -166,21 +199,18 @@ async function waitForStableOutputDir() {
     if (after !== 0 && after === before) {
       const missingImports = findMissingEntryImports(entry);
       if (missingImports.length === 0) {
-        let entryStat = null;
-        try {
-          entryStat = fs.statSync(entry);
-        } catch {
+        const snapshot = getEntryImportSnapshot(entry);
+        if (!snapshot) {
           stablePasses = 0;
-          lastVerifiedEntryMtime = -1;
+          lastVerifiedSnapshot = '';
           continue;
         }
 
-        const entryMtime = entryStat.mtimeMs || 0;
-        if (entryMtime === lastVerifiedEntryMtime) {
+        if (snapshot === lastVerifiedSnapshot) {
           stablePasses += 1;
         } else {
           stablePasses = 1;
-          lastVerifiedEntryMtime = entryMtime;
+          lastVerifiedSnapshot = snapshot;
         }
 
         if (stablePasses >= 2) {
@@ -191,7 +221,7 @@ async function waitForStableOutputDir() {
     }
 
     stablePasses = 0;
-    lastVerifiedEntryMtime = -1;
+    lastVerifiedSnapshot = '';
   }
 }
 

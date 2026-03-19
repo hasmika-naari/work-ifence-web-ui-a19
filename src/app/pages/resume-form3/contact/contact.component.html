@@ -2,6 +2,44 @@
 <div class="resume-form-container">
   <form [formGroup]="contactForm" class="resume-form">
 
+    <section class="contact-hero">
+      <div class="contact-hero__content">
+        <p class="contact-hero__eyebrow">Template 2 Header</p>
+        <h2 class="contact-hero__title">Contact details and profile image</h2>
+        <p class="contact-hero__description">
+          Add the details shown at the top of the resume. The uploaded image is used as the Template 2 avatar.
+        </p>
+      </div>
+
+      <div class="contact-hero__upload-card">
+        <div class="contact-hero__avatar" [class.contact-hero__avatar--image]="hasProfileImage">
+          @if (hasProfileImage) {
+            <img [src]="getImageBase64()" alt="Profile image preview" />
+          }
+          @else {
+            <span>{{ profileInitials }}</span>
+          }
+        </div>
+
+        <div class="contact-hero__upload-actions">
+          <label class="contact-hero__upload-btn" for="profile-image-upload">
+            <i class="pi pi-image"></i>
+            {{ hasProfileImage ? 'Replace image' : 'Upload image' }}
+          </label>
+          <input id="profile-image-upload" type="file" accept="image/png,image/jpeg,image/webp" (change)="onFileSelected($event)" />
+
+          @if (hasProfileImage) {
+            <button type="button" class="contact-hero__remove-btn" (click)="removeSelectedImage()">
+              <i class="pi pi-trash"></i>
+              Remove
+            </button>
+          }
+
+          <p class="contact-hero__hint">Use a square JPG, PNG, or WebP image for the cleanest avatar crop.</p>
+        </div>
+      </div>
+    </section>
+
     <div class="form-row form-row--double">
       <div class="field">
         <label for="fname">First Name *</label>
@@ -48,7 +86,7 @@
 
         <div class="form-row form-row--single">
           <div class="field">
-            <label for="subTitle">Sub Title/Role</label>
+            <label for="subTitle">Professional Headline</label>
             <input
               id="subTitle"
               type="text"
@@ -165,6 +203,24 @@
                             }
                           </div>
                         </div>
+
+                        <div class="form-row form-row--single">
+                          <div class="field">
+                            <label for="portfolio_url">Portfolio URL</label>
+                            <input
+                              id="portfolio_url"
+                              type="url"
+                              pInputText
+                              formControlName="portfolio_url"
+                              placeholder="https://your-portfolio.com"
+                              />
+                              @if (contactForm.get('portfolio_url')?.hasError('pattern') && (contactForm.get('portfolio_url')?.dirty || contactForm.get('portfolio_url')?.touched)) {
+                                <small class="error">
+                                  Please enter a valid portfolio link.
+                                </small>
+                              }
+                            </div>
+                          </div>
 
                         <div class="form-actions">
                           <button

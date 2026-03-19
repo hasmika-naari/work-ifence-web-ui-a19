@@ -1,0 +1,29 @@
+<section class="template2-section-shell" [class.is-sidebar]="variant === 'sidebar'" [class.is-main]="variant === 'main'">
+  <header class="template2-section-shell__header">
+    <h2 class="template2-section-shell__title">
+      <span class="template2-section-shell__title-copy">
+        <span class="template2-section-shell__title-icon"><span [class]="iconClass"></span></span>
+        <span>{{ title }}</span>
+      </span>
+      <span class="template2-section-shell__title-rule"></span>
+    </h2>
+
+    @if(!isPreview && !isPrintMode && (canAdd || canEdit || canDelete)) {
+      <div class="template2-section-shell__actions">
+        @if(canAdd) {
+          <button type="button" class="template2-section-shell__action" title="Add" (click)="add.emit()"><i [class]="actionIcons.add"></i></button>
+        }
+        @if(canEdit) {
+          <button type="button" class="template2-section-shell__action" title="Edit" (click)="edit.emit()"><i [class]="actionIcons.edit"></i></button>
+        }
+        @if(canDelete) {
+          <button type="button" class="template2-section-shell__action" title="Delete" (click)="delete.emit()"><i [class]="actionIcons.delete"></i></button>
+        }
+      </div>
+    }
+  </header>
+
+  <div class="template2-section-shell__body">
+    <ng-content></ng-content>
+  </div>
+</section>

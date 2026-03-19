@@ -49,7 +49,8 @@ export class ResumeContactComponent implements OnInit, OnDestroy {
   }
 
   sections: Signal<any[]>;
-  imageBase64: String | null = null; // Define a class property to store the image bytes
+  imageBase64: string | null = null;
+  profileImageSrc: string | null = null;
   cPage : number = 0
   panelOpenState = true;
   showProfileImage : boolean = false
@@ -78,6 +79,7 @@ export class ResumeContactComponent implements OnInit, OnDestroy {
   outLineButton = true;
   @Output() contact = new EventEmitter();
   private originalFormValues: any = null;
+  private originalImageSrc: string | null = null;
   public hasFormChanged: boolean = false;
   profile_summary_genai : Array<String> | null = null 
   is_summary_loading : boolean = false;
@@ -149,6 +151,9 @@ get email_address(){
       linkedIn_profile_display_name: contactData.linkedIn_profile_display_name || '',
       github_profile_display_name: contactData.github_profile_display_name || ''
     });
+    this.profileImageSrc = this.resumeForm()?.imageBase64Encoded || null;
+    this.imageBase64 = this.profileImageSrc;
+    this.showProfileImage = !!this.profileImageSrc;
     setTimeout(() => {
       this.captureOriginalFormValues();
     }, 0);
@@ -164,7 +169,8 @@ get email_address(){
   }
 
   private captureOriginalFormValues(): void {
-    this.originalFormValues = { ...this.contactForm.value };
+    this.originalFormValues = { ...this.contactForm.getRawValue() };
+    this.originalImageSrc = this.profileImageSrc;
     this.hasFormChanged = false;
   }
 
@@ -174,8 +180,9 @@ get email_address(){
       return;
     }
 
-    const currentValues = this.contactForm.value;
-    this.hasFormChanged = JSON.stringify(this.originalFormValues) !== JSON.stringify(currentValues);
+    const currentValues = this.contactForm.getRawValue();
+    this.hasFormChanged = JSON.stringify(this.originalFormValues) !== JSON.stringify(currentValues)
+      || this.originalImageSrc !== this.profileImageSrc;
   }
 
   // Helper method to check if form can be submitted
@@ -196,15 +203,21 @@ get email_address(){
 
   saveAndContinue(display : String | null){
     this.markFormGroupTouched(this.contactForm);
+    if (this.contactForm.invalid) {
+      return;
+    }
     let resumeContact: ResumeContact = new ResumeContact();
     resumeContact.fname =  this.contactForm.value.fname?this.contactForm.value.fname?.trim() : '';
     resumeContact.lname =  this.contactForm.value.lname?this.contactForm.value.lname?.trim() : '';
     resumeContact.subTitle =  this.contactForm.value.subTitle?this.contactForm.value.subTitle:'';
+    resumeContact.role = this.contactForm.value.role?this.contactForm.value.role:'';
     resumeContact.phone_number =  this.contactForm.value.phone_number?this.contactForm.value.phone_number : "";
     resumeContact.email_address =  this.contactForm.value.email_address?this.contactForm.value.email_address : "";
+    resumeContact.email = resumeContact.email_address;
     resumeContact.linkedIn_profile =  this.contactForm.value.linkedIn_profile?this.contactForm.value.linkedIn_profile : "";
     resumeContact.github_profile =  this.contactForm.value.github_profile?this.contactForm.value.github_profile : "";
     resumeContact.portfolio_url =  this.contactForm.value.portfolio_url?this.contactForm.value.portfolio_url : "";
+    resumeContact.portfolio_link = resumeContact.portfolio_url;
     resumeContact.linkedIn_profile_display_name = this.contactForm.value.linkedIn_profile_display_name?this.contactForm.value.linkedIn_profile_display_name:"";
     resumeContact.github_profile_display_name = this.contactForm.value.github_profile_display_name?this.contactForm.value.github_profile_display_name:"";
     resumeContact.address = this.contactForm.value.address?this.contactForm.value.address:"";
@@ -213,13 +226,23 @@ get email_address(){
     // Update CONTACT section's data in selectedResume.sections
     const resume = this.resumeForm();
     if (resume && Array.isArray(resume.sections)) {
-      const contactSection = resume.sections.find((section: any) => section.section === 'CONTACT');
-      if (contactSection) {
-        contactSection.data = { ...resumeContact };
-      }
-      // Clear selectedContact after save
-      resume.selectedContact = undefined;
-      this.userStore.updateResumeForm({ ...resume });
+      const updatedSections = resume.sections.map((section: any) => {
+        if (section.section !== 'CONTACT') {
+          return section;
+        }
+
+        return {
+          ...section,
+          data: { ...resumeContact }
+        };
+      });
+
+      this.userStore.updateResumeForm({
+        ...resume,
+        sections: updatedSections,
+        imageBase64Encoded: this.profileImageSrc,
+        selectedContact: undefined
+      });
     }
 
     if(!this.sectionStatus().isContact){
@@ -235,7 +258,6 @@ get email_address(){
   }
 
   onFileSelected(event: any) {
-    this.showProfileImage = true;
     const file: File = event.target.files[0];
     if (file) {
       this.convertImageToBase64(file);
@@ -244,27 +266,37 @@ get email_address(){
 
   convertImageToBase64(file: File) {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const arrayBuffer: ArrayBuffer | null = reader.result as ArrayBuffer; // Get the ArrayBuffer
-      if (arrayBuffer) {
-        const uint8Array = new Uint8Array(arrayBuffer); // Create a Uint8Array view
-        this.imageBase64 = this.arrayBufferToBase64(uint8Array); // Convert to base64
-        console.log('Image converted to base64:', this.imageBase64);
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        this.imageBase64 = reader.result;
+        this.profileImageSrc = reader.result;
+        this.showProfileImage = true;
+        this.checkForFormChanges();
       }
     };
-    reader.readAsArrayBuffer(file);
+    reader.readAsDataURL(file);
   }
 
   getImageBase64(){
-    return "data:image/png;base64, " + this.imageBase64;
+    return this.profileImageSrc || 'assets/img/home/profile_fake.png';
   }
 
-  arrayBufferToBase64(buffer: Uint8Array): string {
-    let binary = '';
-    buffer.forEach((byte) => {
-      binary += String.fromCharCode(byte);
-    });
-    return btoa(binary);
+  removeSelectedImage(): void {
+    this.imageBase64 = null;
+    this.profileImageSrc = null;
+    this.showProfileImage = false;
+    this.checkForFormChanges();
+  }
+
+  get profileInitials(): string {
+    const firstInitial = this.contactForm.value.fname?.trim()?.charAt(0) || '';
+    const lastInitial = this.contactForm.value.lname?.trim()?.charAt(0) || '';
+    const initials = `${firstInitial}${lastInitial}`.toUpperCase();
+    return initials || 'WF';
+  }
+
+  get hasProfileImage(): boolean {
+    return !!this.profileImageSrc;
   }
 
   onSubmit(){

@@ -1,219 +1,392 @@
-<div class="resume-container">
-  <div class="body-container">
-    <header class="trigger-area">
-      <div class="header">
-        <h1>{{getContactData().fname + ' ' + getContactData().lname}}</h1>
-      </div>
-      <ul class="profile-contact-details-list">
-        @if(getContactData().phone_number?.length > 0){
-          <li><b>Phone :</b> {{getContactData().phone_number}}</li>
-        }
-        @if(getContactData().email?.length > 0){
-          <li><b>Email :</b> {{getContactData().email}}</li>
-        }
-        @if(getContactData().linkedIn_profile?.length > 0){
-          <li><b>LinkedIn :</b> <a href="{{getContactData().linkedIn_profile}}">
-        Profile</a>
-      </li>
-    }
-    @if(getContactData().github_profile?.length > 0){
-      <li><b>Github :</b> <a  href="{{getContactData().github_profile}}">
-    Profile</a>
-  </li>
-}
-@if(getContactData().portfolio_link?.length > 0){
-  <li><b>Potfolio :</b> <a  href="{{getContactData().portfolio_link}}">
-Profile</a>
-</li>
-}
-</ul>
-@if (!isPreview) {
-  <div class="edit-context-menu" >
-    <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('CONTACT', null)"  ></i>
-  </div>
-}
-</header>
-@if((getProfileSummary() || '').length > 0){
-  <div class="summary trigger-area">
-    <h2 style="text-transform: uppercase;font-size: 16px;font-weight: 600;">Summary</h2>
-    <p class="resume-summary" >{{getProfileSummary()}}</p>
-    @if (!isPreview) {
-      <div class="edit-context-menu" >
-        <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('PROFILE_SUMMARY', null)"  ></i>
-        <i class="fa fa-trash show-orange-red" (click)="confirmDeleteDialog('SUMMARY', null)"  ></i>
-      </div>
-    }
-  </div>
-}
-@if(getSectionItems('WORK_EXPERIENCE').length > 0 && (!isPreview || checkExperienceCondition())){
-  <div class="template2-experience">
-    <span class="template2-section-title">
-      <span><h2 style="position: relative;float:left;font-size: 16px;font-weight: 600;color: black;text-transform: uppercase;">
-      Experience  </h2>
-    </span>
-    @if (!isPreview) {
-      <span>
-        <i style="position: relative;float:left;left:20px;top:5px;" matTooltip="Add Experience"  class="fa fa-plus show-green add-education-icon"
-          id="editContact" (click)="addSectionHandler('EXPERIENCE', '')"  >
-        </i>
-      </span>
-    }
-  </span>
-  @for (item of getSectionItems('WORK_EXPERIENCE'); track item) {
-    <div class="trigger-area" style="padding-top: 10px;">
-      @if (!isPreview || !item.isHideSelected) {
-        <div [class]="getDivClass(item)">
-          <div class="experience-details">
-            <p><strong>{{item.position_title}}</strong> | <strong>{{item.company_name}}</strong> | <strong>{{item.location}}</strong> | <strong>{{item.start_date}} - {{item.end_date}}</strong></p>
-          </div>
-          <div class="experience-bullets">
-            <div [innerHTML]="item.description"></div>
-          </div>
-        </div>
-      }
-      @if (!isPreview) {
-        <div class="edit-context-menu menuFadeInUp">
-          <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('WORK_EXPERIENCE', item)"  ></i>
-          <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('EXPERIENCE', item)"></i>
-          @if(item.isHideSelected){
-            <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('EXPERIENCE', item)"></i>
-          }
-          @else{
-          <i class="fa fa-eye" (click)="hideSectionElement('EXPERIENCE', item)"></i>
-        }
-        <i class="fa fa-arrow-up"  (click)="moveObjectById('EXPERIENCE', item.id, 'up')" ></i>
-        <i class="fa fa-arrow-down"  (click)="moveObjectById('EXPERIENCE', item.id, 'down')" ></i>
-      </div>
-    }
-  </div>
-}
-</div>
-}
-@if(getSectionItems('PROJECT').length > 0 && (!isPreview || checkProjectCondition())){
-  <div class="template2-projects">
-    <span class="template2-section-title">
-      <span><h2 style="position: relative;float:left;font-size: 16px;font-weight: 600;text-transform:uppercase;">
-      Projects  </h2>
-    </span>
-    @if (!isPreview) {
-      <span>
-        <i style="position: relative;float:left;left:20px;top:5px;" matTooltip="Add Project"  class="fa fa-plus show-green add-project-icon"
-          id="editContact" (click)="addSectionHandler('PROJECT', '')"  >
-        </i>
-      </span>
-    }
-  </span>
-  @for (item of getSectionItems('PROJECT'); track item) {
-    <div class="trigger-area"  style="padding-top: 10px;">
-      @if (!isPreview || !item.isHideSelected) {
-        <div [class]="getDivClass(item)">
-          <div class="project-details">
-            <p><a href="{{item.project_link}}"><strong>{{item.project_name}}</strong></a></p>
-            <!-- <p><strong>January 2020 - March 2021</strong></p> -->
-          </div>
-          <div class="project-bullets">
-            <div [innerHTML]="item.description"></div>
-          </div>
-        </div>
-      }
-      @if (!isPreview) {
-        <div class="edit-context-menu" >
-          <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('PROJECT', item)"  ></i>
-          <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('PROJECT', item)"></i>
-          @if(item.isHideSelected){
-            <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('PROJECT', item)"></i>
-          }
-          @else{
-          <i class="fa fa-eye" (click)="hideSectionElement('PROJECT', item)"></i>
-        }
-        <i class="fa fa-arrow-up"  (click)="moveObjectById('PROJECT', item.id, 'up')" ></i>
-        <i class="fa fa-arrow-down"  (click)="moveObjectById('PROJECT', item.id, 'down')" ></i>
-      </div>
-    }
-  </div>
-}
-</div>
-}
-@if(getSectionItems('EDUCATION').length > 0 && (!isPreview || checkEducationCondition())){
-  <div class="template2-education">
-    <span class="template2-section-title">
-      <span><h2 style="position: relative;float:left;font-size: 16px;font-weight: 600;text-transform: uppercase;">
-      Education  </h2>
-    </span>
-    @if (!isPreview) {
-      <span>
-        <i style="position: relative;float:left;left:20px;top:5px;" matTooltip="Add Education"  class="fa fa-plus show-green add-education-icon"
-          id="editContact" (click)="addSectionHandler('EDUCATION', '')"  >
-        </i>
-      </span>
-    }
-  </span>
-  @for (item of getSectionItems('EDUCATION'); track item) {
-    <div class="education-details trigger-area"  style="padding-top: 10px;">
-      @if (!isPreview || !item.isHideSelected) {
-        <div class="education-details" [class]="getDivClass(item)">
-          <p><strong>{{item.degree}}, {{item.field_of_study}}</strong> | <strong>{{item.school_name}}</strong> | <strong>{{item.school_location}}</strong> | <strong>CGPA: {{item.gpa}}</strong> | <strong>{{item.graduation_date}}</strong></p>
-        </div>
-      }
-      @if (!isPreview) {
-        <div class="edit-context-menu" >
-          <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('EDUCATION', item)"  ></i>
-          <i class="fa fa-trash show-orange-red"  (click)="confirmDeleteDialog('EDUCATION', item)" ></i>
-          @if(item.isHideSelected){
-            <i class="fa fa-eye-slash" aria-hidden="true" (click)="unHideSectionElement('EDUCATION', item)"></i>
-          }
-          @else{
-          <i class="fa fa-eye" (click)="hideSectionElement('EDUCATION', item)"></i>
-        }
-        <i class="fa fa-arrow-up"  (click)="moveObjectById('EDUCATION', item.id, 'up')" ></i>
-        <i class="fa fa-arrow-down"  (click)="moveObjectById('EDUCATION', item.id, 'down')" ></i>
-      </div>
-    }
-  </div>
-}
-</div>
-}
-@if(getSectionItems('SKILLS_BULLET_POINTS').length > 0){
-  <div class="template2-skills">
-    <span class="template2-section-title">
-      <span><h2 style="position: relative;float:left;font-size: 16px;font-weight: 600;text-transform: uppercase;">
-      Skills  </h2>
-    </span>
-    @if (!isPreview) {
-      <span>
-        <i style="position: relative;float:left;left:20px;top:5px;" matTooltip="Add Skill"  class="fa fa-plus show-green add-skill-icon"
-          id="editContact" (click)="addSectionHandler('SKILLS', '')"  >
-        </i>
-      </span>
-    }
-  </span>
-  <div class="trigger-area course-work">
-    <div  class="course-work-section-content">
-      <ul class="course-work-list" style="padding-left: 0px;">
-        @for (item of getSectionItems('SKILLS_BULLET_POINTS'); track item) {
-          <li class="course-work-lisit-item">{{item}}</li>
-        }
-      </ul>
-    </div>
-    @if (!isPreview) {
-      <div class="edit-context-menu" >
-        <i class="fa fa-pencil show-green"  id="editContact" (click)="editSectionHandler('SKILLS_BULLET_POINTS', null)"  ></i>
-        <i class="fa fa-trash show-orange-red"   (click)="confirmDeleteDialog('SKILLS', null)"></i>
-      </div>
-    }
-  </div>
-</div>
-}
-<!-- Your resume content goes here -->
-</div>
-<footer style="padding-top: 100px;padding-bottom:30px;">
-  <div class="row">
-    <div class="text-left">
-      <p class="company-name-in-footer">www.workifence.com</p>
-    </div>
-    <div>
+<div class="template2">
+  <app-template2-header
+    [contact]="contact"
+    [imageSrc]="profileImageSrc"
+    [initials]="initials"
+    [isPreview]="isPreview"
+    [isPrintMode]="isPrintMode"
+    (edit)="openSectionEditor('CONTACT')">
+  </app-template2-header>
 
-    </div>
+  <div class="template2-layout">
+    <aside class="template2-sidebar">
+      @if (hasSummary('PROFILE_SUMMARY')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('PROFILE_SUMMARY', 'Summary')"
+          [iconClass]="getSectionIconClass('PROFILE_SUMMARY')"
+          variant="sidebar"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          (edit)="openSectionEditor('PROFILE_SUMMARY')">
+          <div class="template2-richtext template2-summary-copy" [innerHTML]="getSummaryHtml('PROFILE_SUMMARY')"></div>
+        </app-template2-section-shell>
+      }
+
+      @if (hasSummary('PROFILE_SUMMARY_BULLETED')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('PROFILE_SUMMARY_BULLETED', 'Career Highlights')"
+          [iconClass]="getSectionIconClass('PROFILE_SUMMARY_BULLETED')"
+          variant="sidebar"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          [canDelete]="!isPreview"
+          (edit)="openSectionEditor('PROFILE_SUMMARY_BULLETED')"
+          (delete)="removeSection('PROFILE_SUMMARY_BULLETED')">
+          <ul class="template2-bullet-list">
+            @for (bullet of getSummaryBullets(); track bullet) {
+              <li>{{ bullet }}</li>
+            }
+          </ul>
+        </app-template2-section-shell>
+      }
+
+      @if (shouldShowSection('SKILLS_BY_CATEGORY')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('SKILLS_BY_CATEGORY', 'Skills By Category')"
+          [iconClass]="getSectionIconClass('SKILLS_BY_CATEGORY')"
+          variant="sidebar"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          [canDelete]="!isPreview"
+          (edit)="openSectionEditor('SKILLS_BY_CATEGORY')"
+          (delete)="removeSection('SKILLS_BY_CATEGORY')">
+          <div class="template2-category-list">
+            @for (item of getSkillsCategoryRows(); track item.data?.id ?? item.raw?.id ?? item.title) {
+              <div class="template2-category-card">
+                @if (!isPreview && !isPrintMode) {
+                  <div class="template2-item-actions">
+                    <button type="button" title="Edit" (click)="openSectionEditor('SKILLS_BY_CATEGORY', item.raw)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Delete" (click)="confirmDeleteDialog('SKILLS_CATEGORY', item.raw)"><i [class]="actionIcons.delete"></i></button>
+                    @if (item.data?.isHideSelected) {
+                      <button type="button" title="Show" (click)="toggleItemVisibility('SKILLS_BY_CATEGORY', item.raw, false)"><i [class]="actionIcons.show"></i></button>
+                    }
+                    @else {
+                      <button type="button" title="Hide" (click)="toggleItemVisibility('SKILLS_BY_CATEGORY', item.raw, true)"><i [class]="actionIcons.hide"></i></button>
+                    }
+                    <button type="button" title="Move up" (click)="moveObjectById('SKILLS_BY_CATEGORY', item.data?.id || item.raw?.id, 'up')"><i [class]="actionIcons.moveUp"></i></button>
+                    <button type="button" title="Move down" (click)="moveObjectById('SKILLS_BY_CATEGORY', item.data?.id || item.raw?.id, 'down')"><i [class]="actionIcons.moveDown"></i></button>
+                  </div>
+                }
+                <h3>{{ item.title }}</h3>
+                <div class="template2-chip-list">
+                  @for (skill of item.skills; track skill) {
+                    <span class="template2-chip">{{ skill }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </app-template2-section-shell>
+      }
+
+      @if (shouldShowSection('SKILLS_BULLET_POINTS')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('SKILLS_BULLET_POINTS', 'Skills')"
+          [iconClass]="getSectionIconClass('SKILLS_BULLET_POINTS')"
+          variant="sidebar"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          [canDelete]="!isPreview"
+          (edit)="openSectionEditor('SKILLS_BULLET_POINTS')"
+          (delete)="confirmDeleteDialog('SKILLS', null)">
+          <ul class="template2-bullet-list template2-bullet-list--tight template2-bullet-list--columns">
+            @for (value of getListValues('SKILLS_BULLET_POINTS', 'skill'); track value) {
+              <li>{{ value }}</li>
+            }
+          </ul>
+        </app-template2-section-shell>
+      }
+
+      @if (shouldShowSection('RELEVANT_COURSEWORK')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('RELEVANT_COURSEWORK', 'Course Work')"
+          [iconClass]="getSectionIconClass('RELEVANT_COURSEWORK')"
+          variant="sidebar"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          [canDelete]="!isPreview"
+          (edit)="openSectionEditor('RELEVANT_COURSEWORK')"
+          (delete)="confirmDeleteDialog('COURSEWORK', null)">
+          <ul class="template2-bullet-list template2-bullet-list--tight">
+            @for (value of getCourseworkRows(); track value) {
+              <li>{{ value }}</li>
+            }
+          </ul>
+        </app-template2-section-shell>
+      }
+
+      @if (checkCertificationCondition()) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('CERTIFICATIONS', 'Certifications')"
+          [iconClass]="getSectionIconClass('CERTIFICATIONS')"
+          variant="sidebar"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canAdd]="!isPreview"
+          (add)="addSectionHandler('CERTIFICATIONS')">
+          <div class="template2-stack-list">
+            @for (item of getCertificationRows(); track item.data?.id ?? item.raw?.id) {
+              <article class="template2-side-card">
+                <div class="template2-side-card__copy">
+                  <h3>{{ item.data?.name }}</h3>
+                  @if (item.data?.authority || item.data?.date) {
+                    <div class="template2-side-card__meta-row">
+                      <p>{{ item.data?.authority }}</p>
+                      @if (item.data?.date) {
+                        <span>{{ item.data?.date }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+                @if (!isPreview && !isPrintMode) {
+                  <div class="template2-item-actions">
+                    <button type="button" title="Edit" (click)="openSectionEditor('CERTIFICATIONS', item.raw)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Delete" (click)="confirmDeleteDialog('CERTIFICATION', item.raw)"><i [class]="actionIcons.delete"></i></button>
+                    @if (item.data?.isHideSelected) {
+                      <button type="button" title="Show" (click)="toggleItemVisibility('CERTIFICATIONS', item.raw, false)"><i [class]="actionIcons.show"></i></button>
+                    }
+                    @else {
+                      <button type="button" title="Hide" (click)="toggleItemVisibility('CERTIFICATIONS', item.raw, true)"><i [class]="actionIcons.hide"></i></button>
+                    }
+                    <button type="button" title="Move up" (click)="moveObjectById('CERTIFICATIONS', item.data?.id || item.raw?.id, 'up')"><i [class]="actionIcons.moveUp"></i></button>
+                    <button type="button" title="Move down" (click)="moveObjectById('CERTIFICATIONS', item.data?.id || item.raw?.id, 'down')"><i [class]="actionIcons.moveDown"></i></button>
+                  </div>
+                }
+              </article>
+            }
+          </div>
+        </app-template2-section-shell>
+      }
+
+      @if (shouldShowSection('CERTIFICATIONS_BULLET_POINTS')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('CERTIFICATIONS_BULLET_POINTS', 'Certification Highlights')"
+          [iconClass]="getSectionIconClass('CERTIFICATIONS_BULLET_POINTS')"
+          variant="sidebar"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          [canDelete]="!isPreview"
+          (edit)="openSectionEditor('CERTIFICATIONS_BULLET_POINTS')"
+          (delete)="removeSection('CERTIFICATIONS_BULLET_POINTS')">
+          <ul class="template2-bullet-list template2-bullet-list--tight">
+            @for (value of getListValues('CERTIFICATIONS_BULLET_POINTS', 'point'); track value) {
+              <li>{{ value }}</li>
+            }
+          </ul>
+        </app-template2-section-shell>
+      }
+
+      @if (shouldShowSection('ACHIEVEMENTS_BULLET_POINTS')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('ACHIEVEMENTS_BULLET_POINTS', 'Achievements')"
+          [iconClass]="getSectionIconClass('ACHIEVEMENTS_BULLET_POINTS')"
+          variant="sidebar"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          [canDelete]="!isPreview"
+          (edit)="openSectionEditor('ACHIEVEMENTS_BULLET_POINTS')"
+          (delete)="removeSection('ACHIEVEMENTS_BULLET_POINTS')">
+          <ul class="template2-bullet-list template2-bullet-list--tight">
+            @for (value of getListValues('ACHIEVEMENTS_BULLET_POINTS', 'achievement'); track value) {
+              <li>{{ value }}</li>
+            }
+          </ul>
+        </app-template2-section-shell>
+      }
+    </aside>
+
+    <main class="template2-main">
+      @if (checkExperienceCondition()) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('WORK_EXPERIENCE', 'Experience')"
+          [iconClass]="getSectionIconClass('WORK_EXPERIENCE')"
+          variant="main"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canAdd]="!isPreview"
+          (add)="addSectionHandler('WORK_EXPERIENCE')">
+          <div class="template2-main-list">
+            @for (item of getExperienceRows(); track item.data?.id ?? item.raw?.id) {
+              <article class="template2-entry-card">
+                <div class="template2-entry-card__header">
+                  <div>
+                    <h3>{{ item.data?.position_title }}</h3>
+                    <p>{{ item.data?.company_name }}</p>
+                  </div>
+                  <div class="template2-entry-card__meta">
+                    @if (item.data?.location) {
+                      <span>{{ item.data?.location }}</span>
+                    }
+                    @if (item.data?.start_date || item.data?.end_date) {
+                      <span>{{ formatDateRange(item.data?.start_date, item.data?.end_date, item.data?.isCurrentlyWorkHere) }}</span>
+                    }
+                  </div>
+                </div>
+                @if (item.data?.description) {
+                  <div class="template2-richtext" [innerHTML]="item.data?.description"></div>
+                }
+                @if (!isPreview && !isPrintMode) {
+                  <div class="template2-item-actions template2-item-actions--main">
+                    <button type="button" title="Edit" (click)="openSectionEditor('WORK_EXPERIENCE', item.data)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Delete" (click)="confirmDeleteDialog('EXPERIENCE', item.data)"><i [class]="actionIcons.delete"></i></button>
+                    @if (item.data?.isHideSelected) {
+                      <button type="button" title="Show" (click)="toggleItemVisibility('WORK_EXPERIENCE', item.raw, false)"><i [class]="actionIcons.show"></i></button>
+                    }
+                    @else {
+                      <button type="button" title="Hide" (click)="toggleItemVisibility('WORK_EXPERIENCE', item.raw, true)"><i [class]="actionIcons.hide"></i></button>
+                    }
+                    <button type="button" title="Move up" (click)="moveObjectById('WORK_EXPERIENCE', item.data?.id || item.raw?.id, 'up')"><i [class]="actionIcons.moveUp"></i></button>
+                    <button type="button" title="Move down" (click)="moveObjectById('WORK_EXPERIENCE', item.data?.id || item.raw?.id, 'down')"><i [class]="actionIcons.moveDown"></i></button>
+                  </div>
+                }
+              </article>
+            }
+          </div>
+        </app-template2-section-shell>
+      }
+
+      @if (checkProjectCondition()) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('PROJECT', 'Projects')"
+          [iconClass]="getSectionIconClass('PROJECT')"
+          variant="main"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canAdd]="!isPreview"
+          (add)="addSectionHandler('PROJECT')">
+          <div class="template2-main-list">
+            @for (item of getProjectRows(); track item.data?.id ?? item.raw?.id) {
+              <article class="template2-entry-card">
+                <div class="template2-entry-card__header">
+                  <div>
+                    @if (item.data?.project_link) {
+                      <h3><a [href]="item.data?.project_link" target="_blank" rel="noreferrer">{{ item.data?.project_name }}</a></h3>
+                    }
+                    @else {
+                      <h3>{{ item.data?.project_name }}</h3>
+                    }
+                    @if (item.data?.role) {
+                      <p>{{ item.data?.role }}</p>
+                    }
+                  </div>
+                  <div class="template2-entry-card__meta">
+                    @if (item.data?.technologies_used) {
+                      <span>{{ item.data?.technologies_used }}</span>
+                    }
+                    @if (item.data?.start_date || item.data?.end_date || item.data?.period) {
+                      <span>{{ item.data?.period || formatDateRange(item.data?.start_date, item.data?.end_date) }}</span>
+                    }
+                  </div>
+                </div>
+                @if (item.data?.description || item.data?.responsibilitiesRichText || item.data?.highlightsRichText) {
+                  <div class="template2-richtext" [innerHTML]="item.data?.description || item.data?.responsibilitiesRichText || item.data?.highlightsRichText"></div>
+                }
+                @if (!isPreview && !isPrintMode) {
+                  <div class="template2-item-actions template2-item-actions--main">
+                    <button type="button" title="Edit" (click)="openSectionEditor('PROJECT', item.data)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Delete" (click)="confirmDeleteDialog('PROJECT', item.data)"><i [class]="actionIcons.delete"></i></button>
+                    @if (item.data?.isHideSelected) {
+                      <button type="button" title="Show" (click)="toggleItemVisibility('PROJECT', item.raw, false)"><i [class]="actionIcons.show"></i></button>
+                    }
+                    @else {
+                      <button type="button" title="Hide" (click)="toggleItemVisibility('PROJECT', item.raw, true)"><i [class]="actionIcons.hide"></i></button>
+                    }
+                    <button type="button" title="Move up" (click)="moveObjectById('PROJECT', item.data?.id || item.raw?.id, 'up')"><i [class]="actionIcons.moveUp"></i></button>
+                    <button type="button" title="Move down" (click)="moveObjectById('PROJECT', item.data?.id || item.raw?.id, 'down')"><i [class]="actionIcons.moveDown"></i></button>
+                  </div>
+                }
+              </article>
+            }
+          </div>
+        </app-template2-section-shell>
+      }
+
+      @if (checkEducationCondition()) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('EDUCATION', 'Education')"
+          [iconClass]="getSectionIconClass('EDUCATION')"
+          variant="main"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canAdd]="!isPreview"
+          (add)="addSectionHandler('EDUCATION')">
+          <div class="template2-main-list">
+            @for (item of getEducationRows(); track item.data?.id ?? item.raw?.id) {
+              <article class="template2-entry-card template2-entry-card--compact">
+                <div class="template2-entry-card__header">
+                  <div>
+                    <h3>{{ item.data?.degree }}@if(item.data?.field_of_study){, {{ item.data?.field_of_study }}}</h3>
+                    <p>{{ item.data?.school_name }}</p>
+                  </div>
+                  <div class="template2-entry-card__meta">
+                    @if (item.data?.school_location) {
+                      <span>{{ item.data?.school_location }}</span>
+                    }
+                    @if (item.data?.graduation_date) {
+                      <span>{{ item.data?.graduation_date }}</span>
+                    }
+                    @if (item.data?.gpa) {
+                      <span>CGPA: {{ item.data?.gpa }}</span>
+                    }
+                  </div>
+                </div>
+                @if (!isPreview && !isPrintMode) {
+                  <div class="template2-item-actions template2-item-actions--main">
+                    <button type="button" title="Edit" (click)="openSectionEditor('EDUCATION', item.data)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Delete" (click)="confirmDeleteDialog('EDUCATION', item.data)"><i [class]="actionIcons.delete"></i></button>
+                    @if (item.data?.isHideSelected) {
+                      <button type="button" title="Show" (click)="toggleItemVisibility('EDUCATION', item.raw, false)"><i [class]="actionIcons.show"></i></button>
+                    }
+                    @else {
+                      <button type="button" title="Hide" (click)="toggleItemVisibility('EDUCATION', item.raw, true)"><i [class]="actionIcons.hide"></i></button>
+                    }
+                    <button type="button" title="Move up" (click)="moveObjectById('EDUCATION', item.data?.id || item.raw?.id, 'up')"><i [class]="actionIcons.moveUp"></i></button>
+                    <button type="button" title="Move down" (click)="moveObjectById('EDUCATION', item.data?.id || item.raw?.id, 'down')"><i [class]="actionIcons.moveDown"></i></button>
+                  </div>
+                }
+              </article>
+            }
+          </div>
+        </app-template2-section-shell>
+      }
+
+      @if (shouldShowSection('ACHIEVEMENT_WITH_DESC')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('ACHIEVEMENT_WITH_DESC', 'Accomplishments')"
+          [iconClass]="getSectionIconClass('ACHIEVEMENT_WITH_DESC')"
+          variant="main"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          [canDelete]="!isPreview"
+          (edit)="openSectionEditor('ACHIEVEMENT_WITH_DESC')"
+          (delete)="removeSection('ACHIEVEMENT_WITH_DESC')">
+          <div class="template2-main-list">
+            @for (item of getAchievementRows(); track item.data?.id ?? item.raw?.id) {
+              <article class="template2-entry-card template2-entry-card--compact">
+                <div class="template2-entry-card__header">
+                  <div>
+                    <h3>{{ item.data?.accomplisment }}</h3>
+                    @if (item.data?.date) {
+                      <p>{{ item.data?.date }}</p>
+                    }
+                  </div>
+                </div>
+                @if (item.data?.description || item.data?.original_html_description) {
+                  <div class="template2-richtext" [innerHTML]="item.data?.original_html_description || item.data?.description"></div>
+                }
+              </article>
+            }
+          </div>
+        </app-template2-section-shell>
+      }
+    </main>
   </div>
-</footer>
 </div>

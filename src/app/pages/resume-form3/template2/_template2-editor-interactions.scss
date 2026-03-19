@@ -1,0 +1,197 @@
+.template2-item-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.template2-item-actions button {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid rgba(198, 166, 111, 0.45);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--template2-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.template2-item-actions button:hover {
+  border-color: var(--template2-accent);
+  color: var(--template2-accent);
+  transform: translateY(-1px);
+}
+
+.template2-item-actions--main {
+  top: auto;
+  right: 0;
+  bottom: 0;
+  padding: 0.22rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(219, 199, 164, 0.62);
+}
+
+.template2-side-card:hover .template2-item-actions,
+.template2-side-card:focus-within .template2-item-actions,
+.template2-entry-card:hover .template2-item-actions,
+.template2-entry-card:focus-within .template2-item-actions,
+.template2-category-card:hover .template2-item-actions,
+.template2-category-card:focus-within .template2-item-actions {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+:host ::ng-deep .resume-contact-edit-icon.p-button,
+:host ::ng-deep .resume-contact-edit-icon.p-button:focus,
+:host ::ng-deep .resume-contact-edit-icon.p-button:active,
+:host ::ng-deep .resume-contact-edit-icon.p-button:hover,
+:host ::ng-deep .resume-contact-edit-icon.p-button:enabled:hover,
+:host ::ng-deep .resume-contact-edit-icon.p-button:enabled:focus,
+:host ::ng-deep .resume-contact-edit-icon.p-button:enabled:active,
+:host ::ng-deep .resume-contact-edit-icon .p-button,
+:host ::ng-deep .resume-contact-edit-icon .p-button:hover,
+:host ::ng-deep .resume-contact-edit-icon .p-button:focus,
+:host ::ng-deep .resume-contact-edit-icon .p-button:active,
+:host ::ng-deep .resume-contact-edit-icon .p-button:enabled:hover,
+:host ::ng-deep .resume-contact-edit-icon .p-button:enabled:focus,
+:host ::ng-deep .resume-contact-edit-icon .p-button:enabled:active {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+:host ::ng-deep .resume-contact-edit-icon .p-button {
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  border-radius: 0 !important;
+  color: #888 !important;
+}
+
+:host ::ng-deep .resume-contact-edit-icon .p-button:hover,
+:host ::ng-deep .resume-contact-edit-icon .p-button:focus,
+:host ::ng-deep .resume-contact-edit-icon .p-button:active,
+:host ::ng-deep .resume-contact-edit-icon .p-button:enabled:hover,
+:host ::ng-deep .resume-contact-edit-icon .p-button:enabled:focus,
+:host ::ng-deep .resume-contact-edit-icon .p-button:enabled:active {
+  color: #2c3e50 !important;
+}
+
+.template2-header__action {
+  flex-shrink: 0;
+  align-self: flex-start;
+  position: absolute;
+  top: 0.7rem;
+  right: 1.2rem;
+  font-size: 1.3rem;
+  color: #888;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 2;
+  transition: opacity 0.2s ease, visibility 0.2s ease, color 0.2s ease;
+}
+
+.template2-header__action:hover {
+  color: #2c3e50;
+  background: transparent;
+  box-shadow: none !important;
+}
+
+.template2-header__action:focus,
+.template2-header__action:active {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.template2-header:hover .template2-header__action,
+.template2-header:focus-within .template2-header__action {
+  opacity: 1;
+  visibility: visible;
+}
+
+.template2-section-shell__actions {
+  position: absolute;
+  top: 50%;
+  right: 0.9rem;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.35rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.template2-section-shell__action {
+  width: 1.95rem;
+  height: 1.95rem;
+  border: 1px solid rgba(179, 150, 102, 0.35);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--template2-muted, #856a47);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.template2-section-shell__action:hover {
+  border-color: var(--template2-accent, #a5671e);
+  color: var(--template2-accent, #a5671e);
+  transform: translateY(-1px);
+}
+
+.template2-section-shell:hover .template2-section-shell__actions,
+.template2-section-shell:focus-within .template2-section-shell__actions {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@media (max-width: 900px) {
+  .template2-item-actions {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    margin-top: 0.4rem;
+  }
+
+  .template2-item-actions--main {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .template2-header__action {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .template2-section-shell__actions {
+    position: static;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}

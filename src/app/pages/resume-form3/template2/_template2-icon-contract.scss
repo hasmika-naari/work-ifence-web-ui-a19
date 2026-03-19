@@ -1,0 +1,35 @@
+@font-face {
+  font-family: 'FontAwesomeLocal';
+  src: url('/assets/resume/icons/fontawesome-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.fa-icon {
+  font-family: 'FontAwesomeLocal' !important;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.t2-icon-profile::before { content: '\f007'; }
+.t2-icon-highlights::before { content: '\f005'; }
+.t2-icon-skills::before { content: '\f085'; }
+.t2-icon-coursework::before { content: '\f02d'; }
+.t2-icon-certifications::before { content: '\f0a3'; }
+.t2-icon-achievements::before { content: '\f091'; }
+.t2-icon-experience::before { content: '\f0b1'; }
+.t2-icon-projects::before { content: '\f07c'; }
+.t2-icon-education::before { content: '\f19d'; }
+.t2-icon-default::before { content: '\f02e'; }
+
+.t2-icon-email::before { content: '\f0e0'; }
+.t2-icon-phone::before { content: '\f095'; }
+.t2-icon-linkedin::before { content: '\f0e1'; }
+.t2-icon-github::before { content: '\f09b'; }
+.t2-icon-portfolio::before { content: '\f0ac'; }

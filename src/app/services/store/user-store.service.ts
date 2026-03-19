@@ -886,10 +886,12 @@ export class UserStoreService {
 
       updateResumeForm(resume: Resume) {
         this.state.update((state) => {
-          // Only update the sections array and selectedContact in resumeForm, not replace the whole object
           const updatedResumeForm = {
             ...state.selectedResume.resumeForm,
-            sections: resume.sections,
+            ...resume,
+            sections: resume.sections ?? state.selectedResume.resumeForm.sections,
+            multipleSections: resume.multipleSections ?? state.selectedResume.resumeForm.multipleSections,
+            imageBase64Encoded: resume.imageBase64Encoded ?? state.selectedResume.resumeForm.imageBase64Encoded,
             selectedContact: resume.selectedContact
           };
           return {

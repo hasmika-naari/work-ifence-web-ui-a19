@@ -2182,6 +2182,7 @@ hideMenu() {
       if(!this.selectedResumeListItem().id){
           request.createdDate = Date.now().toString();
         this.resumeService.saveResume(request).subscribe((e : ResumeListDataItem) => {
+          this.uploadResumeProfileImage(request.current_filename);
           this.isActionInProgress = false;
           this.isDisabled = false;
           this.loadingBar.complete();
@@ -2213,6 +2214,7 @@ hideMenu() {
         request.id = this.selectedResumeListItem().id;
         request.createdDate = this.selectedResumeListItem().createdDate;
         this.resumeService.updateResume(request).subscribe((e : ResumeListDataItem) => {
+          this.uploadResumeProfileImage(request.current_filename);
           
           this.isActionInProgress = false;
           this.isDisabled = false;
@@ -2351,6 +2353,7 @@ hideMenu() {
       }
       this.resumeService.saveAndDownloadResume(request).subscribe({
         next: (response: any) => {
+          this.uploadResumeProfileImage(request.current_filename);
           this.clearResumeChanged();
           const fileContent = response.file; // byte array
           const resume_response = response.metadata; // JSON object
@@ -2409,6 +2412,51 @@ hideMenu() {
     } else {
       this.showToast('error', 'Error', 'Please complete all required fields in the Meta Data form.');
     }
+  }
+
+  private uploadResumeProfileImage(documentFileName: string): void {
+    const imageSrc = this.resumeSignalForm().imageBase64Encoded;
+    if (typeof imageSrc !== 'string' || !imageSrc.startsWith('data:image/')) {
+      return;
+    }
+
+    const imageBytes = this.dataUrlToBytes(imageSrc);
+    if (!imageBytes) {
+      return;
+    }
+
+    const extension = this.getImageExtensionFromDataUrl(imageSrc);
+    const imageFileName = `${documentFileName.replace(/\.pdf$/i, '')}-profile.${extension}`;
+    const body = {
+      imageBytes: Array.from(imageBytes)
+    };
+
+    this.resumeService.uploadProfileImage(body, `${this.userAccount().login}/wif-resume/`, imageFileName, '').subscribe({
+      error: () => {
+        this.showToast('warn', 'Profile Image', 'Resume saved, but the profile image could not be mirrored to storage.');
+      }
+    });
+  }
+
+  private dataUrlToBytes(dataUrl: string): Uint8Array | null {
+    const base64Data = dataUrl.split(',')[1];
+    if (!base64Data) {
+      return null;
+    }
+
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let index = 0; index < byteCharacters.length; index++) {
+      byteNumbers[index] = byteCharacters.charCodeAt(index);
+    }
+
+    return new Uint8Array(byteNumbers);
+  }
+
+  private getImageExtensionFromDataUrl(dataUrl: string): string {
+    const match = dataUrl.match(/^data:image\/([a-zA-Z0-9.+-]+);base64,/i);
+    const extension = match?.[1]?.toLowerCase() || 'png';
+    return extension === 'jpeg' ? 'jpg' : extension;
   }
 
   confirmDiscardAction(): void {

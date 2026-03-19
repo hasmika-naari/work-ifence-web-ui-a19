@@ -1,6 +1,608 @@
 import { Injectable, Signal, inject } from '@angular/core';
 import { Accomplishment, achievement, Award, Certification, Education, Experience, Language, Project, Resume, Skill, SkillV2, TemplateVariables, courseWork } from '../resume.model';
 import { UserStoreService } from '../store/user-store.service';
+import { TEMPLATE2_CONTACT_ICON_CLASSES, TEMPLATE2_SECTION_ICON_CLASSES } from '../../pages/resume-form3/template2/template2-icons';
+
+type Template2ExportColumn = 'sidebar' | 'main';
+
+const TEMPLATE_2_PRESENTATIONAL_CSS = `.template2 {
+  --template2-heading-font: Cambria, Georgia, "Times New Roman", serif;
+  --template2-body-font: "Segoe UI", Arial, Helvetica, sans-serif;
+  --template2-bg: #ffffff;
+  --template2-panel: transparent;
+  --template2-border: #ebdcc0;
+  --template2-divider: #e0c07b;
+  --template2-heading: #1f1b16;
+  --template2-text: #37322a;
+  --template2-muted: #5d564c;
+  --template2-accent: #d9a23c;
+  --template2-shadow: none;
+  --template2-name-size: 2.08rem;
+  --template2-headline-size: 0.9rem;
+  --template2-contact-size: 12px;
+  --template2-section-title-size: 0.92rem;
+  --template2-item-title-size: 1rem;
+  --template2-side-title-size: 0.92rem;
+  --template2-label-size: 0.72rem;
+  --template2-body-size: 12px;
+  --template2-emphasis-size: 12px;
+  --template2-meta-size: 12px;
+  --template2-body-line-height: 1.5;
+  --template2-chip-line-height: 1.62;
+  --template2-section-gap: 1.05rem;
+  --template2-card-gap: 0.75rem;
+  --template2-header-gap: 1rem;
+  --template2-sidebar-width: minmax(205px, 0.72fr);
+  --template2-main-width: minmax(0, 1.78fr);
+  --template2-layout-gap: 1.35rem;
+  --template2-section-header-gap: 0.7rem;
+  --template2-contact-row-gap: 0.38rem;
+  --template2-contact-column-gap: 1rem;
+  margin: 0 auto;
+  padding-bottom: 1.5rem;
+  color: var(--template2-text);
+  font-family: var(--template2-body-font);
+  background: #fff;
+}
+
+@font-face {
+  font-family: "FontAwesomeLocal";
+  src: url('/assets/resume/icons/fontawesome-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.template2 .fa-icon {
+  font-family: "FontAwesomeLocal" !important;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.template2 .t2-icon-profile::before { content: "\\f007"; }
+.template2 .t2-icon-highlights::before { content: "\\f005"; }
+.template2 .t2-icon-skills::before { content: "\\f085"; }
+.template2 .t2-icon-coursework::before { content: "\\f02d"; }
+.template2 .t2-icon-certifications::before { content: "\\f0a3"; }
+.template2 .t2-icon-achievements::before { content: "\\f091"; }
+.template2 .t2-icon-experience::before { content: "\\f0b1"; }
+.template2 .t2-icon-projects::before { content: "\\f07c"; }
+.template2 .t2-icon-education::before { content: "\\f19d"; }
+.template2 .t2-icon-default::before { content: "\\f02e"; }
+.template2 .t2-icon-email::before { content: "\\f0e0"; }
+.template2 .t2-icon-phone::before { content: "\\f095"; }
+.template2 .t2-icon-linkedin::before { content: "\\f0e1"; }
+.template2 .t2-icon-github::before { content: "\\f09b"; }
+.template2 .t2-icon-portfolio::before { content: "\\f0ac"; }
+
+.template2-layout {
+  display: grid;
+  grid-template-columns: var(--template2-sidebar-width) var(--template2-main-width);
+  gap: var(--template2-layout-gap);
+  align-items: start;
+}
+
+.template2-sidebar,
+.template2-main {
+  display: grid;
+  gap: var(--template2-section-gap);
+  align-content: start;
+}
+
+.template2-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--template2-header-gap);
+  padding: 0.1rem 0 1.2rem;
+  margin-bottom: 1.35rem;
+  border-bottom: 1px solid var(--template2-divider);
+}
+
+.template2-header__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--template2-header-gap);
+  min-width: 0;
+}
+
+.template2-header__avatar {
+  width: 5.25rem;
+  height: 5.25rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e5ca94 0%, #d5a24f 100%);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--template2-heading-font);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.template2-header__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.template2-header__copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.template2-header__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.template2-header__name {
+  margin: 0;
+  font-family: var(--template2-heading-font);
+  font-size: var(--template2-name-size);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--template2-heading);
+}
+
+.template2-header__headline {
+  margin: 0;
+  font-size: var(--template2-headline-size);
+  line-height: 1.3;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--template2-accent);
+}
+
+.template2-header__meta {
+  list-style: none;
+  padding: 0;
+  margin: 0.1rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--template2-contact-column-gap);
+  row-gap: var(--template2-contact-row-gap);
+}
+
+.template2-header__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+  font-size: var(--template2-contact-size);
+  line-height: 1.25;
+  color: var(--template2-text);
+  white-space: nowrap;
+}
+
+.template2-header__meta-item a,
+.template2-entry-card__header a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.template2-header__meta-icon,
+.template2-section-shell__title-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--template2-accent);
+}
+
+.template2-header__meta-icon .fa-icon {
+  font-size: 0.72rem;
+}
+
+.template2-section-shell {
+  position: relative;
+  display: grid;
+  gap: var(--template2-section-header-gap);
+}
+
+.template2-section-shell__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.18rem;
+}
+
+.template2-section-shell__title {
+  margin: 0;
+  width: 100%;
+  display: grid;
+  gap: 0.22rem;
+  font-family: var(--template2-heading-font);
+  font-size: var(--template2-section-title-size);
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--template2-heading);
+}
+
+.template2-section-shell__title-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.template2-section-shell__title-icon .fa-icon {
+  font-size: 0.92rem;
+}
+
+.template2-section-shell__title-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin-top: 0.1rem;
+  background: var(--template2-divider);
+}
+
+.template2-category-list,
+.template2-stack-list,
+.template2-main-list {
+  display: grid;
+  gap: var(--template2-card-gap);
+}
+
+.template2-category-card,
+.template2-side-card,
+.template2-entry-card {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.template2-category-card h3 {
+  margin: 0 0 0.24rem;
+  font-family: var(--template2-body-font);
+  font-size: var(--template2-label-size);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--template2-muted);
+}
+
+.template2-chip {
+  display: inline;
+  color: var(--template2-heading);
+  font-size: var(--template2-emphasis-size);
+  font-weight: 600;
+  line-height: var(--template2-chip-line-height);
+}
+
+.template2-chip::after {
+  content: ", ";
+}
+
+.template2-chip:last-child::after {
+  content: "";
+}
+
+.template2-bullet-list {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.template2-bullet-list--tight li,
+.template2-richtext,
+.template2-richtext p,
+.template2-richtext li {
+  font-size: var(--template2-body-size);
+  line-height: var(--template2-body-line-height);
+  color: var(--template2-text);
+}
+
+.template2-bullet-list--columns {
+  column-count: 2;
+  column-gap: 1.1rem;
+}
+
+.template2-bullet-list--columns li {
+  break-inside: avoid;
+}
+
+.template2-side-card__copy h3 {
+  margin: 0;
+  font-family: var(--template2-heading-font);
+  font-size: var(--template2-side-title-size);
+  font-weight: 700;
+  color: var(--template2-heading);
+}
+
+.template2-side-card__copy p,
+.template2-side-card__copy span,
+.template2-entry-card__meta,
+.template2-entry-card__header p {
+  color: var(--template2-muted);
+  font-size: var(--template2-meta-size);
+}
+
+.template2-side-card__meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.template2-side-card__meta-row p {
+  margin: 0;
+}
+
+.template2-side-card__meta-row span {
+  margin-left: auto;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.template2-entry-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.template2-entry-card__header h3 {
+  margin: 0;
+  font-family: var(--template2-heading-font);
+  font-size: var(--template2-item-title-size);
+  font-weight: 700;
+  color: var(--template2-heading);
+}
+
+.template2-entry-card__header p {
+  margin: 0;
+}
+
+.template2-entry-card__meta {
+  text-align: right;
+  font-style: italic;
+}
+
+.template2-entry-card__meta span {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .template2-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .template2-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .template2-bullet-list--columns {
+    column-count: 1;
+  }
+
+  .template2-entry-card__header {
+    flex-direction: column;
+  }
+
+  .template2-entry-card__meta {
+    text-align: left;
+  }
+}`;
+
+const TEMPLATE_2_EXPORT_NORMALIZERS: Record<string, (resume: Resume, context: any) => { column: Template2ExportColumn; html: string } | null> = {
+  PROFILE_SUMMARY: (resume: Resume, context: any) => {
+    const summary = context.template2GetSectionData(resume, 'PROFILE_SUMMARY') || {};
+    const content = summary.original_summary_html || (summary.profile_summary ? context.template2EscapeHtml(summary.profile_summary) : '');
+
+    if (!content) {
+      return null;
+    }
+
+    return {
+      column: 'sidebar',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'PROFILE_SUMMARY', 'Summary'),
+        TEMPLATE2_SECTION_ICON_CLASSES.PROFILE_SUMMARY,
+        `<div class="template2-richtext">${content}</div>`,
+      ),
+    };
+  },
+  PROFILE_SUMMARY_BULLETED: (resume: Resume, context: any) => {
+    const summary = context.template2GetSectionData(resume, 'PROFILE_SUMMARY_BULLETED') || {};
+    const bullets = (summary.summary_bullets || []).filter((item: string) => item && item.trim().length > 0);
+
+    if (!bullets.length) {
+      return null;
+    }
+
+    return {
+      column: 'sidebar',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'PROFILE_SUMMARY_BULLETED', 'Career Highlights'),
+        TEMPLATE2_SECTION_ICON_CLASSES.PROFILE_SUMMARY_BULLETED,
+        context.template2RenderList(bullets, 'template2-bullet-list'),
+      ),
+    };
+  },
+  SKILLS_BY_CATEGORY: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'SKILLS_BY_CATEGORY');
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'sidebar',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'SKILLS_BY_CATEGORY', 'Skills By Category'),
+        TEMPLATE2_SECTION_ICON_CLASSES.SKILLS_BY_CATEGORY,
+        `<div class="template2-category-list">${items.map((item: any) => {
+          const skills = (item.skills || []).filter(Boolean);
+          if (!skills.length && !item.category) {
+            return '';
+          }
+
+          return `<div class="template2-category-card"><h3>${context.template2EscapeHtml(item.category || 'Category')}</h3><div class="template2-chip-list">${skills.map((skill: string) => `<span class="template2-chip">${context.template2EscapeHtml(skill)}</span>`).join('')}</div></div>`;
+        }).join('')}</div>`,
+      ),
+    };
+  },
+  SKILLS_BULLET_POINTS: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'SKILLS_BULLET_POINTS').map((item: any) => item?.skill || item).filter(Boolean);
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'sidebar',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'SKILLS_BULLET_POINTS', 'Skills'),
+        TEMPLATE2_SECTION_ICON_CLASSES.SKILLS_BULLET_POINTS,
+        context.template2RenderList(items, 'template2-bullet-list template2-bullet-list--tight template2-bullet-list--columns'),
+      ),
+    };
+  },
+  RELEVANT_COURSEWORK: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'RELEVANT_COURSEWORK')
+      .map((item: any) => [item?.courseworkname, item?.institution].filter(Boolean).join(' | '))
+      .filter(Boolean);
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'sidebar',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'RELEVANT_COURSEWORK', 'Course Work'),
+        TEMPLATE2_SECTION_ICON_CLASSES.RELEVANT_COURSEWORK,
+        context.template2RenderList(items, 'template2-bullet-list template2-bullet-list--tight'),
+      ),
+    };
+  },
+  CERTIFICATIONS: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'CERTIFICATIONS');
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'sidebar',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'CERTIFICATIONS', 'Certifications'),
+        TEMPLATE2_SECTION_ICON_CLASSES.CERTIFICATIONS,
+        `<div class="template2-stack-list">${items.map((item: any) => `<article class="template2-side-card"><div class="template2-side-card__copy"><h3>${context.template2EscapeHtml(item.name || '')}</h3>${(item.authority || item.date) ? `<div class="template2-side-card__meta-row">${item.authority ? `<p>${context.template2EscapeHtml(item.authority)}</p>` : '<p></p>'}${item.date ? `<span>${context.template2EscapeHtml(item.date)}</span>` : ''}</div>` : ''}</div></article>`).join('')}</div>`,
+      ),
+    };
+  },
+  CERTIFICATIONS_BULLET_POINTS: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'CERTIFICATIONS_BULLET_POINTS').map((item: any) => item?.point || item).filter(Boolean);
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'sidebar',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'CERTIFICATIONS_BULLET_POINTS', 'Certification Highlights'),
+        TEMPLATE2_SECTION_ICON_CLASSES.CERTIFICATIONS_BULLET_POINTS,
+        context.template2RenderList(items, 'template2-bullet-list template2-bullet-list--tight'),
+      ),
+    };
+  },
+  ACHIEVEMENTS_BULLET_POINTS: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'ACHIEVEMENTS_BULLET_POINTS').map((item: any) => item?.achievement || item?.title || item).filter(Boolean);
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'sidebar',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'ACHIEVEMENTS_BULLET_POINTS', 'Achievements'),
+        TEMPLATE2_SECTION_ICON_CLASSES.ACHIEVEMENTS_BULLET_POINTS,
+        context.template2RenderList(items, 'template2-bullet-list template2-bullet-list--tight'),
+      ),
+    };
+  },
+  WORK_EXPERIENCE: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'WORK_EXPERIENCE');
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'main',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'WORK_EXPERIENCE', 'Experience'),
+        TEMPLATE2_SECTION_ICON_CLASSES.WORK_EXPERIENCE,
+        `<div class="template2-main-list">${items.map((item: any) => `<article class="template2-entry-card"><div class="template2-entry-card__header"><div><h3>${context.template2EscapeHtml(item.position_title || '')}</h3>${item.company_name ? `<p>${context.template2EscapeHtml(item.company_name)}</p>` : ''}</div><div class="template2-entry-card__meta">${item.location ? `<span>${context.template2EscapeHtml(item.location)}</span>` : ''}${(item.start_date || item.end_date) ? `<span>${context.template2EscapeHtml(context.template2FormatDateRange(item.start_date, item.end_date, item.isCurrentlyWorkHere))}</span>` : ''}</div></div>${item.description ? `<div class="template2-richtext">${item.description}</div>` : ''}</article>`).join('')}</div>`,
+      ),
+    };
+  },
+  PROJECT: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'PROJECT');
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'main',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'PROJECT', 'Projects'),
+        TEMPLATE2_SECTION_ICON_CLASSES.PROJECT,
+        `<div class="template2-main-list">${items.map((item: any) => `<article class="template2-entry-card"><div class="template2-entry-card__header"><div><h3>${item.project_link ? `<a href="${context.template2EscapeHtml(item.project_link)}" target="_blank" rel="noreferrer">${context.template2EscapeHtml(item.project_name || '')}</a>` : context.template2EscapeHtml(item.project_name || '')}</h3>${item.role ? `<p>${context.template2EscapeHtml(item.role)}</p>` : ''}</div><div class="template2-entry-card__meta">${item.technologies_used ? `<span>${context.template2EscapeHtml(item.technologies_used)}</span>` : ''}${(item.start_date || item.end_date || item.period) ? `<span>${context.template2EscapeHtml(item.period || context.template2FormatDateRange(item.start_date, item.end_date))}</span>` : ''}</div></div>${(item.description || item.responsibilitiesRichText || item.highlightsRichText) ? `<div class="template2-richtext">${item.description || item.responsibilitiesRichText || item.highlightsRichText}</div>` : ''}</article>`).join('')}</div>`,
+      ),
+    };
+  },
+  EDUCATION: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'EDUCATION');
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'main',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'EDUCATION', 'Education'),
+        TEMPLATE2_SECTION_ICON_CLASSES.EDUCATION,
+        `<div class="template2-main-list">${items.map((item: any) => `<article class="template2-entry-card template2-entry-card--compact"><div class="template2-entry-card__header"><div><h3>${context.template2EscapeHtml([item.degree, item.field_of_study].filter(Boolean).join(', '))}</h3>${item.school_name ? `<p>${context.template2EscapeHtml(item.school_name)}</p>` : ''}</div><div class="template2-entry-card__meta">${item.school_location ? `<span>${context.template2EscapeHtml(item.school_location)}</span>` : ''}${item.graduation_date ? `<span>${context.template2EscapeHtml(item.graduation_date)}</span>` : ''}${item.gpa ? `<span>CGPA: ${context.template2EscapeHtml(item.gpa)}</span>` : ''}</div></div></article>`).join('')}</div>`,
+      ),
+    };
+  },
+  ACHIEVEMENT_WITH_DESC: (resume: Resume, context: any) => {
+    const items = context.template2GetSectionItems(resume, 'ACHIEVEMENT_WITH_DESC');
+
+    if (!items.length) {
+      return null;
+    }
+
+    return {
+      column: 'main',
+      html: context.template2RenderSectionShell(
+        context.template2GetSectionTitle(resume, 'ACHIEVEMENT_WITH_DESC', 'Accomplishments'),
+        TEMPLATE2_SECTION_ICON_CLASSES.ACHIEVEMENT_WITH_DESC,
+        `<div class="template2-main-list">${items.map((item: any) => `<article class="template2-entry-card template2-entry-card--compact"><div class="template2-entry-card__header"><div><h3>${context.template2EscapeHtml(item.accomplisment || '')}</h3>${item.date ? `<p>${context.template2EscapeHtml(item.date)}</p>` : ''}</div></div>${(item.original_html_description || item.description) ? `<div class="template2-richtext">${item.original_html_description || context.template2EscapeHtml(item.description)}</div>` : ''}</article>`).join('')}</div>`,
+      ),
+    };
+  },
+};
 
 const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: any, context: any) => string | null> = {
   CONTACT: (section: any, resumeForm: any) => {
@@ -270,7 +872,9 @@ export class TemplatesService {
     if(template_name == "TEMPLATE_1"){
       return this.getTemplate1HTMLV1(resume);
     }
-    // TEMPLATE_2 removed: no implementation available
+    else if(template_name == 'TEMPLATE_2'){
+      return this.getTemplate2HTMLText(resume);
+    }
     else if(template_name == 'TEMPLATE_3'){
   return this.getTemplate4HTMLText(resume);
     }
@@ -629,6 +1233,173 @@ export class TemplatesService {
 
   // ...existing code...
 // ...existing code...
+
+  private template2GetSection(resume: Resume, sectionName: string): any {
+    const aliases: Record<string, string[]> = {
+      CERTIFICATIONS: ['CERTIFICATIONS', 'CERTIFICATION'],
+      CERTIFICATION: ['CERTIFICATIONS', 'CERTIFICATION'],
+      SKILLS_BY_CATEGORY: ['SKILLS_BY_CATEGORY', 'SKILLS_CATEGORY'],
+      SKILLS_CATEGORY: ['SKILLS_BY_CATEGORY', 'SKILLS_CATEGORY'],
+    };
+    const candidates = aliases[sectionName] || [sectionName];
+    return resume.sections?.find((section: any) => candidates.includes(section.section));
+  }
+
+  private template2GetSectionData(resume: Resume, sectionName: string): any {
+    const section = this.template2GetSection(resume, sectionName);
+    return section?.data || section?.items?.[0]?.data || null;
+  }
+
+  private template2GetSectionItems(resume: Resume, sectionName: string): any[] {
+    const section = this.template2GetSection(resume, sectionName);
+    return (section?.items || [])
+      .map((item: any) => item?.data || item)
+      .filter((item: any) => !item?.isHideSelected);
+  }
+
+  private template2EscapeHtml(value: any): string {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  private template2GetSectionTitle(resume: Resume, sectionName: string, fallback: string): string {
+    return this.template2GetSection(resume, sectionName)?.editable_section_title || fallback;
+  }
+
+  private template2RenderSectionShell(title: string, iconClass: string, body: string): string {
+    return `
+      <section class="template2-section-shell">
+        <header class="template2-section-shell__header">
+          <h2 class="template2-section-shell__title">
+            <span class="template2-section-shell__title-copy">
+              <span class="template2-section-shell__title-icon"><span class="${iconClass}"></span></span>
+              <span>${this.template2EscapeHtml(title)}</span>
+            </span>
+            <span class="template2-section-shell__title-rule"></span>
+          </h2>
+        </header>
+        <div class="template2-section-shell__body">${body}</div>
+      </section>`;
+  }
+
+  private template2RenderList(items: string[], className: string = 'template2-bullet-list'): string {
+    if (!items.length) {
+      return '';
+    }
+
+    return `<ul class="${className}">${items.map(item => `<li>${this.template2EscapeHtml(item)}</li>`).join('')}</ul>`;
+  }
+
+  private template2GetPortfolioLabel(portfolio: string): string {
+    if (!portfolio) {
+      return '';
+    }
+
+    try {
+      return new URL(portfolio).hostname.replace(/^www\./, '');
+    } catch {
+      return portfolio;
+    }
+  }
+
+  private template2RenderHeader(resume: Resume): string {
+    const contact = this.template2GetSectionData(resume, 'CONTACT') || {};
+    const email = contact.email || contact.email_address || contact.emailId || '';
+    const fullName = `${contact.fname || ''} ${contact.lname || ''}`.trim() || 'Resume';
+    const initials = `${contact.fname?.charAt(0) || ''}${contact.lname?.charAt(0) || ''}`.trim().toUpperCase() || 'WF';
+    const portfolio = contact.portfolio_url || contact.portfolio_link || '';
+    const contactMeta = [
+      email ? { iconClass: TEMPLATE2_CONTACT_ICON_CLASSES.email, text: email, href: `mailto:${email}` } : null,
+      contact.phone_number ? { iconClass: TEMPLATE2_CONTACT_ICON_CLASSES.phone, text: contact.phone_number, href: `tel:${contact.phone_number}` } : null,
+      contact.linkedIn_profile ? { iconClass: TEMPLATE2_CONTACT_ICON_CLASSES.linkedin, text: contact.linkedIn_profile_display_name || 'LinkedIn', href: contact.linkedIn_profile } : null,
+      contact.github_profile ? { iconClass: TEMPLATE2_CONTACT_ICON_CLASSES.github, text: contact.github_profile_display_name || 'GitHub', href: contact.github_profile } : null,
+      portfolio ? { iconClass: TEMPLATE2_CONTACT_ICON_CLASSES.portfolio, text: this.template2GetPortfolioLabel(portfolio), href: portfolio } : null,
+    ].filter(Boolean) as Array<{ iconClass: string; text: string; href: string }>;
+
+    return `
+      <header class="template2-header">
+        <div class="template2-header__identity">
+          <div class="template2-header__avatar">
+            ${resume.imageBase64Encoded ? `<img src="${resume.imageBase64Encoded}" alt="Profile photo" />` : this.template2EscapeHtml(initials)}
+          </div>
+          <div class="template2-header__copy">
+            <div class="template2-header__title-group">
+              <h1 class="template2-header__name">${this.template2EscapeHtml(fullName)}</h1>
+              ${(contact.subTitle || contact.role) ? `<p class="template2-header__headline">${this.template2EscapeHtml(contact.subTitle || contact.role)}</p>` : ''}
+            </div>
+            ${contactMeta.length ? `<ul class="template2-header__meta">${contactMeta.map(item => `<li class="template2-header__meta-item"><span class="template2-header__meta-icon"><span class="${item.iconClass}"></span></span><a href="${this.template2EscapeHtml(item.href)}" target="_blank" rel="noreferrer">${this.template2EscapeHtml(item.text)}</a></li>`).join('')}</ul>` : ''}
+          </div>
+        </div>
+      </header>`;
+  }
+
+  private template2FormatDateRange(startDate?: string, endDate?: string, isCurrent?: boolean): string {
+    return [startDate, isCurrent ? 'Present' : endDate].filter(Boolean).join(' - ');
+  }
+
+  getTemplate2HTMLText(resume: Resume) {
+    const contact = this.template2GetSectionData(resume, 'CONTACT') || {};
+    const fullName = `${contact.fname || ''} ${contact.lname || ''}`.trim() || 'Resume';
+    const sidebarSections = [
+      'PROFILE_SUMMARY',
+      'PROFILE_SUMMARY_BULLETED',
+      'SKILLS_BY_CATEGORY',
+      'SKILLS_BULLET_POINTS',
+      'RELEVANT_COURSEWORK',
+      'CERTIFICATIONS',
+      'CERTIFICATIONS_BULLET_POINTS',
+      'ACHIEVEMENTS_BULLET_POINTS',
+    ];
+    const mainSections = ['WORK_EXPERIENCE', 'PROJECT', 'EDUCATION', 'ACHIEVEMENT_WITH_DESC'];
+    const renderTemplate2Sections = (sectionNames: string[], column: Template2ExportColumn) => sectionNames
+      .map(sectionName => TEMPLATE_2_EXPORT_NORMALIZERS[sectionName]?.(resume, this))
+      .filter((section): section is { column: Template2ExportColumn; html: string } => Boolean(section && section.column === column && section.html))
+      .map(section => section.html)
+      .join('');
+
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${this.template2EscapeHtml(fullName)}</title>
+      <style>
+        html, body {
+          margin: 0;
+          padding: 0;
+          background: #ffffff;
+        }
+
+        body {
+          padding: 32px;
+        }
+
+        .template2-export-page {
+          max-width: 900px;
+          margin: 0 auto;
+        }
+
+        ${TEMPLATE_2_PRESENTATIONAL_CSS}
+      </style>
+    </head>
+    <body>
+      <div class="template2-export-page">
+        <div class="template2">
+          ${this.template2RenderHeader(resume)}
+          <div class="template2-layout">
+            <aside class="template2-sidebar">${renderTemplate2Sections(sidebarSections, 'sidebar')}</aside>
+            <main class="template2-main">${renderTemplate2Sections(mainSections, 'main')}</main>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>`;
+  }
 
   formatTemplate2Experience(items : Array<Experience>){
     return items.map((item : Experience)=> `
