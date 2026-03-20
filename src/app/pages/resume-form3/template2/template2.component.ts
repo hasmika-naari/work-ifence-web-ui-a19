@@ -41,7 +41,7 @@ export class ResumeTemplate2Component {
   }
 
   get profileImageSrc(): string | null {
-    return this.resumeForm().imageBase64Encoded || null;
+    return this.resolveProfileImageSource(this.resumeForm());
   }
 
   get contact(): ResumeContact {
@@ -383,5 +383,34 @@ export class ResumeTemplate2Component {
       ...resume,
       sections: updatedSections,
     } as Resume);
+  }
+
+  private resolveProfileImageSource(resume: Resume | null | undefined): string | null {
+    const renderConfig = resume?.renderConfig;
+
+    return this.normalizeImageSource(renderConfig?.avatarUrl)
+      || this.normalizeImageSource(renderConfig?.profileImageUrl)
+      || this.normalizeImageSource(renderConfig?.avatarBase64)
+      || this.normalizeImageSource(renderConfig?.profileImageBase64)
+      || this.normalizeImageSource(renderConfig?.imageBase64Encoded)
+      || this.normalizeImageSource(resume?.imageBase64Encoded)
+      || null;
+  }
+
+  private normalizeImageSource(value: unknown): string | null {
+    const text = typeof value === 'string' ? value.trim() : '';
+    if (!text) {
+      return null;
+    }
+
+    if (/^(data:image\/|https?:\/\/|\/)/i.test(text)) {
+      return text;
+    }
+
+    if (/^[A-Za-z0-9+/=]+$/.test(text)) {
+      return `data:image/png;base64,${text}`;
+    }
+
+    return text;
   }
 }

@@ -240,6 +240,18 @@ export class ResumeService {
       .pipe(catchError(this.handleError));
   }
 
+  uploadResumeProfileImage(resumeId: string, fileName: string, imageBytes: number[]): Observable<ResumeListDataItem> {
+    let baseUrl = this.appConstants.BASE_API_URL;
+    if (isPlatformBrowser(this.platformId)) {
+      baseUrl = '';
+    }
+
+    const queryUrl = `${baseUrl}${this.appConstants.UPDATE_JOB_RESUME_URL}/${resumeId}/profile-image?filename=${encodeURIComponent(fileName)}`;
+    return this.httpClient.post<any>(queryUrl, { imageBytes })
+      .pipe(map(item => this.normalizeResumeListItem(item)))
+      .pipe(catchError(this.handleError));
+  }
+
   updateResume(jobResume : JobResumeRequest) : Observable<ResumeListDataItem>{
     let baseUrl = this.appConstants.BASE_API_URL;
     if(isPlatformBrowser(this.platformId)){

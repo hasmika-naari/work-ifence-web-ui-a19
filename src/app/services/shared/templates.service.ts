@@ -408,7 +408,7 @@ const TEMPLATE_2_EXPORT_NORMALIZERS: Record<string, (resume: Resume, context: an
     }
 
     return {
-      column: 'sidebar',
+      column: 'main',
       html: context.template2RenderSectionShell(
         context.template2GetSectionTitle(resume, 'PROFILE_SUMMARY', 'Summary'),
         TEMPLATE2_SECTION_ICON_CLASSES.PROFILE_SUMMARY,
@@ -1306,12 +1306,41 @@ export class TemplatesService {
     }
   }
 
+  private template2NormalizeImageSource(value: unknown): string {
+    const text = String(value ?? '').trim();
+    if (!text) {
+      return '';
+    }
+
+    if (/^(data:image\/|https?:\/\/|\/)/i.test(text)) {
+      return text;
+    }
+
+    if (/^[A-Za-z0-9+/=]+$/.test(text)) {
+      return `data:image/png;base64,${text}`;
+    }
+
+    return text;
+  }
+
+  private template2GetProfileImageSrc(resume: Resume): string {
+    const renderConfig = resume.renderConfig || {};
+
+    return this.template2NormalizeImageSource(renderConfig.avatarBase64)
+      || this.template2NormalizeImageSource(renderConfig.profileImageBase64)
+      || this.template2NormalizeImageSource(renderConfig.imageBase64Encoded)
+      || this.template2NormalizeImageSource(renderConfig.avatarUrl)
+      || this.template2NormalizeImageSource(renderConfig.profileImageUrl)
+      || this.template2NormalizeImageSource(resume.imageBase64Encoded);
+  }
+
   private template2RenderHeader(resume: Resume): string {
     const contact = this.template2GetSectionData(resume, 'CONTACT') || {};
     const email = contact.email || contact.email_address || contact.emailId || '';
     const fullName = `${contact.fname || ''} ${contact.lname || ''}`.trim() || 'Resume';
     const initials = `${contact.fname?.charAt(0) || ''}${contact.lname?.charAt(0) || ''}`.trim().toUpperCase() || 'WF';
     const portfolio = contact.portfolio_url || contact.portfolio_link || '';
+    const profileImageSrc = this.template2GetProfileImageSrc(resume);
     const contactMeta = [
       email ? { iconClass: TEMPLATE2_CONTACT_ICON_CLASSES.email, text: email, href: `mailto:${email}` } : null,
       contact.phone_number ? { iconClass: TEMPLATE2_CONTACT_ICON_CLASSES.phone, text: contact.phone_number, href: `tel:${contact.phone_number}` } : null,
@@ -1324,7 +1353,7 @@ export class TemplatesService {
       <header class="template2-header">
         <div class="template2-header__identity">
           <div class="template2-header__avatar">
-            ${resume.imageBase64Encoded ? `<img src="${resume.imageBase64Encoded}" alt="Profile photo" />` : this.template2EscapeHtml(initials)}
+            ${profileImageSrc ? `<img src="${this.template2EscapeHtml(profileImageSrc)}" alt="Profile photo" />` : this.template2EscapeHtml(initials)}
           </div>
           <div class="template2-header__copy">
             <div class="template2-header__title-group">

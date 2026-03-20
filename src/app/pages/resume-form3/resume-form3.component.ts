@@ -2182,7 +2182,7 @@ hideMenu() {
       if(!this.selectedResumeListItem().id){
           request.createdDate = Date.now().toString();
         this.resumeService.saveResume(request).subscribe((e : ResumeListDataItem) => {
-          this.uploadResumeProfileImage(request.current_filename);
+            this.uploadResumeProfileImage(e.id, request.current_filename);
           this.isActionInProgress = false;
           this.isDisabled = false;
           this.loadingBar.complete();
@@ -2214,7 +2214,7 @@ hideMenu() {
         request.id = this.selectedResumeListItem().id;
         request.createdDate = this.selectedResumeListItem().createdDate;
         this.resumeService.updateResume(request).subscribe((e : ResumeListDataItem) => {
-          this.uploadResumeProfileImage(request.current_filename);
+          this.uploadResumeProfileImage(e.id, request.current_filename);
           
           this.isActionInProgress = false;
           this.isDisabled = false;
@@ -2353,10 +2353,10 @@ hideMenu() {
       }
       this.resumeService.saveAndDownloadResume(request).subscribe({
         next: (response: any) => {
-          this.uploadResumeProfileImage(request.current_filename);
           this.clearResumeChanged();
           const fileContent = response.file; // byte array
           const resume_response = response.metadata; // JSON object
+          this.uploadResumeProfileImage(String(resume_response?.id || ''), request.current_filename);
           const byteCharacters = atob(fileContent);
           const byteNumbers = new Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
@@ -2414,7 +2414,11 @@ hideMenu() {
     }
   }
 
-  private uploadResumeProfileImage(documentFileName: string): void {
+  private uploadResumeProfileImage(resumeId: string, documentFileName: string): void {
+    if (!resumeId) {
+      return;
+    }
+
     const imageSrc = this.resumeSignalForm().imageBase64Encoded;
     if (typeof imageSrc !== 'string' || !imageSrc.startsWith('data:image/')) {
       return;
@@ -2427,15 +2431,72 @@ hideMenu() {
 
     const extension = this.getImageExtensionFromDataUrl(imageSrc);
     const imageFileName = `${documentFileName.replace(/\.pdf$/i, '')}-profile.${extension}`;
-    const body = {
-      imageBytes: Array.from(imageBytes)
-    };
+    this.resumeService.uploadResumeProfileImage(resumeId, imageFileName, Array.from(imageBytes)).subscribe({
+      next: (updatedResume) => {
+        const currentResume = this.resumeSignalForm();
+        const renderConfig = this.extractResumeRenderConfig(updatedResume.resumeJson);
+        const mergedResume = {
+          ...currentResume,
+          id: updatedResume.id || currentResume.id,
+          renderConfig: {
+            ...currentResume.renderConfig,
+            ...renderConfig,
+          },
+        } as Resume;
 
-    this.resumeService.uploadProfileImage(body, `${this.userAccount().login}/wif-resume/`, imageFileName, '').subscribe({
+        this.userStore.updateResumeForm({
+          ...mergedResume,
+          imageBase64Encoded: this.resolveResumeImageSource(mergedResume) || currentResume.imageBase64Encoded,
+        });
+      },
       error: () => {
-        this.showToast('warn', 'Profile Image', 'Resume saved, but the profile image could not be mirrored to storage.');
+        this.showToast('warn', 'Profile Image', 'Resume saved, but the profile image could not be uploaded.');
       }
     });
+  }
+
+  private extractResumeRenderConfig(resumeJson: string): Record<string, unknown> {
+    if (!resumeJson) {
+      return {};
+    }
+
+    try {
+      const parsed = JSON.parse(resumeJson);
+      return parsed?.renderConfig && typeof parsed.renderConfig === 'object'
+        ? parsed.renderConfig
+        : {};
+    } catch {
+      return {};
+    }
+  }
+
+  private resolveResumeImageSource(resume: Resume): string | null {
+    const renderConfig = resume.renderConfig || {};
+
+    return this.normalizeResumeImageSource(renderConfig.avatarUrl)
+      || this.normalizeResumeImageSource(renderConfig.profileImageUrl)
+      || this.normalizeResumeImageSource(renderConfig.avatarBase64)
+      || this.normalizeResumeImageSource(renderConfig.profileImageBase64)
+      || this.normalizeResumeImageSource(renderConfig.imageBase64Encoded)
+      || this.normalizeResumeImageSource(resume.imageBase64Encoded)
+      || null;
+  }
+
+  private normalizeResumeImageSource(value: unknown): string | null {
+    const text = typeof value === 'string' ? value.trim() : '';
+    if (!text) {
+      return null;
+    }
+
+    if (/^(data:image\/|https?:\/\/|\/)/i.test(text)) {
+      return text;
+    }
+
+    if (/^[A-Za-z0-9+/=]+$/.test(text)) {
+      return `data:image/png;base64,${text}`;
+    }
+
+    return text;
   }
 
   private dataUrlToBytes(dataUrl: string): Uint8Array | null {

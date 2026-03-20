@@ -10,19 +10,6 @@
 
   <div class="template2-layout">
     <aside class="template2-sidebar">
-      @if (hasSummary('PROFILE_SUMMARY')) {
-        <app-template2-section-shell
-          [title]="getSectionTitle('PROFILE_SUMMARY', 'Summary')"
-          [iconClass]="getSectionIconClass('PROFILE_SUMMARY')"
-          variant="sidebar"
-          [isPreview]="isPreview"
-          [isPrintMode]="isPrintMode"
-          [canEdit]="true"
-          (edit)="openSectionEditor('PROFILE_SUMMARY')">
-          <div class="template2-richtext template2-summary-copy" [innerHTML]="getSummaryHtml('PROFILE_SUMMARY')"></div>
-        </app-template2-section-shell>
-      }
-
       @if (hasSummary('PROFILE_SUMMARY_BULLETED')) {
         <app-template2-section-shell
           [title]="getSectionTitle('PROFILE_SUMMARY_BULLETED', 'Career Highlights')"
@@ -203,6 +190,19 @@
     </aside>
 
     <main class="template2-main">
+      @if (hasSummary('PROFILE_SUMMARY')) {
+        <app-template2-section-shell
+          [title]="getSectionTitle('PROFILE_SUMMARY', 'Summary')"
+          [iconClass]="getSectionIconClass('PROFILE_SUMMARY')"
+          variant="main"
+          [isPreview]="isPreview"
+          [isPrintMode]="isPrintMode"
+          [canEdit]="true"
+          (edit)="openSectionEditor('PROFILE_SUMMARY')">
+          <div class="template2-richtext template2-summary-copy" [innerHTML]="getSummaryHtml('PROFILE_SUMMARY')"></div>
+        </app-template2-section-shell>
+      }
+
       @if (checkExperienceCondition()) {
         <app-template2-section-shell
           [title]="getSectionTitle('WORK_EXPERIENCE', 'Experience')"

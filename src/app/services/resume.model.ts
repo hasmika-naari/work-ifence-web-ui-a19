@@ -429,6 +429,13 @@ export class Education{
     fontSize: number = 11; // Base font size in points
     lineHeight: number = 1.2;
     pageMargins: string = '1in'; // standard margin
+    profileImageKey?: string;
+    profileImageFileName?: string;
+    profileImageUrl?: string;
+    avatarUrl?: string;
+    imageBase64Encoded?: string;
+    profileImageBase64?: string;
+    avatarBase64?: string;
   }
 
   export class Accomplishment{
