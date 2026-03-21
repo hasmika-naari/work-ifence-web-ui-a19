@@ -2448,6 +2448,21 @@ hideMenu() {
           ...mergedResume,
           imageBase64Encoded: this.resolveResumeImageSource(mergedResume) || currentResume.imageBase64Encoded,
         });
+
+        const index = this.resumeDataItemList().findIndex(obj => obj.id === updatedResume.id);
+        if (index !== -1) {
+          const currentItem = this.resumeDataItemList()[index];
+          const previewImageUrl = (updatedResume.previewImageUrl || currentItem.previewImageUrl || '').trim();
+          const nextItem = {
+            ...currentItem,
+            ...updatedResume,
+            previewImageUrl,
+            imageBytes: previewImageUrl ? [previewImageUrl] : currentItem.imageBytes,
+          };
+
+          this.userStore.updateResumeDataListItem(nextItem, index);
+          this.userStore.setFilteredResumes([...this.resumeDataItemList()]);
+        }
       },
       error: () => {
         this.showToast('warn', 'Profile Image', 'Resume saved, but the profile image could not be uploaded.');

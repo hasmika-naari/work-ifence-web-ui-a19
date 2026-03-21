@@ -21,6 +21,7 @@ export class ResumeListDataItem {
     ownerId!: string;
     tags!: string;
     fileName : string;
+    previewImageUrl?: string;
     imageBytes : string[];
     priority! : any;
     constructor() {
@@ -55,6 +56,7 @@ export class ApplicationListDataItem {
     ownerId!: string;
     tags!: string;
     fileName : string;
+    previewImageUrl?: string;
     imageBytes! : any;
     priority! : any;
     constructor() {

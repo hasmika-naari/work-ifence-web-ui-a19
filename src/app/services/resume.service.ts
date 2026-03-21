@@ -125,6 +125,7 @@ export class ResumeService {
       item?.old_filename,
       this.getFileNameFromPath(documentUrl),
     );
+    normalizedItem.previewImageUrl = this.pickText(item?.previewImageUrl, item?.preview_image_url);
     normalizedItem.imageBytes = Array.isArray(item?.imageBytes) ? item.imageBytes : [];
     normalizedItem.priority = item?.priority ?? item?.isPrimary ?? false;
 
