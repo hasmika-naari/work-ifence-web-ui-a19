@@ -299,11 +299,11 @@
                     @if (item.data?.role) {
                       <p>{{ item.data?.role }}</p>
                     }
+                    @if (item.data?.technologies_used) {
+                      <p class="template2-entry-card__supporting-copy"><span class="template2-entry-card__supporting-label">Technologies:</span> {{ item.data?.technologies_used }}</p>
+                    }
                   </div>
                   <div class="template2-entry-card__meta">
-                    @if (item.data?.technologies_used) {
-                      <span>{{ item.data?.technologies_used }}</span>
-                    }
                     @if (item.data?.start_date || item.data?.end_date || item.data?.period) {
                       <span>{{ item.data?.period || formatDateRange(item.data?.start_date, item.data?.end_date) }}</span>
                     }
@@ -314,7 +314,7 @@
                 }
                 @if (!isPreview && !isPrintMode) {
                   <div class="template2-item-actions template2-item-actions--main">
-                    <button type="button" title="Edit" (click)="openSectionEditor('PROJECT', item.data)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Edit" (click)="openSectionEditor('PROJECT', item.raw)"><i [class]="actionIcons.edit"></i></button>
                     <button type="button" title="Delete" (click)="confirmDeleteDialog('PROJECT', item.data)"><i [class]="actionIcons.delete"></i></button>
                     @if (item.data?.isHideSelected) {
                       <button type="button" title="Show" (click)="toggleItemVisibility('PROJECT', item.raw, false)"><i [class]="actionIcons.show"></i></button>

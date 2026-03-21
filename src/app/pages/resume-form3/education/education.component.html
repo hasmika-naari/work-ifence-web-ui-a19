@@ -118,7 +118,7 @@
 
                   <div class="field">
                     <label for="graduation_year">Graduation Date *</label>
-                    <p-calendar
+                    <p-datePicker
                       inputId="graduation_year"
                       formControlName="graduation_year"
                       view="month"
@@ -128,7 +128,7 @@
                       iconDisplay="input"
                       placeholder="MM/YYYY"
                       [readonlyInput]="true">
-                    </p-calendar>
+                    </p-datePicker>
                     @if (educationForm.get('graduation_year')?.hasError('required') && (educationForm.get('graduation_year')?.dirty || educationForm.get('graduation_year')?.touched)) {
                       <small class="error">
                         Required.

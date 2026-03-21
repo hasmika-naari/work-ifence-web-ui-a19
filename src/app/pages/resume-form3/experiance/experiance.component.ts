@@ -570,18 +570,21 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
     
     let start = this.selectedExperience().start_date;
     let endd = this.selectedExperience().end_date;
+    const isCurrentRole = this.isCurrentExperience(this.selectedExperience());
     this.experienceForm.controls['position_title'].setValue(this.selectedExperience().position_title) 
     this.experienceForm.controls['company_name'].setValue(this.selectedExperience().company_name)
     this.experienceForm.controls['location'].setValue(this.selectedExperience().location)
     this.experienceForm.controls['start_date'].setValue(moment(start).toDate());
     this.experienceForm.controls['description'].setValue(this.selectedExperience().description)
     // this.experienceForm.controls['bullet_points'].setValue(this.selectedExperience().bullet_points_count);
-    if(this.selectedExperience().isCurrentlyWorkHere){
+    if(isCurrentRole){
       this.experienceForm.controls['end_date'].disable();
+      this.experienceForm.controls['end_date'].setValue(null);
       this.experienceForm.controls['isCurrentlyWorkHere'].setValue(true);
     } 
     else{
-      this.experienceForm.controls['end_date'].setValue(moment(endd).toDate()); 
+      this.experienceForm.controls['end_date'].enable();
+      this.experienceForm.controls['end_date'].setValue(endd ? moment(endd).toDate() : null); 
       this.experienceForm.controls['isCurrentlyWorkHere'].setValue(false)
     }
     let section_title;
@@ -607,6 +610,10 @@ setEndDateMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker
         
         // Capture original values immediately after setting form values
         this.captureOriginalFormValues();
+  }
+
+  private isCurrentExperience(experience: Experience): boolean {
+    return experience.isCurrentlyWorkHere || experience.end_date?.trim().toLowerCase() === 'present';
   }
 
   // addEducationField() {

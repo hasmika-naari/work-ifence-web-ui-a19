@@ -2306,6 +2306,174 @@ hideMenu() {
 
   }
 
+  private buildResumeRequest(): JobResumeRequest {
+    const request = new JobResumeRequest();
+    request.title = this.resumeSignalForm().title;
+    request.category = this.resumeSignalForm().resume_category;
+    request.roleCategory = this.resumeSignalForm().role_category;
+
+    this.accessCategories.map((e) => {
+      if (e.access_description == this.resumeSignalForm().access_level) {
+        request.access = e.access_category;
+      }
+    });
+
+    request.description = 'Resume Description';
+    this.custom_fileName = this.resumeSignalForm().title.replace(/\s+/g, '') + this.appUtilService.generateUniqueString() + '.pdf';
+    request.old_documentUrl = this.selectedResumeListItem().documentUrl;
+    request.current_documentUrl = this.userAccount().login + '/wif-resume/' + this.custom_fileName;
+
+    const resumeData: Resume = this.resumeSignalForm();
+    resumeData.sections = this.currentSections();
+    resumeData.multipleSections = this.multipleSections();
+    request.resumeJson = JSON.stringify(resumeData);
+    request.status = this.resumeSignalForm().isActive ? 'ACTIVE' : 'IN_ACTIVE';
+    request.isPrimary = this.resumeSignalForm().isPrimary;
+    request.lastUpdatedDate = Date.now().toString();
+    request.lastUsedFor = '';
+    request.templateId = this.resumeSignalForm().template_details.id.toString();
+    request.ownerId = this.userAccount().id;
+    request.old_filename = this.selectedResumeListItem().fileName;
+    request.current_filename = this.custom_fileName;
+    request.htmlcontent = this.templateService.getFormatedResumeHTMLText(
+      this.resumeSignalForm().template_details.template_name,
+      this.getUnHideElements()
+    );
+    request.username = this.userAccount().login;
+
+    if (!this.selectedResumeListItem().id) {
+      request.createdDate = Date.now().toString();
+    } else {
+      request.id = this.selectedResumeListItem().id;
+      request.createdDate = this.selectedResumeListItem().createdDate;
+    }
+
+    return request;
+  }
+
+  private setDownloadActionState(isBusy: boolean): void {
+    this.isActionInProgress = isBusy;
+    this.isDisabled = isBusy;
+
+    if (isBusy) {
+      this.loadingBar.start();
+    } else {
+      this.loadingBar.complete();
+    }
+
+    const element = document.getElementById('actions-disable');
+    if (element != null) {
+      element.style.zIndex = isBusy ? '1000' : '-1000';
+      element.style.display = 'none';
+    }
+  }
+
+  private downloadBlobFile(blob: Blob, fileName: string): void {
+    const dataUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(dataUrl);
+  }
+
+  private syncSavedResumeItem(resumeResponse: ResumeListDataItem): void {
+    this.userStore.updateSelectedResumeListItem(resumeResponse);
+    this.userStore.setIsChangeInNewResume(false);
+    this.clearResumeChanged();
+
+    this.pdfToImageService.convertPdfToImageBytesThroughUrl('https://workifence.s3.us-east-1.amazonaws.com/' + resumeResponse.documentUrl).then((bytes) => {
+      resumeResponse.imageBytes = bytes;
+      const index = this.resumeDataItemList().findIndex(obj => obj.id === resumeResponse.id);
+      if (index >= 0) {
+        this.userStore.updateResumeDataListItem(resumeResponse, index);
+      } else {
+        this.userStore.addResumeDataListItem(resumeResponse);
+      }
+      this.userStore.setFilteredResumes([...this.resumeDataItemList()]);
+    });
+  }
+
+  private triggerResumeDownload(item: ResumeListDataItem, format: 'pdf' | 'word'): void {
+    if (format === 'word') {
+      let fileName = item.fileName;
+      if (!fileName) {
+        this.setDownloadActionState(false);
+        this.showToast('error', 'Error', 'No file name found for Word download.');
+        return;
+      }
+
+      const docxFileName = fileName.replace(/\.[^.]+$/, '') + '.docx';
+      this.resumeService.dowloadResumeDOC(item.userName, docxFileName).subscribe({
+        next: (res: any) => {
+          const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+          this.downloadBlobFile(blob, docxFileName);
+          this.setDownloadActionState(false);
+        },
+        error: () => {
+          const docFileName = fileName.replace(/\.[^.]+$/, '') + '.doc';
+          this.resumeService.dowloadResumeDOC(item.userName, docFileName).subscribe({
+            next: (fallbackRes: any) => {
+              const blob = new Blob([fallbackRes], { type: 'application/msword' });
+              this.downloadBlobFile(blob, docFileName);
+              this.setDownloadActionState(false);
+            },
+            error: () => {
+              this.setDownloadActionState(false);
+              this.showToast('error', 'Error', 'Failed to download Word resume. Please try again.');
+            }
+          });
+        }
+      });
+      return;
+    }
+
+    this.resumeService.dowloadResumePDF(item.userName, item.fileName).subscribe({
+      next: (res: any) => {
+        const blob = new Blob([res], { type: 'application/pdf' });
+        this.downloadBlobFile(blob, item.fileName);
+        this.setDownloadActionState(false);
+      },
+      error: () => {
+        this.setDownloadActionState(false);
+        this.showToast('error', 'Error', 'Failed to download PDF resume. Please try again.');
+      }
+    });
+  }
+
+  handlePreviewDownload(format: 'pdf' | 'word'): void {
+    if (!this.isResumeValid()) {
+      this.showToast('error', 'Error', 'Please complete all required fields in the Meta Data form.');
+      return;
+    }
+
+    this.setDownloadActionState(true);
+
+    if (!this.selectedResumeListItem().id || this.isChangeInNewResume() || this.hasLocalResumeChanges) {
+      const request = this.buildResumeRequest();
+      const saveRequest = this.selectedResumeListItem().id
+        ? this.resumeService.updateResume(request)
+        : this.resumeService.saveResume(request);
+
+      saveRequest.subscribe({
+        next: (resumeResponse: ResumeListDataItem) => {
+          this.uploadResumeProfileImage(resumeResponse.id, request.current_filename);
+          this.syncSavedResumeItem(resumeResponse);
+          this.triggerResumeDownload(resumeResponse, format);
+        },
+        error: () => {
+          this.setDownloadActionState(false);
+          this.showToast('error', 'Error', 'Failed to save resume before download. Please try again.');
+        }
+      });
+      return;
+    }
+
+    this.triggerResumeDownload(this.selectedResumeListItem(), format);
+  }
+
 
   saveAndDownload(){
     if(this.isResumeValid()){

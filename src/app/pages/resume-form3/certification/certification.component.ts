@@ -138,6 +138,8 @@ export class CertificationComponent implements OnInit, OnDestroy {
         effect(()=>{
           if(this.selectedCertification() && this.selectedCertification().id){
             this.setCertificationValues();
+          } else {
+            this.resetCertificationValues();
           }
         });
 
@@ -461,6 +463,37 @@ private _filterYears(value: string): number[] {
       this.certifyForm.controls['section_title'].setValue(section_title??'Certifications')
   }
 
+  resetCertificationValues() {
+    let section_title;
+    if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
+      this.multipleSections().map((e : SectionDesc[])=>{
+        e.map((section : SectionDesc)=>{
+          if(section.section == 'CERTIFICATIONS'){
+            section_title = section.editable_section_title
+          }
+        })
+      })
+    }
+    else{
+      this.sections().map((section : SectionDesc)=>{
+          if(section.section == 'CERTIFICATIONS'){
+            section_title = section.editable_section_title
+          }
+        })
+    }
+
+    this.certifyForm.reset({
+      certification_name: '',
+      issued_organisation: '',
+      issued_month_year: this.getCurrentMonthDate(),
+      certification_link: '',
+      description: '',
+      section_title: section_title ?? 'Certifications'
+    }, { emitEvent: false });
+
+    this.captureOriginalFormValues();
+  }
+
   // yearValidator(): ValidatorFn {
   //   return (control: AbstractControl): { [key: string]: any } | null => {
   //     const currentYear = new Date().getFullYear();
@@ -578,7 +611,7 @@ private _filterYears(value: string): number[] {
     cer.name = this.certifyForm.value.certification_name ? this.certifyForm.value.certification_name : '';
     cer.url = this.certifyForm.value.certification_link ? this.certifyForm.value.certification_link : '';
     cer.authority = this.certifyForm.value.issued_organisation ? this.certifyForm.value.issued_organisation : '';
-    // Store as MM/YYYY string
+    const existingCertificationDate = this.selectedCertification()?.data?.date;
     const issuedMonthYearValue = this.certifyForm.value.issued_month_year;
     console.log('certifyForm.value:', this.certifyForm.value);
     if (
@@ -587,12 +620,13 @@ private _filterYears(value: string): number[] {
       issuedMonthYearValue !== null &&
       Object.prototype.toString.call(issuedMonthYearValue) === '[object Date]'
     ) {
-      const dateObj = issuedMonthYearValue as Date;
-      const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-      const year = dateObj.getFullYear();
-      cer.date = `${month}/${year}`;
-    } else if (typeof issuedMonthYearValue === 'string' && /^\d{2}\/\d{4}$/.test(issuedMonthYearValue)) {
-      cer.date = issuedMonthYearValue;
+      cer.date = this.formatCertificationDate(issuedMonthYearValue as Date, existingCertificationDate);
+    } else if (typeof issuedMonthYearValue === 'string') {
+      const parsedDate = this.mmYYYYStringToDate(issuedMonthYearValue)
+        || this.yyyyMMStringToDate(issuedMonthYearValue);
+      cer.date = parsedDate
+        ? this.formatCertificationDate(parsedDate, existingCertificationDate)
+        : issuedMonthYearValue;
     } else {
       cer.date = '';
     }
@@ -1509,6 +1543,33 @@ private dateToMMYYYYString(date: Date): string {
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear();
   return `${month}/${year}`;
+}
+
+private yyyyMMStringToDate(value: string): Date | null {
+  if (typeof value === 'string' && /^\d{4}-\d{2}$/.test(value)) {
+    const [year, month] = value.split('-').map(Number);
+    return new Date(year, month - 1, 1);
+  }
+  return null;
+}
+
+private dateToYYYYMMString(date: Date): string {
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${year}-${month}`;
+}
+
+private formatCertificationDate(date: Date, existingFormat?: string): string {
+  if (typeof existingFormat === 'string' && /^\d{4}-\d{2}$/.test(existingFormat)) {
+    return this.dateToYYYYMMString(date);
+  }
+
+  return this.dateToMMYYYYString(date);
+}
+
+private getCurrentMonthDate(): Date {
+  const today = new Date();
+  return new Date(today.getFullYear(), today.getMonth(), 1);
 }
 
 }

@@ -227,6 +227,20 @@
   font-style: italic;
 }
 
+.template2-entry-card__supporting-copy {
+  display: block;
+  margin-top: 0.12rem;
+  color: var(--template2-text);
+  font-size: var(--template2-meta-size);
+  font-style: normal;
+}
+
+.template2-entry-card__supporting-label {
+  color: var(--template2-heading);
+  font-size: var(--template2-meta-size);
+  font-weight: 600;
+}
+
 .template2-entry-card__header a {
   color: inherit;
   text-decoration: none;

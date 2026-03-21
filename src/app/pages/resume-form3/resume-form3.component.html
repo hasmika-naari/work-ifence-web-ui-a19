@@ -313,7 +313,7 @@
       [style]="{'width': 'min(1100px, 85vw)', 'min-width': '320px'}"
       [showCloseIcon]="false"
       [blockScroll]="true"
-      [dismissableMask]="false"
+      [dismissible]="false"
       appendTo="body"
       [baseZIndex]="25000"
   >
@@ -333,7 +333,7 @@
       <ng-template pTemplate="content">
           <app-preview-resume 
               [templateName]="activeTemplateName() || 'TEMPLATE_1'"
-              (download)="saveAndDownload()"
+              (download)="handlePreviewDownload($event)"
               (close)="closePreview()"
           ></app-preview-resume>
       </ng-template>

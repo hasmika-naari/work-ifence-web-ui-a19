@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const projectRoot = process.cwd();
 const entry = path.join(projectRoot, 'dist', 'workifence', 'server', 'server.mjs');
@@ -22,6 +23,39 @@ function log(msg) {
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+function probeEntryImport(entryFile) {
+  return new Promise((resolve) => {
+    const fileUrl = pathToFileURL(entryFile).href;
+    const probe = spawn(
+      process.execPath,
+      ['--input-type=module', '--eval', `await import(${JSON.stringify(fileUrl)});`],
+      {
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: process.env,
+      }
+    );
+
+    let stderr = '';
+    probe.stderr.on('data', (chunk) => {
+      stderr += chunk.toString();
+    });
+
+    probe.on('exit', (code) => {
+      resolve({
+        ok: code === 0,
+        stderr: stderr.trim(),
+      });
+    });
+
+    probe.on('error', (error) => {
+      resolve({
+        ok: false,
+        stderr: String(error),
+      });
+    });
+  });
 }
 
 async function waitForFile(filePath) {
@@ -229,7 +263,17 @@ async function waitForStableOutputDir() {
         }
 
         if (stablePasses >= 2) {
-          return;
+          const probe = await probeEntryImport(entry);
+          if (probe.ok) {
+            return;
+          }
+
+          stablePasses = 0;
+          lastVerifiedSnapshot = '';
+
+          if (probe.stderr.includes('ERR_MODULE_NOT_FOUND')) {
+            log('SSR bundle not ready yet; waiting for chunk graph to settle.');
+          }
         }
         continue;
       }

@@ -130,13 +130,13 @@
             <div style="display: flex; gap: 18px; align-items: center;">
               <a class="p-menuitem-link resume-menu-option"
                 href="#"
-                (click)="$event.preventDefault(); $event.stopPropagation(); downloadResumePdf(resume)">
+                (click)="$event.preventDefault(); $event.stopPropagation(); openDownloadPreview(resume)">
                 <span class="p-menuitem-icon pi pi-download"></span>
                 <span class="p-menuitem-text">PDF</span>
               </a>
               <a class="p-menuitem-link resume-menu-option"
                 href="#"
-                (click)="$event.preventDefault(); $event.stopPropagation(); downloadResumeDoc(resume)">
+                (click)="$event.preventDefault(); $event.stopPropagation(); openDownloadPreview(resume)">
                 <span class="p-menuitem-icon pi pi-download"></span>
                 <span class="p-menuitem-text">DOC</span>
               </a>
@@ -155,6 +155,16 @@
     <div class="col-12 p-0">
       <span class="w-100 text-left d-block mt-2 fs-6">Created On: <strong>{{resume.createdDate | date}}</strong></span>
     </div>
+    <div class="col-12 p-0 resume-card-download-actions">
+      <button type="button" class="resume-card-download-btn resume-card-download-btn--pdf" (click)="openDownloadPreview(resume)">
+        <i class="pi pi-file-pdf"></i>
+        PDF
+      </button>
+      <button type="button" class="resume-card-download-btn resume-card-download-btn--doc" (click)="openDownloadPreview(resume)">
+        <i class="pi pi-file-word"></i>
+        DOC
+      </button>
+    </div>
   </div>
 </div>
 <div class="col-12">
@@ -171,3 +181,31 @@
 }
 }
 </div>
+
+<p-drawer
+  [visible]="previewDrawerOpen"
+  [position]="'right'"
+  [style]="{'width': 'min(1100px, 85vw)', 'min-width': '320px'}"
+  [showCloseIcon]="false"
+  [blockScroll]="true"
+  [dismissible]="false"
+  appendTo="body"
+  [baseZIndex]="25000">
+  <ng-template pTemplate="header">
+    <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <h3 style="margin: 0;">Preview</h3>
+      <p-button
+        icon="pi pi-times"
+        [rounded]="true"
+        [text]="true"
+        severity="danger"
+        (onClick)="closePreview()"></p-button>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <app-preview-resume
+      [templateName]="previewTemplateName"
+      (download)="onPreviewDownload($event)"
+      (close)="closePreview()"></app-preview-resume>
+  </ng-template>
+</p-drawer>

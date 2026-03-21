@@ -42,9 +42,9 @@
       </div>
 
       <div class="form-row form-row--single" [hidden]="false">
-        <div class="field">
-          <label for="year">Year *</label>
-          <p-datePicker id="year" formControlName="year" view="year" dateFormat="yy" [showIcon]="true" [yearNavigator]="true" yearRange="1950:2050" placeholder="Select Year"></p-datePicker>
+          <div class="field field--half-width">
+          <label for="year">Month & Year *</label>
+          <p-datePicker id="year" formControlName="year" view="month" dateFormat="MM yy" [showIcon]="true" [yearNavigator]="true" yearRange="1950:2050" placeholder="Select Month and Year"></p-datePicker>
           @if (achievementsForm.get('year')?.hasError('required') && (achievementsForm.get('year')?.dirty || achievementsForm.get('year')?.touched)) {
             <small class="error">Required.</small>
           }

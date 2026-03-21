@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Resume, Education, Project, Accomplishment, Skill, SkillV2, courseWork, Certification, Experience } from '../resume.model';
 import { SectionDesc } from '../store/user-store';
+import { TemplatesService } from './templates.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Templatesv2Service {
+  private readonly legacyTemplatesService = inject(TemplatesService);
 
     private getSection(resume: Resume, sectionName: string): any {
       return resume.sections?.find((section: any) => section.section === sectionName);
@@ -55,7 +57,10 @@ export class Templatesv2Service {
     }
 
     public getFormatedResumeHTMLText(templateName: string, resume: Resume): string {
-      // For now, always use the modern sections formatter
+      if (templateName === 'TEMPLATE_1' || templateName === 'TEMPLATE_2') {
+        return this.legacyTemplatesService.getFormatedResumeHTMLText(templateName, resume);
+      }
+
       return this.getFormattedSectionsForModern(resume);
     }
 

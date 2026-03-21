@@ -972,10 +972,140 @@ hideMenu() {
     });
 
     dialogRef.afterClosed().subscribe(result => {    
-      if(result.event == 'DOWNLOAD'){
-        this.saveAndDownload();
+      if(result?.event == 'DOWNLOAD'){
+        this.handlePreviewDownload(result.format || 'pdf');
       }
     });
+  }
+
+  private buildResumeRequest(): JobResumeRequest {
+    const request = new JobResumeRequest();
+    request.title = this.resumeSignalForm().title;
+    request.category = this.resumeSignalForm().resume_category;
+    request.roleCategory = this.resumeSignalForm().role_category;
+    this.accessCategories.map((e) => {
+      if (e.access_description == this.resumeSignalForm().access_level) {
+        request.access = e.access_category;
+      }
+    });
+    request.description = 'Resume Description';
+    const customFileName = this.resumeSignalForm().title.replace(/\s+/g, '') + this.appUtilService.generateUniqueString() + '.pdf';
+    request.old_documentUrl = this.selectedResumeListItem().documentUrl;
+    request.current_documentUrl = this.userAccount().login + '/wif-resume/' + customFileName;
+    request.resumeJson = JSON.stringify(this.resumeSignalForm());
+    request.status = this.resumeSignalForm().isActive ? 'ACTIVE' : 'IN_ACTIVE';
+    request.isPrimary = this.resumeSignalForm().isPrimary;
+    request.lastUpdatedDate = Date.now().toString();
+    request.lastUsedFor = '';
+    request.templateId = this.resumeSignalForm().template_details.id.toString();
+    request.ownerId = this.userAccount().id;
+    request.old_filename = this.selectedResumeListItem().fileName;
+    request.current_filename = customFileName;
+    request.htmlcontent = this.templateService.getFormatedResumeHTMLText(this.resumeSignalForm().template_details.template_name, this.getUnHideElements());
+    request.username = this.userAccount().login;
+
+    if (!this.selectedResumeListItem().id) {
+      request.createdDate = Date.now().toString();
+    } else {
+      request.id = this.selectedResumeListItem().id;
+      request.createdDate = this.selectedResumeListItem().createdDate;
+    }
+
+    return request;
+  }
+
+  private setDownloadActionState(isBusy: boolean): void {
+    this.isActionInProgress = isBusy;
+    this.isDisabled = isBusy;
+    const element = document.getElementById('actions-disable');
+    if (element != null) {
+      element.style.zIndex = isBusy ? '1000' : '-1000';
+      element.style.display = 'none';
+    }
+  }
+
+  private downloadBlobFile(blob: Blob, fileName: string): void {
+    const dataUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(dataUrl);
+  }
+
+  private handleSavedResume(resumeResponse: ResumeListDataItem): void {
+    this.userStore.updateSelectedResumeListItem(resumeResponse);
+    this.userStore.setIsChangeInNewResume(false);
+  }
+
+  private triggerResumeDownload(item: ResumeListDataItem, format: 'pdf' | 'word'): void {
+    if (format === 'word') {
+      let fileName = item.fileName;
+      if (!fileName) {
+        this.setDownloadActionState(false);
+        return;
+      }
+
+      const docxFileName = fileName.replace(/\.[^.]+$/, '') + '.docx';
+      this.resumeService.dowloadResumeDOC(item.userName, docxFileName).subscribe({
+        next: (res: any) => {
+          const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+          this.downloadBlobFile(blob, docxFileName);
+          this.setDownloadActionState(false);
+        },
+        error: () => {
+          const docFileName = fileName.replace(/\.[^.]+$/, '') + '.doc';
+          this.resumeService.dowloadResumeDOC(item.userName, docFileName).subscribe({
+            next: (fallbackRes: any) => {
+              const blob = new Blob([fallbackRes], { type: 'application/msword' });
+              this.downloadBlobFile(blob, docFileName);
+              this.setDownloadActionState(false);
+            },
+            error: () => {
+              this.setDownloadActionState(false);
+            }
+          });
+        }
+      });
+      return;
+    }
+
+    this.resumeService.dowloadResumePDF(item.userName, item.fileName).subscribe({
+      next: (res: any) => {
+        const blob = new Blob([res], { type: 'application/pdf' });
+        this.downloadBlobFile(blob, item.fileName);
+        this.setDownloadActionState(false);
+      },
+      error: () => {
+        this.setDownloadActionState(false);
+      }
+    });
+  }
+
+  handlePreviewDownload(format: 'pdf' | 'word'): void {
+    this.setDownloadActionState(true);
+
+    if (!this.selectedResumeListItem().id || this.isChangeInNewResume()) {
+      const request = this.buildResumeRequest();
+      const saveRequest = this.selectedResumeListItem().id
+        ? this.resumeService.updateResume(request)
+        : this.resumeService.saveResume(request);
+
+      saveRequest.subscribe({
+        next: (resumeResponse: ResumeListDataItem) => {
+          this.handleSavedResume(resumeResponse);
+          this.triggerResumeDownload(resumeResponse, format);
+        },
+        error: () => {
+          this.setDownloadActionState(false);
+        }
+      });
+      return;
+    }
+
+    this.triggerResumeDownload(this.selectedResumeListItem(), format);
   }
 
   showEditSection($event : any){

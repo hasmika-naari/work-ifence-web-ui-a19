@@ -228,7 +228,15 @@ export class ResumeTemplate2Component {
         }
         break;
       case 'PROJECT':
-        this.userStore.updateProject((selectedItem as Project) || new Project());
+        if ((selectedItem as SectionItem)?.data) {
+          const selectedProjectItem = selectedItem as SectionItem;
+          this.userStore.updateProject({
+            ...selectedProjectItem.data,
+            id: selectedProjectItem.id || selectedProjectItem.data?.id,
+          } as Project);
+        } else {
+          this.userStore.updateProject((selectedItem as Project) || new Project());
+        }
         break;
       case 'WORK_EXPERIENCE':
         this.userStore.updateExperience((selectedItem as Experience) || new Experience());

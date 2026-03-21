@@ -32,6 +32,8 @@ import { ConfirmDialogComponent } from '../resume-form3/confirm-dialog/confirm-d
 import { PdfToImageService } from 'src/app/services/shared/pdf-image-conversion.service';
 import { WorkIfenceDataService } from 'src/app/services/work-ifence-data.service';
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
+import { DrawerModule } from 'primeng/drawer';
+import { PreviewResumeComponent } from '../resume-form3/preview-resume/preview-resume.component';
 
 @Component({
     selector: 'resume-list2',
@@ -58,7 +60,9 @@ import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
         MatListModule,
         MatProgressBarModule,
         MatCheckbox,
-        MatCheckboxModule
+        MatCheckboxModule,
+        DrawerModule,
+        PreviewResumeComponent
     ]
 })
 export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
@@ -79,6 +83,9 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
     filteredResumes: Signal<ResumeListDataItem[]> = this.userStore.getFilteredResumes();
 
     pdfBlob! : Blob
+    previewDrawerOpen = false;
+    previewTemplateName = 'TEMPLATE_1';
+    previewResumeItem: ResumeListDataItem | null = null;
 
     sortOptions: SelectItem[] = [];
 
@@ -382,6 +389,51 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
         const documentFileName = documentUrl.split('/').filter(Boolean).pop();
 
         return documentFileName || item.fileName;
+    }
+
+    private parseResumeJson(item: ResumeListDataItem): Resume | null {
+        if (!item?.resumeJson) {
+            return null;
+        }
+
+        try {
+            return JSON.parse(item.resumeJson) as Resume;
+        } catch (error) {
+            console.error('Failed to parse resume JSON for preview drawer', error);
+            return null;
+        }
+    }
+
+    openDownloadPreview(item: ResumeListDataItem): void {
+        const resume = this.parseResumeJson(item);
+
+        if (!resume) {
+            return;
+        }
+
+        this.userStore.setResumeForm(resume);
+        this.userStore.updateSelectedResumeListItem(item);
+        this.previewResumeItem = item;
+        this.previewTemplateName = resume.template_details?.template_name || 'TEMPLATE_1';
+        this.previewDrawerOpen = true;
+    }
+
+    closePreview(): void {
+        this.previewDrawerOpen = false;
+        this.previewResumeItem = null;
+    }
+
+    onPreviewDownload(format: 'pdf' | 'word'): void {
+        if (!this.previewResumeItem) {
+            return;
+        }
+
+        if (format === 'word') {
+            this.downloadResumeDoc(this.previewResumeItem);
+            return;
+        }
+
+        this.downloadResumePdf(this.previewResumeItem);
     }
 
     downloadResumePdf(item: ResumeListDataItem) {

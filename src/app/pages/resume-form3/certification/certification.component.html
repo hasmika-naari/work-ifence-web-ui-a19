@@ -83,7 +83,7 @@
               <div class="field">
                 <label for="issued_month_year">Issued Month & Year *</label>
                 <div class="calendar-input-wrapper">
-                  <p-calendar
+                  <p-datePicker
                     id="issued_month_year"
                     formControlName="issued_month_year"
                     view="month"
@@ -95,7 +95,7 @@
                     [inputStyle]="{width: '160px', minWidth: '120px', borderRight: 'none', borderRadius: '4px 0 0 4px'}"
                     [style]="{width: 'auto'}"
                     panelStyleClass="calendar-panel-custom"
-                  ></p-calendar>
+                  ></p-datePicker>
                 </div>
                 @if (certifyForm.get('issued_month_year')?.hasError('required') && (certifyForm.get('issued_month_year')?.dirty || certifyForm.get('issued_month_year')?.touched)) {
                   <small class="error">

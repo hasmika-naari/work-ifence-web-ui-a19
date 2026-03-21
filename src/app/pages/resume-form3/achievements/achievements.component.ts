@@ -84,7 +84,7 @@ export class AchievementsComponent implements OnInit, OnDestroy {
   achievementsForm = this._formBuilder.group({
     title: new FormControl('', Validators.required),
     organization: new FormControl('', Validators.required),
-    year: new FormControl('', Validators.required),
+    year: new FormControl<Date | null>(null, Validators.required),
     section_title: new FormControl('', Validators.required)
   });
 
@@ -170,6 +170,7 @@ export class AchievementsComponent implements OnInit, OnDestroy {
 
   setAchievements() {
     const selectedAchievement = this.selectedAchievement()?.data as AchievementBulletPoints | undefined;
+    const isAddModeSelection = this.selectedAchievement()?.id === '';
     const shouldUseSelectedAchievement = !!(
       this.selectedAchievement()?.id
       || selectedAchievement?.title
@@ -177,20 +178,22 @@ export class AchievementsComponent implements OnInit, OnDestroy {
       || selectedAchievement?.year
     );
     const achSection = this.sections().find((section: any) => section.section === 'ACHIEVEMENTS_BULLET_POINTS');
-    const achItem = shouldUseSelectedAchievement
+    const achItem = isAddModeSelection
+      ? null
+      : shouldUseSelectedAchievement
       ? selectedAchievement
       : (achSection?.items && achSection.items.length > 0 ? achSection.items[0].data : null);
     if (achItem) {
       this.achievementsForm.patchValue({
         title: achItem.title || '',
         organization: achItem.organization || '',
-        year: achItem.year || '',
+        year: this.mmYYYYStringToDate(achItem.year || ''),
       });
     } else {
       this.achievementsForm.patchValue({
         title: '',
         organization: '',
-        year: '',
+        year: null,
       });
     }
     let section_title;
@@ -265,9 +268,9 @@ setCertification(){
   let achievement = new AchievementBulletPoints();
       achievement.title = formValue.title || '';
       achievement.organization = formValue.organization || '';
-      // If year is a Date object, extract year as string
+      // Store achievement date in MM/YYYY format.
       if (formValue.year && typeof formValue.year === 'object' && typeof (formValue.year as Date).getFullYear === 'function') {
-        achievement.year = String((formValue.year as Date).getFullYear());
+        achievement.year = this.dateToMMYYYYString(formValue.year as Date);
       } else if (typeof formValue.year === 'string') {
         achievement.year = formValue.year;
       } else {
@@ -381,6 +384,25 @@ setCertification(){
         this.markFormGroupTouched(control);
       }
     });
+  }
+
+  private mmYYYYStringToDate(value: string): Date | null {
+    if (typeof value === 'string' && /^\d{2}\/\d{4}$/.test(value)) {
+      const [month, year] = value.split('/').map(Number);
+      return new Date(year, month - 1, 1);
+    }
+
+    if (typeof value === 'string' && /^\d{4}$/.test(value)) {
+      return new Date(Number(value), 0, 1);
+    }
+
+    return null;
+  }
+
+  private dateToMMYYYYString(date: Date): string {
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}/${year}`;
   }
 
   
