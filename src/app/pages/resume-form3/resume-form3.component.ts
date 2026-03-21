@@ -1553,8 +1553,8 @@ hideMenu() {
     this.openPanel('courseWorkDetails', 'Course Work');
     this.courseWorkCount = this.courseWorkCount + 1;
   }
-  showSkillsDetails(section :string){
-    if (section === 'SKILLS_BY_CATEGORY') {
+  showSkillsDetails(section :string, resetSelectedCategory: boolean = false){
+    if (section === 'SKILLS_BY_CATEGORY' && resetSelectedCategory) {
       this.selectedSkillsCategoryIndex = null;
       this.userStore.setSelectedSkillsCategory(null);
     }

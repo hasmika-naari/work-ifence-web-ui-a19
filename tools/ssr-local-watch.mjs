@@ -82,44 +82,16 @@ function resolveImportTarget(baseFile, spec) {
 }
 
 function findMissingEntryImports(entryFile) {
-  let source;
-  try {
-    source = fs.readFileSync(entryFile, 'utf8');
-  } catch {
-    return [entryFile];
-  }
-
-  const specs = getTopLevelRelativeImportSpecifiers(source);
-  const missing = [];
-
-  for (const spec of specs) {
-    const resolved = resolveImportTarget(entryFile, spec);
-    if (!resolved) {
-      missing.push(path.resolve(path.dirname(entryFile), spec));
-    }
-  }
-
-  return missing;
+  return inspectStaticImportGraph(entryFile).missing;
 }
 
 function getEntryImportSnapshot(entryFile) {
-  let source;
-  try {
-    source = fs.readFileSync(entryFile, 'utf8');
-  } catch {
+  const graph = inspectStaticImportGraph(entryFile);
+  if (graph.missing.length > 0) {
     return null;
   }
 
-  const specs = getTopLevelRelativeImportSpecifiers(source);
-  const files = [entryFile];
-
-  for (const spec of specs) {
-    const resolved = resolveImportTarget(entryFile, spec);
-    if (!resolved) {
-      return null;
-    }
-    files.push(resolved);
-  }
+  const files = [...graph.files];
 
   const snapshot = [];
   for (const file of files) {
@@ -133,6 +105,49 @@ function getEntryImportSnapshot(entryFile) {
 
   snapshot.sort();
   return snapshot.join('|');
+}
+
+function inspectStaticImportGraph(entryFile) {
+  const queue = [entryFile];
+  const seen = new Set();
+  const files = [];
+  const missing = [];
+
+  while (queue.length) {
+    const currentFile = queue.pop();
+    if (!currentFile || seen.has(currentFile)) {
+      continue;
+    }
+
+    seen.add(currentFile);
+
+    let source;
+    try {
+      source = fs.readFileSync(currentFile, 'utf8');
+    } catch {
+      missing.push(currentFile);
+      continue;
+    }
+
+    files.push(currentFile);
+
+    const specs = getTopLevelRelativeImportSpecifiers(source);
+    for (const spec of specs) {
+      const resolved = resolveImportTarget(currentFile, spec);
+      if (!resolved) {
+        missing.push(path.resolve(path.dirname(currentFile), spec));
+        continue;
+      }
+      if (!seen.has(resolved)) {
+        queue.push(resolved);
+      }
+    }
+  }
+
+  return {
+    files,
+    missing: [...new Set(missing)].sort(),
+  };
 }
 
 function latestMjsMtimeMs(dirPath) {

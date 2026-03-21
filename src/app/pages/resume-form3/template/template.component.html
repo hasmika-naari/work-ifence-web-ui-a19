@@ -19,11 +19,11 @@
             <!-- Only Move Down for first, only Move Up for last, both for others. For PROJECT, hide move down if last. -->
             <button pButton pTooltip="Move Up" icon="pi pi-arrow-up" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'moveUp')" (click)="moveObjectById(section.section, section.id || '', 'up')"></button>
             <button pButton pTooltip="Move Down" icon="pi pi-arrow-down" class="p-button-rounded p-button-text p-button-sm" *ngIf="section.section !== 'PROJECT' ? shouldShowButton(section.section, 'moveDown') : !last" (click)="moveObjectById(section.section, section.id || '', 'down')"></button>
-            <button pButton pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" 
+            <button pButton [attr.title]="'Edit'" [icon]="'pi pi-pencil'" class="p-button-rounded p-button-text p-button-sm" 
               *ngIf="shouldShowButton(section.section, 'edit')" 
               (click)="section.section === 'PROFILE_SUMMARY_BULLETED' ? onEditProfileSummaryBulleted() : section.section === 'SKILLS_BY_CATEGORY' ? onEditSkillsByCategory() : editSectionHandler(section.section, section.section === 'PROFILE_SUMMARY' ? getProfileSummarySection() : section.section === 'EDUCATION' ? getSectionItems('EDUCATION') : section.section === 'WORK_EXPERIENCE' ? getSectionItems('WORK_EXPERIENCE') : section.section === 'PROJECT' ? getSectionItems('PROJECT') : null)"></button>
             <button pButton pTooltip="Delete" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'delete')" (click)="removeSection(section.section)"></button>
-            <button pButton pTooltip="Add" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'add')" (click)="addSectionHandler(section.section)"></button>
+            <button pButton pTooltip="Add" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm" *ngIf="shouldShowButton(section.section, 'add')" (click)="section.section === 'ACHIEVEMENTS_BULLET_POINTS' ? onAddAchievement() : section.section === 'CERTIFICATIONS' ? onAddCertification() : addSectionHandler(section.section)"></button>
           </div>
         </div>
         <ng-container [ngSwitch]="section.section">

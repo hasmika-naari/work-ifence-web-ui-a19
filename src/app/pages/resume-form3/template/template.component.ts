@@ -13,7 +13,7 @@ import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, CdkDragStart } from '@angular/cdk/drag-drop';
-import { Resume, ResumeContact, IsSectionPresent, ProfileSummary, Education, Project, Experience, Certification, SkillV2, Accomplishment, courseWork } from '../../../services/resume.model';
+import { Resume, ResumeContact, IsSectionPresent, ProfileSummary, Education, Project, Experience, Certification, SkillV2, Accomplishment, AchievementBulletPoints, courseWork } from '../../../services/resume.model';
 import { SectionDesc } from '../../../services/store/user-store';
 import { ResumeListDataItem } from '../../../services/work-ifence-data.model';
 import { UserStoreService } from '../../../services/store/user-store.service';
@@ -536,6 +536,16 @@ export class Resume1TemplateComponent implements OnInit, OnDestroy {
     this.addSectionHandler('SKILLS_BULLET_POINTS');
   }
 
+  onAddAchievement(): void {
+    this.userStore.setSelectedAccomplishment({ id: '', data: new AchievementBulletPoints() } as any);
+    this.editSection.emit({ section: 'ACHIEVEMENTS_BULLET_POINTS' });
+  }
+
+  onAddCertification(): void {
+    this.userStore.setSelectedCertification({ id: undefined, data: new Certification() } as any);
+    this.editSection.emit({ section: 'CERTIFICATIONS' });
+  }
+
   // Handles edit event from skills section
   onEditSkills() {
     // Handles edit for SKILLS_BULLET_POINTS
@@ -962,6 +972,10 @@ formatSkills(items : string[]){
     this.userStore.setSelectedExperience(new Experience());
   }
 
+  if (section === 'CERTIFICATIONS') {
+    this.userStore.setSelectedCertification({ id: undefined, data: new Certification() } as any);
+  }
+
   this.markDirty();
   this.cdr.detectChanges();
   this.cdr.markForCheck();
@@ -1163,7 +1177,7 @@ private animateSuccessfulDrop(targetIndex: number) {
         'SKILLS_BULLET_POINTS': () => this.hasSkillsBulletPoints(),
         'SKILLS_BY_CATEGORY': () => this.hasSkillsByCategory(),
         'SKILLS_CATEGORY': () => this.hasSkills(),
-        'ACHIEVEMENTS_BULLET_POINTS': () => this.hasAchievements(),
+        'ACHIEVEMENTS_BULLET_POINTS': () => false,
         'default': () => true
       },
       'add': {
@@ -1174,7 +1188,7 @@ private animateSuccessfulDrop(targetIndex: number) {
         'SKILLS_BULLET_POINTS': () => !this.hasSkillsBulletPoints(),
         'SKILLS_BY_CATEGORY': () => true,
         'SKILLS_CATEGORY': () => !this.hasSkills(),
-        'ACHIEVEMENTS_BULLET_POINTS': () => !this.hasAchievements(),
+        'ACHIEVEMENTS_BULLET_POINTS': () => true,
         'default': () => true
       },
       'delete': {

@@ -31,15 +31,17 @@
   padding: 1.25rem;
   border: 1px solid #eadfd1;
   border-radius: 1.25rem;
-  background:
-    radial-gradient(circle at top left, rgba(240, 91, 69, 0.12), transparent 45%),
-    linear-gradient(135deg, #fffdf9 0%, #fff7ef 100%);
+  background: linear-gradient(135deg, #fffdf9 0%, #fff7ef 100%);
+}
+
+.contact-hero--simple {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
 }
 
 .contact-hero__content {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 0.4rem;
 }
 
@@ -50,6 +52,11 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #b2653f;
+}
+
+.contact-hero__avatar-frame {
+  position: relative;
+  display: inline-flex;
 }
 
 .contact-hero__title {
@@ -68,6 +75,24 @@
   color: #6c5b52;
 }
 
+.contact-hero__names-column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.contact-hero__image-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.85rem;
+
+  input {
+    display: none;
+  }
+}
+
 .contact-hero__upload-card {
   display: flex;
   align-items: center;
@@ -79,20 +104,19 @@
 }
 
 .contact-hero__avatar {
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 11rem;
+  height: 11rem;
   flex-shrink: 0;
-  border-radius: 50%;
+  border-radius: 1.5rem;
   overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #e7d0bc 0%, #c57e55 100%);
-  color: #fff;
-  font-size: 1.5rem;
+  background: linear-gradient(135deg, #f1f5f9 0%, #dbeafe 100%);
+  color: #0f172a;
+  font-size: 2.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.35);
 
   img {
     width: 100%;
@@ -101,41 +125,42 @@
   }
 }
 
-.contact-hero__upload-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.65rem;
-
-  input {
-    display: none;
-  }
-}
-
-.contact-hero__upload-btn,
-.contact-hero__remove-btn {
+.contact-hero__upload-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  min-height: 2.75rem;
-  padding: 0.75rem 1rem;
+  justify-content: center;
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.7rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 999px;
-  border: 1px solid #f05b45;
-  font-size: 0.82rem;
+  border: none;
+  padding: 0;
+  font-size: 1.4rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(15, 23, 42, 0.68);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: color 0.18s ease, background-color 0.18s ease;
+  box-shadow: none;
 }
 
-.contact-hero__upload-btn {
-  background: #f05b45;
-  color: #fff;
+.contact-hero__upload-btn:hover {
+  color: #0f172a;
 }
 
-.contact-hero__remove-btn {
-  background: transparent;
-  color: #f05b45;
+.contact-hero__upload-btn:focus-visible {
+  outline: none;
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.contact-hero__upload-btn i {
+  font-size: 1.9rem;
+  line-height: 1;
 }
 
 .contact-hero__hint {
@@ -143,6 +168,23 @@
   font-size: 0.8rem;
   line-height: 1.5;
   color: #7c6c62;
+}
+
+@media (max-width: 767px) {
+  .contact-hero,
+  .contact-hero--simple {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-hero__image-column {
+    order: -1;
+  }
+
+  .contact-hero__avatar {
+    width: 9rem;
+    height: 9rem;
+    font-size: 2.2rem;
+  }
 }
 
 .container{

@@ -2,64 +2,27 @@
 <div class="resume-form-container">
   <form [formGroup]="contactForm" class="resume-form">
 
-    <section class="contact-hero">
-      <div class="contact-hero__content">
-        <p class="contact-hero__eyebrow">Template 2 Header</p>
-        <h2 class="contact-hero__title">Contact details and profile image</h2>
-        <p class="contact-hero__description">
-          Add the details shown at the top of the resume. The uploaded image is used as the Template 2 avatar.
-        </p>
-      </div>
-
-      <div class="contact-hero__upload-card">
-        <div class="contact-hero__avatar" [class.contact-hero__avatar--image]="hasProfileImage">
-          @if (hasProfileImage) {
-            <img [src]="getImageBase64()" alt="Profile image preview" />
-          }
-          @else {
-            <span>{{ profileInitials }}</span>
-          }
-        </div>
-
-        <div class="contact-hero__upload-actions">
-          <label class="contact-hero__upload-btn" for="profile-image-upload">
-            <i class="pi pi-image"></i>
-            {{ hasProfileImage ? 'Replace image' : 'Upload image' }}
-          </label>
-          <input id="profile-image-upload" type="file" accept="image/png,image/jpeg,image/webp" (change)="onFileSelected($event)" />
-
-          @if (hasProfileImage) {
-            <button type="button" class="contact-hero__remove-btn" (click)="removeSelectedImage()">
-              <i class="pi pi-trash"></i>
-              Remove
-            </button>
-          }
-
-          <p class="contact-hero__hint">Use a square JPG, PNG, or WebP image for the cleanest avatar crop.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="form-row form-row--double">
-      <div class="field">
-        <label for="fname">First Name *</label>
-        <input
-          id="fname"
-          type="text"
-          pInputText
-          formControlName="fname"
-          placeholder="Enter first name"
-          />
-          @if (contactForm.get('fname')?.hasError('pattern') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)) {
-            <small class="error">
-              Please enter a valid name.
-            </small>
-          }
-          @if (contactForm.get('fname')?.hasError('required') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)) {
-            <small class="error">
-              Required.
-            </small>
-          }
+    <section class="contact-hero contact-hero--simple">
+      <div class="contact-hero__names-column">
+        <div class="field">
+          <label for="fname">First Name *</label>
+          <input
+            id="fname"
+            type="text"
+            pInputText
+            formControlName="fname"
+            placeholder="Enter first name"
+            />
+            @if (contactForm.get('fname')?.hasError('pattern') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)) {
+              <small class="error">
+                Please enter a valid name.
+              </small>
+            }
+            @if (contactForm.get('fname')?.hasError('required') && (contactForm.get('fname')?.dirty || contactForm.get('fname')?.touched)) {
+              <small class="error">
+                Required.
+              </small>
+            }
         </div>
 
         <div class="field">
@@ -81,8 +44,27 @@
                 Required.
               </small>
             }
-          </div>
         </div>
+      </div>
+
+      <div class="contact-hero__image-column">
+        <div class="contact-hero__avatar-frame">
+          <div class="contact-hero__avatar" [class.contact-hero__avatar--image]="hasProfileImage">
+            @if (hasProfileImage) {
+              <img [src]="getImageBase64()" alt="Profile image preview" />
+            }
+            @else {
+              <span>{{ profileInitials }}</span>
+            }
+          </div>
+
+          <label class="contact-hero__upload-btn" for="profile-image-upload" title="Upload or replace profile image" aria-label="Upload or replace profile image">
+            <i class="pi pi-camera"></i>
+          </label>
+        </div>
+        <input id="profile-image-upload" type="file" accept="image/png,image/jpeg,image/webp" (change)="onFileSelected($event)" />
+      </div>
+    </section>
 
         <div class="form-row form-row--single">
           <div class="field">

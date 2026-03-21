@@ -390,7 +390,7 @@ export class UserStoreService {
   updateAccomplishmentItem(accom : Accomplishment, index : number){
   this.state.update((state) => {
     const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
-      if (section.section === 'ACCOMPLISHMENT') {
+      if (section.section === 'ACCOMPLISHMENT' || section.section === 'ACHIEVEMENT_WITH_DESC') {
         const items = section.items ? [...section.items] : [];
         items[index] = { ...items[index], data: accom };
         return { ...section, items };
@@ -417,7 +417,7 @@ export class UserStoreService {
   addAccomplishmentItem(accom : Accomplishment){
   this.state.update((state) => {
     const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
-      if (section.section === 'ACCOMPLISHMENT') {
+      if (section.section === 'ACCOMPLISHMENT' || section.section === 'ACHIEVEMENT_WITH_DESC') {
         return {
           ...section,
           items: [...(section.items ?? []), { id: accom.id, data: accom }]
@@ -1475,11 +1475,12 @@ setResumeForm(resume: Resume) {
 
       deleteAccomplishment(exp : Accomplishment){
     this.state.update((state) => {
+      const accomplishmentId = exp?.id || (exp as any)?.data?.id;
       const updatedSections = state.selectedResume.resumeForm.sections.map(section => {
-        if (section.section === 'ACCOMPLISHMENT') {
+        if (section.section === 'ACCOMPLISHMENT' || section.section === 'ACHIEVEMENT_WITH_DESC') {
           return {
             ...section,
-            items: section.items?.filter(item => item.data.id !== exp.id) ?? []
+            items: section.items?.filter(item => item.data?.id !== accomplishmentId && item.id !== accomplishmentId) ?? []
           };
         }
         return section;

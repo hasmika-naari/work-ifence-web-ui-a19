@@ -16,8 +16,8 @@
   height: 1.75rem;
   border: 1px solid rgba(198, 166, 111, 0.45);
   border-radius: 999px;
-  background: #fff;
-  color: var(--template2-muted);
+  background: #faf5ee;
+  color: #5f4c36;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -41,12 +41,30 @@
   border: 1px solid rgba(219, 199, 164, 0.62);
 }
 
+.template2-category-card .template2-item-actions {
+  padding: 0.24rem 0.38rem;
+  border-radius: 999px;
+  background: rgba(250, 245, 238, 0.98);
+  border: 1px solid rgba(219, 199, 164, 0.82);
+  box-shadow: 0 4px 12px rgba(160, 120, 78, 0.12);
+}
+
+.template2-side-card .template2-item-actions {
+  padding: 0.24rem 0.38rem;
+  border-radius: 999px;
+  background: rgba(250, 245, 238, 0.98);
+  border: 1px solid rgba(219, 199, 164, 0.82);
+  box-shadow: 0 4px 12px rgba(160, 120, 78, 0.12);
+}
+
 .template2-side-card:hover .template2-item-actions,
 .template2-side-card:focus-within .template2-item-actions,
 .template2-entry-card:hover .template2-item-actions,
 .template2-entry-card:focus-within .template2-item-actions,
 .template2-category-card:hover .template2-item-actions,
-.template2-category-card:focus-within .template2-item-actions {
+.template2-category-card:focus-within .template2-item-actions,
+.template2-bullet-list__item:hover .template2-item-actions,
+.template2-bullet-list__item:focus-within .template2-item-actions {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;

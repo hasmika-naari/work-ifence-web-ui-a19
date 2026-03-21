@@ -31,6 +31,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import Quill from 'quill';
 import { SectionDesc } from 'src/app/services/store/user-store';
 import { DatePicker } from 'primeng/datepicker';
+import { SectionItem } from 'src/app/services/store/user-store';
 
 
 
@@ -71,7 +72,8 @@ export class AchievementsComponent implements OnInit, OnDestroy {
   resumeSignalForm : Signal<Resume> = this.userStore.getResumeForm();
   sectionStatus : Signal<IsSectionPresent> = this.userStore.getSectionStatus();
   sections : Signal<SectionDesc[]> = this.userStore.getCurrentSections();
-    multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections(); 
+  multipleSections : Signal<SectionDesc[][]> = this.userStore.getMultipleColumnTemplateSections();
+  selectedAchievement : Signal<SectionItem> = this.userStore.getSelectedAccomplishment();
 
 
   outLineButton = true;
@@ -167,14 +169,28 @@ export class AchievementsComponent implements OnInit, OnDestroy {
 
 
   setAchievements() {
-    // Find the ACHIEVEMENTS_BULLET_POINTS section and get its first item's data
+    const selectedAchievement = this.selectedAchievement()?.data as AchievementBulletPoints | undefined;
+    const shouldUseSelectedAchievement = !!(
+      this.selectedAchievement()?.id
+      || selectedAchievement?.title
+      || selectedAchievement?.organization
+      || selectedAchievement?.year
+    );
     const achSection = this.sections().find((section: any) => section.section === 'ACHIEVEMENTS_BULLET_POINTS');
-    const achItem = achSection?.items && achSection.items.length > 0 ? achSection.items[0].data : null;
+    const achItem = shouldUseSelectedAchievement
+      ? selectedAchievement
+      : (achSection?.items && achSection.items.length > 0 ? achSection.items[0].data : null);
     if (achItem) {
       this.achievementsForm.patchValue({
         title: achItem.title || '',
         organization: achItem.organization || '',
         year: achItem.year || '',
+      });
+    } else {
+      this.achievementsForm.patchValue({
+        title: '',
+        organization: '',
+        year: '',
       });
     }
     let section_title;
@@ -197,12 +213,21 @@ export class AchievementsComponent implements OnInit, OnDestroy {
   }
 
 setCertification(){
+  const selectedCertification = this.selectedAchievement()?.data as CertificationBulletPoints | undefined;
+  const shouldUseSelectedCertification = !!(
+    this.selectedAchievement()?.id
+    || selectedCertification?.original_html_content
+    || selectedCertification?.point
+  );
   if(this.editor?.clipboard){
-    // Find the CERTIFICATIONS_BULLET_POINTS section and get its first item's data
     const certSection = this.sections().find((section: any) => section.section === 'CERTIFICATIONS_BULLET_POINTS');
-    const certItem = certSection?.items && certSection.items.length > 0 ? certSection.items[0].data : null;
+    const certItem = shouldUseSelectedCertification
+      ? selectedCertification
+      : (certSection?.items && certSection.items.length > 0 ? certSection.items[0].data : null);
     if(certItem && certItem.original_html_content) {
       this.editor.clipboard.dangerouslyPasteHTML(certItem.original_html_content);
+    } else if (this.editor) {
+      this.editor.setContents([{ insert: '\n' }]);
     }
   }
   let section_title;
@@ -222,7 +247,7 @@ setCertification(){
           }
         })
     }
-    this.achievementsForm.controls['section_title'].setValue(section_title??'Certifications')
+  this.achievementsForm.controls['section_title'].setValue(section_title??'Certifications')
 }
 
 
@@ -254,12 +279,10 @@ setCertification(){
       const achSection = this.sections().find((section: any) => section.section === 'ACHIEVEMENTS_BULLET_POINTS');
       let items = achSection?.items ? [...achSection.items] : [];
 
-      // Check if editing (has selected index or id)
-      let editIndex = -1;
-      if (items.length > 0) {
-        // Try to find by id or just update first for now
-        editIndex = 0;
-      }
+      const selectedAchievement = this.selectedAchievement();
+      const editIndex = selectedAchievement?.id
+        ? items.findIndex((item: any) => item.id === selectedAchievement.id)
+        : -1;
 
       let sectionItem;
       if (editIndex >= 0) {
@@ -286,12 +309,46 @@ setCertification(){
       });
       console.log('Updated sections:', updatedSections);
       this.userStore.setResumeSections(updatedSections);
+      this.userStore.setSelectedAccomplishment({ id: '', data: new AchievementBulletPoints() } as SectionItem);
 
       if(!this.sectionStatus().isAchievement){
         let status = this.sectionStatus()
         status.isAchievement = true;
         this.userStore.updateSectionStatus(status);
       }
+    }
+    else if(this.sectionName == 'CERTIFICATIONS_BULLET_POINTS'){
+      const sectionTitle = this.achievementsForm.controls['section_title'].value ?? 'Certifications';
+      const cert = new CertificationBulletPoints();
+      cert.original_html_content = this.getEditorData();
+      cert.point = this.getEditorRawData();
+      cert.isDefault = !cert.point;
+
+      const certSection = this.sections().find((section: any) => section.section === 'CERTIFICATIONS_BULLET_POINTS');
+      let items = certSection?.items ? [...certSection.items] : [];
+      const selectedCertification = this.selectedAchievement();
+      const editIndex = selectedCertification?.id
+        ? items.findIndex((item: any) => item.id === selectedCertification.id)
+        : -1;
+
+      const sectionItem = editIndex >= 0
+        ? { ...items[editIndex], data: cert }
+        : { id: 'certbp_' + Date.now(), data: cert };
+
+      if (editIndex >= 0) {
+        items[editIndex] = sectionItem;
+      } else {
+        items.push(sectionItem);
+      }
+
+      const updatedSections = this.sections().map((section: any) => {
+        if (section.section === 'CERTIFICATIONS_BULLET_POINTS') {
+          return { ...section, items, editable_section_title: sectionTitle };
+        }
+        return section;
+      });
+      this.userStore.setResumeSections(updatedSections);
+      this.userStore.setSelectedAccomplishment({ id: '', data: new CertificationBulletPoints() } as SectionItem);
     }
     if(this.resumeSignalForm().template_details.template_name == 'TEMPLATE_9'){
           this.multipleSections().map((e : SectionDesc[])=>{

@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output, Signal, ViewEncapsulation, inje
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { Certification, Education, Experience, ProfileSummary, Project, Resume, ResumeContact } from 'src/app/services/resume.model';
+import { Accomplishment, Certification, CertificationBulletPoints, Education, Experience, ProfileSummary, Project, Resume, ResumeContact } from 'src/app/services/resume.model';
 import { SectionDesc, SectionItem } from 'src/app/services/store/user-store';
 import { Template2HeaderComponent } from './sections/template2-header.component';
 import { Template2SectionShellComponent } from './sections/template2-section-shell.component';
@@ -169,6 +169,17 @@ export class ResumeTemplate2Component {
     return this.getRenderedItems('ACHIEVEMENT_WITH_DESC').map(item => ({ raw: item, data: this.itemData(item) }));
   }
 
+  getAchievementBulletRows(): any[] {
+    return this.getRenderedItems('ACHIEVEMENTS_BULLET_POINTS').map(item => {
+      const data = this.itemData(item);
+      return {
+        raw: item,
+        data,
+        label: data?.title || data?.achievement || data?.name || data?.point || '',
+      };
+    });
+  }
+
   getProjectRows(): any[] {
     return this.getRenderedItems('PROJECT').map(item => ({ raw: item, data: this.itemData(item) }));
   }
@@ -206,7 +217,15 @@ export class ResumeTemplate2Component {
         this.userStore.setSelectedSummary(this.getSummarySection(section));
         break;
       case 'EDUCATION':
-        this.userStore.updateEducation((selectedItem as Education) || new Education());
+        if ((selectedItem as SectionItem)?.data) {
+          const selectedEducationItem = selectedItem as SectionItem;
+          this.userStore.updateEducation({
+            ...selectedEducationItem.data,
+            id: selectedEducationItem.id || selectedEducationItem.data?.id,
+          } as Education);
+        } else {
+          this.userStore.updateEducation((selectedItem as Education) || new Education());
+        }
         break;
       case 'PROJECT':
         this.userStore.updateProject((selectedItem as Project) || new Project());
@@ -216,6 +235,15 @@ export class ResumeTemplate2Component {
         break;
       case 'CERTIFICATIONS':
         this.userStore.updateCertification((selectedItem as SectionItem) || ({ id: undefined, data: new Certification() } as SectionItem));
+        break;
+      case 'CERTIFICATIONS_BULLET_POINTS':
+        this.userStore.setSelectedAccomplishment((selectedItem as SectionItem) || this.getSectionItems('CERTIFICATIONS_BULLET_POINTS')[0] || null);
+        break;
+      case 'ACHIEVEMENTS_BULLET_POINTS':
+        this.userStore.setSelectedAccomplishment((selectedItem as SectionItem) || this.getSectionItems('ACHIEVEMENTS_BULLET_POINTS')[0] || null);
+        break;
+      case 'ACHIEVEMENT_WITH_DESC':
+        this.userStore.setSelectedAccomplishment((selectedItem as SectionItem) || ({ data: new Accomplishment() } as SectionItem));
         break;
       case 'SKILLS_BY_CATEGORY':
         this.userStore.setSelectedSkillsCategory(selectedItem || this.getSectionItems('SKILLS_BY_CATEGORY')[0] || null);
@@ -241,6 +269,18 @@ export class ResumeTemplate2Component {
         break;
       case 'CERTIFICATIONS':
         this.userStore.updateCertification({ id: undefined, data: new Certification() } as SectionItem);
+        break;
+      case 'CERTIFICATIONS_BULLET_POINTS':
+        this.userStore.setSelectedAccomplishment({ id: '', data: new CertificationBulletPoints() } as SectionItem);
+        break;
+      case 'ACHIEVEMENTS_BULLET_POINTS':
+        this.userStore.setSelectedAccomplishment({ id: '', data: { title: '', organization: '', year: '' } } as SectionItem);
+        break;
+      case 'ACHIEVEMENT_WITH_DESC':
+        this.userStore.setSelectedAccomplishment({ data: new Accomplishment() } as SectionItem);
+        break;
+      case 'SKILLS_BY_CATEGORY':
+        this.userStore.setSelectedSkillsCategory(null);
         break;
       default:
         break;
@@ -283,6 +323,12 @@ export class ResumeTemplate2Component {
         }
         else if(section === "CERTIFICATION"){
           this.userStore.deleteCertification(selectedJson)
+        }
+        else if(section === "ACHIEVEMENTS_BULLET_POINTS"){
+          this.userStore.deleteAchievementItem(selectedJson)
+        }
+        else if(section === "ACHIEVEMENT_WITH_DESC"){
+          this.userStore.deleteAccomplishment(selectedJson?.data || selectedJson)
         }
       }
     });

@@ -36,9 +36,9 @@
           variant="sidebar"
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
-          [canEdit]="true"
+          [canAdd]="true"
           [canDelete]="!isPreview"
-          (edit)="openSectionEditor('SKILLS_BY_CATEGORY')"
+          (add)="addSectionHandler('SKILLS_BY_CATEGORY')"
           (delete)="removeSection('SKILLS_BY_CATEGORY')">
           <div class="template2-category-list">
             @for (item of getSkillsCategoryRows(); track item.data?.id ?? item.raw?.id ?? item.title) {
@@ -115,7 +115,9 @@
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
           [canAdd]="!isPreview"
-          (add)="addSectionHandler('CERTIFICATIONS')">
+          [canDelete]="!isPreview"
+          (add)="addSectionHandler('CERTIFICATIONS')"
+          (delete)="removeSection('CERTIFICATIONS')">
           <div class="template2-stack-list">
             @for (item of getCertificationRows(); track item.data?.id ?? item.raw?.id) {
               <article class="template2-side-card">
@@ -157,9 +159,9 @@
           variant="sidebar"
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
-          [canEdit]="true"
+          [canAdd]="true"
           [canDelete]="!isPreview"
-          (edit)="openSectionEditor('CERTIFICATIONS_BULLET_POINTS')"
+          (add)="addSectionHandler('CERTIFICATIONS_BULLET_POINTS')"
           (delete)="removeSection('CERTIFICATIONS_BULLET_POINTS')">
           <ul class="template2-bullet-list template2-bullet-list--tight">
             @for (value of getListValues('CERTIFICATIONS_BULLET_POINTS', 'point'); track value) {
@@ -176,13 +178,29 @@
           variant="sidebar"
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
-          [canEdit]="true"
+          [canAdd]="true"
           [canDelete]="!isPreview"
-          (edit)="openSectionEditor('ACHIEVEMENTS_BULLET_POINTS')"
+          (add)="addSectionHandler('ACHIEVEMENTS_BULLET_POINTS')"
           (delete)="removeSection('ACHIEVEMENTS_BULLET_POINTS')">
           <ul class="template2-bullet-list template2-bullet-list--tight">
-            @for (value of getListValues('ACHIEVEMENTS_BULLET_POINTS', 'achievement'); track value) {
-              <li>{{ value }}</li>
+            @for (item of getAchievementBulletRows(); track item.data?.id ?? item.raw?.id ?? item.label) {
+              <li class="template2-bullet-list__item">
+                <span>{{ item.label }}</span>
+                @if (!isPreview && !isPrintMode) {
+                  <div class="template2-item-actions">
+                    <button type="button" title="Edit" (click)="openSectionEditor('ACHIEVEMENTS_BULLET_POINTS', item.raw)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Delete" (click)="confirmDeleteDialog('ACHIEVEMENTS_BULLET_POINTS', item.raw)"><i [class]="actionIcons.delete"></i></button>
+                    @if (item.data?.isHideSelected) {
+                      <button type="button" title="Show" (click)="toggleItemVisibility('ACHIEVEMENTS_BULLET_POINTS', item.raw, false)"><i [class]="actionIcons.show"></i></button>
+                    }
+                    @else {
+                      <button type="button" title="Hide" (click)="toggleItemVisibility('ACHIEVEMENTS_BULLET_POINTS', item.raw, true)"><i [class]="actionIcons.hide"></i></button>
+                    }
+                    <button type="button" title="Move up" (click)="moveObjectById('ACHIEVEMENTS_BULLET_POINTS', item.data?.id || item.raw?.id, 'up')"><i [class]="actionIcons.moveUp"></i></button>
+                    <button type="button" title="Move down" (click)="moveObjectById('ACHIEVEMENTS_BULLET_POINTS', item.data?.id || item.raw?.id, 'down')"><i [class]="actionIcons.moveDown"></i></button>
+                  </div>
+                }
+              </li>
             }
           </ul>
         </app-template2-section-shell>
@@ -198,7 +216,9 @@
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
           [canEdit]="true"
-          (edit)="openSectionEditor('PROFILE_SUMMARY')">
+          [canDelete]="!isPreview"
+          (edit)="openSectionEditor('PROFILE_SUMMARY')"
+          (delete)="removeSection('PROFILE_SUMMARY')">
           <div class="template2-richtext template2-summary-copy" [innerHTML]="getSummaryHtml('PROFILE_SUMMARY')"></div>
         </app-template2-section-shell>
       }
@@ -211,7 +231,9 @@
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
           [canAdd]="!isPreview"
-          (add)="addSectionHandler('WORK_EXPERIENCE')">
+          [canDelete]="!isPreview"
+          (add)="addSectionHandler('WORK_EXPERIENCE')"
+          (delete)="removeSection('WORK_EXPERIENCE')">
           <div class="template2-main-list">
             @for (item of getExperienceRows(); track item.data?.id ?? item.raw?.id) {
               <article class="template2-entry-card">
@@ -260,7 +282,9 @@
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
           [canAdd]="!isPreview"
-          (add)="addSectionHandler('PROJECT')">
+          [canDelete]="!isPreview"
+          (add)="addSectionHandler('PROJECT')"
+          (delete)="removeSection('PROJECT')">
           <div class="template2-main-list">
             @for (item of getProjectRows(); track item.data?.id ?? item.raw?.id) {
               <article class="template2-entry-card">
@@ -316,7 +340,9 @@
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
           [canAdd]="!isPreview"
-          (add)="addSectionHandler('EDUCATION')">
+          [canDelete]="!isPreview"
+          (add)="addSectionHandler('EDUCATION')"
+          (delete)="removeSection('EDUCATION')">
           <div class="template2-main-list">
             @for (item of getEducationRows(); track item.data?.id ?? item.raw?.id) {
               <article class="template2-entry-card template2-entry-card--compact">
@@ -339,7 +365,7 @@
                 </div>
                 @if (!isPreview && !isPrintMode) {
                   <div class="template2-item-actions template2-item-actions--main">
-                    <button type="button" title="Edit" (click)="openSectionEditor('EDUCATION', item.data)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Edit" (click)="openSectionEditor('EDUCATION', item.raw)"><i [class]="actionIcons.edit"></i></button>
                     <button type="button" title="Delete" (click)="confirmDeleteDialog('EDUCATION', item.data)"><i [class]="actionIcons.delete"></i></button>
                     @if (item.data?.isHideSelected) {
                       <button type="button" title="Show" (click)="toggleItemVisibility('EDUCATION', item.raw, false)"><i [class]="actionIcons.show"></i></button>
@@ -364,13 +390,27 @@
           variant="main"
           [isPreview]="isPreview"
           [isPrintMode]="isPrintMode"
-          [canEdit]="true"
+          [canAdd]="true"
           [canDelete]="!isPreview"
-          (edit)="openSectionEditor('ACHIEVEMENT_WITH_DESC')"
+          (add)="addSectionHandler('ACHIEVEMENT_WITH_DESC')"
           (delete)="removeSection('ACHIEVEMENT_WITH_DESC')">
           <div class="template2-main-list">
             @for (item of getAchievementRows(); track item.data?.id ?? item.raw?.id) {
-              <article class="template2-entry-card template2-entry-card--compact">
+              <article class="template2-entry-card template2-entry-card--compact template2-entry-card--editable">
+                @if (!isPreview && !isPrintMode) {
+                  <div class="template2-item-actions">
+                    <button type="button" title="Edit" (click)="openSectionEditor('ACHIEVEMENT_WITH_DESC', item.raw)"><i [class]="actionIcons.edit"></i></button>
+                    <button type="button" title="Delete" (click)="confirmDeleteDialog('ACHIEVEMENT_WITH_DESC', item.raw)"><i [class]="actionIcons.delete"></i></button>
+                    @if (item.data?.isHideSelected) {
+                      <button type="button" title="Show" (click)="toggleItemVisibility('ACHIEVEMENT_WITH_DESC', item.raw, false)"><i [class]="actionIcons.show"></i></button>
+                    }
+                    @else {
+                      <button type="button" title="Hide" (click)="toggleItemVisibility('ACHIEVEMENT_WITH_DESC', item.raw, true)"><i [class]="actionIcons.hide"></i></button>
+                    }
+                    <button type="button" title="Move up" (click)="moveObjectById('ACHIEVEMENT_WITH_DESC', item.data?.id || item.raw?.id, 'up')"><i [class]="actionIcons.moveUp"></i></button>
+                    <button type="button" title="Move down" (click)="moveObjectById('ACHIEVEMENT_WITH_DESC', item.data?.id || item.raw?.id, 'down')"><i [class]="actionIcons.moveDown"></i></button>
+                  </div>
+                }
                 <div class="template2-entry-card__header">
                   <div>
                     <h3>{{ item.data?.accomplisment }}</h3>

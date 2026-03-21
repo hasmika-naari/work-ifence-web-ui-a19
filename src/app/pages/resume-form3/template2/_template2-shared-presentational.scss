@@ -124,6 +124,11 @@
   line-height: 1.4;
 }
 
+.template2-bullet-list__item {
+  position: relative;
+  padding-right: 2.2rem;
+}
+
 .template2-bullet-list--tight li {
   font-size: var(--template2-body-size);
 }
@@ -193,6 +198,11 @@
 
 .template2-entry-card--compact {
   gap: 0.12rem;
+}
+
+.template2-entry-card--editable {
+  position: relative;
+  padding-right: 2.4rem;
 }
 
 .template2-entry-card__header {
