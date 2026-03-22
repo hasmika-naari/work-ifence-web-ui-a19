@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Optional, Output, Signal, inject, Input } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, EventEmitter, OnChanges, OnDestroy, OnInit, Optional, Output, Signal, SimpleChanges, inject, Input } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -29,21 +29,18 @@ import { ResumeTemplate8Component } from '../template8/template8.component';
 import { Subscription } from 'rxjs';
 import { ResumeTemplate9Component } from '../template9/template9.component';
 import { ResumeTemplate10Component } from '../template10/template10.component';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { ToastModule } from 'primeng/toast';
 
 
 @Component({
   selector: 'app-preview-resume',
   standalone: true,
-  imports: [RouterModule, CarouselModule, ReactiveFormsModule, FormsModule, MatStepperModule, ToastModule, MatFormFieldModule, InputTextModule, MatDialogModule, MatInputModule, ButtonModule, MatButtonModule, AccordionModule, TextareaModule, TooltipModule, MatIconModule, MatExpansionModule, Resume1TemplateComponent, ResumeTemplate2Component, ResumeTemplate3Component, ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, ResumeTemplate9Component, ResumeTemplate10Component, LoadingBarModule],
+  imports: [RouterModule, CarouselModule, ReactiveFormsModule, FormsModule, MatStepperModule, ToastModule, MatFormFieldModule, InputTextModule, MatDialogModule, MatInputModule, ButtonModule, MatButtonModule, AccordionModule, TextareaModule, TooltipModule, MatIconModule, MatExpansionModule, Resume1TemplateComponent, ResumeTemplate2Component, ResumeTemplate3Component, ResumeTemplate4Component, ResumeTemplate5Component, ResumeTemplate6Component, ResumeTemplate7Component, ResumeTemplate8Component, ResumeTemplate9Component, ResumeTemplate10Component],
   templateUrl: './preview-resume.component.html',
   styleUrls: ['./preview-resume.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 })
-export class PreviewResumeComponent implements OnInit, OnDestroy {
-  private loadingBar = inject(LoadingBarService, { optional: true });
+export class PreviewResumeComponent implements OnInit, OnDestroy, OnChanges {
   private messageService = inject(MessageService, { optional: true });
   private router = inject(Router, { optional: true });
 
@@ -51,11 +48,11 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
   isToggled = false;
   selectedTemplateName: string = '';
   private themeToggleSubscription: Subscription;
-  private loadingBarSubscription: Subscription | undefined;
   isDownloading = false;
 
 
   @Input() templateName: string | undefined;
+  @Input() downloadInProgress = false;
   @Output() download = new EventEmitter<'pdf' | 'word'>();
   @Output() close = new EventEmitter<void>();
 
@@ -77,8 +74,11 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
       if (this.themeToggleSubscription) {
         this.themeToggleSubscription.unsubscribe();
       }
-      if (this.loadingBarSubscription) {
-        this.loadingBarSubscription.unsubscribe();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+      if (changes['downloadInProgress'] && !changes['downloadInProgress'].currentValue) {
+        this.isDownloading = false;
       }
     }
  
@@ -86,17 +86,6 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
       // When used inside a drawer, @Input templateName is set before ngOnInit
       // When used as a dialog, fall back to injected data
       this.selectedTemplateName = this.templateName || (this.data as any)?.name || '';
-      
-      // Subscribe to loading bar to auto-reset isDownloading flag
-      if (this.loadingBar) {
-        this.loadingBarSubscription = this.loadingBar.value$.subscribe(value => {
-          if (value === 0 && this.isDownloading) {
-            setTimeout(() => {
-              this.isDownloading = false;
-            }, 100);
-          }
-        });
-      }
   }
 
   onConfirmHandler(){
@@ -109,20 +98,19 @@ export class PreviewResumeComponent implements OnInit, OnDestroy {
   onDownloadHandler(format: 'pdf' | 'word' = 'pdf') {
     try {
       this.isDownloading = true;
-      if (this.loadingBar) {
-        this.loadingBar.start();
-      }
       
       if (this.dialogRef) {
         this.dialogRef.close({ event: 'DOWNLOAD', format });
       } else {
         this.download.emit(format);
+        setTimeout(() => {
+          if (!this.downloadInProgress) {
+            this.isDownloading = false;
+          }
+        }, 300);
       }
     } catch (error: any) {
       this.isDownloading = false;
-      if (this.loadingBar) {
-        this.loadingBar.complete();
-      }
       
       // Always show error toast at top-right
       if (this.messageService) {

@@ -1,5 +1,4 @@
 <!-- Drawer-friendly preview (also works in dialog). No Cancel button; sticky Download action. -->
-<ngx-loading-bar [color]="'#ff6347'" [height]="'4px'"></ngx-loading-bar>
 <div class="preview-drawer-container">
   <div class="preview-canvas">
     <div class="preview-page preview-resume-renderer-page preview-browser-resume-page preview-browserResumePage">
@@ -11,7 +10,7 @@
           severity="danger"
           pTooltip="Download as PDF"
           tooltipPosition="bottom"
-          [disabled]="isDownloading"
+          [disabled]="isDownloading || downloadInProgress"
           (onClick)="onDownloadHandler('pdf')"
         ></p-button>
         <p-button 
@@ -22,7 +21,7 @@
           [style]="{ 'margin-left': '8px' }"
           pTooltip="Download as Word"
           tooltipPosition="bottom"
-          [disabled]="isDownloading"
+          [disabled]="isDownloading || downloadInProgress"
           (onClick)="onDownloadHandler('word')"
         ></p-button>
       </div>
@@ -66,7 +65,7 @@
       [rounded]="false"
       [text]="false"
       severity="danger"
-      [disabled]="isDownloading"
+      [disabled]="isDownloading || downloadInProgress"
       (onClick)="onDownloadHandler('pdf')"
     ></p-button>
     <p-button 
@@ -76,7 +75,7 @@
       [text]="false"
       severity="info"
       [style]="{ 'margin-left': '8px' }"
-      [disabled]="isDownloading"
+      [disabled]="isDownloading || downloadInProgress"
       (onClick)="onDownloadHandler('word')"
     ></p-button>
   </div>

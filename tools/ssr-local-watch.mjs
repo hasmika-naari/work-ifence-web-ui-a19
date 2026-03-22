@@ -15,6 +15,7 @@ let restartTimer = null;
 let isRestarting = false;
 
 let lastFsEventAt = 0;
+let requiredFreshOutputAfterMs = Date.now();
 
 function log(msg) {
   // Match the existing console style from concurrently output.
@@ -218,6 +219,14 @@ function latestMjsMtimeMs(dirPath) {
   return latest;
 }
 
+function getFileMtimeMs(filePath) {
+  try {
+    return fs.statSync(filePath).mtimeMs || 0;
+  } catch {
+    return 0;
+  }
+}
+
 async function waitForStableOutputDir() {
   // Wait until the SSR output directory stops changing for a bit.
   // This prevents starting Node while chunks are still being rewritten,
@@ -246,6 +255,14 @@ async function waitForStableOutputDir() {
 
     const after = latestMjsMtimeMs(watchDir);
     if (after !== 0 && after === before) {
+      const entryMtime = getFileMtimeMs(entry);
+      const newestOutputMtime = Math.max(after, entryMtime);
+      if (newestOutputMtime <= requiredFreshOutputAfterMs) {
+        stablePasses = 0;
+        lastVerifiedSnapshot = '';
+        continue;
+      }
+
       const missingImports = findMissingEntryImports(entry);
       if (missingImports.length === 0) {
         const snapshot = getEntryImportSnapshot(entry);
@@ -324,6 +341,7 @@ async function restartNow() {
 }
 
 function scheduleRestart() {
+  requiredFreshOutputAfterMs = Date.now();
   if (restartTimer) clearTimeout(restartTimer);
   restartTimer = setTimeout(() => {
     restartTimer = null;
@@ -333,6 +351,7 @@ function scheduleRestart() {
 
 async function main() {
   log(`Watching '${path.relative(projectRoot, watchDir)}'`);
+  requiredFreshOutputAfterMs = Date.now();
   await waitForStableOutputDir();
   await restartNow();
 

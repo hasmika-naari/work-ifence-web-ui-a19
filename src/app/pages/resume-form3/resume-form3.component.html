@@ -333,6 +333,7 @@
       <ng-template pTemplate="content">
           <app-preview-resume 
               [templateName]="activeTemplateName() || 'TEMPLATE_1'"
+              [downloadInProgress]="isActionInProgress"
               (download)="handlePreviewDownload($event)"
               (close)="closePreview()"
           ></app-preview-resume>

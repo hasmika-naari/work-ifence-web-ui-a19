@@ -134,15 +134,19 @@
 }
 
 .template2-bullet-list--columns {
-  column-count: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 1.1rem;
-  display: block;
+  row-gap: 0.18rem;
   padding-left: 1rem;
 }
 
 .template2-bullet-list--columns li {
-  break-inside: avoid;
-  margin-bottom: 0.18rem;
+  break-inside: auto;
+  margin-bottom: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .template2-side-card {
@@ -212,6 +216,11 @@
   gap: 1rem;
 }
 
+.template2-entry-card__header > :first-child {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
 .template2-entry-card__header h3 {
   margin: 0;
   font-family: var(--template2-heading-font);
@@ -222,9 +231,10 @@
 
 .template2-entry-card__header p {
   margin: 0.02rem 0 0;
-  color: var(--template2-muted);
+  color: var(--template2-heading);
   font-size: var(--template2-meta-size);
-  font-style: italic;
+  font-style: normal;
+  font-weight: 600;
 }
 
 .template2-entry-card__supporting-copy {
@@ -251,8 +261,17 @@
   gap: 0.04rem;
   text-align: right;
   font-size: var(--template2-meta-size);
-  font-style: italic;
+  font-style: normal;
   color: var(--template2-muted);
+  justify-items: end;
+  min-width: 9.5rem;
+  flex: 0 0 9.5rem;
+}
+
+.template2-entry-card__meta span {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
 }
 
 .template2-richtext {
@@ -292,7 +311,7 @@
   }
 
   .template2-bullet-list--columns {
-    column-count: 1;
+    grid-template-columns: 1fr;
   }
 
   .template2-entry-card__header {
