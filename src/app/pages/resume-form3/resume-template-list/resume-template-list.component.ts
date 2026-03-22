@@ -1,5 +1,5 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, EventEmitter, 
-          OnDestroy, OnInit, Output, Signal, computed, inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, ElementRef, EventEmitter, 
+          OnDestroy, OnInit, Output, Signal, computed, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
@@ -14,6 +14,84 @@ import {
   buildResumeTemplateIdentity,
   resolveCanonicalTemplateKey,
 } from 'src/app/resume-portal/utils/resume-template-key.util';
+
+const TEMPLATE_FILTER_TABS = [
+  'All',
+  'ATS-Friendly',
+  'Professional',
+  'Fresher',
+  'Tech & Skills',
+  'Creative',
+] as const;
+
+type TemplateFilterTab = typeof TEMPLATE_FILTER_TABS[number];
+type TemplateSpecificFilterTab = Exclude<TemplateFilterTab, 'All'>;
+
+interface TemplateCategoryMeta {
+  primary: TemplateSpecificFilterTab;
+  matches: TemplateSpecificFilterTab[];
+}
+
+const TEMPLATE_FILTER_ALIAS_MAP: Record<string, TemplateSpecificFilterTab> = {
+  'ats-friendly': 'ATS-Friendly',
+  'ats friendly': 'ATS-Friendly',
+  ats: 'ATS-Friendly',
+  professional: 'Professional',
+  fresher: 'Fresher',
+  'tech & skills': 'Tech & Skills',
+  'tech and skills': 'Tech & Skills',
+  'tech-skills': 'Tech & Skills',
+  tech: 'Tech & Skills',
+  skills: 'Tech & Skills',
+  creative: 'Creative',
+};
+
+const TEMPLATE_CATEGORY_META_BY_KEY: Record<string, TemplateCategoryMeta> = {
+  TEMPLATE_1: {
+    primary: 'Professional',
+    matches: ['Professional', 'ATS-Friendly'],
+  },
+  TEMPLATE_2: {
+    primary: 'ATS-Friendly',
+    matches: ['ATS-Friendly', 'Fresher'],
+  },
+  TEMPLATE_3: {
+    primary: 'ATS-Friendly',
+    matches: ['ATS-Friendly'],
+  },
+  TEMPLATE_4: {
+    primary: 'Professional',
+    matches: ['Professional'],
+  },
+  TEMPLATE_5: {
+    primary: 'Tech & Skills',
+    matches: ['Professional', 'Tech & Skills'],
+  },
+  TEMPLATE_6: {
+    primary: 'Creative',
+    matches: ['Creative'],
+  },
+  TEMPLATE_7: {
+    primary: 'Creative',
+    matches: ['Creative'],
+  },
+  TEMPLATE_9: {
+    primary: 'Tech & Skills',
+    matches: ['Professional', 'Tech & Skills'],
+  },
+  TEMPLATE_10: {
+    primary: 'Professional',
+    matches: ['Professional', 'Fresher'],
+  },
+};
+
+const normalizeFilterToken = (value: string | null | undefined): string =>
+  (value ?? '')
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ');
 
 
 export interface DialogData {
@@ -36,6 +114,7 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
   private templateFacade: ResumeTemplateFacadeService = inject(ResumeTemplateFacadeService);
   private templateSelection = inject(ResumeTemplateSelectionService);
   private snackBar = inject(MatSnackBar);
+  private hostRef = inject(ElementRef<HTMLElement>);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   resumeForm : Signal<Resume> = this.userStore.getResumeForm();
 
@@ -43,6 +122,18 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
   subs: Array<Subscription> = [];
 
   templates = computed(() => this.templateFacade.templates());
+  readonly templateFilterTabs = TEMPLATE_FILTER_TABS;
+  readonly selectedCategoryTab = signal<TemplateFilterTab>('All');
+  readonly filteredTemplates = computed(() => {
+    const selectedTab = this.selectedCategoryTab();
+    const currentTemplates = this.templates();
+
+    if (selectedTab === 'All') {
+      return currentTemplates;
+    }
+
+    return currentTemplates.filter(template => this.resolveTemplateFilterTabs(template).includes(selectedTab));
+  });
 
   constructor(
       private router : Router, 
@@ -70,6 +161,33 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
         console.log('Current route does not match the desired route');
       }
     }));
+  }
+
+  selectCategoryTab(tab: TemplateFilterTab): void {
+    this.selectedCategoryTab.set(tab);
+  }
+
+  onTabKeydown(event: KeyboardEvent, index: number): void {
+    const { key } = event;
+    if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(key)) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (key === 'Home') {
+      this.focusTab(0);
+      return;
+    }
+
+    if (key === 'End') {
+      this.focusTab(this.templateFilterTabs.length - 1);
+      return;
+    }
+
+    const direction = key === 'ArrowRight' ? 1 : -1;
+    const nextIndex = (index + direction + this.templateFilterTabs.length) % this.templateFilterTabs.length;
+    this.focusTab(nextIndex);
   }
 
   selectTemplateHandler($event: Event, template: ResumeTemplateUi){
@@ -126,6 +244,83 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
 
   isLocked(template: ResumeTemplateUi): boolean {
     return this.templateFacade.isLocked(template);
+  }
+
+  getPrimaryCategoryLabel(template: ResumeTemplateUi): TemplateSpecificFilterTab | null {
+    const categoryMeta = this.resolveTemplateCategoryMeta(template);
+    if (categoryMeta) {
+      return categoryMeta.primary;
+    }
+
+    return TEMPLATE_FILTER_ALIAS_MAP[normalizeFilterToken(template.category)] ?? null;
+  }
+
+  getPrimaryCategoryClass(template: ResumeTemplateUi): string | null {
+    const primaryCategory = this.getPrimaryCategoryLabel(template);
+    if (!primaryCategory) {
+      return null;
+    }
+
+    const slug = normalizeFilterToken(primaryCategory)
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    return `template-category-chip-${slug}`;
+  }
+
+  private focusTab(index: number): void {
+    const hostElement = this.hostRef.nativeElement as HTMLElement;
+    const tabButtons = hostElement.querySelectorAll('[data-template-filter-tab]') as NodeListOf<HTMLButtonElement>;
+    tabButtons.item(index)?.focus();
+  }
+
+  private resolveTemplateFilterTabs(template: ResumeTemplateUi): TemplateSpecificFilterTab[] {
+    const mappedTabs = new Set<TemplateSpecificFilterTab>();
+
+    for (const token of [template.category, ...(template.tags ?? [])]) {
+      const mapped = TEMPLATE_FILTER_ALIAS_MAP[normalizeFilterToken(token)];
+      if (mapped) {
+        mappedTabs.add(mapped);
+      }
+    }
+
+    const canonicalKey = resolveCanonicalTemplateKey({
+      id: template.id,
+      templateKey: template.templateKey,
+      componentKey: template.componentKey,
+      imageUrl: template.imageUrl,
+    });
+
+    const explicitCategoryMeta = canonicalKey ? TEMPLATE_CATEGORY_META_BY_KEY[canonicalKey] : undefined;
+    if (explicitCategoryMeta) {
+      for (const tab of explicitCategoryMeta.matches) {
+        mappedTabs.add(tab);
+      }
+    }
+
+    const coarseCategory = normalizeFilterToken(template.category);
+    if (mappedTabs.size === 0) {
+      if (coarseCategory === 'creative') {
+        mappedTabs.add('Creative');
+      } else if (coarseCategory === 'modern') {
+        mappedTabs.add('Professional');
+      } else if (coarseCategory === 'simple') {
+        mappedTabs.add('ATS-Friendly');
+      }
+    }
+
+    return Array.from(mappedTabs);
+  }
+
+  private resolveTemplateCategoryMeta(template: ResumeTemplateUi): TemplateCategoryMeta | null {
+    const canonicalKey = resolveCanonicalTemplateKey({
+      id: template.id,
+      templateKey: template.templateKey,
+      componentKey: template.componentKey,
+      imageUrl: template.imageUrl,
+    });
+
+    return canonicalKey ? TEMPLATE_CATEGORY_META_BY_KEY[canonicalKey] ?? null : null;
   }
 
   private toResumeTemplate(template: ResumeTemplateUi): ResumeTemplateDto {

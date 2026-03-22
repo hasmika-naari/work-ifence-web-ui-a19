@@ -1,7 +1,102 @@
 
 
+
+.template-filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 4px;
+  padding: 0 0 4px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.template-filter-tab {
+  appearance: none;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #fff;
+  color: var(--secondaryColor);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.template-filter-tab:hover {
+  border-color: rgba(10, 102, 194, 0.3);
+  color: var(--mainColor);
+}
+
+.template-filter-tab:focus-visible {
+  outline: 2px solid rgba(10, 102, 194, 0.28);
+  outline-offset: 2px;
+}
+
+.template-filter-tab-active {
+  background: rgba(10, 102, 194, 0.08);
+  border-color: rgba(10, 102, 194, 0.45);
+  color: var(--mainColor);
+  box-shadow: 0 2px 10px rgba(10, 102, 194, 0.12);
+}
+
+.template-empty-state {
+  margin: 20px 0 8px;
+  padding: 18px 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  background: rgba(248, 250, 252, 0.8);
+  color: rgba(15, 23, 42, 0.72);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
 .template-card {
   cursor: pointer;
+}
+
+.template-category-chip {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.2);
+  background: #2563eb;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.template-category-chip-ats-friendly {
+  background: #059669;
+}
+
+.template-category-chip-professional {
+  background: #2563eb;
+}
+
+.template-category-chip-fresher {
+  background: #7c3aed;
+}
+
+.template-category-chip-tech-skills {
+  background: #0891b2;
+}
+
+.template-category-chip-creative {
+  background: #ea580c;
 }
 
 .template-card-locked {
