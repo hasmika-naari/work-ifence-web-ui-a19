@@ -192,7 +192,7 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
 
   selectTemplateHandler($event: Event, template: ResumeTemplateUi){
     const gate = this.templateFacade.canUseTemplate(template);
-    if (!gate.allowed) {
+    if (!gate.allowed && gate.reason === 'LOGIN_REQUIRED') {
       this.snackBar.open(this.templateFacade.explainReason(gate.reason), 'View plans', { duration: 3200 });
       this.templateFacade.handleDenied(gate.reason, this.router.url);
       return;
@@ -244,6 +244,11 @@ export class ResumeTemplateListComponent implements OnInit, OnDestroy {
 
   isLocked(template: ResumeTemplateUi): boolean {
     return this.templateFacade.isLocked(template);
+  }
+
+  isUpgradeRestricted(template: ResumeTemplateUi): boolean {
+    const gate = this.templateFacade.canUseTemplate(template);
+    return !gate.allowed && gate.reason === 'UPGRADE_REQUIRED';
   }
 
   getPrimaryCategoryLabel(template: ResumeTemplateUi): TemplateSpecificFilterTab | null {

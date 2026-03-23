@@ -34,6 +34,7 @@ import { WorkIfenceDataService } from 'src/app/services/work-ifence-data.service
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 import { DrawerModule } from 'primeng/drawer';
 import { PreviewResumeComponent } from '../resume-form3/preview-resume/preview-resume.component';
+import { resolveResumePreviewUrl } from 'src/app/utils/resume-preview-url';
 
 @Component({
     selector: 'resume-list2',
@@ -66,8 +67,6 @@ import { PreviewResumeComponent } from '../resume-form3/preview-resume/preview-r
     ]
 })
 export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
-
-    private readonly resumeAssetBaseUrl = 'https://workifence.s3.us-east-1.amazonaws.com';
 
 
  
@@ -360,17 +359,7 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
     }
 
     private getResumeDocumentDownloadUrl(item: ResumeListDataItem): string | null {
-        const documentUrl = (item.documentUrl || '').trim();
-
-        if (!documentUrl) {
-            return null;
-        }
-
-        if (/^https?:\/\//i.test(documentUrl)) {
-            return documentUrl;
-        }
-
-        return `${this.resumeAssetBaseUrl}/${documentUrl.replace(/^\/+/, '')}`;
+        return resolveResumePreviewUrl(item.documentUrl);
     }
 
     private getFileExtension(fileName: string | null | undefined): string {

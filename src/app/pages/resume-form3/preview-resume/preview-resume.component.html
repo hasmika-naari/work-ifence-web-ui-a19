@@ -1,5 +1,22 @@
 <!-- Drawer-friendly preview (also works in dialog). No Cancel button; sticky Download action. -->
 <div class="preview-drawer-container">
+  @if (downloadRestricted) {
+    <div class="preview-restriction-banner" role="status" aria-live="polite">
+      <div class="preview-restriction-banner__copy">
+        <span class="preview-restriction-banner__icon pi pi-lock"></span>
+        <div>
+          <div class="preview-restriction-banner__title">Premium template selected</div>
+          <div class="preview-restriction-banner__message">Upgrade is required to download with this design.</div>
+        </div>
+      </div>
+      <p-button
+        label="Upgrade"
+        icon="pi pi-arrow-up-right"
+        severity="warn"
+        (onClick)="onUpgradeHandler()"
+      ></p-button>
+    </div>
+  }
   <div class="preview-canvas">
     <div class="preview-page preview-resume-renderer-page preview-browser-resume-page preview-browserResumePage">
       <div class="preview-top-actions">
@@ -8,7 +25,7 @@
           [rounded]="true" 
           [text]="true" 
           severity="danger"
-          pTooltip="Download as PDF"
+          [pTooltip]="getDownloadTooltip('pdf')"
           tooltipPosition="bottom"
           [disabled]="isDownloading || downloadInProgress"
           (onClick)="onDownloadHandler('pdf')"
@@ -19,7 +36,7 @@
           [text]="true" 
           severity="info"
           [style]="{ 'margin-left': '8px' }"
-          pTooltip="Download as Word"
+          [pTooltip]="getDownloadTooltip('word')"
           tooltipPosition="bottom"
           [disabled]="isDownloading || downloadInProgress"
           (onClick)="onDownloadHandler('word')"
@@ -61,7 +78,7 @@
   <div class="preview-actions">
     <p-button 
       icon="pi pi-file-pdf" 
-      label="Download PDF"
+      [label]="getDownloadLabel('pdf')"
       [rounded]="false"
       [text]="false"
       severity="danger"
@@ -70,7 +87,7 @@
     ></p-button>
     <p-button 
       icon="pi pi-file-word" 
-      label="Download Word"
+      [label]="getDownloadLabel('word')"
       [rounded]="false"
       [text]="false"
       severity="info"

@@ -97,10 +97,10 @@
                                         [style.pointer-events]="isDisabled ? 'none' : 'auto'" 
                                         [style.opacity]="isDisabled ? 0.5 : 1"
                                         [ngClass]="{'action-highlight': isChangeInNewResume(), 'action-pulse': isChangeInNewResume()}"
-                                        matTooltip="You have unsaved changes. Save & download."
+                                        [matTooltip]="saveAndDownloadTooltip()"
                                         matTooltipPosition="right"
                                     >
-                                        <div><span class="checkmark"><p-icon class="pi pi-download "></p-icon></span> SAVE & DOWNLOAD</div>
+                                        <div><span class="checkmark"><p-icon class="pi pi-download "></p-icon></span> {{ saveAndDownloadLabel() }}</div>
                                         @if(false){
                                             <div class="wave-point"></div>
                                         }</li>
@@ -121,12 +121,40 @@
         <!-- <div class="centered-content"> -->
         <div class="resume-editor-content-box center-block" style="margin-top: 16px;">
                 <div class="browser-resume-title-div trigger-area" style="text-align:left;" >
+                    @if (showPremiumDownloadRestriction()) {
+                        <div class="premium-download-banner" role="status" aria-live="polite">
+                            <div class="premium-download-banner__icon">
+                                <p-icon class="pi pi-lock"></p-icon>
+                            </div>
+                            <div class="premium-download-banner__content">
+                                <div class="premium-download-banner__title">{{ premiumRestrictionBannerTitle }}</div>
+                                <div class="premium-download-banner__message">{{ premiumRestrictionBannerMessage }}</div>
+                            </div>
+                            <div class="premium-download-banner__actions">
+                                <p-button
+                                    label="Upgrade"
+                                    icon="pi pi-arrow-up-right"
+                                    severity="warn"
+                                    (onClick)="openPremiumUpgradeFlow()"
+                                ></p-button>
+                                <p-button
+                                    label="Switch to free template"
+                                    [text]="true"
+                                    severity="warn"
+                                    (onClick)="switchToFreeTemplate()"
+                                ></p-button>
+                            </div>
+                        </div>
+                    }
                     <div class="row wrap streach-h-100 m-0 p-0">
                         <div class="metadata-container">
                             <p-panel class="form-title-panel-pp" [header]="(resumeSignalForm().title || 'Resume Title') + ' | ' + (resumeSignalForm().role_category || 'Role')"
                                    [collapsed]="true"  [toggleable]="true">
                                 <ng-template pTemplate="icons">
                                         <span class="pp-inline-message" severity="info">{{resumeSignalForm().access_level || 'Private'}}</span> 
+                                        @if (showPremiumDownloadRestriction()) {
+                                            <span class="pp-inline-message premium-download-pill">Upgrade required for download</span>
+                                        }
                                         <p-button icon="pi pi-pencil"   
                                             [rounded]="true" [text]="true" severity="success"
                                             [disabled]="isDisabled"
@@ -147,6 +175,13 @@
                                     <div class="detail-item" style="text-align: start;">
                                         <strong class="data-value">{{resumeSignalForm().isActive? 'Active' : 'Not Active'}}</strong>
                                         <span class="data-label">Status</span>
+                                    </div>
+                                    <div class="detail-item" style="text-align: start;">
+                                        <strong class="data-value">{{selectedTemplateDisplayName()}}</strong>
+                                        @if (selectedTemplateDownloadState().isPremiumTemplate) {
+                                            <span class="template-access-note">{{ showPremiumDownloadRestriction() ? 'Premium template | Upgrade required for download' : 'Premium template' }}</span>
+                                        }
+                                        <span class="data-label">Template</span>
                                     </div>
                                 </div>
                             </p-panel>
@@ -334,7 +369,10 @@
           <app-preview-resume 
               [templateName]="activeTemplateName() || 'TEMPLATE_1'"
               [downloadInProgress]="isActionInProgress"
+              [downloadRestricted]="showPremiumDownloadRestriction()"
+              [downloadRestrictionTooltip]="premiumDownloadTooltip"
               (download)="handlePreviewDownload($event)"
+              (upgrade)="openPremiumUpgradeFlow()"
               (close)="closePreview()"
           ></app-preview-resume>
       </ng-template>

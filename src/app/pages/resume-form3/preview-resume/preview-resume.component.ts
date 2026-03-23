@@ -53,7 +53,10 @@ export class PreviewResumeComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() templateName: string | undefined;
   @Input() downloadInProgress = false;
+  @Input() downloadRestricted = false;
+  @Input() downloadRestrictionTooltip = 'Upgrade your plan to download this premium template';
   @Output() download = new EventEmitter<'pdf' | 'word'>();
+  @Output() upgrade = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
 
   public dialogRef: MatDialogRef<PreviewResumeComponent> | null = inject(MatDialogRef<PreviewResumeComponent>, { optional: true });
@@ -131,6 +134,23 @@ export class PreviewResumeComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.close.emit();
     }
+  }
+
+  onUpgradeHandler(): void {
+    this.upgrade.emit();
+  }
+
+  getDownloadTooltip(format: 'pdf' | 'word'): string {
+    if (this.downloadRestricted) {
+      return this.downloadRestrictionTooltip;
+    }
+
+    return format === 'pdf' ? 'Download as PDF' : 'Download as Word';
+  }
+
+  getDownloadLabel(format: 'pdf' | 'word'): string {
+    const base = format === 'pdf' ? 'Download PDF' : 'Download Word';
+    return this.downloadRestricted ? `${base} (Upgrade Required)` : base;
   }
 
    

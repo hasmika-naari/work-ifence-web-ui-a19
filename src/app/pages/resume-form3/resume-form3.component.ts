@@ -1,7 +1,7 @@
 import { MessageService } from 'primeng/api';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, Optional, PLATFORM_ID, Signal, SimpleChanges, inject, signal } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, ElementRef, Inject, NgZone, OnChanges, OnDestroy, OnInit, Optional, PLATFORM_ID, Signal, SimpleChanges, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,7 +18,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { TableRowSelectEvent, TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
@@ -73,7 +73,7 @@ import { AddSectionComponent } from './add-section/add-section.component';
 import * as _ from 'lodash'
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { PlanGateService, FREE_TEMPLATE_ID } from 'src/app/resume-portal/services/plan-gate.service';
+import { PlanGateService, FREE_TEMPLATE_ID, FREE_TEMPLATE_IDS } from 'src/app/resume-portal/services/plan-gate.service';
 import { TemplateAccessService } from 'src/app/resume-portal/services/template-access.service';
 import { ResumeLimitService } from 'src/app/resume-portal/services/resume-limit.service';
 import { ResumeTemplateVm } from 'src/app/resume-portal/models/resume-template.model';
@@ -85,10 +85,23 @@ import {
   resolveCanonicalTemplateKey,
   resolveLegacyTemplateName,
 } from 'src/app/resume-portal/utils/resume-template-key.util';
+import { resolveResumePreviewUrl } from 'src/app/utils/resume-preview-url';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
 }
+
+type SelectedTemplateDownloadState = {
+  title: string;
+  isPremiumTemplate: boolean;
+  isRestrictedForDownload: boolean;
+  gateReason?: string;
+};
+
+const PREMIUM_TEMPLATE_SELECTED_TITLE = 'Premium template selected';
+const PREMIUM_TEMPLATE_SELECTED_MESSAGE = 'You can edit and save your resume. Upgrade is required to download with this design.';
+const PREMIUM_TEMPLATE_DOWNLOAD_TOOLTIP = 'Upgrade your plan to download this premium template';
+const PREMIUM_TEMPLATE_DOWNLOAD_REASON = 'Upgrade required to download this premium template.';
 
 @Component({
   selector: 'app-resume-form3',
@@ -337,6 +350,56 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
 
   private readonly templateFacade = inject(ResumeTemplateFacadeService);
   private readonly templateSelection = inject(ResumeTemplateSelectionService);
+  readonly selectedTemplateDownloadState = computed<SelectedTemplateDownloadState>(() => {
+    const details = this.resumeSignalForm()?.template_details;
+    if (!details) {
+      return {
+        title: 'Template',
+        isPremiumTemplate: false,
+        isRestrictedForDownload: false,
+      };
+    }
+
+    const templateId = this.resolveTemplateId(details.id);
+    const catalogTemplate = this.findCatalogTemplate(
+      templateId,
+      details.templateKey ?? details.template_name,
+      details.componentKey,
+    );
+    const accessLevel = (catalogTemplate?.accessLevel ?? details.accessLevel ?? '').toString().toUpperCase();
+    const isPremiumTemplate = catalogTemplate
+      ? this.templateFacade.isPremium(catalogTemplate)
+      : (accessLevel === 'PREMIUM' || !(FREE_TEMPLATE_IDS as readonly number[]).includes(templateId));
+
+    const templateVm: ResumeTemplateVm = {
+      id: String(templateId),
+      title: catalogTemplate?.title ?? details.name ?? this.resolveTemplateName(details),
+      category: isPremiumTemplate ? 'PREMIUM' : 'BASIC',
+      isDefault: !!catalogTemplate?.isDefault,
+    };
+    const gate = catalogTemplate
+      ? this.templateFacade.canUseTemplate(catalogTemplate)
+      : this.templateAccess.canUseTemplate(templateVm);
+
+    return {
+      title: catalogTemplate?.title ?? details.name ?? this.resolveTemplateName(details),
+      isPremiumTemplate,
+      isRestrictedForDownload: isPremiumTemplate && !gate.allowed && gate.reason === 'UPGRADE_REQUIRED',
+      gateReason: gate.reason,
+    };
+  });
+  readonly showPremiumDownloadRestriction = computed(() => this.selectedTemplateDownloadState().isRestrictedForDownload);
+  readonly saveAndDownloadLabel = computed(() =>
+    this.showPremiumDownloadRestriction() ? 'SAVE & DOWNLOAD (UPGRADE REQUIRED)' : 'SAVE & DOWNLOAD'
+  );
+  readonly saveAndDownloadTooltip = computed(() =>
+    this.showPremiumDownloadRestriction()
+      ? PREMIUM_TEMPLATE_DOWNLOAD_TOOLTIP
+      : 'You have unsaved changes. Save & download.'
+  );
+  readonly premiumRestrictionBannerTitle = PREMIUM_TEMPLATE_SELECTED_TITLE;
+  readonly premiumRestrictionBannerMessage = PREMIUM_TEMPLATE_SELECTED_MESSAGE;
+  readonly premiumDownloadTooltip = PREMIUM_TEMPLATE_DOWNLOAD_TOOLTIP;
 
   browser = false;
 
@@ -719,7 +782,7 @@ ngAfterViewInit(): void {
       const gate = catalogTemplate
         ? this.templateFacade.canUseTemplate(catalogTemplate)
         : this.templateAccess.canUseTemplate(vm);
-      if (!gate.allowed) {
+      if (!gate.allowed && gate.reason === 'LOGIN_REQUIRED') {
         this.openSnackBar(this.templateAccess.explainReason(gate.reason), 'View plans');
         this.templateAccess.handleDenied(gate.reason, this.router.url);
         return;
@@ -869,6 +932,18 @@ ngAfterViewInit(): void {
 
   activeTemplateName(): string {
     return this.resolveTemplateName(this.resumeSignalForm()?.template_details);
+  }
+
+  selectedTemplateDisplayName(): string {
+    return this.selectedTemplateDownloadState().title;
+  }
+
+  openPremiumUpgradeFlow(): void {
+    this.planGate.enforceOrUpgrade(false, PREMIUM_TEMPLATE_DOWNLOAD_REASON);
+  }
+
+  switchToFreeTemplate(): void {
+    this.showResumeTemplates();
   }
 
   private ensureTemplateDetailsCompatibility(resume: Resume): void {
@@ -2176,7 +2251,13 @@ hideMenu() {
       request.ownerId = this.userAccount().id;
       request.old_filename = this.selectedResumeListItem().fileName;
       request.current_filename = this.custom_fileName;
-      request.htmlcontent = this.templateService.getFormatedResumeHTMLText(this.resumeSignalForm().template_details.template_name, this.getUnHideElements())
+      try {
+        request.htmlcontent = this.buildFormattedResumeHtml();
+      } catch (error) {
+        this.handleResumeExportGenerationError('Failed to generate resume content for the selected template. Please review your contact details and try again.', error);
+        return;
+      }
+
       request.username = this.userAccount().login;
   
       if(!this.selectedResumeListItem().id){
@@ -2193,11 +2274,7 @@ hideMenu() {
           }
           this.userStore.setIsChangeInNewResume(false);
           this.clearResumeChanged();
-          this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
-            e.imageBytes = bytes;
-            this.userStore.addResumeDataListItem(e);
-            this.userStore.setFilteredResumes([...this.resumeDataItemList()])
-          })
+          void this.syncSavedResumeItem(e);
           this.router.navigateByUrl('/user/resumes');
         }, (error) => {
           this.isActionInProgress = false;
@@ -2225,12 +2302,7 @@ hideMenu() {
             element.style.display = "none";
           }
           this.userStore.setIsChangeInNewResume(false);
-          this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + e.documentUrl).then((bytes)=>{
-            e.imageBytes = bytes;
-            let index = this.resumeDataItemList().findIndex(obj => obj.id === e.id);
-            this.userStore.updateResumeDataListItem(e, index);
-            this.userStore.setFilteredResumes([...this.resumeDataItemList()])
-          })
+          void this.syncSavedResumeItem(e);
           this.router.navigateByUrl('/user/resumes');
         }, (error) => {
           this.isActionInProgress = false;
@@ -2268,8 +2340,31 @@ hideMenu() {
     }
   }
 
+  private handleResumeExportGenerationError(message: string, error?: unknown): void {
+    console.error('Failed to generate resume export content.', error);
+    this.setDownloadActionState(false);
+    this.showToast('error', 'Error', message);
+  }
+
+  private buildFormattedResumeHtml(): string {
+    return this.templateService.getFormatedResumeHTMLText(
+      this.resumeSignalForm().template_details.template_name,
+      this.getUnHideElements()
+    );
+  }
+
   getUnHideElements(){
     const resume = this.resumeSignalForm();
+    const resumeWithLegacyContact = resume as Resume & {
+      contact?: unknown;
+      selectedContact?: unknown;
+    };
+    const contactSection = (resume.sections ?? []).find((section: any) => section?.section === 'CONTACT');
+    const resolvedContact = resumeWithLegacyContact.contact
+      ?? resumeWithLegacyContact.selectedContact
+      ?? contactSection?.data
+      ?? contactSection?.items?.[0]?.data
+      ?? null;
     const cloneItem = (item: any) => ({
       ...item,
       data: item?.data ? { ...item.data } : item?.data
@@ -2287,6 +2382,8 @@ hideMenu() {
 
     return {
       ...resume,
+      contact: resolvedContact,
+      selectedContact: resolvedContact,
       sections: (resume.sections ?? []).map((section: any) => {
         const items = Array.isArray(section?.items) ? section.items.map(cloneItem) : section?.items;
 
@@ -2335,10 +2432,7 @@ hideMenu() {
     request.ownerId = this.userAccount().id;
     request.old_filename = this.selectedResumeListItem().fileName;
     request.current_filename = this.custom_fileName;
-    request.htmlcontent = this.templateService.getFormatedResumeHTMLText(
-      this.resumeSignalForm().template_details.template_name,
-      this.getUnHideElements()
-    );
+    request.htmlcontent = this.buildFormattedResumeHtml();
     request.username = this.userAccount().login;
 
     if (!this.selectedResumeListItem().id) {
@@ -2379,21 +2473,51 @@ hideMenu() {
     URL.revokeObjectURL(dataUrl);
   }
 
-  private syncSavedResumeItem(resumeResponse: ResumeListDataItem): void {
+  private resolveResumePdfUrl(documentUrl: unknown): string | null {
+    return resolveResumePreviewUrl(documentUrl);
+  }
+
+  private async populateResumePreview(resumeResponse: ResumeListDataItem): Promise<ResumeListDataItem> {
+    const hydratedResponse = {
+      ...resumeResponse,
+      imageBytes: Array.isArray(resumeResponse.imageBytes) ? resumeResponse.imageBytes : [],
+    } as ResumeListDataItem;
+    const pdfUrl = this.resolveResumePdfUrl(hydratedResponse.documentUrl);
+
+    try {
+      if (pdfUrl) {
+        hydratedResponse.imageBytes = await this.pdfToImageService.convertPdfToImageBytesThroughUrl(pdfUrl);
+      }
+
+      if ((hydratedResponse.imageBytes?.length ?? 0) === 0 && hydratedResponse.userName && hydratedResponse.fileName) {
+        const pdfBytes = await firstValueFrom(
+          this.resumeService.dowloadResumePDF(hydratedResponse.userName, hydratedResponse.fileName)
+        );
+        hydratedResponse.imageBytes = await this.pdfToImageService.convertPdfArrayBufferToImageBytes(pdfBytes as ArrayBuffer);
+      }
+    } catch {
+      hydratedResponse.imageBytes = Array.isArray(hydratedResponse.imageBytes) ? hydratedResponse.imageBytes : [];
+    }
+
+    return hydratedResponse;
+  }
+
+  private async syncSavedResumeItem(resumeResponse: ResumeListDataItem): Promise<void> {
     this.userStore.updateSelectedResumeListItem(resumeResponse);
     this.userStore.setIsChangeInNewResume(false);
     this.clearResumeChanged();
 
-    this.pdfToImageService.convertPdfToImageBytesThroughUrl('https://workifence.s3.us-east-1.amazonaws.com/' + resumeResponse.documentUrl).then((bytes) => {
-      resumeResponse.imageBytes = bytes;
-      const index = this.resumeDataItemList().findIndex(obj => obj.id === resumeResponse.id);
-      if (index >= 0) {
-        this.userStore.updateResumeDataListItem(resumeResponse, index);
-      } else {
-        this.userStore.addResumeDataListItem(resumeResponse);
-      }
-      this.userStore.setFilteredResumes([...this.resumeDataItemList()]);
-    });
+    const hydratedResponse = await this.populateResumePreview(resumeResponse);
+    const index = this.resumeDataItemList().findIndex(obj => obj.id === hydratedResponse.id);
+
+    if (index >= 0) {
+      this.userStore.updateResumeDataListItem(hydratedResponse, index);
+    } else {
+      this.userStore.addResumeDataListItem(hydratedResponse);
+    }
+
+    this.userStore.updateSelectedResumeListItem(hydratedResponse);
+    this.userStore.setFilteredResumes([...this.resumeDataItemList()]);
   }
 
   private triggerResumeDownload(item: ResumeListDataItem, format: 'pdf' | 'word'): void {
@@ -2444,6 +2568,10 @@ hideMenu() {
   }
 
   handlePreviewDownload(format: 'pdf' | 'word'): void {
+    if (this.interceptRestrictedDownload()) {
+      return;
+    }
+
     if (!this.isResumeValid()) {
       this.showToast('error', 'Error', 'Please complete all required fields in the Meta Data form.');
       return;
@@ -2452,7 +2580,14 @@ hideMenu() {
     this.setDownloadActionState(true);
 
     if (!this.selectedResumeListItem().id || this.isChangeInNewResume() || this.hasLocalResumeChanges) {
-      const request = this.buildResumeRequest();
+      let request: JobResumeRequest;
+      try {
+        request = this.buildResumeRequest();
+      } catch (error) {
+        this.handleResumeExportGenerationError('Failed to generate resume content for download. Please review your contact details and try again.', error);
+        return;
+      }
+
       const saveRequest = this.selectedResumeListItem().id
         ? this.resumeService.updateResume(request)
         : this.resumeService.saveResume(request);
@@ -2476,6 +2611,10 @@ hideMenu() {
 
 
   saveAndDownload(){
+    if (this.interceptRestrictedDownload()) {
+      return;
+    }
+
     if(this.isResumeValid()){
       this.isActionInProgress = true;
       this.isDisabled = true;
@@ -2510,7 +2649,13 @@ hideMenu() {
       request.ownerId = this.userAccount().id;
       request.old_filename = this.selectedResumeListItem().fileName;
       request.current_filename = this.custom_fileName;
-      request.htmlcontent = this.templateService.getFormatedResumeHTMLText(this.resumeSignalForm().template_details.template_name, this.getUnHideElements());
+      try {
+        request.htmlcontent = this.buildFormattedResumeHtml();
+      } catch (error) {
+        this.handleResumeExportGenerationError('Failed to generate resume content for save and download. Please review your contact details and try again.', error);
+        return;
+      }
+
       request.username = this.userAccount().login;
       console.log(request.htmlcontent);
       if(!this.selectedResumeListItem().id){
@@ -2548,21 +2693,7 @@ hideMenu() {
             element.style.display = "none";
           }
           this.userStore.setIsChangeInNewResume(false);
-          if(this.selectedResumeListItem().id){
-            this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + resume_response.documentUrl).then((bytes)=>{
-              resume_response.imageBytes = bytes;
-              let index = this.resumeDataItemList().findIndex(obj => obj.id === resume_response.id);
-              this.userStore.updateResumeDataListItem(resume_response, index);
-              this.userStore.setFilteredResumes([...this.resumeDataItemList()])
-            })
-          }
-          else{
-            this.pdfToImageService.convertPdfToImageBytesThroughUrl("https://workifence.s3.us-east-1.amazonaws.com/" + resume_response.documentUrl).then((bytes)=>{
-              resume_response.imageBytes = bytes;
-              this.userStore.addResumeDataListItem(resume_response);
-              this.userStore.setFilteredResumes([...this.resumeDataItemList()])
-            })
-          }
+          void this.syncSavedResumeItem(resume_response as ResumeListDataItem);
           this.router.navigateByUrl('/user/resumes');
         },
         error: (err) => {
@@ -2621,14 +2752,16 @@ hideMenu() {
         if (index !== -1) {
           const currentItem = this.resumeDataItemList()[index];
           const previewImageUrl = (updatedResume.previewImageUrl || currentItem.previewImageUrl || '').trim();
-          const nextItem = {
-            ...currentItem,
+          const nextItem = this.mergeResumeListItemUpdate(currentItem, {
             ...updatedResume,
             previewImageUrl,
-            imageBytes: previewImageUrl ? [previewImageUrl] : currentItem.imageBytes,
-          };
+            imageBytes: Array.isArray(currentItem.imageBytes) ? [...currentItem.imageBytes] : [],
+          });
 
           this.userStore.updateResumeDataListItem(nextItem, index);
+          if (this.selectedResumeListItem().id === nextItem.id) {
+            this.userStore.updateSelectedResumeListItem(nextItem);
+          }
           this.userStore.setFilteredResumes([...this.resumeDataItemList()]);
         }
       },
@@ -2701,6 +2834,34 @@ hideMenu() {
     const match = dataUrl.match(/^data:image\/([a-zA-Z0-9.+-]+);base64,/i);
     const extension = match?.[1]?.toLowerCase() || 'png';
     return extension === 'jpeg' ? 'jpg' : extension;
+  }
+
+  private interceptRestrictedDownload(): boolean {
+    if (!this.showPremiumDownloadRestriction()) {
+      return false;
+    }
+
+    this.openPremiumUpgradeFlow();
+    return true;
+  }
+
+  private mergeResumeListItemUpdate(currentItem: ResumeListDataItem, incoming: ResumeListDataItem): ResumeListDataItem {
+    const mergedItem = {
+      ...currentItem,
+      ...incoming,
+    } as ResumeListDataItem;
+
+    mergedItem.documentUrl = (incoming.documentUrl || currentItem.documentUrl || '').trim();
+    mergedItem.fileName = (incoming.fileName || currentItem.fileName || '').trim();
+    mergedItem.userName = (incoming.userName || currentItem.userName || '').trim();
+    mergedItem.title = incoming.title || currentItem.title;
+    mergedItem.resumeJson = incoming.resumeJson || currentItem.resumeJson;
+    mergedItem.previewImageUrl = (incoming.previewImageUrl || currentItem.previewImageUrl || '').trim();
+    mergedItem.imageBytes = Array.isArray(incoming.imageBytes) && incoming.imageBytes.length > 0
+      ? [...incoming.imageBytes]
+      : (Array.isArray(currentItem.imageBytes) ? [...currentItem.imageBytes] : []);
+
+    return mergedItem;
   }
 
   confirmDiscardAction(): void {

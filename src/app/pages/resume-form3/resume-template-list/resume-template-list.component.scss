@@ -99,8 +99,8 @@
   background: #ea580c;
 }
 
-.template-card-locked {
-  opacity: 0.65;
+.template-card-upgrade {
+  opacity: 1;
 }
 
 .template-image{
@@ -134,12 +134,12 @@
   border-color: transparent;
 }
 
-.template-badge.locked {
+.template-badge.upgrade {
   left: auto;
   right: 8px;
-  background: rgba(0, 0, 0, 0.78);
-  color: #fff;
-  border-color: transparent;
+  background: #fff7db;
+  color: #9a6700;
+  border-color: #f3d27a;
 }
 
 .template-name{

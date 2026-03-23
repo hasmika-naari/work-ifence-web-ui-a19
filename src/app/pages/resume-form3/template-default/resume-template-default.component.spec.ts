@@ -3,6 +3,20 @@ import { ResumeTemplateDefaultComponent } from './resume-template-default.compon
 import { UserStoreService } from '../../../services/store/user-store.service';
 import { Resume, RenderConfig } from '../../../services/resume.model';
 import { signal } from '@angular/core';
+import { SectionDesc } from '../../../services/store/user-store';
+
+function createSection(overrides: Partial<SectionDesc>): SectionDesc {
+  return {
+    section: 'SUMMARY',
+    description: '',
+    isAdded: true,
+    isPremium: false,
+    tags: '',
+    label: '',
+    data: {},
+    ...overrides,
+  };
+}
 
 describe('ResumeTemplateDefaultComponent', () => {
   let component: ResumeTemplateDefaultComponent;
@@ -34,12 +48,11 @@ describe('ResumeTemplateDefaultComponent', () => {
   it('should show the correct full name in the header', () => {
     const resume = new Resume();
     resume.sections = [
-      {
+      createSection({
         section: 'CONTACT',
         title: 'Contact',
-        isAdded: true,
         data: { fname: 'John', lname: 'Doe' }
-      }
+      })
     ];
     resumeFormSignal.set(resume);
     fixture.detectChanges();
@@ -52,9 +65,9 @@ describe('ResumeTemplateDefaultComponent', () => {
   it('should filter out the CONTACT section from activeSections for the main body', () => {
     const resume = new Resume();
     resume.sections = [
-      { section: 'CONTACT', title: 'Header info', isAdded: true, data: {} },
-      { section: 'WORK_EXPERIENCE', title: 'Work', isAdded: true, data: {}, items: [] },
-      { section: 'EDUCATION', title: 'Edu', isAdded: true, data: {}, items: [] }
+      createSection({ section: 'CONTACT', title: 'Header info', data: {} }),
+      createSection({ section: 'WORK_EXPERIENCE', title: 'Work', data: {}, items: [] }),
+      createSection({ section: 'EDUCATION', title: 'Edu', data: {}, items: [] })
     ];
     resumeFormSignal.set(resume);
     fixture.detectChanges();

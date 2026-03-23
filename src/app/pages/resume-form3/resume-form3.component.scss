@@ -56,6 +56,84 @@
   animation: none; /* remove pulsing animation */
 }
 
+.premium-download-pill {
+  margin-left: 8px;
+  background: #fff7db;
+  color: #9a6700;
+  border: 1px solid #f3d27a;
+}
+
+.template-access-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #9a6700;
+  letter-spacing: 0.01em;
+}
+
+.premium-download-banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 12px 0 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid #f3d27a;
+  background: linear-gradient(180deg, #fffaf0 0%, #fff7db 100%);
+}
+
+.premium-download-banner__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.14);
+  color: #b45309;
+  flex: 0 0 auto;
+}
+
+.premium-download-banner__content {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.premium-download-banner__title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #7c5200;
+}
+
+.premium-download-banner__message {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #8a5a00;
+}
+
+.premium-download-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 960px) {
+  .premium-download-banner {
+    flex-direction: column;
+  }
+
+  .premium-download-banner__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
 .resume-data-data{
   color: var(--mainColor) !important;
   font-family: var(--fontFamily1);

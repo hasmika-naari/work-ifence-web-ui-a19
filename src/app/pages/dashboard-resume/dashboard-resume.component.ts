@@ -58,6 +58,7 @@ import { ResumeTemplateSelectionService } from 'src/app/services/resume-template
 import { FooterWorkifenceComponent } from '../landing/footer-wifence/footer-wifence.component';
 import { ResumePortalApiService } from 'src/app/resume-portal/services/resume-portal-api.service';
 import { buildResumeTemplateIdentity } from 'src/app/resume-portal/utils/resume-template-key.util';
+import { resolveResumePreviewUrl } from 'src/app/utils/resume-preview-url';
 
 interface Option {
   name : string;
@@ -549,12 +550,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   private buildResumePdfUrl(documentUrl: unknown): string | null {
-    const normalizedDocumentUrl = this.getText(documentUrl);
-    if (!normalizedDocumentUrl) {
-      return null;
-    }
-
-    return `https://workifence.s3.us-east-1.amazonaws.com/${normalizedDocumentUrl}`;
+    return resolveResumePreviewUrl(documentUrl);
   }
 
   async getResumeData(){

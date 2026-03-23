@@ -604,40 +604,127 @@ const TEMPLATE_2_EXPORT_NORMALIZERS: Record<string, (resume: Resume, context: an
   },
 };
 
+function getTemplateExportSectionData(resumeForm: any, sectionName: string): any {
+  const section = (resumeForm?.sections ?? []).find((item: any) => item?.section === sectionName);
+  if (!section) {
+    return null;
+  }
+
+  if (section?.data) {
+    return section.data;
+  }
+
+  if (Array.isArray(section?.items) && section.items.length > 0) {
+    return section.items[0]?.data ?? section.items[0] ?? null;
+  }
+
+  return null;
+}
+
+function getTemplate1ContactData(resumeForm: any): any {
+  return resumeForm?.contact
+    ?? resumeForm?.selectedContact
+    ?? getTemplateExportSectionData(resumeForm, 'CONTACT')
+    ?? {};
+}
+
+function hasTemplate1ContactData(resumeForm: any, contact: any): boolean {
+  if (resumeForm?.isSectionPresent?.isContact === false) {
+    return false;
+  }
+
+  return [
+    contact?.fname,
+    contact?.lname,
+    contact?.subTitle,
+    contact?.phone_number,
+    contact?.email_address,
+    contact?.email,
+    contact?.linkedIn_profile,
+    contact?.github_profile,
+  ].some((value) => (value ?? '').toString().trim().length > 0);
+}
+
+function getTemplate1SectionItems(resumeForm: any, section: any, sectionName: string, legacyList: any[] = []): any[] {
+  const sectionItems = Array.isArray(section?.items)
+    ? section.items.map((item: any) => item?.data ?? item).filter(Boolean)
+    : [];
+
+  if (sectionItems.length > 0) {
+    return sectionItems;
+  }
+
+  const legacyItems = Array.isArray(legacyList) ? legacyList.filter(Boolean) : [];
+  if (legacyItems.length > 0) {
+    return legacyItems;
+  }
+
+  const sectionData = getTemplateExportSectionData(resumeForm, sectionName);
+  if (Array.isArray(sectionData)) {
+    return sectionData.filter(Boolean);
+  }
+
+  return [];
+}
+
+function getTemplate1SummaryData(resumeForm: any, section: any): any {
+  return section?.data
+    ?? section?.items?.[0]?.data
+    ?? getTemplateExportSectionData(resumeForm, 'PROFILE_SUMMARY')
+    ?? resumeForm?.profileSummary
+    ?? {};
+}
+
 const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: any, context: any) => string | null> = {
   CONTACT: (section: any, resumeForm: any) => {
-    if (!resumeForm.isSectionPresent.isContact) return null;
-    const contactEmail = resumeForm.contact.email_address || resumeForm.contact.email || '';
+    const contact = getTemplate1ContactData(resumeForm);
+    if (!hasTemplate1ContactData(resumeForm, contact)) return null;
+
+    const contactEmail = (contact?.email_address || contact?.email || '').toString().trim();
+    const fullName = [contact?.fname, contact?.lname]
+      .map((value: unknown) => (value ?? '').toString().trim())
+      .filter(Boolean)
+      .join(' ');
+    const phoneNumber = (contact?.phone_number || '').toString().trim();
+    const linkedInProfile = (contact?.linkedIn_profile || '').toString().trim();
+    const linkedInDisplayName = (contact?.linkedIn_profile_display_name || linkedInProfile).toString().trim();
+    const githubProfile = (contact?.github_profile || '').toString().trim();
+    const githubDisplayName = (contact?.github_profile_display_name || githubProfile).toString().trim();
+    const subTitle = (contact?.subTitle || '').toString().trim();
+
     return `
       <header class="trigger-area resume-contact-us" style="margin-bottom:15px;">
         <div style="display:flex;flex-direction:column;"> 
-            <span class="profile-full-name" style="margin:0;padding:0;" id="resumeName">${resumeForm.contact.fname + ' ' + resumeForm.contact.lname}</span>
-            <span class="profile-sub-title" style="margin:0;padding:0;padding-bottom:5px">${resumeForm.contact.subTitle}</span>
+            <span class="profile-full-name" style="margin:0;padding:0;" id="resumeName">${fullName}</span>
+            <span class="profile-sub-title" style="margin:0;padding:0;padding-bottom:5px">${subTitle}</span>
         </div>
         <div>
               <ul class="profile-contact-details-list">
-                  ${resumeForm.contact.phone_number.length > 0 ?
-        `<li class="contact-li"><span class="material-icons contact-detail-icon">phone</span> ${resumeForm.contact.phone_number}</li>` : ''}
+                  ${phoneNumber.length > 0 ?
+        `<li class="contact-li"><span class="material-icons contact-detail-icon">phone</span> ${phoneNumber}</li>` : ''}
                   ${contactEmail.length > 0 ?
             `<li class="contact-li"><span class="material-icons contact-detail-icon">alternate_email</span> ${contactEmail}</li>` : ''}
-                  ${resumeForm.contact.linkedIn_profile.length > 0 ?
-        `<li class="contact-li"><i class="fab fa-linkedin contact-detail-icon"></i> <a href="${resumeForm.contact.linkedIn_profile}" class="contact-a" style="color:#000000DE"> ${resumeForm.contact.linkedIn_profile_display_name}</a></li>` : ''}
-                  ${resumeForm.contact.github_profile.length > 0 ?
-        `<li class="contact-li"><i class="fab fa-github contact-detail-icon"></i> <a  href="${resumeForm.contact.github_profile}" class="contact-a" style="color:#000000DE"> ${resumeForm.contact.github_profile_display_name}</a></li>` : ''}
+                  ${linkedInProfile.length > 0 ?
+        `<li class="contact-li"><i class="fab fa-linkedin contact-detail-icon"></i> <a href="${linkedInProfile}" class="contact-a" style="color:#000000DE"> ${linkedInDisplayName}</a></li>` : ''}
+                  ${githubProfile.length > 0 ?
+        `<li class="contact-li"><i class="fab fa-github contact-detail-icon"></i> <a  href="${githubProfile}" class="contact-a" style="color:#000000DE"> ${githubDisplayName}</a></li>` : ''}
               </ul>
         </div>
       </header>`;
   },
   PROFILE_SUMMARY: (section: any, resumeForm: any) => {
-    if (!(resumeForm.profileSummary.profile_summary.length > 0 && resumeForm.isSectionPresent.isSummary)) return null;
+    const summaryData = getTemplate1SummaryData(resumeForm, section);
+    const summaryText = (summaryData?.profile_summary || '').toString().trim();
+    if (!summaryText) return null;
+
     return `
       <section class="trigger-area resume-summary">
         <span class="summary-section-title">Summary</span>
-        <div class="project-content">${resumeForm.profileSummary.profile_summary}</div>
+        <div class="project-content">${summaryText}</div>
       </section>`;
   },
   PROFILE_SUMMARY_BULLETED: (section: any, resumeForm: any) => {
-    const bulletedData = section.data;
+    const bulletedData = section?.data ?? section?.items?.[0]?.data;
     if (!bulletedData) return null;
     let bulletContent = '';
     if (bulletedData.profile_summary) {
@@ -658,40 +745,47 @@ const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: a
       </section>` : null;
   },
   EDUCATION: (section: any, resumeForm: any, context: any) => {
-    if (!(resumeForm.education.length > 0 && resumeForm.isSectionPresent.isEducation)) return null;
+    const educationItems = getTemplate1SectionItems(resumeForm, section, 'EDUCATION', resumeForm?.education);
+    if (educationItems.length === 0) return null;
+
     return `
       <section class="trigger-area resume-education">
           <span class="summary-section-title">Education</span>  
-          ${context.formatHTMLTemplate1EducationV1(resumeForm.education)}        
+          ${context.formatHTMLTemplate1EducationV1(educationItems)}        
       </section>`;
   },
   COURSEWORK: (section: any, resumeForm: any, context: any) => {
-    if (!(resumeForm.courseWork.length > 0 && resumeForm.isSectionPresent.isCourseWork)) return null;
+    const courseWorkItems = getTemplate1SectionItems(resumeForm, section, 'RELEVANT_COURSEWORK', resumeForm?.courseWork);
+    if (courseWorkItems.length === 0) return null;
+
     return `
       <section class="trigger-area course-work">
         <span class="summary-section-title">Relevant Coursework</span>
         <div class="course-work-section-content project-content" style="margin-top:7px;">
             <ul class="course-work-list">
-              ${context.formatHTMLTemplate1CourseWorkV1(resumeForm.courseWork)}
+              ${context.formatHTMLTemplate1CourseWorkV1(courseWorkItems)}
             </ul>
         </div>
       </section>`;
   },
   SKILLS_BULLET_POINTS: (section: any, resumeForm: any, context: any) => {
-    if (!(resumeForm.isSectionPresent.isSkill && resumeForm.skill.length > 0)) return null;
+    const skillItems = getTemplate1SectionItems(resumeForm, section, 'SKILLS_BULLET_POINTS', resumeForm?.skill);
+    if (skillItems.length === 0) return null;
+
     return `
       <section class="trigger-area course-work">
         <span class="summary-section-title">Skills</span>
         <div class="course-work-section-content project-content" style="margin-top:7px;">
             <ul class="course-work-list">
-              ${context.formatHTMLTemplate1SkillWorkV1(resumeForm.skill)}
+              ${context.formatHTMLTemplate1SkillWorkV1(skillItems)}
             </ul>
         </div>
       </section>`;
   },
   SKILLS_BY_CATEGORY: (section: any, resumeForm: any, context: any) => {
-    if (!(resumeForm.skill_v2.length > 0 && resumeForm.isSectionPresent?.isSkillV2)) return null;
-    const skillV2List: SkillV2[] = (resumeForm as any).skill_v2 ?? (resumeForm.sections?.find((s: any) => s.section === 'SKILLS_BY_CATEGORY')?.items?.map((i: any) => i.data) ?? []);
+    const skillV2List = getTemplate1SectionItems(resumeForm, section, 'SKILLS_BY_CATEGORY', (resumeForm as any)?.skill_v2) as SkillV2[];
+    if (skillV2List.length === 0) return null;
+
     const firstHalfSkills = [...skillV2List.slice(0, Math.ceil(skillV2List.length / 2))];
     const secondHalfSkills = [...skillV2List.slice(Math.ceil(skillV2List.length / 2))];
     return `
@@ -708,16 +802,19 @@ const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: a
       </section>`;
   },
   WORK_EXPERIENCE: (section: any, resumeForm: any, context: any) => {
-    if (!(resumeForm.experience.length > 0 && resumeForm.isSectionPresent.isExperience)) return null;
+    const experienceItems = getTemplate1SectionItems(resumeForm, section, 'WORK_EXPERIENCE', resumeForm?.experience);
+    if (experienceItems.length === 0) return null;
+
     return `
       <section class="course-work section-details trigger-area">
           <span class="summary-section-title">Experience</span>  
-          ${context.formatHTMLTemplate1ExperienceV1(resumeForm.experience)}
+          ${context.formatHTMLTemplate1ExperienceV1(experienceItems)}
       </section>`;
   },
   PROJECT: (section: any, resumeForm: any, context: any) => {
     const projectItems = section?.items?.map((item: any) => item?.data ?? item).filter(Boolean) ?? [];
-    if (!(projectItems.length > 0 && resumeForm.isSectionPresent.isProject)) return null;
+    if (projectItems.length === 0) return null;
+
     return `
       <section class="course-work section-details trigger-area">
           <span class="summary-section-title">Projects</span>
@@ -726,7 +823,8 @@ const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: a
   },
   CERTIFICATIONS: (section: any, resumeForm: any, context: any) => {
     const certItems = section?.items?.map((i: any) => i.data) ?? [];
-    if (!(certItems.length > 0 && resumeForm.isSectionPresent.isCertification)) return null;
+    if (certItems.length === 0) return null;
+
     return `
       <section class="course-work section-details trigger-area">
           <span class="summary-section-title">Certifications</span>  
@@ -745,7 +843,7 @@ const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: a
       })
       .filter((item: any) => item.title || item.organization || item.year);
 
-    if (!(achievementItems.length > 0 && resumeForm.isSectionPresent?.isAchievement)) return null;
+    if (achievementItems.length === 0) return null;
 
     return `
       <section class="course-work section-details trigger-area">
@@ -766,7 +864,8 @@ const TEMPLATE_1_EXPORT_NORMALIZERS: Record<string, (section: any, resumeForm: a
   },
   ACCOMPLISHMENTS: (section: any, resumeForm: any) => {
     const achvItems = section?.items?.map((i: any) => i.data.description) ?? [];
-    if (!(achvItems.length > 0 && resumeForm.isSectionPresent?.isAchievement)) return null;
+    if (achvItems.length === 0) return null;
+
     return `
       <section class="trigger-area course-work trigger-area">
         <span class="summary-section-title">Achievements</span>
