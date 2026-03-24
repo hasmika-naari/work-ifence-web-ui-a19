@@ -130,15 +130,21 @@
             <div style="display: flex; gap: 18px; align-items: center;">
               <a class="p-menuitem-link resume-menu-option"
                 href="#"
-                (click)="$event.preventDefault(); $event.stopPropagation(); openDownloadPreview(resume)">
+                (click)="onResumeMenuDownloadPdf($event, resume)">
                 <span class="p-menuitem-icon pi pi-download"></span>
                 <span class="p-menuitem-text">PDF</span>
               </a>
               <a class="p-menuitem-link resume-menu-option"
                 href="#"
-                (click)="$event.preventDefault(); $event.stopPropagation(); openDownloadPreview(resume)">
+                (click)="onResumeMenuDownloadDoc($event, resume)">
                 <span class="p-menuitem-icon pi pi-download"></span>
                 <span class="p-menuitem-text">DOC</span>
+              </a>
+              <a class="p-menuitem-link resume-menu-option"
+                href="#"
+                (click)="onResumeMenuPreview($event, resume)">
+                <span class="p-menuitem-icon pi pi-eye"></span>
+                <span class="p-menuitem-text">Preview</span>
               </a>
             </div>
           }

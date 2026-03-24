@@ -407,6 +407,24 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
         this.previewDrawerOpen = true;
     }
 
+    onResumeMenuDownloadPdf(event: Event, item: ResumeListDataItem): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.downloadResumePdf(item);
+    }
+
+    onResumeMenuDownloadDoc(event: Event, item: ResumeListDataItem): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.downloadResumeDoc(item);
+    }
+
+    onResumeMenuPreview(event: Event, item: ResumeListDataItem): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.openDownloadPreview(item);
+    }
+
     closePreview(): void {
         this.previewDrawerOpen = false;
         this.previewResumeItem = null;

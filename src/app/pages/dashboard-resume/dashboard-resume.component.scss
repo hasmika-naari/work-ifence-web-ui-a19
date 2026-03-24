@@ -218,6 +218,19 @@ h1 {
     min-width: 240px;
   }
 
+  .resume-download-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: -2px;
+  }
+
+  .resume-download-progress__label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+  }
+
   .title{
     margin: 0;
     font-size: 28px;

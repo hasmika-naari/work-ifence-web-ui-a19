@@ -80,6 +80,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   private stickyStateListener?: () => void;
 
   private _isActionInProgress = true;
+  isResumeDownloadInProgress = false;
 
   get isActionInProgress(): boolean {
     return this._isActionInProgress;
@@ -663,7 +664,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   receiveFromChild(isActionInProgress: boolean) {
-    this.isActionInProgress = isActionInProgress; 
+    this.isResumeDownloadInProgress = isActionInProgress;
   }
 
   setFilterValues(){

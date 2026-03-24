@@ -63,6 +63,13 @@
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     }
 
+    @if (!isActionInProgress && isResumeDownloadInProgress) {
+      <div class="resume-download-progress" aria-live="polite">
+        <div class="resume-download-progress__label">Downloading resume...</div>
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </div>
+    }
+
     <div class="resume-body">
       <resume-list2
         [isActionInProgress]="isActionInProgress"
