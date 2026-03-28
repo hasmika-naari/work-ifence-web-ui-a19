@@ -9,6 +9,18 @@ import { isPlatformBrowser } from '@angular/common';
 import { JobApplicationDetails, JobResume, JobResumeRequest } from './resume.model';
 import { JobApplication, JobApplicationRequest, ResumeListDataItem } from './work-ifence-data.model';
 
+export interface ResumeCreateEligibilityResponse {
+  allowed?: boolean;
+  eligible?: boolean;
+  blocked?: boolean;
+  code?: string;
+  reason?: string;
+  title?: string;
+  message?: string;
+  scope?: string;
+  [key: string]: unknown;
+}
+
 @Injectable({providedIn: 'any'})
 export class ResumeService {
 
@@ -343,6 +355,17 @@ export class ResumeService {
     let queryUrl = baseUrl + this.appConstants.GET_RESUMES_BY_USER_ID + '?ownerId.equals=' + ownerId;;
 
     return this.http.get<any>(queryUrl).pipe(map(items => this.normalizeResumeList(items)), catchError(this.handleError));
+  }
+
+  getCreateEligibility(): Observable<ResumeCreateEligibilityResponse> {
+    let baseUrl = this.appConstants.BASE_API_URL;
+    if (isPlatformBrowser(this.platformId)) {
+      baseUrl = '';
+    }
+
+    const queryUrl = baseUrl + this.appConstants.GET_CREATE_RESUME_ELIGIBILITY;
+    return this.httpClient.get<ResumeCreateEligibilityResponse>(queryUrl)
+      .pipe(catchError(this.handleError));
   }
 
   saveApplication(data : JobApplicationRequest){

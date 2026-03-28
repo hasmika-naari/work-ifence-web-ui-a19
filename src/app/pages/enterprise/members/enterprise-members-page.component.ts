@@ -13,6 +13,7 @@ import { catchError, distinctUntilChanged, filter, map, shareReplay, startWith, 
 import { expand, reduce } from 'rxjs/operators';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
+import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
 import { EnterpriseApiService, EnterpriseRelationDto, PageDto } from 'src/app/services/enterprise-api.service';
 import { isEntitlementError, isSeatLimitError, parseBackendError, toFriendlyErrorMessage } from 'src/app/utils/api-error';
 import { EnterpriseInviteDialogComponent } from './enterprise-invite-dialog.component';
@@ -41,6 +42,7 @@ export class EnterpriseMembersPageComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
   private readonly dashboardContext = inject(DashboardContextService);
+  private readonly upgradeDrawer = inject(UpgradeDrawerService);
 
   readonly accessMe = this.accessFacade.accessMeSignal;
   readonly enterpriseId = computed(() => this.accessMe()?.enterpriseId ?? '');
@@ -109,7 +111,11 @@ export class EnterpriseMembersPageComponent {
           const parsed = parseBackendError(err);
           const msg = toFriendlyErrorMessage(parsed);
           if (isEntitlementError(parsed) || isSeatLimitError(parsed)) {
-            void this.router.navigate(['/pricing'], { queryParams: { scope: 'enterprise' } });
+            this.upgradeDrawer.openForContext('ENTERPRISE', {
+              title: 'Enterprise upgrade required',
+              message: msg,
+              returnUrl: this.router.url,
+            });
           }
           return of({
             loading: false,
@@ -143,7 +149,11 @@ export class EnterpriseMembersPageComponent {
 
     if (typeof limit === 'number' && usedSeats >= limit) {
       this.snackBar.open('Seat limit reached, upgrade to invite more members.', 'OK', { duration: 3500 });
-      void this.router.navigate(['/pricing'], { queryParams: { scope: 'enterprise' } });
+      this.upgradeDrawer.openForContext('ENTERPRISE', {
+        title: 'Upgrade for more seats',
+        message: 'Your team has reached its seat limit. Upgrade your enterprise plan to invite more members.',
+        returnUrl: this.router.url,
+      });
       return;
     }
 
@@ -171,7 +181,11 @@ export class EnterpriseMembersPageComponent {
           const msg = toFriendlyErrorMessage(parsed);
           this.snackBar.open(msg, 'OK', { duration: 4000 });
           if (isEntitlementError(parsed) || isSeatLimitError(parsed)) {
-            void this.router.navigate(['/pricing'], { queryParams: { scope: 'enterprise' } });
+            this.upgradeDrawer.openForContext('ENTERPRISE', {
+              title: isSeatLimitError(parsed) ? 'Upgrade for more seats' : 'Upgrade your enterprise plan',
+              message: isSeatLimitError(parsed) ? 'This action needs more enterprise seats. Upgrade your plan to continue inviting members.' : `${msg} Review your enterprise plan to continue managing members.`,
+              returnUrl: this.router.url,
+            });
           }
         },
       });
@@ -211,7 +225,11 @@ export class EnterpriseMembersPageComponent {
         const parsed = parseBackendError(err);
         this.snackBar.open(toFriendlyErrorMessage(parsed), 'OK', { duration: 4000 });
         if (isEntitlementError(parsed) || isSeatLimitError(parsed)) {
-          void this.router.navigate(['/pricing'], { queryParams: { scope: 'enterprise' } });
+          this.upgradeDrawer.openForContext('ENTERPRISE', {
+            title: isSeatLimitError(parsed) ? 'Upgrade for more seats' : 'Upgrade your enterprise plan',
+            message: isSeatLimitError(parsed) ? 'This action needs more enterprise seats. Upgrade your plan to continue managing members.' : `${toFriendlyErrorMessage(parsed)} Review your enterprise plan to continue managing members.`,
+            returnUrl: this.router.url,
+          });
         }
       },
     });

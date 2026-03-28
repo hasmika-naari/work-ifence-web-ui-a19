@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
-import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
 import { LockedCalloutComponent } from 'src/app/shared/components/locked-callout/locked-callout.component';
+import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
 
 @Component({
     selector: 'app-notifications-page',
@@ -13,13 +14,18 @@ import { LockedCalloutComponent } from 'src/app/shared/components/locked-callout
     styleUrl: './notifications-page.component.scss'
 })
 export class NotificationsPageComponent {
+    private readonly router = inject(Router);
     private readonly accessFacade = inject(AccessFacadeService);
-    private readonly upgradeRouter = inject(UpgradeRouterService);
+    private readonly upgradeDrawer = inject(UpgradeDrawerService);
 
     readonly canUseAlerts = computed(() => this.accessFacade.can('ALERTS'));
     readonly alertsLockMessage = computed(() => this.accessFacade.denyMessage('ALERTS'));
 
     goToPricing(): void {
-        this.upgradeRouter.goToPricingForContext('PERSONAL');
+        this.upgradeDrawer.openForContext('PERSONAL', {
+            title: 'Upgrade for job alerts',
+            message: this.alertsLockMessage() || 'Upgrade your plan to receive saved-search and job alert notifications.',
+            returnUrl: this.router.url,
+        });
     }
 }

@@ -50,9 +50,27 @@
       </div>
 
       <div class="resume-controls__meta">
-        <button class="add-job-btn" (click)="onAddResume()" [disabled]="isActionInProgress">
-          <p-icon class="pi pi-plus"></p-icon>
-          <span>Add Resume</span>
+        @if (hasResumeLimit()) {
+          <div class="resume-plan-summary" [class.resume-plan-summary--at-limit]="isResumeLimitReached()">
+            <span class="resume-plan-summary__eyebrow">Resume storage</span>
+            <strong class="resume-plan-summary__title">{{ resumeUsageLabel() }}</strong>
+            <span class="resume-plan-summary__detail">{{ resumeUsageDetail() }}</span>
+          </div>
+
+          <button class="resume-plan-btn" type="button" (click)="openSubscriptionPlans()">
+            {{ isResumeLimitReached() ? 'Upgrade plan' : 'Manage plan' }}
+          </button>
+        }
+
+        <button class="add-job-btn" (click)="onAddResume()" [disabled]="isActionInProgress || isCreateEligibilityLoading">
+          <i
+            class="pi"
+            [class.pi-plus]="!isCreateEligibilityLoading"
+            [class.pi-spin]="isCreateEligibilityLoading"
+            [class.pi-spinner]="isCreateEligibilityLoading"
+            aria-hidden="true"
+          ></i>
+          <span>{{ isCreateEligibilityLoading ? 'Checking eligibility...' : 'Add Resume' }}</span>
         </button>
 
         <app-import-existing-resume></app-import-existing-resume>

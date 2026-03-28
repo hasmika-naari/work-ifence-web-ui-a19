@@ -3,9 +3,9 @@ import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
 import { PortalTemplate, ResumePortalStore } from '../store/resume-portal.store';
 import { PlanGateService } from '../services/plan-gate.service';
+import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
 
 export type TemplatePreviewDialogData = {
   template: PortalTemplate;
@@ -200,17 +200,13 @@ export type TemplatePreviewDialogData = {
   ],
 })
 export class TemplatePreviewDialogComponent {
-  private router: Router;
-
   constructor(
     public dialogRef: MatDialogRef<TemplatePreviewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TemplatePreviewDialogData,
     private store: ResumePortalStore,
     private planGate: PlanGateService,
-    router: Router
-  ) {
-    this.router = router;
-  }
+    private upgradeDrawer: UpgradeDrawerService,
+  ) {}
 
   get requiresUpgrade(): boolean {
     return Boolean(this.data.template.isPremium) && this.planGate.isFree();
@@ -222,7 +218,11 @@ export class TemplatePreviewDialogComponent {
     // If this is a premium template and the user is on a free plan,
     // prompt upgrade immediately (do not navigate to the builder).
     if (this.requiresUpgrade) {
-      void this.router.navigateByUrl('/pricing');
+      this.upgradeDrawer.openForContext('PERSONAL', {
+        title: 'Premium template selected',
+        message: 'Upgrade your plan to use this premium template.',
+        returnUrl: '/resume-marketplace',
+      });
       return;
     }
 

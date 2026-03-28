@@ -148,6 +148,16 @@
               </a>
             </div>
           }
+          @else if (item.label === 'Duplicate') {
+            <a class="p-menuitem-link resume-menu-option resume-menu-option--with-hint"
+              (click)="menuActionHandler($event, resume, item)">
+              <span class="p-menuitem-icon pi" [ngClass]="item.icon"></span>
+              <span class="p-menuitem-text">{{ item.label }}</span>
+              @if (isResumeLimitReached()) {
+                <span class="resume-menu-option__hint">Upgrade required</span>
+              }
+            </a>
+          }
           @else {
             <a class="p-menuitem-link resume-menu-option"
               (click)="menuActionHandler($event, resume, item)">

@@ -1,10 +1,10 @@
 import { Injectable, Injector, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 import { AccessFacadeService } from './access-facade.service';
 import { SubscriptionApiService } from '../services/subscription-api.service';
 import { DashboardContextService } from '../services/dashboard-context.service';
-import type { SubscriptionPlan, SubscriptionScope } from '../models/subscription.model';
+import type { CreateSubscriptionUpgradeRequest, SubscriptionPlan, SubscriptionScope } from '../models/subscription.model';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionFacadeService {
@@ -14,6 +14,16 @@ export class SubscriptionFacadeService {
   private readonly dashboardContext = inject(DashboardContextService);
 
   private readonly plansSignals = new Map<SubscriptionScope, ReturnType<typeof toSignal<SubscriptionPlan[]>>>();
+  private readonly plansRefresh = new Map<SubscriptionScope, BehaviorSubject<void>>();
+  private readonly planLoadErrors = signal<Record<SubscriptionScope, string | null>>({
+    INDIVIDUAL: null,
+    ENTERPRISE: null,
+  });
+
+  constructor() {
+    this.initializePlansSignal('INDIVIDUAL');
+    this.initializePlansSignal('ENTERPRISE');
+  }
 
   readonly currentScopeSignal = computed<SubscriptionScope>(() => {
     const ctx = this.dashboardContext.context();
@@ -33,7 +43,31 @@ export class SubscriptionFacadeService {
     const cached = this.plansSignals.get(scope);
     if (cached) return cached;
 
-    const sig = toSignal(this.api.getActivePlans(scope), {
+    return this.initializePlansSignal(scope);
+  }
+
+  planLoadError(scope: SubscriptionScope): string | null {
+    return this.planLoadErrors()[scope] ?? null;
+  }
+
+  reloadPlans(scope: SubscriptionScope): void {
+    this.plansRefresh.get(scope)?.next();
+  }
+
+  private initializePlansSignal(scope: SubscriptionScope) {
+    const refresh$ = new BehaviorSubject<void>(void 0);
+    this.plansRefresh.set(scope, refresh$);
+
+    const sig = toSignal(refresh$.pipe(
+      switchMap(() => this.api.getActivePlans(scope).pipe(
+        tap(() => this.setPlanLoadError(scope, null)),
+        catchError((error) => {
+          console.error(`Failed to load ${scope.toLowerCase()} subscription plans.`, error);
+          this.setPlanLoadError(scope, this.toPlanLoadErrorMessage(error));
+          return of([] as SubscriptionPlan[]);
+        })
+      ))
+    ), {
       injector: this.injector,
       initialValue: [] as SubscriptionPlan[],
     });
@@ -72,5 +106,29 @@ export class SubscriptionFacadeService {
           return res;
         })
       );
+  }
+
+  submitUpgradeRequest(req: CreateSubscriptionUpgradeRequest): Observable<unknown> {
+    return this.api.submitUpgradeRequest(req);
+  }
+
+  private setPlanLoadError(scope: SubscriptionScope, message: string | null): void {
+    this.planLoadErrors.update((current) => ({
+      ...current,
+      [scope]: message,
+    }));
+  }
+
+  private toPlanLoadErrorMessage(error: unknown): string {
+    const status = (error as { status?: unknown } | null | undefined)?.status;
+    if (status === 504) {
+      return 'Plan options are taking too long to load. You can retry and still review your current plan details.';
+    }
+
+    if (status === 0) {
+      return 'Plan options are temporarily unavailable. Check the backend connection and try again.';
+    }
+
+    return 'Plan options could not be loaded right now. Please try again.';
   }
 }

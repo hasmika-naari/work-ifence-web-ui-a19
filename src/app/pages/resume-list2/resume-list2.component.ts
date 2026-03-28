@@ -34,6 +34,7 @@ import { WorkIfenceDataService } from 'src/app/services/work-ifence-data.service
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 import { DrawerModule } from 'primeng/drawer';
 import { PreviewResumeComponent } from '../resume-form3/preview-resume/preview-resume.component';
+import { ResumeLimitService } from 'src/app/resume-portal/services/resume-limit.service';
 import { resolveResumePreviewUrl } from 'src/app/utils/resume-preview-url';
 
 @Component({
@@ -72,6 +73,7 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
  
     private userStore: UserStoreService = inject(UserStoreService);
     private appUtilService: AppUtilService = inject(AppUtilService);
+    private resumeLimit: ResumeLimitService = inject(ResumeLimitService);
     
     @Input() isActionInProgress: boolean = true; 
     @Output() childEvent = new EventEmitter<boolean>();
@@ -85,6 +87,7 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
     previewDrawerOpen = false;
     previewTemplateName = 'TEMPLATE_1';
     previewResumeItem: ResumeListDataItem | null = null;
+    readonly isResumeLimitReached = this.resumeLimit.isAtLimit;
 
     sortOptions: SelectItem[] = [];
 
@@ -513,6 +516,12 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
                                 this.router.navigateByUrl('/user/resumes/resume');
                         }
         }else if(option.label === 'Duplicate'){
+            const limit = this.resumeLimit.canCreateResume();
+            if (!limit.allowed) {
+                this.resumeLimit.handleDenied(limit, { action: 'duplicate', returnUrl: this.router.url });
+                return;
+            }
+
             this.childEvent.emit(true);
             let request = new JobResumeRequest();
             request.title = 'Copy Of ' + item.title;
@@ -540,7 +549,8 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
             this.subs.push(this.resumeService.saveResume(request).subscribe((e : ResumeListDataItem) => {
                 e.imageBytes = item.imageBytes;
                 this.userStore.addResumeDataListItem(e);
-                this.userStore.setFilteredResumes([...this.resumeDataItemList()])
+                                this.userStore.setFilteredResumes([...this.resumeDataItemList()])
+                                this.resumeLimit.syncResumeCount(this.resumeDataItemList().length);
                 this.childEvent.emit(false);
               }));
 
@@ -563,6 +573,7 @@ export class ResumeList2Component implements OnInit, OnChanges, OnDestroy {
                 let index = this.resumeDataItemList().findIndex(obj => obj.id === item.id)
                 this.userStore.removeResumeDataListItem(index);
                 this.userStore.setFilteredResumes([...this.resumeDataItemList()]);
+                                this.resumeLimit.syncResumeCount(this.resumeDataItemList().length);
                 this.childEvent.emit(false);
             }));
           }

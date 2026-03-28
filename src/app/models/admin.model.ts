@@ -27,3 +27,20 @@ export interface AdminSubscriptionRow {
   provider?: string;
   createdDate?: string;
 }
+
+export interface AdminSubscriptionUpgradeRequestRow {
+  id?: string | number;
+  requestCode?: string;
+  userName?: string;
+  userLogin?: string;
+  userEmail?: string;
+  userDisplay?: string;
+  currentPlan?: string;
+  currentPlanCode?: string;
+  requestedPlan?: string;
+  requestedPlanCode?: string;
+  status?: string;
+  requestedDate?: string;
+  reviewedDate?: string;
+  adminRemarks?: string;
+}

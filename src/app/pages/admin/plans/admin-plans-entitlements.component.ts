@@ -174,6 +174,10 @@ export class AdminPlansEntitlementsComponent {
     marketingSubtitle: new FormControl<string>('', { nonNullable: true }),
     sortOrder: new FormControl<number | null>(null),
 
+    badgeText: new FormControl<string>('', { nonNullable: true }),
+    recommended: new FormControl<boolean>(false, { nonNullable: true }),
+    featuresSummary: new FormControl<string>('', { nonNullable: true }),
+
     featuresJson: new FormControl<string>('', { nonNullable: true }),
   });
 
@@ -270,6 +274,10 @@ export class AdminPlansEntitlementsComponent {
       marketingSubtitle: '',
       sortOrder: null,
 
+      badgeText: '',
+      recommended: false,
+      featuresSummary: '',
+
       featuresJson: '',
     });
     this.featuresJsonError.set('');
@@ -306,8 +314,14 @@ export class AdminPlansEntitlementsComponent {
       marketingSubtitle: plan.marketingSubtitle ?? '',
       sortOrder: plan.sortOrder ?? null,
 
+      badgeText: '',
+      recommended: false,
+      featuresSummary: '',
+
       featuresJson: plan.featuresJson ?? '',
     });
+
+    this.applyFeaturesJsonControls(plan.featuresJson ?? '');
 
     this.featuresJsonError.set('');
     this.entPageIndex.set(0);
@@ -341,6 +355,7 @@ export class AdminPlansEntitlementsComponent {
     try {
       const obj = JSON.parse(raw);
       this.planForm.controls.featuresJson.setValue(JSON.stringify(obj, null, 2));
+      this.applyFeatureMetaFromObject(obj);
       this.featuresJsonError.set('');
     } catch (e: any) {
       this.featuresJsonError.set(e?.message ?? 'Invalid JSON');
@@ -551,6 +566,7 @@ export class AdminPlansEntitlementsComponent {
 
   private toPlanDto(): SubscriptionPlanDto {
     const v = this.planForm.getRawValue();
+    const featuresJson = this.buildFeaturesJsonValue();
 
     return {
       id: v.id ?? undefined,
@@ -575,8 +591,117 @@ export class AdminPlansEntitlementsComponent {
       marketingSubtitle: v.marketingSubtitle?.trim() || undefined,
       sortOrder: v.sortOrder ?? undefined,
 
-      featuresJson: v.featuresJson?.trim() || undefined,
+      featuresJson,
     };
+  }
+
+  private applyFeaturesJsonControls(raw: string): void {
+    const trimmed = (raw ?? '').trim();
+    if (!trimmed) {
+      this.planForm.patchValue({
+        badgeText: '',
+        recommended: false,
+        featuresSummary: '',
+      }, { emitEvent: false });
+      return;
+    }
+
+    try {
+      this.applyFeatureMetaFromObject(JSON.parse(trimmed));
+    } catch {
+      this.planForm.patchValue({
+        badgeText: '',
+        recommended: false,
+        featuresSummary: '',
+      }, { emitEvent: false });
+    }
+  }
+
+  private applyFeatureMetaFromObject(value: unknown): void {
+    const record = this.toRecord(value);
+    const badgeText = record ? this.firstText(record, ['badgeText', 'badge', 'badgeLabel']) : '';
+    const recommended = record ? (this.firstBoolean(record, ['recommended', 'isRecommended', 'highlighted']) ?? false) : false;
+    const featuresSummary = record ? this.extractFeaturesSummary(record) : '';
+
+    this.planForm.patchValue({
+      badgeText,
+      recommended,
+      featuresSummary,
+    }, { emitEvent: false });
+  }
+
+  private buildFeaturesJsonValue(): string | undefined {
+    const v = this.planForm.getRawValue();
+    const raw = (v.featuresJson ?? '').trim();
+    const base = raw ? this.toRecord(JSON.parse(raw)) ?? {} : {};
+
+    const badgeText = v.badgeText?.trim();
+    const featuresSummary = v.featuresSummary?.trim();
+    const recommended = !!v.recommended;
+
+    if (badgeText) {
+      base['badgeText'] = badgeText;
+    } else {
+      delete base['badgeText'];
+      delete base['badge'];
+      delete base['badgeLabel'];
+    }
+
+    if (recommended) {
+      base['recommended'] = true;
+    } else {
+      delete base['recommended'];
+      delete base['isRecommended'];
+      delete base['highlighted'];
+    }
+
+    if (featuresSummary) {
+      base['featuresSummary'] = featuresSummary;
+    } else {
+      delete base['featuresSummary'];
+      delete base['summary'];
+      delete base['description'];
+    }
+
+    return Object.keys(base).length > 0 ? JSON.stringify(base) : undefined;
+  }
+
+  private extractFeaturesSummary(source: Record<string, unknown>): string {
+    return this.firstText(source, ['featuresSummary', 'summary', 'description']);
+  }
+
+  private toRecord(value: unknown): Record<string, unknown> | null {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return null;
+    }
+
+    return value as Record<string, unknown>;
+  }
+
+  private firstText(source: Record<string, unknown>, keys: string[]): string {
+    for (const key of keys) {
+      const value = (source[key] ?? '').toString().trim();
+      if (value) {
+        return value;
+      }
+    }
+
+    return '';
+  }
+
+  private firstBoolean(source: Record<string, unknown>, keys: string[]): boolean | null {
+    for (const key of keys) {
+      const raw = source[key];
+      if (typeof raw === 'boolean') {
+        return raw;
+      }
+
+      const text = (raw ?? '').toString().trim().toLowerCase();
+      if (text === 'true') return true;
+      if (text === 'false') return false;
+    }
+
+    return null;
   }
 
   private showError(err: any): void {

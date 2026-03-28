@@ -166,8 +166,25 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Sort order</mat-label>
+            <mat-label>Display order</mat-label>
             <input matInput type="number" formControlName="sortOrder" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Badge text</mat-label>
+            <input matInput formControlName="badgeText" placeholder="Recommended" />
+          </mat-form-field>
+
+          <mat-slide-toggle formControlName="recommended">Highlight as recommended</mat-slide-toggle>
+
+          <mat-form-field appearance="outline" class="plans-admin__grid-span-2">
+            <mat-label>Features summary</mat-label>
+            <textarea
+              matInput
+              rows="3"
+              formControlName="featuresSummary"
+              placeholder="Short summary shown with this plan"
+            ></textarea>
           </mat-form-field>
         </div>
 

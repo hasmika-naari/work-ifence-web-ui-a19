@@ -54,6 +54,7 @@ import { RoundsComponent } from './rounds/rounds.component';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
 import { LockedCalloutComponent } from 'src/app/shared/components/locked-callout/locked-callout.component';
+import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -127,6 +128,7 @@ export class ApplicationForm3Component implements OnInit, OnDestroy, AfterViewCh
   private userStore: UserStoreService = inject(UserStoreService);
   private readonly accessFacade = inject(AccessFacadeService);
   private readonly upgradeRouter = inject(UpgradeRouterService);
+  private readonly upgradeDrawer = inject(UpgradeDrawerService);
 
   readonly canUseJobTracking = computed(() => this.accessFacade.can('JOB_TRACKING'));
   readonly jobTrackingLockMessage = computed(() => this.accessFacade.denyMessage('JOB_TRACKING'));
@@ -994,7 +996,11 @@ ngAfterViewInit(): void {
     }
 
     goToPricing(): void {
-      this.upgradeRouter.goToPricingForContext('PERSONAL');
+      this.upgradeDrawer.openForContext('PERSONAL', {
+        title: 'Upgrade for job tracking',
+        message: this.jobTrackingLockMessage() || 'Upgrade your plan to save and manage job applications from this form.',
+        returnUrl: this.router.url,
+      });
     }
 
       deleteVendorContact(event : any){

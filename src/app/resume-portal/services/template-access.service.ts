@@ -1,15 +1,15 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
-import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
 import { ResumeTemplateVm } from '../models/resume-template.model';
+import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
 
 export type TemplateDenyReason = 'LOGIN_REQUIRED' | 'UPGRADE_REQUIRED' | string;
 
 @Injectable({ providedIn: 'root' })
 export class TemplateAccessService {
   private readonly access = inject(AccessFacadeService);
-  private readonly upgradeRouter = inject(UpgradeRouterService);
+  private readonly upgradeDrawer = inject(UpgradeDrawerService);
   private readonly router = inject(Router);
 
   private readonly me = this.access.accessMeSignal;
@@ -45,7 +45,7 @@ export class TemplateAccessService {
       case 'LOGIN_REQUIRED':
         return 'Please sign in to use a template.';
       case 'UPGRADE_REQUIRED':
-        return 'Upgrade your plan to unlock this template.';
+        return 'Upgrade your plan to save and export resumes with premium templates.';
       default:
         return 'This template is locked.';
     }
@@ -54,13 +54,16 @@ export class TemplateAccessService {
   handleDenied(reason: TemplateDenyReason | undefined, returnUrl?: string): void {
     const r = (reason ?? '').toString();
     if (r === 'LOGIN_REQUIRED') {
-      this.router.navigate(['/sign-in'], {
+      void this.router.navigate(['/sign-in'], {
         queryParams: { returnUrl: returnUrl ?? this.router.url },
       });
       return;
     }
 
-    // Resume portal is always personal pricing.
-    this.upgradeRouter.goToPricingForContext('PERSONAL');
+    this.upgradeDrawer.openForContext('PERSONAL', {
+      title: 'Premium template access',
+      message: this.explainReason(reason),
+      returnUrl,
+    });
   }
 }

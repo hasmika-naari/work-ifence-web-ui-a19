@@ -13,6 +13,7 @@ import { catchError, distinctUntilChanged, filter, map, shareReplay, startWith }
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { EnterpriseApiService, EnterpriseProfileDto } from 'src/app/services/enterprise-api.service';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
+import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
 import { parseBackendError, toFriendlyErrorMessage, isEntitlementError } from 'src/app/utils/api-error';
 import { Router } from '@angular/router';
 
@@ -41,6 +42,7 @@ export class EnterpriseOrgPageComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
   private readonly dashboardContext = inject(DashboardContextService);
+  private readonly upgradeDrawer = inject(UpgradeDrawerService);
 
   private readonly refresh$ = new BehaviorSubject<void>(void 0);
 
@@ -61,7 +63,11 @@ export class EnterpriseOrgPageComponent {
           const parsed = parseBackendError(err);
           const msg = toFriendlyErrorMessage(parsed);
           if (isEntitlementError(parsed)) {
-            void this.router.navigate(['/pricing'], { queryParams: { scope: 'enterprise' } });
+            this.upgradeDrawer.openForContext('ENTERPRISE', {
+              title: 'Upgrade your enterprise plan',
+              message: `${msg} Review enterprise plan options to restore organization access.`,
+              returnUrl: this.router.url,
+            });
           }
           return of({ loading: false, error: msg });
         }),

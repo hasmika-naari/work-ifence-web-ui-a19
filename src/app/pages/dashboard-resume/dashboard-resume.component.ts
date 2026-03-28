@@ -57,6 +57,7 @@ import { ImportExistingResumeComponent } from '../import-existing-resume/import-
 import { ResumeTemplateSelectionService } from 'src/app/services/resume-template-selection.service';
 import { FooterWorkifenceComponent } from '../landing/footer-wifence/footer-wifence.component';
 import { ResumePortalApiService } from 'src/app/resume-portal/services/resume-portal-api.service';
+import { ResumeLimitService } from 'src/app/resume-portal/services/resume-limit.service';
 import { buildResumeTemplateIdentity } from 'src/app/resume-portal/utils/resume-template-key.util';
 import { resolveResumePreviewUrl } from 'src/app/utils/resume-preview-url';
 
@@ -81,6 +82,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
 
   private _isActionInProgress = true;
   isResumeDownloadInProgress = false;
+  isCreateEligibilityLoading = false;
 
   get isActionInProgress(): boolean {
     return this._isActionInProgress;
@@ -398,6 +400,7 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   private resumeService: ResumeService = inject(ResumeService);
   private pdfToImageService: PdfToImageService = inject(PdfToImageService);
   private userStore: UserStoreService = inject(UserStoreService);
+  private resumeLimit: ResumeLimitService = inject(ResumeLimitService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   private platformId: object =  inject(PLATFORM_ID);
   userAccount: Signal<Account> = this.userStore.getUserAccount();
@@ -408,6 +411,10 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   loginStatus : Signal<boolean> = this.userStore.getUserLoginStatus();
   subs: Array<Subscription> = [];
   private readonly templateSelection = inject(ResumeTemplateSelectionService);
+  readonly resumeUsageLabel = this.resumeLimit.usageLabel;
+  readonly resumeUsageDetail = this.resumeLimit.usageDetail;
+  readonly hasResumeLimit = this.resumeLimit.hasResumeLimit;
+  readonly isResumeLimitReached = this.resumeLimit.isAtLimit;
   resumes : ResumeListDataItem[] = []
   filteredResumes : ResumeListDataItem[] = []
   isFirstTimeCalling : boolean = true;
@@ -683,7 +690,35 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   /**
    * Handles the "Add Job Application" button click.
    */
-  onAddResume(): void {
+  async onAddResume(): Promise<void> {
+    if (this.isCreateEligibilityLoading) {
+      return;
+    }
+
+    const limit = this.resumeLimit.canCreateResume();
+    if (!limit.allowed) {
+      this.resumeLimit.handleDenied(limit, { action: 'create', returnUrl: this.router.url });
+      return;
+    }
+
+    this.isCreateEligibilityLoading = true;
+
+    try {
+      const eligibility = await firstValueFrom(this.resumeService.getCreateEligibility());
+      if (!this.resumeLimit.isCreateEligibilityAllowed(eligibility)) {
+        this.resumeLimit.handleEligibilityDenied(eligibility, { action: 'create', returnUrl: this.router.url });
+        return;
+      }
+
+      this.startNewResumeFlow();
+    } catch (error) {
+      console.error('Failed to verify resume create eligibility.', error);
+    } finally {
+      this.isCreateEligibilityLoading = false;
+    }
+  }
+
+  private startNewResumeFlow(): void {
     const resume = new Resume();
     const selection = this.templateSelection.consumeCatalogSelection();
     if (selection) {
@@ -709,7 +744,11 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
     this.userStore.setResumeForm(resume);
     this.userStore.updateSelectedResumeListItem(new ResumeListDataItem());
     this.userStore.setIsChangeInNewResume(false);
-    this.router.navigateByUrl('/user/resumes/resume');
+    void this.router.navigateByUrl('/user/resumes/resume');
+  }
+
+  openSubscriptionPlans(): void {
+    this.resumeLimit.openSubscriptionPlans();
   }
 
   filterApplications(){    

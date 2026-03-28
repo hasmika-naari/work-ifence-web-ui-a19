@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 export const APP_CONTEXT:string = ''
 export const BASE_AWS_S3_API_URL = '';
@@ -74,6 +76,8 @@ export class PassWordResetState {
 
 @Injectable({ providedIn: 'root' })
 export class AppConstantsService {
+  private readonly platformId = inject(PLATFORM_ID);
+
     public JWT_TOKEN: string;
     public CONFIG_URL:string;
     public TEST_CONNECTION !: string;
@@ -131,6 +135,7 @@ export class AppConstantsService {
 
     public GET_RESUMES_BY_USER_NAME_URL: string;
     public GET_RESUMES_BY_USER_ID: string;
+    public GET_CREATE_RESUME_ELIGIBILITY: string;
     public SAVE_RESUMES: string;
     public UPDATE_RESUME: string;
     public DELETE_RESUME: string;
@@ -180,17 +185,20 @@ export class AppConstantsService {
     public passwordResetState: PassWordResetState;
 
     constructor() {
+      const serverApiBaseUrl = (environment.backend ?? 'http://Workifence.com:8090').replace(/\/$/, '');
+      const browserApiBaseUrl = isPlatformBrowser(this.platformId) ? '' : serverApiBaseUrl;
+
         this.CONFIG_URL = 'assets/config/web.config.json';
         this.JWT_TOKEN = '';
         this.BASE_APP_URL = 'http://Workifence.com';
         // this.BASE_APP_URL = 'http://localhost:4200';
-        this.BASE_API_SSR_URL = 'http://Workifence.com:8090';
-        this.BASE_API_URL = 'http://Workifence.com:8090';
-        this.BASE_SSR_API_URL = 'http://Workifence.com:8090';
+      this.BASE_API_SSR_URL = serverApiBaseUrl;
+      this.BASE_API_URL = browserApiBaseUrl;
+      this.BASE_SSR_API_URL = serverApiBaseUrl;
         // this.BASE_AWS_API_URL = 'https://97.74.93.142:8443';
         // this.BASE_FRONT_PAGE_API_URL = 'https://97.74.93.142:8443';
         // this.BASE_API_URL = '';
-        this.BASE_AWS_API_URL = 'http://Workifence.com:8090';
+      this.BASE_AWS_API_URL = browserApiBaseUrl;
         this.BASE_FRONT_PAGE_API_URL = '';
         this.SIGN_IN_PRE_URL = APP_CONTEXT ? '/' : '' + APP_CONTEXT + '/api/wif-login';
         this.SIGN_IN_URL = APP_CONTEXT ? '/' : '' + APP_CONTEXT + '/api/authenticate';
@@ -270,6 +278,10 @@ export class AppConstantsService {
       this.GET_RESUMES_BY_USER_ID =  APP_CONTEXT
       ? '/'
       : '' + APP_CONTEXT + '/api/job-resumes';
+
+      this.GET_CREATE_RESUME_ELIGIBILITY = APP_CONTEXT
+      ? '/'
+      : '' + APP_CONTEXT + '/api/resume-plans/create-eligibility';
 
       this.SAVE_RESUMES = APP_CONTEXT
       ? '/'

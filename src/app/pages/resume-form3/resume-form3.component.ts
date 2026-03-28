@@ -73,7 +73,7 @@ import { AddSectionComponent } from './add-section/add-section.component';
 import * as _ from 'lodash'
 import { Templatesv2Service } from 'src/app/services/shared/templatev2.service';
 import { UserStoreService } from 'src/app/services/store/user-store.service';
-import { PlanGateService, FREE_TEMPLATE_ID, FREE_TEMPLATE_IDS } from 'src/app/resume-portal/services/plan-gate.service';
+import { FREE_TEMPLATE_ID, FREE_TEMPLATE_IDS } from 'src/app/resume-portal/services/plan-gate.service';
 import { TemplateAccessService } from 'src/app/resume-portal/services/template-access.service';
 import { ResumeLimitService } from 'src/app/resume-portal/services/resume-limit.service';
 import { ResumeTemplateVm } from 'src/app/resume-portal/models/resume-template.model';
@@ -326,7 +326,6 @@ export class ResumeForm3Component implements OnInit, OnDestroy, AfterViewChecked
 
   private userStore: UserStoreService = inject(UserStoreService);
   private route: ActivatedRoute = inject(ActivatedRoute);
-  private planGate: PlanGateService = inject(PlanGateService);
   private templateAccess: TemplateAccessService = inject(TemplateAccessService);
   private resumeLimit: ResumeLimitService = inject(ResumeLimitService);
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
@@ -793,7 +792,7 @@ ngAfterViewInit(): void {
         if (limit.reason === 'LOGIN_REQUIRED') {
           this.templateAccess.handleDenied('LOGIN_REQUIRED', this.router.url);
         } else {
-          this.resumeLimit.handleLimitDenied();
+          this.resumeLimit.handleDenied(limit, { action: 'create', returnUrl: this.router.url });
         }
         return;
       }
@@ -939,7 +938,7 @@ ngAfterViewInit(): void {
   }
 
   openPremiumUpgradeFlow(): void {
-    this.planGate.enforceOrUpgrade(false, PREMIUM_TEMPLATE_DOWNLOAD_REASON);
+    this.templateAccess.handleDenied('UPGRADE_REQUIRED', this.router.url);
   }
 
   switchToFreeTemplate(): void {

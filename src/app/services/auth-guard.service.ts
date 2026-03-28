@@ -70,7 +70,7 @@ export class AuthGuardService implements CanActivate {
     // return this.store.pipe(select(getIsAuthenticated)).pipe(
     //   map((isAuthenticated: boolean) => {
     //     if(!isAuthenticated){
-    //       this.router.navigateByUrl('/login');
+    //       this.router.navigateByUrl('/sign-in');
     //       return true;
     //     }
     //     return true;
@@ -103,7 +103,7 @@ export class AuthGuardService implements CanActivate {
     // return this.store.pipe(select(getIsAuthenticated)).pipe(
     //   map((isAuthenticated: boolean) => {
     //     if(!isAuthenticated){
-    //       this.router.navigateByUrl('/login');
+    //       this.router.navigateByUrl('/sign-in');
     //       return true;
     //     }
     //     return true;

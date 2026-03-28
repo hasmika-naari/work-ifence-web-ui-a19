@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import type { FeatureDeniedReason } from 'src/app/models/feature-key.model';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
+import { UpgradeDrawerService } from '../upgrade-drawer/upgrade-drawer.service';
 
 @Component({
   selector: 'app-feature-gate-notice',
@@ -17,6 +18,7 @@ import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 export class FeatureGateNoticeComponent {
   private readonly router = inject(Router);
   private readonly accessFacade = inject(AccessFacadeService);
+  private readonly upgradeDrawer = inject(UpgradeDrawerService);
 
   @Input() reason: FeatureDeniedReason | null = null;
   @Input() loggedIn = false;
@@ -53,6 +55,10 @@ export class FeatureGateNoticeComponent {
 
   goUpgrade(): void {
     this.close();
-    void this.router.navigateByUrl('/pricing');
+    this.upgradeDrawer.openForCurrentContext({
+      title: this.title,
+      message: this.message,
+      returnUrl: this.router.url,
+    });
   }
 }

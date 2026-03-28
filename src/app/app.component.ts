@@ -36,13 +36,14 @@ import { GlobalErrorHandler } from './services/global-error-handler';
 import { MessageService } from 'primeng/api';
 import { AccessFacadeService } from './facades/access-facade.service';
 import { FeatureGateNoticeComponent } from './shared/feature-gate-notice/feature-gate-notice.component';
+import { UpgradeDrawerComponent } from './shared/upgrade-drawer/upgrade-drawer.component';
 import { ActiveProfileStore } from './auth/active-profile.store';
 import { RouteDebugService } from './services/route-debug.service';
 import { AccessContextStore } from './core/store/access-context.store';
 @Component({
     selector: 'app-root',
     imports: [RouterOutlet, RouterModule, CommonModule, LoadingScreenComponent,
-      SidebarComponent, HeaderComponent, FooterComponent, LoadingBarModule, ScrollPositionDirective, ToastModule, FeatureGateNoticeComponent],
+      SidebarComponent, HeaderComponent, FooterComponent, LoadingBarModule, ScrollPositionDirective, ToastModule, FeatureGateNoticeComponent, UpgradeDrawerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

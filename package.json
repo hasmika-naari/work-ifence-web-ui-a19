@@ -19,7 +19,7 @@
     "serve:ssr:workifence": "node dist/workifence/server/server.mjs",
     "ssr:local": "npm run build:ssr:dev && set FORCE_HTTP=true&& set PORT=4000&& node dist/workifence/server/server.mjs",
     "serve:ssr:local:watch": "set FORCE_HTTP=true&& set PORT=4000&& node tools/ssr-local-watch.mjs",
-    "ssr:local:watch": "concurrently -k -n build,server -c cyan,magenta \"npm:build:ssr:dev:watch\" \"npm:serve:ssr:local:watch\"",
+    "ssr:local:watch": "concurrently --kill-others-on-fail -n build,server -c cyan,magenta \"npm:build:ssr:dev:watch\" \"npm:serve:ssr:local:watch\"",
     "ssr:prod:http": "npm run build && set PORT=4000&& node dist/workifence/server/server.mjs",
     "ssr:prod:https": "npm run build && set ENABLE_HTTPS=true&& set PORT=443&& node dist/workifence/server/server.mjs",
     "serve:dist:e2e": "sirv ./dist/workifence/browser --single --host 127.0.0.1 --port 4200 --no-clear"

@@ -5,7 +5,7 @@ import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SubscriptionPlanDto, WifenceSubscriptionDto } from '../models/subscription.dto';
 import { buildCriteriaParams } from '../shared/http/build-criteria-params';
-import type { StartSubscriptionRequest, SubscriptionPlan, SubscriptionScope, WifenceSubscription } from '../models/subscription.model';
+import type { CreateSubscriptionUpgradeRequest, StartSubscriptionRequest, SubscriptionPlan, SubscriptionScope, WifenceSubscription } from '../models/subscription.model';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionApiService {
@@ -57,6 +57,11 @@ export class SubscriptionApiService {
   startSubscription(req: StartSubscriptionRequest): Observable<WifenceSubscription> {
     const url = `${this.getBaseUrl()}/api/subscriptions/start`;
     return this.http.post<WifenceSubscription>(url, req);
+  }
+
+  submitUpgradeRequest(req: CreateSubscriptionUpgradeRequest): Observable<unknown> {
+    const url = `${this.getBaseUrl()}/api/subscription-upgrade-requests`;
+    return this.http.post(url, req);
   }
 
   private getBaseUrl(): string {

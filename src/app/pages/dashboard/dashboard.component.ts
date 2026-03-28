@@ -13,6 +13,7 @@ import { DashboardContextService } from 'src/app/services/dashboard-context.serv
 import { ActiveRoleService } from 'src/app/services/active-role.service';
 import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
 import { RemoteConfigFacadeService } from 'src/app/facades/remote-config-facade.service';
+import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { DashboardStatCardDTO } from 'src/app/core/models/my-dashboard.model';
 import { SessionContextStore } from 'src/app/core/store/session-context.store';
@@ -105,6 +106,7 @@ export class DashboardComponent implements OnInit {
   private dashboardContext: DashboardContextService = inject(DashboardContextService);
   private activeRoleService: ActiveRoleService = inject(ActiveRoleService);
   private upgradeRouter: UpgradeRouterService = inject(UpgradeRouterService);
+  private upgradeDrawer: UpgradeDrawerService = inject(UpgradeDrawerService);
   private sessionContextStore: SessionContextStore = inject(SessionContextStore);
   private userDashboardStore: UserDashboardStore = inject(UserDashboardStore);
   private accountPlanSummaryService: AccountPlanSummaryService = inject(AccountPlanSummaryService);
@@ -444,7 +446,12 @@ export class DashboardComponent implements OnInit {
 
   onRecommendationAction(item: DashboardRecommendationVM): void {
     if (item?.isLocked) {
-      this.upgradeRouter.goToPricingForContext(this.dashboardCtx());
+      const recommendationTitle = this.toText(item?.title);
+      this.upgradeDrawer.openForContext(this.dashboardCtx(), {
+        title: recommendationTitle ? `Upgrade for ${recommendationTitle}` : 'Upgrade required',
+        message: recommendationTitle ? `Upgrade your plan to unlock ${recommendationTitle} from your dashboard.` : 'Upgrade your plan to use this recommendation.',
+        returnUrl: this.routerService.url,
+      });
       return;
     }
 
@@ -458,7 +465,13 @@ export class DashboardComponent implements OnInit {
 
   onRecommendationRowAction(item: RecommendationRowVM): void {
     if (item.isLocked) {
-      this.onUpgradeClick();
+      this.onUpgradeClick({
+        key: item.key,
+        title: item.title,
+        desc: item.desc,
+        icon: 'workspace_premium',
+        locked: true,
+      });
       return;
     }
 
@@ -534,17 +547,17 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  onUpgradeClick(): void {
-    this.routerService
-      .navigateByUrl('/user/billing/upgrade')
-      .then((navigated) => {
-        if (!navigated) {
-          this.snackBar.open('Coming soon', 'Close', { duration: 2200 });
-        }
-      })
-      .catch(() => {
-        this.snackBar.open('Coming soon', 'Close', { duration: 2200 });
-      });
+  onUpgradeClick(feature?: FeatureItem): void {
+    const featureTitle = this.toText(feature?.title);
+    const featureMessage = featureTitle
+      ? `Upgrade your plan to unlock ${featureTitle} and the other premium tools in this section.`
+      : 'Upgrade your plan to unlock the premium features in this section.';
+
+    this.upgradeDrawer.openForContext(this.dashboardCtx(), {
+      title: featureTitle ? `Upgrade for ${featureTitle}` : 'Upgrade required',
+      message: featureMessage,
+      returnUrl: this.routerService.url,
+    });
   }
 
   recentJobPrimary(item: RecentJobAppVM): string {
@@ -884,10 +897,12 @@ export class DashboardComponent implements OnInit {
 
   onToolClick(tool: { key?: string; title?: string; route: string; enabled: boolean; disabledMessage?: string; featureKey?: FeatureKey }) {
     if (tool.featureKey && !this.accessFacade.canOrExplain(tool.featureKey)) {
-      this.snackBar.open(tool.disabledMessage || 'Upgrade required', 'View plans', {
-        duration: 2500,
+      const toolTitle = this.toText(tool.title);
+      this.upgradeDrawer.openForContext(this.dashboardCtx(), {
+        title: toolTitle ? `Upgrade for ${toolTitle}` : 'Upgrade required',
+        message: tool.disabledMessage || (toolTitle ? `Upgrade your plan to use ${toolTitle}.` : 'Upgrade required'),
+        returnUrl: this.routerService.url,
       });
-      this.upgradeRouter.goToPricingForContext(this.dashboardCtx());
       return;
     }
 
@@ -896,10 +911,11 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    this.snackBar.open(tool.disabledMessage || 'Upgrade required', 'View plans', {
-      duration: 2500,
+    this.upgradeDrawer.openForContext(this.dashboardCtx(), {
+      title: this.toText(tool.title) ? `Upgrade for ${this.toText(tool.title)}` : 'Upgrade required',
+      message: tool.disabledMessage || (this.toText(tool.title) ? `Upgrade your plan to use ${this.toText(tool.title)}.` : 'Upgrade required'),
+      returnUrl: this.routerService.url,
     });
-    this.upgradeRouter.goToPricingForContext(this.dashboardCtx());
   }
 
 }

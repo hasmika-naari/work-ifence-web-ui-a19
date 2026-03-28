@@ -1,6 +1,7 @@
 export type SubscriptionScope = 'INDIVIDUAL' | 'ENTERPRISE';
 
 export interface SubscriptionPlan {
+  id?: string | number;
   code?: string;
   name?: string;
   scope?: SubscriptionScope | string;
@@ -49,4 +50,9 @@ export interface StartSubscriptionRequest {
   subscriberId?: string;
   planCode: string;
   startTrial?: boolean;
+}
+
+export interface CreateSubscriptionUpgradeRequest {
+  requestedPlanId: string | number;
+  requestReason?: string;
 }

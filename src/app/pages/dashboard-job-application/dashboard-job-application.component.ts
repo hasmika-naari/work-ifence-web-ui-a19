@@ -43,6 +43,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from 
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { UpgradeRouterService } from 'src/app/services/upgrade-router.service';
 import { LockedCalloutComponent } from 'src/app/shared/components/locked-callout/locked-callout.component';
+import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
 
 interface Option {
   name : string;
@@ -171,6 +172,7 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
   private userStore: UserStoreService = inject(UserStoreService);
   private readonly accessFacade = inject(AccessFacadeService);
   private readonly upgradeRouter = inject(UpgradeRouterService);
+  private readonly upgradeDrawer = inject(UpgradeDrawerService);
 
   readonly canUseJobTracking = computed(() => this.accessFacade.can('JOB_TRACKING'));
   readonly jobTrackingLockMessage = computed(() => this.accessFacade.denyMessage('JOB_TRACKING'));
@@ -206,7 +208,11 @@ export class DashboardJobApplicationComponent implements OnInit, AfterViewInit, 
   }
 
   goToPricing(): void {
-    this.upgradeRouter.goToPricingForContext('PERSONAL');
+    this.upgradeDrawer.openForContext('PERSONAL', {
+      title: 'Upgrade for job tracking',
+      message: this.jobTrackingLockMessage() || 'Upgrade your plan to track applications, interviews, and follow-ups in one place.',
+      returnUrl: this.router.url,
+    });
   }
 
   ngOnInit() {

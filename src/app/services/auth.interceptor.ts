@@ -113,7 +113,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       map((response: HttpEvent<any>) => {
         if (response instanceof HttpErrorResponse) {
           if (response.status === 401) {
-            this.router.navigate(['login']);
+            void this.router.navigateByUrl('/sign-in');
           } else if (response.status === 302 || response.status === 0) {
           }else if(response.status === 400){
             
@@ -144,7 +144,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       catchError((error: unknown) => {
         const httpErr = error as HttpErrorResponse;
         if (httpErr?.status === 401) {
-          this.router.navigate(['login']);
+          void this.router.navigateByUrl('/sign-in');
         }
 
         return throwError(() => error);

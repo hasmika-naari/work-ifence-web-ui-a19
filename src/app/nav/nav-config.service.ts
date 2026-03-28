@@ -126,6 +126,14 @@ export class NavConfigService {
               entitlementKey: ENTITLEMENT_KEYS.ADMIN_BILLING_SUBSCRIPTIONS
             },
             {
+              id: 'upgrade-requests',
+              title: 'Upgrade Requests',
+              icon: 'send',
+              route: '/user/admin/upgrade-requests',
+              featureFlag: FEATURE_FLAGS.NAV_PLACEHOLDER,
+              entitlementKey: ENTITLEMENT_KEYS.ADMIN_BILLING_SUBSCRIPTIONS
+            },
+            {
               id: 'payments',
               title: 'Invoices & Payments',
               icon: 'dollar-sign',

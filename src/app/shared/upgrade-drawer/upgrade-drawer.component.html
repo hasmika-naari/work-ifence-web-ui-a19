@@ -1,0 +1,205 @@
+<p-drawer
+  [visible]="visible()"
+  [position]="'right'"
+  [style]="{ width: 'min(540px, 96vw)' }"
+  styleClass="upgrade-drawer-panel"
+  [showCloseIcon]="false"
+  [dismissible]="true"
+  [blockScroll]="true"
+  appendTo="body"
+  [baseZIndex]="26000"
+  (visibleChange)="onVisibleChange($event)"
+>
+  <ng-template pTemplate="header">
+    <div class="upgrade-drawer__header">
+      <div class="upgrade-drawer__header-copy">
+        <div class="upgrade-drawer__eyebrow">{{ scope() === 'ENTERPRISE' ? 'Enterprise subscription' : 'Subscription options' }}</div>
+        <h3 class="upgrade-drawer__title">{{ state().title }}</h3>
+      </div>
+      <button type="button" class="upgrade-drawer__close" (click)="close()" aria-label="Close upgrade drawer">
+        <span class="pi pi-times"></span>
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="content">
+    <div class="upgrade-drawer__body">
+      <section class="upgrade-drawer__hero">
+        <div class="upgrade-drawer__hero-glow upgrade-drawer__hero-glow--primary"></div>
+        <div class="upgrade-drawer__hero-glow upgrade-drawer__hero-glow--secondary"></div>
+        <div class="upgrade-drawer__hero-content">
+          <div class="upgrade-drawer__hero-badge">
+            <span class="pi pi-sparkles"></span>
+            <span>{{ scope() === 'ENTERPRISE' ? 'Plan control for your workspace' : 'Unlock premium workflow tools' }}</span>
+          </div>
+          <p class="upgrade-drawer__message">{{ state().message }}</p>
+          <div class="upgrade-drawer__hero-meta">
+            <div class="upgrade-drawer__hero-meta-card">
+              <span class="upgrade-drawer__hero-meta-label">Current plan</span>
+              <strong>{{ currentPlanLabel() }}</strong>
+              <p>{{ formatPrice(currentPlan()) }}</p>
+            </div>
+            <div class="upgrade-drawer__hero-meta-card upgrade-drawer__hero-meta-card--highlight">
+              <span class="upgrade-drawer__hero-meta-label">Suggested next step</span>
+              <strong>{{ recommendedPlan()?.marketingTitle || recommendedPlan()?.name || 'Browse plans' }}</strong>
+              <p>{{ recommendedPlan() ? formatPrice(recommendedPlan()!) : 'See available upgrades' }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="upgrade-drawer__current-plan upgrade-drawer__section-panel">
+        <div class="upgrade-drawer__section-head">
+          <div class="upgrade-drawer__section-label">Your current plan</div>
+          <p class="upgrade-drawer__section-copy">What you can use right now without upgrading.</p>
+        </div>
+        <div class="upgrade-drawer__current-card">
+          <div class="upgrade-drawer__current-title-row">
+            <div>
+              <strong>{{ currentPlanLabel() }}</strong>
+              <p class="upgrade-drawer__current-subtitle">{{ formatPrice(currentPlan()) }} • {{ formatBillingInterval(currentPlanBillingInterval()) }}</p>
+            </div>
+            <span class="upgrade-drawer__status">{{ currentPlanBadge() || statusText(subscription()?.status || 'FREE') }}</span>
+          </div>
+          <div class="upgrade-drawer__metric-grid upgrade-drawer__metric-grid--current">
+            <div class="upgrade-drawer__metric-card">
+              <span class="upgrade-drawer__metric-label"><span class="pi pi-credit-card"></span>Price</span>
+              <strong>{{ formatPrice(currentPlan()) }}</strong>
+            </div>
+            <div class="upgrade-drawer__metric-card">
+              <span class="upgrade-drawer__metric-label"><span class="pi pi-calendar"></span>Billing</span>
+              <strong>{{ formatBillingInterval(currentPlanBillingInterval()) }}</strong>
+            </div>
+            <div class="upgrade-drawer__metric-card">
+              <span class="upgrade-drawer__metric-label"><span class="pi pi-bookmark"></span>Badge</span>
+              <strong>{{ currentPlanBadge() || '—' }}</strong>
+            </div>
+            <div class="upgrade-drawer__metric-card">
+              <span class="upgrade-drawer__metric-label"><span class="pi pi-palette"></span>Template access</span>
+              <strong>{{ currentTemplateAccess() }}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="upgrade-drawer__usage upgrade-drawer__section-panel">
+        <div class="upgrade-drawer__section-head">
+          <div class="upgrade-drawer__section-label">Usage</div>
+          <p class="upgrade-drawer__section-copy">Resume creation usage based on live account and eligibility API data.</p>
+        </div>
+        <div class="upgrade-drawer__usage-grid">
+          <div class="upgrade-drawer__metric-card">
+            <span class="upgrade-drawer__metric-label"><span class="pi pi-file"></span>Used resumes</span>
+            <strong>{{ usage().used }}</strong>
+          </div>
+          <div class="upgrade-drawer__metric-card">
+            <span class="upgrade-drawer__metric-label"><span class="pi pi-database"></span>Allowed resumes</span>
+            <strong>{{ usage().allowed === null ? 'Unlimited' : usage().allowed }}</strong>
+          </div>
+          <div class="upgrade-drawer__metric-card">
+            <span class="upgrade-drawer__metric-label"><span class="pi pi-chart-bar"></span>Remaining</span>
+            <strong>{{ usage().remaining === null ? 'Unlimited' : usage().remaining }}</strong>
+          </div>
+        </div>
+        @if (usage().progressPercent !== null) {
+          <div class="upgrade-drawer__usage-progress">
+            <div class="upgrade-drawer__usage-progress-track">
+              <div class="upgrade-drawer__usage-progress-fill" [style.width.%]="usage().progressPercent"></div>
+            </div>
+            <div class="upgrade-drawer__usage-progress-copy">{{ usage().used }} / {{ usage().allowed }} resumes used</div>
+          </div>
+        }
+      </section>
+
+      <section class="upgrade-drawer__plans upgrade-drawer__section-panel">
+        <div class="upgrade-drawer__section-head">
+          <div class="upgrade-drawer__section-label">Choose a plan</div>
+          <p class="upgrade-drawer__section-copy">Plan options are rendered from API data. Existing layout and upgrade actions remain unchanged.</p>
+        </div>
+
+        @if (upgradePlans().length === 0) {
+          <div class="upgrade-drawer__empty-state">
+            <p>{{ planLoadError() || 'No additional plans are available right now.' }}</p>
+            @if (planLoadError()) {
+              <button
+                type="button"
+                class="upgrade-drawer__retry-button"
+                (click)="retryPlanLoad()"
+              >
+                Retry loading plans
+              </button>
+            }
+          </div>
+        }
+
+        @for (plan of upgradePlans(); track plan.code) {
+          <article
+            class="upgrade-plan-card"
+            [class.upgrade-plan-card--featured]="isRecommended(plan)"
+          >
+            @if (plan.badgeText) {
+              <div class="upgrade-plan-card__badge">{{ plan.badgeText }}</div>
+            }
+
+            <div class="upgrade-plan-card__header">
+              <div class="upgrade-plan-card__title-block">
+                <h4>{{ plan.marketingTitle || plan.name || plan.code }}</h4>
+                @if (planSubtitle(plan)) {
+                  <div class="upgrade-plan-card__subtitle">{{ planSubtitle(plan) }}</div>
+                }
+              </div>
+              <div class="upgrade-plan-card__price-block">
+                <div class="upgrade-plan-card__price">{{ formatPrice(plan) }}</div>
+                <div class="upgrade-plan-card__price-caption">{{ planStatusLabel(plan) }}</div>
+                @if ((plan.trialDays ?? 0) > 0) {
+                  <div class="upgrade-plan-card__trial">{{ plan.trialDays }}-day trial included</div>
+                }
+              </div>
+            </div>
+
+            <div class="upgrade-plan-card__block-title">Includes</div>
+            <div class="upgrade-plan-card__benefits">
+              @for (benefit of plan.featureBullets; track benefit) {
+                <div class="upgrade-plan-card__benefit">
+                  <span class="pi pi-check-circle"></span>
+                  <span>{{ benefit }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="upgrade-plan-card__actions" [class.upgrade-plan-card__actions--pending]="hasPendingRequest(plan)">
+              <label class="upgrade-plan-card__reason-label" [attr.for]="'upgrade-reason-' + plan.code">Reason for trial (optional)</label>
+              <textarea
+                class="upgrade-plan-card__reason"
+                [id]="'upgrade-reason-' + plan.code"
+                rows="3"
+                maxlength="500"
+                [value]="requestReason(plan)"
+                (input)="updateRequestReason(plan, $any($event.target).value)"
+                [disabled]="isRequesting(plan) || hasPendingRequest(plan)"
+                placeholder="Add context for the trial request"
+              ></textarea>
+              <button
+                type="button"
+                class="upgrade-plan-card__button"
+                [class.upgrade-plan-card__button--pending]="hasPendingRequest(plan)"
+                [disabled]="isRequesting(plan) || hasPendingRequest(plan) || !plan.planId"
+                (click)="submitUpgradeRequest(plan)"
+              >
+                <i
+                  class="pi"
+                  [class.pi-send]="!isRequesting(plan)"
+                  [class.pi-spin]="isRequesting(plan)"
+                  [class.pi-spinner]="isRequesting(plan)"
+                  aria-hidden="true"
+                ></i>
+                <span>{{ isRequesting(plan) ? 'Submitting...' : (hasPendingRequest(plan) ? 'Trial Pending' : 'Request Trial') }}</span>
+              </button>
+              <p class="upgrade-plan-card__action-note">{{ hasPendingRequest(plan) ? 'You already have a pending trial request.' : (plan.planId ? 'Submit a trial request for this plan.' : 'Trial request is unavailable for this plan.') }}</p>
+            </div>
+          </article>
+        }
+      </section>
+    </div>
+  </ng-template>
+</p-drawer>

@@ -1,0 +1,107 @@
+<app-admin-table-shell
+  title="Upgrade Requests"
+  subtitle="Review subscription upgrade requests"
+  [loading]="loading()"
+  [length]="total()"
+  [pageIndex]="pageIndex()"
+  [pageSize]="pageSize()"
+  (pageChange)="onPageChange($event)"
+>
+  <div filters class="admin-filters">
+    <mat-form-field appearance="outline" class="admin-filter">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="status()" (selectionChange)="onStatusChange($event.value)">
+        @for (opt of statusOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="admin-filter admin-filter--grow">
+      <mat-label>Plan</mat-label>
+      <input
+        matInput
+        [value]="plan()"
+        (input)="onPlanChange(($any($event.target).value))"
+        placeholder="Current or requested plan…"
+      />
+    </mat-form-field>
+
+    <button mat-stroked-button type="button" (click)="refresh()">Refresh</button>
+  </div>
+
+  <div table>
+    <table mat-table [dataSource]="page().content" class="admin-table">
+      <ng-container matColumnDef="requestCode">
+        <th mat-header-cell *matHeaderCellDef>Request Code</th>
+        <td mat-cell *matCellDef="let row">{{ row.requestCode || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef>User</th>
+        <td mat-cell *matCellDef="let row">{{ userLabel(row) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="currentPlan">
+        <th mat-header-cell *matHeaderCellDef>Current Plan</th>
+        <td mat-cell *matCellDef="let row">{{ currentPlanLabel(row) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="requestedPlan">
+        <th mat-header-cell *matHeaderCellDef>Requested Plan</th>
+        <td mat-cell *matCellDef="let row">{{ requestedPlanLabel(row) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let row">{{ row.status || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="requestedDate">
+        <th mat-header-cell *matHeaderCellDef>Requested Date</th>
+        <td mat-cell *matCellDef="let row">{{ row.requestedDate ? (row.requestedDate | date:'medium') : '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="reviewedDate">
+        <th mat-header-cell *matHeaderCellDef>Reviewed Date</th>
+        <td mat-cell *matCellDef="let row">{{ row.reviewedDate ? (row.reviewedDate | date:'medium') : '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="adminRemarks">
+        <th mat-header-cell *matHeaderCellDef>Admin Remarks</th>
+        <td mat-cell *matCellDef="let row">{{ row.adminRemarks || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let row" class="admin-actions">
+          <button
+            mat-button
+            color="primary"
+            type="button"
+            (click)="approve(row)"
+            [disabled]="isRowBusy(row.id) || !canReview(row)"
+          >
+            Approve
+          </button>
+          <button
+            mat-button
+            color="warn"
+            type="button"
+            (click)="reject(row)"
+            [disabled]="isRowBusy(row.id) || !canReview(row)"
+          >
+            Reject
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    @if (!loading() && page().content.length === 0) {
+      <div class="muted" style="padding: 12px 0;">No upgrade requests found.</div>
+    }
+  </div>
+</app-admin-table-shell>

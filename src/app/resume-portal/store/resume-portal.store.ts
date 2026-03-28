@@ -176,7 +176,7 @@ export class ResumePortalStore {
       if (limit.reason === 'LOGIN_REQUIRED') {
         this.templateAccess.handleDenied('LOGIN_REQUIRED', builderUrl);
       } else {
-        this.resumeLimit.handleLimitDenied();
+        this.resumeLimit.handleDenied(limit, { action: 'create', returnUrl: this.router.url });
       }
       return;
     }
@@ -222,7 +222,7 @@ export class ResumePortalStore {
       if (limit.reason === 'LOGIN_REQUIRED') {
         this.templateAccess.handleDenied('LOGIN_REQUIRED', builderUrl);
       } else {
-        this.resumeLimit.handleLimitDenied();
+        this.resumeLimit.handleDenied(limit, { action: 'create', returnUrl: this.router.url });
       }
       return;
     }
