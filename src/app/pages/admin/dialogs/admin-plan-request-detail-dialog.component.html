@@ -1,0 +1,90 @@
+<h2 mat-dialog-title class="prd-title">
+  Plan Request
+  @if (detail.requestCode) {
+    <span class="prd-code">{{ detail.requestCode }}</span>
+  }
+</h2>
+
+<div mat-dialog-content class="prd-content">
+
+  <!-- Status -->
+  <div class="prd-section prd-section--status">
+    <span class="prd-status-badge" [attr.data-status]="detail.status?.toUpperCase()">
+      {{ detail.status || 'Unknown' }}
+    </span>
+  </div>
+
+  <!-- Plans -->
+  <div class="prd-section">
+    <h3 class="prd-section-title">Plans</h3>
+    <div class="prd-plans">
+      <div class="prd-plan">
+        <div class="prd-plan__label">Current Plan</div>
+        <div class="prd-plan__value">{{ detail.currentPlanCode || '—' }}</div>
+      </div>
+      <div class="prd-arrow">→</div>
+      <div class="prd-plan">
+        <div class="prd-plan__label">Requested Plan</div>
+        <div class="prd-plan__value prd-plan__value--requested">{{ detail.requestedPlanCode || '—' }}</div>
+      </div>
+    </div>
+    @if (detail.trialDays) {
+      <div class="prd-meta">Trial duration: {{ detail.trialDays }} day{{ detail.trialDays === 1 ? '' : 's' }}</div>
+    }
+    @if (detail.trialStartDate) {
+      <div class="prd-meta">Trial start: {{ detail.trialStartDate | date:'mediumDate' }}</div>
+    }
+    @if (detail.trialEndDate) {
+      <div class="prd-meta">Trial end: {{ detail.trialEndDate | date:'mediumDate' }}</div>
+    }
+  </div>
+
+  <!-- Request details -->
+  <div class="prd-section">
+    <h3 class="prd-section-title">Details</h3>
+    <dl class="prd-dl">
+      <dt>Requested by</dt>
+      <dd>{{ userLabel() }}</dd>
+
+      @if (detail.requestReason) {
+        <dt>Request Reason</dt>
+        <dd>{{ detail.requestReason }}</dd>
+      }
+
+      @if (detail.requestType) {
+        <dt>Request type</dt>
+        <dd>{{ detail.requestType }}</dd>
+      }
+
+      @if (detail.requestedDate) {
+        <dt>Requested</dt>
+        <dd>{{ detail.requestedDate | date:'medium' }}</dd>
+      }
+
+      @if (detail.reviewedDate) {
+        <dt>Reviewed</dt>
+        <dd>{{ detail.reviewedDate | date:'medium' }}</dd>
+      }
+
+      @if (detail.reviewedBy) {
+        <dt>Reviewed by</dt>
+        <dd>{{ detail.reviewedBy }}</dd>
+      }
+    </dl>
+  </div>
+
+  <!-- Remarks -->
+  <div class="prd-section">
+    <h3 class="prd-section-title">Admin Remarks</h3>
+    @if (detail.adminRemarks) {
+      <p class="prd-remarks">{{ detail.adminRemarks }}</p>
+    } @else {
+      <p class="prd-muted">No remarks recorded.</p>
+    }
+  </div>
+
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">Close</button>
+</div>

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Injector, inject } from '@angular/core';
 import {
   HttpEvent,
   HttpInterceptor,
@@ -20,7 +20,14 @@ export class GlobalErrorInterceptor implements HttpInterceptor {
   loadingBar = inject(LoadingBarService);
   messageService = inject(MessageService);
   router = inject(Router);
-  upgradeDrawer = inject(UpgradeDrawerService);
+  // UpgradeDrawerService is resolved lazily to break the circular dependency:
+  // GlobalErrorInterceptor (HTTP_INTERCEPTORS) → UpgradeDrawerService →
+  // SubscriptionFacadeService → HttpClient → HTTP_INTERCEPTORS
+  private readonly injector = inject(Injector);
+  private _upgradeDrawer?: UpgradeDrawerService;
+  private get upgradeDrawer(): UpgradeDrawerService {
+    return (this._upgradeDrawer ??= this.injector.get(UpgradeDrawerService));
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   

@@ -1,29 +1,59 @@
-.admin-shell {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
+/* ── Page-level wrapper — clears the fixed navbar (same as .dashboard-wrapper) ── */
+.admin-page-wrapper {
+  min-height: 100vh;
+  background: #f8fafc;
+  background-image:
+    radial-gradient(circle at 10% 10%, hsla(10, 80%, 60%, 0.06), transparent 30%),
+    radial-gradient(circle at 90% 20%, hsla(230, 80%, 70%, 0.06), transparent 30%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding: 78px 28px 48px;
+  box-sizing: border-box;
 }
 
-.admin-shell__header {
+/* ── Shell container ── */
+.admin-shell {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* ── Page header (above the card, matches dashboard layout) ── */
+.admin-shell__page-header {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .admin-shell__title {
-  font-size: 18px;
+  font-size: 1.75rem;
   font-weight: 700;
+  color: #f05b4e;
+  line-height: 1.15;
+  margin: 0;
 }
 
 .admin-shell__subtitle {
-  font-size: 12px;
+  font-size: 0.875rem;
+  margin: 4px 0 0;
+  color: #64748b;
 }
 
-.admin-shell__filters {
-  margin-top: 12px;
-  margin-bottom: 12px;
+.admin-shell__header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── White card ── */
+.admin-shell__card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.05);
+  overflow: hidden;
 }
 
 .admin-shell__content {
@@ -33,5 +63,5 @@
 .admin-shell__loading {
   display: flex;
   justify-content: center;
-  padding: 12px 0;
+  padding: 24px 0;
 }

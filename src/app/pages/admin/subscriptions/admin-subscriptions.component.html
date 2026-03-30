@@ -1,98 +1,467 @@
-<app-admin-table-shell
-  title="Subscriptions"
-  subtitle="Administer subscriptions and trials"
-  [loading]="loading()"
-  [length]="total()"
-  [pageIndex]="pageIndex()"
-  [pageSize]="pageSize()"
-  (pageChange)="onPageChange($event)"
->
-  <div filters class="admin-filters">
-    <mat-form-field appearance="outline" class="admin-filter">
-      <mat-label>Subscriber type</mat-label>
-      <mat-select [value]="subscriberType()" (selectionChange)="onSubscriberTypeChange($event.value)">
-        @for (opt of subscriberTypeOptions; track opt.value) {
-          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+﻿<div class="sub-page-wrapper">
 
-    <mat-form-field appearance="outline" class="admin-filter">
-      <mat-label>Status</mat-label>
-      <input
-        matInput
-        [value]="status()"
-        (input)="onStatusChange(($any($event.target).value))"
-        placeholder="e.g. ACTIVE, TRIALING"
-      />
-    </mat-form-field>
+  <!-- ── Page header ──────────────────────────────────────────────────────── -->
+  <div class="sub-page-header">
+    <div>
+      <h1 class="sub-page-title">Subscriptions</h1>
+      <p class="sub-page-sub">Manage active subscriptions, trials, and requests</p>
+    </div>
 
-    <mat-form-field appearance="outline" class="admin-filter admin-filter--grow">
-      <mat-label>Search</mat-label>
-      <input
-        matInput
-        [value]="q()"
-        (input)="onSearchChange(($any($event.target).value))"
-        placeholder="Subscriber ID, plan code…"
-      />
-    </mat-form-field>
-
-    <button mat-stroked-button type="button" (click)="refresh()">Refresh</button>
   </div>
 
-  <div table>
-    <table mat-table [dataSource]="page().content" class="admin-table">
-      <ng-container matColumnDef="subscriberType">
-        <th mat-header-cell *matHeaderCellDef>Type</th>
-        <td mat-cell *matCellDef="let row">{{ row.subscriberType || '-' }}</td>
-      </ng-container>
+  <!-- ── Work queue card (fills remaining height) ─────────────────────────── -->
+  <div class="work-queue-card">
 
-      <ng-container matColumnDef="subscriberId">
-        <th mat-header-cell *matHeaderCellDef>Subscriber</th>
-        <td mat-cell *matCellDef="let row">{{ row.subscriberId || '-' }}</td>
-      </ng-container>
+    <!-- Tabs + filter toggle -->
+    <div class="custom-tabs-row">
+      <div class="custom-tabs">
+        <button class="tab" [class.active]="selectedTab()===0" (click)="onTabChange(0)">Active Subscriptions</button>
+        <button class="tab" [class.active]="selectedTab()===1" (click)="onTabChange(1)">Active Trials</button>
+        <button class="tab" [class.active]="selectedTab()===2" (click)="onTabChange(2)">Requests</button>
+      </div>
+      <div class="tabs-actions">
+        <button class="add-sub-icon-btn" type="button" (click)="addSubscription()" matTooltip="New Subscription" matTooltipPosition="below">
+          <i class="pi pi-plus"></i>
+        </button>
+        <button class="filter-icon-btn" (click)="toggleFilterPanel()" matTooltip="Toggle Filters" matTooltipPosition="below">
+          <i class="pi pi-sliders-h"></i>
+        </button>
+      </div>
+    </div>
 
-      <ng-container matColumnDef="planCode">
-        <th mat-header-cell *matHeaderCellDef>Plan</th>
-        <td mat-cell *matCellDef="let row">{{ row.planCode || '-' }}</td>
-      </ng-container>
+    <!-- ── Scrollable table area ─────────────────────────────────────────── -->
+    <div class="work-queue-table-wrapper">
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let row">{{ row.status || '-' }}</td>
-      </ng-container>
+      <!-- Tab 1: Active Subscriptions -->
+      @if (selectedTab() === 0) {
+        <table class="work-queue-table">
+          <thead>
+            <tr>
+              <th>Subscriber</th>
+              <th>Type</th>
+              <th>Plan</th>
+              <th>Status</th>
+              <th>Period End</th>
+              <th>Trial End</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (subLoading()) {
+              <tr class="data-row"><td colspan="8" class="skeleton-block" style="height:28px"></td></tr>
+            }
+            @for (row of subPage().content; track row.id) {
+              <tr class="data-row" [style.display]="subLoading() ? 'none' : ''">
+                <td>
+                  <div class="subscription-primary">{{ row.subscriberDisplayName || row.subscriberId || "—" }}</div>
+                </td>
+                <td><span [class]="getTypeClass(row.subscriberType)">{{ row.subscriberType || "—" }}</span></td>
+                <td>
+                  <div class="subscription-primary" [matTooltip]="row.planCode || ''" matTooltipPosition="above">{{ getPlanName(row.planCode) }}</div>
+                </td>
+                <td><span [class]="getStatusClass(row.status)">{{ row.status || "—" }}</span></td>
+                <td>{{ row.currentPeriodEnd ? (row.currentPeriodEnd | date:"mediumDate") : "—" }}</td>
+                <td>{{ row.trialEndDate ? (row.trialEndDate | date:"mediumDate") : "—" }}</td>
+                <td>{{ row.createdDate ? (row.createdDate | date:"mediumDate") : "—" }}</td>
+                <td class="actions-cell">
+                  <button type="button" class="row-action-icon" matTooltip="View details" matTooltipPosition="above" (click)="openViewDrawer(row)" [disabled]="isSubBusy(row.id)"><i class="pi pi-eye"></i></button>
+                  <button type="button" class="row-action-icon" matTooltip="Edit subscription" matTooltipPosition="above" (click)="openViewDrawer(row)" [disabled]="isSubBusy(row.id)"><i class="pi pi-pencil"></i></button>
+                  <button type="button" class="row-action-icon" matTooltip="Extend trial" matTooltipPosition="above" (click)="extendTrial(row)" [disabled]="isSubBusy(row.id)"><i class="pi pi-clock"></i></button>
+                  <button type="button" class="row-action-icon" matTooltip="Activate" matTooltipPosition="above" (click)="activate(row)" [disabled]="isSubBusy(row.id)"><i class="pi pi-check-circle"></i></button>
+                  <button type="button" class="row-action-icon row-action-danger" matTooltip="Suspend" matTooltipPosition="above" (click)="suspend(row)" [disabled]="isSubBusy(row.id)"><i class="pi pi-pause-circle"></i></button>
+                </td>
+              </tr>
+            }
+            @if (!subLoading() && subPage().content.length === 0) {
+              <tr class="no-record-row"><td colspan="8">No active subscriptions found</td></tr>
+            }
+          </tbody>
+        </table>
+      }
 
-      <ng-container matColumnDef="trialEndDate">
-        <th mat-header-cell *matHeaderCellDef>Trial end</th>
-        <td mat-cell *matCellDef="let row">{{ row.trialEndDate || '-' }}</td>
-      </ng-container>
+      <!-- Tab 2: Active Trials -->
+      @if (selectedTab() === 1) {
+        <table class="work-queue-table">
+          <thead>
+            <tr>
+              <th>Subscriber</th>
+              <th>Type</th>
+              <th>Trial Plan</th>
+              <th>Trial Start</th>
+              <th>Trial End</th>
+              <th>Days Left</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (trialLoading()) {
+              <tr class="data-row"><td colspan="7" class="skeleton-block" style="height:28px"></td></tr>
+            }
+            @for (row of trialPage().content; track row.id) {
+              <tr class="data-row" [style.display]="trialLoading() ? 'none' : ''">
+                <td>
+                  <div class="subscription-primary">{{ row.subscriberDisplayName || row.subscriberId || "—" }}</div>
+                </td>
+                <td><span [class]="getTypeClass(row.subscriberType)">{{ row.subscriberType || "—" }}</span></td>
+                <td>
+                  <div class="subscription-primary" [matTooltip]="row.planCode || ''" matTooltipPosition="above">{{ getPlanName(row.planCode) }}</div>
+                </td>
+                <td>{{ row.trialStartDate ? (row.trialStartDate | date:"mediumDate") : "—" }}</td>
+                <td>{{ row.trialEndDate ? (row.trialEndDate | date:"mediumDate") : "—" }}</td>
+                <td>
+                  @if (daysRemaining(row.trialEndDate) !== null) {
+                    @let days = daysRemaining(row.trialEndDate)!;
+                    <span class="chip" [class.days-critical]="days <= 3" [class.days-warn]="days > 3 && days <= 7" [class.days-ok]="days > 7">{{ days }}d</span>
+                  } @else { — }
+                </td>
+                <td class="actions-cell">
+                  <button type="button" class="row-action-icon" matTooltip="View details" matTooltipPosition="above" (click)="openViewDrawer(row)" [disabled]="isTrialBusy(row.id)"><i class="pi pi-eye"></i></button>
+                  <button type="button" class="row-action-icon" matTooltip="Edit" matTooltipPosition="above" (click)="openViewDrawer(row)" [disabled]="isTrialBusy(row.id)"><i class="pi pi-pencil"></i></button>
+                  <button type="button" class="row-action-icon" matTooltip="Extend trial" matTooltipPosition="above" (click)="extendTrialRow(row)" [disabled]="isTrialBusy(row.id)"><i class="pi pi-clock"></i></button>
+                  <button type="button" class="row-action-icon row-action-danger" matTooltip="End trial" matTooltipPosition="above" (click)="endTrialRow(row)" [disabled]="isTrialBusy(row.id)"><i class="pi pi-times-circle"></i></button>
+                </td>
+              </tr>
+            }
+            @if (!trialLoading() && trialPage().content.length === 0) {
+              <tr class="no-record-row"><td colspan="7">No active trials found</td></tr>
+            }
+          </tbody>
+        </table>
+      }
 
-      <ng-container matColumnDef="currentPeriodEnd">
-        <th mat-header-cell *matHeaderCellDef>Period end</th>
-        <td mat-cell *matCellDef="let row">{{ row.currentPeriodEnd || '-' }}</td>
-      </ng-container>
+      <!-- Tab 3: Subscription Requests -->
+      @if (selectedTab() === 2) {
+        <table class="work-queue-table">
+          <thead>
+            <tr>
+              <th>Subscriber</th>
+              <th>Type</th>
+              <th>Current Plan</th>
+              <th>Requested Plan</th>
+              <th>Status</th>
+              <th>Requested</th>
+              <th>Trial End</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (reqLoading()) {
+              <tr class="data-row"><td colspan="8" class="skeleton-block" style="height:28px"></td></tr>
+            }
+            @for (row of reqPage().content; track row.id) {
+              <tr class="data-row" [style.display]="reqLoading() ? 'none' : ''">
+                <td>
+                  <div class="subscription-primary">{{ reqUserLabel(row) }}</div>
+                </td>
+                <td>
+                  @if (row.requestType) {
+                    <span class="chip type-req">{{ row.requestType }}</span>
+                  } @else { — }
+                </td>
+                <td>
+                  <div class="subscription-primary" [matTooltip]="row.currentPlanCode || ''" matTooltipPosition="above">{{ getPlanName(row.currentPlanCode) }}</div>
+                </td>
+                <td>
+                  <div class="subscription-primary" [matTooltip]="row.requestedPlanCode || ''" matTooltipPosition="above">{{ getPlanName(row.requestedPlanCode) }}</div>
+                </td>
+                <td><span [class]="getStatusClass(row.status)">{{ row.status || "—" }}</span></td>
+                <td>{{ row.requestedDate ? (row.requestedDate | date:"mediumDate") : "—" }}</td>
+                <td>{{ row.trialEndDate ? (row.trialEndDate | date:"mediumDate") : "—" }}</td>
+                <td class="actions-cell">
+                  <button type="button" class="row-action-icon" matTooltip="View request" matTooltipPosition="above" (click)="openReqViewDrawer(row)" [disabled]="isReqBusy(row.id)"><i class="pi pi-eye"></i></button>
+                  <button type="button" class="row-action-icon row-action-success" matTooltip="Approve" matTooltipPosition="above" (click)="approveTrialAction(row)" [disabled]="isReqBusy(row.id) || !canReview(row)"><i class="pi pi-check"></i></button>
+                  <button type="button" class="row-action-icon" matTooltip="Extend trial" matTooltipPosition="above" (click)="extendPlanTrialAction(row)" [disabled]="isReqBusy(row.id) || !canExtendPlanTrial(row)"><i class="pi pi-clock"></i></button>
+                  <button type="button" class="row-action-icon row-action-danger" matTooltip="Reject" matTooltipPosition="above" (click)="rejectPlanRequestAction(row)" [disabled]="isReqBusy(row.id) || !canReview(row)"><i class="pi pi-times"></i></button>
+                </td>
+              </tr>
+            }
+            @if (!reqLoading() && reqPage().content.length === 0) {
+              <tr class="no-record-row"><td colspan="8">No subscription requests found</td></tr>
+            }
+          </tbody>
+        </table>
+      }
 
-      <ng-container matColumnDef="provider">
-        <th mat-header-cell *matHeaderCellDef>Provider</th>
-        <td mat-cell *matCellDef="let row">{{ row.provider || '-' }}</td>
-      </ng-container>
+    </div><!-- /work-queue-table-wrapper -->
 
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let row" class="admin-actions">
-          <button mat-button type="button" (click)="extendTrial(row)" [disabled]="isRowBusy(row.id)">Extend trial</button>
-          <button mat-button type="button" (click)="endTrial(row)" [disabled]="isRowBusy(row.id)">End trial</button>
-          <button mat-button color="primary" type="button" (click)="activate(row)" [disabled]="isRowBusy(row.id)">Activate</button>
-          <button mat-button color="warn" type="button" (click)="suspend(row)" [disabled]="isRowBusy(row.id)">Suspend</button>
-        </td>
-      </ng-container>
+    <!-- Pagination bar -->
+    <div class="pagination-bar">
+      <button class="next-btn" type="button" (click)="prevPageActive()" [disabled]="!canPrevActive()"><i class="pi pi-angle-left"></i></button>
+      <span class="active">{{ getCurrentPageActive() }}</span>
+      <span>/ {{ getTotalPagesActive() }}</span>
+      <button class="next-btn" type="button" (click)="nextPageActive()" [disabled]="!canNextActive()"><i class="pi pi-angle-right"></i></button>
+    </div>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+  </div><!-- /work-queue-card -->
+</div><!-- /sub-page-wrapper -->
 
-    @if (!loading() && (page().content?.length ?? 0) === 0) {
-      <div class="muted" style="padding: 12px 0;">No subscriptions found.</div>
+
+<!-- ── Filter Drawer ──────────────────────────────────────────────────────── -->
+<p-drawer
+  [(visible)]="showFilterPanel"
+  [position]="'right'"
+  [modal]="false"
+  appendTo="body"
+  [transitionOptions]="'180ms cubic-bezier(0.2, 0, 0, 1)'"
+  [showCloseIcon]="true"
+  (onHide)="closeFilterPanel()"
+  styleClass="workqueue-drawer"
+  [style]="{width: '300px'}">
+  <ng-template pTemplate="header"><h3>Filters</h3></ng-template>
+  <div class="filter-panel-content">
+    @if (selectedTab() === 0) {
+      <div class="filter-group">
+        <label>Subscriber type</label>
+        <select [value]="subSubscriberType()" (change)="onSubSubscriberTypeChange($any($event.target).value)">
+          <option value="">All types</option>
+          <option value="INDIVIDUAL">Individual</option>
+          <option value="ENTERPRISE">Enterprise</option>
+        </select>
+        <label>Status</label>
+        <input type="text" [value]="subStatus()" (input)="onSubStatusChange($any($event.target).value)" placeholder="ACTIVE, TRIALING…" />
+        <label>Search</label>
+        <input type="text" [value]="subQ()" (input)="onSubSearchChange($any($event.target).value)" placeholder="Subscriber or plan…" />
+      </div>
     }
+    @if (selectedTab() === 1) {
+      <div class="filter-group">
+        <label>Subscriber type</label>
+        <select [value]="trialSubscriberType()" (change)="onTrialSubscriberTypeChange($any($event.target).value)">
+          <option value="">All types</option>
+          <option value="INDIVIDUAL">Individual</option>
+          <option value="ENTERPRISE">Enterprise</option>
+        </select>
+        <label>Search</label>
+        <input type="text" [value]="trialQ()" (input)="onTrialSearchChange($any($event.target).value)" placeholder="Subscriber or plan…" />
+      </div>
+    }
+    @if (selectedTab() === 2) {
+      <div class="filter-group">
+        <label>Status</label>
+        <select [value]="reqStatus()" (change)="onReqStatusChange($any($event.target).value)">
+          <option value="">All statuses</option>
+          <option value="PENDING">Pending</option>
+          <option value="APPROVED">Approved</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+        <label>Request type</label>
+        <select [value]="reqType()" (change)="onReqTypeChange($any($event.target).value)">
+          <option value="">All types</option>
+          <option value="TRIAL_REQUEST">Trial request</option>
+          <option value="UPGRADE_REQUEST">Upgrade request</option>
+        </select>
+        <label>Plan code</label>
+        <input type="text" [value]="reqPlan()" (input)="onReqPlanChange($any($event.target).value)" placeholder="Plan code…" />
+      </div>
+    }
+    <div class="filter-actions">
+      <button type="button" class="clear-all-btn" (click)="clearCurrentFilters()">Clear All</button>
+      <button type="button" class="apply-filter-btn" (click)="closeFilterPanel()">Done</button>
+    </div>
   </div>
-</app-admin-table-shell>
+</p-drawer>
+
+
+<!-- ── Request Detail Drawer ─────────────────────────────────────────────── -->
+<p-drawer
+  [visible]="reqDrawerOpen()"
+  (visibleChange)="$event ? null : closeReqDrawer()"
+  [position]="'right'"
+  [modal]="true"
+  appendTo="body"
+  [transitionOptions]="'180ms cubic-bezier(0.2, 0, 0, 1)'"
+  [showCloseIcon]="true"
+  (onHide)="closeReqDrawer()"
+  styleClass="workqueue-row-edit-drawer sub-edit-drawer"
+  [style]="{width: '480px'}">
+  <ng-template pTemplate="header">
+    <h3>Request Detail</h3>
+  </ng-template>
+
+  @if (reqDrawerRow(); as req) {
+    <div class="req-detail-content">
+      <div class="req-detail-group">
+        <div class="req-detail-label">Subscriber</div>
+        <div class="req-detail-value">{{ reqUserLabel(req) }}</div>
+      </div>
+      <div class="req-detail-group">
+        <div class="req-detail-label">Request Type</div>
+        <div class="req-detail-value">
+          @if (req.requestType) {
+            <span class="chip type-req">{{ req.requestType }}</span>
+          } @else { — }
+        </div>
+      </div>
+      <div class="req-detail-group">
+        <div class="req-detail-label">Current Plan</div>
+        <div class="req-detail-value">
+          {{ getPlanName(req.currentPlanCode) }}
+          @if (req.currentPlanCode) {
+            <span class="plan-code-hint">({{ req.currentPlanCode }})</span>
+          }
+        </div>
+      </div>
+      <div class="req-detail-group">
+        <div class="req-detail-label">Requested Plan</div>
+        <div class="req-detail-value">
+          {{ getPlanName(req.requestedPlanCode) }}
+          @if (req.requestedPlanCode) {
+            <span class="plan-code-hint">({{ req.requestedPlanCode }})</span>
+          }
+        </div>
+      </div>
+      <div class="req-detail-group">
+        <div class="req-detail-label">Status</div>
+        <div class="req-detail-value"><span [class]="getStatusClass(req.status)">{{ req.status || "—" }}</span></div>
+      </div>
+      <div class="req-detail-group">
+        <div class="req-detail-label">Requested Date</div>
+        <div class="req-detail-value">{{ req.requestedDate ? (req.requestedDate | date:"mediumDate") : "—" }}</div>
+      </div>
+      <div class="req-detail-group">
+        <div class="req-detail-label">Trial End</div>
+        <div class="req-detail-value">{{ req.trialEndDate ? (req.trialEndDate | date:"mediumDate") : "—" }}</div>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="sub-drawer-footer">
+        <button type="button" class="clear-all-btn" (click)="closeReqDrawer()">Close</button>
+        @if (canReview(req)) {
+          <button type="button" class="apply-filter-btn" (click)="approveTrialAction(req); closeReqDrawer()">Approve</button>
+          <button type="button" class="clear-all-btn row-action-danger-text" (click)="rejectPlanRequestAction(req); closeReqDrawer()">Reject</button>
+        }
+      </div>
+    </ng-template>
+  }
+</p-drawer>
+
+
+<!-- ── Edit / Create Drawer ───────────────────────────────────────────────── -->
+<p-drawer
+  [visible]="drawerOpen()"
+  (visibleChange)="$event ? null : closeDrawer()"
+  [position]="'right'"
+  [modal]="true"
+  appendTo="body"
+  [transitionOptions]="'180ms cubic-bezier(0.2, 0, 0, 1)'"
+  [showCloseIcon]="true"
+  (onHide)="closeDrawer()"
+  styleClass="workqueue-row-edit-drawer sub-edit-drawer"
+  [style]="{width: '480px'}">
+  <ng-template pTemplate="header">
+    <h3>{{ drawerMode() === "create" ? "New Subscription" : "Edit Subscription" }}</h3>
+  </ng-template>
+
+  <div class="row-edit-drawer-content">
+    <form [formGroup]="editForm" class="sub-drawer-form">
+
+      <div class="sub-form-group">
+        <label class="sub-field-label">Subscriber type</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-select formControlName="subscriberType">
+            <mat-option value="INDIVIDUAL">Individual</mat-option>
+            <mat-option value="ENTERPRISE">Enterprise</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="sub-form-group">
+        <label class="sub-field-label">Subscriber (user login)</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput [formControl]="userSearchCtrl" [matAutocomplete]="userAuto"
+                 placeholder="Search by login…" (input)="onUserSearchInput($any($event.target).value)" />
+          <mat-icon matSuffix>person_search</mat-icon>
+          <mat-autocomplete #userAuto="matAutocomplete" (optionSelected)="onUserSelected($event)">
+            @for (u of userOptions(); track u.login) {
+              <mat-option [value]="u.login">
+                <span class="user-opt-login">{{ u.login }}</span>
+                @if (u.firstName || u.lastName) {
+                  <span class="user-opt-name"> — {{ u.firstName }} {{ u.lastName }}</span>
+                }
+              </mat-option>
+            }
+            @if (userOptions().length === 0 && (userSearchCtrl.value?.length ?? 0) >= 2) {
+              <mat-option disabled>No users found</mat-option>
+            }
+          </mat-autocomplete>
+          @if (editForm.controls["subscriberId"].value) {
+            <mat-hint>Assigned to: <strong>{{ editForm.controls["subscriberId"].value }}</strong></mat-hint>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="sub-form-group">
+        <label class="sub-field-label">Plan code</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput formControlName="planCode" placeholder="e.g. FREE_INDIVIDUAL, PRO_INDIVIDUAL" />
+        </mat-form-field>
+      </div>
+
+      <div class="sub-form-group">
+        <label class="sub-field-label">Status</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-select formControlName="status">
+            <mat-option value="ACTIVE">Active</mat-option>
+            <mat-option value="TRIALING">Trialing</mat-option>
+            <mat-option value="SUSPENDED">Suspended</mat-option>
+            <mat-option value="CANCELLED">Cancelled</mat-option>
+            <mat-option value="PENDING_QUEUE">Pending queue</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="sub-drawer-row">
+        <div class="half-width">
+          <label class="sub-field-label">Start date</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input matInput type="date" formControlName="startDate" />
+          </mat-form-field>
+        </div>
+        <div class="half-width">
+          <label class="sub-field-label">Next billing date</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input matInput type="date" formControlName="nextBillingDate" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="sub-drawer-row">
+        <div class="half-width">
+          <label class="sub-field-label">Trial start</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input matInput type="date" formControlName="trialStartDate" />
+          </mat-form-field>
+        </div>
+        <div class="half-width">
+          <label class="sub-field-label">Trial end</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input matInput type="date" formControlName="trialEndDate" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="sub-form-group">
+        <label class="sub-field-label">Provider subscription ID</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput formControlName="providerSubscriptionId" placeholder="Optional" />
+        </mat-form-field>
+      </div>
+
+      <div class="sub-drawer-checks">
+        <mat-checkbox formControlName="autoRenew">Auto renew</mat-checkbox>
+        <mat-checkbox formControlName="cancelAtPeriodEnd">Cancel at period end</mat-checkbox>
+      </div>
+
+    </form>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="sub-drawer-footer">
+      <button type="button" class="clear-all-btn" (click)="closeDrawer()">Cancel</button>
+      <button type="button" class="apply-filter-btn" (click)="saveDrawer()" [disabled]="drawerSaving()">
+        {{ drawerSaving() ? "Saving…" : drawerMode() === "create" ? "Create" : "Save changes" }}
+      </button>
+    </div>
+  </ng-template>
+</p-drawer>

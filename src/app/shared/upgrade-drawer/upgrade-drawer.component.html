@@ -82,10 +82,36 @@
         </div>
       </section>
 
+      @if (trialStatus().isTrialing || trialStatus().isExpired) {
+        <section class="upgrade-drawer__trial upgrade-drawer__section-panel">
+          <div class="upgrade-drawer__section-head">
+            <div class="upgrade-drawer__section-label">Trial status</div>
+          </div>
+          <div class="upgrade-drawer__metric-grid">
+            <div class="upgrade-drawer__metric-card">
+              <span class="upgrade-drawer__metric-label"><span class="pi pi-clock"></span>Status</span>
+              <strong>{{ trialStatus().isTrialing ? 'Active trial' : 'Expired' }}</strong>
+            </div>
+            @if (trialStatus().trialEndDate) {
+              <div class="upgrade-drawer__metric-card">
+                <span class="upgrade-drawer__metric-label"><span class="pi pi-calendar"></span>Trial ends</span>
+                <strong>{{ trialStatus().trialEndDate | date:'mediumDate' }}</strong>
+              </div>
+            }
+            @if (trialStatus().daysRemaining !== null) {
+              <div class="upgrade-drawer__metric-card">
+                <span class="upgrade-drawer__metric-label"><span class="pi pi-hourglass"></span>Days left</span>
+                <strong>{{ trialStatus().daysRemaining === 0 ? 'Last day' : trialStatus().daysRemaining + ' days' }}</strong>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
       <section class="upgrade-drawer__usage upgrade-drawer__section-panel">
         <div class="upgrade-drawer__section-head">
           <div class="upgrade-drawer__section-label">Usage</div>
-          <p class="upgrade-drawer__section-copy">Resume creation usage based on live account and eligibility API data.</p>
+          <p class="upgrade-drawer__section-copy">How many resumes you've used across your current plan.</p>
         </div>
         <div class="upgrade-drawer__usage-grid">
           <div class="upgrade-drawer__metric-card">
@@ -114,7 +140,7 @@
       <section class="upgrade-drawer__plans upgrade-drawer__section-panel">
         <div class="upgrade-drawer__section-head">
           <div class="upgrade-drawer__section-label">Choose a plan</div>
-          <p class="upgrade-drawer__section-copy">Plan options are rendered from API data. Existing layout and upgrade actions remain unchanged.</p>
+          <p class="upgrade-drawer__section-copy">Select a plan to start a trial or request an upgrade.</p>
         </div>
 
         @if (upgradePlans().length === 0) {
@@ -167,35 +193,109 @@
               }
             </div>
 
-            <div class="upgrade-plan-card__actions" [class.upgrade-plan-card__actions--pending]="hasPendingRequest(plan)">
-              <label class="upgrade-plan-card__reason-label" [attr.for]="'upgrade-reason-' + plan.code">Reason for trial (optional)</label>
-              <textarea
-                class="upgrade-plan-card__reason"
-                [id]="'upgrade-reason-' + plan.code"
-                rows="3"
-                maxlength="500"
-                [value]="requestReason(plan)"
-                (input)="updateRequestReason(plan, $any($event.target).value)"
-                [disabled]="isRequesting(plan) || hasPendingRequest(plan)"
-                placeholder="Add context for the trial request"
-              ></textarea>
-              <button
-                type="button"
-                class="upgrade-plan-card__button"
-                [class.upgrade-plan-card__button--pending]="hasPendingRequest(plan)"
-                [disabled]="isRequesting(plan) || hasPendingRequest(plan) || !plan.planId"
-                (click)="submitUpgradeRequest(plan)"
-              >
-                <i
-                  class="pi"
-                  [class.pi-send]="!isRequesting(plan)"
-                  [class.pi-spin]="isRequesting(plan)"
-                  [class.pi-spinner]="isRequesting(plan)"
-                  aria-hidden="true"
-                ></i>
-                <span>{{ isRequesting(plan) ? 'Submitting...' : (hasPendingRequest(plan) ? 'Trial Pending' : 'Request Trial') }}</span>
-              </button>
-              <p class="upgrade-plan-card__action-note">{{ hasPendingRequest(plan) ? 'You already have a pending trial request.' : (plan.planId ? 'Submit a trial request for this plan.' : 'Trial request is unavailable for this plan.') }}</p>
+            <div class="upgrade-plan-card__actions">
+              @switch (requestStatusFor(plan)) {
+                @case ('PENDING') {
+                  <div class="upgrade-plan-card__status-badge upgrade-plan-card__status-badge--pending">
+                    <span class="pi pi-clock" aria-hidden="true"></span>
+                    <span>Requested</span>
+                  </div>
+                  <p class="upgrade-plan-card__action-note">Your trial request is pending review.</p>
+                  @if (planRequestFor(plan)?.requestedDate) {
+                    <p class="upgrade-plan-card__action-meta">
+                      <span class="pi pi-calendar" aria-hidden="true"></span>
+                      Submitted: {{ planRequestFor(plan)?.requestedDate | date:'mediumDate' }}
+                    </p>
+                  }
+                }
+                @case ('APPROVED') {
+                  <div class="upgrade-plan-card__status-badge upgrade-plan-card__status-badge--approved">
+                    <span class="pi pi-check-circle" aria-hidden="true"></span>
+                    <span>Trial Active</span>
+                  </div>
+                  <p class="upgrade-plan-card__action-note">Your trial is active. Enjoy your plan!</p>
+                  @if (planRequestFor(plan)?.reviewedDate) {
+                    <p class="upgrade-plan-card__action-meta">
+                      <span class="pi pi-calendar" aria-hidden="true"></span>
+                      Started: {{ planRequestFor(plan)?.reviewedDate | date:'mediumDate' }}
+                    </p>
+                  }
+                  @if (planRequestFor(plan)?.trialEndDate) {
+                    <p class="upgrade-plan-card__action-meta">
+                      <span class="pi pi-hourglass" aria-hidden="true"></span>
+                      Trial ends: {{ planRequestFor(plan)?.trialEndDate | date:'mediumDate' }}
+                    </p>
+                  }
+                }
+                @case ('REJECTED') {
+                  <div class="upgrade-plan-card__status-badge upgrade-plan-card__status-badge--rejected">
+                    <span class="pi pi-times-circle" aria-hidden="true"></span>
+                    <span>Request Rejected</span>
+                  </div>
+                  <p class="upgrade-plan-card__action-note">Your previous request was rejected. You may submit a new one below.</p>
+                  @if (planRequestFor(plan)?.adminRemarks) {
+                    <p class="upgrade-plan-card__action-meta upgrade-plan-card__action-meta--remarks">
+                      <span class="pi pi-info-circle" aria-hidden="true"></span>
+                      Admin note: {{ planRequestFor(plan)?.adminRemarks }}
+                    </p>
+                  }
+                  <label class="upgrade-plan-card__reason-label" [attr.for]="'upgrade-reason-' + plan.code">Reason for retry (optional)</label>
+                  <textarea
+                    class="upgrade-plan-card__reason"
+                    [id]="'upgrade-reason-' + plan.code"
+                    rows="3"
+                    maxlength="500"
+                    [value]="requestReason(plan)"
+                    (input)="updateRequestReason(plan, $any($event.target).value)"
+                    [disabled]="isRequesting(plan)"
+                    placeholder="Add context for the trial request"
+                  ></textarea>
+                  <button
+                    type="button"
+                    class="upgrade-plan-card__button"
+                    [disabled]="isRequesting(plan) || !plan.planId"
+                    (click)="submitUpgradeRequest(plan)"
+                  >
+                    <i
+                      class="pi"
+                      [class.pi-send]="!isRequesting(plan)"
+                      [class.pi-spin]="isRequesting(plan)"
+                      [class.pi-spinner]="isRequesting(plan)"
+                      aria-hidden="true"
+                    ></i>
+                    <span>{{ isRequesting(plan) ? 'Submitting...' : 'Request Trial' }}</span>
+                  </button>
+                }
+                @default {
+                  <label class="upgrade-plan-card__reason-label" [attr.for]="'upgrade-reason-' + plan.code">Reason for trial (optional)</label>
+                  <textarea
+                    class="upgrade-plan-card__reason"
+                    [id]="'upgrade-reason-' + plan.code"
+                    rows="3"
+                    maxlength="500"
+                    [value]="requestReason(plan)"
+                    (input)="updateRequestReason(plan, $any($event.target).value)"
+                    [disabled]="isRequesting(plan)"
+                    placeholder="Add context for the trial request"
+                  ></textarea>
+                  <button
+                    type="button"
+                    class="upgrade-plan-card__button"
+                    [disabled]="isRequesting(plan) || !plan.planId"
+                    (click)="submitUpgradeRequest(plan)"
+                  >
+                    <i
+                      class="pi"
+                      [class.pi-send]="!isRequesting(plan)"
+                      [class.pi-spin]="isRequesting(plan)"
+                      [class.pi-spinner]="isRequesting(plan)"
+                      aria-hidden="true"
+                    ></i>
+                    <span>{{ isRequesting(plan) ? 'Submitting...' : 'Request Trial' }}</span>
+                  </button>
+                  <p class="upgrade-plan-card__action-note">{{ plan.planId ? 'Submit a trial request for this plan.' : 'Trial request is unavailable for this plan.' }}</p>
+                }
+              }
             </div>
           </article>
         }

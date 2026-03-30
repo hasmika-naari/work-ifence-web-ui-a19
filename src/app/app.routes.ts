@@ -656,6 +656,14 @@ export const routes: Routes = [
                                 .then(m => m.AdminUpgradeRequestsComponent),
                         data: { breadcrumb: 'Upgrade Requests', requireAuth: true, requireFlag: 'SUBSCRIPTIONS', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_BILLING_SUBSCRIPTIONS }
                     }),
+                    entitledRoute(ENTITLEMENT_KEYS.ADMIN_BILLING_SUBSCRIPTIONS, {
+                        path: 'subscriptions',
+                        canActivate: [entitlementRouteGuard, accessGuard],
+                        loadComponent: () =>
+                            import('./pages/admin/subscriptions/admin-subscriptions.component')
+                                .then(m => m.AdminSubscriptionsComponent),
+                        data: { breadcrumb: 'Subscriptions', requireAuth: true, requireFlag: 'SUBSCRIPTIONS', requireMode: 'ADMIN', entitlementKey: ENTITLEMENT_KEYS.ADMIN_BILLING_SUBSCRIPTIONS }
+                    }),
                     entitledRoute(ENTITLEMENT_KEYS.ADMIN_RESUME_TEMPLATES, {
                         path: 'resume-templates',
                         canActivate: [entitlementRouteGuard, accessGuard],

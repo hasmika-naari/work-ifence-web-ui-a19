@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { buildPageableParams } from 'src/app/shared/http/build-pageable-params';
 import type {
   AdminOnboardingRequestRow,
+  AdminSubscriptionPlanRequestRow,
   AdminSubscriptionUpgradeRequestRow,
   AdminSubscriptionRow,
   PagedResponse,
@@ -29,6 +30,14 @@ export interface ListSubscriptionsParams {
 export interface ListSubscriptionUpgradeRequestsParams {
   status?: string;
   plan?: string;
+  page: number;
+  size: number;
+}
+
+export interface ListSubscriptionPlanRequestsParams {
+  status?: string;
+  planCode?: string;
+  requestType?: string;
   page: number;
   size: number;
 }
@@ -92,16 +101,51 @@ export class AdminApiService {
       page: params.page,
       size: params.size,
       filters: {
-        subscriberType: params.subscriberType,
-        status: params.status,
+        'subscriberType.equals': params.subscriberType,
+        'status.equals': params.status,
         q: params.q,
       },
     });
 
     return this.http.get<PagedResponse<AdminSubscriptionRow>>(
-      `${this.getBaseUrl()}/api/ext/admin/subscriptions`,
+      `${this.getBaseUrl()}/api/wifence-subscriptions`,
       { params: httpParams }
+    ).pipe(
+      map((response) => {
+        const paged = this.normalizePagedResponse(
+          response as PagedResponse<AdminSubscriptionRow> | AdminSubscriptionRow[],
+          params.page,
+          params.size
+        );
+        return { ...paged, content: paged.content.map((r) => this.normalizeSubscriptionRow(r)) };
+      })
     );
+  }
+
+  getSubscription(id: string): Observable<AdminSubscriptionRow> {
+    return this.http
+      .get<AdminSubscriptionRow>(`${this.getBaseUrl()}/api/wifence-subscriptions/${encodeURIComponent(id)}`)
+      .pipe(map((r) => this.normalizeSubscriptionRow(r)));
+  }
+
+  createSubscription(body: Partial<AdminSubscriptionRow>): Observable<AdminSubscriptionRow> {
+    return this.http
+      .post<AdminSubscriptionRow>(`${this.getBaseUrl()}/api/wifence-subscriptions`, body)
+      .pipe(map((r) => this.normalizeSubscriptionRow(r)));
+  }
+
+  /**
+   * Full-replace update via the extended admin endpoint.
+   * Uses PUT /api/ext/wifence-subscriptions/{id} consistent with how
+   * the rest of this project persists subscription edits.
+   */
+  updateSubscription(id: string, body: Partial<AdminSubscriptionRow>): Observable<AdminSubscriptionRow> {
+    return this.http
+      .put<AdminSubscriptionRow>(
+        `${this.getBaseUrl()}/api/ext/wifence-subscriptions/${encodeURIComponent(id)}`,
+        body
+      )
+      .pipe(map((r) => this.normalizeSubscriptionRow(r)));
   }
 
   listSubscriptionUpgradeRequests(
@@ -145,6 +189,68 @@ export class AdminApiService {
     );
   }
 
+  // ---------------------------------------------------------------------------
+  // Subscription Plan Requests  (/api/admin/subscription-plan-requests)
+  // ---------------------------------------------------------------------------
+
+  listPlanRequests(
+    params: ListSubscriptionPlanRequestsParams
+  ): Observable<PagedResponse<AdminSubscriptionPlanRequestRow>> {
+    const httpParams = buildPageableParams({
+      page: params.page,
+      size: params.size,
+      filters: {
+        status: params.status,
+        planCode: params.planCode,
+        requestType: params.requestType,
+      },
+    });
+    return this.http.get<PagedResponse<AdminSubscriptionPlanRequestRow> | AdminSubscriptionPlanRequestRow[]>(
+      `${this.getBaseUrl()}/api/admin/subscription-plan-requests`,
+      { params: httpParams }
+    ).pipe(
+      map((response) => this.normalizePagedResponse(response, params.page, params.size))
+    );
+  }
+
+  getPlanRequest(id: string | number): Observable<AdminSubscriptionPlanRequestRow> {
+    return this.http.get<AdminSubscriptionPlanRequestRow>(
+      `${this.getBaseUrl()}/api/admin/subscription-plan-requests/${encodeURIComponent(String(id))}`
+    );
+  }
+
+  approveTrial(
+    id: string | number,
+    body: {
+      adminRemarks?: string;
+      trialDays?: number;
+      trialStartDate?: string;
+      trialEndDate?: string;
+    }
+  ): Observable<void> {
+    return this.http.patch<void>(
+      `${this.getBaseUrl()}/api/admin/subscription-plan-requests/${encodeURIComponent(String(id))}/approve-trial`,
+      body
+    );
+  }
+
+  rejectPlanRequest(id: string | number, body: { adminRemarks?: string }): Observable<void> {
+    return this.http.patch<void>(
+      `${this.getBaseUrl()}/api/admin/subscription-plan-requests/${encodeURIComponent(String(id))}/reject`,
+      body
+    );
+  }
+
+  extendPlanTrial(
+    id: string | number,
+    body: { trialDays?: number; trialEndDate?: string; reason?: string }
+  ): Observable<void> {
+    return this.http.patch<void>(
+      `${this.getBaseUrl()}/api/admin/subscription-plan-requests/${encodeURIComponent(String(id))}/extend-trial`,
+      body
+    );
+  }
+
   endTrial(id: string): Observable<void> {
     return this.http.post<void>(
       `${this.getBaseUrl()}/api/ext/admin/subscriptions/${encodeURIComponent(id)}/end-trial`,
@@ -164,6 +270,31 @@ export class AdminApiService {
       `${this.getBaseUrl()}/api/ext/admin/subscriptions/${encodeURIComponent(id)}/suspend`,
       {}
     );
+  }
+
+  /** Search platform users for the subscriber assignment autocomplete. */
+  searchUsers(
+    q: string,
+    size = 20
+  ): Observable<Array<{ login: string; firstName?: string; lastName?: string; email?: string }>> {
+    const params = new HttpParams()
+      .set('login.contains', q)
+      .set('size', String(size));
+    return this.http.get<Array<{ login: string; firstName?: string; lastName?: string; email?: string }>>(
+      `${this.getBaseUrl()}/api/users`, { params }
+    );
+  }
+
+  private normalizeSubscriptionRow(row: AdminSubscriptionRow): AdminSubscriptionRow {
+    return {
+      ...row,
+      // /api/wifence-subscriptions exposes the period-end date as nextBillingDate.
+      // The admin subscriptions UI binds to currentPeriodEnd, so fall back here.
+      currentPeriodEnd: row.currentPeriodEnd || row.nextBillingDate,
+      // Normalise display name for subscriber column enrichment.
+      subscriberDisplayName:
+        row.subscriberDisplayName || row.subscriberId || undefined,
+    };
   }
 
   private getBaseUrl(): string {

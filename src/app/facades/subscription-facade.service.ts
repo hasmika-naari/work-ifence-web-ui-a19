@@ -1,10 +1,11 @@
-import { Injectable, Injector, computed, inject, signal } from '@angular/core';
+import { Injectable, Injector, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 import { AccessFacadeService } from './access-facade.service';
 import { SubscriptionApiService } from '../services/subscription-api.service';
 import { DashboardContextService } from '../services/dashboard-context.service';
-import type { CreateSubscriptionUpgradeRequest, SubscriptionPlan, SubscriptionScope } from '../models/subscription.model';
+import type { CreateSubscriptionUpgradeRequest, SubscriptionPlan, SubscriptionPlanRequest, SubscriptionPlanRequestRow, SubscriptionScope, TrialStatusSummary } from '../models/subscription.model';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionFacadeService {
@@ -21,8 +22,13 @@ export class SubscriptionFacadeService {
   });
 
   constructor() {
-    this.initializePlansSignal('INDIVIDUAL');
-    this.initializePlansSignal('ENTERPRISE');
+    // Skip eager plan loading during SSR — the SsrHttpBlockInterceptor would stub
+    // those requests anyway, and the timeout errors pollute server logs.
+    // Plans are initialized lazily via plansSignal() on the browser side.
+    if (isPlatformBrowser(inject(PLATFORM_ID))) {
+      this.initializePlansSignal('INDIVIDUAL');
+      this.initializePlansSignal('ENTERPRISE');
+    }
   }
 
   readonly currentScopeSignal = computed<SubscriptionScope>(() => {
@@ -38,6 +44,26 @@ export class SubscriptionFacadeService {
    * This avoids extra API calls for the common UI.
    */
   readonly currentSubscriptionSignal = computed(() => this.accessFacade.accessMeSignal().subscription);
+
+  /** Derives trial status from the current subscription. Single source of truth for all consumers. */
+  readonly trialStatus = computed<TrialStatusSummary>(() => {
+    const sub = this.currentSubscriptionSignal();
+    const status = (sub?.status ?? '').toString().toUpperCase();
+    const isTrialing = status === 'TRIALING';
+    const isExpired = !!status && status !== 'ACTIVE' && status !== 'TRIALING';
+    let daysRemaining: number | null = null;
+    if (isTrialing && sub?.trialEndDate) {
+      daysRemaining = Math.max(0, Math.ceil((new Date(sub.trialEndDate).getTime() - Date.now()) / 86_400_000));
+    }
+    return {
+      isTrialing,
+      isExpired,
+      trialEndDate: sub?.trialEndDate ?? undefined,
+      daysRemaining: isTrialing ? daysRemaining : null,
+      trialPlanCode: isTrialing ? (sub?.planCode ?? undefined) : undefined,
+      assignedPlanCode: sub?.planCode ?? undefined,
+    };
+  });
 
   plansSignal(scope: SubscriptionScope) {
     const cached = this.plansSignals.get(scope);
@@ -110,6 +136,14 @@ export class SubscriptionFacadeService {
 
   submitUpgradeRequest(req: CreateSubscriptionUpgradeRequest): Observable<unknown> {
     return this.api.submitUpgradeRequest(req);
+  }
+
+  getMyPlanRequests(): Observable<SubscriptionPlanRequestRow[]> {
+    return this.api.getMyPlanRequests();
+  }
+
+  submitPlanRequest(req: SubscriptionPlanRequest): Observable<SubscriptionPlanRequestRow> {
+    return this.api.submitPlanRequest(req);
   }
 
   private setPlanLoadError(scope: SubscriptionScope, message: string | null): void {

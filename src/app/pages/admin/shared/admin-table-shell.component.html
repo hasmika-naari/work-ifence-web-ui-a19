@@ -1,35 +1,36 @@
-<section class="admin-shell">
-  <div class="admin-shell__header">
-    <div>
-      <div class="admin-shell__title">{{ title }}</div>
-      @if (subtitle) {
-        <div class="admin-shell__subtitle muted">{{ subtitle }}</div>
-      }
-    </div>
-    <div class="admin-shell__header-actions">
-      <ng-content select="[header-actions]"></ng-content>
-    </div>
-  </div>
-
-  <div class="admin-shell__filters">
-    <ng-content select="[filters]"></ng-content>
-  </div>
-
-  <div class="admin-shell__content">
-    @if (loading) {
-      <div class="admin-shell__loading">
-        <mat-spinner diameter="28"></mat-spinner>
+<div class="admin-page-wrapper">
+  <section class="admin-shell">
+    <!-- Page header: title + primary action sit above the card -->
+    <div class="admin-shell__page-header">
+      <div>
+        <div class="admin-shell__title">{{ title }}</div>
+        @if (subtitle) {
+          <p class="admin-shell__subtitle">{{ subtitle }}</p>
+        }
       </div>
-    }
+      <div class="admin-shell__header-actions">
+        <ng-content select="[header-actions]"></ng-content>
+      </div>
+    </div>
 
-    <ng-content select="[table]"></ng-content>
-  </div>
+    <!-- White card -->
+    <div class="admin-shell__card">
+      <div class="admin-shell__content">
+        @if (loading) {
+          <div class="admin-shell__loading">
+            <mat-spinner diameter="28"></mat-spinner>
+          </div>
+        }
+        <ng-content select="[table]"></ng-content>
+      </div>
 
-  <mat-paginator
-    [length]="length"
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="pageSizeOptions"
-    (page)="onPage($event)"
-  ></mat-paginator>
-</section>
+      <mat-paginator
+        [length]="length"
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPage($event)"
+      ></mat-paginator>
+    </div>
+  </section>
+</div>

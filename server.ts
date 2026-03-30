@@ -101,6 +101,17 @@ export function app(): express.Express {
   };
   server.use(['/api', '/api*', '/api**'], createProxyMiddleware(proxyOptions));
 
+  // Any request with a file extension (fonts, images, JS, CSS, etc.) that wasn't
+  // served by the static middleware above should 404 — not fall through to Angular
+  // SSR where the router would try to navigate to e.g. "/assets/resume/fonts/Poppins-Regular.ttf".
+  server.use((req: any, res: any, next: any) => {
+    if (/\.(?!html)[a-zA-Z0-9]+$/.test(req.path)) {
+      res.status(404).end();
+      return;
+    }
+    next();
+  });
+
   // Angular SSR Rendering
   server.get('*', async (req, res, next) => {
     try {

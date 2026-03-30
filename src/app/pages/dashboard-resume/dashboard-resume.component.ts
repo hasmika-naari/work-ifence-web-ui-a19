@@ -14,10 +14,14 @@ import {
   SimpleChanges,
   ElementRef,
   ViewChild,
+  signal,
+  computed,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { firstValueFrom, Subscription } from 'rxjs';
-import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { firstValueFrom, Subscription, take } from 'rxjs';
+import { SubscriptionFacadeService } from 'src/app/facades/subscription-facade.service';
+import type { SubscriptionPlanRequestRow } from 'src/app/models/subscription.model';
+import { DatePipe, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuModule } from 'primeng/menu';
@@ -69,7 +73,7 @@ interface Option {
 @Component({
     selector: 'app-resume-dashboard',
     standalone: true,
-    imports: [RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule, ImportExistingResumeComponent, FooterWorkifenceComponent],
+    imports: [DatePipe, RouterLink, RouterModule, StyleClassModule, NgOptimizedImage, MenuModule, ChartModule, FormsModule, ChartModule, ReactiveFormsModule, MenuModule, DividerModule, MatFormFieldModule, MatInputModule, TableModule, DialogModule, InputTextModule, MatProgressBarModule, StyleClassModule, ResumeList2Component, PanelMenuModule, ResumeFormTabbedComponent, ResumeForm2Component, ButtonModule, TemplatesPageComponent, ResumeFormComponent, ApplicationListComponent, MatMenuModule, MatIconModule, MatToolbarModule, MatSelectModule, MatMenuModule, SelectModule, ImportExistingResumeComponent, FooterWorkifenceComponent],
     templateUrl: './dashboard-resume.component.html',
     styleUrl : './dashboard-resume.component.scss',
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
@@ -401,6 +405,16 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
   private pdfToImageService: PdfToImageService = inject(PdfToImageService);
   private userStore: UserStoreService = inject(UserStoreService);
   private resumeLimit: ResumeLimitService = inject(ResumeLimitService);
+  private readonly subscriptionFacade = inject(SubscriptionFacadeService);
+  readonly trialRequest = signal<SubscriptionPlanRequestRow | null>(null);
+  readonly trialBannerDismissed = signal(false);
+  readonly trialBannerStatus = computed<string | null>(() => {
+    if (this.trialBannerDismissed()) { return null; }
+    const row = this.trialRequest();
+    if (!row) { return null; }
+    const s = (row.status ?? '').toUpperCase();
+    return (s === 'PENDING' || s === 'APPROVED' || s === 'REJECTED') ? s : null;
+  });
   sidebarIconOnly: Signal<boolean> = this.userStore.getSidebarIconOnly();
   private platformId: object =  inject(PLATFORM_ID);
   userAccount: Signal<Account> = this.userStore.getUserAccount();
@@ -438,6 +452,16 @@ export class DashboardResumeComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngOnInit() {
       this.templateSelection.applySelectionIfPresent();
+      this.subscriptionFacade.getMyPlanRequests().pipe(take(1)).subscribe({
+        next: (rows) => {
+          if (rows.length === 0) { return; }
+          const latest = rows.reduce((a, b) =>
+            (b.requestedDate ?? '') >= (a.requestedDate ?? '') ? b : a
+          );
+          this.trialRequest.set(latest);
+        },
+        error: () => { /* best-effort: silently skip */ },
+      });
       // this.sidenavService.toggleCollapsed();
 
       this.filteredResumeCategoryValue.setValue(null);

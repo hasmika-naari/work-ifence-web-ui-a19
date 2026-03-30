@@ -511,6 +511,22 @@ body {
     height: 100%;
 }
 
+/* ── Admin sub-page drawers: must sit above fixed header (z 999) and
+   .main-content stacking context (z 8888). Drawers are appendTo=body
+   so these rules apply at the <body> level. ─────────────────────── */
+.workqueue-drawer,
+.workqueue-row-edit-drawer {
+    z-index: 10001 !important;
+    top: 0 !important;
+    height: 100vh !important;
+}
+
+/* Mask / backdrop for modal drawers */
+body > .p-drawer-mask,
+body > .p-overlay-mask {
+    z-index: 10000 !important;
+}
+
 
 /* Ensure tab panels stretch to fill the tab container */
 /* Remove forced height from .p-tabpanel to avoid hiding the indicator */

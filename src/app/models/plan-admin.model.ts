@@ -26,6 +26,10 @@ export interface SubscriptionPlanDto {
   marketingSubtitle?: string;
   sortOrder?: number;
 
+  badgeText?: string;
+  recommended?: boolean;
+  featuresSummary?: string;
+
   featuresJson?: string;
 
   createdDate?: string;

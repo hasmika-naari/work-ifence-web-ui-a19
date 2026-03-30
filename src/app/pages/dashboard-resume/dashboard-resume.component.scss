@@ -23,6 +23,94 @@
 //   padding-bottom: 0 !important;
 // }
 
+.trial-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  margin: 0 0 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 13px;
+
+  &[data-status="PENDING"] {
+    background: #f0f9ff;
+    border-color: #bae6fd;
+    .trial-status-banner__icon { color: #0369a1; }
+  }
+
+  &[data-status="APPROVED"] {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    .trial-status-banner__icon { color: #15803d; }
+  }
+
+  &[data-status="REJECTED"] {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    .trial-status-banner__icon { color: #be123c; }
+  }
+}
+
+.trial-status-banner__body {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.trial-status-banner__icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.trial-status-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.trial-status-banner__title {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.trial-status-banner__detail {
+  color: #475569;
+}
+
+.trial-status-banner__action {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #be123c;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #be123c;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #fff1f2;
+  }
+}
+
+.trial-status-banner__dismiss {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+
+  &:hover { color: #475569; }
+}
+
 body {
     //font-family: Arial, sans-serif;
     margin: 0;

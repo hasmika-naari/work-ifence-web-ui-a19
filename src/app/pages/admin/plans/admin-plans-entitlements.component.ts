@@ -314,11 +314,11 @@ export class AdminPlansEntitlementsComponent {
       marketingSubtitle: plan.marketingSubtitle ?? '',
       sortOrder: plan.sortOrder ?? null,
 
-      badgeText: '',
-      recommended: false,
-      featuresSummary: '',
+      badgeText: plan.badgeText ?? '',
+      recommended: plan.recommended ?? false,
+      featuresSummary: plan.featuresSummary ?? '',
 
-      featuresJson: plan.featuresJson ?? '',
+      featuresJson: plan.featuresJson ?? ''
     });
 
     this.applyFeaturesJsonControls(plan.featuresJson ?? '');
@@ -590,6 +590,10 @@ export class AdminPlansEntitlementsComponent {
       marketingTitle: v.marketingTitle?.trim() || undefined,
       marketingSubtitle: v.marketingSubtitle?.trim() || undefined,
       sortOrder: v.sortOrder ?? undefined,
+
+      badgeText: v.badgeText?.trim() || undefined,
+      recommended: v.recommended || undefined,
+      featuresSummary: v.featuresSummary?.trim() || undefined,
 
       featuresJson,
     };

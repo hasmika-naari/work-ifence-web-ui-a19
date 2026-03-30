@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { DrawerModule } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { SubscriptionFacadeService } from 'src/app/facades/subscription-facade.service';
-import type { SubscriptionPlan, SubscriptionScope } from 'src/app/models/subscription.model';
+import type { SubscriptionPlan, SubscriptionPlanRequestRow, SubscriptionScope } from 'src/app/models/subscription.model';
 import { ResumeLimitService } from 'src/app/resume-portal/services/resume-limit.service';
-import { parseBackendError, toFriendlyErrorMessage } from 'src/app/utils/api-error';
+import { isUpgradeRequiredError, parseBackendError, toFriendlyErrorMessage } from 'src/app/utils/api-error';
+import type { ParsedBackendError } from 'src/app/utils/api-error';
 import { UpgradeDrawerService } from './upgrade-drawer.service';
 
 interface UpgradePlanView {
@@ -163,10 +164,22 @@ export class UpgradeDrawerComponent {
   });
   readonly recommendedPlan = computed<UpgradePlanView | undefined>(() => this.upgradePlans().find((plan) => plan.recommended) ?? this.upgradePlans()[0]);
 
+  /** Delegates to the facade — single source of truth across all consumers. */
+  readonly trialStatus = this.subscriptionFacade.trialStatus;
+
   readonly activePlanCode = signal<string | null>(null);
   readonly requestingPlanId = signal<string | null>(null);
   readonly requestReasonByPlan = signal<Record<string, string>>({});
-  readonly pendingRequestPlanIds = signal<Record<string, true>>({});
+
+  private readonly _loadPendingOnOpen = effect(() => {
+    if (this.visible()) {
+      this.upgradeDrawer.refreshPendingRequests();
+      // Refresh subscription/me so trial end date, status, and plan code reflect
+      // the latest backend state (e.g. after admin approve/extend/expiry) even
+      // when the drawer is opened without a page navigation.
+      this.accessFacade.reload();
+    }
+  });
 
   close(): void {
     this.upgradeDrawer.close();
@@ -200,7 +213,26 @@ export class UpgradeDrawerComponent {
   }
 
   hasPendingRequest(plan: UpgradePlanView): boolean {
-    return !!this.pendingRequestPlanIds()[this.requestKey(plan)];
+    return this.upgradeDrawer.pendingPlanCodes().has((plan.code ?? '').toUpperCase());
+  }
+
+  planRequestFor(plan: UpgradePlanView): SubscriptionPlanRequestRow | undefined {
+    const code = (plan.code ?? '').toUpperCase();
+    const matches = this.upgradeDrawer.myPlanRequests().filter(
+      (r) => (r.planCode ?? '').toUpperCase() === code
+    );
+    if (matches.length === 0) { return undefined; }
+    // Return the most recent request so a re-submission after rejection takes precedence.
+    return matches.reduce((latest, r) =>
+      (r.requestedDate ?? '') >= (latest.requestedDate ?? '') ? r : latest
+    );
+  }
+
+  requestStatusFor(plan: UpgradePlanView): string | null {
+    const row = this.planRequestFor(plan);
+    if (!row) { return null; }
+    const s = (row.status ?? '').toUpperCase();
+    return s || null;
   }
 
   requestReason(plan: UpgradePlanView): string {
@@ -253,22 +285,31 @@ export class UpgradeDrawerComponent {
 
   submitUpgradeRequest(plan: UpgradePlanView): void {
     const requestedPlanId = plan.planId;
-    if (requestedPlanId === undefined || requestedPlanId === null || this.isRequesting(plan) || this.hasPendingRequest(plan)) {
+    const currentStatus = this.requestStatusFor(plan);
+    if (
+      requestedPlanId === undefined || requestedPlanId === null
+      || this.isRequesting(plan)
+      || currentStatus === 'PENDING'
+      || currentStatus === 'APPROVED'
+    ) {
       return;
     }
 
+    const planCode = (plan.code ?? '').toUpperCase();
     const key = this.requestKey(plan);
     const requestReason = this.requestReason(plan).trim();
 
     this.requestingPlanId.set(key);
-    this.subscriptionFacade.submitUpgradeRequest({
-      requestedPlanId,
+    this.subscriptionFacade.submitPlanRequest({
+      requestType: 'TRIAL_REQUEST',
+      planId: requestedPlanId,
       requestReason: requestReason || undefined,
     }).pipe(
       finalize(() => this.requestingPlanId.set(null))
     ).subscribe({
-      next: () => {
-        this.markPlanPending(key);
+      next: (newRow: SubscriptionPlanRequestRow) => {
+        // Optimistic: inject the returned PENDING row via service — pendingPlanCodes auto-updates.
+        this.upgradeDrawer.markPlanPending(planCode, { ...newRow, planCode: newRow.planCode ?? plan.code ?? '' });
         this.messageService.add({
           key: 'global',
           severity: 'success',
@@ -280,26 +321,50 @@ export class UpgradeDrawerComponent {
           ...current,
           [key]: '',
         }));
+        // Re-fetch from server for authoritative state.
+        this.upgradeDrawer.refreshPendingRequests();
       },
       error: (error) => {
+        const parsed = parseBackendError(error);
+
+        // 1. Duplicate / already-pending — treat as soft confirmation.
         if (this.isDuplicatePendingRequestError(error)) {
-          this.markPlanPending(key);
+          this.upgradeDrawer.markPlanPending(planCode);
+          // Sync server state in case the row was missing locally.
+          this.upgradeDrawer.refreshPendingRequests();
           this.messageService.add({
             key: 'global',
             severity: 'warn',
-            summary: 'Trial request already pending',
-            detail: 'You already have a pending trial request',
+            summary: 'Already requested',
+            detail: 'A trial request for this plan is already pending review.',
             life: 5000,
           });
           return;
         }
 
-        const parsed = parseBackendError(error);
+        // 2. Eligibility / entitlement failure — not eligible to request.
+        if (this.isEligibilityError(parsed)) {
+          this.messageService.add({
+            key: 'global',
+            severity: 'warn',
+            summary: 'Not eligible',
+            detail: toFriendlyErrorMessage(parsed),
+            life: 7000,
+          });
+          return;
+        }
+
+        // 3. Generic API error.
+        const detail =
+          (error as { error?: { detail?: string } } | null)?.error?.detail
+          || toFriendlyErrorMessage(parsed)
+          || (error as { message?: string } | null)?.message
+          || 'Unable to submit the trial request. Please try again.';
         this.messageService.add({
           key: 'global',
           severity: 'error',
           summary: 'Request failed',
-          detail: error?.error?.detail || toFriendlyErrorMessage(parsed) || error?.message || 'Unable to submit the trial request right now.',
+          detail,
           life: 7000,
         });
       },
@@ -710,15 +775,10 @@ export class UpgradeDrawerComponent {
     return Number.isFinite(num) ? num : null;
   }
 
-  private markPlanPending(key: string): void {
-    if (!key) {
-      return;
-    }
-
-    this.pendingRequestPlanIds.update((current) => ({
-      ...current,
-      [key]: true,
-    }));
+  private isEligibilityError(parsed: ParsedBackendError): boolean {
+    // 403 with eligibility/entitlement codes, or plain 403 from an eligibility endpoint.
+    if (parsed.status === 403) { return true; }
+    return isUpgradeRequiredError(parsed);
   }
 
   private isDuplicatePendingRequestError(error: unknown): boolean {

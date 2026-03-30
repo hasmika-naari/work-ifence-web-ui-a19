@@ -5,7 +5,7 @@ import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SubscriptionPlanDto, WifenceSubscriptionDto } from '../models/subscription.dto';
 import { buildCriteriaParams } from '../shared/http/build-criteria-params';
-import type { CreateSubscriptionUpgradeRequest, StartSubscriptionRequest, SubscriptionPlan, SubscriptionScope, WifenceSubscription } from '../models/subscription.model';
+import type { CreateSubscriptionUpgradeRequest, StartSubscriptionRequest, SubscriptionPlan, SubscriptionPlanRequest, SubscriptionPlanRequestRow, SubscriptionScope, WifenceSubscription } from '../models/subscription.model';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionApiService {
@@ -62,6 +62,16 @@ export class SubscriptionApiService {
   submitUpgradeRequest(req: CreateSubscriptionUpgradeRequest): Observable<unknown> {
     const url = `${this.getBaseUrl()}/api/subscription-upgrade-requests`;
     return this.http.post(url, req);
+  }
+
+  /** Returns all plan requests submitted by the current user. */
+  getMyPlanRequests(): Observable<SubscriptionPlanRequestRow[]> {
+    return this.http.get<SubscriptionPlanRequestRow[]>(`${this.getBaseUrl()}/api/subscription-plan-requests/my`);
+  }
+
+  /** Submits a new subscription plan request (trial or upgrade). */
+  submitPlanRequest(req: SubscriptionPlanRequest): Observable<SubscriptionPlanRequestRow> {
+    return this.http.post<SubscriptionPlanRequestRow>(`${this.getBaseUrl()}/api/subscription-plan-requests`, req);
   }
 
   private getBaseUrl(): string {

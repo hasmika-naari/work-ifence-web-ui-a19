@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>Extend Trial</h2>
+
+<div mat-dialog-content>
+  <p class="muted" style="margin: 0 0 16px;">
+    Choose how to specify the extension, then optionally add a reason.
+  </p>
+
+  <!-- Mode toggle -->
+  <mat-radio-group [formControl]="form.controls.mode" style="display: flex; gap: 24px; margin-bottom: 20px;">
+    <mat-radio-button value="days">Add days</mat-radio-button>
+    <mat-radio-button value="date">Set new end date</mat-radio-button>
+  </mat-radio-group>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+
+    <!-- Days mode -->
+    @if (mode === 'days') {
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Days to add</mat-label>
+        <input matInput type="number" [formControl]="form.controls.trialDays" min="1" max="365" />
+        @if (form.controls.trialDays.touched && form.controls.trialDays.invalid) {
+          <mat-hint style="color: #d32f2f;">Enter a value between 1 and 365.</mat-hint>
+        }
+      </mat-form-field>
+    }
+
+    <!-- Date mode -->
+    @if (mode === 'date') {
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>New trial end date</mat-label>
+        <input matInput type="date" [formControl]="form.controls.trialEndDate" [min]="minDate" />
+        @if (form.controls.trialEndDate.touched && form.controls.trialEndDate.hasError('required')) {
+          <mat-hint style="color: #d32f2f;">End date is required.</mat-hint>
+        }
+        @if (form.controls.trialEndDate.touched && form.controls.trialEndDate.hasError('endNotForward')) {
+          <mat-hint style="color: #d32f2f;">
+            {{ data?.currentTrialEndDate ? 'Date must be after the current trial end date.' : 'Date must be in the future.' }}
+          </mat-hint>
+        }
+      </mat-form-field>
+    }
+
+    <!-- Reason (always shown) -->
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Reason (optional)</mat-label>
+      <textarea matInput rows="3" [formControl]="form.controls.reason"></textarea>
+    </mat-form-field>
+
+  </div>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" type="button" (click)="confirm()">Extend Trial</button>
+</div>

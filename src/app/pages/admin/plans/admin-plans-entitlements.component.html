@@ -87,6 +87,10 @@
 
       <form [formGroup]="planForm" class="plans-admin__form">
         <div class="grid">
+
+          <!-- ── Basics ─────────────────────────────────────────── -->
+          <div class="plans-admin__section-title plans-admin__grid-span-2">Basics</div>
+
           <mat-form-field appearance="outline">
             <mat-label>Code</mat-label>
             <input matInput formControlName="code" />
@@ -105,6 +109,11 @@
             </mat-select>
           </mat-form-field>
 
+          <mat-slide-toggle formControlName="isActive">Active</mat-slide-toggle>
+
+          <!-- ── Pricing ──────────────────────────────────────────── -->
+          <div class="plans-admin__section-title plans-admin__grid-span-2">Pricing</div>
+
           <mat-form-field appearance="outline">
             <mat-label>Billing interval</mat-label>
             <input matInput formControlName="billingInterval" placeholder="MONTHLY" />
@@ -120,12 +129,13 @@
             <input matInput formControlName="currency" />
           </mat-form-field>
 
-          <mat-slide-toggle formControlName="isActive">Active</mat-slide-toggle>
-
           <mat-form-field appearance="outline">
             <mat-label>Trial days</mat-label>
             <input matInput type="number" formControlName="trialDays" />
           </mat-form-field>
+
+          <!-- ── Limits & features ──────────────────────────────── -->
+          <div class="plans-admin__section-title plans-admin__grid-span-2">Limits &amp; features</div>
 
           <mat-form-field appearance="outline">
             <mat-label>Resume limit</mat-label>
@@ -141,10 +151,6 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-slide-toggle formControlName="jobTrackingEnabled">Job tracking</mat-slide-toggle>
-          <mat-slide-toggle formControlName="courseCentralEnabled">Course central</mat-slide-toggle>
-          <mat-slide-toggle formControlName="alertsEnabled">Alerts</mat-slide-toggle>
-
           <mat-form-field appearance="outline">
             <mat-label>Enterprise users limit</mat-label>
             <input matInput type="number" formControlName="enterpriseUsersLimit" />
@@ -154,6 +160,13 @@
             <mat-label>Storage limit (MB)</mat-label>
             <input matInput type="number" formControlName="storageLimitMb" />
           </mat-form-field>
+
+          <mat-slide-toggle formControlName="jobTrackingEnabled">Job tracking</mat-slide-toggle>
+          <mat-slide-toggle formControlName="courseCentralEnabled">Course central</mat-slide-toggle>
+          <mat-slide-toggle formControlName="alertsEnabled">Alerts</mat-slide-toggle>
+
+          <!-- ── Display info ───────────────────────────────────── -->
+          <div class="plans-admin__section-title plans-admin__grid-span-2">Display info</div>
 
           <mat-form-field appearance="outline">
             <mat-label>Marketing title</mat-label>
@@ -172,7 +185,7 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Badge text</mat-label>
-            <input matInput formControlName="badgeText" placeholder="Recommended" />
+            <input matInput formControlName="badgeText" placeholder="e.g. Recommended" />
           </mat-form-field>
 
           <mat-slide-toggle formControlName="recommended">Highlight as recommended</mat-slide-toggle>

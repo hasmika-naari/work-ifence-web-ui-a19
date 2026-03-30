@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Injector, computed, inject, signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,6 +16,9 @@ import {
   debounceTime,
   distinctUntilChanged,
   finalize,
+  firstValueFrom,
+  interval,
+  merge,
   of,
   startWith,
   Subject,
@@ -23,9 +26,12 @@ import {
   tap,
   type Observable,
 } from 'rxjs';
-import type { AdminSubscriptionUpgradeRequestRow, PagedResponse } from 'src/app/models/admin.model';
+import type { AdminSubscriptionPlanRequestRow, PagedResponse } from 'src/app/models/admin.model';
 import { AdminApiService } from 'src/app/services/admin-api.service';
+import { AdminApproveTrialDialogComponent } from '../dialogs/admin-approve-trial-dialog.component';
+import { AdminExtendPlanTrialDialogComponent, AdminExtendPlanTrialDialogData } from '../dialogs/admin-extend-plan-trial-dialog.component';
 import { AdminNotesDialogComponent } from '../dialogs/admin-notes-dialog.component';
+import { AdminPlanRequestDetailDialogComponent } from '../dialogs/admin-plan-request-detail-dialog.component';
 import { AdminTableShellComponent } from '../shared/admin-table-shell.component';
 
 type UpgradeRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | '' | string;
@@ -55,10 +61,16 @@ export class AdminUpgradeRequestsComponent {
 
   readonly status = signal<UpgradeRequestStatus>('');
   readonly plan = signal<string>('');
+  readonly requestType = signal<string>('');
   readonly pageIndex = signal<number>(0);
   readonly pageSize = signal<number>(20);
 
-  private readonly refresh$ = new Subject<void>();
+  private readonly manualRefresh$ = new Subject<void>();
+  /** Fires on manual refresh and automatically every 30 s so expiring trials are reflected without admin action. */
+  private readonly refresh$ = merge(
+    this.manualRefresh$,
+    interval(30_000)
+  ).pipe(takeUntilDestroyed());
 
   readonly loading = signal<boolean>(false);
 
@@ -70,9 +82,12 @@ export class AdminUpgradeRequestsComponent {
     'user',
     'currentPlan',
     'requestedPlan',
+    'requestType',
     'status',
     'requestedDate',
     'reviewedDate',
+    'reviewedBy',
+    'trialEndDate',
     'adminRemarks',
     'actions',
   ];
@@ -81,15 +96,17 @@ export class AdminUpgradeRequestsComponent {
     combineLatest({
       status: toObservable(this.status),
       plan: toObservable(this.plan).pipe(debounceTime(250), distinctUntilChanged()),
+      requestType: toObservable(this.requestType),
       pageIndex: toObservable(this.pageIndex),
       pageSize: toObservable(this.pageSize),
       refresh: this.refresh$.pipe(startWith(void 0)),
     }).pipe(
       tap(() => this.loading.set(true)),
-      switchMap(({ status, plan, pageIndex, pageSize }) =>
-        this.api.listSubscriptionUpgradeRequests({
+      switchMap(({ status, plan, requestType, pageIndex, pageSize }) =>
+        this.api.listPlanRequests({
           status: status || undefined,
-          plan: plan?.trim() || undefined,
+          planCode: plan?.trim() || undefined,
+          requestType: requestType || undefined,
           page: pageIndex,
           size: pageSize,
         }).pipe(
@@ -100,7 +117,7 @@ export class AdminUpgradeRequestsComponent {
               totalElements: 0,
               number: pageIndex,
               size: pageSize,
-            } as PagedResponse<AdminSubscriptionUpgradeRequestRow>);
+            } as PagedResponse<AdminSubscriptionPlanRequestRow>);
           }),
           finalize(() => this.loading.set(false))
         )
@@ -108,7 +125,7 @@ export class AdminUpgradeRequestsComponent {
     ),
     {
       injector: this.injector,
-      initialValue: { content: [], totalElements: 0, number: 0, size: 20 } as PagedResponse<AdminSubscriptionUpgradeRequestRow>,
+      initialValue: { content: [], totalElements: 0, number: 0, size: 20 } as PagedResponse<AdminSubscriptionPlanRequestRow>,
     }
   );
 
@@ -120,6 +137,31 @@ export class AdminUpgradeRequestsComponent {
     { label: 'Approved', value: 'APPROVED' },
     { label: 'Rejected', value: 'REJECTED' },
   ];
+
+  readonly requestTypeOptions: Array<{ label: string; value: string }> = [
+    { label: 'All types', value: '' },
+    { label: 'Trial request', value: 'TRIAL_REQUEST' },
+    { label: 'Upgrade request', value: 'UPGRADE_REQUEST' },
+  ];
+
+  async viewDetail(row: AdminSubscriptionPlanRequestRow): Promise<void> {
+    if (row.id === undefined || row.id === null) return;
+
+    try {
+      this.setRowBusy(row.id, true);
+      const detail = await firstValueFrom(
+        this.api.getPlanRequest(row.id)
+      ) as AdminSubscriptionPlanRequestRow;
+      this.dialog.open(AdminPlanRequestDetailDialogComponent, {
+        width: '600px',
+        data: { detail: detail ?? row },
+      });
+    } catch (err: any) {
+      this.showError(err);
+    } finally {
+      this.setRowBusy(row.id, false);
+    }
+  }
 
   onPageChange(ev: PageEvent): void {
     this.pageIndex.set(ev.pageIndex);
@@ -136,51 +178,75 @@ export class AdminUpgradeRequestsComponent {
     this.pageIndex.set(0);
   }
 
-  refresh(): void {
-    this.refresh$.next();
+  onRequestTypeChange(value: string): void {
+    this.requestType.set(value);
+    this.pageIndex.set(0);
   }
 
-  canReview(row: AdminSubscriptionUpgradeRequestRow): boolean {
+  refresh(): void {
+    this.manualRefresh$.next();
+  }
+
+  canReview(row: AdminSubscriptionPlanRequestRow): boolean {
     return (row.status ?? '').toString().trim().toUpperCase() === 'PENDING';
   }
 
-  approve(row: AdminSubscriptionUpgradeRequestRow): void {
-    if (row.id === undefined || row.id === null || !this.canReview(row)) {
-      return;
-    }
+  canExtendTrial(row: AdminSubscriptionPlanRequestRow): boolean {
+    return (row.status ?? '').toString().trim().toUpperCase() === 'APPROVED';
+  }
 
-    const ref = this.dialog.open(AdminNotesDialogComponent, {
+  extendTrialAction(row: AdminSubscriptionPlanRequestRow): void {
+    if (row.id === undefined || row.id === null || !this.canExtendTrial(row)) return;
+
+    const ref = this.dialog.open(AdminExtendPlanTrialDialogComponent, {
       width: '520px',
-      data: {
-        title: 'Approve upgrade request',
-        message: 'You can optionally add remarks before approving this request.',
-        confirmLabel: 'Approve',
-        notesRequired: false,
-      },
+      data: { currentTrialEndDate: row.trialEndDate } satisfies AdminExtendPlanTrialDialogData,
     });
 
     ref.afterClosed().subscribe((result) => {
       if (!result) return;
       this.runRowAction(
         row.id!,
-        () => this.api.approveSubscriptionUpgradeRequest(row.id!, { adminRemarks: result.notes || undefined }),
-        'Upgrade request approved.'
+        () => this.api.extendPlanTrial(row.id!, {
+          trialDays: result.trialDays,
+          trialEndDate: result.trialEndDate,
+          reason: result.reason,
+        }),
+        'Trial extended.'
       );
     });
   }
 
-  reject(row: AdminSubscriptionUpgradeRequestRow): void {
-    if (row.id === undefined || row.id === null || !this.canReview(row)) {
-      return;
-    }
+  approveTrialAction(row: AdminSubscriptionPlanRequestRow): void {
+    if (row.id === undefined || row.id === null || !this.canReview(row)) return;
+
+    const ref = this.dialog.open(AdminApproveTrialDialogComponent, { width: '520px' });
+
+    ref.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.runRowAction(
+        row.id!,
+        () => this.api.approveTrial(row.id!, {
+          trialDays: result.trialDays,
+          trialStartDate: result.trialStartDate,
+          trialEndDate: result.trialEndDate,
+          adminRemarks: result.adminRemarks,
+        }),
+        'Trial approved.'
+      );
+    });
+  }
+
+  rejectPlanRequestAction(row: AdminSubscriptionPlanRequestRow): void {
+    if (row.id === undefined || row.id === null || !this.canReview(row)) return;
 
     const ref = this.dialog.open(AdminNotesDialogComponent, {
       width: '520px',
       data: {
-        title: 'Reject upgrade request',
-        message: 'You can optionally add remarks before rejecting this request.',
+        title: 'Reject request',
+        message: 'Provide a reason for rejecting this request. This will be visible to the user.',
         confirmLabel: 'Reject',
-        notesRequired: false,
+        notesRequired: true,
       },
     });
 
@@ -188,22 +254,22 @@ export class AdminUpgradeRequestsComponent {
       if (!result) return;
       this.runRowAction(
         row.id!,
-        () => this.api.rejectSubscriptionUpgradeRequest(row.id!, { adminRemarks: result.notes || undefined }),
-        'Upgrade request rejected.'
+        () => this.api.rejectPlanRequest(row.id!, { adminRemarks: result.notes }),
+        'Request rejected.'
       );
     });
   }
 
-  userLabel(row: AdminSubscriptionUpgradeRequestRow): string {
+  userLabel(row: AdminSubscriptionPlanRequestRow): string {
     return row.userDisplay || row.userName || row.userLogin || row.userEmail || '-';
   }
 
-  currentPlanLabel(row: AdminSubscriptionUpgradeRequestRow): string {
-    return row.currentPlan || row.currentPlanCode || '-';
+  currentPlanLabel(row: AdminSubscriptionPlanRequestRow): string {
+    return row.currentPlanCode || '-';
   }
 
-  requestedPlanLabel(row: AdminSubscriptionUpgradeRequestRow): string {
-    return row.requestedPlan || row.requestedPlanCode || '-';
+  requestedPlanLabel(row: AdminSubscriptionPlanRequestRow): string {
+    return row.requestedPlanCode || '-';
   }
 
   private runRowAction(id: string | number, call: () => Observable<void>, successMessage: string): void {

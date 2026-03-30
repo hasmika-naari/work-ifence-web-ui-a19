@@ -77,6 +77,46 @@
       </div>
     </div>
 
+    @if (trialBannerStatus(); as status) {
+      <div class="trial-status-banner" [attr.data-status]="status" role="status" aria-live="polite">
+        <div class="trial-status-banner__body">
+          @switch (status) {
+            @case ('PENDING') {
+              <span class="pi pi-clock trial-status-banner__icon" aria-hidden="true"></span>
+              <div class="trial-status-banner__text">
+                <span class="trial-status-banner__title">Trial request pending</span>
+                <span class="trial-status-banner__detail">Your request is under review. We'll notify you once it's approved.</span>
+              </div>
+            }
+            @case ('APPROVED') {
+              <span class="pi pi-check-circle trial-status-banner__icon" aria-hidden="true"></span>
+              <div class="trial-status-banner__text">
+                <span class="trial-status-banner__title">Trial active</span>
+                @if (trialRequest()?.trialEndDate) {
+                  <span class="trial-status-banner__detail">Your trial is active until {{ trialRequest()!.trialEndDate | date:'mediumDate' }}.</span>
+                } @else {
+                  <span class="trial-status-banner__detail">Your trial plan is now active. Enjoy your features!</span>
+                }
+              </div>
+            }
+            @case ('REJECTED') {
+              <span class="pi pi-times-circle trial-status-banner__icon" aria-hidden="true"></span>
+              <div class="trial-status-banner__text">
+                <span class="trial-status-banner__title">Trial request rejected</span>
+                <span class="trial-status-banner__detail">Your request was not approved. You may submit a new one from plan settings.</span>
+              </div>
+              <button class="trial-status-banner__action" type="button" (click)="openSubscriptionPlans()">
+                View plans
+              </button>
+            }
+          }
+        </div>
+        <button class="trial-status-banner__dismiss" type="button" aria-label="Dismiss" (click)="trialBannerDismissed.set(true)">
+          <span class="pi pi-times" aria-hidden="true"></span>
+        </button>
+      </div>
+    }
+
     @if (isActionInProgress) {
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     }

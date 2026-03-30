@@ -1,21 +1,20 @@
 import { provideServerRendering } from '@angular/ssr';
 import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
 import { appConfig } from './app.config';
-import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import {VERSION as CDK_VERSION} from '@angular/cdk';
-import {VERSION as MAT_VERSION, MatNativeDateModule} from '@angular/material/core';
 import { SsrHttpBlockInterceptor } from './ssr/ssr-http-block.interceptor';
 
-console.info('Server: Angular CDK version', CDK_VERSION.full);
-console.info('Server: Angular Material version', MAT_VERSION.full);
+// provideHttpClient is intentionally NOT repeated here — it is already set up
+// (with withInterceptorsFromDi) in appConfig.  Calling it a second time was
+// creating a circular-dependency cycle on HTTP_INTERCEPTORS at SSR boot time.
+// SsrHttpBlockInterceptor is registered below as a multi-provider so it is
+// automatically included in the merged interceptor chain.
 
 const serverConfig: ApplicationConfig = {
   providers: [
     provideServerRendering(),
-    provideHttpClient(withFetch(), withInterceptorsFromDi()),
-    provideNoopAnimations()
-    ,
+    provideNoopAnimations(),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: SsrHttpBlockInterceptor,
