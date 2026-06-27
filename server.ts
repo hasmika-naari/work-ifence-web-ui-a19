@@ -81,6 +81,8 @@ export function app(): express.Express {
     changeOrigin: true,
     secure: false,
     ws: true,
+    proxyTimeout: 10000,
+    timeout: 10000,
     pathRewrite: { '^/api': '/api' },
     onProxyReq: (proxyReq: any, req: any) => {
       try {
@@ -96,6 +98,13 @@ export function app(): express.Express {
         }
       } catch {
         // ignore
+      }
+    },
+    onError: (err: any, req: any, res: any) => {
+      console.warn(`[proxy] ${req.method} ${req.url} → ${err.code ?? err.message}`);
+      if (!res.headersSent) {
+        res.writeHead(502, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Backend unavailable', code: err.code }));
       }
     },
   };

@@ -29,6 +29,11 @@ export interface AdminSubscriptionRow {
   trialStartDate?: string;
   trialEndDate?: string;
   /**
+   * Start of the current billing period.
+   * Populated from `currentPeriodStart` when present in the raw API response.
+   */
+  currentPeriodStart?: string;
+  /**
    * Normalised period-end date.
    * Populated from `currentPeriodEnd` when present, otherwise falls back to
    * `nextBillingDate` which is how /api/wifence-subscriptions exposes the value.

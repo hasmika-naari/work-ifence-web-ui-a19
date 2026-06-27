@@ -286,11 +286,21 @@ export class AdminApiService {
   }
 
   private normalizeSubscriptionRow(row: AdminSubscriptionRow): AdminSubscriptionRow {
+    // ---------------------------------------------------------------------------
+    // Subscription lifecycle summary (for future ext-API migration reference):
+    //   BASIC free user            → status=ACTIVE,    planCode=BASIC   (Subscriptions tab)
+    //   Trial granted              → status=TRIALING                    (Trials tab)
+    //   Trial converted / upgraded → status=ACTIVE (paid plan)          (Subscriptions tab)
+    //   Request pending/approved   → separate domain (/api/admin/subscription-plan-requests)
+    //                                                                    (Requests tab)
+    // ---------------------------------------------------------------------------
     return {
       ...row,
       // /api/wifence-subscriptions exposes the period-end date as nextBillingDate.
       // The admin subscriptions UI binds to currentPeriodEnd, so fall back here.
       currentPeriodEnd: row.currentPeriodEnd || row.nextBillingDate,
+      // Preserve currentPeriodStart as-is (raw field from API).
+      currentPeriodStart: row.currentPeriodStart,
       // Normalise display name for subscriber column enrichment.
       subscriberDisplayName:
         row.subscriberDisplayName || row.subscriberId || undefined,

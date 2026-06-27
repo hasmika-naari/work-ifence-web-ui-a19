@@ -219,7 +219,12 @@
           <option value="ENTERPRISE">Enterprise</option>
         </select>
         <label>Status</label>
-        <input type="text" [value]="subStatus()" (input)="onSubStatusChange($any($event.target).value)" placeholder="ACTIVE, TRIALING…" />
+        <!-- Controlled dropdown: TRIALING is excluded here — those records belong in the Active Trials tab. -->
+        <select [value]="subStatus()" (change)="onSubStatusChange($any($event.target).value)">
+          @for (opt of subStatusOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
         <label>Search</label>
         <input type="text" [value]="subQ()" (input)="onSubSearchChange($any($event.target).value)" placeholder="Subscriber or plan…" />
       </div>

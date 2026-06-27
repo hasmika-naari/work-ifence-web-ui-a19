@@ -38,21 +38,35 @@ export class YeaSnackBarService {
   }
 
   openMultiLineSnackBar(title: any, messages: any, mtype: any, duration: any) {
-    const config = new MatSnackBarConfig();
-    config.duration = duration ? duration : this.autoHide;
-    config.panelClass =  mtype;
-    
+    const snackBarDuration = duration ? duration : this.autoHide;
+
     this.snackBarRef = this.snackBar.openFromComponent(MultiLineSnackbarComponent, {
-      duration: this.autoHide * 10000,
+      duration: snackBarDuration,
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,
       panelClass: [mtype]
     });
     this.snackBarRef.instance.snackBarRefMultiLineComponent = this.snackBarRef;
     this.snackBarRef.instance.title = title;
-   
-    this.snackBarRef.instance.errorMessages = messages;
 
+    this.snackBarRef.instance.errorMessages = this.normalizeMultiLineMessages(messages);
+
+  }
+
+  private normalizeMultiLineMessages(messages: any): Array<{ message: string }> {
+    if (Array.isArray(messages)) {
+      return messages.map((message: any) => {
+        if (typeof message === 'string') {
+          return { message };
+        }
+
+        return {
+          message: message?.message ?? String(message ?? '')
+        };
+      });
+    }
+
+    return [{ message: String(messages ?? '') }];
   }
 
 }

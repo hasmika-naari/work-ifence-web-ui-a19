@@ -16,47 +16,22 @@ import { AuthService } from 'src/app/services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
-import { PopoverModule } from 'primeng/popover';
-import { OverlayModule } from 'primeng/overlay';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { DrawerModule } from 'primeng/drawer';
-import { CheckboxModule } from 'primeng/checkbox';
-import { BadgeModule } from 'primeng/badge';
-import { PasswordModule } from 'primeng/password';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { RippleModule } from 'primeng/ripple';
-import { HeaderWorkIfenceComponent } from '../../landing/header-wifence/header-wifence.component';
-import { FooterWorkifenceComponent } from '../../landing/footer-wifence/footer-wifence.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { IconsModule } from 'src/app/shared/icons.module';
 
 @Component({
     selector: 'app-reset-password',
     standalone: true,
-  imports: [CommonModule, RouterModule, 
-    MatIconModule,  
+  imports: [CommonModule, RouterModule,
+    MatIconModule,
     MatCardModule,
     MatInputModule,
-    MatCheckboxModule,
     MatButtonModule,
+    MatProgressBarModule,
     FormsModule,
-    PopoverModule,
-    OverlayModule,
-    InputTextModule,
-    ButtonModule,
-    DrawerModule,
-    CheckboxModule,
-    BadgeModule,
-    PasswordModule,
-    RadioButtonModule,
-    ToggleSwitchModule,
-    RippleModule,
-    RouterModule,
     ReactiveFormsModule,
-    HeaderWorkIfenceComponent,
-    FooterWorkifenceComponent],
+    IconsModule],
     templateUrl: './reset-password-page.component.html',
     styleUrls: ['./reset-password-page.component.scss']
 })

@@ -222,20 +222,14 @@ return of(contact);
 }
 
 initiateResetPassword(reset : PasswordResetRqst){
-  let baseUrl = this.appConstants.BASE_API_URL;
-  if(isPlatformBrowser(this.platformId)){
-    baseUrl = '';
-  }
-  const url = this.appConstants.BASE_API_URL + '/api/wif-reset-password/init';
+  const baseUrl = isPlatformBrowser(this.platformId) ? '' : this.appConstants.BASE_API_URL;
+  const url = baseUrl + '/api/wif-reset-password/init';
   return this.http.post<any>(url,reset).pipe(catchError(this.handleError))
 }
 
 finishResetPassword(reset : PasswordResetFinishRqst){
-  let baseUrl = this.appConstants.BASE_API_URL;
-  if(isPlatformBrowser(this.platformId)){
-    baseUrl = '';
-  }
-  const url = this.appConstants.BASE_API_URL + '/api/wif-reset-password/finish';
+  const baseUrl = isPlatformBrowser(this.platformId) ? '' : this.appConstants.BASE_API_URL;
+  const url = baseUrl + '/api/wif-reset-password/finish';
   return this.http.post<any>(url,reset).pipe(catchError(this.handleError))
 }
 

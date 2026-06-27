@@ -2,7 +2,10 @@ export const PUBLIC_ROUTE_PREFIXES = [
   '/auth',
   '/authentication',
   '/sign-in',
-  '/public'
+  '/sign-up',
+  '/public',
+  '/reset-finish',
+  '/activate',
 ];
 
 export const PUBLIC_ROUTE_EXACT = [

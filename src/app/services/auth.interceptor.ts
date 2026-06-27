@@ -14,6 +14,7 @@ import { AppConstantsService } from './app-constants.service';
 import { YeaSnackBarService } from './utilities/snackbar';
 import { LoginResponse } from './auth.models';
 import { isPlatformBrowser } from '@angular/common';
+import { isPublicRoute } from '../core/routing/public-routes';
 // import { SignalStore } from './store/signal-store';
 // import { UserState } from './store/user-store';
 
@@ -143,7 +144,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       }),
       catchError((error: unknown) => {
         const httpErr = error as HttpErrorResponse;
-        if (httpErr?.status === 401) {
+        if (httpErr?.status === 401 && !isPublicRoute(this.router.url)) {
           void this.router.navigateByUrl('/sign-in');
         }
 

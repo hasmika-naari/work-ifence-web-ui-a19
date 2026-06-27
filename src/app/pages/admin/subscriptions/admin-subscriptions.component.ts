@@ -78,7 +78,8 @@ export class AdminSubscriptionsComponent {
   clearCurrentFilters(): void {
     const t = this.selectedTab();
     if (t === 0) {
-      this.subSubscriberType.set(''); this.subStatus.set(''); this.subQ.set(''); this.subPageIndex.set(0);
+      // Reset to ACTIVE (not empty) to maintain the separation: TRIALING stays in the Trials tab.
+      this.subSubscriberType.set(''); this.subStatus.set('ACTIVE'); this.subQ.set(''); this.subPageIndex.set(0);
     } else if (t === 1) {
       this.trialSubscriberType.set(''); this.trialQ.set(''); this.trialPageIndex.set(0);
     } else {
@@ -90,8 +91,11 @@ export class AdminSubscriptionsComponent {
   readonly selectedTab = signal<number>(0);
 
   // ── Tab 1: Active Subscriptions ──────────────────────────────────────────
+  // Default to ACTIVE so only real current subscriptions appear.
+  // TRIALING is intentionally excluded here – those rows belong in the Active Trials tab.
+  // BASIC free users appear here because they have status=ACTIVE with planCode=BASIC.
   readonly subSubscriberType = signal<SubscriberType>('');
-  readonly subStatus = signal<string>('');
+  readonly subStatus = signal<string>('ACTIVE');
   readonly subQ = signal<string>('');
   readonly subPageIndex = signal<number>(0);
   readonly subPageSize = signal<number>(20);
@@ -254,6 +258,20 @@ export class AdminSubscriptionsComponent {
     { label: 'All', value: '' },
     { label: 'Individual', value: 'INDIVIDUAL' },
     { label: 'Enterprise', value: 'ENTERPRISE' },
+  ];
+
+  /**
+   * Status options for the Active Subscriptions tab.
+   * TRIALING is intentionally omitted – use the Active Trials tab for those records.
+   * An empty value removes the status filter so admins can inspect suspended/cancelled
+   * records alongside active ones when needed.
+   */
+  readonly subStatusOptions: Array<{ label: string; value: string }> = [
+    { label: 'Active (default)', value: 'ACTIVE' },
+    { label: 'Suspended',        value: 'SUSPENDED' },
+    { label: 'Cancelled',        value: 'CANCELLED' },
+    { label: 'Pending queue',    value: 'PENDING_QUEUE' },
+    { label: 'All statuses',     value: '' },
   ];
 
   readonly reqStatusOptions = [

@@ -103,7 +103,7 @@
                     </mat-form-field>
                     <div class="login-options-row">
                       <mat-checkbox formControlName="remember" color="primary">Remember me</mat-checkbox>
-                      <button type="button" class="forgot-password-link" (click)="forgotPassword($event)">Forgot password?</button>
+                      <button type="button" class="forgot-password-link" (click)="forgotPassword($event)" data-testid="forgot-password-toggle">Forgot password?</button>
                     </div>
                     <button class="login-btn enabled-button" type="submit" [disabled]="isLoading || loginForm.invalid" data-testid="login-submit">
                       @if (!isLoading) {
@@ -115,25 +115,25 @@
                     </button>
                   </form>
                 } @else {
-                  <form [formGroup]="forgotPasswordForm" (ngSubmit)="forgotPasswordSubmit($event)">
+                  <form [formGroup]="forgotPasswordForm" (ngSubmit)="forgotPasswordSubmit($event)" data-testid="forgot-password-form">
                     <mat-form-field appearance="outline">
                       <mat-label>Username</mat-label>
                       <mat-icon matPrefix>mail_outline</mat-icon>
-                      <input matInput formControlName="username" placeholder="Username">
+                      <input matInput formControlName="username" placeholder="Username" data-testid="forgot-password-username">
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                       <mat-label>Email</mat-label>
                       <mat-icon matPrefix>email</mat-icon>
-                      <input matInput formControlName="email" placeholder="Email address">
+                      <input matInput formControlName="email" placeholder="Email address" data-testid="forgot-password-email">
                     </mat-form-field>
                     @if (resetErrorMessage) {
                       <div style="color:#b91c1c;margin:6px 0 12px 0;">{{ resetErrorMessage }}</div>
                     }
-                    <button class="login-btn enabled-button" type="submit" [disabled]="isActionInProgress || forgotPasswordForm.invalid">
+                    <button class="login-btn enabled-button" type="submit" [disabled]="isActionInProgress || forgotPasswordForm.invalid" data-testid="forgot-password-submit">
                       Reset Password
                     </button>
                     <div style="margin-top:10px;text-align:center;">
-                      <button type="button" class="forgot-password-link" (click)="switchToLogin($event)">Back to sign in</button>
+                      <button type="button" class="forgot-password-link" (click)="switchToLogin($event)" data-testid="forgot-password-back">Back to sign in</button>
                     </div>
                   </form>
                 }

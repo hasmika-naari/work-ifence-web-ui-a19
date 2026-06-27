@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, catchError, map, of, switchMap, tap } from
 import { AccessFacadeService } from './access-facade.service';
 import { SubscriptionApiService } from '../services/subscription-api.service';
 import { DashboardContextService } from '../services/dashboard-context.service';
+import { LocalStorageService } from '../services/local-storage.service';
 import type { CreateSubscriptionUpgradeRequest, SubscriptionPlan, SubscriptionPlanRequest, SubscriptionPlanRequestRow, SubscriptionScope, TrialStatusSummary } from '../models/subscription.model';
 
 @Injectable({ providedIn: 'root' })
@@ -13,6 +14,7 @@ export class SubscriptionFacadeService {
   private readonly accessFacade = inject(AccessFacadeService);
   private readonly api = inject(SubscriptionApiService);
   private readonly dashboardContext = inject(DashboardContextService);
+  private readonly storage = inject(LocalStorageService);
 
   private readonly plansSignals = new Map<SubscriptionScope, ReturnType<typeof toSignal<SubscriptionPlan[]>>>();
   private readonly plansRefresh = new Map<SubscriptionScope, BehaviorSubject<void>>();
@@ -24,8 +26,11 @@ export class SubscriptionFacadeService {
   constructor() {
     // Skip eager plan loading during SSR — the SsrHttpBlockInterceptor would stub
     // those requests anyway, and the timeout errors pollute server logs.
-    // Plans are initialized lazily via plansSignal() on the browser side.
-    if (isPlatformBrowser(inject(PLATFORM_ID))) {
+    // Also skip when not logged in — unauthenticated requests to /api/subscription-plans
+    // return 401 which the auth interceptor would otherwise use to redirect to /sign-in,
+    // breaking public pages like /reset-finish and /activate.
+    // Plans are initialized lazily via plansSignal() when first accessed.
+    if (isPlatformBrowser(inject(PLATFORM_ID)) && this.storage.isLoggedIn()) {
       this.initializePlansSignal('INDIVIDUAL');
       this.initializePlansSignal('ENTERPRISE');
     }
