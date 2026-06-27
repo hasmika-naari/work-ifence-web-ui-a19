@@ -8,13 +8,12 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { BehaviorSubject, EMPTY, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { catchError, distinctUntilChanged, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
-import { expand, reduce } from 'rxjs/operators';
 import { AccessFacadeService } from 'src/app/facades/access-facade.service';
 import { DashboardContextService } from 'src/app/services/dashboard-context.service';
 import { UpgradeDrawerService } from 'src/app/shared/upgrade-drawer/upgrade-drawer.service';
-import { EnterpriseApiService, EnterpriseRelationDto, PageDto } from 'src/app/services/enterprise-api.service';
+import { EnterpriseApiService, EnterpriseMemberDto, PageDto } from 'src/app/services/enterprise-api.service';
 import { isEntitlementError, isSeatLimitError, parseBackendError, toFriendlyErrorMessage } from 'src/app/utils/api-error';
 import { EnterpriseInviteDialogComponent } from './enterprise-invite-dialog.component';
 
@@ -54,26 +53,16 @@ export class EnterpriseMembersPageComponent {
   private readonly refresh$ = new BehaviorSubject<void>(void 0);
   private readonly page$ = new BehaviorSubject<{ page: number; size: number }>({ page: 0, size: 20 });
 
-  readonly displayedColumns = ['userName', 'email', 'role', 'membershipStatus', 'startDate', 'invitedBy', 'actions'];
+  readonly displayedColumns = ['userName', 'role', 'membershipStatus', 'actions'];
 
   private isSeatUsed(status?: string): boolean {
     const s = (status ?? '').toString().toUpperCase();
     return s === 'ACTIVE' || s === 'INVITED';
   }
 
-  private fetchAllRelations$(enterpriseId: string) {
-    const size = 200;
-    return this.enterpriseApi.listRelations(enterpriseId, 0, size).pipe(
-      expand((res) => {
-        const page = res.number ?? 0;
-        const total = res.totalElements ?? 0;
-        const nextPage = page + 1;
-        const loaded = nextPage * size;
-        if (loaded >= total) return EMPTY;
-        return this.enterpriseApi.listRelations(enterpriseId, nextPage, size);
-      }),
-      map((res) => res.content ?? []),
-      reduce((acc, content) => acc.concat(content), [] as EnterpriseRelationDto[])
+  private fetchAllMembers$(enterpriseId: string) {
+    return this.enterpriseApi.listMembers(enterpriseId, 0, 1000).pipe(
+      map((res) => res.content ?? [])
     );
   }
 
@@ -90,8 +79,8 @@ export class EnterpriseMembersPageComponent {
       const limit = me?.entitlements?.enterpriseUsersLimit;
 
       return combineLatest([
-        this.enterpriseApi.listRelations(enterpriseId, page, size),
-        this.fetchAllRelations$(enterpriseId).pipe(catchError(() => of([] as EnterpriseRelationDto[]))),
+        this.enterpriseApi.listMembers(enterpriseId, page, size),
+        this.fetchAllMembers$(enterpriseId).pipe(catchError(() => of([] as EnterpriseMemberDto[]))),
       ]).pipe(
         map(([paged, all]) => {
           const usedSeats = all.filter((r) => this.isSeatUsed(r.membershipStatus)).length;
@@ -120,7 +109,7 @@ export class EnterpriseMembersPageComponent {
           return of({
             loading: false,
             error: msg,
-            page: { content: [], totalElements: 0, number: page, size } as PageDto<EnterpriseRelationDto>,
+            page: { content: [], totalElements: 0, number: page, size } as PageDto<EnterpriseMemberDto>,
             usedSeats: 0,
             seatsFull: false,
             seatsTooltip: '',
@@ -165,13 +154,11 @@ export class EnterpriseMembersPageComponent {
       if (!enterpriseId) return;
 
       const payload = {
-        enterpriseId,
-        email: result.email,
+        userName: result.userName,
         role: result.role,
-        note: result.note,
       };
 
-      this.enterpriseApi.inviteMember(payload).subscribe({
+      this.enterpriseApi.inviteMember(enterpriseId, payload).subscribe({
         next: () => {
           this.snackBar.open('Invite sent', 'OK', { duration: 2500 });
           this.refresh();
@@ -192,9 +179,10 @@ export class EnterpriseMembersPageComponent {
     });
   }
 
-  activate(id?: string) {
-    if (!id) return;
-    this.enterpriseApi.activateRelation(id).subscribe({
+  activate(userName?: string) {
+    const enterpriseId = this.enterpriseId();
+    if (!userName || !enterpriseId) return;
+    this.enterpriseApi.activateMember(enterpriseId, userName).subscribe({
       next: () => {
         this.snackBar.open('Member activated', 'OK', { duration: 2000 });
         this.refresh();
@@ -203,9 +191,10 @@ export class EnterpriseMembersPageComponent {
     });
   }
 
-  suspend(id?: string) {
-    if (!id) return;
-    this.enterpriseApi.suspendRelation(id).subscribe({
+  suspend(userName?: string) {
+    const enterpriseId = this.enterpriseId();
+    if (!userName || !enterpriseId) return;
+    this.enterpriseApi.suspendMember(enterpriseId, userName).subscribe({
       next: () => {
         this.snackBar.open('Member suspended', 'OK', { duration: 2000 });
         this.refresh();
@@ -214,9 +203,10 @@ export class EnterpriseMembersPageComponent {
     });
   }
 
-  remove(id?: string) {
-    if (!id) return;
-    this.enterpriseApi.removeRelation(id).subscribe({
+  remove(userName?: string) {
+    const enterpriseId = this.enterpriseId();
+    if (!userName || !enterpriseId) return;
+    this.enterpriseApi.removeMember(enterpriseId, userName).subscribe({
       next: () => {
         this.snackBar.open('Member removed', 'OK', { duration: 2000 });
         this.refresh();

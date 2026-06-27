@@ -1,11 +1,13 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
 export interface EnterpriseMyDto {
   enterpriseId?: string;
-  profileId?: string;
-  enterpriseProfileId?: string;
+  enterpriseName?: string;
+  myRole?: string;
+  membershipStatus?: string;
+  startDate?: string;
 }
 
 export interface EnterpriseProfileDto {
@@ -20,14 +22,11 @@ export interface EnterpriseProfileDto {
   setupStatus?: string;
 }
 
-export interface EnterpriseRelationDto {
-  id?: string;
+export interface EnterpriseMemberDto {
+  userId?: string;
   userName?: string;
-  email?: string;
   role?: string;
   membershipStatus?: string;
-  startDate?: string;
-  invitedBy?: string;
 }
 
 export interface PageDto<T> {
@@ -37,12 +36,19 @@ export interface PageDto<T> {
   size?: number;
 }
 
+export interface EnterpriseInvitePayload {
+  userName: string;
+  userId?: string;
+  role?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class EnterpriseApiService {
   private readonly http = inject(HttpClient);
 
-  getMyEnterprise(): Observable<EnterpriseMyDto> {
-    return this.http.get<EnterpriseMyDto>('/api/enterprise/my');
+  /** Returns the list of enterprises the current user belongs to. */
+  getMyEnterprises(): Observable<EnterpriseMyDto[]> {
+    return this.http.get<EnterpriseMyDto[]>('/api/enterprises/my');
   }
 
   getEnterpriseProfile(id: string): Observable<EnterpriseProfileDto> {
@@ -53,42 +59,38 @@ export class EnterpriseApiService {
     return this.http.put<EnterpriseProfileDto>(`/api/enterprise-profiles/${encodeURIComponent(id)}`, payload);
   }
 
-  listRelations(enterpriseId: string, page: number, size: number): Observable<PageDto<EnterpriseRelationDto>> {
-    const params = new HttpParams()
-      .set('enterpriseId', enterpriseId)
-      .set('page', String(page))
-      .set('size', String(size));
-
-    return this.http
-      .get<PageDto<EnterpriseRelationDto> | EnterpriseRelationDto[]>('/api/enterprise-profile-relations', { params })
-      .pipe(
-        map((res: any) => {
-          if (Array.isArray(res)) {
-            return { content: res, totalElements: res.length, number: page, size } as PageDto<EnterpriseRelationDto>;
-          }
-          return res as PageDto<EnterpriseRelationDto>;
-        })
-      );
+  /** List members for an enterprise. Returns a page-shaped result (flat list wrapped). */
+  listMembers(enterpriseId: string, page = 0, size = 50): Observable<PageDto<EnterpriseMemberDto>> {
+    return this.http.get<EnterpriseMemberDto[]>(`/api/enterprises/${encodeURIComponent(enterpriseId)}/members`).pipe(
+      map((members) => {
+        const start = page * size;
+        const slice = members.slice(start, start + size);
+        return { content: slice, totalElements: members.length, number: page, size } as PageDto<EnterpriseMemberDto>;
+      })
+    );
   }
 
-  inviteMember(payload: any): Observable<any> {
-    return this.http.post('/api/enterprise-profile-relations/invite', payload);
+  inviteMember(enterpriseId: string, payload: EnterpriseInvitePayload): Observable<unknown> {
+    return this.http.post(`/api/enterprises/${encodeURIComponent(enterpriseId)}/members/invite`, payload);
   }
 
-  activateRelation(id: string): Observable<any> {
-    return this.http.post(`/api/enterprise-profile-relations/${encodeURIComponent(id)}/activate`, {});
+  updateRole(enterpriseId: string, userName: string, role: string): Observable<unknown> {
+    return this.http.patch(`/api/enterprises/${encodeURIComponent(enterpriseId)}/members/${encodeURIComponent(userName)}/role`, { role });
   }
 
-  suspendRelation(id: string): Observable<any> {
-    return this.http.post(`/api/enterprise-profile-relations/${encodeURIComponent(id)}/suspend`, {});
+  activateMember(enterpriseId: string, userName: string): Observable<unknown> {
+    return this.http.post(`/api/enterprises/${encodeURIComponent(enterpriseId)}/members/${encodeURIComponent(userName)}/activate`, {});
   }
 
-  removeRelation(id: string): Observable<any> {
-    return this.http.delete(`/api/enterprise-profile-relations/${encodeURIComponent(id)}`);
+  suspendMember(enterpriseId: string, userName: string): Observable<unknown> {
+    return this.http.post(`/api/enterprises/${encodeURIComponent(enterpriseId)}/members/${encodeURIComponent(userName)}/suspend`, {});
   }
 
-  getEnterpriseSubscription(enterpriseId: string): Observable<any> {
-    const params = new HttpParams().set('scope', 'ENTERPRISE').set('subscriberId', enterpriseId);
-    return this.http.get('/api/ext/subscriptions/current', { params });
+  removeMember(enterpriseId: string, userName: string): Observable<unknown> {
+    return this.http.delete(`/api/enterprises/${encodeURIComponent(enterpriseId)}/members/${encodeURIComponent(userName)}`);
+  }
+
+  getEnterpriseSubscription(enterpriseId: string): Observable<unknown> {
+    return this.http.get(`/api/ext/subscriptions/current?scope=ENTERPRISE&subscriberId=${encodeURIComponent(enterpriseId)}`);
   }
 }

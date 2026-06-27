@@ -27,9 +27,8 @@ export class EnterpriseInviteDialogComponent {
   private readonly fb = inject(FormBuilder);
 
   readonly form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    role: ['EMPLOYEE', [Validators.required]],
-    note: [''],
+    userName: ['', [Validators.required]],
+    role: ['ENTERPRISE_EMPLOYEE', [Validators.required]],
   });
 
   submit() {

@@ -232,7 +232,21 @@ function flattenRoutes(maps) {
 
   function visitRouteArray(arrayExpr, parentSegments, inheritedGuards) {
     for (const el of arrayExpr.elements) {
-      const e = unwrapParen(el);
+      let e = unwrapParen(el);
+
+      // Unwrap entitledRoute(key, routeObj) — the helper returns a spread of the route
+      // object with added canActivate/data fields, but static analysis sees a call expression.
+      // Extract the second argument (the route object literal) and merge in the entitlementKey
+      // from the first argument so the route is visible to the audit.
+      let callerEntitlementKey;
+      if (e && ts.isCallExpression(e)) {
+        const fnName = e.expression.getText?.() ?? '';
+        if (fnName === 'entitledRoute' && e.arguments.length >= 2) {
+          callerEntitlementKey = resolveKey(e.arguments[0], maps);
+          e = unwrapParen(e.arguments[1]);
+        }
+      }
+
       if (!e || !ts.isObjectLiteralExpression(e)) continue;
 
       const pathExpr = getObjectProp(e, 'path');
@@ -253,6 +267,8 @@ function flattenRoutes(maps) {
         entitlementKey = resolveKey(getObjectProp(dataExpr, 'entitlementKey'), maps);
         minPlan = resolveKey(getObjectProp(dataExpr, 'minPlan'), maps);
       }
+      // Fall back to the key passed to entitledRoute() if data.entitlementKey was not set
+      if (!entitlementKey && callerEntitlementKey) entitlementKey = callerEntitlementKey;
 
       const redirectTo = getObjectProp(e, 'redirectTo');
       const hasComponentOrLoader = !!(getObjectProp(e, 'component') || getObjectProp(e, 'loadComponent') || getObjectProp(e, 'loadChildren'));

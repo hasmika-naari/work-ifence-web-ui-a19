@@ -1,8 +1,8 @@
 {
   "summary": {
     "total": 64,
-    "pass": 1,
-    "fail": 5,
+    "pass": 6,
+    "fail": 0,
     "hidden": 58,
     "group": 0
   },
@@ -14,10 +14,12 @@
       "route": "/user/dashboard-admin",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "ADMIN_CONSOLE",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "ADMIN_CONSOLE",
+      "routeEnt": "ADMIN_CONSOLE",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "admin",
@@ -26,10 +28,11 @@
       "route": "/user/requests",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "ADMIN_REQUESTS",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeEnt": "ADMIN_REQUESTS",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "admin",
@@ -110,10 +113,12 @@
       "route": "/user/admin/plans",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "ADMIN_BILLING_PLANS",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "SUBSCRIPTIONS",
+      "routeEnt": "ADMIN_BILLING_PLANS",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "admin",
@@ -122,10 +127,12 @@
       "route": "/user/admin/subscriptions",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "ADMIN_BILLING_SUBSCRIPTIONS",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "SUBSCRIPTIONS",
+      "routeEnt": "ADMIN_BILLING_SUBSCRIPTIONS",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "admin",
@@ -134,10 +141,12 @@
       "route": "/user/admin/upgrade-requests",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "ADMIN_BILLING_SUBSCRIPTIONS",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "SUBSCRIPTIONS",
+      "routeEnt": "ADMIN_BILLING_SUBSCRIPTIONS",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "admin",
@@ -170,10 +179,12 @@
       "route": "/user/admin/feature-flags",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "ADMIN_FEATUREFLAGS",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "ADMIN_CONSOLE",
+      "routeEnt": "ADMIN_FEATUREFLAGS",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "admin",
@@ -194,10 +205,12 @@
       "route": "/user/admin/resume-templates",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "ADMIN_RESUME_TEMPLATES",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "ADMIN_CONSOLE",
+      "routeEnt": "ADMIN_RESUME_TEMPLATES",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "admin",
@@ -300,9 +313,10 @@
       "title": "Dashboard",
       "route": "/user/dashboard",
       "navEnt": "USER_DASHBOARD",
-      "routeGuards": "",
-      "exists": false,
-      "status": "FAIL (no route)",
+      "routeEnt": "USER_DASHBOARD",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard",
+      "exists": true,
+      "status": "PASS",
       "notes": ""
     },
     {
@@ -324,10 +338,12 @@
       "route": "/user/resumes",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "RESUME_PORTAL",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "RESUME_PORTAL",
+      "routeEnt": "RESUME_PORTAL",
+      "routeGuards": "AuthGuardService, accessGuard, entitlementRouteGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "user",
@@ -426,10 +442,12 @@
       "route": "/user/job-applications",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "JOB_TRACKING",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "JOB_TRACKING",
+      "routeEnt": "JOB_TRACKING",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "user",
@@ -489,9 +507,11 @@
       "route": "/user/job-analytics",
       "navEnt": "JOB_ANALYTICS",
       "navPlan": "PlanTier.PRO",
-      "routeGuards": "",
-      "exists": false,
-      "status": "FAIL (no route)",
+      "routeEnt": "JOB_ANALYTICS",
+      "routePlan": "PlanTier.PRO",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard",
+      "exists": true,
+      "status": "PASS",
       "notes": ""
     },
     {
@@ -527,10 +547,12 @@
       "route": "/user/user-learn",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "LEARN_PORTAL",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeFlag": "COURSE_CENTRAL",
+      "routeEnt": "LEARN_PORTAL",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "user",
@@ -539,10 +561,11 @@
       "route": "/user/learn-saved",
       "navFlag": "NAV_PLACEHOLDER",
       "navEnt": "LEARN_SAVED",
-      "routeGuards": "",
-      "exists": false,
-      "status": "HIDDEN (no route)",
-      "notes": "Nav hidden via NAV_PLACEHOLDER; prevents dead link"
+      "routeEnt": "LEARN_SAVED",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard",
+      "exists": true,
+      "status": "HIDDEN (route exists)",
+      "notes": "Nav hidden via NAV_PLACEHOLDER; route still present"
     },
     {
       "role": "user",
@@ -615,9 +638,11 @@
       "route": "/notifications",
       "navFlag": "ALERTS",
       "navEnt": "JOB_ALERTS",
-      "routeGuards": "",
-      "exists": false,
-      "status": "FAIL (no route)",
+      "routeFlag": "ALERTS",
+      "routeEnt": "JOB_ALERTS",
+      "routeGuards": "entitlementRouteGuard, accessGuard",
+      "exists": true,
+      "status": "PASS",
       "notes": ""
     },
     {
@@ -638,9 +663,10 @@
       "title": "Upgrade",
       "route": "/user/billing/upgrade",
       "navEnt": "BILLING_UPGRADE",
-      "routeGuards": "",
-      "exists": false,
-      "status": "FAIL (no route)",
+      "routeEnt": "BILLING_UPGRADE",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard",
+      "exists": true,
+      "status": "PASS",
       "notes": ""
     },
     {
@@ -709,9 +735,10 @@
       "title": "My Profile",
       "route": "/user/profile",
       "navEnt": "PROFILE",
-      "routeGuards": "",
-      "exists": false,
-      "status": "FAIL (no route)",
+      "routeEnt": "PROFILE",
+      "routeGuards": "AuthGuardService, entitlementRouteGuard",
+      "exists": true,
+      "status": "PASS",
       "notes": ""
     },
     {

@@ -3,23 +3,19 @@
 <div mat-dialog-content>
   <form [formGroup]="form" class="form">
     <mat-form-field appearance="outline" class="full">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" />
+      <mat-label>Username (login)</mat-label>
+      <input matInput formControlName="userName" placeholder="e.g. john.doe" />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full">
       <mat-label>Role</mat-label>
       <mat-select formControlName="role">
-        <mat-option value="EMPLOYEE">Employee</mat-option>
-        <mat-option value="HR">HR</mat-option>
-        <mat-option value="MARKETING">Marketing</mat-option>
-        <mat-option value="RECRUITER">Recruiter</mat-option>
+        <mat-option value="ENTERPRISE_EMPLOYEE">Employee</mat-option>
+        <mat-option value="ENTERPRISE_HR">HR</mat-option>
+        <mat-option value="ENTERPRISE_MARKETING">Marketing</mat-option>
+        <mat-option value="ENTERPRISE_RECRUITER">Recruiter</mat-option>
+        <mat-option value="ENTERPRISE_ADMIN">Admin</mat-option>
       </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full">
-      <mat-label>Note (optional)</mat-label>
-      <textarea matInput rows="3" formControlName="note"></textarea>
     </mat-form-field>
   </form>
 </div>

@@ -34,6 +34,7 @@ export interface MenuItemCreateInput {
 }
 
 @Injectable({ providedIn: 'root' })
+export class MenuManagementService {
   constructor(private http: HttpClient) {}
 
   // EXT endpoints
