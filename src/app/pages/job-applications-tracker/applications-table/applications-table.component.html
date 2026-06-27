@@ -1,35 +1,29 @@
 
 <div class="applications-grid-card">
-   <div class="card-header">
+  <div class="card-header">
     <h3>My Applications</h3>
-    
-    <!-- Filter Controls -->
+
     <div class="filter-controls">
-      <!-- Company Filter -->
       <div class="filter-group">
-        <input 
-          type="text" 
+        <input
+          type="text"
           placeholder="Filter by company"
           [(ngModel)]="filters.company"
           (input)="onFilterChange()"
           class="filter-input"
         />
       </div>
-      
-      <!-- Position Filter -->
       <div class="filter-group">
-        <input 
-          type="text" 
+        <input
+          type="text"
           placeholder="Filter by position"
           [(ngModel)]="filters.position"
           (input)="onFilterChange()"
           class="filter-input"
         />
       </div>
-      
-      <!-- Status Filter -->
       <div class="filter-group">
-        <select 
+        <select
           [(ngModel)]="filters.status"
           (change)="onFilterChange()"
           class="filter-select"
@@ -40,9 +34,7 @@
           </option>
         </select>
       </div>
-      
-      <!-- Clear Filters Button -->
-      <button 
+      <button
         class="clear-filters-btn"
         (click)="clearFilters()"
         [disabled]="!filters.company && !filters.position && !filters.status"
@@ -52,125 +44,73 @@
     </div>
   </div>
 
-  <div class="grid">
+  <!-- Loading / error states -->
+  <div *ngIf="loading" class="state-msg">Loading applications…</div>
+  <div *ngIf="!loading && error" class="state-msg error">{{ error }}</div>
+  <div *ngIf="!loading && !error && allRows.length === 0" class="state-msg">
+    No applications yet. Add your first application to get started.
+  </div>
+
+  <div class="grid" *ngIf="!loading && !error && allRows.length > 0">
     <!-- HEADER -->
     <div class="grid-header">
-        <div class="cell header"></div>
+      <div class="cell header"></div>
       <div class="cell header">Company</div>
       <div class="cell header">Position</div>
       <div class="cell header">Status</div>
-      <div class="cell header">Last update</div>
-      <div class="cell header">Reference Link</div>
+      <div class="cell header">Date</div>
+      <div class="cell header">Source</div>
       <div class="cell header">Action</div>
-
-      <!-- <div class="cell header">Website</div>
-      <div class="cell header">Contact</div>
-      <div class="cell header">Reference</div> -->
     </div>
 
     <!-- ROWS -->
-    <div
-      class="grid-row"
-      *ngFor="let app of paginatedApplications"
-    >
-     <div class="cell">
+    <div class="grid-row" *ngFor="let app of paginatedApplications">
+      <div class="cell">
         <input type="checkbox" />
       </div>
-      <div class="cell company">
-        {{ app.company.name }}
-      </div>
-
+      <div class="cell company">{{ app.company }}</div>
+      <div class="cell">{{ app.position }}</div>
       <div class="cell">
-        {{ app.position }}
-      </div>
-
-      <div class="cell">
-        <span
-          class="status-pill"
-          [ngClass]="getStatusClass(app.status)"
-        >
+        <span class="status-pill" [ngClass]="getStatusClass(app.statusKey)">
           {{ app.status }}
         </span>
       </div>
-
+      <div class="cell">{{ app.applicationDate }}</div>
+      <div class="cell">{{ app.source ?? '—' }}</div>
       <div class="cell">
-        {{ app.applicationDate }}
-      </div>
-
-      <div class="cell">
-        <a [href]="app.referenceLink" target="_blank">
-          {{ app.referenceLink }}
+        <a *ngIf="app.jobUrl" [href]="app.jobUrl" target="_blank" rel="noopener">
+          <mat-icon class="edit-icon">open_in_new</mat-icon>
         </a>
+        <mat-icon *ngIf="!app.jobUrl" class="edit-icon">edit</mat-icon>
       </div>
-       <div class="cell">
-      
-       <mat-icon class="edit-icon">edit</mat-icon>
-      </div>
-
-      <!-- <div class="cell actions">
-        <span
-          class="action-chip"
-          *ngFor="let action of app.nextActions"
-        >
-          {{ action }}
-        </span>
-      </div>
-
-      <div class="cell">
-        <a [href]="'https://' + app.company.website" target="_blank">
-          {{ app.company.website }}
-        </a>
-      </div>
-
-      <div class="cell">
-        {{ app.contact }}
-      </div>
-
-      <div class="cell">
-        <a href="#" class="ref-link">
-          {{ app.referenceLink }}
-        </a>
-      </div>  -->
     </div>
   </div>
-  
-  <!-- Custom Pagination Controls -->
-  <div class="pagination-container">
-    <!-- Page size selector -->
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="!loading && totalItems > 0">
     <div class="page-size-selector">
       <label>Items per page:</label>
-      <select 
-        [value]="pageSize" 
-        (change)="changePageSize($event)"
-        class="page-size-select"
-      >
-        <option *ngFor="let size of pageSizeOptions" [value]="size">
-          {{ size }}
-        </option>
+      <select [value]="pageSize" (change)="changePageSize($event)" class="page-size-select">
+        <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
       </select>
     </div>
 
-    <!-- Pagination info -->
     <div class="pagination-info">
-      Showing {{ (currentPage - 1) * pageSize + 1 }} to 
-      {{ Math.min(currentPage * pageSize, totalItems) }} of 
+      Showing {{ (currentPage - 1) * pageSize + 1 }} to
+      {{ Math.min(currentPage * pageSize, totalItems) }} of
       {{ totalItems }} entries
     </div>
 
-    <!-- Pagination controls -->
     <div class="pagination-controls">
-      <!-- Previous button -->
-      <button 
-        class="pagination-btn" 
+      <button
+        class="pagination-btn"
         [class.disabled]="currentPage === 1"
         (click)="previousPage()"
         [disabled]="currentPage === 1"
       >
         ‹ Previous
       </button>
-
-      <!-- Page numbers -->
-      <button 
+      <button
         *ngFor="let page of getPageNumbers()"
         class="pagination-btn page-number"
         [class.active]="page === currentPage"
@@ -178,10 +118,8 @@
       >
         {{ page }}
       </button>
-
-      <!-- Next button -->
-      <button 
-        class="pagination-btn" 
+      <button
+        class="pagination-btn"
         [class.disabled]="currentPage === totalPages"
         (click)="nextPage()"
         [disabled]="currentPage === totalPages"
@@ -191,6 +129,3 @@
     </div>
   </div>
 </div>
-
-
-

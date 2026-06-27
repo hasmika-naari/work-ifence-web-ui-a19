@@ -1,364 +1,164 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import {
+  ApplicationTrackingApiService,
+  JobApplicationSummary,
+} from '../../../services/application-tracking-api.service';
 
+interface ApplicationStatus {
+  id: number;
+  primaryDisplayName: string;
+  keyName: string;
+  backgroundColor?: string;
+  color?: string;
+}
 
-interface ApplicationRecord {
-  company: {
-    name: string;
-    website: string;
-  };
+/** Flattened view model used by the template. */
+interface ApplicationRow {
+  id: number;
+  company: string;
   position: string;
   status: string;
+  statusKey: string;
   applicationDate: string;
-  salary: number;
-  nextActions: string[];
-  contact: string;
-  referenceLink: string;
+  jobUrl?: string;
+  source?: string;
 }
 
 @Component({
   selector: 'app-applications-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule , MatIconModule, MatSortModule, MatTableModule, MatInputModule, MatPaginatorModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatIconModule],
   templateUrl: './applications-table.component.html',
   styleUrls: ['./applications-table.component.scss']
 })
 export class ApplicationsTableComponent implements OnInit {
 
-  // Make Math available in template
   Math = Math;
 
-  // Pagination properties
-  currentPage: number = 1;
-  pageSize: number = 5;
-  totalItems: number = 0;
-  totalPages: number = 0;
-  paginatedApplications: ApplicationRecord[] = [];
-  pageSizeOptions: number[] = [5, 10, 15, 20];
+  loading = false;
+  error: string | null = null;
 
-  // Filter properties
-  filteredApplications: ApplicationRecord[] = [];
-  filters = {
-    company: '',
-    position: '',
-    status: ''
-  };
-  
-  // Get unique values for filter dropdowns
+  currentPage = 1;
+  pageSize = 10;
+  totalItems = 0;
+  totalPages = 0;
+  pageSizeOptions = [5, 10, 20, 50];
+
+  filters = { company: '', position: '', status: '' };
   uniqueStatuses: string[] = [];
-  uniqueCompanies: string[] = [];
-  uniquePositions: string[] = [];
 
- constructor() { }
+  allRows: ApplicationRow[] = [];
+  filteredRows: ApplicationRow[] = [];
+  paginatedApplications: ApplicationRow[] = [];
+
+  private statusMap = new Map<number, ApplicationStatus>();
+
+  constructor(
+    private readonly api: ApplicationTrackingApiService,
+    private readonly http: HttpClient
+  ) {}
 
   ngOnInit(): void {
-    //  const gridElement = document.querySelector('.applications-grid-card') as HTMLElement;
-
-    //   let remainingHeight = window.innerHeight - 290;
-    //   // Check if the element exists
-    //   if (gridElement) {
-    //       // Set the height style
-    //       gridElement.style.maxHeight = remainingHeight + 'px'; // Example height
-    //   }
-      
-      // Initialize filters and pagination
-      this.initializeFilters();
-      this.applyFilters();
+    this.loadData();
   }
 
-//   displayedColumns: string[] = ['company', 'position', 'status', 'applicationDate', 'salary', 'nextActions', 'website', 'contact', 'referenceLink'];
+  private loadData(): void {
+    this.loading = true;
+    this.error = null;
 
-
-  applications: ApplicationRecord[] = [
-    {
-      company: { name: 'Airbnb', website: 'airbnb.com' },
-      position: 'Full Stack Developer',
-      status: 'Applied',
-      applicationDate: 'July 22, 2025',
-      salary: 95000,
-      nextActions: ['Prepare Interview'],
-      contact: 'Brian Chesky',
-      referenceLink: 'Notion Portfolio'
-    },
-    {
-      company: { name: 'Spotify', website: 'spotify.com' },
-      position: 'Frontend Developer',
-      status: 'Interviewed',
-      applicationDate: 'July 21, 2025',
-      salary: 130000,
-      nextActions: ['Waiting', 'Follow up'],
-      contact: 'Daniel Ek',
-      referenceLink: 'Personal Website'
-    },
-    {
-      company: { name: 'Apple', website: 'apple.com' },
-      position: 'iOS Engineer',
-      status: 'Applied',
-      applicationDate: 'July 20, 2025',
-      salary: 120000,
-      nextActions: ['Prepare Interview'],
-      contact: 'Tim Cook',
-      referenceLink: 'LinkedIn Profile'
-    },
-    {
-      company: { name: 'Netflix', website: 'netflix.com' },
-      position: 'DevOps Specialist',
-      status: 'Rejected',
-      applicationDate: 'July 5, 2025',
-      salary: 105000,
-      nextActions: ['Send email'],
-      contact: 'Reed Hastings',
-      referenceLink: 'Portfolio Site'
-    },
-    {
-      company: { name: 'Airbnb', website: 'airbnb.com' },
-      position: 'Full Stack Developer',
-      status: 'Applied',
-      applicationDate: 'July 22, 2025',
-      salary: 95000,
-      nextActions: ['Prepare Interview'],
-      contact: 'Brian Chesky',
-      referenceLink: 'Notion Portfolio'
-    },
-    {
-      company: { name: 'Spotify', website: 'spotify.com' },
-      position: 'Frontend Developer',
-      status: 'Interviewed',
-      applicationDate: 'July 21, 2025',
-      salary: 130000,
-      nextActions: ['Waiting', 'Follow up'],
-      contact: 'Daniel Ek',
-      referenceLink: 'Personal Website'
-    },
-    {
-      company: { name: 'Apple', website: 'apple.com' },
-      position: 'iOS Engineer',
-      status: 'Applied',
-      applicationDate: 'July 20, 2025',
-      salary: 120000,
-      nextActions: ['Prepare Interview'],
-      contact: 'Tim Cook',
-      referenceLink: 'LinkedIn Profile'
-    },
-    {
-      company: { name: 'Netflix', website: 'netflix.com' },
-      position: 'DevOps Specialist',
-      status: 'Rejected',
-      applicationDate: 'July 5, 2025',
-      salary: 105000,
-      nextActions: ['Send email'],
-      contact: 'Reed Hastings',
-      referenceLink: 'Portfolio Site'
-    },
-    {
-      company: { name: 'Airbnb', website: 'airbnb.com' },
-      position: 'Full Stack Developer',
-      status: 'Applied',
-      applicationDate: 'July 22, 2025',
-      salary: 95000,
-      nextActions: ['Prepare Interview'],
-      contact: 'Brian Chesky',
-      referenceLink: 'Notion Portfolio'
-    },
-    {
-      company: { name: 'Spotify', website: 'spotify.com' },
-      position: 'Frontend Developer',
-      status: 'Interviewed',
-      applicationDate: 'July 21, 2025',
-      salary: 130000,
-      nextActions: ['Waiting', 'Follow up'],
-      contact: 'Daniel Ek',
-      referenceLink: 'Personal Website'
-    },
-    {
-      company: { name: 'Apple', website: 'apple.com' },
-      position: 'iOS Engineer',
-      status: 'Applied',
-      applicationDate: 'July 20, 2025',
-      salary: 120000,
-      nextActions: ['Prepare Interview'],
-      contact: 'Tim Cook',
-      referenceLink: 'LinkedIn Profile'
-    },
-    {
-      company: { name: 'Netflix', website: 'netflix.com' },
-      position: 'DevOps Specialist',
-      status: 'Rejected',
-      applicationDate: 'July 5, 2025',
-      salary: 105000,
-      nextActions: ['Send email'],
-      contact: 'Reed Hastings',
-      referenceLink: 'Portfolio Site'
-    },
-    {
-      company: { name: 'Airbnb', website: 'airbnb.com' },
-      position: 'Full Stack Developer',
-      status: 'Applied',
-      applicationDate: 'July 22, 2025',
-      salary: 95000,
-      nextActions: ['Prepare Interview'],
-      contact: 'Brian Chesky',
-      referenceLink: 'Notion Portfolio'
-    },
-    {
-      company: { name: 'Spotify', website: 'spotify.com' },
-      position: 'Frontend Developer',
-      status: 'Interviewed',
-      applicationDate: 'July 21, 2025',
-      salary: 130000,
-      nextActions: ['Waiting', 'Follow up'],
-      contact: 'Daniel Ek',
-      referenceLink: 'Personal Website'
-    },
-    {
-      company: { name: 'Apple', website: 'apple.com' },
-      position: 'iOS Engineer',
-      status: 'Applied',
-      applicationDate: 'July 20, 2025',
-      salary: 120000,
-      nextActions: ['Prepare Interview'],
-      contact: 'Tim Cook',
-      referenceLink: 'LinkedIn Profile'
-    },
-    {
-      company: { name: 'Netflix', website: 'netflix.com' },
-      position: 'DevOps Specialist',
-      status: 'Rejected',
-      applicationDate: 'July 5, 2025',
-      salary: 105000,
-      nextActions: ['Send email'],
-      contact: 'Reed Hastings',
-      referenceLink: 'Portfolio Site'
-    }
-  ];
-
-
-
-//   @ViewChild(MatPaginator) paginator!: MatPaginator;
-//   @ViewChild(MatSort) sort!: MatSort;
-
-  ngAfterViewInit() {
-    // this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
+    forkJoin({
+      statuses: this.http.get<ApplicationStatus[]>('/api/application-statuses').pipe(catchError(() => of([]))),
+      applications: this.api.list(0, 200).pipe(catchError(() => of([]))),
+    }).subscribe({
+      next: ({ statuses, applications }) => {
+        statuses.forEach(s => this.statusMap.set(s.id, s));
+        this.allRows = applications.map(a => this.toRow(a));
+        this.uniqueStatuses = [...new Set(this.allRows.map(r => r.status))].sort();
+        this.applyFilters();
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Failed to load applications.';
+        this.loading = false;
+      }
+    });
   }
 
-//   applyFilter(event: Event) {
-//     const value = (event.target as HTMLInputElement).value;
-//     this.dataSource.filter = value.trim().toLowerCase();
-//   }
-
-  // Filter methods
-  initializeFilters(): void {
-    // Get unique values for dropdowns
-    this.uniqueCompanies = [...new Set(this.applications.map(app => app.company.name))].sort();
-    this.uniquePositions = [...new Set(this.applications.map(app => app.position))].sort();
-    this.uniqueStatuses = [...new Set(this.applications.map(app => app.status))].sort();
+  private toRow(a: JobApplicationSummary): ApplicationRow {
+    const st = this.statusMap.get(a.statusId);
+    return {
+      id: a.id,
+      company: a.company,
+      position: a.jobTitle,
+      status: st?.primaryDisplayName ?? `Status ${a.statusId}`,
+      statusKey: st?.keyName ?? String(a.statusId),
+      applicationDate: a.applicationDate ?? a.createdAt,
+      jobUrl: a.jobUrl,
+      source: a.source,
+    };
   }
 
   applyFilters(): void {
-    this.filteredApplications = this.applications.filter(app => {
-      const companyMatch = !this.filters.company || 
-        app.company.name.toLowerCase().includes(this.filters.company.toLowerCase());
-      const positionMatch = !this.filters.position || 
-        app.position.toLowerCase().includes(this.filters.position.toLowerCase());
-      const statusMatch = !this.filters.status || app.status === this.filters.status;
-      
+    this.filteredRows = this.allRows.filter(r => {
+      const companyMatch = !this.filters.company || r.company.toLowerCase().includes(this.filters.company.toLowerCase());
+      const positionMatch = !this.filters.position || r.position.toLowerCase().includes(this.filters.position.toLowerCase());
+      const statusMatch = !this.filters.status || r.status === this.filters.status;
       return companyMatch && positionMatch && statusMatch;
     });
-    
-    // Reset to first page and update pagination
     this.currentPage = 1;
-    this.initializePagination();
+    this.totalItems = this.filteredRows.length;
+    this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+    this.updatePage();
   }
 
-  onFilterChange(): void {
-    this.applyFilters();
-  }
+  onFilterChange(): void { this.applyFilters(); }
 
   clearFilters(): void {
-    this.filters = {
-      company: '',
-      position: '',
-      status: ''
-    };
+    this.filters = { company: '', position: '', status: '' };
     this.applyFilters();
   }
 
-  // Pagination methods
-  initializePagination(): void {
-    this.totalItems = this.filteredApplications.length;
-    this.totalPages = Math.ceil(this.totalItems / this.pageSize);
-    this.updatePaginatedData();
-  }
-
-  updatePaginatedData(): void {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedApplications = this.filteredApplications.slice(startIndex, endIndex);
+  private updatePage(): void {
+    const start = (this.currentPage - 1) * this.pageSize;
+    this.paginatedApplications = this.filteredRows.slice(start, start + this.pageSize);
   }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.updatePaginatedData();
+      this.updatePage();
     }
   }
 
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePaginatedData();
-    }
-  }
+  previousPage(): void { this.goToPage(this.currentPage - 1); }
+  nextPage(): void { this.goToPage(this.currentPage + 1); }
 
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePaginatedData();
-    }
-  }
-
-  changePageSize(event: any): void {
-    this.pageSize = +event.target.value;
-    this.currentPage = 1; // Reset to first page
-    this.initializePagination();
+  changePageSize(event: Event): void {
+    this.pageSize = +(event.target as HTMLSelectElement).value;
+    this.currentPage = 1;
+    this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+    this.updatePage();
   }
 
   getPageNumbers(): number[] {
-    const pages: number[] = [];
-    const maxVisiblePages = 5;
-    const half = Math.floor(maxVisiblePages / 2);
-    
+    const max = 5;
+    const half = Math.floor(max / 2);
     let start = Math.max(1, this.currentPage - half);
-    let end = Math.min(this.totalPages, start + maxVisiblePages - 1);
-    
-    // Adjust start if we're near the end
-    if (end - start + 1 < maxVisiblePages) {
-      start = Math.max(1, end - maxVisiblePages + 1);
-    }
-    
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    
+    const end = Math.min(this.totalPages, start + max - 1);
+    if (end - start + 1 < max) start = Math.max(1, end - max + 1);
+    const pages: number[] = [];
+    for (let i = start; i <= end; i++) pages.push(i);
     return pages;
   }
 
-  getStatusClass(status: string): string {
-  return status
-    .toLowerCase()
-    .replace(/\s+/g, '-'); // "Offer Received" → "offer-received"
-}
-
-
-
-
+  getStatusClass(statusKey: string): string {
+    return statusKey.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  }
 }

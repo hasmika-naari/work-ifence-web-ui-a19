@@ -10,11 +10,13 @@ import { ResumeForm3Component } from 'src/app/pages/resume-form3/resume-form3.co
 import { TemplateAccessService } from '../services/template-access.service';
 import { ResumeTemplateVm } from '../models/resume-template.model';
 import { FREE_TEMPLATE_ID } from '../services/plan-gate.service';
+import { ResumeVisibilityShareComponent } from '../components/resume-visibility-share.component';
+import { AiResumePanelComponent } from '../components/ai-resume-panel.component';
 
 @Component({
   selector: 'app-resume-builder-shell',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, ResumeForm3Component],
+  imports: [CommonModule, MatProgressSpinnerModule, ResumeForm3Component, ResumeVisibilityShareComponent, AiResumePanelComponent],
   template: `
     @if (!ready()) {
       <div class="loading">
@@ -22,6 +24,10 @@ import { FREE_TEMPLATE_ID } from '../services/plan-gate.service';
         <div class="text">Loading resume…</div>
       </div>
     } @else {
+      @if (resumeId()) {
+        <app-resume-visibility-share class="vs-host" [resumeId]="resumeId()"></app-resume-visibility-share>
+        <app-ai-resume-panel class="ai-host" [resumeId]="resumeId()"></app-ai-resume-panel>
+      }
       <app-resume-form3></app-resume-form3>
     }
   `,
@@ -29,6 +35,8 @@ import { FREE_TEMPLATE_ID } from '../services/plan-gate.service';
     `
       .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 16px; gap: 12px; }
       .text { color: rgba(0,0,0,.65); font-weight: 600; }
+      .vs-host { display: block; max-width: 980px; margin: 12px auto 0; padding: 0 16px; }
+      .ai-host { display: block; max-width: 980px; margin: 8px auto 0; padding: 0 16px; }
     `,
   ],
 })

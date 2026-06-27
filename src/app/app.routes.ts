@@ -237,6 +237,15 @@ export const routes: Routes = [
         data: { reuseComponent: false, breadcrumb: 'Profile' }
     },
     {
+        // R1-E1 public, read-only shared résumé (unauthenticated). Token resolved server-side
+        // by the public ext endpoint; no guard — visibility/revocation is enforced by the backend.
+        path: 'r/:token',
+        loadComponent: () =>
+            import('./resume-portal/public/pages/public-resume-view.component')
+                .then(m => m.PublicResumeViewComponent),
+        data: { reuseComponent: false, breadcrumb: 'Shared Résumé' }
+    },
+    {
         path: 'resume',
         redirectTo: 'resume-builder',
         pathMatch: 'full'
@@ -511,6 +520,14 @@ export const routes: Routes = [
                 canActivate: [entitlementRouteGuard, accessGuard],
                 loadComponent: () => import('./pages/job-applications-tracker/applications-dashboard.component').then(m => m.ApplicationsDashboardComponent),
                 data: { breadcrumb: 'Job Applications', requireAuth: true, requireFlag: 'JOB_TRACKING', requireFeature: 'JOB_TRACKING', pricingScope: 'individual', entitlementKey: ENTITLEMENT_KEYS.JOB_TRACKING }
+            }),
+            entitledRoute(ENTITLEMENT_KEYS.EXTENSION_CAPTURE, {
+                path: 'extension-tokens',
+                canActivate: [entitlementRouteGuard, accessGuard],
+                loadComponent: () =>
+                    import('./pages/extension-tokens/extension-token-manager.component')
+                        .then(m => m.ExtensionTokenManagerComponent),
+                data: { breadcrumb: 'Extension Tokens', requireFlag: 'EXTENSION_CAPTURE', entitlementKey: ENTITLEMENT_KEYS.EXTENSION_CAPTURE },
             }),
             entitledRoute(ENTITLEMENT_KEYS.JOB_TRACKING, {
                 path: 'job-applications/application',
